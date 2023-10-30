@@ -44,6 +44,7 @@ namespace WBFL
             const IOneEndSeatedStabilityProblem* pStabilityProblem, ///< The stability problem parameters
             const OneEndSeatedCheckArtifact* pArtifact, ///< The specification checking artifact
             rptChapter* pChapter, ///< The report chapter to populate
+            const WBFL::Units::IndirectMeasure* pDisplayUnits, ///< The display units
             LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
             Float64 offset = 0 ///< Offset to be applied to analysis point locations
          );
@@ -54,9 +55,10 @@ namespace WBFL
             const IOneEndSeatedStabilityProblem* pStabilityProblem, ///< The stability problem parameters
             const OneEndSeatedResults* pResults, ///< The results of the stability analysis
             rptChapter* pChapter,  ///< The report chapter to populate
+            const WBFL::Units::IndirectMeasure* pDisplayUnits, ///< The display units
             LPCTSTR lpszLocColumnLabel = nullptr, ///< Label for the Location column for report tables
             Float64 offset = 0,  ///< Offset to be applied to analysis point locations
-            bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxilary reinforcement are reported
+            bool bReportTensileForceDetails = true ///< If true, the details for computing the tension force required to be carried by auxiliary reinforcement are reported
          );
       };
    }

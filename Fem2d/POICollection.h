@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "POI.h"
 
-typedef CModelCollection<IFem2dPOICollection, IFem2dPOI, CPOI, IFem2dEnumPOI, &IID_IFem2dEnumPOI,PoiIDType> POICollImpl;
+using POICollImpl = CModelCollection<IFem2dPOICollection, IFem2dPOI, CPOI, IFem2dEnumPOI, &IID_IFem2dEnumPOI, PoiIDType>;
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ END_COM_MAP()
 // IFem2dPOICollection
 public:
 	STDMETHOD(Create)(/*[in]*/PoiIDType ID, /*[in]*/MemberIDType memberID, /*[in]*/Float64 loc, /*[out, retval]*/ IFem2dPOI* *pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/PoiIDType* pid) override;
 	STDMETHOD(Clear)() override;
 };
 

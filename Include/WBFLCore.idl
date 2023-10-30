@@ -287,10 +287,10 @@ library WBFLCore
    ]
    interface IManageAgents : IUnknown
    {
-      [propget] HRESULT AgentCount([out,retval]CollectionIndexType* nAgents);
-      [propget] HRESULT Agent([in]CollectionIndexType idx,[out,retval]IAgent** ppAgent);
-      [propget] HRESULT ExtensionAgentCount([out,retval]CollectionIndexType* nAgents);
-      [propget] HRESULT ExtensionAgent([in]CollectionIndexType idx,[out,retval]IAgent** ppAgent);
+      [propget] HRESULT AgentCount([out,retval]IndexType* nAgents);
+      [propget] HRESULT Agent([in]IndexType idx,[out,retval]IAgent** ppAgent);
+      [propget] HRESULT ExtensionAgentCount([out,retval]IndexType* nAgents);
+      [propget] HRESULT ExtensionAgent([in]IndexType idx,[out,retval]IAgent** ppAgent);
    };
 
 	[

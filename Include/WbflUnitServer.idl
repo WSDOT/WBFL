@@ -324,7 +324,7 @@ library WBFLUnitServer
 
         /// Returns the number of items in the collection.
         [propget, helpcontext(IDH_IUnitTypes_Count),helpstring("Returns the number of items in collection.")]
-        HRESULT Count([out, retval] CollectionIndexType* retval);
+        HRESULT Count([out, retval] IndexType* retval);
 
         /// Creates a UnitType in the collection.
         [helpcontext(IDH_IUnitTypes_Add),helpstring("Creates a new UnitType and adds it to the collection.")]
@@ -452,7 +452,7 @@ library WBFLUnitServer
 
        /// Returns the number of items in the collection.
        [propget, helpcontext(IDH_IUnits_Count), helpstring("Returns the number of items in collection.")]
-       HRESULT Count([out, retval] CollectionIndexType* retval);
+       HRESULT Count([out, retval] IndexType* retval);
 
        /// Creates a Unit in the collection.
        [helpcontext(IDH_IUnits_Add),helpstring("Creates a new unit of measure and adds it to the collection")]
@@ -503,7 +503,7 @@ library WBFLUnitServer
        ///
        /// This method can only be called once for each instance of the UnitServer object. It is recommended that you call it during the initialization routines of your application or component. Subsequent calls to this method will fail with IDS_E_BASEUNITSSET error.
         [helpcontext(IDH_IUnitServer_SetBaseUnits), helpstring("Sets the base units. This method can only be called once.")]
-        HRESULT SetBaseUnits(
+        HRESULT SetSystemUnits(
            [in] BSTR bstrMass, ///< Base unit for mass
            [in] BSTR bstrLength,  ///< Base unit for length
            [in] BSTR bstrTime,  ///< Base unit for time
@@ -727,7 +727,7 @@ library WBFLUnitServer
 
        /// Returns the number of items in the collection
        [propget, helpcontext(IDH_IDisplayUnitGroup_Count),helpstring("Returns number of items in collection.")] 
-       HRESULT Count([out, retval] CollectionIndexType* retval);
+       HRESULT Count([out, retval] IndexType* retval);
 
        /// Creates a new DisplayUnit object in the collection
        [helpcontext(IDH_IDisplayUnitGroup_Add),helpstring("Add an item to the collection")]
@@ -814,7 +814,7 @@ library WBFLUnitServer
 
         /// Returns the number of DisplayUnitGroup objects
         [propget, helpcontext(IDH_IDisplayUnitMgr_Count),helpstring("Returns number of display groups")] 
-        HRESULT Count([out, retval] CollectionIndexType* retval);
+        HRESULT Count([out, retval] IndexType* retval);
 
         /// Creates a new DisplayUnitGroup object in the collection.
         /// An error will occur if the name of the display unit group is already in use (IDS_E_GROUPALREADYDEFINED). An error will also occur if the specified unit type is not found in the unit server (IDS_E_BADUNITTYPE)
@@ -941,7 +941,7 @@ library WBFLUnitServer
 
       /// Returns the number of DisplayUnitGroup objects
       [propget, helpcontext(IDH_IDisplayUnitMgr2_Count),helpstring("Returns number of display groups")]
-        HRESULT Count([out, retval] CollectionIndexType* retval);
+        HRESULT Count([out, retval] IndexType* retval);
 
         /// Creates a new DisplayUnitGroup object in the collection.
         /// An error will occur if the name of the display unit group is already in use (IDS_E_GROUPALREADYDEFINED). An error will also occur if the specified unit type is not found in the unit server (IDS_E_BADUNITTYPE)

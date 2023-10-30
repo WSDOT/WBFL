@@ -21,117 +21,40 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_XPROGRAMMINGERROR_H_
-#define INCLUDED_SYSTEM_XPROGRAMMINGERROR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <System\SysExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysXProgrammingError
-
-   A programming error exception thrown when a programming error is
-   encountered.
-
-
-DESCRIPTION
-   A programming error exception thrown when a programming error is
-   encountered.
-
-LOG
-   rab : 11.21.1997 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysXProgrammingError : public sysXBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum Reason { CodeFault,        // There is an error in the source code,
-                 InvalidValue,     // A valid is inavlid
-                 ValueOutOfRange,  // A value was out of a required range
-                 NotImplemented,   // A code segment is not implemented
-                 AssertValidFailed // A call to AssertValid() failed
+   namespace System
+   {
+      /// A programming error exception thrown when a programming error is encountered.
+      class SYSCLASS XProgrammingError : public XBase
+      {
+      public:
+         // GROUP: ENUMERATIONS
+         enum Reason { Precondition,     ///< A precondition was not satisfied
+                       InvalidValue,     ///< A value is invalid
+                       ValueOutOfRange,  ///< A value was out of a required range
+                       NotImplemented,   ///< A code segment is not implemented
+                       AssertValidFailed, ///< A call to AssertValid() failed
+                       Unspecified ///< The type of error is unspecified
+         };
+
+         XProgrammingError() = default;
+         XProgrammingError(Reason reason, const std::_tstring& file, Uint32 line);
+         virtual ~XProgrammingError() = default;
+
+         XProgrammingError& operator=(const XProgrammingError&) = default;
+         
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         virtual Reason GetReasonCode() const noexcept;
+
+      private:
+         Reason m_Reason{ Unspecified };
+      };
    };
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysXProgrammingError(Reason reason, LPCTSTR file, Int32 line);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysXProgrammingError(const sysXProgrammingError& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysXProgrammingError();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   sysXProgrammingError& operator = (const sysXProgrammingError& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   void Throw() const;
-
-   //------------------------------------------------------------------------
-   Int32 GetReason() const;
-
-   //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const sysXProgrammingError& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const sysXProgrammingError& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_PROGRAMMINGERROR_H_

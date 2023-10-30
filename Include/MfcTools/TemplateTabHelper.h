@@ -78,8 +78,8 @@ public:
       }
    };
    
-   typedef std::vector<TabDisplayFile> TabDisplayFileList;
-   typedef TabDisplayFileList::iterator TabDisplayFileIterator;
+   using TabDisplayFileList = std::vector<TabDisplayFile>;
+   using TabDisplayFileIterator = TabDisplayFileList::iterator;
 
    // GROUP: LIFECYCLE
    //------------------------------------------------------------------------
@@ -147,8 +147,8 @@ private:
    //------------------------------------------------------------------------
    std::set<std::_tstring> m_DirectoryList;
 
-   typedef std::set<TabFile> FileListType;
-   typedef FileListType::iterator FileListTypeIterator;
+   using FileListType = std::set<TabFile>;
+   using FileListTypeIterator = FileListType::iterator;
    FileListType     m_FileList;
    // GROUP: LIFECYCLE
 
@@ -171,24 +171,17 @@ public:
 
    //------------------------------------------------------------------------
    // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
+   virtual void Dump(WBFL::Debug::LogContext& os) const;
    #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
 };
 
 // INLINE METHODS
 //
    //------------------------------------------------------------------------
    // useful typedefs for tab and file lists
-   typedef std::map<std::_tstring, mfcTemplateTabHelper> TabList;
-   typedef TabList::value_type TabListEntry;
-   typedef TabList::iterator TabListIterator;
+   using TabList = std::map<std::_tstring, mfcTemplateTabHelper>;
+   using TabListEntry = TabList::value_type;
+   using TabListIterator = TabList::iterator;
 
 // EXTERNAL REFERENCES
 //

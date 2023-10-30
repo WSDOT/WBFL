@@ -106,7 +106,7 @@ void CTestAngleDisplayUnitFormatter::Test()
    fmtr->put_CondensedFormat(VARIANT_FALSE);
    fmtr->put_Signed(VARIANT_FALSE);
 
-   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),COGO_E_BADFORMATTAG);
+   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),E_INVALIDARG);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("d,m,s"),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("45d 00m 00.00s L")), 0);
@@ -150,41 +150,7 @@ void CTestAngleDisplayUnitFormatter::Test()
    TRY_TEST(fmtr->Format(0.1,CComBSTR("°,\',\""),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("0° 00\' 0000.000\" L")), 0);
 
-   /// Test Events
-   fmtr->put_Signed(VARIANT_FALSE);
-   fmtr->put_CondensedFormat(VARIANT_FALSE);
-   CComObject<CTestAngleDisplayUnitFormatter>* pTest;
-   CComObject<CTestAngleDisplayUnitFormatter>::CreateInstance(&pTest);
-   pTest->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTest);
-   TRY_TEST(AtlAdvise(fmtr,punk,IID_IDisplayUnitFormatterEvents,&dwCookie),S_OK);
-
-   pTest->InitEventTest();
-   fmtr->put_Signed(VARIANT_TRUE);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   fmtr->put_CondensedFormat(VARIANT_TRUE);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   fmtr->FormatSpecifiers(4,2,tjLeft,nftFixed,0.1);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(fmtr,IID_IDisplayUnitFormatterEvents,dwCookie),S_OK);
-   pTest->Release();
-
-
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_AngleDisplayUnitFormatter,IID_IAngleDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_AngleDisplayUnitFormatter,IID_IDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestAngleDisplayUnitFormatter::OnFormatChanged()
-{
-//   ::MessageBox(nullptr,"OnFormatChanged","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

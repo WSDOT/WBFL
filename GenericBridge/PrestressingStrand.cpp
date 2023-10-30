@@ -64,13 +64,13 @@ STDMETHODIMP CPrestressingStrand::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-const matPsStrand* CPrestressingStrand::GetStrand()
+const WBFL::Materials::PsStrand* CPrestressingStrand::GetStrand()
 {
-   lrfdStrandPool* pStrandPool = lrfdStrandPool::GetInstance();
-   const matPsStrand* pStrand = pStrandPool->GetStrand((matPsStrand::Grade)m_Grade,
-                                                       (matPsStrand::Type)m_Type,
-                                                       (matPsStrand::Coating)m_Coating,
-                                                       (matPsStrand::Size)m_Size);
+   const auto* pStrandPool = WBFL::LRFD::StrandPool::GetInstance();
+   const WBFL::Materials::PsStrand* pStrand = pStrandPool->GetStrand((WBFL::Materials::PsStrand::Grade)m_Grade,
+                                                       (WBFL::Materials::PsStrand::Type)m_Type,
+                                                       (WBFL::Materials::PsStrand::Coating)m_Coating,
+                                                       (WBFL::Materials::PsStrand::Size)m_Size);
 
    return pStrand;
 }
@@ -173,7 +173,7 @@ STDMETHODIMP CPrestressingStrand::get_NominalDiameter(Float64* dps)
 {
    CHECK_RETVAL(dps);
 
-   const matPsStrand* pStrand = GetStrand();
+   const WBFL::Materials::PsStrand* pStrand = GetStrand();
    *dps = pStrand->GetNominalDiameter();
    return S_OK;
 }
@@ -182,7 +182,7 @@ STDMETHODIMP CPrestressingStrand::get_NominalArea(Float64* aps)
 {
    CHECK_RETVAL(aps);
 
-   const matPsStrand* pStrand = GetStrand();
+   const WBFL::Materials::PsStrand* pStrand = GetStrand();
    *aps = pStrand->GetNominalArea();
 
    return S_OK;
@@ -192,7 +192,7 @@ STDMETHODIMP CPrestressingStrand::get_UltimateStrength(Float64* fpu)
 {
    CHECK_RETVAL(fpu);
 
-    const matPsStrand* pStrand = GetStrand();
+    const WBFL::Materials::PsStrand* pStrand = GetStrand();
    *fpu = pStrand->GetUltimateStrength();
 
    return S_OK;
@@ -202,7 +202,7 @@ STDMETHODIMP CPrestressingStrand::get_YieldStrength(Float64* fpy)
 {
    CHECK_RETVAL(fpy);
 
-   const matPsStrand* pStrand = GetStrand();
+   const WBFL::Materials::PsStrand* pStrand = GetStrand();
    *fpy = pStrand->GetYieldStrength();
 
    return S_OK;
@@ -212,7 +212,7 @@ STDMETHODIMP CPrestressingStrand::get_ModulusE(Float64* e)
 {
    CHECK_RETVAL(e);
 
-   const matPsStrand* pStrand = GetStrand();
+   const WBFL::Materials::PsStrand* pStrand = GetStrand();
    *e = pStrand->GetE();
 
    return S_OK;
@@ -260,7 +260,7 @@ STDMETHODIMP CPrestressingStrand::get_Density(StageIndexType stageIdx,Float64* w
    }
    else
    {
-      *w = ::ConvertToSysUnits(490.0, unitMeasure::LbfPerFeet3);
+      *w = WBFL::Units::ConvertToSysUnits(490.0, WBFL::Units::Measure::LbfPerFeet3);
    }
 
    return S_OK;

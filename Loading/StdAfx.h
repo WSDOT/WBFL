@@ -33,7 +33,8 @@
 #endif // _MSC_VER > 1000
 
 
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override

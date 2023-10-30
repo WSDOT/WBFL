@@ -29,6 +29,36 @@
 #include "Angle.h"
 #include "Direction.h"
 #include "Station.h"
+#include "StationEquation.h"
+#include "ProfileElement.h"
+#include "CircularCurve.h"
+#include "CompoundCurve.h"
+#include "TransitionCurve.h"
+#include "CubicSpline.h"
+#include "Path.h"
+#include "Alignment.h"
+#include "Profile.h"
+#include "Surface.h"
+#include "SurfaceTemplate.h"
+#include "ProfilePoint.h"
+#include "PathSegment.h"
+#include "ProfileSegment.h"
+#include "VerticalCurve.h"
+#include "SurfacePoint.h"
+#include "SurfaceProfile.h"
+#include "SurfaceTemplateSegment.h"
+#include "Superelevation.h"
+#include "Widening.h"
+
+#include "GirderLineFactory.h"
+#include "DiaphragmLineFactory.h"
+#include "LayoutLineFactory.h"
+#include "PierLineFactory.h"
+#include "PierLine.h"
+#include "GirderLine.h"
+#include "DiaphragmLine.h"
+#include "DeckBoundary.h"
+#include "DeckBoundaryFactory.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -36,94 +66,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void cogoUtil::ToDMS(Float64 value,long* deg,long* min,Float64* sec)
+
+void cogoUtil::Inverse(IPoint2d* p1, IPoint2d* p2, Float64* pDist, IDirection** ppDir)
 {
-   value *= 180.0/M_PI; // Convert value to degree
-
-   long sign = BinarySign( value );
-   value = fabs(value);
-
-   *deg = (long)floor(value);
-   value -= *deg;
-   value *= 60;
-   *min = (long)floor(value);
-   value -= *min;
-   *sec = value*60;
-
-   if ( IsZero(60. - *sec,0.051) ) // 59.95 ==> 60.0, 59.94 ==> 59.9
-   {
-      *sec = 0.;
-      *min += 1;
-   }
-
-   if ( *min == 60 )
-   {
-      *min = 0;
-      *deg += 1;
-   }
-
-   *deg *= sign;
-}
-
-Float64 cogoUtil::FromDMS(long deg,long min,Float64 sec)
-{
-   Float64 angle;
-   angle = BinarySign(deg)*(abs(deg) + (Float64)min/60. + sec/3600.);
-
-   angle *= M_PI/180.; // Convert to radians
-
-   return angle;
-}
-
-Float64 cogoUtil::NormalizeAngle(Float64 angle)
-{
-   // if angle is a large number, figure out how many 2PI's there are
-   // and subtract out that number.
-   int scale = (int)abs(angle / TWO_PI);
-   if ( 1 < scale )
-   {
-      angle -= (scale*TWO_PI);
-   }
-
-   do
-   {
-      if ( angle < 0 )
-      {
-         angle += TWO_PI;
-      }
-
-      if ( angle >= TWO_PI )
-      {
-         angle -= TWO_PI;
-      }
-   } while ( angle < 0 || TWO_PI <= angle );
-
-   return angle;
-}
-
-void cogoUtil::Inverse(IPoint2d* p1,IPoint2d* p2,Float64* pDist,IDirection** ppDir)
-{
-   Float64 x1, y1;
-   Float64 x2, y2;
-   p1->get_X(&x1);   p1->get_Y(&y1);
-   p2->get_X(&x2);   p2->get_Y(&y2);
-
-   Float64 dx = x2 - x1;
-   Float64 dy = y2 - y1;
-
-   *pDist = sqrt(dx*dx + dy*dy);
-   Float64 dir  = atan2(dy,dx);
-
-   if (IsZero(dir))
-   {
-      dir = 0.0;
-   }
-   else if ( dir < 0 )
-   {
-      dir += TWO_PI;
-   }
-
-   CreateDirection(dir,ppDir);
+   auto pnt1 = cogoUtil::GetInnerPoint(p1);
+   auto pnt2 = cogoUtil::GetInnerPoint(p2);
+   WBFL::COGO::Direction direction;
+   std::tie(*pDist, direction) = WBFL::COGO::COGO::ComputeInverse(*pnt1, *pnt2);
+   CreateDirection(direction, ppDir);
 }
 
 HRESULT CreateDirection(Float64 dir,IDirection** ppDirection)
@@ -140,9 +90,110 @@ HRESULT CreateDirection(Float64 dir,IDirection** ppDirection)
    return hr;
 }
 
+HRESULT cogoUtil::CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d> point, IPoint2d** ppPoint)
+{
+   return geomUtil::CreatePoint(point, ppPoint);
+}
 
-////////////////////////////////////////////////////////////////////
-// Helper Methods
+HRESULT cogoUtil::CreatePoint(const WBFL::Geometry::Point2d& point, IPoint2d** ppPoint)
+{
+   return cogoUtil::CreatePoint(std::make_shared<WBFL::Geometry::Point2d>(point), ppPoint);
+}
+
+HRESULT cogoUtil::CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d> point, IPoint3d** ppPoint)
+{
+   return geomUtil::CreatePoint(point, ppPoint);
+}
+
+HRESULT cogoUtil::CreatePoint(const WBFL::Geometry::Point3d& point, IPoint3d** ppPoint)
+{
+   return cogoUtil::CreatePoint(std::make_shared<WBFL::Geometry::Point3d>(point), ppPoint);
+}
+
+std::shared_ptr<WBFL::Geometry::Point2d> cogoUtil::GetInnerPoint(IPoint2d* pPoint)
+{
+   return geomUtil::GetInnerPoint(pPoint);
+}
+
+std::shared_ptr<WBFL::Geometry::Point3d> cogoUtil::GetInnerPoint(IPoint3d* pPoint)
+{
+   return geomUtil::GetInnerPoint(pPoint);
+}
+
+WBFL::Geometry::Point2d cogoUtil::GetPoint(IPoint2d* pPoint)
+{
+   return geomUtil::GetPoint(pPoint);
+}
+
+WBFL::Geometry::Line2d cogoUtil::GetLine(ILine2d* pLine)
+{
+   return geomUtil::GetLine(pLine);
+}
+
+WBFL::Geometry::LineSegment2d cogoUtil::GetLineSegment(ILineSegment2d* pLineSegment)
+{
+   return geomUtil::GetLineSegment(pLineSegment);
+}
+
+WBFL::Geometry::Circle cogoUtil::GetCircle(ICircle* pCircle)
+{
+   return geomUtil::GetCircle(pCircle);
+}
+
+WBFL::Geometry::Circle2d cogoUtil::GetCircle2d(ICircle* pCircle)
+{
+   return geomUtil::GetCircle2d(pCircle);
+}
+
+HRESULT cogoUtil::CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment)
+{
+   return geomUtil::CreateLineSegment(ls, ppLineSegment);
+}
+
+HRESULT cogoUtil::CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine)
+{
+   return geomUtil::CreateLine(line, ppLine);
+}
+
+HRESULT cogoUtil::CreatePoints(const std::vector<WBFL::Geometry::Point2d>& points, IPoint2dCollection** ppPoints)
+{
+   return geomUtil::CreatePointCollection(points, ppPoints);
+}
+
+HRESULT cogoUtil::CreateAngle(const WBFL::COGO::Angle& angle, IAngle** ppAngle)
+{
+   return CreateAngle(std::make_shared<WBFL::COGO::Angle>(angle), ppAngle);
+}
+
+HRESULT cogoUtil::CreateAngle(std::shared_ptr<WBFL::COGO::Angle> angle, IAngle** ppAngle)
+{
+   CComObject<CAngle>* pAngle;
+   CComObject<CAngle>::CreateInstance(&pAngle);
+   pAngle->SetAngle(angle);
+   (*ppAngle) = pAngle;
+   (*ppAngle)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Angle> cogoUtil::GetInnerAngle(IAngle* pAngle)
+{
+   CAngle* angle = dynamic_cast<CAngle*>(pAngle);
+   ATLASSERT(angle);
+   return angle->GetAngle();
+}
+
+std::pair<HRESULT,WBFL::COGO::Angle> cogoUtil::AngleFromVariant(VARIANT varAngle)
+{
+   CComPtr<IAngle> angle;
+   HRESULT hr = AngleFromVariant(varAngle, &angle);
+   if (FAILED(hr))
+      return std::make_pair(hr, WBFL::COGO::Angle(-9999999));
+
+   Float64 value;
+   angle->get_Value(&value);
+   return std::make_pair(S_OK,WBFL::COGO::Angle(value));
+}
+
 HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
 {
    CComPtr<IAngle> objAngle;
@@ -170,8 +221,9 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
 
    case VT_BSTR:
       {
-         CComPtr<IAngle> objAngle;
-         objAngle.CoCreateInstance(CLSID_Angle);
+         CComObject<CAngle>* pAngle;
+         CComObject<CAngle>::CreateInstance(&pAngle);
+         CComPtr<IAngle> objAngle = pAngle;
          if ( SUCCEEDED(objAngle->FromString(varAngle.bstrVal)) )
          {
             (*angle) = objAngle;
@@ -203,204 +255,666 @@ HRESULT cogoUtil::AngleFromVariant(VARIANT varAngle,IAngle** angle)
    return S_OK;
 }
 
-HRESULT cogoUtil::DirectionFromVariant(VARIANT varDir,IDirection** dir)
+WBFL::COGO::Direction& cogoUtil::GetInnerDirection(IDirection* pDirection)
 {
-   CComPtr<IDirection> objDir;
-   switch( varDir.vt )
-   {
-   case VT_UNKNOWN:
-      varDir.punkVal->QueryInterface(&objDir);
-      if ( objDir == nullptr )
-      {
-         return E_INVALIDARG;
-      }
+   CDirection* p = dynamic_cast<CDirection*>(pDirection);
+   ATLASSERT(p);
+   return p->GetDirection();
+}
 
-      objDir->QueryInterface(dir);
-      break;
-
-   case VT_DISPATCH:
-      varDir.pdispVal->QueryInterface(&objDir);
-      if ( objDir == nullptr )
-      {
-         return E_INVALIDARG;
-      }
-
-      objDir->QueryInterface(dir);
-      break;
-
-   case VT_BSTR:
-      {
-         CComPtr<IDirection> objDir;
-         objDir.CoCreateInstance(CLSID_Direction);
-         if ( SUCCEEDED(objDir->FromString(varDir.bstrVal)) )
-         {
-            (*dir) = objDir;
-            (*dir)->AddRef();
-            break;
-         }
-         else
-         {
-            return E_INVALIDARG;
-         }
-      }
-
-   default:
-      {
-         CComVariant var;
-         if ( FAILED(::VariantChangeType(&var,&varDir,0,VT_R8)))
-         {
-            return E_INVALIDARG;
-         }
-
-         CComObject<CDirection>* pDir;
-         CComObject<CDirection>::CreateInstance(&pDir);
-         pDir->put_Value(var.dblVal);
-         (*dir) = pDir;
-         (*dir)->AddRef();
-      }
-   }
-
+HRESULT cogoUtil::CreateDirection(const WBFL::COGO::Direction& direction, IDirection** ppDir)
+{
+   CComObject<CDirection>* pDirection;
+   CComObject<CDirection>::CreateInstance(&pDirection);
+   (*ppDir) = pDirection;
+   (*ppDir)->AddRef();
+   (*ppDir)->put_Value(direction.GetValue());
    return S_OK;
 }
 
-HRESULT cogoUtil::StationFromVariant(VARIANT varStation,bool bClone,IStation** station)
+std::pair<HRESULT, WBFL::COGO::Direction> cogoUtil::DirectionFromVariant(VARIANT varDirection)
 {
-   CComPtr<IStation> objStation;
-   switch( varStation.vt )
+   HRESULT hr = S_OK;
+   CComPtr<IDirection> objDir;
+
+   if ((varDirection.vt == VT_UNKNOWN && varDirection.punkVal == nullptr) || (varDirection.vt == VT_DISPATCH) && varDirection.pdispVal == nullptr)
+   {
+      // null pointers are treated as a short hand for zero direction
+      varDirection.vt = VT_R8;
+      varDirection.dblVal = 0.0;
+   }
+
+   switch (varDirection.vt)
    {
    case VT_UNKNOWN:
-      if ( varStation.punkVal == nullptr )
-      {
-         return E_INVALIDARG;
-      }
+      hr = varDirection.punkVal->QueryInterface(&objDir);
+      break;
 
-      varStation.punkVal->QueryInterface(&objStation);
-      if ( objStation.p == nullptr )
-      {
-         return E_INVALIDARG;
-      }
+   case VT_DISPATCH:
+      hr = varDirection.pdispVal->QueryInterface(&objDir);
+      break;
 
-      if ( bClone )
+   case VT_BSTR:
+   {
+      CComObject<CDirection>* pDirection;
+      CComObject<CDirection>::CreateInstance(&pDirection);
+      objDir = pDirection;
+      hr = objDir->FromString(varDirection.bstrVal);
+      if (FAILED(hr)) objDir.Release();
+      break;
+   }
+
+   default:
+   {
+      CComVariant var;
+      if (FAILED(::VariantChangeType(&var, &varDirection, 0, VT_R8)))
       {
-         objStation->Clone(station);
+         hr = E_INVALIDARG;
       }
       else
       {
-         objStation->QueryInterface(station);
+         objDir.CoCreateInstance(CLSID_Direction);
+         objDir->put_Value(var.dblVal);
+      }
+   }
+   }
+
+   if (FAILED(hr))
+      return std::make_pair(hr, WBFL::COGO::Direction(-9999999));
+
+   Float64 value;
+   objDir->get_Value(&value);
+   return std::make_pair(hr, WBFL::COGO::Direction(value));
+}
+
+HRESULT cogoUtil::CreateProfileElement(std::shared_ptr<WBFL::COGO::ProfileElement> pe, IProfileElement** ppProfileElement)
+{
+   auto segment = std::dynamic_pointer_cast<WBFL::COGO::ProfileSegment>(pe);
+   auto vc = std::dynamic_pointer_cast<WBFL::COGO::VerticalCurve>(pe);
+   if (segment)
+   {
+      CComObject<CProfileSegment>* pSegment;
+      CComObject<CProfileSegment>::CreateInstance(&pSegment);
+      pSegment->SetProfileSegment(segment);
+      (*ppProfileElement) = pSegment;
+      (*ppProfileElement)->AddRef();
+   }
+   else if (vc)
+   {
+      CComObject<CVerticalCurve>* pVC;
+      CComObject<CVerticalCurve>::CreateInstance(&pVC);
+      pVC->SetVerticalCurve(vc);
+      (*ppProfileElement) = pVC;
+      (*ppProfileElement)->AddRef();
+   }
+   else
+   {
+      ATLASSERT(false);// is there a new kind of profile element;
+   }
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::ProfileElement> cogoUtil::GetInnerProfileElement(IProfileElement* pProfileElement)
+{
+   auto segment = dynamic_cast<CProfileSegment*>(pProfileElement);
+   auto vc = dynamic_cast<CVerticalCurve*>(pProfileElement);
+
+   std::shared_ptr<WBFL::COGO::ProfileElement> profile_element;
+   if (segment)
+   {
+      profile_element = segment->GetProfileSegment();
+   }
+   else if (vc)
+   {
+      profile_element = vc->GetVerticalCurve();
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new kind of profile element?
+   }
+
+   return profile_element;
+
+}
+
+HRESULT cogoUtil::CreatePathElement(std::shared_ptr<WBFL::COGO::PathElement> pe, IPathElement** ppPathElement)
+{
+   auto segment = std::dynamic_pointer_cast<WBFL::COGO::PathSegment>(pe);
+   auto circular_curve = std::dynamic_pointer_cast<WBFL::COGO::CircularCurve>(pe);
+   auto compound_curve = std::dynamic_pointer_cast<WBFL::COGO::CompoundCurve>(pe);
+   auto transition_curve = std::dynamic_pointer_cast<WBFL::COGO::TransitionCurve>(pe);
+   auto spline_curve = std::dynamic_pointer_cast<WBFL::COGO::CubicSpline>(pe);
+   auto path = std::dynamic_pointer_cast<WBFL::COGO::Path>(pe);
+
+   if (segment)
+   {
+      CComObject<CPathSegment>* pSegment;
+      CComObject<CPathSegment>::CreateInstance(&pSegment);
+      pSegment->SetPathSegment(segment);
+      (*ppPathElement) = pSegment;
+      (*ppPathElement)->AddRef();
+   }
+   else if (circular_curve)
+   {
+      CComObject<CCircularCurve>* pPE;
+      CComObject<CCircularCurve>::CreateInstance(&pPE);
+      pPE->SetCurve(circular_curve);
+      (*ppPathElement) = pPE;
+      (*ppPathElement)->AddRef();
+   }
+   else if (compound_curve)
+   {
+      CComObject<CCompoundCurve>* pPE;
+      CComObject<CCompoundCurve>::CreateInstance(&pPE);
+      pPE->SetCurve(compound_curve);
+      (*ppPathElement) = pPE;
+      (*ppPathElement)->AddRef();
+   }
+   else if (transition_curve)
+   {
+      CComObject<CTransitionCurve>* pPE;
+      CComObject<CTransitionCurve>::CreateInstance(&pPE);
+      pPE->SetCurve(transition_curve);
+      (*ppPathElement) = pPE;
+      (*ppPathElement)->AddRef();
+   }
+   else if (spline_curve)
+   {
+      CComObject<CCubicSpline>* pPE;
+      CComObject<CCubicSpline>::CreateInstance(&pPE);
+      pPE->SetSpline(spline_curve);
+      (*ppPathElement) = pPE;
+      (*ppPathElement)->AddRef();
+   }
+   else if (path)
+   {
+      CComObject<CPath>* pPE;
+      CComObject<CPath>::CreateInstance(&pPE);
+      pPE->SetPath(path);
+      (*ppPathElement) = pPE;
+      (*ppPathElement)->AddRef();
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new kind of path element?
+   }
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::PathElement> cogoUtil::GetInnerPathElement(IPathElement* pPathElement)
+{
+   auto segment = dynamic_cast<CPathSegment*>(pPathElement);
+   auto circular_curve = dynamic_cast<CCircularCurve*>(pPathElement);
+   auto compound_curve = dynamic_cast<CCompoundCurve*>(pPathElement);
+   auto transition_curve = dynamic_cast<CTransitionCurve*>(pPathElement);
+   auto spline_curve = dynamic_cast<CCubicSpline*>(pPathElement);
+   auto path = dynamic_cast<CPath*>(pPathElement);
+
+   std::shared_ptr<WBFL::COGO::PathElement> path_element;
+   if (segment)
+   {
+      path_element = segment->GetPathSegment();
+   }
+   else if (circular_curve)
+   {
+      path_element = circular_curve->GetCurve();
+   }
+   else if (compound_curve)
+   {
+      path_element = compound_curve->GetCurve();
+   }
+   else if (transition_curve)
+   {
+      path_element = transition_curve->GetCurve();
+   }
+   else if (spline_curve)
+   {
+      path_element = spline_curve->GetSpline();
+   }
+   else if (path)
+   {
+      path_element = path->GetPath();
+   }
+   else
+   {
+      ATLASSERT(false); // is there a new kind of path element?
+   }
+
+   return path_element;
+}
+
+HRESULT cogoUtil::CreatePathSegment(std::shared_ptr<WBFL::COGO::PathSegment> pathSegment, IPathSegment** ppPathSegment)
+{
+   CComObject<CPathSegment>* pSegment;
+   CComObject<CPathSegment>::CreateInstance(&pSegment);
+   pSegment->SetPathSegment(pathSegment);
+   (*ppPathSegment) = pSegment;
+   (*ppPathSegment)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::PathSegment> cogoUtil::GetInnerPathSegment(IPathSegment* pPathSegment)
+{
+   CPathSegment* segment = dynamic_cast<CPathSegment*>(pPathSegment);
+   ATLASSERT(segment);
+   return segment->GetPathSegment();
+}
+
+HRESULT cogoUtil::CreateProfile(std::shared_ptr<WBFL::COGO::Profile> profile, IProfile** ppProfile)
+{
+   CComObject<CProfile>* pProfile;
+   CComObject<CProfile>::CreateInstance(&pProfile);
+   pProfile->SetProfile(profile);
+   (*ppProfile) = pProfile;
+   (*ppProfile)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Profile> cogoUtil::GetInnerProfile(IProfile* pProfile)
+{
+   CProfile* profile = dynamic_cast<CProfile*>(pProfile);
+   ATLASSERT(profile);
+   return profile->GetProfile();
+}
+
+HRESULT cogoUtil::CreatePath(std::shared_ptr<WBFL::COGO::Path> path, IPath** ppPath)
+{
+   CComObject<CPath>* pPath;
+   CComObject<CPath>::CreateInstance(&pPath);
+   pPath->SetPath(path);
+   (*ppPath) = pPath;
+   (*ppPath)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Path> cogoUtil::GetInnerPath(IPath* pPath)
+{
+   CPath* path = dynamic_cast<CPath*>(pPath);
+   ATLASSERT(path);
+   return path->GetPath();
+}
+
+HRESULT cogoUtil::CreateAlignment(std::shared_ptr<WBFL::COGO::Alignment> alignment, IAlignment** ppAlignment)
+{
+   CComObject<CAlignment>* pAlignment;
+   CComObject<CAlignment>::CreateInstance(&pAlignment);
+   pAlignment->SetAlignment(alignment);
+   (*ppAlignment) = pAlignment;
+   (*ppAlignment)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Alignment> cogoUtil::GetInnerAlignment(IAlignment* pAlignment)
+{
+   CAlignment* alignment = dynamic_cast<CAlignment*>(pAlignment);
+   ATLASSERT(alignment);
+   return alignment->GetAlignment();
+}
+
+HRESULT cogoUtil::CreateSurface(std::shared_ptr<WBFL::COGO::Surface> surface, ISurface** ppSurface)
+{
+   CComObject<CSurface>* pSurface;
+   CComObject<CSurface>::CreateInstance(&pSurface);
+   pSurface->SetSurface(surface);
+   (*ppSurface) = pSurface;
+   (*ppSurface)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Surface> cogoUtil::GetInnerSurface(ISurface* pSurface)
+{
+   CSurface* surface = dynamic_cast<CSurface*>(pSurface);
+   ATLASSERT(surface);
+   return surface->GetSurface();
+}
+
+std::shared_ptr<WBFL::COGO::ProfilePoint> cogoUtil::GetInnerProfilePoint(IProfilePoint* pProfilePoint)
+{
+   CProfilePoint* point = dynamic_cast<CProfilePoint*>(pProfilePoint);
+   ATLASSERT(point);
+   return point->GetProfilePoint();
+}
+
+WBFL::COGO::ProfilePoint cogoUtil::GetProfilePoint(IProfilePoint* pProfilePoint)
+{
+   CProfilePoint* point = dynamic_cast<CProfilePoint*>(pProfilePoint);
+   ATLASSERT(point);
+   return *(point->GetProfilePoint());
+}
+
+HRESULT cogoUtil::CreateProfilePoint(const WBFL::COGO::ProfilePoint& profilePoint, IProfilePoint** ppProfilePoint)
+{
+   return cogoUtil::CreateProfilePoint(std::make_shared<WBFL::COGO::ProfilePoint>(profilePoint), ppProfilePoint);
+}
+
+HRESULT cogoUtil::CreateProfilePoint(std::shared_ptr<WBFL::COGO::ProfilePoint> profilePoint, IProfilePoint** ppProfilePoint)
+{
+   CComObject<CProfilePoint>* pPP;
+   CComObject<CProfilePoint>::CreateInstance(&pPP);
+   pPP->SetProfilePoint(profilePoint);
+   (*ppProfilePoint) = pPP;
+   (*ppProfilePoint)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::SurfacePoint> cogoUtil::GetInnerSurfacePoint(ISurfacePoint* pSurfacePoint)
+{
+   CSurfacePoint* point = dynamic_cast<CSurfacePoint*>(pSurfacePoint);
+   ATLASSERT(point);
+   return point->GetSurfacePoint();
+}
+
+HRESULT cogoUtil::CreateSurfacePoint(std::shared_ptr<WBFL::COGO::SurfacePoint> surfacePoint, ISurfacePoint** ppSurfacePoint)
+{
+   CComObject<CSurfacePoint>* pPP;
+   CComObject<CSurfacePoint>::CreateInstance(&pPP);
+   pPP->SetSurfacePoint(surfacePoint);
+   (*ppSurfacePoint) = pPP;
+   (*ppSurfacePoint)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::SurfaceProfile> cogoUtil::GetInnerSurfaceProfile(ISurfaceProfile* pSurfaceProfile)
+{
+   CSurfaceProfile* profile = dynamic_cast<CSurfaceProfile*>(pSurfaceProfile);
+   ATLASSERT(profile);
+   return profile->GetSurfaceProfile();
+}
+
+HRESULT cogoUtil::CreateSurfaceProfile(ISurface* pSurface,std::shared_ptr<WBFL::COGO::SurfaceProfile> surfaceProfile, ISurfaceProfile** ppSurfaceProfile)
+{
+   CComObject<CSurfaceProfile>* pPP;
+   CComObject<CSurfaceProfile>::CreateInstance(&pPP);
+   pPP->putref_Surface(pSurface);
+   pPP->SetSurfaceProfile(surfaceProfile);
+   (*ppSurfaceProfile) = pPP;
+   (*ppSurfaceProfile)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::SurfaceTemplate> cogoUtil::GetInnerSurfaceTemplate(ISurfaceTemplate* pSurfaceTemplate)
+{
+   CSurfaceTemplate* pTemplate = dynamic_cast<CSurfaceTemplate*>(pSurfaceTemplate);
+   ATLASSERT(pTemplate);
+   return pTemplate->GetSurfaceTemplate();
+}
+
+HRESULT cogoUtil::CreateSurfaceTemplate(ISurface* pSurface, std::shared_ptr<WBFL::COGO::SurfaceTemplate> st, ISurfaceTemplate** ppSurfaceTemplate)
+{
+   CComObject<CSurfaceTemplate>* pST;
+   CComObject<CSurfaceTemplate>::CreateInstance(&pST);
+   pST->putref_Surface(pSurface);
+   pST->SetSurfaceTemplate(st);
+   (*ppSurfaceTemplate) = pST;
+   (*ppSurfaceTemplate)->AddRef();
+   return S_OK;
+}
+
+HRESULT cogoUtil::CreateSurfaceTemplateSegment(const WBFL::COGO::SurfaceTemplateSegment& segment,ISurfaceTemplateSegment** ppSegment)
+{
+   CComObject<CSurfaceTemplateSegment>* pST;
+   CComObject<CSurfaceTemplateSegment>::CreateInstance(&pST);
+   pST->SetSurfaceTemplateSegment(segment);
+   (*ppSegment) = pST;
+   (*ppSegment)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Superelevation> cogoUtil::GetInnerSuperelevation(ISuperelevation* pSuperelevation)
+{
+   CSuperelevation* super = dynamic_cast<CSuperelevation*>(pSuperelevation);
+   ATLASSERT(super);
+   return super->GetSuperelevation();
+}
+
+HRESULT cogoUtil::CreateSuperelevation(std::shared_ptr<WBFL::COGO::Superelevation> superelevation, ISuperelevation** ppSuperelevation)
+{
+   CComObject<CSuperelevation>* pSuperelevation;
+   CComObject<CSuperelevation>::CreateInstance(&pSuperelevation);
+   pSuperelevation->SetSuperelevation(superelevation);
+   (*ppSuperelevation) = pSuperelevation;
+   (*ppSuperelevation)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::Widening> cogoUtil::GetInnerWidening(IWidening* pWidening)
+{
+   CWidening* widening = dynamic_cast<CWidening*>(pWidening);
+   ATLASSERT(widening);
+   return widening->GetWidening();
+}
+
+HRESULT cogoUtil::CreateWidening(std::shared_ptr<WBFL::COGO::Widening> widening, IWidening** ppWidening)
+{
+   CComObject<CWidening>* pWidening;
+   CComObject<CWidening>::CreateInstance(&pWidening);
+   pWidening->SetWidening(widening);
+   (*ppWidening) = pWidening;
+   (*ppWidening)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::CompoundCurve> cogoUtil::GetInnerCompoundCurve(ICompoundCurve* pCurve)
+{
+   CCompoundCurve* curve = dynamic_cast<CCompoundCurve*>(pCurve);
+   ATLASSERT(curve);
+   return curve->GetCurve();
+}
+
+HRESULT cogoUtil::CreateCompoundCurve(std::shared_ptr<WBFL::COGO::CompoundCurve> curve, ICompoundCurve** ppCurve)
+{
+   CComObject<CCompoundCurve>* pCurve;
+   CComObject<CCompoundCurve>::CreateInstance(&pCurve);
+   pCurve->SetCurve(curve);
+   (*ppCurve) = pCurve;
+   (*ppCurve)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::CircularCurve> cogoUtil::GetInnerCircularCurve(ICircularCurve* pCurve)
+{
+   CCircularCurve* curve = dynamic_cast<CCircularCurve*>(pCurve);
+   ATLASSERT(curve);
+   return curve->GetCurve();
+}
+
+HRESULT cogoUtil::CreateCircularCurve(std::shared_ptr<WBFL::COGO::CircularCurve> curve, ICircularCurve** ppCurve)
+{
+   CComObject<CCircularCurve>* pCurve;
+   CComObject<CCircularCurve>::CreateInstance(&pCurve);
+   pCurve->SetCurve(curve);
+   (*ppCurve) = pCurve;
+   (*ppCurve)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::TransitionCurve> cogoUtil::GetInnerTransitionCurve(ITransitionCurve* pCurve)
+{
+   CTransitionCurve* curve = dynamic_cast<CTransitionCurve*>(pCurve);
+   ATLASSERT(curve);
+   return curve->GetCurve();
+}
+
+HRESULT cogoUtil::CreateTransitionCurve(std::shared_ptr<WBFL::COGO::TransitionCurve> curve, ITransitionCurve** ppCurve)
+{
+   CComObject<CTransitionCurve>* pCurve;
+   CComObject<CTransitionCurve>::CreateInstance(&pCurve);
+   pCurve->SetCurve(curve);
+   (*ppCurve) = pCurve;
+   (*ppCurve)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::CubicSpline> cogoUtil::GetInnerCubicSpline(ICubicSpline* pCurve)
+{
+   CCubicSpline* curve = dynamic_cast<CCubicSpline*>(pCurve);
+   ATLASSERT(curve);
+   return curve->GetSpline();
+}
+
+HRESULT cogoUtil::CreateCubicSpline(std::shared_ptr<WBFL::COGO::CubicSpline> curve, ICubicSpline** ppCurve)
+{
+   CComObject<CCubicSpline>* pCurve;
+   CComObject<CCubicSpline>::CreateInstance(&pCurve);
+   pCurve->SetSpline(curve);
+   (*ppCurve) = pCurve;
+   (*ppCurve)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::ProfileSegment> cogoUtil::GetInnerProfileSegment(IProfileSegment* pSegment)
+{
+   CProfileSegment* segment = dynamic_cast<CProfileSegment*>(pSegment);
+   ATLASSERT(segment);
+   return segment->GetProfileSegment();
+}
+
+HRESULT cogoUtil::CreateProfileSegment(std::shared_ptr<WBFL::COGO::ProfileSegment> segment, IProfileSegment** ppSegment)
+{
+   CComObject<CProfileSegment>* pSegment;
+   CComObject<CProfileSegment>::CreateInstance(&pSegment);
+   pSegment->SetProfileSegment(segment);
+   (*ppSegment) = pSegment;
+   (*ppSegment)->AddRef();
+   return S_OK;
+}
+
+std::shared_ptr<WBFL::COGO::VerticalCurve> cogoUtil::GetInnerVerticalCurve(IVerticalCurve* pVertCurve)
+{
+   CVerticalCurve* pVC = dynamic_cast<CVerticalCurve*>(pVertCurve);
+   ATLASSERT(pVC);
+   return pVC->GetVerticalCurve();
+}
+
+HRESULT cogoUtil::CreateVerticalCurve(std::shared_ptr<WBFL::COGO::VerticalCurve> vc, IVerticalCurve** ppVertCurve)
+{
+   CComObject<CVerticalCurve>* pVC;
+   CComObject<CVerticalCurve>::CreateInstance(&pVC);
+   pVC->SetVerticalCurve(vc);
+   (*ppVertCurve) = pVC;
+   (*ppVertCurve)->AddRef();
+   return S_OK;
+}
+
+HRESULT cogoUtil::CreateStationEquation(const WBFL::COGO::StationEquation& equation, IStationEquation** ppEquation)
+{
+   CComObject<CStationEquation>* pEquation;
+   CComObject<CStationEquation>::CreateInstance(&pEquation);
+   pEquation->SetEquation(equation);
+   (*ppEquation) = pEquation;
+   (*ppEquation)->AddRef();
+   return S_OK;
+}
+
+WBFL::COGO::Station& cogoUtil::GetInnerStation(IStation* pStation)
+{
+   CStation* s = dynamic_cast<CStation*>(pStation);
+   ATLASSERT(s);
+   return s->GetStation();
+}
+
+HRESULT cogoUtil::CreateStation(const WBFL::COGO::Station& station, IStation** ppStation)
+{
+   CComObject<CStation>* pStation;
+   CComObject<CStation>::CreateInstance(&pStation);
+   pStation->SetStation(station);
+   (*ppStation) = pStation;
+   (*ppStation)->AddRef();
+   return S_OK;
+}
+
+std::pair<HRESULT, WBFL::COGO::Station> cogoUtil::StationFromVariant(VARIANT varStation)
+{
+   HRESULT hr = S_OK;
+   CComPtr<IStation> objStation;
+   switch (varStation.vt)
+   {
+   case VT_UNKNOWN:
+      if (varStation.punkVal == nullptr)
+      {
+         hr = E_INVALIDARG;
+      }
+      else
+      {
+         varStation.punkVal->QueryInterface(&objStation);
+         if (objStation.p == nullptr)
+         {
+            hr = E_INVALIDARG;
+         }
       }
       break;
 
    case VT_DISPATCH:
-      if ( varStation.pdispVal == nullptr )
+      if (varStation.pdispVal == nullptr)
       {
-         return E_INVALIDARG;
-      }
-
-      varStation.pdispVal->QueryInterface(&objStation);
-      if ( objStation.p == nullptr )
-      {
-         return E_INVALIDARG;
-      }
-
-      if ( bClone )
-      {
-         objStation->Clone(station);
+         hr = E_INVALIDARG;
       }
       else
       {
-         objStation->QueryInterface(station);
+         varStation.pdispVal->QueryInterface(&objStation);
+         if (objStation.p == nullptr)
+         {
+            hr = E_INVALIDARG;
+         }
       }
       break;
 
    case VT_BSTR:
+   {
+      CComObject<CStation>* pStation;
+      CComObject<CStation>::CreateInstance(&pStation);
+      CComPtr<IStation> sta(pStation); // need this so we don't leak pStation if this fails
+      if (FAILED(pStation->FromString(varStation.bstrVal, umUS))) // try US mode first
       {
-         CComObject<CStation>* pStation;
-         CComObject<CStation>::CreateInstance(&pStation);
-         CComPtr<IStation> sta(pStation); // need this so we don't leak pStation if this fails
-         if ( FAILED(pStation->FromString(varStation.bstrVal,umUS)) ) // try US mode first
+         if (FAILED(pStation->FromString(varStation.bstrVal, umSI))) // now try SI mode
          {
-            if ( FAILED(pStation->FromString(varStation.bstrVal,umSI)) ) // now try SI mode
-            {
-               // still failed... something is wrong
-               return E_INVALIDARG;
-            }
+            // still failed... something is wrong
+            hr = E_INVALIDARG;
          }
-         (*station) = pStation;
-         (*station)->AddRef();
       }
-      break;
+      else
+      {
+         objStation = pStation;
+      }
+   }
+   break;
 
    default:
+   {
+      CComVariant var;
+      if (FAILED(::VariantChangeType(&var, &varStation, 0, VT_R8)))
       {
-         CComVariant var;
-         if ( FAILED(::VariantChangeType(&var,&varStation,0,VT_R8)))
-         {
-            return E_INVALIDARG;
-         }
-
+         hr = E_INVALIDARG;
+      }
+      else
+      {
          CComObject<CStation>* pStation;
          CComObject<CStation>::CreateInstance(&pStation);
          pStation->put_Value(var.dblVal);
-         (*station) = pStation;
-         (*station)->AddRef();
+         objStation = pStation;
       }
    }
-
-   return S_OK;
+   }
+   ATLASSERT(hr == S_OK);
+   Float64 value; objStation->get_Value(&value);
+   IndexType zoneIdx; objStation->get_StationZoneIndex(&zoneIdx);
+   return std::make_pair(hr, WBFL::COGO::Station(zoneIdx, value));
 }
 
 bool cogoUtil::IsPointBeforeStart(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint)
 {
-   CComPtr<ICoordinateXform2d> xform;
-   xform.CoCreateInstance(CLSID_CoordinateXform2d);
-
-   CComPtr<IDirection> dir;
-   Float64 dist;
-   cogoUtil::Inverse(pStart,pEnd,&dist,&dir);
-   
-   Float64 angle;
-   dir->get_Value(&angle);
-
-   xform->putref_NewOrigin(pStart);
-   xform->put_RotationAngle(angle);
-
-   CComPtr<IPoint2d> p;
-   p.CoCreateInstance(CLSID_Point2d);
-   cogoUtil::CopyPoint(p,pPoint);
-
-   xform->Xform(&(p.p),xfrmOldToNew);
-
-   Float64 x;
-   p->get_X(&x);
-
-   return x < 0 ? true : false;
+   auto start = GetPoint(pStart);
+   auto end = GetPoint(pEnd);
+   auto point = GetPoint(pPoint);
+   return WBFL::COGO::COGO::IsPointBeforeStart(start, end, point);
 }
 
 bool cogoUtil::IsPointAfterEnd(IPoint2d* pStart,IPoint2d* pEnd,IPoint2d* pPoint)
 {
-   CComPtr<ICoordinateXform2d> xform;
-   xform.CoCreateInstance(CLSID_CoordinateXform2d);
-
-   CComPtr<IDirection> dir;
-   Float64 dist;
-   cogoUtil::Inverse(pStart,pEnd,&dist,&dir);
-   
-   Float64 angle;
-   dir->get_Value(&angle);
-
-   xform->putref_NewOrigin(pEnd);
-   xform->put_RotationAngle(angle);
-
-   CComPtr<IPoint2d> p;
-   p.CoCreateInstance(CLSID_Point2d);
-   cogoUtil::CopyPoint(p,pPoint);
-
-   xform->Xform(&(p.p),xfrmOldToNew);
-
-   Float64 x;
-   p->get_X(&x);
-
-   return 0 < x ? true : false;
+   auto start = GetPoint(pStart);
+   auto end = GetPoint(pEnd);
+   auto point = GetPoint(pPoint);
+   return WBFL::COGO::COGO::IsPointAfterEnd(start, end, point);
 }
 
 bool cogoUtil::IsEqual(IPoint2d* p1,IPoint2d* p2)
@@ -423,601 +937,149 @@ void cogoUtil::CopyPoint(IPoint2d* to,IPoint2d* from)
    to->Move(x,y);
 }
 
-HRESULT cogoUtil::LocateByDistDir(IPoint2d* from,Float64 dist,IDirection* objDir,Float64 offset,IPoint2dFactory* pFactory,IPoint2d** ppoint)
+HRESULT cogoUtil::LocateByDistDir(IPoint2d* pFrom,Float64 dist,IDirection* objDir,Float64 offset,IPoint2d** ppPoint)
 {
-   Float64 dx;
-   Float64 dy;
-   Float64 x;
-   Float64 y;
-   Float64 dir;
-
-   from->Location(&x,&y);
-
-   objDir->get_Value(&dir);
-
-   Float64 sindir = sin( dir );
-   Float64 cosdir = cos( dir );
-
-   dx = dist * cosdir;
-   dy = dist * sindir;
-
-   // Point on line
-   x += dx;
-   y += dy;
-
-   // Apply offset
-   x += offset * sindir;
-   y -= offset * cosdir;
-
-   if (pFactory)
-   {
-      pFactory->CreatePoint(ppoint);
-   }
-   else
-   {
-      CComPtr<IPoint2d> p;
-      p.CoCreateInstance(CLSID_Point2d);
-      p.CopyTo(ppoint);
-   }
-
-   (*ppoint)->Move(x,y);
-
-   return S_OK;
+   auto from = GetPoint(pFrom);
+   Float64 direction;
+   objDir->get_Value(&direction);
+   auto point = WBFL::COGO::COGO::LocateByDistanceAndDirection(from, dist, direction, offset);
+   return CreatePoint(point, ppPoint);
 }
 
-void cogoUtil::LineCircleIntersect(ILine2d* line,ICircle* circle,IPoint2d* pntNearest,IPoint2dFactory* pFactory,IPoint2d** newPnt)
+HRESULT cogoUtil::LineCircleIntersect(ILine2d* pLine,ICircle* pCircle,IPoint2d* pntNearest,IPoint2d** newPnt)
 {
-   (*newPnt) = nullptr;
-
-   CComPtr<IGeomUtil2d> geomUtil;
-   geomUtil.CoCreateInstance(CLSID_GeomUtil);
-   
-   CComQIPtr<IGeomUtil> gu(geomUtil);
-   CComQIPtr<IPoint2dFactory> factory2d(pFactory);
-   gu->putref_Point2dFactory(factory2d);
-
-   short nIntersect;
-   CComPtr<IPoint2d> p1, p2;
-   geomUtil->LineCircleIntersect(line,circle,&p1,&p2,&nIntersect);
-
-   CComQIPtr<IPoint2d> pnt1(p1);
-   CComQIPtr<IPoint2d> pnt2(p2);
-
-   if ( nIntersect == 0 )
-   {
-      (*newPnt) = nullptr;
-   }
-   else if ( nIntersect == 1 )
-   {
-      (*newPnt) = pnt1;
-      (*newPnt)->AddRef();
-   }
-   else
-   {
-      ATLASSERT(nIntersect == 2);
-
-      Float64 d1, d2;
-      geomUtil->Distance(pntNearest,pnt1,&d1);
-      geomUtil->Distance(pntNearest,pnt2,&d2);
-
-      if ( d2 < d1 )
-      {
-         (*newPnt) = pnt2;
-         (*newPnt)->AddRef();
-      }
-      else
-      {
-         (*newPnt) = pnt1;
-         (*newPnt)->AddRef();
-      }
-   }
+   auto line = GetLine(pLine);
+   auto circle = GetCircle2d(pCircle);
+   auto nearest = GetPoint(pntNearest);
+   auto point = WBFL::COGO::COGO::IntersectLineAndCircle(line, circle, nearest);
+   return CreatePoint(point, newPnt);
 }
-
-void cogoUtil::GetBrgParts(Float64 brgVal,NSDirectionType *pnsDir, long *pDeg, long *pMin, Float64 *pSec, EWDirectionType *pewDir)
-{
-   Float64 dir = brgVal;
-
-   *pnsDir = InRange( 0., brgVal, M_PI ) ? nsNorth : nsSouth;
-   *pewDir = InRange( 0., brgVal, PI_OVER_2 ) || InRange( 1.5*M_PI, brgVal, TWO_PI) ? ewEast : ewWest;
-
-   if ( InRange( 0.0, brgVal, PI_OVER_2 ) )
-   {
-      dir = PI_OVER_2 - brgVal;
-   }
-   else if ( InRange(PI_OVER_2,brgVal,M_PI) )
-   {
-      dir = brgVal - PI_OVER_2;
-   }
-   else if ( InRange(M_PI,brgVal,3*PI_OVER_2) )
-   {
-      dir = 3*PI_OVER_2 - brgVal;
-   }
-   else
-   {
-      dir = brgVal - 3*PI_OVER_2;
-   }
-
-   cogoUtil::ToDMS( dir, pDeg, pMin, pSec );
-}
-
 
 HRESULT cogoUtil::ParseAngleTags(std::_tstring& strTag,std::_tstring* strDegTag,std::_tstring* strMinTag,std::_tstring* strSecTag)
 {
-   std::_tstring::size_type posFirst = strTag.find(_T(","));
-   std::_tstring::size_type posSecond = strTag.find(_T(","),posFirst+1);
-
-   if (posFirst == std::_tstring::npos || posSecond == std::_tstring::npos )
+   try
+   {
+      std::tie(*strDegTag, *strMinTag, *strSecTag) = WBFL::COGO::COGO::ParseAngleTags(strTag);
+   }
+   catch (...)
    {
       return E_INVALIDARG;
    }
-
-   strDegTag->assign(strTag,0,posFirst);
-   strMinTag->assign(strTag,posFirst+1,posSecond-posFirst-1);
-   strSecTag->assign(strTag,posSecond+1,strTag.size()-posFirst-1);
-
    return S_OK;
 }
 
-bool cogoUtil::IsEqual(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+HRESULT cogoUtil::CreateArray(const std::vector<Float64>& values, IDblArray** ppArray)
 {
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
+   CComPtr<IDblArray> array;
+   array.CoCreateInstance(CLSID_DblArray);
+   for (const auto& value : values)
    {
-      pProfile->get_Alignment(&alignment);
+      array->Add(value);
    }
 
-   return IsEqual(alignment,pSta1,pSta2);
+   return array.CopyTo(ppArray);
 }
 
-bool cogoUtil::IsEqual(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+std::vector<Float64> cogoUtil::GetArray(IDblArray* pArray)
 {
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
+   IndexType nItems;
+   pArray->get_Count(&nItems);
+   std::vector<Float64> vValues;
+   vValues.reserve(nItems);
+   for (IndexType i = 0; i < nItems; i++)
    {
-      pAlignment->get_StationEquations(&equations);
+      Float64 value;
+      pArray->get_Item(i, &value);
+      vValues.push_back(value);
    }
 
-   return IsEqual(equations,pSta1,pSta2);
+   return vValues;
+
 }
 
-bool cogoUtil::IsEqual(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+std::shared_ptr<WBFL::COGO::GirderLineFactory> cogoUtil::GetInnerFactory(IGirderLineFactory* pFactory)
 {
-   if ( pEquations )
-   {
-      Float64 sta1,sta2;
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
-      return ::IsEqual(sta1,sta2);
-   }
-   else
-   {
-      ZoneIndexType zoneIdx1, zoneIdx2;
-      Float64 sta1, sta2;
-      pSta1->GetStation(&zoneIdx1,&sta1);
-      pSta2->GetStation(&zoneIdx2,&sta2);
-
-      if ( zoneIdx1 != zoneIdx2 )
-      {
-         return false;
-      }
-
-      return ::IsEqual(sta1,sta2);
-   }
-
-   ATLASSERT(false); // should never get here
-   return false;
+   CGirderLineFactory* p = dynamic_cast<CGirderLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
 }
 
-Float64 cogoUtil::Distance(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+std::shared_ptr<WBFL::COGO::DiaphragmLineFactory> cogoUtil::GetInnerFactory(IDiaphragmLineFactory* pFactory)
 {
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
-   {
-      pProfile->get_Alignment(&alignment);
-   }
-
-   return Distance(alignment,pSta1,pSta2);
+   CDiaphragmLineFactory* p = dynamic_cast<CDiaphragmLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
 }
 
-Float64 cogoUtil::Distance(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+std::shared_ptr<WBFL::COGO::LayoutLineFactory> cogoUtil::GetInnerFactory(ILayoutLineFactory* pFactory)
 {
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
-   {
-      pAlignment->get_StationEquations(&equations);
-   }
-
-   return Distance(equations,pSta1,pSta2);
+   CLayoutLineFactory* p = dynamic_cast<CLayoutLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
 }
 
-Float64 cogoUtil::Distance(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+std::shared_ptr<WBFL::COGO::PierLineFactory> cogoUtil::GetInnerFactory(IPierLineFactory* pFactory)
 {
-   if ( pEquations )
-   {
-      Float64 sta1,sta2;
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
-      return sta2-sta1;
-   }
-   else
-   {
-      ZoneIndexType zoneIdx1, zoneIdx2;
-      Float64 sta1, sta2;
-      pSta1->GetStation(&zoneIdx1,&sta1);
-      pSta2->GetStation(&zoneIdx2,&sta2);
-
-      ATLASSERT(zoneIdx1 == zoneIdx2);
-
-      return sta2-sta1;
-   }
-
-   ATLASSERT(false); // should never get here
-   return -99999;
+   CPierLineFactory* p = dynamic_cast<CPierLineFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
 }
 
-Int8 cogoUtil::Compare(IProfile* pProfile,IStation* pSta1,IStation* pSta2)
+std::shared_ptr<WBFL::COGO::DeckBoundaryFactory> cogoUtil::GetInnerFactory(IDeckBoundaryFactory* pFactory)
 {
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
-   {
-      pProfile->get_Alignment(&alignment);
-   }
-
-   return Compare(alignment,pSta1,pSta2);
+   CDeckBoundaryFactory* p = dynamic_cast<CDeckBoundaryFactory*>(pFactory);
+   ATLASSERT(p);
+   return p->GetFactory();
 }
 
-Int8 cogoUtil::Compare(IAlignment* pAlignment,IStation* pSta1,IStation* pSta2)
+HRESULT cogoUtil::CreatePierLine(std::shared_ptr<WBFL::COGO::PierLine> pierLine, IPierLine** ppPierLine)
 {
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
+   CComObject<CPierLine>* pPierLine;
+   HRESULT hr = CComObject<CPierLine>::CreateInstance(&pPierLine);
+   if (SUCCEEDED(hr))
    {
-      pAlignment->get_StationEquations(&equations);
+      *ppPierLine = pPierLine;
+      (*ppPierLine)->AddRef();
+      pPierLine->SetPierLine(pierLine);
    }
-
-   return Compare(equations,pSta1,pSta2);
+   return hr;
 }
 
-Int8 cogoUtil::Compare(IStationEquationCollection* pEquations,IStation* pSta1,IStation* pSta2)
+HRESULT cogoUtil::CreateGirderLine(std::shared_ptr<WBFL::COGO::GirderLine> girderLine, IGirderLine** ppGirderLine)
 {
-   if ( pEquations )
+   CComObject<CGirderLine>* pGirderLine;
+   HRESULT hr = CComObject<CGirderLine>::CreateInstance(&pGirderLine);
+   if (SUCCEEDED(hr))
    {
-      Float64 sta1,sta2;
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta1),&sta1);
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta2),&sta2);
-      return IsZero(sta2-sta1) ? 0 : ::Sign(sta2-sta1);
+      *ppGirderLine = pGirderLine;
+      (*ppGirderLine)->AddRef();
+      pGirderLine->SetGirderLine(girderLine);
    }
-   else
-   {
-      ZoneIndexType zoneIdx1, zoneIdx2;
-      Float64 sta1, sta2;
-      pSta1->GetStation(&zoneIdx1,&sta1);
-      pSta2->GetStation(&zoneIdx2,&sta2);
-
-      ATLASSERT(zoneIdx1 == zoneIdx2);
-
-      return IsZero(sta2 - sta1) ? 0 : ::Sign(sta2-sta1);
-   }
-
-   ATLASSERT(false); // should never get here
-   return -2;
+   return hr;
 }
 
-Float64 cogoUtil::GetNormalizedStationValue(IProfile* pProfile,IStation* pSta)
+HRESULT cogoUtil::CreateDiaphragmLine(std::shared_ptr<WBFL::COGO::DiaphragmLine> diaphragmLine, IDiaphragmLine** ppDiaphragmLine)
 {
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
+   CComObject<CDiaphragmLine>* pDiaphragmLine;
+   HRESULT hr = CComObject<CDiaphragmLine>::CreateInstance(&pDiaphragmLine);
+   if (SUCCEEDED(hr))
    {
-      pProfile->get_Alignment(&alignment);
+      *ppDiaphragmLine = pDiaphragmLine;
+      (*ppDiaphragmLine)->AddRef();
+      pDiaphragmLine->SetDiaphragmLine(diaphragmLine);
    }
-
-   return GetNormalizedStationValue(alignment,pSta);
+   return hr;
 }
 
-Float64 cogoUtil::GetNormalizedStationValue(IAlignment* pAlignment,IStation* pSta)
+HRESULT cogoUtil::CreateDeckBoundary(std::shared_ptr<WBFL::COGO::DeckBoundary> deckBoundary, IDeckBoundary** ppDeckBoundary)
 {
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
+   CComObject<CDeckBoundary>* pDeckBoundary;
+   HRESULT hr = CComObject<CDeckBoundary>::CreateInstance(&pDeckBoundary);
+   if (SUCCEEDED(hr))
    {
-      pAlignment->get_StationEquations(&equations);
+      *ppDeckBoundary = pDeckBoundary;
+      (*ppDeckBoundary)->AddRef();
+      pDeckBoundary->SetDeckBoundary(deckBoundary);
    }
-
-   return GetNormalizedStationValue(equations,pSta);
-}
-
-Float64 cogoUtil::GetNormalizedStationValue(IStationEquationCollection* pEquations,IStation* pSta)
-{
-   if ( pEquations )
-   {
-      Float64 station;
-      pEquations->ConvertToNormalizedStation(CComVariant(pSta),&station);
-      return station;
-   }
-   else
-   {
-      ZoneIndexType zoneIdx;
-      Float64 station;
-      pSta->GetStation(&zoneIdx,&station);
-
-      ATLASSERT(zoneIdx == INVALID_INDEX);
-
-      return station;
-   }
-
-   ATLASSERT(false); // should never get here
-   return -99999;
-}
-
-void cogoUtil::IncrementStationBy(IProfile* pProfile,IStation* pStation,Float64 dist)
-{
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
-   {
-      pProfile->get_Alignment(&alignment);
-   }
-   IncrementStationBy(alignment,pStation,dist);
-}
-
-void cogoUtil::IncrementStationBy(IAlignment* pAlignment,IStation* pStation,Float64 dist)
-{
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
-   {
-      pAlignment->get_StationEquations(&equations);
-   }
-
-   IncrementStationBy(equations,pStation,dist);
-}
-
-void cogoUtil::IncrementStationBy(IStationEquationCollection* pEquations,IStation* pStation,Float64 dist)
-{
-   if ( pEquations )
-   {
-      pEquations->IncrementBy(pStation,dist);
-   }
-   else
-   {
-      ZoneIndexType zoneIdx;
-      Float64 station;
-      pStation->GetStation(&zoneIdx,&station);
-
-      ATLASSERT(zoneIdx == INVALID_INDEX);
-      station += dist;
-      pStation->SetStation(zoneIdx,station);
-   }
-}
-
-void cogoUtil::CreateStation(IProfile* pProfile,Float64 normalizedStation,IStation** pSta)
-{
-   CComPtr<IAlignment> alignment;
-   if ( pProfile )
-   {
-      pProfile->get_Alignment(&alignment);
-   }
-
-   return CreateStation(alignment,normalizedStation,pSta);
-}
-
-void cogoUtil::CreateStation(IAlignment* pAlignment,Float64 normalizedStation,IStation** pSta)
-{
-   CComPtr<IStationEquationCollection> equations;
-   if ( pAlignment )
-   {
-      pAlignment->get_StationEquations(&equations);
-   }
-
-   return CreateStation(equations,normalizedStation,pSta);
-}
-
-void cogoUtil::CreateStation(IStationEquationCollection* pEquations,Float64 normalizedStation,IStation** pSta)
-{
-   if ( pEquations )
-   {
-      pEquations->ConvertFromNormalizedStation(normalizedStation,pSta);
-   }
-   else
-   {
-      CComObject<CStation>* pStation;
-      CComObject<CStation>::CreateInstance(&pStation);
-      (*pSta) = pStation;
-      (*pSta)->AddRef();
-      (*pSta)->SetStation(INVALID_INDEX,normalizedStation);
-   }
-}
-
-HRESULT cogoUtil::CreateParallelLine(IPoint2d* pnt, IDirection* objDir, Float64 offset, ILine2dFactory* pLineFactory, ILine2d** line)
-{
-   // Save the direction of the line before it is altered.
-   Float64 dir;
-   objDir->get_Value(&dir);
-
-   // Get the offset point for line
-   CComPtr<IPoint2d> pntLine;
-   CComPtr<IDirection> objClone;
-   objDir->Clone(&objClone);
-   objClone->IncrementBy(CComVariant(-PI_OVER_2));
-
-   HRESULT hr = cogoUtil::LocateByDistDir(pnt, offset, objClone, 0.0, nullptr, &pntLine);
-   ATLASSERT(SUCCEEDED(hr));
-
-   // Create a vector in the direction of line
-   CComPtr<IVector2d> vec;
-   vec.CoCreateInstance(CLSID_Vector2d);
-   vec->put_X(cos(dir));
-   vec->put_Y(sin(dir));
-
-   // Create line
-   CComPtr<ILine2d> newLine;
-   if (pLineFactory)
-      pLineFactory->CreateLine(&newLine);
-   else
-      newLine.CoCreateInstance(CLSID_Line2d);
-
-   newLine->SetExplicit(pntLine, vec);
-
-   *line = newLine;
-   (*line)->AddRef();
-
-   return S_OK;
-}
-
-HRESULT cogoUtil::IntersectBearings(IPoint2d* p1, VARIANT varDir1, Float64 offset1, IPoint2d* p2, VARIANT varDir2, Float64 offset2, IPoint2dFactory* pPointFactory, IPoint2d** point)
-{
-   CHECK_IN(p1);
-   CHECK_IN(p2);
-   CHECK_RETOBJ(point);
-
-   HRESULT hr;
-
-   // Get the input data and validate
-   CComPtr<IPoint2d> pnt[2];
-   pnt[0] = p1;
-   pnt[1] = p2;
-
-   CComPtr<IDirection> dir[2];
-   hr = cogoUtil::DirectionFromVariant(varDir1, &dir[0]);
-   if (FAILED(hr))
-      return hr;
-
-   hr = cogoUtil::DirectionFromVariant(varDir2, &dir[1]);
-   if (FAILED(hr))
-      return hr;
-
-   Float64 offset[2];
-   offset[0] = offset1;
-   offset[1] = offset2;
-
-   CComPtr<ILine2d> line[2];
-   for (long i = 0; i < 2; i++)
-   {
-      cogoUtil::CreateParallelLine(pnt[i], dir[i], offset[i], nullptr/*line factory*/, &line[i]);
-   }
-
-   // Intersect the lines
-   CComPtr<IPoint2d> p;
-   hr = geomUtil::LineLineIntersect(line[0], line[1], pPointFactory, &p);
-   if (FAILED(hr))
-      return hr;
-
-   if (p != nullptr)
-   {
-      p->QueryInterface(point);
-   }
-   else
-   {
-      *point = nullptr;
-   }
-
-   return S_OK;
-}
-
-HRESULT cogoUtil::IntersectBearingCircle(IPoint2d* pnt1, VARIANT varDir, Float64 offset, IPoint2d* pntCenter, Float64 radius, IPoint2d* pntNearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
-{
-   CHECK_IN(pnt1);
-   CHECK_IN(pntCenter);
-   CHECK_IN(pntNearest);
-   CHECK_RETOBJ(point);
-
-   if (radius <= 0.0) return COGO_E_RADIUS;
-
-   // Get the input data and validate
-   HRESULT hr;
-
-
-   CComPtr<IDirection> dir;
-   hr = cogoUtil::DirectionFromVariant(varDir, &dir);
-   if (FAILED(hr))
-      return hr;
-
-   CComPtr<ILine2d> line;
-   cogoUtil::CreateParallelLine(pnt1, dir, offset, nullptr, &line);
-
-   CComPtr<ICircle> circle;
-   circle.CoCreateInstance(CLSID_Circle);
-   circle->putref_Center(pntCenter);
-   circle->put_Radius(radius);
-
-   CComPtr<IPoint2d> p1, p2;
-   short nIntersect;
-   geomUtil::LineCircleIntersect(line, circle, pPointFactory, &p1, &p2, &nIntersect);
-
-   if (nIntersect == 0)
-   {
-      (*point) = 0;
-   }
-   else if (nIntersect == 1)
-   {
-      p1.QueryInterface(point);
-   }
-   else
-   {
-      ATLASSERT(nIntersect == 2);
-
-      Float64 d1, d2;
-      p1->DistanceEx(pntNearest, &d1);
-      p2->DistanceEx(pntNearest, &d2);
-
-      if (d2 < d1)
-      {
-         p2.QueryInterface(point);
-      }
-      else
-      {
-         p1.QueryInterface(point);
-      }
-   }
-
-   return S_OK;
-}
-
-HRESULT cogoUtil::IntersectCircles(IPoint2d* c1, Float64 r1, IPoint2d* c2, Float64 r2, IPoint2d* nearest, IPoint2dFactory* pPointFactory, IPoint2d** point)
-{
-   CHECK_IN(c1);
-   CHECK_IN(c2);
-   CHECK_IN(nearest);
-   CHECK_RETOBJ(point);
-
-   if (r1 <= 0.0 || r2 <= 0.0) return COGO_E_RADIUS;
-
-
-   CComPtr<ICircle> circle1;
-   circle1.CoCreateInstance(CLSID_Circle);
-   circle1->putref_Center(c1);
-   circle1->put_Radius(r1);
-
-   CComPtr<ICircle> circle2;
-   circle2.CoCreateInstance(CLSID_Circle);
-   circle2->putref_Center(c2);
-   circle2->put_Radius(r2);
-
-   CComPtr<IPoint2d> p1, p2;
-   short nIntersect;
-   geomUtil::CircleCircleIntersect(circle1, circle2, pPointFactory, &p1, &p2, &nIntersect);
-
-   if (nIntersect == 0)
-   {
-      (*point) = 0;
-   }
-   else if (nIntersect == 1)
-   {
-      p1.QueryInterface(point);
-   }
-   else
-   {
-      ATLASSERT(nIntersect == 2);
-
-      Float64 d1, d2;
-      p1->DistanceEx(nearest, &d1);
-      p2->DistanceEx(nearest, &d2);
-
-      if (d2 < d1)
-      {
-         p2.QueryInterface(point);
-      }
-      else
-      {
-         p1.QueryInterface(point);
-      }
-   }
-
-   return S_OK;
+   return hr;
 }

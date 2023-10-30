@@ -86,7 +86,7 @@ void CEAFAutoCalcReportView::OnInitialUpdate()
       m_pRptMgr = pCreateData->m_pRptMgr;
       ATLASSERT(m_pReportBuilderMgr != nullptr || m_pRptMgr != nullptr); // one of these should not be nullptr
 
-      CollectionIndexType rptIdx = pCreateData->m_RptIdx;
+      IndexType rptIdx = pCreateData->m_RptIdx;
       BOOL bPromptForSpec = pCreateData->m_bPromptForSpec;
 
       CreateReportSpecification(rptIdx,bPromptForSpec);
@@ -152,7 +152,7 @@ void CEAFAutoCalcReportView::UpdateNow()
    CEAFReportView::UpdateNow(nullptr);
 }
 
-void CEAFAutoCalcReportView::UpdateNow(CReportHint* pHint)
+void CEAFAutoCalcReportView::UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
 {
    // Update is forced by the user
    CEAFReportView::UpdateNow(pHint);
@@ -179,7 +179,7 @@ void CEAFAutoCalcReportView::EditReport()
    }
 }
 
-HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(CReportHint* pHint)
+HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
 {
    HRESULT hr = CEAFReportView::UpdateReportBrowser(pHint);
 

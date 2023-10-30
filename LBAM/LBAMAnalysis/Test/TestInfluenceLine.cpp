@@ -63,7 +63,7 @@ HRESULT CTestInfluenceLine::Test()
 
    // test empty il
    Float64 d, d2;
-   CollectionIndexType l;
+   IndexType l;
    TRY_TEST(pil->get_Count(ilsBoth,&l), S_OK);
    TRY_TEST(l, 0);
    TRY_TEST(pil->get_Count(ilsPositive,&l), S_OK);
@@ -276,7 +276,7 @@ HRESULT CTestInfluenceLine::Test()
 
    CComPtr<IDblArray> izb, izp, izn;
    TRY_TEST(pil->ComputeNonZeroRegions(ilsBoth, &izb), S_OK);
-   TIArrayHelper<Float64, IDblArray, CollectionIndexType> zb(izb);
+   TIArrayHelper<Float64, IDblArray, IndexType> zb(izb);
    TRY_TEST(zb.Size(), 6);
    TRY_TEST(zb[0], 10.0);
    TRY_TEST(zb[1], 40.0);
@@ -285,7 +285,7 @@ HRESULT CTestInfluenceLine::Test()
    TRY_TEST(zb[4], 80.0);
    TRY_TEST(zb[5], 90.0);
    TRY_TEST(pil->ComputeNonZeroRegions(ilsPositive, &izp), S_OK);
-   TIArrayHelper<Float64, IDblArray, CollectionIndexType> zp(izp);
+   TIArrayHelper<Float64, IDblArray, IndexType> zp(izp);
    TRY_TEST(zp.Size(), 6);
    TRY_TEST(zp[0], 10.0);
    TRY_TEST(zp[1], 24.0);
@@ -294,7 +294,7 @@ HRESULT CTestInfluenceLine::Test()
    TRY_TEST(zp[4], 80.0);
    TRY_TEST(zp[5], 90.0);
    TRY_TEST(pil->ComputeNonZeroRegions(ilsNegative, &izn), S_OK);
-   TIArrayHelper<Float64, IDblArray, CollectionIndexType> zn(izn);
+   TIArrayHelper<Float64, IDblArray, IndexType> zn(izn);
    TRY_TEST(zn.Size(), 4);
    TRY_TEST(zn[0], 24.0);
    TRY_TEST(zn[1], 40.0);

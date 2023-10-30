@@ -97,8 +97,8 @@ HRESULT DealWithExceptionsInContext(T* psource, const IID& iid)
       catch (CComException& re)
       {
          // Local flavor. Append context to message
-        _bstr_t msg = CreateLBAMContextMsg(psource->GetMemberType(), psource->m_ID);
-        re.AppendToMessage((BSTR)msg);
+        auto msg = CreateLBAMContextMsg(psource->GetMemberType(), psource->m_ID);
+        re.AppendToMessage(msg);
         throw re;
       }
       catch (...)
@@ -396,7 +396,7 @@ inline void FindTemporarySupport(ILBAMModel* pModel, SupportIDType tsId, ITempor
 
 // Helper template class for dealing with the IDbl/ILng/IBStr Array classes
 // Note this this thing throws with an error occurs - so wrap it in a try block
-template <class T, class TArr,class IndexType>
+template <class T, class TArr,class IdxType>
 class TIArrayHelper
 {
 public:
@@ -404,7 +404,7 @@ public:
    m_Arr(arr)
    {;}
 
-   T operator[] (IndexType i) const
+   T operator[] (IdxType i) const
    {
       ATLASSERT(m_Arr!=nullptr);
       T val;
@@ -413,12 +413,12 @@ public:
       return val;
    }
 
-   IndexType Size()
+   IdxType Size()
    {
-      CollectionIndexType size;
+      IndexType size;
       CHRException hr;
       hr = m_Arr->get_Count(&size);
-      return IndexType(size);
+      return IdxType(size);
    }
 
 private:

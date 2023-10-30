@@ -9,13 +9,6 @@ CLASS
 #include <Reporter\FontStyleLibrary.h>
 #include <Reporter\RcTable.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-
 std::_tstring rptStyleLibrary::ms_ReportTitleStyle           = _T("ReportTitleStyle");
 std::_tstring rptStyleLibrary::ms_ReportSubtitleStyle        = _T("ReportSubtitleStyle");
 std::_tstring rptStyleLibrary::ms_ChapterTitleStyle          = _T("ChapterTitleStyle");
@@ -244,7 +237,7 @@ const std::_tstring& rptStyleLibrary::GetTableCellStyle(Uint32 style)
       index |= 0x0004;
    }
 
-   ATLASSERT( 0 <= index && index <= 5 );
+   CHECK( 0 <= index && index <= 5 );
 
    return ms_TableCellStyle[index];
 }

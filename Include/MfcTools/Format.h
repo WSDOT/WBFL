@@ -24,7 +24,7 @@
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 #include <WBFLCogo.h>
 
 
@@ -32,12 +32,12 @@
 template <class T>
 inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncludeUnitTag = true)
 {
-   value = ::ConvertFromSysUnits( value, indirectMeasure.UnitOfMeasure );
+   value = WBFL::Units::ConvertFromSysUnits( value, indirectMeasure.UnitOfMeasure );
    if (IsZero(value, indirectMeasure.Tol))
    {
       value = 0.0;
    }
-   sysNumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
+   WBFL::System::NumericFormatTool format_tool(indirectMeasure.Format,indirectMeasure.Width,indirectMeasure.Precision);
    std::_tstring str = format_tool.AsString( value );
    CString strDimension;
    if ( bIncludeUnitTag )
@@ -53,9 +53,9 @@ inline CString FormatDimension(Float64 value,const T& indirectMeasure,bool bIncl
    return strDimension;
 }
 
-CString MFCTOOLSFUNC FormatOffset(Float64 offset,const unitmgtLengthData& indirectMeasure,bool bIncludeUnitTag = true);
-CString MFCTOOLSFUNC FormatScalar(Float64 value,const unitmgtScalar& indirectMeasure);
+CString MFCTOOLSFUNC FormatOffset(Float64 offset,const WBFL::Units::LengthData& indirectMeasure,bool bIncludeUnitTag = true);
+CString MFCTOOLSFUNC FormatScalar(Float64 value,const WBFL::Units::ScalarData& indirectMeasure);
 CString MFCTOOLSFUNC FormatPercentage(Float64 value,bool bIncludeUnitTag = true);
-CString MFCTOOLSFUNC FormatStation(const unitStationFormat& format,Float64 value);
+CString MFCTOOLSFUNC FormatStation(const WBFL::Units::StationFormat& format,Float64 value,ZoneIndexType zoneIdx = INVALID_INDEX);
 CString MFCTOOLSFUNC FormatDirection(IDirection* pDirection);
 CString MFCTOOLSFUNC FormatAngle(IAngle* pAngle);

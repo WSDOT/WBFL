@@ -24,102 +24,74 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XCodeVersion.h>
 #include <Math\QuadraticSolver.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdPsStrand
-****************************************************************************/
-
-// preconvert for performance
-static const Float64 g_197000_MPA = ::ConvertToSysUnits( 197000., unitMeasure::MPa );
-static const Float64 g_1725_MPA   = ::ConvertToSysUnits( 1725, unitMeasure::MPa );
-static const Float64 g_1860_MPA   = ::ConvertToSysUnits( 1860, unitMeasure::MPa );
-static const Float64 g_2070_MPA   = ::ConvertToSysUnits( 2070, unitMeasure::MPa);
-static const Float64 g_28500_KSI  = ::ConvertToSysUnits( 28500., unitMeasure::KSI );
-static const Float64 g_250_KSI    = ::ConvertToSysUnits(  250, unitMeasure::KSI );
-static const Float64 g_270_KSI = ::ConvertToSysUnits(270, unitMeasure::KSI);
-static const Float64 g_300_KSI = ::ConvertToSysUnits(300, unitMeasure::KSI);
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdPsStrand::~lrfdPsStrand()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-Float64 lrfdPsStrand::GetUltimateStrength(matPsStrand::Grade gr)
+Float64 PsStrand::GetUltimateStrength(WBFL::Materials::PsStrand::Grade gr)
 {
    Float64 fpu;
-   bool is_si = ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI );
-   if ( gr == matPsStrand::Gr1725 )
+   bool is_si = ( BDSManager::GetUnits() == BDSManager::Units::SI );
+   if ( gr == WBFL::Materials::PsStrand::Grade::Gr1725 )
    {
-      fpu = is_si ? g_1725_MPA : g_250_KSI;
+      fpu = is_si ? WBFL::Units::ConvertToSysUnits(1725, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(250, WBFL::Units::Measure::KSI);
    }
-   else if (gr == matPsStrand::Gr1860)
+   else if (gr == WBFL::Materials::PsStrand::Grade::Gr1860)
    {
-      fpu = is_si ? g_1860_MPA : g_270_KSI;
+      fpu = is_si ? WBFL::Units::ConvertToSysUnits(1860, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(270, WBFL::Units::Measure::KSI);
    }
-   else if (gr == matPsStrand::Gr2070)
+   else if (gr == WBFL::Materials::PsStrand::Grade::Gr2070)
    {
-      fpu = is_si ? g_2070_MPA : g_300_KSI;
+      fpu = is_si ? WBFL::Units::ConvertToSysUnits(2070, WBFL::Units::Measure::MPa) : WBFL::Units::ConvertToSysUnits(300, WBFL::Units::Measure::KSI);
    }
    else
    {
-      ATLASSERT(false); // is there a new grade?
+      CHECK(false); // is there a new grade?
    }
 
    return fpu;
 }
 
-Float64 lrfdPsStrand::GetYieldStrength(matPsStrand::Grade gr,matPsStrand::Type type)
+Float64 PsStrand::GetYieldStrength(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type)
 {
    Float64 fpu = GetUltimateStrength( gr );
-   Float64 fpy = fpu * ( type == matPsStrand::LowRelaxation ? 0.90 : 0.85 );
+   Float64 fpy = fpu * ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.90 : 0.85 );
    return fpy;
 }
 
-Float64 lrfdPsStrand::GetStressLimit(matPsStrand::Grade gr,matPsStrand::Type type,Stage stage)
+Float64 PsStrand::GetStressLimit(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type,Stage stage)
 {
    Float64 fpu = GetUltimateStrength( gr );
    Float64 fpy = GetYieldStrength( gr, type );
    Float64 f_limit;
 
-   bool is_first_edition = ( lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994 );
+   bool is_first_edition = ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 );
    switch( stage )
    {
-   case Jacking:
+   case Stage::Jacking:
         if ( !is_first_edition )
-           THROW( lrfdXCodeVersion, BadVersion );
+           WBFL_LRFD_THROW( XCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.78 : 0.72 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.78 : 0.72 ) * fpu;
         break;
 
-   case BeforeTransfer:
+   case Stage::BeforeTransfer:
         if ( is_first_edition )
-           THROW( lrfdXCodeVersion, BadVersion );
+           WBFL_LRFD_THROW( XCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.75 : 0.70 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.75 : 0.70 ) * fpu;
         break;
 
-   case AfterTransfer:
+   case Stage::AfterTransfer:
         if ( !is_first_edition )
-           THROW( lrfdXCodeVersion, BadVersion );
+           WBFL_LRFD_THROW( XCodeVersion, BadVersion );
 
-        f_limit = ( type == matPsStrand::LowRelaxation ? 0.74 : 0.70 ) * fpu;
+        f_limit = ( type == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.74 : 0.70 ) * fpu;
         break;
 
-   case AfterAllLosses:
+   case Stage::AfterAllLosses:
         f_limit = 0.80 * fpy;
         break;
    }
@@ -127,60 +99,60 @@ Float64 lrfdPsStrand::GetStressLimit(matPsStrand::Grade gr,matPsStrand::Type typ
    return f_limit;
 }
 
-Float64 lrfdPsStrand::GetModE()
+Float64 PsStrand::GetModE()
 {
    Float64 e;
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      e = g_197000_MPA;
+      e = WBFL::Units::ConvertToSysUnits(197000., WBFL::Units::Measure::MPa);
    }
    else
    {
-      e = g_28500_KSI;
+      e = WBFL::Units::ConvertToSysUnits(28500., WBFL::Units::Measure::KSI);
    }
 
    return e;
 }
 
-Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer)
+Float64 PsStrand::GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer)
 {
-   Float64 fpj = lrfdPsStrand::GetFpj( strand, timeToXfer );
+   Float64 fpj = PsStrand::GetFpj( strand, timeToXfer );
    Float64 Pjack = fpj * nStrands * strand.GetNominalArea();
 
    return Pjack;
 }
 
-Float64 lrfdPsStrand::GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff)
+Float64 PsStrand::GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff)
 {
-   Float64 fpj = lrfdPsStrand::GetFpj( strand, timeToXfer, coeff );
+   Float64 fpj = PsStrand::GetFpj( strand, timeToXfer, coeff );
    Float64 Pjack = fpj * nStrands * strand.GetNominalArea();
 
    return Pjack;
 }
 
-Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer)
+Float64 PsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer)
 {
    Float64 fpj;
    Float64 coeff; // coefficient on fpu
-   if ( lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994 )
+   if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 )
    {
-      coeff = ( strand.GetType() == matPsStrand::LowRelaxation ? 0.78 : 0.72 );
+      coeff = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.78 : 0.72 );
    }
    else
    {
-      coeff = ( strand.GetType() == matPsStrand::LowRelaxation ? 0.75 : 0.70 ); 
+      coeff = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 0.75 : 0.70 ); 
    }
 
-   fpj = lrfdPsStrand::GetFpj( strand, timeToXfer, coeff );
+   fpj = PsStrand::GetFpj( strand, timeToXfer, coeff );
    return fpj;
 }
 
-Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float64 coeff)
+Float64 PsStrand::GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer,Float64 coeff)
 {
    Float64 fpj;
 
-   if ( lrfdVersionMgr::GetVersion() == lrfdVersionMgr::FirstEdition1994 || lrfdVersionMgr::ThirdEdition2004 < lrfdVersionMgr::GetVersion())
+   if ( BDSManager::GetEdition() == BDSManager::Edition::FirstEdition1994 || BDSManager::Edition::ThirdEdition2004 < BDSManager::GetEdition())
    {
       fpj = coeff * strand.GetUltimateStrength();
    }
@@ -191,16 +163,16 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
 
       Float64 fbt; // stress before transfer
       fbt = coeff * strand.GetUltimateStrength();
-      fbt = ::ConvertFromSysUnits( fbt, unitMeasure::MPa );
+      fbt = WBFL::Units::ConvertFromSysUnits( fbt, WBFL::Units::Measure::MPa );
 
       Float64 fpy = strand.GetYieldStrength();
-      fpy = ::ConvertFromSysUnits( fpy, unitMeasure::MPa );
+      fpy = WBFL::Units::ConvertFromSysUnits( fpy, WBFL::Units::Measure::MPa );
       
       Float64 k; // Coefficient in denominator of equation 5.9.5.4.4b
-      k = ( strand.GetType() == matPsStrand::LowRelaxation ? 40.0 : 10.0 );
+      k = ( strand.GetType() == WBFL::Materials::PsStrand::Type::LowRelaxation ? 40.0 : 10.0 );
 
       Float64 t; // time in days
-      t = ::ConvertFromSysUnits( timeToXfer, unitMeasure::Day );
+      t = WBFL::Units::ConvertFromSysUnits( timeToXfer, WBFL::Units::Measure::Day );
 
       Float64 K; // log(24t)/k from eqn 5.9.5.4.4b
       if ( t*24. < 1 )
@@ -213,21 +185,18 @@ Float64 lrfdPsStrand::GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float6
       b = -1*(1.0 + 0.55*K);
       c = fbt;
 
-      Float64 fpj1, fpj2; // Solutions to a quadratic equation
-      mathQuadraticSolver solver(a,b,c);
-      bool bSolved = (solver.Solve( &fpj1, &fpj2 ) > 0);
-      CHECK( bSolved );
-      CHECK( fpj1 > fpj2 );
-
-      fpj = fpj2;
-
-      fpj = ::ConvertToSysUnits( fpj, unitMeasure::MPa );
+      WBFL::Math::QuadraticSolver solver(a,b,c);
+      auto roots = solver.Solve();
+      CHECK(roots.size() == 2);
+      CHECK(roots[0] < roots[1]);
+      fpj = roots[1]; // we want the larger value
+      fpj = WBFL::Units::ConvertToSysUnits( fpj, WBFL::Units::Measure::MPa );
    }
 
    return fpj;
 }
 
-Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
+Float64 PsStrand::GetXferLength(const WBFL::Materials::PsStrand& strand,bool bEpoxyCoated)
 {
    if ( bEpoxyCoated )
    {
@@ -242,19 +211,19 @@ Float64 lrfdPsStrand::GetXferLength(const matPsStrand& strand,bool bEpoxyCoated)
    }
 }
 
-Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
+Float64 PsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
 {
    Float64 k;
    Float64 d;
    Float64 d_limit;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-       d = ::ConvertFromSysUnits(mbrDepth,unitMeasure::Millimeter);
+       d = WBFL::Units::ConvertFromSysUnits(mbrDepth,WBFL::Units::Measure::Millimeter);
        d_limit = 600;
    }
    else
    {
-       d = ::ConvertFromSysUnits(mbrDepth,unitMeasure::Inch);
+       d = WBFL::Units::ConvertFromSysUnits(mbrDepth,WBFL::Units::Measure::Inch);
        d_limit = 24;
    }
 
@@ -263,7 +232,7 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    {
       k = 2.0;
    }
-   else if ( d <= d_limit && lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+   else if ( d <= d_limit && BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
    {
       k = 1.0;
    }
@@ -275,157 +244,45 @@ Float64 lrfdPsStrand::GetDevLengthFactor(Float64 mbrDepth,bool bDebonded)
    return k;
 }
 
-Float64 lrfdPsStrand::GetDevLength(const matPsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
+Float64 PsStrand::GetDevLength(const WBFL::Materials::PsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
 {
    Float64 db = strand.GetNominalDiameter();
    return GetDevLength(db, fps, fpe, mbrDepth, bDebonded);
 }
 
-Float64 lrfdPsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
+Float64 PsStrand::GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded)
 {
    Float64 ld;
    Float64 k = GetDevLengthFactor(mbrDepth,bDebonded);
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI)
    {
-      db  = ::ConvertFromSysUnits(db,unitMeasure::Millimeter);
-      fps = ::ConvertFromSysUnits(fps,unitMeasure::MPa);
-      fpe = ::ConvertFromSysUnits(fpe,unitMeasure::MPa);
+      db  = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Millimeter);
+      fps = WBFL::Units::ConvertFromSysUnits(fps,WBFL::Units::Measure::MPa);
+      fpe = WBFL::Units::ConvertFromSysUnits(fpe,WBFL::Units::Measure::MPa);
       ld = k*db*(0.15*fps - 0.097*fpe);
-      ld = ::ConvertToSysUnits(ld,unitMeasure::Millimeter);
+      ld = WBFL::Units::ConvertToSysUnits(ld,WBFL::Units::Measure::Millimeter);
    }
    else
    {
-      db  = ::ConvertFromSysUnits(db,unitMeasure::Inch);
-      fps = ::ConvertFromSysUnits(fps,unitMeasure::KSI);
-      fpe = ::ConvertFromSysUnits(fpe,unitMeasure::KSI);
+      db  = WBFL::Units::ConvertFromSysUnits(db,WBFL::Units::Measure::Inch);
+      fps = WBFL::Units::ConvertFromSysUnits(fps,WBFL::Units::Measure::KSI);
+      fpe = WBFL::Units::ConvertFromSysUnits(fpe,WBFL::Units::Measure::KSI);
       ld = k*db*(fps - 2.*fpe/3.);
-      ld = ::ConvertToSysUnits(ld,unitMeasure::Inch);
+      ld = WBFL::Units::ConvertToSysUnits(ld,WBFL::Units::Measure::Inch);
    }
 
    return ld;
 }
 
-Float64 lrfdPsStrand::GetFpjPT(const matPsStrand& strand)
+Float64 PsStrand::GetFpjPT(const WBFL::Materials::PsStrand& strand)
 {
    Float64 fpy = strand.GetYieldStrength();
    return 0.90*fpy;
 }
 
-Float64 lrfdPsStrand::GetPjackPT(const matPsStrand& strand,StrandIndexType nStrands)
+Float64 PsStrand::GetPjackPT(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands)
 {
    Float64 fpj = GetFpjPT(strand);
    Float64 Apt = nStrands*strand.GetNominalArea();
    return Apt*fpj;
 }
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdPsStrand::AssertValid() const
-{
-   return true;
-}
-
-void lrfdPsStrand::Dump(dbgDumpContext& os) const
-{
-   os << "Dump for lrfdPsStrand" << endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include <Lrfd\AutoVersion.h>
-#include <Lrfd\VersionMgr.h>
-#include <Lrfd\StrandPool.h>
-bool lrfdPsStrand::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("lrfdPsStrand");
-   lrfdAutoVersion auto_ver;
-
-   Uint16 nStrands = 10;
-   Float64 Pjack;
-   Float64 xferTime = ::ConvertToSysUnits( 24.0, unitMeasure::Hour );
-   const matPsStrand* pStrand = 0;
-   lrfdStrandPool* pPool = lrfdStrandPool::GetInstance();
-
-   // LRFD 1st Edition
-
-   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition1994 );
-   lrfdVersionMgr::SetUnits(lrfdVersionMgr::SI);
-
-   // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1153.82, 0.01 ) );
-
-   // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1249.97, 0.01 ) );
-
-   // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1321.92, 0.01 ) );
-
-   // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1432.08, 0.01 ) );
-
-
-   // LRFD 1st Edition with 1996 and/or 1997 interim provisions
-
-   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEditionWith1997Interims );
-
-   // Grade 1725 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1171.98, 0.01 ) );
-
-   // Grade 1725 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1725, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1214.12, 0.01 ) );
-
-   // Grade 1860 SR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::StressRelieved, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1342.72, 0.01 ) );
-
-   // Grade 1860 LR
-   pStrand = pPool->GetStrand( matPsStrand::Gr1860, matPsStrand::LowRelaxation, matPsStrand::None, matPsStrand::D1270 );
-   Pjack = lrfdPsStrand::GetPjack( *pStrand, nStrands, xferTime );
-   Pjack = ::ConvertFromSysUnits( Pjack, unitMeasure::Kilonewton );
-   TRY_TESTME( IsEqual( Pjack, 1391.01, 0.01 ) );
-
-   TESTME_EPILOG("lrfdPsStrand");
-}
-#endif // _UNITTEST
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

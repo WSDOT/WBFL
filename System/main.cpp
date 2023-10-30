@@ -22,25 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-#include <System\UnitTest.h>
-#include <System\dllTest.h>
-#include <stdio.h>
-#include <vector>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-using namespace std;
-
-HANDLE g_hModule = 0;
-
-/*---------------------------------------------------------------------------
-DllMain   Required for Windows DLL, called on process/thread attach/detach.
----------------------------------------------------------------------------*/
 BOOL APIENTRY DllMain( HANDLE hModule, 
                        DWORD reason, 
                        LPVOID  )
@@ -60,11 +42,4 @@ BOOL APIENTRY DllMain( HANDLE hModule,
    }
 
    return TRUE;
-}
-
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
-{
-   return sysUnitTest::TestMe(rlog);
 }

@@ -30,93 +30,36 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+using namespace WBFL::Units;
 
-/****************************************************************************
-CLASS
-   unitXUnit
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-unitXUnit::unitXUnit(Reason reason,LPCTSTR file,Int16 line) :
-sysXBase(file,line),
+XUnit::XUnit(Reason reason,const std::_tstring& file,Uint32 line) :
+WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-unitXUnit::unitXUnit(const unitXUnit& rOther) :
-sysXBase(rOther)
-{
-   MakeCopy(rOther);
-}
-
-unitXUnit::~unitXUnit()
+XUnit::~XUnit()
 {
 }
 
-//======================== OPERATORS  =======================================
-unitXUnit& unitXUnit::operator= (const unitXUnit& rOther)
+void XUnit::Throw() const
 {
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
+   throw *static_cast<const XUnit*>(this);
 }
 
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-void unitXUnit::Throw() const
+Int32 XUnit::GetReason() const noexcept
 {
-   throw *static_cast<const unitXUnit*>(this);
+   return std::underlying_type<XUnit::Reason>::type(m_Reason);
 }
 
-Int32 unitXUnit::GetReason() const
+XUnit::Reason XUnit::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
 
-unitXUnit::Reason unitXUnit::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
 #if defined _DEBUG
-bool unitXUnit::AssertValid() const
+bool XUnit::AssertValid() const
 {
-   return true; //sysXBase::AssertValid();
+   return true; // __super::AssertValid();
 }
 #endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void unitXUnit::MakeCopy(const unitXUnit& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void unitXUnit::MakeAssignment(const unitXUnit& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

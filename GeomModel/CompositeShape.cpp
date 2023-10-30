@@ -21,908 +21,329 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\CompositeShape.h>
-
-#include <GeomModel\Properties.h>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/CompositeShape.h>
 #include <MathEx.h>
-#include <iostream>
+#include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::Geometry;
 
-/****************************************************************************
-CLASS
-   gmCompositeShape
-****************************************************************************/
-
-
-//
-// Create a phony class for composite testing
-//
-class gmTestShape : public gmShapeImp
+template <class T>
+inline void ValidateIndex(IndexType idx, const T& container)
 {
-public:
-   gmTestShape(const gmProperties& prop):m_Props(prop){;}
-   void GetProperties(gmProperties* pProps) const {*pProps=m_Props;}
-   void Draw(HDC hDC, const grlibPointMapper& mapper)const{;}
-   gmIShape* CreateClone(bool bRegisterListeners = false) const {return new gmTestShape(*this);}
-   gmIShape* CreateClippedShape(const gpLine2d& line, 
-                               gpLine2d::Side side) const {return new gmTestShape(*this);}
-   gmIShape* CreateClippedShape(const gpRect2d& r,
-                                gmShapeImp::ClipRegion region
-                                ) const {return new gmTestShape(*this);}
-   Float64 GetFurthestDistance(const gpLine2d& line,
-                               gpLine2d::Side side) const {return 0;}
-   void DoTranslate(const gpSize2d& delta) {}
-   void DoRotate(const gpPoint2d& center, Float64 angle) {}
-   virtual gpRect2d GetBoundingBox() const override {return gpRect2d(
-                                     m_Props.Xleft(),m_Props.Ybottom(),
-                                     m_Props.Xright(),m_Props.Ytop());}
-   bool operator==(const gmTestShape& rhs) const{return m_Props==rhs.m_Props;}
-private:
-   gmProperties m_Props;
-};
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmCompositeShape::gmCompositeShape() :
-gmShapeImp()
-{
-   Init();
+   if (container.size() <= idx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 }
 
-gmCompositeShape::~gmCompositeShape()
+CompositeShape::CompositeShape() :
+   Shape()
 {
-   Clean();
 }
 
-//======================== OPERATORS  =======================================
-
-//======================== OPERATIONS =======================================
-
-gmIShape* gmCompositeShape::CreateClone(bool bRegisterListeners) const
+CompositeShape::CompositeShape(const CompositeShape& rOther) :
+   Shape(rOther)
 {
-   std::unique_ptr<gmCompositeShape> ph(new gmCompositeShape( *this ));// no memory leaks if DoRegister() throws
-
-   // copy listeners if requested.
-   if (bRegisterListeners)
-      ph->DoRegisterListeners(*this);
-
-   return ph.release();
+   Copy(rOther);
 }
 
-void gmCompositeShape::GetProperties(gmProperties* pProperties) const
+CompositeShape::~CompositeShape()
 {
-   gmProperties sum, tmp;
-   // add up properties for all members of the composite
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
+}
+
+CompositeShape& CompositeShape::operator= (const CompositeShape& rOther)
+{
+   if (this != &rOther)
    {
-      (*it).second->GetProperties(&tmp);
-      sum += tmp;
+      __super::operator=(rOther);
+      Clear();
+      Copy(rOther);
    }
 
-   *pProperties = sum;
+   return *this;
 }
 
-gpRect2d gmCompositeShape::GetBoundingBox() const
+void CompositeShape::Offset(const Size2d& delta)
 {
-   gpRect2d tmp;
-   bool first = true;
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      if (first)
-      {
-         tmp = (*it).second->GetBoundingBox();
-         first=false;
-      }
-      else
-         tmp.Union((*it).second->GetBoundingBox());
-   }
-
-   return tmp;
+   std::ranges::for_each(m_Shapes, [&](auto& shape) {shape.first->Offset(delta); });
+   SetDirtyFlag();
 }
 
-gmIShape* gmCompositeShape::CreateClippedShape(const gpLine2d& line, gpLine2d::Side side) const
+void CompositeShape::Rotate(const Point2d& center, Float64 angle)
 {
-   std::unique_ptr<gmCompositeShape> pclipped(std::make_unique<gmCompositeShape>());
-   // cycle through all shapes and clip 'em
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      std::unique_ptr<gmIShape> tmp((*it).second->CreateClippedShape(line, side));
-      if (tmp.get())
-      {
-         pclipped->AddShape(*tmp);
-      }
-   }
+   std::ranges::for_each(m_Shapes, [&](auto& shape) {shape.first->Rotate(center,angle); });
+   SetDirtyFlag();
+}
 
-   if (0 < pclipped->GetNumShapes())
-   {
-      return pclipped.release();
-   }
+void CompositeShape::Offset(Float64 dx, Float64 dy)
+{
+   Offset(Size2d(dx, dy));
+}
+
+void CompositeShape::Move(LocatorPoint lp, const Point2d& to)
+{
+   Move(GetLocatorPoint(lp),to);
+}
+
+void CompositeShape::Move(const Point2d& from, const Point2d& to)
+{
+   Offset(to - from);
+}
+
+void CompositeShape::Rotate(Float64 cx, Float64 cy, Float64 angle)
+{
+   Rotate(Point2d(cx, cy), angle);
+}
+
+void CompositeShape::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
+{
+   if (0 < m_Shapes.size()) m_Shapes.front().first->SetHookPoint(hookPnt);
+}
+
+void CompositeShape::SetHookPoint(const Point2d& hookPnt)
+{
+   if (0 < m_Shapes.size()) m_Shapes.front().first->SetHookPoint(hookPnt);
+}
+
+std::shared_ptr<Point2d> CompositeShape::GetHookPoint()
+{
+   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : std::shared_ptr<Point2d>());
+}
+
+std::shared_ptr<const Point2d> CompositeShape::GetHookPoint() const
+{
+   return (0 < m_Shapes.size() ? m_Shapes.front().first->GetHookPoint() : std::shared_ptr<Point2d>());
+}
+
+Point2d CompositeShape::GetLocatorPoint(LocatorPoint point) const
+{
+   if (0 < m_Shapes.size())
+      return m_Shapes.front().first->GetLocatorPoint(point);
    else
+      return Point2d(0, 0);
+}
+
+void CompositeShape::SetLocatorPoint(LocatorPoint lp, const Point2d& position)
+{
+   Move(lp, position);
+}
+
+Float64 CompositeShape::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
+{
+   Float64 fd = -Float64_Max;
+   for (const auto& pair : m_Shapes)
    {
-      return nullptr;
-   }
-}
-
-gmIShape* gmCompositeShape::CreateClippedShape(const gpRect2d& r,
-                             gmShapeImp::ClipRegion region
-                            ) const
-{
-   std::unique_ptr<gmCompositeShape> pclipped(std::make_unique<gmCompositeShape>());
-   // cycle through all shapes and clip 'em
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      std::unique_ptr<gmIShape> tmp((*it).second->CreateClippedShape(r, region));
-      if(tmp.get())
-         pclipped->AddShape(*tmp);
-   }
-
-   if (0 < pclipped->GetNumShapes())
-   {
-      return pclipped.release();
-   }
-   else
-   {
-      return nullptr;
-   }
-}
-
-void gmCompositeShape::MakeSolid(bool flag)
-{
-   BeginDamage();
-   gmShapeImp::MakeSolid(flag);
-
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->MakeSolid(flag);
-   }
-   EndDamage();
-
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-}
-
-
-bool gmCompositeShape::EnableBorderMode(bool bEnable)
-{
-   bool tmp = IsBorderModeEnabled();
-   BeginDamage();
-   gmShapeImp::EnableBorderMode(bEnable);
-
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->EnableBorderMode(bEnable);
-   }
-   EndDamage();
-
-   NotifyAllListeners(gmShapeListener::DISPLAY);
-   return tmp;
-}
-
-COLORREF gmCompositeShape::SetBorderColor(COLORREF color)
-{
-   COLORREF tmp = GetBorderColor();
-   BeginDamage();
-   gmShapeImp::SetBorderColor(color);
-
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->SetBorderColor(color);
-   }
-   EndDamage();
-   NotifyAllListeners(gmShapeListener::DISPLAY);
-   return tmp;
-}
-
-bool gmCompositeShape::EnableFillMode(bool bEnable)
-{
-   bool tmp = IsFillModeEnabled();
-   BeginDamage();
-   gmShapeImp::EnableFillMode(bEnable);
-
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->EnableFillMode(bEnable);
-   }
-   EndDamage();
-
-   NotifyAllListeners(gmShapeListener::DISPLAY);
-   return tmp;
-}
-
-COLORREF gmCompositeShape::SetFillColor(COLORREF color)
-{
-   COLORREF tmp = GetFillColor();
-   BeginDamage();
-   gmShapeImp::SetFillColor(color);
-
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->SetFillColor(color);
-   }
-   EndDamage();
-
-   NotifyAllListeners(gmShapeListener::DISPLAY);
-   return tmp;
-}
-
-
-void gmCompositeShape::Draw(HDC hDC, const grlibPointMapper& mapper) const
-{
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->Draw(hDC, mapper);
-   }
-}
-
-Uint32 gmCompositeShape::AddShape(const gmIShape& rShape, bool bRegisterListeners)
-{
-   m_LastKey++;
-   ShapePtr tmp(rShape.CreateClone(bRegisterListeners));
-   tmp->SetParent(this);
-   m_ShapeContainer.insert(ShapeEntry(m_LastKey, tmp));
-
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-
-   return m_LastKey;
-}
-
-bool gmCompositeShape::RemoveShape(Uint32 key)
-{
-   ShapeIterator iter = m_ShapeContainer.find(key);
-   if ( iter != m_ShapeContainer.end() )
-   {
-      m_ShapeContainer.erase(iter);
-
-      NotifyAllListeners(gmShapeListener::PROPERTIES);
-
-      return true;
-   }
-   else
-      return false;
-}
-
-void gmCompositeShape::Clear()
-{
-   Clean();
-   Init();
-}
-
-const gmIShape* gmCompositeShape::GetShape(Uint32 key) const
-{
-   ConstShapeIterator iter = m_ShapeContainer.find(key);
-
-   if ( iter != m_ShapeContainer.end() )
-      return (*iter).second.get();
-   else
-      return -0;
-}
-
-gmIShape* gmCompositeShape::GetShape(Uint32 key)
-{
-   ShapeIterator iter = m_ShapeContainer.find(key);
-
-   if ( iter != m_ShapeContainer.end() )
-      return (*iter).second.get();
-   else
-      return -0;
-}
-
-CollectionIndexType gmCompositeShape::GetNumShapes() const
-{
-   return m_ShapeContainer.size();
-}
-
-Float64 gmCompositeShape::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
-{
-   bool first=false;
-   Float64 fd;
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      if (first)
-      {
-         fd = (*it).second->GetFurthestDistance(line,side);
-         first = false;
-      }
-      else
-         fd = max(fd, (*it).second->GetFurthestDistance(line,side));
+      fd = Max(fd, pair.first->GetFurthestDistance(line, side));
    }
    return fd;
 }
 
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmCompositeShape::AssertValid() const
+std::pair<Point2d,Float64> CompositeShape::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
-   return gmShapeImp::AssertValid();
-}
-
-void gmCompositeShape::Dump(dbgDumpContext& os) const
-{
-   os << _T("Dump for gmCompositeShape") << endl;
-   gmShapeImp::Dump( os );
-   os << _T("Contained shapes in gmCompositeShape") << endl;
-   os << _T("   m_LastKey   = ")<<m_LastKey<<endl;
-   os << _T("   # of Shapes = ")<<m_ShapeContainer.size()<<endl;
-   Uint32 i = 0;
-   for (ConstShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
+   Point2d fp;
+   Float64 fd = -Float64_Max;
+   for (const auto& pair : m_Shapes)
    {
-      os<<_T(" Shape Number: ")<<++i<<_T(" Key = ")<<(*it).first<<endl;
-      (*it).second->Dump(os);
-   }
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-
-gmCompositeShape::gmCompositeShape(const gmCompositeShape& rOther) :
-gmShapeImp(rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmCompositeShape& gmCompositeShape::operator= (const gmCompositeShape& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
+      auto [p,dist] = pair.first->GetFurthestPoint(line, side);
+      if (fd < dist)
+      {
+         fp = p;
+         fd = dist;
+      }
    }
 
-   return *this;
+   return std::make_pair(fp, fd);
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void gmCompositeShape::DoTranslate(const gpSize2d& delta)
+bool CompositeShape::PointInShape(const Point2d& p) const
 {
-   BeginDamage();
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
+   for (const auto& [shape,type] : m_Shapes)
    {
-      (*it).second->Translate(delta);
-   }
-   EndDamage();
-}
-
-void gmCompositeShape::DoRotate(const gpPoint2d& center, Float64 angle)
-{
-   BeginDamage();
-   for (ShapeIterator it=m_ShapeContainer.begin();it!=m_ShapeContainer.end(); it++)
-   {
-      (*it).second->Rotate(center, angle);
-   }
-   EndDamage();
-}
-
-
-void gmCompositeShape::MakeCopy(const gmCompositeShape& rOther)
-{
-   m_LastKey        = rOther.m_LastKey;
-   for (ConstShapeIterator it=rOther.m_ShapeContainer.begin(); 
-        it!=rOther.m_ShapeContainer.end(); it++)
-   {
-      ShapePtr tmp( ((*it).second)->CreateClone(false) );
-      tmp->SetParent(this);
-      m_ShapeContainer.insert(ShapeEntry((*it).first, tmp));
-   }
-}
-
-void gmCompositeShape::MakeAssignment(const gmCompositeShape& rOther)
-{
-   Clean();
-   Init();
-
-   gmShapeImp::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmCompositeShape::Init()
-{
-   m_LastKey = 0;
-}
-
-void gmCompositeShape::Clean()
-{
-   m_ShapeContainer.clear();
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-
-/****************************************************************************
-CLASS
-   gmShapeIter
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmShapeIter::gmShapeIter()
-{
-   Init();
-}
-
-gmShapeIter::gmShapeIter(gmCompositeShape* pComposite)
-{
-   SetComposite(pComposite);
-}
-
-
-gmShapeIter::gmShapeIter(const gmShapeIter& rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmShapeIter::~gmShapeIter()
-{
-   Clean();
-}
-
-//======================== OPERATORS  =======================================
-gmShapeIter& gmShapeIter::operator= (const gmShapeIter& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
+      if (shape->PointInShape(p) && type == ShapeType::Solid)
+      {
+         return true;
+      }
    }
 
-   return *this;
+   return false;
 }
 
-//======================== OPERATIONS =======================================
-
-void gmShapeIter::SetComposite(gmCompositeShape* pComposite)
+Float64 CompositeShape::GetPerimeter() const
 {
-   PRECONDITION(pComposite!=0);
-   m_pComposite = pComposite;
-   m_Iterator = pComposite->m_ShapeContainer.begin();
-}
-
-void gmShapeIter::Begin()
-{
-   PRECONDITION(m_pComposite!=0);
-   m_Iterator = m_pComposite->m_ShapeContainer.begin();
-}
-
-void gmShapeIter::End()
-{
-   PRECONDITION(m_pComposite!=0);
-   m_Iterator = m_pComposite->m_ShapeContainer.end();
-}
-
-void gmShapeIter::Next()
-{
-   PRECONDITION(m_pComposite!=0);
-   CHECK(m_Iterator!=m_pComposite->m_ShapeContainer.end());
-   m_Iterator++;
-}
-
-void gmShapeIter::Prev()
-{
-   PRECONDITION(m_pComposite!=0);
-   CHECK(m_Iterator!=m_pComposite->m_ShapeContainer.begin());
-   m_Iterator--;
-}
-
-gmShapeIter::operator void *() const
-{
-   if (m_pComposite == 0)
-   {
-      return nullptr;
-   }
-   else if (m_Iterator == m_pComposite->m_ShapeContainer.end())
-   {
-      return nullptr;
-   }
+   if (0 < m_Shapes.size())
+      return m_Shapes.front().first->GetPerimeter();
    else
-   {
-      return (*m_Iterator).second.get();
-   }
+      return 0;
 }
 
-gmIShape* gmShapeIter::CurrentShape() const
+ShapeProperties CompositeShape::GetProperties() const
 {
-   PRECONDITION(*this);
-   return (*m_Iterator).second.get();
+   return GetShapeProperties();
 }
 
-const Uint32* gmShapeIter::CurrentKey() const
+Rect2d CompositeShape::GetBoundingBox() const
 {
-   PRECONDITION(*this);
-   return &((*m_Iterator).first);
+   const auto& props = GetShapeProperties();
+   const auto& cg = props.GetCentroid();
+   return Rect2d(cg.X() - props.GetXleft(), cg.Y() - props.GetYbottom(), props.GetXright() + cg.X(), props.GetYtop() + cg.Y());
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmShapeIter::AssertValid() const
+std::vector<Point2d> CompositeShape::GetPolyPoints() const
 {
-   return true;
-}
-
-void gmShapeIter::Dump(dbgDumpContext& os) const
-{
-   os<< _T("Dump for gmShapeIter")<<endl;
-   os<< _T("   m_pComposite = ")<<m_pComposite<<endl;
-}
-
-#endif // _DEBUG
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmShapeIter::MakeCopy(const gmShapeIter& rOther)
-{
-   m_pComposite = rOther.m_pComposite;
-   m_Iterator = rOther.m_Iterator;
-}
-
-void gmShapeIter::MakeAssignment(const gmShapeIter& rOther)
-{
-   Clean();
-   Init();
-
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmShapeIter::Init()
-{
-   m_pComposite = 0;
-}
-
-void gmShapeIter::Clean()
-{
-   // nothing to clean up.
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-
-/****************************************************************************
-CLASS
-   gmConstShapeIter
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmConstShapeIter::gmConstShapeIter()
-{
-   Init();
-}
-
-gmConstShapeIter::gmConstShapeIter(const gmCompositeShape* pComposite)
-{
-   SetComposite(pComposite);
-}
-
-
-gmConstShapeIter::gmConstShapeIter(const gmConstShapeIter& rOther)
-{
-   Init();
-   MakeCopy(rOther);
-}
-
-gmConstShapeIter::~gmConstShapeIter()
-{
-   Clean();
-}
-
-//======================== OPERATORS  =======================================
-gmConstShapeIter& gmConstShapeIter::operator= (const gmConstShapeIter& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-void gmConstShapeIter::SetComposite(const gmCompositeShape* pComposite)
-{
-   PRECONDITION(pComposite!=0);
-   m_pComposite = pComposite;
-   m_Iterator = pComposite->m_ShapeContainer.begin();
-}
-
-
-void gmConstShapeIter::Begin()
-{
-   PRECONDITION(m_pComposite!=0);
-   m_Iterator = m_pComposite->m_ShapeContainer.begin();
-}
-
-void gmConstShapeIter::End()
-{
-   PRECONDITION(m_pComposite!=0);
-   m_Iterator = m_pComposite->m_ShapeContainer.end();
-}
-
-void gmConstShapeIter::Next()
-{
-   PRECONDITION(m_pComposite!=0);
-   CHECK(m_Iterator!=m_pComposite->m_ShapeContainer.end());
-   m_Iterator++;
-}
-
-void gmConstShapeIter::Prev()
-{
-   PRECONDITION(m_pComposite!=0);
-   CHECK(m_Iterator!=m_pComposite->m_ShapeContainer.begin());
-   m_Iterator--;
-}
-
-gmConstShapeIter::operator void *() const
-{
-   if (m_pComposite == 0)
-   {
-      return nullptr;
-   }
-   else if (m_Iterator == m_pComposite->m_ShapeContainer.end())
-   {
-      return nullptr;
-   }
+   if (m_Shapes.size() == 0)
+      return std::vector<Point2d>();
    else
+      return m_Shapes.front().first->GetPolyPoints();
+}
+
+void CompositeShape::Reflect(const Line2d& line)
+{
+   std::ranges::for_each(m_Shapes, [&line](auto& pair) {pair.first->Reflect(line); });
+}
+
+std::unique_ptr<Shape> CompositeShape::CreateReflectedShape(const Line2d& line) const
+{
+   auto clone = CreateClone();
+   clone->Reflect(line);
+   return clone;
+}
+
+std::unique_ptr<Shape> CompositeShape::CreateClone() const
+{
+   return std::make_unique<CompositeShape>(*this);
+}
+
+std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Line2d& line, Line2d::Side side) const
+{
+   std::unique_ptr<CompositeShape> clipped(std::make_unique<CompositeShape>());
+   for(const auto& [shape,type] : m_Shapes)
    {
-      return (*m_Iterator).second.get();
-   }
-}
-
-const gmIShape* gmConstShapeIter::CurrentShape() const
-{
-   PRECONDITION(*this);
-   return (*m_Iterator).second.get();
-}
-
-const Uint32* gmConstShapeIter::CurrentKey() const
-{
-   PRECONDITION(*this);
-   return &((*m_Iterator).first);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmConstShapeIter::AssertValid() const
-{
-   return true;
-}
-
-void gmConstShapeIter::Dump(dbgDumpContext& os) const
-{
-   os<< _T("Dump for gmConstShapeIter")<<endl;
-}
-
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmConstShapeIter::MakeCopy(const gmConstShapeIter& rOther)
-{
-   m_pComposite = rOther.m_pComposite;
-   m_Iterator = rOther.m_Iterator;
-}
-
-void gmConstShapeIter::MakeAssignment(const gmConstShapeIter& rOther)
-{
-   Clean();
-   Init();
-
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void gmConstShapeIter::Init()
-{
-   m_pComposite = 0;
-}
-
-void gmConstShapeIter::Clean()
-{
-   // nothing to clean up.
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-#if defined _UNITTEST
-
-bool gmCompositeShape::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmCompositeShape");
-
-   // create an angle shape. by composing two rectangles
-   // Taken from "Statics" 1st Ed. by J.L. Merriam, page 373
-   gmTestShape outer(gmProperties(2000,gpPoint2d(20,25),416666.,266666.,0,50,0,0,40,0));
-   gmTestShape inner(gmProperties(-1200,gpPoint2d(25,30),-160000.,-90000.,0,50,10,10,40,0));
-   gmCompositeShape anglec;
-   Uint32 okey, ikey;
-   gmIShape* sp;
-   okey = anglec.AddShape(outer);
-   TRY_TESTME( okey >= 0 ) ;
-   ikey = anglec.AddShape(inner);
-   TRY_TESTME( ikey >= 0 ) ;
-   sp = anglec.GetShape(ikey);
-   TRY_TESTME( sp != nullptr ) ;
-   sp->MakeSolid(false);  // set inner shape to be hollow (does nothing for gmtestshape)
-
-   gmProperties aprops;
-   anglec.GetProperties(&aprops);
-   TRY_TESTME (IsEqual(aprops.Area(), 800.)) 
-   TRY_TESTME (IsEqual(aprops.Ixx(),  181666., 10.)) 
-   TRY_TESTME (IsEqual(aprops.Iyy(),  101666., 10.)) 
-   TRY_TESTME (IsEqual(aprops.Ixy(), -75000., 10.)) 
-   TRY_TESTME (anglec.GetBoundingBox() == gpRect2d(0,0,40,50)) 
-
-   // take a dump
-#if defined _DEBUG
-   anglec.Dump(rlog.GetDumpCtx());
-#endif
-
-   // delete inner rectangle
-   TRY_TESTME( anglec.RemoveShape(ikey) )
-   anglec.GetProperties(&aprops);
-   TRY_TESTME (IsEqual(aprops.Area(), 2000.)) 
-   TRY_TESTME (IsEqual(aprops.Ixx(),  416666., 10.)) 
-   TRY_TESTME (IsEqual(aprops.Iyy(),  266666., 10.)) 
-   TRY_TESTME (IsEqual(aprops.Ixy(),       0., 10.)) 
-   TRY_TESTME (anglec.GetBoundingBox() == gpRect2d(0,0,40,50)) 
-
-
-   TESTME_EPILOG("gmCompositeShape");
-}
-
-bool gmShapeIter::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmShapeIter");
-
-   // create a composite and iterate through its shapes
-   gmTestShape s1(gmProperties(2000,gpPoint2d(20,25),416666.,266666.,0,50,0,0,40,0));
-   gmTestShape s2(gmProperties(1200,gpPoint2d(25,30),-160000.,-90000.,0,50,10,10,40,0));
-   gmTestShape s3(gmProperties( 200,gpPoint2d( 0, 0),    220.,   300.,0,5,1,1,4,0));
-   gmCompositeShape ctest;
-   Uint32 p1 = ctest.AddShape(s1);
-   Uint32 p2 = ctest.AddShape(s2);
-   Uint32 p3 = ctest.AddShape(s3);
-   Uint32 p4 = ctest.AddShape(s2);
-   Uint32 p5 = ctest.AddShape(s3);
-   Uint32 p6 = ctest.AddShape(s1);
-
-   gmShapeIter my_it(&ctest);
-   Uint32 i = 0;
-   for(my_it.Begin(); my_it; my_it.Next())
-   {
-      i++;
-      if (i==3)
-         TRY_TESTME (p3 == *my_it.CurrentKey()) ;
-      if (i==4)
-         TRY_TESTME (s2 == *(gmTestShape*)my_it.CurrentShape());
-      if (i==5)
-         TRY_TESTME (p5 == *my_it.CurrentKey()) ;
+      std::unique_ptr<Shape> clipped_piece = shape->CreateClippedShape(line, side);
+      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), type);
    }
 
-   my_it.Prev();
-   TRY_TESTME (p6 == *my_it.CurrentKey());
+   if (clipped->GetShapeCount() == 0)
+      return nullptr;
 
-   TRY_TESTME ( ctest.RemoveShape(p4) ) ;
-   TRY_TESTME ( ctest.RemoveShape(p5) ) ;
-
-   my_it.End();
-   gmShapeIter new_it = my_it;
-   new_it.Prev();
-   new_it.Prev();
-   TRY_TESTME ( s3 == *(gmTestShape*)new_it.CurrentShape() );
-
-#if defined _DEBUG
-   my_it.Dump(rlog.GetDumpCtx());
-#endif
-
-   TESTME_EPILOG("gmShapeIter");
+   return clipped;
 }
 
-
-bool gmConstShapeIter::TestMe(dbgLog& rlog)
+std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const
 {
-   TESTME_PROLOGUE("gmConstShapeIter");
-
-   // create a composite and iterate through its shapes
-   gmTestShape s1(gmProperties(2000,gpPoint2d(20,25),416666.,266666.,0,50,0,0,40,0));
-   gmTestShape s2(gmProperties(1200,gpPoint2d(25,30),-160000.,-90000.,0,50,10,10,40,0));
-   gmTestShape s3(gmProperties( 200,gpPoint2d( 0, 0),    220.,   300.,0,5,1,1,4,0));
-   gmCompositeShape ctest;
-   Uint32 p1 = ctest.AddShape(s1);
-   Uint32 p2 = ctest.AddShape(s2);
-   Uint32 p3 = ctest.AddShape(s3);
-   Uint32 p4 = ctest.AddShape(s2);
-   Uint32 p5 = ctest.AddShape(s3);
-   Uint32 p6 = ctest.AddShape(s1);
-
-   gmConstShapeIter my_it(&ctest);
-   Uint32 i = 0;
-   for(my_it.Begin(); my_it; my_it.Next())
+   std::unique_ptr<CompositeShape> clipped(std::make_unique<CompositeShape>());
+   for (const auto& [shape,type] : m_Shapes)
    {
-      i++;
-      if (i==3)
-         TRY_TESTME ( p3 == *my_it.CurrentKey() );
-      if (i==4)
-         TRY_TESTME ( s2 == *(gmTestShape*)my_it.CurrentShape() );
-      if (i==5)
-         TRY_TESTME ( p5 == *my_it.CurrentKey() ) ;
+      std::unique_ptr<Shape> clipped_piece = shape->CreateClippedShape(r, region);
+      if (clipped_piece) clipped->AddShape(std::move(clipped_piece), type);
    }
 
-   my_it.Prev();
-   TRY_TESTME (p6 == *my_it.CurrentKey()) ;
+   if (clipped->GetShapeCount() == 0)
+      return nullptr;
 
-   TRY_TESTME ( ctest.RemoveShape(p4) ) ;
-   TRY_TESTME ( ctest.RemoveShape(p5) ) ;
-
-   my_it.End();
-   gmConstShapeIter new_it = my_it;
-   new_it.Prev();
-   new_it.Prev();
-   TRY_TESTME ( s3 == *(gmTestShape*)new_it.CurrentShape() );
-
-#if defined _DEBUG
-  my_it.Dump(rlog.GetDumpCtx());
-#endif
-
-   TESTME_EPILOG("gmConstShapeIter");
+   return clipped;
 }
 
-#endif // _UNITTEST
+void CompositeShape::AddShape(const Shape& shape,CompositeShape::ShapeType shapeType)
+{
+   AddShape(shape.CreateClone(), shapeType);
+}
 
+void CompositeShape::AddShape(std::unique_ptr<Shape>&& shape, CompositeShape::ShapeType shapeType)
+{
+   if (m_Shapes.empty() && shapeType == ShapeType::Void)
+      THROW_GEOMETRY(WBFL_GEOMETRY_E_SHAPE); // first shape must be solid
 
+   m_Shapes.emplace_back(std::move(shape), shapeType);
+   SetDirtyFlag();
+}
+
+void CompositeShape::RemoveShape(IndexType idx)
+{
+   ValidateIndex(idx, m_Shapes);
+   m_Shapes.erase(m_Shapes.begin() + idx);
+   SetDirtyFlag();
+}
+
+void CompositeShape::Clear()
+{
+   m_Shapes.clear();
+   SetDirtyFlag();
+}
+
+std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx)
+{
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].first;
+}
+
+const std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx) const
+{
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].first;
+}
+
+CompositeShape::ShapeType CompositeShape::GetShapeType(IndexType idx) const
+{
+   ValidateIndex(idx, m_Shapes);
+   return m_Shapes[idx].second;
+}
+
+bool CompositeShape::IsSolid(IndexType idx) const
+{
+   return GetShapeType(idx) == ShapeType::Solid;
+}
+
+bool CompositeShape::IsVoid(IndexType idx) const
+{
+   return GetShapeType(idx) == ShapeType::Void;
+}
+
+IndexType CompositeShape::GetShapeCount() const
+{
+   return m_Shapes.size();
+}
+
+void CompositeShape::SetDirtyFlag(bool bFlag)
+{
+   m_bIsDirty = bFlag;
+}
+
+bool CompositeShape::GetDirtyFlag() const
+{
+   return m_bIsDirty;
+}
+
+const ShapeProperties& CompositeShape::GetShapeProperties() const
+{
+   if (!m_bIsDirty) return m_Properties;
+
+   ShapeProperties props;
+   if (0 < m_Shapes.size())
+   {
+      props = m_Shapes.front().first->GetProperties();
+      auto iter = m_Shapes.begin() + 1;
+      auto end = m_Shapes.end();
+      for(; iter != end; iter++)
+      {
+         const auto& [shape,type](*iter);
+         const ShapeProperties& p = shape->GetProperties();
+         if (type == ShapeType::Solid)
+            props += p; // shape is a solid
+         else
+            props -= p; // shape is a void
+      }
+   }
+   m_Properties = props;
+
+   m_bIsDirty = false;
+   return m_Properties;
+}
+
+void CompositeShape::Copy(const CompositeShape& other)
+{
+   m_bIsDirty = other.m_bIsDirty;
+   m_Properties = other.m_Properties;
+
+   for (const auto& [shape,type] : other.m_Shapes)
+   {
+      m_Shapes.emplace_back(shape->CreateClone(), type);
+   }
+}

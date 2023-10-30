@@ -1438,7 +1438,7 @@ void CModel::Compute()
 void CModel::CheckModel()
 {
    // must have at least two joints to have a model
-   CollectionIndexType count;
+   IndexType count;
    m_pJoints->get_Count(&count);
    if (count < 2)
       THROW_IDS(IDS_E_MODEL_HAS_NO_JOINTS, FEM2D_E_MODEL_HAS_NO_JOINTS, IDH_E_MODEL_HAS_NO_JOINTS);
@@ -2267,7 +2267,7 @@ void CModel::RemoveResults(LoadCaseIDType lcase)
 {
    // remove all results for a given load case
    // ignore return code since we don't know (care) if loading results exist
-   CollectionIndexType st;
+   IndexType st;
 
    JntResultIterator ji( m_JntResults.begin() );
    JntResultIterator jiend( m_JntResults.end() );

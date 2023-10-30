@@ -30,4 +30,6 @@
 void MFCTOOLSFUNC MultiLineTextOut(CDC* pDC,int x,int y,LPCTSTR lpszText);
 void MFCTOOLSFUNC ChangeComboBoxString(CComboBox* pCB,int idx,LPCTSTR lpszNewString);
 
+HFONT MFCTOOLSFUNC CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCTSTR lpszFaceName);
+
 #endif // INCLUDED_MFCTOOLS_TEXT_H_

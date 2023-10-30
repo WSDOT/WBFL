@@ -25,105 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XPsLosses.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdXPsLosses
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXPsLosses::lrfdXPsLosses(Reason reason,
-                             LPCTSTR file,
-                             Int16 line) :
-sysXBase(file,line),
+XPsLosses::XPsLosses(Reason reason, LPCTSTR file, Uint32 line) :
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-lrfdXPsLosses::lrfdXPsLosses(const lrfdXPsLosses& rOther) :
-sysXBase(rOther)
+void XPsLosses::Throw() const
 {
-   MakeCopy(rOther);
+   throw *static_cast<const XPsLosses*>(this);
 }
 
-lrfdXPsLosses::~lrfdXPsLosses()
+Int32 XPsLosses::GetReason() const noexcept
 {
+   return (Int32)m_Reason;
 }
 
-//======================== OPERATORS  =======================================
-lrfdXPsLosses& lrfdXPsLosses::operator= (const lrfdXPsLosses& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdXPsLosses::Throw() const
-{
-   throw *static_cast<const lrfdXPsLosses*>(this);
-}
-
-Int32 lrfdXPsLosses::GetReason() const
+XPsLosses::Reason XPsLosses::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXPsLosses::Reason lrfdXPsLosses::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXPsLosses::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXPsLosses::Dump(dbgDumpContext& os) const
-{
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXPsLosses::MakeCopy(const lrfdXPsLosses& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXPsLosses::MakeAssignment(const lrfdXPsLosses& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

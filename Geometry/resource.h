@@ -1,5 +1,30 @@
+///////////////////////////////////////////////////////////////////////
+// Geometry - Geometric Modeling Library
+// Copyright © 1999-2023  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
+// Microsoft Developer Studio generated include file.
 // Used by Geometry.rc
 //
 #define IDS_PROJNAME                    100
@@ -50,6 +75,14 @@
 #define IDR_PRECASTBEAM2                147
 #define IDR_NUDECKEDIBEAM               148
 #define IDR_PCIDECKEDIBEAM              149
+#define IDR_ELASTICPROPERTIES           150
+#define IDR_MASSPROPERTIES              151
+#define IDR_COMPOSITESECTIONITEM        152
+#define IDR_COMPOSITESECTION            153
+#define IDR_COMPOSITEBEAM               154
+#define IDR_COMPOSITESECTIONITEMEX      155
+#define IDR_COMPOSITESECTIONEX          156
+
 #define IDS_E_NOTNORMALIZED             512
 #define IDS_E_ZEROMAGNITUDE             513
 #define IDS_E_MAGNITUDELESSTHANZERO     514

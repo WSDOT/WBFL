@@ -31,11 +31,12 @@
 #define CCS_RB_EDIT         0
 #define CCS_RB_FIND         1
 #define CCS_RB_SELECT_ALL   2
-#define CCS_RB_PRINT        3
-#define CCS_RB_REFRESH      4
-#define CCS_RB_VIEW_SOURCE  5
-#define CCS_RB_VIEW_BACK    6
-#define CCS_RB_VIEW_FORWARD 7
+#define CCS_RB_COPY         3
+#define CCS_RB_PRINT        4
+#define CCS_RB_REFRESH      5
+#define CCS_RB_VIEW_SOURCE  6
+#define CCS_RB_VIEW_BACK    7
+#define CCS_RB_VIEW_FORWARD 8
 #define CCS_RB_TOC          50
 
 #endif // INCLUDED_CUSTSITEVARS_H_

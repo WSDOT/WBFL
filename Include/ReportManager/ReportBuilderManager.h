@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportBuilderManager.h: interface for the CReportBuilderManager class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #pragma once
 
 #include <ReportManager\ReportManagerExp.h>
@@ -35,35 +31,79 @@
 
 class rptReport;
 
-class REPORTMANAGERCLASS CReportBuilderManager  
+namespace WBFL
 {
-public:
-	CReportBuilderManager();
-	virtual ~CReportBuilderManager();
-   virtual void ClearAll();  // deletes all report builders
+   namespace Reporting
+   {
+      /// Managers of all the report builders
+      class REPORTMANAGERCLASS ReportBuilderManager : public std::enable_shared_from_this<ReportBuilderManager>
+      {
+      public:
+         /// Factory method to create a ReportBuilderManager.
+         /// The report builder manager must be a shared pointer, this method ensures proper creation.
+         [[nodiscard]] static std::shared_ptr<ReportBuilderManager> Create();
+	      ~ReportBuilderManager() = default;
 
-   void AddReportBuilder(CReportBuilder* pRptBuilder);
-   void AddReportBuilder(std::shared_ptr<CReportBuilder>& pRptBuilder);
-   CollectionIndexType GetReportBuilderCount(bool bIncludeHidden = false) const;
-   std::shared_ptr<CReportBuilder> GetReportBuilder(LPCTSTR strReportName);
-   std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
-   std::shared_ptr<CReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
-   std::shared_ptr<CReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName);
-   std::vector<std::_tstring> GetReportNames(bool bIncludeHidden = false) const;
-   CReportDescription GetReportDescription(LPCTSTR strReportName);
-   CReportDescription GetReportDescription(const std::_tstring& strReportName);
-   const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
-   const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
-   std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName);
-   std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
-   std::shared_ptr<CReportSpecificationBuilder> GetReportSpecificationBuilder(const CReportDescription& rptDesc);
-   std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
-   INT_PTR DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
+         /// Removes all report builders
+         void ClearAll();
 
-private:
-   typedef std::map<std::_tstring, std::shared_ptr<CReportBuilder> > RptBuilderContainer;
-   typedef std::pair<std::_tstring, std::shared_ptr<CReportBuilder> > RptBuilderEntry;
-   RptBuilderContainer m_RptBuilders;
+         /// Adds a report builder
+         void AddReportBuilder(std::shared_ptr<ReportBuilder>& pRptBuilder);
 
-   std::shared_ptr<rptReport> CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec);
+         /// Returns the number of report builders
+         IndexType GetReportBuilderCount(
+            bool bIncludeHidden = false ///< If true, the count includes hidden report builders
+         ) const;
+
+         /// Returns a report builder
+         std::shared_ptr<ReportBuilder> GetReportBuilder(LPCTSTR strReportName);
+         std::shared_ptr<ReportBuilder> GetReportBuilder(const std::_tstring& strReportName);
+         std::shared_ptr<const ReportBuilder> GetReportBuilder(LPCTSTR strReportName) const;
+         std::shared_ptr<const ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) const;
+
+         /// Removes a report builder
+         std::shared_ptr<ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName);
+         std::shared_ptr<ReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName);
+         std::vector<std::_tstring> GetReportNames(bool bIncludeHidden = false) const;
+
+         /// Gets the ReportDescription for the specified report
+         ReportDescription GetReportDescription(LPCTSTR strReportName) const;
+         ReportDescription GetReportDescription(const std::_tstring& strReportName) const;
+
+         /// Returns the bitmap displayed on the Report menu for the specified report
+         const CBitmap* GetMenuBitmap(LPCTSTR strReportName);
+         const CBitmap* GetMenuBitmap(const std::_tstring& strReportName);
+
+         /// Returns the ReportSpecificationBuilder for the specified report
+         std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName);
+         std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
+         std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder(const ReportDescription& rptDesc);
+
+         /// Creates a ReportBrowser
+         std::shared_ptr<ReportBrowser> CreateReportBrowser(
+            HWND hwndParent, ///< Handle of the parent window
+            const std::shared_ptr<ReportSpecification>& pRptSpec, ///< The report specification for creating the report
+            const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder ///< The report specification builder to support editing of the report
+         ) const;
+
+         /// Displays a dialog that allows the user to select and create a report
+         /// \return IDOK or IDCANCEL
+         INT_PTR DisplayReportDialog(
+            DWORD flags, ///< Unused
+            const std::shared_ptr<ReportSpecification>& pRptSpec, ///< The report specification for creating the report
+            const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder ///< The report specification builder to support editing of the report
+         );
+
+      private:
+         // because this object inherits from enable_shared_from_this, it can only be used with shared pointers
+         // however, we sill need the constructor so it is private so client's can't directly create this object
+         ReportBuilderManager() = default;
+
+         using RptBuilderContainer = std::map<std::_tstring, std::shared_ptr<ReportBuilder>>;
+         using RptBuilderEntry = std::pair<std::_tstring, std::shared_ptr<ReportBuilder>>;
+         RptBuilderContainer m_RptBuilders;
+
+         std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<ReportSpecification>& pRptSpec) const;
+      };
+   };
 };

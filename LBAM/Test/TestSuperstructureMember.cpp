@@ -75,7 +75,7 @@ void CTestSuperstructureMember::Test()
    // test the container for SuperstructureMembers
    CComPtr<ISuperstructureMember> psm;
    TRY_TEST(psm.CoCreateInstance( CLSID_SuperstructureMember ), S_OK );
-   hr = ContainerTester<ISuperstructureMember,&CLSID_SuperstructureMember,ISuperstructureMembers,&CLSID_SuperstructureMembers,CTestSuperstructureMember,ISuperstructureMembersEvents,&IID_ISuperstructureMembersEvents,IEnumSuperstructureMember,CollectionIndexType>::TestSegmentContainer(pMe);
+   hr = ContainerTester<ISuperstructureMember,&CLSID_SuperstructureMember,ISuperstructureMembers,&CLSID_SuperstructureMembers,CTestSuperstructureMember,ISuperstructureMembersEvents,&IID_ISuperstructureMembersEvents,IEnumSuperstructureMember,IndexType>::TestSegmentContainer(pMe);
    TRY_TEST(hr, S_OK);
 
    // first test a sm by itself
@@ -277,22 +277,22 @@ STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersChanged(ISuperstr
    return S_OK;
 }
 
-STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersAdded(ISuperstructureMember* item, CollectionIndexType idx)
+STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersAdded(ISuperstructureMember* item, IndexType idx)
 {
    m_csStiffnessFired = true;
    return S_OK;
 }
-STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, CollectionIndexType idx)
+STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersBeforeRemove(ISuperstructureMember* item, IndexType idx)
 {
    m_csStiffnessFired = true;
    return S_OK;
 }
-STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersMoveTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersMoveTo(IndexType from, IndexType to)
 {
    m_csStiffnessFired = true;
    return S_OK;
 }
-STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersCopyTo(CollectionIndexType from, CollectionIndexType to)
+STDMETHODIMP CTestSuperstructureMember::OnSuperstructureMembersCopyTo(IndexType from, IndexType to)
 {
    m_csStiffnessFired = true;
    return S_OK;

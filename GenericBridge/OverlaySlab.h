@@ -59,7 +59,7 @@ private:
    Float64 m_GrossDepth;
    CComPtr<IMaterial> m_Material;
 
-   IDeckBoundary* m_pDeckBoundary; // weak reference
+   CComPtr<IDeckBoundary> m_pDeckBoundary;
 
 public:
 DECLARE_REGISTRY_RESOURCEID(IDR_OVERLAYSLAB)

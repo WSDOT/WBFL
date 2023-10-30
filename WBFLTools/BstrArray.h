@@ -59,23 +59,23 @@ END_COM_MAP()
 
 // IBstrArray
 public:
-	STDMETHOD(Find)(/*[in]*/BSTR value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Find)(/*[in]*/BSTR value, /*[out,retval]*/IndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clone)(/*[out,retval]*/IBstrArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/BSTR item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/BSTR item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
 	STDMETHOD(Add)(/*[in]*/BSTR item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ BSTR *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ BSTR newVal) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ BSTR *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ BSTR newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumBstrArray ** ) override;
 
 protected:
-   typedef std::vector< CAdapt<CComBSTR> >       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector< CAdapt<CComBSTR> >;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 
 };

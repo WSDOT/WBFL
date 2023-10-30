@@ -62,9 +62,9 @@ BOOL CAddPointLoadDlg::OnInitDialog()
    CComboBox* pLoadings = (CComboBox*)GetDlgItem(IDC_LOADINGS);
    CComPtr<IFem2dLoadingCollection> loadings;
    m_Model->get_Loadings(&loadings);
-   CollectionIndexType count;
+   IndexType count;
    loadings->get_Count(&count);
-   for ( CollectionIndexType i = 0; i < count; i++ )
+   for ( IndexType i = 0; i < count; i++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(i,&loading);

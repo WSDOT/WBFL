@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -22,8 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ROARK_ROARKEXP_H_
-#define INCLUDED_ROARK_ROARKEXP_H_
 #pragma once
 
 // Define BUILDROARK when building this library
@@ -45,7 +43,5 @@
 #define ROARKTPL   extern template class ROARKCLASS
 #endif
 
+#include <Roark/AutoLib.h>
 #include <WbflAll.h>
-#include <Roark\AutoLib.h>
-
-#endif // INCLUDED_ROARK_ROARKEXP_H_

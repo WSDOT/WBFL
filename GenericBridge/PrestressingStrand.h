@@ -63,7 +63,7 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
    
-   const matPsStrand* GetStrand();
+   const WBFL::Materials::PsStrand* GetStrand();
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PRESTRESSINGSTRAND)
 

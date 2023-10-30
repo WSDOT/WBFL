@@ -40,11 +40,11 @@
 #include <Units\Units.h>
 
 #define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
-#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
-#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
-#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
-#define FORCE(_x_)  (::ConvertFromSysUnits(_x_, unitMeasure::Kip))
-#define MOMENT(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KipFeet))
+#define LENGTH(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch))
+#define AREA(_x_)   (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch2))
+#define STRESS(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KSI))
+#define FORCE(_x_)  (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Kip))
+#define MOMENT(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KipFeet))
 #endif // _DEBUG_LOGGING
 
 #ifdef _DEBUG
@@ -251,7 +251,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             if ( slice.BgMaterial )
                slice.BgMaterial->get_Name(&bgName);
 
-            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(top_slice.Xcg) << ", " << std::setw(20) << LENGTH(top_slice.Ycg) << ", " << std::setw(20) << top_slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+            os << std::setw(10) << AREA(top_slice.Area) << ", " << std::setw(10) << "C, " << std::setw(10) << LENGTH(top_slice.Top) << ", " << std::setw(10) << LENGTH(top_slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << top_slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
          }
 
@@ -292,7 +292,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             if ( slice.BgMaterial )
                slice.BgMaterial->get_Name(&bgName);
 
-            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " <<std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(bottom_slice.Xcg) << ", " << std::setw(20) << LENGTH(bottom_slice.Ycg) << ", " << std::setw(20) << bottom_slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+            os << std::setw(10) << AREA(bottom_slice.Area) << ", " << std::setw(10) << "T, " <<std::setw(10) << LENGTH(bottom_slice.Top) << ", " << std::setw(10) << LENGTH(bottom_slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << bottom_slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
          }
 
@@ -344,7 +344,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
             slice.BgMaterial->get_Name(&bgName);
 
          char cSide = (P < 0 ? 'C' : 'T');
-         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " <<std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(slice.Xcg) << ", " << std::setw(20) << LENGTH(slice.Ycg) << ", " << std::setw(20) << slice.ei << ", " << std::setw(20) << strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
+         os << std::setw(10) << AREA(slice.Area) << ", " << std::setw(10) << cSide << ", " <<std::setw(10) << LENGTH(slice.Top) << ", " << std::setw(10) << LENGTH(slice.Bottom) << ", " << std::setw(20) << LENGTH(Xcg) << ", " << std::setw(20) << LENGTH(Ycg) << ", " << std::setw(20) << slice.ei << ", " << std::setw(20) << total_strain << ", " << std::setw(20) << OLE2T(fgName) << ", " << std::setw(10) << STRESS(fg_stress) << ", "  << std::setw(20) << OLE2T(bgName) << ", " << std::setw(10) << STRESS(bg_stress) << ", " << std::setw(10) << STRESS(stress) << ", " << std::setw(10) << FORCE(P) << std::endl;
 #endif // _DEBUG_LOGGING
       }
    }
@@ -374,7 +374,7 @@ STDMETHODIMP CGeneralSectionSolver::Solve(IPlane3d* incrementalStrainPlane,IGene
    m_NeutralAxis->GetExplicit(&pnt,&vec);
    neutral_axis->SetExplicit(pnt,vec);
 
-   (*solution)->InitSolution(p,mx,my,neutral_axis,cgC,C,cgT,T,slices);
+   (*solution)->InitSolution(p,mx,my,neutral_axis,cgC,C,cgT,T,slices, bExceededStrainLimits);
 
 #if defined _DEBUG_LOGGING
    os << std::setw(10) << "Area, " << std::setw(10) << "Side, " << std::setw(10) << "Top, " << std::setw(10) << "Bottom, " << std::setw(20) << "Xcg, " << std::setw(20) << "Ycg, " << std::setw(20) << "initial strain, " << std::setw(20) << "strain, " << std::setw(20) << "fg material, " << std::setw(10) << "fg stress, "  << std::setw(20) << "bg material, " << std::setw(10) << "bg stress, " << std::setw(10) << "stress, " << std::setw(10) << "force" << std::endl;
@@ -414,9 +414,9 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
    std::vector< SHAPEINFO > shapes;
 
    // Rotate the shapes and determine the overall size of the section (bounding box)
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    m_Section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       CComPtr<IShape> original_shape;
       m_Section->get_Shape(shapeIdx,&original_shape);
@@ -497,7 +497,7 @@ void CGeneralSectionSolver::DecomposeSection(IPlane3d* incrementalStrainPlane)
    // Slice each shape
    m_Slices.clear();
    nShapes = shapes.size();
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       // get shape and related information
       SHAPEINFO& shape_info = shapes[shapeIdx];
@@ -558,16 +558,60 @@ bool CGeneralSectionSolver::IsNeutralAxisParallel(IPlane3d* incrementalStrainPla
    CHRException hr;
 
    UpdateNeutralAxis(incrementalStrainPlane,m_TestLine);
-   VARIANT_BOOL bParallel;
-   hr = m_GeomUtil->AreLinesParallel(m_NeutralAxis,m_TestLine,&bParallel);
+   VARIANT_BOOL bSameDirection;
+   hr = m_GeomUtil->IsSameDirection(m_NeutralAxis, m_TestLine, &bSameDirection);
 
-   return bParallel == VARIANT_TRUE ? true : false;
+   return bSameDirection == VARIANT_TRUE ? true : false;
 }
 
 void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,ILine2d* line)
 {
    HRESULT hr; 
 
+   // get the initial strain plane for the primary shape
+   IndexType primaryShapeIdx;
+   m_Section->get_PrimaryShapeIndex(&primaryShapeIdx);
+   CComPtr<IPlane3d> initial_strain_plane;
+   m_Section->get_InitialStrain(primaryShapeIdx, &initial_strain_plane);
+
+   // get three points on the initial strain plane
+   CComPtr<IPoint3d> A1, A2, A3;
+   A1.CoCreateInstance(CLSID_Point3d);
+   A2.CoCreateInstance(CLSID_Point3d);
+   A3.CoCreateInstance(CLSID_Point3d);
+   Float64 X1 = -100;
+   Float64 Y1 = 100;
+   Float64 Z1 = 0;
+   Float64 X2 = 100;
+   Float64 Y2 = 100;
+   Float64 Z2 = 0;
+   Float64 X3 = -100;
+   Float64 Y3 = -100;
+   Float64 Z3 = 0;
+   if (initial_strain_plane)
+   {
+      initial_strain_plane->GetZ(X1, Y1, &Z1);
+      initial_strain_plane->GetZ(X2, Y2, &Z2);
+      initial_strain_plane->GetZ(X3, Y3, &Z3);
+   }
+   A1->Move(X1, Y1, Z1);
+   A2->Move(X2, Y2, Z2);
+   A3->Move(X3, Y3, Z3);
+
+   // get the incremental strain on these three points
+   // and offset the initial strain by the increment strain
+   incrementalStrainPlane->GetZ(X1, Y1, &Z1);
+   A1->Offset(0, 0, Z1);
+   incrementalStrainPlane->GetZ(X2, Y2, &Z2);
+   A2->Offset(0, 0, Z2);
+   incrementalStrainPlane->GetZ(X3, Y3, &Z3);
+   A3->Offset(0, 0, Z3);
+
+   // create a new plane... the total strain plane through these three points
+   CComPtr<IPlane3d> total_strain_plane;
+   total_strain_plane.CoCreateInstance(CLSID_Plane3d);
+   total_strain_plane->ThroughPoints(A1, A2, A3);
+   
    // find the line that passes through z = 0 (z is the strain axis)
 
    Float64 x1 = -1000;
@@ -575,8 +619,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
    Float64 z  = 0.00;
    Float64 y1,y2;
 
-   HRESULT hr1 = incrementalStrainPlane->GetY(x1,z,&y1);
-   HRESULT hr2 = incrementalStrainPlane->GetY(x2,z,&y2);
+   HRESULT hr1 = total_strain_plane->GetY(x1,z,&y1);
+   HRESULT hr2 = total_strain_plane->GetY(x2,z,&y2);
 
    HRESULT hr3 = S_OK;
    HRESULT hr4 = S_OK;
@@ -585,8 +629,8 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
       y1 = -1000;
       y2 =  1000;
       
-      hr3 = incrementalStrainPlane->GetX(y1,z,&x1);
-      hr4 = incrementalStrainPlane->GetX(y2,z,&x2);
+      hr3 = total_strain_plane->GetX(y1,z,&x1);
+      hr4 = total_strain_plane->GetX(y2,z,&x2);
    }
 
    if ( FAILED(hr3) || FAILED(hr4) )
@@ -621,7 +665,7 @@ void CGeneralSectionSolver::UpdateNeutralAxis(IPlane3d* incrementalStrainPlane,I
    Float64 X = x1 + Offset*dx;
    Float64 Y = y1 + Offset*dy;
    Float64 Z;
-   incrementalStrainPlane->GetZ(X,Y,&Z);
+   total_strain_plane->GetZ(X,Y,&Z);
    if (0 < Z)
    {
       // tension is on the left side, so reverse the direction the line

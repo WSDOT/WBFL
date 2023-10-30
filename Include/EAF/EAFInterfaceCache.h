@@ -64,7 +64,7 @@ public:
 
 private:
    IBroker* m_pBroker; // weak reference
-   typedef std::map<IID, IUnknown*> Interfaces;
+   using Interfaces = std::map<IID, IUnknown*>;
    Interfaces m_Interfaces;
 };
 

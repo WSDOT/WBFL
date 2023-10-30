@@ -48,8 +48,7 @@ import "WBFLTools.idl";
 import "WBFLGeometry.idl";
 import "WBFLLoading.idl";
 import "WBFLCogo.idl";
-import "WBFLBridgeGeometry.idl";
-import "WBFLSections.idl";
+import "WBFLGeometry.idl";
 
 #include "GenericBridge.hh"
 
@@ -81,11 +80,6 @@ cpp_quote("#define GB_E_ABSOLUTE_EXPECTED            MAKE_HRESULT(SEVERITY_ERROR
 cpp_quote("#define GB_E_ID_IN_USE                    MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,536)")
 cpp_quote("#define GB_E_OVERHANG                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,537)")
 cpp_quote("#define GB_E_LESS_THAN_MIN_COLUMNS        MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,538)")
-
-// note... these flags get ORed with bridge geometry GF_flags
-// the values of these flags cannot duplicate the GF flags
-cpp_quote("#define BGF_PIERS 0x8000") // updates the pier geometry in the bridge model (assumes pier layout lines have alread been created and updated)
-
 
 [
 	uuid(44ECDFCD-A740-4B05-8139-7AB55E18AA92),
@@ -211,7 +205,7 @@ library WBFLGenericBridge
    {
        ctRoller   = 0, // Used for simple support (zero height pier)
        ctPinned   = 1, // Used for simple support (zero height pier)
-       ctIntegral = 2, // Used for fized height pier
+       ctIntegral = 2, // Used for fixed height pier
        ctHinged   = 3, // Used for fixed height pier
        ctHingedIntegral = 4 // Used for fixed height pier (hinged to a given stage, then integral)
    } ConnectivityType;
@@ -233,7 +227,7 @@ library WBFLGenericBridge
    typedef [public,helpstring("enum DeckOverhangTaper"),uuid(502711DE-D90C-4fb3-A117-15333D8C7EE5)] 
    enum 
    {
-      dotNone            = 0,  // No taper, constant thickness deck in overhanges
+      dotNone            = 0,  // No taper, constant thickness deck in overhangs
       dotTopTopFlange    = 1,  // Taper overhang to top of girder top flange
       dotBottomTopFlange = 2   // Taper overhang to bottom of girder top flange
    } DeckOverhangTaper;
@@ -346,7 +340,7 @@ library WBFLGenericBridge
       ftBottomFace
    } FaceType;
 
-   typedef [public,helpstring("emnum ThickeningType"),uuid(44C78EE7-DF07-42EA-9B3F-F1F3EA13C951)]
+   typedef [public,helpstring("enum ThickeningType"),uuid(44C78EE7-DF07-42EA-9B3F-F1F3EA13C951)]
    enum
    {
       ttEnds, // thicken flanges at end of girder
@@ -537,8 +531,8 @@ library WBFLGenericBridge
 	interface IRebarSection : IUnknown
 	{
 		[helpstring("method Add")] HRESULT Add([in]IRebarSectionItem* item);
-		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
-		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IRebarSectionItem** item);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] IndexType* count);
+		[propget,helpstring("property Item")] HRESULT Item([in]IndexType idx,[out,retval]IRebarSectionItem** item);
         [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
         [propget, restricted, helpstring("property _EnumRebarSectionItem")] HRESULT _EnumRebarSectionItem([out,retval]IEnumRebarSectionItem** enumRSI);
 	};
@@ -559,8 +553,8 @@ library WBFLGenericBridge
 		[propputref,helpstring("property RebarLayoutItem")] HRESULT RebarLayoutItem([in]IRebarLayoutItem* rebarLayoutItem);
       [propput,helpstring("property Hook")] HRESULT Hook([in]DirectionType side,[in]HookType hook);
       [propget,helpstring("property Hook")] HRESULT Hook([in]DirectionType side,[out,retval]HookType* hook);
-		[propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
-		[propget,helpstring("property Location")] HRESULT Location([in] Float64 distFromStartOfPattern,[in]CollectionIndexType barIdx,[out,retval]IPoint2d** location);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval]IndexType* count);
+		[propget,helpstring("property Location")] HRESULT Location([in] Float64 distFromStartOfPattern,[in]IndexType barIdx,[out,retval]IPoint2d** location);
       [propget,helpstring("property Profile")] HRESULT Profile([in]IndexType barIdx,[out,retval]IPoint2dCollection** ppProfile);
 	};
 
@@ -695,8 +689,8 @@ library WBFLGenericBridge
 	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[out,retval] VARIANT_BOOL* bResult);
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval]Float64* start);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
-	   [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
-	   [propget,helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out,retval]IRebarPattern** pattern);
+	   [propget,helpstring("property Count")] HRESULT Count([out,retval]IndexType* count);
+	   [propget,helpstring("property Item")] HRESULT Item([in] IndexType idx,[out,retval]IRebarPattern** pattern);
 	   [helpstring("mehtod AddRebarPattern")] HRESULT AddRebarPattern([in]IRebarPattern* pattern);
        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
        [propget, restricted, helpstring("property _EnumRebarPatterns")] HRESULT _EnumRebarPatterns([out,retval]IEnumRebarPatterns** enumRebarPatterns);
@@ -732,7 +726,7 @@ library WBFLGenericBridge
 	   [helpstring("method ContainsLocation")] HRESULT ContainsLocation([in] Float64 distFromStart,[in]Float64 offset,[out,retval] VARIANT_BOOL* bResult);
 	   [propget,helpstring("property Start")] HRESULT Start([out,retval]Float64* start);
 	   [propget,helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
-	   [propget,helpstring("property Item")] HRESULT Item([in] CollectionIndexType idx,[out,retval]IBridgeDeckRebarPattern** pattern);
+	   [propget,helpstring("property Item")] HRESULT Item([in] IndexType idx,[out,retval]IBridgeDeckRebarPattern** pattern);
 	   [helpstring("mehtod AddRebarPattern")] HRESULT AddRebarPattern([in]IBridgeDeckRebarPattern* pattern);
        [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
        [propget, restricted, helpstring("property _EnumRebarPatterns")] HRESULT _EnumRebarPatterns([out,retval]IEnumBridgeDeckRebarPatterns** enumRebarPatterns);
@@ -803,8 +797,8 @@ library WBFLGenericBridge
 	interface IRebarLayout : IUnknown
 	{
 		[helpstring("method CreateRebarSection")] HRESULT CreateRebarSection([in] Float64 cutLocation,[in]StageIndexType stageIdx,[out,retval]IRebarSection** section);
-		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IRebarLayoutItem** rli);
-		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
+		[propget,helpstring("property Item")] HRESULT Item([in]IndexType idx,[out,retval]IRebarLayoutItem** rli);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] IndexType* count);
 		[helpstring("method Add")] HRESULT Add([in]IRebarLayoutItem* rli);
       [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
       [propget, restricted, helpstring("property _EnumRebarLayoutItems")] HRESULT _EnumRebarLayoutItems([out,retval]IEnumRebarLayoutItems** enumRebarLayoutItems);
@@ -825,8 +819,8 @@ library WBFLGenericBridge
 	   [propputref,helpstring("property EffectiveFlangeWidthTool")] HRESULT EffectiveFlangeWidthTool([in] IEffectiveFlangeWidthTool* pTool);
 	   [propget,helpstring("property EffectiveFlangeWidthTool")] HRESULT EffectiveFlangeWidthTool([out,retval] IEffectiveFlangeWidthTool* *pTool);
 		[helpstring("method CreateRebarSection")] HRESULT CreateRebarSection([in] IDType ssMbrID,[in] SegmentIndexType segIdx,[in]Float64 distFromStartOfSegment,[out,retval]IRebarSection** section);
-		[propget,helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx,[out,retval]IBridgeDeckRebarLayoutItem** rli);
-		[propget,helpstring("property Count")] HRESULT Count([out,retval] CollectionIndexType* count);
+		[propget,helpstring("property Item")] HRESULT Item([in]IndexType idx,[out,retval]IBridgeDeckRebarLayoutItem** rli);
+		[propget,helpstring("property Count")] HRESULT Count([out,retval] IndexType* count);
 		[helpstring("method Add")] HRESULT Add([in]IBridgeDeckRebarLayoutItem* rli);
       [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);  
       [propget, restricted, helpstring("property _EnumRebarLayoutItems")] HRESULT _EnumRebarLayoutItems([out,retval]IEnumBridgeDeckRebarLayoutItems** enumRebarLayoutItems);
@@ -859,7 +853,7 @@ library WBFLGenericBridge
       [helpstring("method AddItemData")] HRESULT AddItemData([in]BSTR name,[in]IUnknown* data);
       [helpstring("method GetItemData")] HRESULT GetItemData([in]BSTR name,[out,retval]IUnknown** data);
       [helpstring("method RemoveItemData")] HRESULT RemoveItemData([in]BSTR name);
-      [helpstring("method GetItemDataCount")] HRESULT GetItemDataCount([out,retval]CollectionIndexType* count);
+      [helpstring("method GetItemDataCount")] HRESULT GetItemDataCount([out,retval]IndexType* count);
    };
 
 	[
@@ -942,7 +936,7 @@ library WBFLGenericBridge
    {
       [helpstring("method GetRange")] HRESULT GetRange([out]Float64* pXbStart, [out]Float64* pXbEnd);
       [helpstring("method ContainsPoint")] HRESULT ContainsPoint([in] Float64 Xb, [out, retval]VARIANT_BOOL* pvbContainsPoint);
-      [helpstring("method Perimeter")] HRESULT Perimeter([in]CollectionIndexType nPointsPerSide,[out]IPoint2dCollection** ppPoints);
+      [helpstring("method Perimeter")] HRESULT Perimeter([in]IndexType nPointsPerSide,[out]IPoint2dCollection** ppPoints);
       [propget, helpstring("property Material")] HRESULT Material([out, retval]IMaterial** ppMaterial);
       [propputref, helpstring("property Material")] HRESULT Material([in]IMaterial* pMaterial);
    };
@@ -980,8 +974,8 @@ library WBFLGenericBridge
       [helpstring("method CreateRegion")] HRESULT CreateRegion([in]PierIDType startPierID, [in]Float64 Xstart, [in]PierIDType endPierID,[in]Float64 Xend, [in]IMaterial* pMaterial, [out, retval]ICastingRegion** ppRegion);
       [helpstring("method FindRegion")] HRESULT FindRegion([in]Float64 Xb, [in]SectionBias bias,[out]IndexType* pIndex,[out]ICastingRegion** ppRegion);
       [helpstring("method FindRegionEx")] HRESULT FindRegionEx([in]GirderIDType ssmbrID, [in]SegmentIndexType segIdx,[in]Float64 Xs, [in]SectionBias bias, [out]IndexType* pIndex, [out]ICastingRegion** ppRegion);
-      [propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType idx, [out, retval]ICastingRegion** ppRegion);
-      [propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType* count);
+      [propget, helpstring("property Item")] HRESULT Item([in]IndexType idx, [out, retval]ICastingRegion** ppRegion);
+      [propget, helpstring("property Count")] HRESULT Count([out, retval] IndexType* count);
       [propget, restricted, helpstring("returns an enumerator for the collection.")] HRESULT _NewEnum([out, retval] IUnknown** retval);
       [propget, restricted, helpstring("property _EnumCastingRegions")] HRESULT _EnumCastingRegions([out, retval]IEnumCastingRegions** ppEnumCastingRegions);
    };
@@ -1236,7 +1230,7 @@ library WBFLGenericBridge
    interface ISegment : IUnknown
    {
       [propget, helpstring("property Length")] HRESULT Length([out, retval] Float64 *pVal);
-      [propget, helpstring("property PrimaryShape")] HRESULT PrimaryShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
+      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs,[in]SectionBias sectionBias,[in]SectionCoordinateSystemType coordinateSystem,[out,retval]IShape** ppShape);
       [helpstring("method GetVolumeAndSurfaceArea")] HRESULT GetVolumeAndSurfaceArea([out]Float64* pVolume, [out]Float64* pSurfaceArea);
       [propget, helpstring("property InternalSurfaceAreaOfVoids")] HRESULT InternalSurfaceAreaOfVoids([out, retval]Float64* pSurfaceArea);
 		[propget, helpstring("property Section")] HRESULT Section([in]StageIndexType stageIdx,[in] Float64 Xs,[in]SectionBias sectionBias, [in]SectionCoordinateSystemType coordinateSystem, [out,retval]ISection** ppSection);
@@ -1267,9 +1261,13 @@ library WBFLGenericBridge
 		[propput,helpstring("property Orientation")] HRESULT Orientation([in]Float64 orientation);
 		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval]Float64* orientation);
 
-      // Depth of haunch at start, middle, and end of segment. Distribution will be constant, linear, or parabolic depending on start/mid/end values
-      [helpstring("GetHaunchDepth")] HRESULT GetHaunchDepth([out]Float64* pStartVal, [out]Float64* pMidVal, [out]Float64* pEndVal);
-      [helpstring("SetHaunchDepth")] HRESULT SetHaunchDepth([in]Float64 startVal,[in]Float64 midVal,[in]Float64 endVal);
+      // Depth of haunch using vector of values along entire length of segment. Distribution will be as follows based on vector size:
+		// 1 - Constant value along entire segment.
+		// 2 - Linear distribution between start and end
+		// 3 - Parabolic based on start/mid/end values
+		// 4+ - Evenly-spaced piecewise-linear distribution along entire segment
+		[helpstring("GetHaunchDepth")] HRESULT GetHaunchDepth([out,retval]IDblArray** haunchVals);
+		[helpstring("SetHaunchDepth")] HRESULT SetHaunchDepth([in]IDblArray* haunchVals);
       [helpstring("method ComputeHaunchDepth")] HRESULT ComputeHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
 
       // Fillet between bottom of slab and haunch.
@@ -1315,8 +1313,8 @@ library WBFLGenericBridge
 	]
 	interface IFilteredSegmentCollection : IUnknown
 	{
-		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType index, [out, retval] ISegment* *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] IndexType *pVal);
+		[propget, helpstring("property Item")] HRESULT Item([in]IndexType index, [out, retval] ISegment* *pVal);
 		[propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSegment* *pVal);
 		[propget] HRESULT _NewEnum([out, retval] IUnknown** retval);  
 	};
@@ -1330,7 +1328,7 @@ library WBFLGenericBridge
 	]
 	interface ISegmentItem : IUnknown
 	{
-		[propget, helpstring("property RelPosition")] HRESULT RelPosition([out, retval] CollectionIndexType *pVal);
+		[propget, helpstring("property RelPosition")] HRESULT RelPosition([out, retval] IndexType *pVal);
 		[propget, helpstring("property Segment")] HRESULT Segment([out, retval] ISegment* *pVal);
 	};
 
@@ -1386,14 +1384,14 @@ library WBFLGenericBridge
 	interface ISuperstructureMemberCollection : IUnknown
 	{
       [helpstring("method Add")] HRESULT Add([in]ISuperstructureMember* pSSMbr);
-		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType index, [out, retval] ISuperstructureMember* *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] IndexType *pVal);
+		[propget, helpstring("property Item")] HRESULT Item([in]IndexType index, [out, retval] ISuperstructureMember* *pVal);
 		[propget, helpstring("property _EnumElements")] HRESULT _EnumElements([out, retval] IEnumSuperstructureMembers* *pVal);
 		[propget] HRESULT _NewEnum([out, retval] IUnknown** retval);  
-      [helpstring("method Remove")] HRESULT Remove([in] CollectionIndexType Index);
+      [helpstring("method Remove")] HRESULT Remove([in] IndexType Index);
  	   [helpstring("method Clear")] HRESULT Clear();
       [helpstring("method Reverse")] HRESULT Reverse();
-      [helpstring("method Insert")] HRESULT Insert([in]CollectionIndexType index,[in]ISuperstructureMember* pVal);
+      [helpstring("method Insert")] HRESULT Insert([in]IndexType index,[in]ISuperstructureMember* pVal);
 	};
    [
 		object,
@@ -1664,7 +1662,7 @@ library WBFLGenericBridge
       [propget, helpstring("property ShapeCount")] HRESULT ShapeCount([out,retval]IndexType* pCount);
       [propget, helpstring("property ForegroundMaterial")] HRESULT ForegroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
 		[propget, helpstring("property BackgroundMaterial")] HRESULT BackgroundMaterial([in]IndexType idx,[out,retval]IMaterial* *material);
-      [propget, helpstring("property GirderShape")] HRESULT GirderShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
+      [propget, helpstring("property BeamShape")] HRESULT BeamShape([in]Float64 Xs, [in]SectionCoordinateSystemType coordinateSystem,[out, retval]IShape** ppShape);
    };
 
 	[
@@ -1945,6 +1943,10 @@ library WBFLGenericBridge
 	]
 	interface IGirderSection : IUnknown
 	{
+		[propget, helpstring("property GirderShape")] HRESULT GirderShape([out, retval]IShape** ppShape);
+		[propget, helpstring("property VoidCount")] HRESULT VoidCount([out, retval]IndexType* pnVoids);
+		[propget, helpstring("property VoidShape")] HRESULT VoidShape([in]IndexType voidIdx, [out, retval]IShape** ppShape);
+
       [propget, helpstring("property WorkPoint")] HRESULT WorkPoint([out, retval]IPoint2d** ppWorkPoint);
 
 	   [propget,helpstring("property WebCount")] HRESULT WebCount([out,retval]WebIndexType* nWebs);
@@ -2187,9 +2189,9 @@ library WBFLGenericBridge
 	interface ITendon : IUnknown
 	{
 	   [helpstring("method AddSegment")] HRESULT AddSegment([in] ITendonSegment* segment);
-	   [propget,helpstring("property Segment")] HRESULT Segment([in] CollectionIndexType index,[out,retval]ITendonSegment** segment);
-	   [propget,helpstring("property Count")] HRESULT Count([out,retval]CollectionIndexType* count);
-	   [helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] CollectionIndexType index);
+	   [propget,helpstring("property Segment")] HRESULT Segment([in] IndexType index,[out,retval]ITendonSegment** segment);
+	   [propget,helpstring("property Count")] HRESULT Count([out,retval]IndexType* count);
+	   [helpstring("method RemoveSegment")] HRESULT RemoveSegment([in] IndexType index);
 	   [helpstring("method ClearSegments")] HRESULT ClearSegments();
 
       [propget,helpstring("property JackingEnd")] HRESULT JackingEnd([out,retval]JackingEndType* type);
@@ -2340,7 +2342,9 @@ library WBFLGenericBridge
 	{
      [propget, helpstring("property BridgeGeometry")] HRESULT BridgeGeometry([out,retval] IBridgeGeometry* *bridgeGeometry);
      [propget, helpstring("property Alignment")] HRESULT Alignment([out,retval] IAlignment** ppAlignment);
-     [propget, helpstring("property Piers")] HRESULT Piers([out,retval] IPierCollection* *piers);
+	  [propget, helpstring("property ProfileID")] HRESULT ProfileID([out, retval] IDType* pProfileID);
+	  [propget, helpstring("property SurfaceID")] HRESULT SurfaceID([out, retval] IDType* pSurfaceID);
+	  [propget, helpstring("property Piers")] HRESULT Piers([out,retval] IPierCollection* *piers);
 	  [propget, helpstring("property Length")] HRESULT Length([out,retval]Float64* length);
 	  [propget, helpstring("property SpanLength")] HRESULT SpanLength([in]SpanIndexType spanIdx,[out,retval]Float64* length);
 	  [propputref,helpstring("property Deck")] HRESULT Deck([in] IBridgeDeck* deck);
@@ -2367,8 +2371,6 @@ library WBFLGenericBridge
      [helpstring("method CreateSuperstructureMember")] HRESULT CreateSuperstructureMember([in]GirderIDType id,[in] GirderIDType leftSSMbrID, [in]GirderIDType rightSSMbrID,[out,retval]ISuperstructureMember** ppMbr);
      [propget, helpstring("property SuperstrucuterMember")] HRESULT SuperstructureMember([in]GirderIDType id,[out,retval]ISuperstructureMember** ppMbr);
      [propget, restricted, helpstring("property _EnumSuperstructureMembers")] HRESULT _EnumSuperstructureMembers([out,retval]IEnumSuperstructureMembers* *enumSSMbrs);
-
-     [helpstring("method UpdateBridgeModel")] HRESULT UpdateBridgeModel(long flags);
 	};
 	 
 

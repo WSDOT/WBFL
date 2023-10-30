@@ -30,7 +30,7 @@
 
 #include "resource.h"       // main symbols
 
-#include <GeometricPrimitives\Primitives.h>
+#include <GeomModel/Primitives.h>
 #include <vector>
 #include <set>
 #include <MathEx.h>
@@ -208,8 +208,8 @@ private:
       { return dPointX == rOther.dPointX && dPointY == rOther.dPointY && nStrandsAtGridPoint == rOther.nStrandsAtGridPoint; }
    };
 
-   typedef std::vector<GridPoint2d> GridCollection;
-   typedef GridCollection::iterator GridCollectionIterator;
+   using GridCollection = std::vector<GridPoint2d>;
+   using GridCollectionIterator = GridCollection::iterator;
    GridCollection m_GridPoints;
 
    bool m_bUpdateGrid;
@@ -224,7 +224,7 @@ private:
       Float64 Elevation;
 
       // grid points that make up this row
-      typedef std::vector<GridIndexType> GridPointsType;
+      using GridPointsType = std::vector<GridIndexType>;
       GridPointsType GridPoints;
 
       bool operator==(const Row& rOther) const
@@ -243,8 +243,8 @@ private:
    struct DebondSection
    {
       Float64 Location;
-      typedef std::set<GridIndexType> GridPointsType;
-      GridPointsType GridPoints; // indicies of grid points that contain debonded strands at this section
+      using GridPointsType = std::set<GridIndexType>;
+      GridPointsType GridPoints; // indices of grid points that contain debonded strands at this section
       bool operator==(const DebondSection& rOther) const { ::IsEqual(Location,rOther.Location); }
       bool operator<(const DebondSection& rOther) const { return Location < rOther.Location; }
    };
@@ -255,12 +255,12 @@ private:
    std::set<Row> m_Rows;
 
    bool m_bUpdateFill;
-   CComPtr<IIndexArray> m_CurrentFill; // array of strand position indicies for the strands that are actually used
+   CComPtr<IIndexArray> m_CurrentFill; // array of strand position indices for the strands that are actually used
    std::vector<GridIndexType>  m_StrandToGridMap; // index into array is a strand index, value stored in array is corresponding grid point index
    
    // Strand grid adjustments
    Float64 m_Xadj; // offsets entire strand grid horizontally
-   Float64 m_Yadj; // offsets entire strand grid verticaly
+   Float64 m_Yadj; // offsets entire strand grid vertically
 
    StrandIndexType GetStrandCount();
 
@@ -270,9 +270,6 @@ private:
    CComPtr<IStrandMover> m_pStrandMover;
    StrandGridType m_StrandGridType;
    EndType m_EndType;
-
-   // geometry factory for performance
-   CComPtr<IPoint2dFactory> m_Point2dFactory;
 
    bool EvenStrandsOnLeft(IndexType gridIdx) const;
    bool IsLeftStrandPosition(GridPoint2d& gridPoint, IndexType positionIndex, bool bEvenStrandsOnLeft) const;

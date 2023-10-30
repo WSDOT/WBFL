@@ -78,7 +78,7 @@ void TestLiveLoadConfiguration::Test()
    // test some defaults
    CComPtr<IIndexArray> axles;
    TRY_TEST( pllc->get_AxleConfig(&axles), S_OK);
-   CollectionIndexType size;
+   IndexType size;
    axles->get_Count(&size);
    TRY_TEST(size, 0);
    DistributionFactorType dft;

@@ -52,7 +52,7 @@ STDMETHODIMP CDblArray::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CDblArray::get_Item(CollectionIndexType relPosition, Float64 *pVal)
+STDMETHODIMP CDblArray::get_Item(IndexType relPosition, Float64 *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -71,7 +71,7 @@ STDMETHODIMP CDblArray::get_Item(CollectionIndexType relPosition, Float64 *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CDblArray::put_Item(CollectionIndexType relPosition, Float64 newVal)
+STDMETHODIMP CDblArray::put_Item(IndexType relPosition, Float64 newVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -106,7 +106,7 @@ STDMETHODIMP CDblArray::Add(Float64 item)
 	return S_OK;
 }
 
-STDMETHODIMP CDblArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CDblArray::Remove(IndexType relPosition)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -129,7 +129,7 @@ STDMETHODIMP CDblArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CDblArray::Insert(CollectionIndexType relPosition, Float64 item)
+STDMETHODIMP CDblArray::Insert(IndexType relPosition, Float64 item)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -152,7 +152,7 @@ STDMETHODIMP CDblArray::Insert(CollectionIndexType relPosition, Float64 item)
 	return S_OK;
 }
 
-STDMETHODIMP CDblArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CDblArray::Reserve(IndexType count)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -220,7 +220,7 @@ STDMETHODIMP CDblArray::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyFloat64, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyFloat64, ContainerType >;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -238,7 +238,7 @@ STDMETHODIMP CDblArray::get__EnumElements(/*[out, retval]*/ IEnumDblArray* *ppen
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumDblArray, &IID_IEnumDblArray, Float64, _CopyFloat64C, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumDblArray, &IID_IEnumDblArray, Float64, _CopyFloat64C, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -256,7 +256,7 @@ STDMETHODIMP CDblArray::get__EnumElements(/*[out, retval]*/ IEnumDblArray* *ppen
    return S_OK;
 }
 
-STDMETHODIMP CDblArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CDblArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -288,7 +288,7 @@ STDMETHODIMP CDblArray::Clone(IDblArray **clone)
 	return S_OK;
 }
 
-STDMETHODIMP CDblArray::ReDim(CollectionIndexType size)
+STDMETHODIMP CDblArray::ReDim(IndexType size)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 

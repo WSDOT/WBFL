@@ -55,14 +55,14 @@ public:
 
       //if ( pT->m_bHoldingEvents )
       //{
-      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   WBFL::System::Flags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
       //   return S_OK;
       //}
 
       pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = m_vec.begin();
-		while (pp < m_vec.end())
+		IUnknown** pp = this->m_vec.begin();
+		while (pp < this->m_vec.end())
 		{
 			if (*pp != nullptr)
 			{
@@ -80,14 +80,14 @@ public:
 
       //if ( pT->m_bHoldingEvents )
       //{
-      //   sysFlags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
+      //   WBFL::System::Flags<UINT32>::Set(&pT->m_PendingEvents,EVT_UNITS);
       //   return S_OK;
       //}
 
       pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = m_vec.begin();
-		while (pp < m_vec.end())
+		IUnknown** pp = this->m_vec.begin();
+		while (pp < this->m_vec.end())
 		{
 			if (*pp != nullptr)
 			{
@@ -215,42 +215,42 @@ public:
 public:
    virtual void                            SetUnitMode(eafTypes::UnitMode unitMode) override;
 	virtual eafTypes::UnitMode              GetUnitMode() override;
- 	virtual const unitStationFormat&        GetStationFormat() override;
-   virtual const unitmgtScalar&            GetScalarFormat() override;
-   virtual const unitmgtScalar&            GetPercentageFormat() override;
-   virtual const unitmgtLengthData&        GetComponentDimUnit() override;
-   virtual const unitmgtLengthData&        GetXSectionDimUnit() override;
-   virtual const unitmgtLengthData&        GetSpanLengthUnit() override;
-   virtual const unitmgtLengthData&        GetDeflectionUnit()  override;
-   virtual const unitmgtLengthData&        GetAlignmentLengthUnit() override;
-   virtual const unitmgtLength2Data&       GetAreaUnit() override;
-   virtual const unitmgtLength4Data&       GetMomentOfInertiaUnit() override;
-   virtual const unitmgtLength3Data&       GetSectModulusUnit() override;
-   virtual const unitmgtPressureData&      GetStressUnit() override;
-   virtual const unitmgtPressureData&      GetModEUnit() override;
-   virtual const unitmgtForceData&         GetGeneralForceUnit() override;
-   virtual const unitmgtForceData&         GetTonnageUnit() override;
-   virtual const unitmgtForceData&         GetShearUnit() override;
-   virtual const unitmgtMomentData&        GetMomentUnit() override;
-   virtual const unitmgtMomentData&        GetSmallMomentUnit() override;
-   virtual const unitmgtAngleData&         GetAngleUnit() override;
-   virtual const unitmgtAngleData&         GetRadAngleUnit() override;  // Radians always
-   virtual const unitmgtDensityData&       GetDensityUnit() override;
-   virtual const unitmgtMassPerLengthData& GetMassPerLengthUnit() override;
-   virtual const unitmgtForcePerLengthData& GetForcePerLengthUnit() override;
-   virtual const unitmgtMomentPerAngleData& GetMomentPerAngleUnit() override;
-   virtual const unitmgtTimeData&          GetShortTimeUnit() override;
-   virtual const unitmgtTimeData&          GetWholeDaysUnit() override;
-   virtual const unitmgtTimeData&          GetFractionalDaysUnit() override;
-   virtual const unitmgtAreaPerLengthData& GetAvOverSUnit() override;
-   virtual const unitmgtForceLength2Data&  GetStiffnessUnit() override;
-   virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit() override;
-   virtual const unitmgtPerLengthData&      GetPerLengthUnit() override;
-   virtual const unitmgtPerLengthData&      GetCurvatureUnit() override;
-   virtual const unitmgtPressureData&       GetSidewalkPressureUnit() override;
-   virtual const unitmgtPressureData&       GetOverlayWeightUnit() override;
-   virtual const unitmgtPressureData&       GetWindPressureUnit() override;
-   virtual const unitmgtVelocityData&       GetVelocityUnit() override;
+ 	virtual const WBFL::Units::StationFormat&        GetStationFormat() override;
+   virtual const WBFL::Units::ScalarData&            GetScalarFormat() override;
+   virtual const WBFL::Units::ScalarData&            GetPercentageFormat() override;
+   virtual const WBFL::Units::LengthData&        GetComponentDimUnit() override;
+   virtual const WBFL::Units::LengthData&        GetXSectionDimUnit() override;
+   virtual const WBFL::Units::LengthData&        GetSpanLengthUnit() override;
+   virtual const WBFL::Units::LengthData&        GetDeflectionUnit()  override;
+   virtual const WBFL::Units::LengthData&        GetAlignmentLengthUnit() override;
+   virtual const WBFL::Units::Length2Data&       GetAreaUnit() override;
+   virtual const WBFL::Units::Length4Data&       GetMomentOfInertiaUnit() override;
+   virtual const WBFL::Units::Length3Data&       GetSectModulusUnit() override;
+   virtual const WBFL::Units::PressureData&      GetStressUnit() override;
+   virtual const WBFL::Units::PressureData&      GetModEUnit() override;
+   virtual const WBFL::Units::ForceData&         GetGeneralForceUnit() override;
+   virtual const WBFL::Units::ForceData&         GetTonnageUnit() override;
+   virtual const WBFL::Units::ForceData&         GetShearUnit() override;
+   virtual const WBFL::Units::MomentData&        GetMomentUnit() override;
+   virtual const WBFL::Units::MomentData&        GetSmallMomentUnit() override;
+   virtual const WBFL::Units::AngleData&         GetAngleUnit() override;
+   virtual const WBFL::Units::AngleData&         GetRadAngleUnit() override;  // Radians always
+   virtual const WBFL::Units::DensityData&       GetDensityUnit() override;
+   virtual const WBFL::Units::MassPerLengthData& GetMassPerLengthUnit() override;
+   virtual const WBFL::Units::ForcePerLengthData& GetForcePerLengthUnit() override;
+   virtual const WBFL::Units::MomentPerAngleData& GetMomentPerAngleUnit() override;
+   virtual const WBFL::Units::TimeData&          GetShortTimeUnit() override;
+   virtual const WBFL::Units::TimeData&          GetWholeDaysUnit() override;
+   virtual const WBFL::Units::TimeData&          GetFractionalDaysUnit() override;
+   virtual const WBFL::Units::AreaPerLengthData& GetAvOverSUnit() override;
+   virtual const WBFL::Units::ForceLength2Data&  GetStiffnessUnit() override;
+   virtual const WBFL::Units::SqrtPressureData&   GetTensionCoefficientUnit() override;
+   virtual const WBFL::Units::PerLengthData&      GetPerLengthUnit() override;
+   virtual const WBFL::Units::PerLengthData&      GetCurvatureUnit() override;
+   virtual const WBFL::Units::PressureData&       GetSidewalkPressureUnit() override;
+   virtual const WBFL::Units::PressureData&       GetOverlayWeightUnit() override;
+   virtual const WBFL::Units::PressureData&       GetWindPressureUnit() override;
+   virtual const WBFL::Units::VelocityData&       GetVelocityUnit() override;
 
 // IEAFStatusCenter
 public:
@@ -258,29 +258,29 @@ public:
    virtual StatusGroupIDType CreateStatusGroupID() override;
    virtual StatusItemIDType Add(CEAFStatusItem* pItem) override;
    virtual bool RemoveByID(StatusItemIDType id) override;
-   virtual bool RemoveByIndex(CollectionIndexType index) override;
+   virtual bool RemoveByIndex(IndexType index) override;
    virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) override;
    virtual CEAFStatusItem* GetByID(StatusItemIDType id) override;
-   virtual CEAFStatusItem* GetByIndex(CollectionIndexType index) override;
+   virtual CEAFStatusItem* GetByIndex(IndexType index) override;
    virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) override;
    virtual eafTypes::StatusSeverityType GetSeverity() override;
-   virtual CollectionIndexType Count() override;
+   virtual IndexType Count() override;
 
 // IEAFTransactions
 public:
-   virtual void Execute(txnTransaction& rTxn) override;
-   virtual void Execute(txnTransaction* pTxn) override;
+   virtual void Execute(const CEAFTransaction& rTxn) override;
+   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) override;
    virtual void Undo() override;
    virtual void Redo() override;
    virtual void Repeat() override;
-   virtual bool CanUndo() override;
-   virtual bool CanRedo() override;
-   virtual bool CanRepeat() override;
-   virtual std::_tstring UndoName() override;
-   virtual std::_tstring RedoName() override;
-   virtual std::_tstring RepeatName() override;
-   virtual CollectionIndexType GetTxnCount() override;
-   virtual CollectionIndexType GetUndoCount() override;
+   virtual bool CanUndo() const override;
+   virtual bool CanRedo() const override;
+   virtual bool CanRepeat() const override;
+   virtual std::_tstring UndoName() const override;
+   virtual std::_tstring RedoName() const override;
+   virtual std::_tstring RepeatName() const override;
+   virtual IndexType GetTxnCount() const override;
+   virtual IndexType GetUndoCount() const override;
 
 // IEAFProjectLog
 public:

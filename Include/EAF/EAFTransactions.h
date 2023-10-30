@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include <System\Transaction.h>
+#include <EAF\EAFTransaction.h>
 
 /*****************************************************************************
 INTERFACE
@@ -42,17 +42,17 @@ DEFINE_GUID(IID_IEAFTransactions,
 0x3fa1c988, 0xfc39, 0x4a3d, 0xa0, 0xe9, 0xf4, 0xec, 0x48, 0x87, 0x1a, 0xc1);
 interface IEAFTransactions : IUnknown
 {
-   virtual void Execute(txnTransaction& rTxn) = 0;
-   virtual void Execute(txnTransaction* pTxn) = 0;
+   virtual void Execute(const CEAFTransaction& rTxn) = 0;
+   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) = 0;
    virtual void Undo() = 0;
    virtual void Redo() = 0;
    virtual void Repeat() = 0;
-   virtual bool CanUndo() = 0;
-   virtual bool CanRedo() = 0;
-   virtual bool CanRepeat() = 0;
-   virtual std::_tstring UndoName() = 0;
-   virtual std::_tstring RedoName() = 0;
-   virtual std::_tstring RepeatName() = 0;
-   virtual CollectionIndexType GetTxnCount() = 0;
-   virtual CollectionIndexType GetUndoCount() = 0;
+   virtual bool CanUndo() const = 0;
+   virtual bool CanRedo() const = 0;
+   virtual bool CanRepeat() const = 0;
+   virtual std::_tstring UndoName() const = 0;
+   virtual std::_tstring RedoName() const = 0;
+   virtual std::_tstring RepeatName() const = 0;
+   virtual IndexType GetTxnCount() const = 0;
+   virtual IndexType GetUndoCount() const = 0;
 };

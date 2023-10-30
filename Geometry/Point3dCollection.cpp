@@ -41,8 +41,7 @@ STDMETHODIMP CPoint3dCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IPoint3dCollection,
-      &IID_IStructuredStorage2
+		&IID_IPoint3dCollection
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -55,70 +54,8 @@ STDMETHODIMP CPoint3dCollection::InterfaceSupportsErrorInfo(REFIID riid)
 
 void CPoint3dCollection::FinalRelease()
 {
-   UnadviseAll();
 }
 
-
-HRESULT CPoint3dCollection::OnBeforeAdd ( Point3dVectorImpl::StoredType* pVal)
-{
-   CHECK_IN(pVal);
-   try
-   {
-      // set up connection point
-      HRESULT hr;
-      hr = CrAdvise(pVal->second.m_T, this, IID_IPoint3dEvents, &(pVal->first));
-      if (FAILED(hr))
-         return hr;
-   }
-   catch(...)
-   {
-      ATLASSERT(false);
-      return E_FAIL;
-   }
-
-   return S_OK;
-}
-
-HRESULT CPoint3dCollection::OnAfterAdd ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx)
-{
-   Fire_OnPointAdded(idx, pVal->second.m_T);
-   return S_OK;
-}
-
-HRESULT CPoint3dCollection::OnBeforeRemove ( Point3dVectorImpl::StoredType* pVal, CollectionIndexType idx)
-{
-   try
-   {
-      // release connection point
-      HRESULT hr;
-      hr = CrUnadvise(pVal->second.m_T, this, IID_IPoint3dEvents, pVal->first);
-      if (FAILED(hr))
-         return hr;
-   }
-   catch(...)
-   {
-      ATLASSERT(false);
-      return E_FAIL;
-   }
-
-   return S_OK;
-}
-
-HRESULT CPoint3dCollection::OnAfterRemove ( CollectionIndexType idx)
-{
-   Fire_OnPointRemoved(idx);
-   return S_OK;
-}
-
-void CPoint3dCollection::UnadviseAll()
-{
-   // free up all of our connectionpoints on destruct
-   CollectionIndexType cnt = 0;
-   for (iterator it= begin(); it != end(); it++)
-   {
-      OnBeforeRemove(*it, cnt++);
-   }
-}
 
 STDMETHODIMP CPoint3dCollection::get__Enum(IEnumPoint3d** ppenum)
 {
@@ -173,9 +110,7 @@ STDMETHODIMP CPoint3dCollection::RemoveDuplicatePoints()
       if ( prevPoint->SameLocation(currPoint) == S_OK )
       {
          IndexType idx = std::distance(m_coll.begin(),iter);
-         OnBeforeRemove(&(*iter),idx);
          iter = m_coll.erase(iter);
-         OnAfterRemove(idx);
       }
       else
       {
@@ -187,23 +122,8 @@ STDMETHODIMP CPoint3dCollection::RemoveDuplicatePoints()
    return S_OK;
 }
 
-STDMETHODIMP CPoint3dCollection::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
 STDMETHODIMP CPoint3dCollection::Clear()
 {
-   UnadviseAll();
    m_coll.clear();
-   Fire_OnPointsCleared();
 	return S_OK;
-}
-
-STDMETHODIMP CPoint3dCollection::OnPointChanged(IPoint3d* point)
-{
-   Fire_OnPointChanged(point);
-
-   return S_OK;
 }

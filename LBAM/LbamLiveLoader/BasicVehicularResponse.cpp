@@ -305,7 +305,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeForces(IIDArray* POIs, BSTR stage, 
       }
       else
       {
-         CollectionIndexType poi_cnt;
+         IndexType poi_cnt;
          hr = POIs->get_Count(&poi_cnt);
 
          // create our results collection 
@@ -314,7 +314,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeForces(IIDArray* POIs, BSTR stage, 
          hr = the_results->Reserve(poi_cnt);
 
          // just add empty results and return
-         for (CollectionIndexType ipoi = 0; ipoi < poi_cnt; ipoi++)
+         for (IndexType ipoi = 0; ipoi < poi_cnt; ipoi++)
          {
             CComPtr<ISectionResult3D> the_result;
             hr = the_result.CoCreateInstance(CLSID_SectionResult3D);
@@ -403,7 +403,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeReactions(IIDArray* POIs, BSTR stag
       OptimizationType optimization;
       hr = config->get_Optimization(&optimization);
 
-      CollectionIndexType ressize;
+      IndexType ressize;
       hr = sec_res->get_Count(&ressize);
 
       CComPtr<IResult3Ds> loc_results;
@@ -414,7 +414,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeReactions(IIDArray* POIs, BSTR stag
       CComPtr<IClassFactory> factory;
       hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType is = 0; is<ressize; is++)
+      for (IndexType is = 0; is<ressize; is++)
       {
          CComPtr<IResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
@@ -482,7 +482,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeSupportDeflections(IIDArray* suppor
       OptimizationType optimization;
       hr = config->get_Optimization(&optimization);
 
-      CollectionIndexType ressize;
+      IndexType ressize;
       hr = sec_res->get_Count(&ressize);
 
       CComPtr<IResult3Ds> loc_results;
@@ -493,7 +493,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeSupportDeflections(IIDArray* suppor
       CComPtr<IClassFactory> factory;
       hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType is = 0; is<ressize; is++)
+      for (IndexType is = 0; is<ressize; is++)
       {
          CComPtr<IResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
@@ -547,7 +547,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
       CComPtr<ISectionStressResults> results;
       hr = results.CoCreateInstance(CLSID_SectionStressResults);
 
-      CollectionIndexType num_res;
+      IndexType num_res;
       hr = force_results->get_Count(&num_res);
       hr = results->Reserve(num_res);
 
@@ -555,7 +555,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
       CComPtr<IClassFactory> factory;
       hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
-      for (CollectionIndexType i = 0; i<num_res; i++)
+      for (IndexType i = 0; i<num_res; i++)
       {
          PoiIDType poi_id;
          hr = POIs->get_Item(i,&poi_id);
@@ -577,10 +577,10 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
          this->GetStressPoints(poi_id, stage, &lft_sps, &rgt_sps);
 
          // left side
-         CollectionIndexType num_sps;
+         IndexType num_sps;
          hr = lft_sps->get_Count(&num_sps);
 
-         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
+         for (IndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> sp;
             hr = lft_sps->get_Item(isp,&sp);
@@ -600,7 +600,7 @@ STDMETHODIMP CBasicVehicularResponse::ComputeStresses(IIDArray* POIs, BSTR stage
 
          hr = rgt_sps->get_Count(&num_sps);
 
-         for (CollectionIndexType isp = 0; isp<num_sps; isp++)
+         for (IndexType isp = 0; isp<num_sps; isp++)
          {
             CComPtr<IStressPoint> sp;
             hr = rgt_sps->get_Item(isp,&sp);
@@ -640,7 +640,7 @@ HRESULT CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage,
    {
       AssertValid();
 
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
 
       // create our results collection 
@@ -747,7 +747,7 @@ HRESULT CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage,
          }
 
          // loop over pois, get influence lines and evaluate answers
-         for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+         for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
          {
             HANDLE_CANCEL_PROGRESS();
 
@@ -978,7 +978,7 @@ HRESULT CBasicVehicularResponse::ComputeResponse(IIDArray* POIs, BSTR stage,
       else
       {
          // results are not applicable - just add empty results and return
-         for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+         for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
          {
             PoiIDType poi_id;
             hr = POIs->get_Item(ipoi, &poi_id);

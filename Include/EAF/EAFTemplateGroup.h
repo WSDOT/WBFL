@@ -118,13 +118,13 @@ public:
    void AddItem(CEAFTemplateItem* pItem);
 
    // Returns the number of items in this group
-   CollectionIndexType GetItemCount() const;
+   IndexType GetItemCount() const;
 
    // Returns a template item by index
-   const CEAFTemplateItem* GetItem(CollectionIndexType itemIdx) const;
-   CEAFTemplateItem* GetItem(CollectionIndexType itemIdx);
+   const CEAFTemplateItem* GetItem(IndexType itemIdx) const;
+   CEAFTemplateItem* GetItem(IndexType itemIdx);
 
-   void RemoveItem(CollectionIndexType itemIdx);
+   void RemoveItem(IndexType itemIdx);
 
    // compares based on group name
    bool operator<(const CEAFTemplateGroup& other) const;
@@ -132,11 +132,11 @@ public:
 
    // returns the total number of templates summed from
    // this group, all sub groups, and all items
-   CollectionIndexType GetTemplateCount() const;
+   IndexType GetTemplateCount() const;
 
 protected:
    void DeepCopy(const CEAFTemplateGroup* pGroup);
-   CollectionIndexType DeepCount(const CEAFTemplateGroup* pGroup) const;
+   IndexType DeepCount(const CEAFTemplateGroup* pGroup) const;
 
 private:
    CString m_GroupName;

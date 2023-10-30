@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "JointLoad.h"
 
-typedef CLoadsCollection<IFem2dJointLoadCollection, IFem2dJointLoad, CJointLoad, IFem2dEnumJointLoad, &IID_IFem2dEnumJointLoad, LoadIDType> JointLoadCollImpl;
+using JointLoadCollImpl = CLoadsCollection<IFem2dJointLoadCollection, IFem2dJointLoad, CJointLoad, IFem2dEnumJointLoad, &IID_IFem2dEnumJointLoad, LoadIDType>;
 
 class ModelEvents;
 
@@ -75,7 +75,7 @@ END_COM_MAP()
 // IFem2dJointLoadCollection
 public:
 	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/JointIDType joint, /*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz, /*[out, retval]*/ IFem2dJointLoad** pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
 	STDMETHOD(Clear)() override;
 };
 

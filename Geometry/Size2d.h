@@ -29,6 +29,7 @@
 #define __SIZE2D_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/Primitives.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CSize2d
@@ -37,15 +38,11 @@ class ATL_NO_VTABLE CSize2d :
 	public CComCoClass<CSize2d, &CLSID_Size2d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CSize2d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public IPersist,
-   public ISize2d,
-   public IStructuredStorage2
+   public ISize2d
 {
 public:
 	CSize2d()
 	{
-      m_Dx = 0.00;
-      m_Dy = 0.00;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SIZE2D)
@@ -54,15 +51,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CSize2d)
 	COM_INTERFACE_ENTRY(ISize2d)
-   COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   Float64 m_Dx;
-   Float64 m_Dy;
+   WBFL::Geometry::Size2d m_Size;
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -71,22 +65,12 @@ private:
 public:
    STDMETHOD(Clone)(/*[out,retval]*/ISize2d** clone) override;
    STDMETHOD(Dimensions)(/*[out]*/Float64* pDx,/*[out]*/Float64* pDy) override;
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(Scale)(/*[in]*/ Float64 factor) override;
 	STDMETHOD(get_Magnitude)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_Dy)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__SIZE2D_H_

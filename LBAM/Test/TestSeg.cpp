@@ -24,6 +24,8 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include "StdAfx.h"
+
+#define SKIP_TEMPLATE
 #include "TestSeg.h"
 
 #ifdef _DEBUG
@@ -55,7 +57,7 @@ void SetupSegment(ISegment* pseg)
    TRY_TEST( pss1->put_Sa(11.141), S_OK );
 
    TRY_TEST( psps->Add(pss1), S_OK);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( psps->get_Count(&cnt), S_OK);
    TRY_TEST( cnt, 1);
 

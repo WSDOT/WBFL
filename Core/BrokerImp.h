@@ -84,7 +84,7 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave* pStrSave) override;
 
 private:
-   typedef std::map<IID, IAgent* >Interfaces; // does not effect ref-counts
+   using Interfaces = std::map<IID, IAgent*>; // does not effect ref-counts
    Interfaces m_Interfaces;
    std::vector< IAgent* > m_Agents; // holds a ref count
    bool m_DelayInit;

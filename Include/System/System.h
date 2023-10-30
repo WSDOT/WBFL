@@ -32,36 +32,28 @@
    #error It is for external users only
 #endif
 
-#include <WBFLTypes.h>
 #include <WBFLDebug.h>
+#include <System\ColorConverter.h>
 #include <System\Checks.h>
 #include <System\Date.h>
 #include <System\DllTest.h>
-#include <System\DumpContext.h>
+#include <System\LogContext.h>
 #include <System\EngNotation.h>
 #include <System\Exception.h>
-#include <System\FileDumpContext.h>
-#include <WBFLTools\LogDumpContext.h>
+#include <System\FileLogContext.h>
 #include <System\Flags.h>
 #include <System\IStructuredLoad.h>
 #include <System\IStructuredSave.h>
-#include <System\LineParseXml.h>
 #include <System\Log.h>
-#include <System\MacroTxn.h>
-#include <System\NextAvailableId.h>
 #include <System\NumericFormatTool.h>
 #include <System\SectionValue.h>
-#include <System\SectionAction.h>
 #include <System\SingletonKiller.h>
 #include <System\StructuredLoadXml.h>
-#include <System\StructuredLoadXmlPrs.h>
 #include <System\StructuredSaveXml.h>
-#include <System\StructuredSaveXmlPrs.h>
 #include <System\SubjectT.h>
 #include <System\Tokenizer.h>
 #include <System\Time.h>
-#include <System\Transaction.h>
-#include <System\TxnManager.h>
+#include <System\Threads.h>
 #include <SYstem\XProgrammingError.h>
 #include <System\XStructuredLoad.h>
 #include <System\XStructuredSave.h>

@@ -21,420 +21,188 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_POLYGON_H_
-#define INCLUDED_GEOMMODEL_POLYGON_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-#include <map>
-#include <GeomModel\GeomModelExp.h>
-#include <GeomModel\ShapeImp.h>
-#include <GeometricPrimitives\Polygon2d.h>
+#include <GeomModel/GeomModelExp.h>
+#include <GeomModel/ShapeImpl.h>
+#include <GeomModel/ShapeProperties.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class gmPolyPointIter;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmPolygon
-
-   Class which defines a straight-sided polygon
-
-
-DESCRIPTION
-   Derived from gmShapeImp,  gmPolygon realizes the gmShapeImp interface with a
-   general polygon.  The points of a polygon can be entered in clockwise or
-   counter-clockwise order.  The last point need not be the same as the first
-   point,  the polygon will automatically be closed when computing
-   properties.  It is common to create a polygon in a convenient coordinate
-   system, and then use the Translate() and Rotate() methods to position the
-   polygon.  The first point stored in the polygon is the hook point.
-
-   In general, it is not a good idea to subclass gmPolygon to represent
-   regular polygons or shapes with a fixed number of sides.  Consider a
-   rectangle class that is a subclass of gmPolygon.  The rectangle could be
-   defined by its center point, its height, and its width.  The user could
-   then call AddPoint().  After calling AddPoint(),  the rectangle is no
-   longer a rectangle.  It is better to subclass gmShapeImp and use gmPolygon as
-   an implementation helper then it is to subclass gmPolygon itself.
-
-LOG
-   rdp : 12.13.1997 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmPolygon : public gmShapeImp, public gmIShapeEx
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // My friend, the iterator
-   friend gmPolyPointIter;
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   gmPolygon();
-
-   //------------------------------------------------------------------------
-   // Explicit constructor - construct from a gpPolygon2d
-   gmPolygon(const gpPolygon2d& rp);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmPolygon();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // AddPoint
-   // Adds a point to the polygon.  Returns a key that can be used to lookup 
-   // the point in later operations. Key is unique for this polygon only and 
-   // is not unique for all polygons in the system.
-   Uint32 AddPoint(const gpPoint2d& p);
-
-   //------------------------------------------------------------------------
-   // Clear
-   // Remove all points from the polygon.
-   void Clear();
-
-   //------------------------------------------------------------------------
-   // RemovePoint
-   // Removes a point from the polygon.  If the point could not be found,  
-   // this method does nothing.  Returns true if the point was successfully
-   // removed,  otherwise false.
-   bool RemovePoint(Uint32 key);
-
-   //------------------------------------------------------------------------
-   // GetPoint
-   // Returns a pointer  to the point identified by key.  If the point could 
-   // not be found,  returns -0.
-   const gpPoint2d* GetPoint(Uint32 key) const;
-
-   //------------------------------------------------------------------------
-   // GetNumPoints
-   // Returns the number of points in the polygon
-   CollectionIndexType GetNumPoints() const;
-
-   //------------------------------------------------------------------------
-   // ReplacePoint
-   // Replaces the point identified by key with point p.  Returns true on 
-   // success,  otherwise return false.
-   bool ReplacePoint(Uint32 key,const gpPoint2d& p);
-
-   //------------------------------------------------------------------------
-   // CreateClone
-   // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
-   // listeners are registered with the clone.  This is a factory method,  
-   // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
-
-   //------------------------------------------------------------------------
-   // GetProperties
-   // Assigns a gmProperties object to the object pointed to by pProperties. 
-   // The origin of the shape properties object is the centroid of this shape
-   // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const override;
-
-   //------------------------------------------------------------------------
-   // GetBoundingBox
-   // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const override;
-
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against line.  Clips away the portion of the shape on the
-   // side of the line defined by side.  This is a factory method.  You are 
-   // responsible for freeing the memory allocated by this method.  If the shape
-   // lies entirely on the clipping side of the line 0 is returned. Any listeners
-   // to the original section are not transferred to this new section.
-   virtual gmIShape* CreateClippedShape(const gpLine2d& line, 
-                                       gpLine2d::Side side) const;
-
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against rectangle r.  Clips in or out of the rectangle
-   // as specified by region.  This is a factory method.  You are responsible 
-   // for freeing memory allocated by this method.  This method returns 0 if, 
-   // the shape lies entirely within the clipping rectangle and region is set 
-   // to clip out, or the shape and the rectangle do not intersect and region 
-   // is to clip in. Any listeners to the original section are not transferred
-   // to this new section.
-   virtual gmIShape* CreateClippedShape(const gpRect2d& r,
-                                        gmShapeImp::ClipRegion region
-                                        ) const;
-
-   //------------------------------------------------------------------------
-   // GetArea
-   // Returns area and cg of shape. Typically faster that getting the properties 
-   // and then the area.
-   virtual void GetArea(Float64* pArea, gpPoint2d* pCG) const override;
-
-   //------------------------------------------------------------------------
-   // ComputeClippedArea
-   // Clips this shape against line and computes area and CG of remaining shape.
-   // Clips away the portion of the shape on the side of the line defined by side. 
-   virtual void ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
-                                   Float64* pArea, gpPoint2d* pCG) const override;
-
-   //------------------------------------------------------------------------
-   // GetFurthestDistance
-   // Returns the distance to a line that is parallel to line, on specified 
-   // side of line,  that passes through the furthest point on the shape 
-   // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
-
-   //------------------------------------------------------------------------
-   // Draw
-   // Draws the shape on the given device context.  Mapping of the coordinates
-   // to the device space should be done using the supplied point mapper.
-   // Draw is for static displays only.  The drawing of this analytical 
-   // model is not intended for interactive, graphical editing.  Interactive 
-   // graphical editing is best left for a package specifically designed for 
-   // this purpose, such as jKit/GO.  In a package like jKit/GO,  a GO object
-   // would most likely delegate its drawing responsibility to the gmShapeImp 
-   // object it represents.
-   // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
-
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   gmPolygon(const gmPolygon& rOther);
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   gmPolygon& operator = (const gmPolygon& rOther);
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // DoTranslate
-   // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta) override;
-
-   //------------------------------------------------------------------------
-   // DoRotate
-   // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmPolygon& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmPolygon& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-
-   gpPolygon2d    m_PolygonImp;     // polygon geometry implementation
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
-/*****************************************************************************
-CLASS 
-   gmPolyPointIter
-
-   This is a helper class used to iterate through the points in a gmPolygon
-   object.  gmPolyPointIter does an insertion order traversal of the points
-   in the gmPolygon it is associated with.
-
-
-DESCRIPTION
-   The gmPolyPointIter class will implement the standard iterator methods
-   Begin(), End(), Next(),  and operator void *().  The
-   standard GetCurrent() iterator method for this class is described below.
-
-LOG
-   rdp : 12.17.1997 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmPolyPointIter
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   gmPolyPointIter();
-
-   //------------------------------------------------------------------------
-   // gmPolyPointIter
-   // Explicit constructor.  Creates an iterator that iterates through the 
-   // points in pPolygon.
-   gmPolyPointIter(const gmPolygon* pPolygon);
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   gmPolyPointIter(const gmPolyPointIter& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmPolyPointIter();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   gmPolyPointIter& operator = (const gmPolyPointIter& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // SetPolygon
-   // Sets the polygon for iteration.  Sets the iterator position to Begin().
-   void SetPolygon(const gmPolygon* pPolygon);
-
-   //------------------------------------------------------------------------
-   // Begin
-   // Moves the iterator to the beginning of  the iteration sequence.
-   virtual void Begin();
-
-   //------------------------------------------------------------------------
-   // End
-   // Moves the iterator to the end of the iteration sequence.  The end point 
-   // is one past the last element.
-   virtual void End();
-
-   //------------------------------------------------------------------------
-   // Next
-   // Moves the iterator to the next position in the iteration sequence.
-   virtual void Next();
-
-   //------------------------------------------------------------------------
-   // Prev
-   // Moves the iterator to the previous position in the iteration sequence.
-   virtual void Prev();
-
-   //------------------------------------------------------------------------
-   // Conversion operator to void pointer. This function converts the object
-   // in the collection currently pointed to a void pointer. If this function
-   // returns zero, no object is currently being pointed to.
-   operator void *();
-   operator void*() const;
-
-   //------------------------------------------------------------------------
-   // CurrentPoint
-   // Returns a pointer to the constant current point or a null pointer if 
-   // nothing exists.
-   const gpPoint2d* CurrentPoint() const;
-
-   //------------------------------------------------------------------------
-   // CurrentKey
-   // Returns a pointer to the current key.  If there is not a current 
-   // element,  returns 0.
-   const Uint32* CurrentKey() const;
-
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmPolyPointIter& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmPolyPointIter& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   const gmPolygon*    m_pPolygon;
-   gpPolyPointIter2d   m_Iterator;
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-   void Clean();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-
-
-
-#endif // INCLUDED_GEOMMODEL_POLYGON_H_
+   namespace Geometry
+   {
+      /// A general polygon.
+      ///
+      /// \image html PolyShape/PolyShape.jpg
+      /// The points of the polygon can be defined clockwise or counter-clockwise. The polygon can be open (first and last points are not the same) or closed (first and last points are the same).
+      /// The hook point is the first point of the polygon. Moving the hook point causes all the points of the polygon to move.
+      /// While it is possible to create degenerate shapes, shapes where edges cross (like a bow tie), shape properties will not be computed correctly for these types of shapes.
+      /// 
+      /// Specifying symmetry can greatly improve efficiency. Points may be defined for half of a polygon with either the a line parallel to the Y-axis or the X-axis as the axis of symmetry.
+      /// The half-polygon cannot have points that define an edge that is coincident with the axis of symmetry.
+      /// 
+      /// ShapeProperties in global coordinates are computed with the following equations:
+      /// \f[ A = \sum{(x_{i+1} - x_i)y_i + \frac{1}{2}(x_{i+1} - x_i)(y_{i+1} - y_i)} \f]
+      /// \f[ I_x = \sum{
+      ///           \frac{{y_i}^3(x_{i+1} - x_i)}{12} 
+      ///           + (x_{i+1}-x_i)y_i {\frac{y_i}{2}}^2 
+      ///           + \frac{(y_{i+1} - y_i)^3 (x_{i+1} - x_i)}{36}
+      ///           + \frac{1}{2} (x_{i+1} - x_i)(y_{i+1} - y_i) \left[ \frac{(y_{i+1} - y_i)}{3} + y_i \right] ^3 
+      ///           } \f]
+      /// \f[ I_y = \sum{
+      ///           \frac{y_i(x_{i+1} - x_i)^3}{12} 
+      ///           + (x_{i+1}-x_i)y_i \left[ x_i + \frac{(x_{i+1} - x_i)}{2} \right]^2 
+      ///           + \frac{(y_{i+1} - y_i)(x_{i+1} - x_i)^3 }{36}
+      ///           + \frac{1}{2} (x_{i+1} - x_i)(y_{i+1} - y_i) \left[ \frac{2(x_{i+1} - x_i)}{3} + x_i \right] ^3 
+      ///           } \f]
+      /// \f[ I_{xy} = \sum{
+      ///            (x_{i+1} - x_i)\frac{{y_i}^2}{2} \left( x_i + \frac{x_{i+1} - x_i}{2} \right)
+      ///            + \frac{1}{2} (x_{i+1} - x_i)(y_{i+1} - y_i) \left( \frac{y_{i+1} - y_i}{3} - y_i  \right) \left[ \frac{2(x_{i+1} - x_i)}{3} + x_i \right]
+      ///            + \frac{(x_{i+1} - x_i)^2(y_{i+1} - y_i)^2}{72}
+      ///            } \f]
+      /// \f[ \overline{x} = \frac{ \sum{ \frac{1}{2}y_i(x_{i+1} - x_i)(x_{i+1} + x_i) + \frac{1}{2}(x_{i+1} - x_i)(y_{i+1} - y_i) \left[ \frac{2}{3}(x_{i+1} + x_i) + x_i \right] } }{A} \f]
+      /// \f[ \overline{y} = \frac{ \sum{ \frac{1}{2}{y_i}^2(x_{i+1} - x_i) + \frac{1}{2}(x_{i+1} - x_i)(y_{i+1} - y_i) \left[ \frac{1}{3}(y_{i+1} + y_i) + y_i \right] } }{A} \f]
+
+      class GEOMMODELCLASS Polygon : public ShapeImpl
+      {
+      public:
+         /// @brief Defines the axis of symmetry.
+         enum class Symmetry 
+         {
+            None, ///< No symmetry
+            X, ///< Symmetry is about the horizontal axis
+            Y ///< Symmetry is about the vertical axis
+         };
+
+         Polygon() = default;
+         Polygon(std::shared_ptr<Point2d>& hookPnt);
+         Polygon(const Polygon&) = default;
+
+         virtual ~Polygon() = default;
+
+         Polygon& operator=(const Polygon&) = default;
+
+         /// Defines the symmetry of the shape. For symmetry about a line parallel to the X axis, axis is the Y value for that line.
+         void SetSymmetry(Symmetry sym,///< type of symmetry
+                          Float64 axis=0 ///< location of the axis of symmetry
+         );
+
+         /// @brief Returns the type of symmetry
+         Symmetry GetSymmetry() const;
+
+         /// @brief Returns the location of the axis of symmetry. The returned value is meaningless if symmetry is Symmetry::None
+         Float64 GetSymmetryAxis() const;
+
+         ///@{
+         /// @brief Adds a point to the polygon
+         void AddPoint(Float64 x, Float64 y);
+         void AddPoint(const Point2d& p);
+         ///@}
+
+         /// Adds points to the polygon
+         void AddPoints(const std::vector<Point2d>& points);
+
+         /// Replaces the points
+         void SetPoints(const std::vector<Point2d>& points);
+
+         /// Remove all points from the polygon.
+         void Clear();
+
+         /// Removes a point from the polygon.
+         /// If the polygon has an axis of symmetry, the point index must be that of a real
+         /// point, not a mirrored point
+         void RemovePoint(IndexType idx);
+
+         /// Returns the point at the specified index.
+         Point2d GetPoint(IndexType idx) const;
+
+         /// Returns the total number of points in the polygon, including points defined by symmetry
+         IndexType GetCount() const;
+
+         /// Replaces the point at the specified index.
+         /// If the polygon has an axis of symmetry, the point index must be that of a real
+         /// point, not a mirrored point
+         void ReplacePoint(IndexType idx, Float64 x,Float64 y);
+
+         /// Replaces the point at the specified index.
+         /// If the polygon has an axis of symmetry, the point index must be that of a real
+         /// point, not a mirrored point
+         void ReplacePoint(IndexType idx,const Point2d& p);
+
+         /// Removes adjacent points that are at the same location.
+         /// If the points form a closed polygon (first and last point are the same), the last point is not removed
+         void RemoveDuplicatePoints();
+
+         /// Returns a point-wise representation of the shape
+         virtual std::vector<Point2d> GetPolyPoints() const override;
+
+         /// Creates a clone.
+         virtual std::unique_ptr<Shape> CreateClone() const override;
+
+         /// Assigns a Properties object to the object pointed to by pProperties. 
+         /// The origin of the shape properties object is the centroid of this shape
+         /// with a rotation of zero.
+         virtual ShapeProperties GetProperties() const override;
+
+         /// Returns the smallest rectangle that bounds the entire shape.
+         virtual Rect2d GetBoundingBox() const override;
+
+         /// @brief Returns true if the point is in the shape
+         /// @param p 
+         /// @return 
+         virtual bool PointInShape(const Point2d& p) const override;
+
+         /// @brief Returns the perimeter of the shape.
+         /// @return 
+         virtual Float64 GetPerimeter() const override;
+
+         // Clips this shape against line. Clips away the portion of the shape on the
+         // side of the line defined by side.
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const override;
+
+         /// Clips this shape against rectangle r.  Clips in or out of the rectangle
+         /// as specified by region.
+         virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r,Shape::ClipRegion region) const override;
+
+         /// Returns the distance to a line that is parallel to line, on specified 
+         /// side of line,  that passes through the furthest point on the shape 
+         /// from line.
+         virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
+
+         /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
+         virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
+
+         /// Reflects the polygon across the line. This operations removes the symmetrical property of the shape
+         virtual void Reflect(const Line2d& line) override;
+
+      #if defined _DEBUG
+         /// Returns true if the class is in a valid state, otherwise returns false
+         virtual bool AssertValid() const;
+      #endif // _DEBUG
+
+      protected:
+         virtual void DoOffset(const Size2d& delta) override;
+         virtual void DoRotate(const Point2d& center, Float64 angle) override;
+
+      private:
+         Symmetry m_Symmetry{ Symmetry::None };
+         Float64 m_SymmetryAxis{ 0.0 };
+
+         mutable std::vector<Point2d> m_Points;
+
+         mutable bool m_bIsDirty{ true };
+         mutable ShapeProperties m_Properties;
+         mutable Rect2d m_BoundingBox;
+         mutable Float64 m_Perimeter{ 0.0 };
+
+         void UpdateProperties() const;
+         void UpdatePoints() const;
+         bool PointInShape_Private(const Point2d & point) const;
+         std::unique_ptr<Shape> CreateClippedShape_Private(const Line2d & line, Line2d::Side side, const std::vector<Point2d>&points) const;
+         Point2d GetMirroredPoint(const Point2d& point) const;
+         void GetAllPoints(std::vector<Point2d>*points) const;
+      };
+
+
+   }; // Geometry
+}; // WBFL

@@ -32,9 +32,19 @@
 
 #include "WBFLComCollections.h"
 
+// NOTE: Ideally this object would be implemented by delegating implementation details to WBFL::Geometry::CompositeShape.
+// This is very difficult and would require breaking encapsulation and ruining extensibility.
+// To save a WBFL::Geometry::Shape into a WBFL::Geometry::CompositeShape object, we would have to figure
+// out what kind of WBFL::Geometry::Shape the IShape pointer wraps. There are two problems with this.
+// 1) If the client creates a new shape that isn't implemented with WBFL::Geometry::Shape, there is no
+// way we can put that shape into the underlying WBFL::Geometry::CompositeShae object, and 2) in order to
+// learn that type of Shape the IShape pointer wraps, we need to do dynamic casts on known types which
+// will break every time a new shape is added. For these reasons, this object does not use WBFL::Geometry::CompositeShape
+// as the underlying implementation
+
+
 class CCompositeShape;
-typedef CComVectorCollectionNoEnum<ICompositeShape,ICompositeShapeItem,CollectionIndexType> CompositeShapeVectorImpl;
-typedef CPersistentCollection<CCompositeShape,CompositeShapeVectorImpl,CollectionIndexType> PersistentCompositeShape;
+using CompositeShapeVectorImpl = CComVectorCollectionNoEnum<ICompositeShape,ICompositeShapeItem,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CCompositeShape
@@ -45,7 +55,7 @@ class ATL_NO_VTABLE CCompositeShape :
 	public ISupportErrorInfo,
    public IShape,
    public IXYPosition,
-	public PersistentCompositeShape
+	public CompositeShapeVectorImpl
 {
 public:
 	CCompositeShape()
@@ -62,7 +72,6 @@ BEGIN_COM_MAP(CCompositeShape)
     COM_INTERFACE_ENTRY(IShape)
     COM_INTERFACE_ENTRY(IXYPosition)
     COM_INTERFACE_ENTRY(IObjectSafety)
-    COM_INTERFACE_ENTRY_CHAIN(PersistentCompositeShape)
 END_COM_MAP()
 
 protected:
@@ -77,21 +86,21 @@ public:
 
 // ICompositeShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
-   //	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
+   //	STDMETHOD(get_Item)(/*[in]*/ IndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
 //	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
-//	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-//	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
+//	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
+//	STDMETHOD(Remove)(/*[in]*/ IndexType idx) override;
 //	STDMETHOD(Clear)() override;
-   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override;
-   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape) override;
+   STDMETHOD(ReplaceEx)(IndexType idx,ICompositeShapeItem* pShapeItem) override;
+   STDMETHOD(Replace)(IndexType idx,IShape* pShape) override;
 	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem) override;
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 
 // IShape
 public:
+	STDMETHOD(FurthestPoint)(/*[in]*/ILine2d* line, /*[out]*/ IPoint2d** ppPoint, /*[out]*/Float64* dist) override;
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;

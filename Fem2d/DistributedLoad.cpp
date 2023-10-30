@@ -602,7 +602,7 @@ void CDistributedLoad::GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx
    }
    else
    {
-      if (fabs(Wya) == fabs(Wyb))
+      if (fabs(Wya) == fabs(Wyb) && !IsZero(Wya) && !IsZero(Wyb))
       {
          // this happens when the Wa and Wb have opposite signs but have equal magnitude
          // the moment effect is not zero... treat the loading as two triangular loads with

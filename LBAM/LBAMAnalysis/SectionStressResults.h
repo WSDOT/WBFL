@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CSectionStressResults;
-typedef CComVectorCollection<ISectionStressResults, ISectionStressResult, IEnumSectionStressResult, &IID_IEnumSectionStressResult,CollectionIndexType> SSRVectorImpl;
-typedef CPersistentCollection<CSectionStressResults, SSRVectorImpl,CollectionIndexType> PersistentSSRCollImpl;
+using SSRVectorImpl = CComVectorCollection<ISectionStressResults, ISectionStressResult, IEnumSectionStressResult, &IID_IEnumSectionStressResult, IndexType>;
+using PersistentSSRCollImpl = CPersistentCollection<CSectionStressResults, SSRVectorImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSectionStressResults

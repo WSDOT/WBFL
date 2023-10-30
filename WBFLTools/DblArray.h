@@ -60,22 +60,22 @@ END_COM_MAP()
 
 // IDblArray
 public:
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(ReDim)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clone)(/*[out,retval]*/IDblArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/Float64 item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/Float64 item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
 	STDMETHOD(Add)(/*[in]*/Float64 item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ Float64 *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ Float64 newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumDblArray ** ) override;
 
 protected:
-   typedef std::vector<Float64>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<Float64>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };
 

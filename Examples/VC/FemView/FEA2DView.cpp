@@ -160,10 +160,10 @@ void CFEA2DView::BuildJointDisplayObjects()
    CComPtr<IFem2dJointCollection> joints;
    model->get_Joints(&joints);
 
-   CollectionIndexType nJnts;
+   IndexType nJnts;
    joints->get_Count(&nJnts);
 
-   for ( CollectionIndexType jnt = 0; jnt < nJnts; jnt++ )
+   for ( IndexType jnt = 0; jnt < nJnts; jnt++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jnt,&joint);
@@ -226,9 +226,9 @@ void CFEA2DView::BuildMemberDisplayObjects()
    CComPtr<IFem2dJointCollection> joints;
    model->get_Joints(&joints);
 
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    members->get_Count(&nMembers);
-   for ( CollectionIndexType mbr = 0; mbr < nMembers; mbr++ )
+   for ( IndexType mbr = 0; mbr < nMembers; mbr++ )
    {
       CComPtr<IFem2dMember> pMbr;
       members->get_Item(mbr,&pMbr);
@@ -326,7 +326,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
                          RGB(255,127,127),
                          RGB(0,255,255),
                          RGB(255,0,255) };
-   CollectionIndexType colorCount = sizeof(colors)/sizeof(COLORREF);
+   IndexType colorCount = sizeof(colors)/sizeof(COLORREF);
 
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
@@ -349,12 +349,12 @@ void CFEA2DView::BuildLoadDisplayObjects()
 
    CComPtr<IFem2dLoadingCollection> loadings;
    model->get_Loadings(&loadings);
-   CollectionIndexType cLoadings;
+   IndexType cLoadings;
    loadings->get_Count(&cLoadings);
-   for ( CollectionIndexType i = 0; i < cLoadings; i++ )
+   for ( IndexType i = 0; i < cLoadings; i++ )
    {
       // Determine the color
-      CollectionIndexType clrIdx = i;
+      IndexType clrIdx = i;
       while ( colorCount <= clrIdx )
       {
          clrIdx -= colorCount;
@@ -367,10 +367,10 @@ void CFEA2DView::BuildLoadDisplayObjects()
       CComPtr<IFem2dPointLoadCollection> ptLoads;
       loading->get_PointLoads(&ptLoads);
 
-      CollectionIndexType cPtLoads;
+      IndexType cPtLoads;
       ptLoads->get_Count(&cPtLoads);
 
-      for ( CollectionIndexType j = 0; j < cPtLoads; j++ )
+      for ( IndexType j = 0; j < cPtLoads; j++ )
       {
          CComPtr<IFem2dPointLoad> ptLoad;
          ptLoads->get_Item(j,&ptLoad);
@@ -647,7 +647,7 @@ void CFEA2DView::OnLoadsCreateLoading()
    model->get_Loadings(&loadings);
 
    CCreateLoadingDlg dlg;
-   CollectionIndexType count;
+   IndexType count;
    loadings->get_Count(&count);
    dlg.m_ID = count;
 
@@ -688,7 +688,7 @@ void CFEA2DView::OnLoadsAddPointLoad()
 
       try
       {
-         CollectionIndexType count;
+         IndexType count;
          pointLoads->get_Count(&count);
          CComPtr<IFem2dPointLoad> ptLoad;
          pointLoads->Create(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,lotGlobal,&ptLoad);

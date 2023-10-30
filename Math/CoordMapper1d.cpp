@@ -24,72 +24,31 @@
 #include <Math\MathLib.h>
 #include <Math\CoordMapper1d.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::Math;
 
-/****************************************************************************
-CLASS
-   mathCoordMapper1d
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-mathCoordMapper1d::mathCoordMapper1d()
-{
-   // no scale difference, no offset
-   m_c = 1;
-   m_d = 0;
-}
-
-mathCoordMapper1d::mathCoordMapper1d(Float64 d, bool IsSameDirection)
+CoordMapper1d::CoordMapper1d(Float64 d, bool IsSameDirection)
 {
   SetMapSameScale(d, IsSameDirection);
 }
 
-mathCoordMapper1d::mathCoordMapper1d(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
+CoordMapper1d::CoordMapper1d(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
 {
   SetCoordinateMap(a1, b1, a2, b2);
 }
 
-mathCoordMapper1d::mathCoordMapper1d(const mathCoordMapper1d& rOther)
-{
-   MakeCopy(rOther);
-}
-
-mathCoordMapper1d::~mathCoordMapper1d()
-{
-}
-
-//======================== OPERATORS  =======================================
-mathCoordMapper1d& mathCoordMapper1d::operator= (const mathCoordMapper1d& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-
-Float64 mathCoordMapper1d::GetA( Float64 B) const
+Float64 CoordMapper1d::GetA( Float64 B) const
 {
    return B * m_c + m_d;
 }
 
-Float64 mathCoordMapper1d::GetB( Float64 A) const
+Float64 CoordMapper1d::GetB( Float64 A) const
 {
    return (A-m_d)/m_c;
 }
 
-void mathCoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
+void CoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Float64 b2)
 {
-   ATLASSERT(!IsEqual(a1, a2, 1.0e-16));//, _T("a1 cannot equal a2") );
+   CHECK(!IsEqual(a1, a2, 1.0e-16));//, _T("a1 cannot equal a2") );
 
    // set up mapping equation: A = B * m_c + m_d
 
@@ -100,14 +59,14 @@ void mathCoordMapper1d::SetCoordinateMap(Float64 a1, Float64 b1, Float64 a2, Flo
    }
    else
    {
-      ATLASSERT(false); //, _T("b1 cannot equal b2") );
+      CHECK(false); //, _T("b1 cannot equal b2") );
       m_c = 1; // same default as in constructor
    }
 
    m_d = a1 - b1 * m_c;
 }
 
-void mathCoordMapper1d::SetMapSameScale(Float64 d, bool bIsSameDirection)
+void CoordMapper1d::SetMapSameScale(Float64 d, bool bIsSameDirection)
 {
    // logic is bizarre here, but it works
 
@@ -118,56 +77,3 @@ void mathCoordMapper1d::SetMapSameScale(Float64 d, bool bIsSameDirection)
    else
       m_c = -1;
 }
-
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void mathCoordMapper1d::MakeCopy(const mathCoordMapper1d& rOther)
-{
-   m_c = rOther.m_c;
-   m_d = rOther.m_d;
-}
-
-void mathCoordMapper1d::MakeAssignment(const mathCoordMapper1d& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-#if defined _DEBUG
-bool mathCoordMapper1d::AssertValid() const
-{
-   return true;
-}
-
-void mathCoordMapper1d::Dump(dbgDumpContext& os) const
-{
-   os << _T("Dump for mathCoordMapper1d not implemented") << endl;
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool mathCoordMapper1d::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("mathCoordMapper1d");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for mathCoordMapper1d");
-   TESTME_EPILOG("mathCoordMapper1d");
-}
-#endif

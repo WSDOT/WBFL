@@ -24,12 +24,6 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/OneEndSeatedCheckArtifact.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Stability;
 
 OneEndSeatedCheckArtifact::OneEndSeatedCheckArtifact()
@@ -57,8 +51,9 @@ const OneEndSeatedCriteria& OneEndSeatedCheckArtifact::GetCriteria() const
    return m_Criteria;
 }
 
-void OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+OneEndSeatedCheckArtifact::ControllingTensionCase OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSectionResult& sectionResult) const
 {
+   ControllingTensionCase controlling_case;
    Float64 Fallow;
    Float64 CD = Float64_Max;
    for ( int i = 0; i < 3; i++ )
@@ -74,13 +69,11 @@ void OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSect
          Float64 fAllow = GetAllowableTension(sectionResult,impact,wind);
 #endif
 
-         Float64 cd;
-         Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdPositive,
-            fAllow, sectionResult.f[impact][wind][TopLeft],
-            fAllow, sectionResult.f[impact][wind][TopRight],
-            fAllow, sectionResult.f[impact][wind][BottomLeft],
-            fAllow, sectionResult.f[impact][wind][BottomRight], &cd);
+         auto [cd, corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Positive,
+            fAllow, sectionResult.f[+impact][+wind][+Corner::TopLeft],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::TopRight],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::BottomLeft],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::BottomRight]);
 
          if ( (i == 0 && w == 0) || // this is the first time so this cd wins
               (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -88,34 +81,33 @@ void OneEndSeatedCheckArtifact::GetControllingTensionCase(const OneEndSeatedSect
             )
          {
             CD = cd;
-            *pImpact = impact;
-            *pWind   = wind;
-            *pCorner = corner;
+            controlling_case.impact = impact;
+            controlling_case.wind   = wind;
+            controlling_case.corner = (Corner)corner;
             Fallow = fAllow;
          }
       }
    }
 
-   *pfAllow = Fallow;
-   *pbPassed = (::IsLE(sectionResult.f[*pImpact][*pWind][*pCorner], *pfAllow));
-
-   *pCD = CD;
+   controlling_case.stress_limit = Fallow;
+   controlling_case.bPassed = (::IsLE(sectionResult.f[+(controlling_case.impact)][+(controlling_case.wind)][+(controlling_case.corner)], controlling_case.stress_limit));
+   controlling_case.CD = CD;
+   return controlling_case;
 }
 
-void OneEndSeatedCheckArtifact::GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const
+OneEndSeatedCheckArtifact::ControllingGlobalCompressionCase OneEndSeatedCheckArtifact::GetControllingGlobalCompressionCase(const OneEndSeatedSectionResult& sectionResult) const
 {
+   ControllingGlobalCompressionCase controlling_case;
    Float64 fAllow = m_Criteria.AllowableCompression_GlobalStress;
    Float64 CD = Float64_Max;
    for (int i = 0; i < 3; i++)
    {
       ImpactDirection impact = (ImpactDirection)i;
-      Float64 cd;
-      Corner corner;
-      corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
-         fAllow, sectionResult.fDirect[impact][TopLeft],
-         fAllow, sectionResult.fDirect[impact][TopRight],
-         fAllow, sectionResult.fDirect[impact][BottomLeft],
-         fAllow, sectionResult.fDirect[impact][BottomRight], &cd);
+      auto [cd,corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
+         fAllow, sectionResult.fDirect[+impact][+Corner::TopLeft],
+         fAllow, sectionResult.fDirect[+impact][+Corner::TopRight],
+         fAllow, sectionResult.fDirect[+impact][+Corner::BottomLeft],
+         fAllow, sectionResult.fDirect[+impact][+Corner::BottomRight]);
 
       if ((i == 0) || // this is the first time so this cd wins
          (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -123,19 +115,20 @@ void OneEndSeatedCheckArtifact::GetControllingGlobalCompressionCase(const OneEnd
          )
       {
          CD = cd;
-         *pImpact = impact;
-         *pCorner = corner;
+         controlling_case.impact = impact;
+         controlling_case.corner = (Corner)corner;
       }
    }
 
-   *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.fDirect[*pImpact][*pCorner]));
-
-   *pCD = CD;
+   controlling_case.stress_limit = fAllow;
+   controlling_case.bPassed = (::IsLT(controlling_case.stress_limit, sectionResult.fDirect[+(controlling_case.impact)][+(controlling_case.corner)]));
+   controlling_case.CD = CD;
+   return controlling_case;
 }
 
-void OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult,ImpactDirection* pImpact,WindDirection* pWind,Corner* pCorner,Float64* pfAllow,bool* pbPassed,Float64* pCD) const
+OneEndSeatedCheckArtifact::ControllingPeakCompressionCase OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSeatedSectionResult& sectionResult) const
 {
+   ControllingPeakCompressionCase controlling_case;
    Float64 fAllow = m_Criteria.AllowableCompression_PeakStress;
    Float64 CD = Float64_Max;
    for ( int i = 0; i < 3; i++ )
@@ -144,13 +137,11 @@ void OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSe
       for ( int w = 0; w < 2; w++ )
       {
          WindDirection wind = (WindDirection)w;
-         Float64 cd;
-         Corner corner;
-         corner = (Corner)mathCDRatio::MinCDRatio(mathCDRatio::cdNegative,
-            fAllow, sectionResult.f[impact][wind][TopLeft],
-            fAllow, sectionResult.f[impact][wind][TopRight],
-            fAllow, sectionResult.f[impact][wind][BottomLeft],
-            fAllow, sectionResult.f[impact][wind][BottomRight], &cd);
+         auto [cd, corner] = WBFL::Math::CDRatio::MinCDRatio(WBFL::Math::CDRatio::Sense::Negative,
+            fAllow, sectionResult.f[+impact][+wind][+Corner::TopLeft],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::TopRight],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::BottomLeft],
+            fAllow, sectionResult.f[+impact][+wind][+Corner::BottomRight]);
 
          if ( (i == 0 && w == 0) || // this is the first time so this cd wins
               (CD < 0 && 0 <= cd) || // there is a sign change and the current cd is a positive value
@@ -158,17 +149,18 @@ void OneEndSeatedCheckArtifact::GetControllingPeakCompressionCase(const OneEndSe
             )
          {
             CD = cd;
-            *pImpact = impact;
-            *pWind   = wind;
-            *pCorner = corner;
+            controlling_case.impact = impact;
+            controlling_case.wind   = wind;
+            controlling_case.corner = (Corner)corner;
          }
       }
    }
 
-   *pfAllow = fAllow;
-   *pbPassed = (::IsLT(*pfAllow, sectionResult.f[*pImpact][*pWind][*pCorner]));
+   controlling_case.stress_limit = fAllow;
+   controlling_case.bPassed = (::IsLT(controlling_case.stress_limit, sectionResult.f[+(controlling_case.impact)][+(controlling_case.wind)][+(controlling_case.corner)]));
+   controlling_case.CD = CD;
 
-   *pCD = CD;
+   return controlling_case;
 }
 
 bool OneEndSeatedCheckArtifact::Passed() const
@@ -179,7 +171,7 @@ bool OneEndSeatedCheckArtifact::Passed() const
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         if (!m_Results.bRotationalStability[impact][wind] || !m_Results.bRolloverStability[impact][wind])
+         if (!m_Results.bRotationalStability[+impact][+wind] || !m_Results.bRolloverStability[+impact][+wind])
          {
             return false;
          }
@@ -219,7 +211,7 @@ bool OneEndSeatedCheckArtifact::PassedDirectTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
-   // against its associted allowable
+   // against its associated allowable
    for (const auto& sectionResult : m_Results.vSectionResults)
    {
       for (IndexType i = 0; i < 3; i++)
@@ -228,7 +220,7 @@ bool OneEndSeatedCheckArtifact::PassedDirectTensionCheck() const
          for (IndexType c = 0; c < 4; c++)
          {
             Corner corner = (Corner)c;
-            Float64 f = sectionResult.fDirect[impact][corner];
+            Float64 f = sectionResult.fDirect[+impact][+corner];
 #if defined REBAR_FOR_DIRECT_TENSION
             Float64 fAllow = GetAllowableTension(sectionResult, impact);
             if (::IsLE(fAllow, f))
@@ -267,7 +259,7 @@ bool OneEndSeatedCheckArtifact::PassedTensionCheck() const
 {
    // since the allowable tension can change based on the amount of reinforcement
    // in the tension region, we have to check every point for every condition
-   // against its associted allowable
+   // against its associated allowable
    for (const auto& sectionResult : m_Results.vSectionResults)
    {
       for (IndexType i = 0; i < 3; i++)
@@ -282,7 +274,7 @@ bool OneEndSeatedCheckArtifact::PassedTensionCheck() const
             for (IndexType w = 0; w < 2; w++)
             {
                WindDirection wind = (WindDirection)w;
-               Float64 f = sectionResult.f[impact][wind][corner];
+               Float64 f = sectionResult.f[+impact][+wind][+corner];
                if (::IsLE(fAllow, f))
                {
                   return false;

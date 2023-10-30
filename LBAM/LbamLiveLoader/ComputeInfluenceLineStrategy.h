@@ -43,9 +43,9 @@ public:
 class ForceInfluenceLineStrategy : public iComputeInfluenceLineStrategy
 {
 public:
-   ForceInfluenceLineStrategy(IInfluenceLineResponse* response, ResultsOrientation or):
+   ForceInfluenceLineStrategy(IInfluenceLineResponse* response, ResultsOrientation orientation):
    m_Response(response),
-   m_Orientation(or)
+   m_Orientation(orientation)
    {
       ATLASSERT(response!=nullptr);
    }

@@ -76,19 +76,18 @@ private:
    Float64 m_Slope; // slope at either the start or end of the tendon segment (must be zero for now)
                     // when generalized, slope may need to be a vector as it is actually a 3D quantity
    DirectionType m_SlopeEnd; // specifies which end of the tendon segment has a slope of m_Slope
-   CComPtr<IGeomUtil3d> m_GeomUtil;
 
-   const mathPolynomial2d& GetParabolaX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
-   const mathPolynomial2d& GetParabolaDX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
-   const mathPolynomial2d& GetParabolaY(); // parabola looking in elevation
-   const mathPolynomial2d& GetParabolaDY(); // parabola looking in elevation
+   const WBFL::Math::PolynomialFunction& GetParabolaX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
+   const WBFL::Math::PolynomialFunction& GetParabolaDX(); // parabola looking in plan (think parabolic tendon in sloped U-beam web, top view)
+   const WBFL::Math::PolynomialFunction& GetParabolaY(); // parabola looking in elevation
+   const WBFL::Math::PolynomialFunction& GetParabolaDY(); // parabola looking in elevation
 
    void UpdateParabolas();
    bool m_bUpdateParabolas;
-   mathPolynomial2d m_ParabolaX; // parabola looking in plan
-   mathPolynomial2d m_ParabolaDX; // slope function parabola X
-   mathPolynomial2d m_ParabolaY; // parabola looking in elevation
-   mathPolynomial2d m_ParabolaDY; // slope function parabola Y
+   WBFL::Math::PolynomialFunction m_ParabolaX; // parabola looking in plan
+   WBFL::Math::PolynomialFunction m_ParabolaDX; // slope function parabola X
+   WBFL::Math::PolynomialFunction m_ParabolaY; // parabola looking in elevation
+   WBFL::Math::PolynomialFunction m_ParabolaDY; // slope function parabola Y
 
    ITendon* m_pTendon;
 

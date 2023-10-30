@@ -21,23 +21,17 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ENGTOOLS_ENGTOOLS_H_
-#define INCLUDED_ENGTOOLS_ENGTOOLS_H_
-#pragma once
-
 // This is a master include file for the Engineering Tools Package
 #if defined(BUILDGEOMMODELLIB)
 	#error Do not use this header file in the Engineering Tools Package
    #error It is for external users only
 #endif
 
-#if !defined INCLUDED_ENGTOOLS_BIAXIALBEAMSTRAIN_H_
-#include <EngTools\BiaxialBeamStrain.h>
-#endif
-
-#if !defined INCLUDED_ENGTOOLS_MOHRCIRCLE_H_
-#include <EngTools\MohrCircle.h>
-#endif
-
-
-#endif // INCLUDED_ENGTOOLS_ENGTOOLS_H_
+#include <EngTools/BiaxialBeamStrain.h>
+#include <EngTools/MohrCircle.h>
+#include <EngTools/Bearing.h>
+#include <EngTools/BearingLoads.h>
+#include <EngTools/BearingCalculator.h>
+#include <EngTools/PrandtlMembraneSolution.h>
+#include <EngTools/PrandtlMembraneSolver.h>
+#include <EngTools/UniformFDMesh.h>

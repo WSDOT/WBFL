@@ -65,6 +65,9 @@ STDMETHODIMP CStrandModelBase::get_StrandMaterial(StrandType strandType,IPrestre
 
 STDMETHODIMP CStrandModelBase::SetHarpingPoints(Float64 hp1, Float64 hp2)
 {
+   hp1 = IsZero(hp1) ? 0.0 : hp1;
+   hp2 = IsZero(hp2) ? 0.0 : hp2;
+
    // must be positive values... HarpPointMeasure will indicate if this is fractional
    if (hp1 < 0 || hp2 < 0)
    {
@@ -94,14 +97,14 @@ STDMETHODIMP CStrandModelBase::GetHarpingPoints(Float64* hp1, Float64* hp2)
 STDMETHODIMP CStrandModelBase::SetEndHarpingPoints(Float64 hp1, Float64 hp2)
 {
    // must be positive values... HarpPointMeasure will indicate if this is fractional
-   if (hp1 < 0 || hp2 < 0)
+   if (IsLT(hp1,0.0) || IsLT(hp2,0.0))
    {
       ATLASSERT(false);
       return E_INVALIDARG;
    }
 
-   m_HPStart = hp1;
-   m_HPEnd = hp2;
+   m_HPStart = IsZero(hp1) ? 0.0 : hp1;
+   m_HPEnd = IsZero(hp2) ? 0.0 : hp2;
 
    m_CGs[Harped].clear();
    return S_OK;
@@ -322,7 +325,7 @@ Float64 CStrandModelBase::GetGirderWidthAdjustment(Float64 Xs) const
 {
    Float64 Xadj = 0;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs, sbLeft, cstGirder, &shape);
+   m_pSegment->get_GirderShape(Xs, sbLeft, cstGirder, &shape);
 
    CComQIPtr<IAsymmetricSection> asymmetric(shape);
    if (asymmetric)

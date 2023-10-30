@@ -21,134 +21,36 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_XSTRUCTUREDSAVE_H_
-#define INCLUDED_SYSTEM_XSTRUCTUREDSAVE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <System\SysExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysXStructuredSave
-
-   Exception class for classes implementing the IStructuredSave interface.
-
-
-DESCRIPTION
-   Use this class when throwing out of classes derived from IStructuredSave
-
-LOG
-   rdp : 07.15.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysXStructuredSave : public sysXBase
+namespace WBFL
 {
-public:
-   // Reasons for hucking
-   enum Reason {BadWrite,CantInitializeTheParser};
+   namespace System
+   {
+      /// Exception class for classes implementing the IStructuredSave interface.
+      /// Use this class when throwing out of classes derived from IStructuredSave
+      class SYSCLASS XStructuredSave : public XBase
+      {
+      public:
+         enum Reason {BadWrite,CantInitializeTheParser,Unspecified};
 
-   // GROUP: LIFECYCLE
+         XStructuredSave() = default;
+         XStructuredSave( Reason reason, const std::_tstring& file, Uint32 line);
+         XStructuredSave(const XStructuredSave&) = default;
+         virtual ~XStructuredSave() = default;
+         XStructuredSave& operator=(const XStructuredSave&) = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysXStructuredSave( Reason reason, LPCTSTR file, Int16 line);
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysXStructuredSave(const sysXStructuredSave& rOther);
+         virtual std::_tstring GetErrorMessage() const override;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysXStructuredSave();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   sysXStructuredSave& operator = (const sysXStructuredSave& rOther);
-
-   // GROUP: OPERATIONS
-   // All classes derived from sysXBase must implement this method as follows:
-   // void myClass::Throw() const { throw *static_cast<myClass*>this; }
-   virtual void Throw() const override;
-
-   //------------------------------------------------------------------------
-   // Returns a reason code for the exception.  Concrete classes derived
-   // from sysXBase must provide an implementation for this method that
-   // returns an enum value as the actual enum type (Recall that enum's
-   // can be safely converted to integer values, but not the other way
-   // around).
-   virtual Int32 GetReason() const override;
-
-   //------------------------------------------------------------------------
-   // Get the reason using an enum our direct clients can understand
-   Reason GetExplicitReason() const;
-
-   //------------------------------------------------------------------------
-   // Assigns an error message to pMsg.  The default implementation is to 
-   // create a message in the following format:
-   //
-   // A <exception_type> error, number <reason>, has occured in
-   // <filename> at line <line>.
-   //
-   // Where exception_type is the dynamic type of the exception,
-   // reason is the reason code returned by GetReason(),
-   // filename is the filename returned by GetFile(),  and
-   // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::_tstring* pMsg) const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const sysXStructuredSave& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const sysXStructuredSave& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-   std::_tstring m_ExtendedMessage;
-
-   // GROUP: LIFECYCLE
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysXStructuredSave();
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+      private:
+         Reason m_Reason{ Unspecified };
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_XSTRUCTUREDSAVE_H_

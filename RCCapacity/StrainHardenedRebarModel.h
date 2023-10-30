@@ -29,6 +29,7 @@
 #define __StrainHardenedRebarModel_H_
 
 #include "resource.h"       // main symbols
+#include <Materials/RebarModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CStrainHardenedRebarModel
@@ -41,13 +42,8 @@ class ATL_NO_VTABLE CStrainHardenedRebarModel :
 {
 public:
    CStrainHardenedRebarModel() :
-      m_bstrName("Strain Hardened Rebar")
+      m_Model(_T("Strain Hardened Rebar"), WBFL::Units::ConvertToSysUnits(60, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(90, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(29000, WBFL::Units::Measure::KSI), 0.006, 0.07)
 	{
-      m_Fy = 60;
-      m_Fu = 90;
-      m_Es = 29000;
-      m_esh = 0.006;
-      m_efr = 0.07;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_STRAINHARDENEDREBARMODEL)
@@ -60,8 +56,7 @@ BEGIN_COM_MAP(CStrainHardenedRebarModel)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
 END_COM_MAP()
 
-   Float64 m_Fy, m_Fu, m_Es, m_esh, m_efr;
-   CComBSTR m_bstrName;
+   WBFL::Materials::RebarModel m_Model;
 
 // ISupportsErrorInfo
 public:

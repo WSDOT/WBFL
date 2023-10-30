@@ -70,7 +70,7 @@ STDMETHODIMP CInfluenceLine::get_POI(PoiIDType* poi)
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::Item(/*[in]*/CollectionIndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location)
+STDMETHODIMP CInfluenceLine::Item(/*[in]*/IndexType idx, /*[in]*/InfluenceSideType side, /*[out]*/ Float64* value, /*[out]*/InfluenceLocationType* locationType, /*[out]*/Float64* location)
 {
    CHECK_RETVAL(value);
    CHECK_RETVAL(location);
@@ -103,7 +103,7 @@ STDMETHODIMP CInfluenceLine::Item(/*[in]*/CollectionIndexType idx, /*[in]*/Influ
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::get_Count( InfluenceSideType side, CollectionIndexType *pVal)
+STDMETHODIMP CInfluenceLine::get_Count( InfluenceSideType side, IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -142,7 +142,7 @@ STDMETHODIMP CInfluenceLine::Add(InfluenceLocationType locationType, Float64 loc
    return S_OK;
 }
 
-STDMETHODIMP CInfluenceLine::Remove(/*[in]*/CollectionIndexType idx)
+STDMETHODIMP CInfluenceLine::Remove(/*[in]*/IndexType idx)
 {
    try
    {
@@ -217,8 +217,8 @@ STDMETHODIMP CInfluenceLine::FindMaxValue(Float64 start,Float64 end,Float64* pLo
       InfluencePointContainer& container = GetContainer(ilsBoth);
 
       // guess at the starting index
-      CollectionIndexType startIdx = CollectionIndexType(container.size()*start/(m_EndBound - m_StartBound) - 1);
-      startIdx = ForceIntoRange<CollectionIndexType>(0,startIdx,container.size()-1);
+      IndexType startIdx = IndexType(container.size()*start/(m_EndBound - m_StartBound) - 1);
+      startIdx = ForceIntoRange<IndexType>(0,startIdx,container.size()-1);
       while ( start < container[startIdx].m_Location )
       {
          if ( startIdx == 0 )
@@ -340,7 +340,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
       if (::IsLT(location,first_gs.m_Location,ms_LocationTolerance) )
       {
          // look backward
-         for(CollectionIndexType i = m_LastFound[side]-1; i >= 0; i--)
+         for(IndexType i = m_LastFound[side]-1; i >= 0; i--)
          {
             const InflPoint& curr = container[i];
             if (curr.m_Location <= location)
@@ -382,8 +382,8 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
       else if (::IsLT(first_gs.m_Location,location,ms_LocationTolerance))
       {
          // look forward
-         CollectionIndexType num_pts = container.size();
-         for(CollectionIndexType i=m_LastFound[side]+1; i< num_pts; i++)
+         IndexType num_pts = container.size();
+         for(IndexType i=m_LastFound[side]+1; i< num_pts; i++)
          {
             const InflPoint& curr = container[i];
             if (location <= curr.m_Location)
@@ -458,7 +458,7 @@ STDMETHODIMP CInfluenceLine::Evaluate(Float64 location, InfluenceSideType side, 
    return S_OK;
 }
 
-HRESULT CInfluenceLine::Reserve(CollectionIndexType n)
+HRESULT CInfluenceLine::Reserve(IndexType n)
 {
    if (n<0)
    {
@@ -649,12 +649,12 @@ STDMETHODIMP CInfluenceLine::Save(IStructuredSave2 * psave)
       // only loads and saves primary influence line
       InfluencePointContainer& container = GetContainer(ilsBoth);
 
-      CollectionIndexType count = container.size();
+      IndexType count = container.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(count) );
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
          const InflPoint& curr = container[i];
 
@@ -772,7 +772,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
 {
    // this function removes excessive locations (misfits) in the "flat spots" in an influence line
 
-   CollectionIndexType source_size = source.size();
+   IndexType source_size = source.size();
    if (source_size==0)
    {
       ATLASSERT(false);  // probably shouldn't see any empty influence lines here
@@ -825,7 +825,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    }
 
    // next copy source data into target neglecting misfits
-   CollectionIndexType mis_size = misfits.size();
+   IndexType mis_size = misfits.size();
 
 #if defined(_DEBUG_LOGGING)
    ATLTRACE(_T("Misfits - %4d of them\n"), mis_size);
@@ -839,13 +839,13 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    if (mis_size!=0)
    {
       // need to skip on misfits
-      CollectionIndexType source_size = source.size();
+      IndexType source_size = source.size();
       ATLASSERT(source_size>mis_size);
       target.clear();
       target.reserve(source_size-mis_size);
 
-      CollectionIndexType mfc = 0;
-      CollectionIndexType i = 0;
+      IndexType mfc = 0;
+      IndexType i = 0;
       while(i<source_size)
       {
          if (  mfc<mis_size  && i==misfits[mfc] )
@@ -869,7 +869,7 @@ void CInfluenceLine::OptimizeInfluence(const InfluencePointContainer& source, In
    }
 
    // finally, make sure dual-values are accounted for
-   CollectionIndexType target_size=target.size();
+   IndexType target_size=target.size();
    if (target_size>2)
    {
       // See comment below from RAB
@@ -936,7 +936,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
       if (!m_IsComputed[ilsNegative])
       {
          InfluencePointContainer& primary_container = GetContainer(ilsBoth);
-         CollectionIndexType orig_size = primary_container.size();
+         IndexType orig_size = primary_container.size();
 
          if (orig_size==0)
             return;
@@ -1033,7 +1033,7 @@ void CInfluenceLine::Flatten(InfluenceSideType side)
       if (!m_IsComputed[ilsPositive])
       {
          InfluencePointContainer& primary_container = GetContainer(ilsBoth);
-         CollectionIndexType orig_size = primary_container.size();
+         IndexType orig_size = primary_container.size();
 
          if (orig_size==0)
             return;
@@ -1238,7 +1238,7 @@ void CInfluenceLine::DoComputeArea()
 {
    InfluencePointContainer& container = GetContainer(ilsBoth);
 
-   CollectionIndexType size = container.size();
+   IndexType size = container.size();
    if (size<2)
    {
       m_Area[ilsBoth]     = 0.0;
@@ -1280,7 +1280,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
       InfluencePointContainer& container = GetContainer(ilsBoth);
 
       DblRegion zone_locations;
-      CollectionIndexType size = container.size();
+      IndexType size = container.size();
       if (size>1)
       {
          if (side==ilsPositive)
@@ -1290,7 +1290,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it1( it2++ );
 
             int iseg = 0;
-            CollectionIndexType numsegs = size-1;
+            IndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
             while (it2 != itend )
@@ -1354,7 +1354,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it1( it2++ );
 
             int iseg = 0;
-            CollectionIndexType numsegs = size-1;
+            IndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
             while (it2 != itend )
@@ -1419,7 +1419,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
             InfluencePointIterator it1( it2++ );
 
             int iseg = 0;
-            CollectionIndexType numsegs = size-1;
+            IndexType numsegs = size-1;
             bool in_zone = false;
             InfluencePointIterator itend( container.end() );
             while (it2 != itend )
@@ -1481,7 +1481,7 @@ STDMETHODIMP CInfluenceLine::ComputeNonZeroRegions(InfluenceSideType side, IDblA
       CHRException hr;
       hr = locs.CoCreateInstance(CLSID_DblArray);
       hr = locs->Reserve(size);
-      for (CollectionIndexType i = 0; i<size; i++)
+      for (IndexType i = 0; i<size; i++)
       {
          hr = locs->Add(zone_locations[i]);
       }
@@ -1605,7 +1605,7 @@ STDMETHODIMP CInfluenceLine::ComputeAreaInRegions(IDblArray* regions, Float64* p
       Compute(ilsBoth);
 
       // attach regions and check validity
-      CollectionIndexType rgn_size;
+      IndexType rgn_size;
       hr = regions->get_Count(&rgn_size);
 
       if (rgn_size%2 != 0)
@@ -1647,8 +1647,8 @@ STDMETHODIMP CInfluenceLine::ComputeAreaInRegions(IDblArray* regions, Float64* p
       InfluencePointIterator end( container.end() );
 
       Float64 area = 0.0;
-      CollectionIndexType num_rgns = rgn_size/2;
-      for (CollectionIndexType ir = 0; ir < num_rgns; ir++)
+      IndexType num_rgns = rgn_size/2;
+      for (IndexType ir = 0; ir < num_rgns; ir++)
       {
          // start and end locations of region
          Float64 r_start, r_end;

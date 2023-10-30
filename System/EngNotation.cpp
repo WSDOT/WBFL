@@ -22,16 +22,15 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
 #include <System\EngNotation.h>
+#include <atlconv.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+// Engineering notation is implemented with a custom c++ stream manipulator. More information on
+// custom manipulators can be found at https://docs.microsoft.com/en-us/cpp/standard-library/other-one-argument-output-stream-manipulators
 
-void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
+using namespace WBFL::System;
+
+void StreamEngNotation(std::ios_base& os, EngNotationFormatSpecification data)
 {
    char buf[51];
    char* buffer;
@@ -96,7 +95,7 @@ void StreamEngNotation(std::ios_base& os,sysEngNotationData data)
 
 eng_notation_manip eng_notation(Float64 value,int nDigits,int sigDigits)
 {
-   sysEngNotationData data;
+   EngNotationFormatSpecification data;
    data.value = value;
    data.nDigits = nDigits;
    data.sigDigits = sigDigits;

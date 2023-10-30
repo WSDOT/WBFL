@@ -119,7 +119,7 @@ STDMETHODIMP CLBAMFactory::CreateSimpleModel(IDblArray* SpanLengths, Float64 E, 
    {
       CHRException hr;
 
-      CollectionIndexType span_cnt;
+      IndexType span_cnt;
       hr = SpanLengths->get_Count(&span_cnt);
       SpanIndexType nSpans = SpanIndexType(span_cnt);
 
@@ -344,9 +344,9 @@ STDMETHODIMP CLBAMFactory::GetSupportIDsForStage(ILBAMModel *pModel, BSTR stage,
 
       CComPtr<IIDArray> vsuppids;
       hr = vsuppids.CoCreateInstance(CLSID_IDArray);
-      CollectionIndexType size = suppids.size();
+      IndexType size = suppids.size();
       vsuppids->Reserve(size);
-      for (CollectionIndexType i = 0; i<size; i++)
+      for (IndexType i = 0; i<size; i++)
       {
          vsuppids->Add(suppids[i]);
       }
@@ -2020,7 +2020,7 @@ STDMETHODIMP CLBAMFactory::CreateSelfWeightDeadLoad(ILBAMModel* pModel,BSTR stag
       CComPtr<ISuperstructureMembers> ssmbrs;
       hr = pModel->get_SuperstructureMembers(&ssmbrs);
 
-      CollectionIndexType count;
+      IndexType count;
       ssmbrs->get_Count(&count);
 
       if ( 0 < count )
@@ -2286,7 +2286,7 @@ STDMETHODIMP CLBAMFactory::GeneratePOIsOnSuperstructure(ILBAMModel *Model, PoiID
       CComPtr<ISuperstructureMembers> pssms;
       hr = Model->get_SuperstructureMembers(&pssms);
 
-      CollectionIndexType num_ssms;
+      IndexType num_ssms;
       hr = pssms->get_Count(&num_ssms);
 
       if (num_ssms==0)
@@ -2419,8 +2419,8 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
    {
       // Plan is walk through all pois and insert pois in superstructure into a vector
       // Then sort the vector.
-      typedef std::vector<PoiLoc> PoiList;
-      typedef PoiList::iterator   PoiListIterator;
+      using PoiList = std::vector<PoiLoc>;
+      using PoiListIterator = PoiList::iterator;
       PoiList poi_list;
 
       CHRException hr;
@@ -2428,13 +2428,13 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
 
       hr = pModel->get_POIs(&lbam_pois);
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = lbam_pois->get_Count(&num_pois);
 
       // reserve the list size to save allocations
       poi_list.reserve(num_pois);
 
-      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<IPOI> lbam_poi;
          hr = lbam_pois->get_Item(ipoi, &lbam_poi);
@@ -2476,7 +2476,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
          }
       #endif
 
-      CollectionIndexType array_size = poi_list.size();
+      IndexType array_size = poi_list.size();
 
       // Create safe arrays that are to be returned.
       CComPtr<IIDArray> poi_ids;
@@ -2488,7 +2488,7 @@ STDMETHODIMP CLBAMFactory::GetSuperstructurePOIs(ILBAMModel* pModel, IIDArray* *
       hr = poi_locs->Reserve(array_size);
 
       // copy ids and locations into safearrays
-      CollectionIndexType i = 0;
+      IndexType i = 0;
       for (PoiListIterator it= poi_list.begin(); it!=poi_list.end(); it++)
       {
          PoiLoc& rpl = *it;
@@ -2516,7 +2516,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
 
    *pPoi = nullptr;
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    hr = pSsms->get_Count(&ssm_cnt);
 
    // we need to deal with the case where the poi location is at the junction of two ssm's
@@ -2539,7 +2539,7 @@ void CLBAMFactory::CreatePoiAlongSuperstructure(Float64 xloc, PoiIDType id, ISup
       return;
    }
 
-   for (CollectionIndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
+   for (IndexType i_ssm = 0; i_ssm<ssm_cnt; i_ssm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       hr = pSsms->get_Item(i_ssm, &ssm);

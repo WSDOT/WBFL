@@ -40,6 +40,8 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+using namespace WBFL::Reporting;
+
 void to_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
 {
    while ( begin != end )
@@ -53,7 +55,7 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
 {
    //turn into an internet-looking url
    std::_tstring filename(fname);
-   CollectionIndexType pos;
+   IndexType pos;
    while((pos=filename.find( _T("\\") )) != std::_tstring::npos)
       filename.replace(pos,1,_T("/"));
 
@@ -61,31 +63,21 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
    return filename;
 }
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CReportBrowser::CReportBrowser()
+ReportBrowser::ReportBrowser()
 {
-   m_pWebBrowser = new CWebBrowser;
+   m_pWebBrowser = std::make_unique<CWebBrowser>();
 }
 
-CReportBrowser::~CReportBrowser()
+ReportBrowser::~ReportBrowser()
 {
    // We are done with our HTML file... Delete it
    if (!m_Filename.empty())
    {
       ::DeleteFile( m_Filename.c_str() );
    }
-
-   AFX_MANAGE_STATE(AfxGetAppModuleState());
-   if ( m_pWebBrowser )
-   {
-      delete m_pWebBrowser;
-   }
 }
 
-void CReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh)
+void ReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh)
 {
    std::_tofstream ofile( m_Filename.c_str() );
    ATLASSERT( ofile.is_open() == true );
@@ -106,12 +98,12 @@ void CReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefr
    }
 }
 
-bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport)
+bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuilderManager>& pRptMgr, const std::shared_ptr<ReportSpecification>& pRptSpec, const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    // Did you forget something?  This method needs a pointer to a rptReport
-   ATLASSERT( pReport != 0 );
+   ATLASSERT( pReport != nullptr );
 
    m_pRptMgr = pRptMgr;
    m_pRptSpec = pRptSpec;
@@ -151,37 +143,37 @@ bool CReportBrowser::Initialize(HWND hwnd,CReportBuilderManager* pRptMgr, std::s
    return true;
 }
 
-std::shared_ptr<CReportSpecification> CReportBrowser::GetReportSpecification()
+std::shared_ptr<ReportSpecification> ReportBrowser::GetReportSpecification()
 {
    return m_pRptSpec;
 }
 
-std::shared_ptr<rptReport> CReportBrowser::GetReport()
+std::shared_ptr<rptReport> ReportBrowser::GetReport()
 {
    return m_pReport;
 }
 
-std::_tstring CReportBrowser::GetReportTitle()
+std::_tstring ReportBrowser::GetReportTitle()
 {
    return m_pRptSpec->GetReportTitle();
 }
 
-void CReportBrowser::Move(POINT topLeft)
+void ReportBrowser::Move(POINT topLeft)
 {
    m_pWebBrowser->SetWindowPos(nullptr,topLeft.x,topLeft.y,0,0,SWP_NOZORDER | SWP_NOSIZE);
 }
 
-void CReportBrowser::Size(SIZE size)
+void ReportBrowser::Size(SIZE size)
 {
    m_pWebBrowser->SetWindowPos(nullptr,0,0,size.cx,size.cy,SWP_NOZORDER | SWP_NOMOVE);
 }
 
-CWnd* CReportBrowser::GetBrowserWnd()
+CWnd* ReportBrowser::GetBrowserWnd()
 {
-   return m_pWebBrowser;
+   return m_pWebBrowser.get();
 }
 
-void CReportBrowser::Print(bool bPrompt)
+void ReportBrowser::Print(bool bPrompt)
 {
    // Build footer string
    std::_tstring lftFoot = m_pRptSpec->GetLeftFooter();
@@ -199,18 +191,18 @@ void CReportBrowser::Print(bool bPrompt)
    m_pWebBrowser->Print(header, footer);
 }
 
-bool CReportBrowser::Edit(bool bUpdate)
+bool ReportBrowser::Edit(bool bUpdate)
 {
-   std::shared_ptr<CReportBuilder> pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
-   CReportDescription rptDesc = pRptBuilder->GetReportDescription();
+   auto pRptBuilder = m_pRptMgr->GetReportBuilder(m_pRptSpec->GetReportName());
+   ReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
-   std::shared_ptr<CReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
+   std::shared_ptr<const ReportSpecificationBuilder> pReportSpecBuilder(m_pRptSpecBuilder);
    if ( m_pRptSpecBuilder == nullptr )
    {
       pReportSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    }
 
-   std::shared_ptr<CReportSpecification> pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
+   auto pReportSpec = pReportSpecBuilder->CreateReportSpec(rptDesc,m_pRptSpec);
    
    // user cancelled.
    if( pReportSpec == nullptr )
@@ -229,7 +221,7 @@ bool CReportBrowser::Edit(bool bUpdate)
    return true;
 }
 
-void CReportBrowser::Find()
+void ReportBrowser::Find()
 {
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
@@ -240,7 +232,7 @@ void CReportBrowser::Find()
    }
 }
 
-void CReportBrowser::SelectAll()
+void ReportBrowser::SelectAll()
 {
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
@@ -251,7 +243,18 @@ void CReportBrowser::SelectAll()
    }
 }
 
-void CReportBrowser::ViewSource()
+void ReportBrowser::Copy()
+{
+   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
+   IOleCommandTarget* pIOleCmdTarget;
+   if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
+   {
+      pIOleCmdTarget->Exec(nullptr, OLECMDID_COPY, OLECMDEXECOPT_DODEFAULT, nullptr, nullptr);
+      pIOleCmdTarget->Release();
+   }
+}
+
+void ReportBrowser::ViewSource()
 {
    LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
    IOleCommandTarget* pIOleCmdTarget;
@@ -262,23 +265,22 @@ void CReportBrowser::ViewSource()
    }
 }
 
-void CReportBrowser::Refresh()
+void ReportBrowser::Refresh()
 {
    m_pWebBrowser->Refresh();
 }
 
-
-void CReportBrowser::Back()
+void ReportBrowser::Back()
 {
    m_pWebBrowser->GoBack();
 }
 
-void CReportBrowser::Forward()
+void ReportBrowser::Forward()
 {
    m_pWebBrowser->GoForward();
 }
 
-void CReportBrowser::NavigateAnchor(long id)
+void ReportBrowser::NavigateAnchor(long id)
 {
    std::_tstring filename = filename_to_URL(m_Filename);
    CString anc;
@@ -286,7 +288,7 @@ void CReportBrowser::NavigateAnchor(long id)
    m_pWebBrowser->Navigate(anc);
 }
 
-void CReportBrowser::MakeFilename()
+void ReportBrowser::MakeFilename()
 {
    TCHAR temp_path[ _MAX_PATH ];
    TCHAR temp_file[ _MAX_PATH ];

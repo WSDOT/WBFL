@@ -51,9 +51,9 @@ BOOL CJointListPage::OnInitDialog()
    CComPtr<IFem2dJointCollection> joints;
    pParent->m_pFem2d->get_Joints(&joints);
 
-   CollectionIndexType nJoints;
+   IndexType nJoints;
    joints->get_Count(&nJoints);
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);

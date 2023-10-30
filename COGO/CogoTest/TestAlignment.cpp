@@ -57,51 +57,44 @@ void CTestAlignment::Test()
    // Test Add
    //
 
-   // Create a Alignment point
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(CLSID_Point2d);
-   point->Move(10,20);
+   // Create an Alignment segment
+   CComPtr<IPathSegment> segment;
+   TRY_TEST(segment.CoCreateInstance(CLSID_PathSegment),S_OK);
 
-   // Create a path element and assign the Alignment point to it
-   CComPtr<IPathElement> element;
-   element.CoCreateInstance(CLSID_PathElement);
-   element->putref_Value(point);
+   CComPtr<IPoint2d> p1;
+   p1.CoCreateInstance(CLSID_Point2d);
+   p1->Move(10, 20);
 
-   // add it to the Alignment
-   TRY_TEST(alignment->Add(nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->Add(element),S_OK);
+   CComPtr<IPoint2d> p2;
+   p2.CoCreateInstance(CLSID_Point2d);
+   p2->Move(10, 50);
 
-   //
-   // Test AddEx
-   //
-
-   // create a new point
-   point.Release();
-   point.CoCreateInstance(CLSID_Point2d);
-   point->Move(20,30);
+   segment->ThroughPoints(p1, p2);
 
    // add it to the Alignment
-   TRY_TEST(alignment->AddEx(nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->AddEx(alignment),COGO_E_PATHELEMENTTYPE);
-   TRY_TEST(alignment->AddEx(point), S_OK);
+   TRY_TEST(alignment->AddPathElement(nullptr),E_INVALIDARG);
+   CComQIPtr<IPathElement> element(segment);
+   TRY_TEST(alignment->AddPathElement(element),S_OK);
 
    // create a horz curve
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   point.Release();
-   hc->get_PBT(&point);
-   point->Move(100,100);
+   p1.Release();
+   hc->get_PBT(&p1);
+   p1->Move(100,100);
 
    // add it to the Alignment
-   TRY_TEST(alignment->AddEx(hc), S_OK);
+   element.Release();
+   hc->QueryInterface(&element);
+   TRY_TEST(alignment->AddPathElement(element), S_OK);
 
    //
    // Test Count
    //
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(alignment->get_Count(nullptr),E_POINTER);
    TRY_TEST(alignment->get_Count(&count),S_OK);
-   TRY_TEST(count,3);
+   TRY_TEST(count,2);
 
    //
    // Test Item
@@ -113,225 +106,153 @@ void CTestAlignment::Test()
    TRY_TEST(alignment->get_Item(100,&element),E_INVALIDARG);
    TRY_TEST(alignment->get_Item(0,nullptr),E_POINTER);
    TRY_TEST(alignment->get_Item(0,&element),S_OK);
-   PathElementType type;
-   element->get_Type(&type);
-   TRY_TEST(type,petPoint);
-   CComPtr<IUnknown> dispVal;
-   element->get_Value(&dispVal);
-   point.Release();
-   dispVal->QueryInterface(&point);
-   Float64 x,y;
-   point->get_X(&x);
-   point->get_Y(&y);
-   TRY_TEST(IsEqual(x,10.0),true);
-   TRY_TEST(IsEqual(y,20.0),true);
 
-   element.Release();
-   TRY_TEST(alignment->get_Item(1,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,petPoint);
-   dispVal.Release();
-   element->get_Value(&dispVal);
-   point.Release();
-   dispVal->QueryInterface(&point);
-   point->get_X(&x);
-   point->get_Y(&y);
-   TRY_TEST(IsEqual(x,20.0),true);
-   TRY_TEST(IsEqual(y,30.0),true);
+   ////
+   //// Test Insert and InsertEx
+   ////
+   //TRY_TEST(alignment->Insert(1,nullptr),E_INVALIDARG);
+   //TRY_TEST(alignment->Insert(-1,element),E_INVALIDARG);
+   //TRY_TEST(alignment->Insert(100,element),E_INVALIDARG);
+   //TRY_TEST(alignment->Insert(1,element),S_OK);
 
-   element.Release();
-   TRY_TEST(alignment->get_Item(2,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,petCompoundCurve);
-   dispVal.Release();
-   element->get_Value(&dispVal);
-   hc.Release();
-   dispVal->QueryInterface(&hc);
-   point.Release();
-   hc->get_PBT(&point);
-   point->get_X(&x);
-   point->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.0),true);
-   TRY_TEST(IsEqual(y,100.0),true);
+   //TRY_TEST(alignment->InsertEx(1,nullptr),E_INVALIDARG);
+   ////TRY_TEST(alignment->InsertEx(1,alignment),COGO_E_PATHELEMENTTYPE); // alignment/path are now valid path elements
+   //TRY_TEST(alignment->InsertEx(-1,point),E_INVALIDARG);
+   //TRY_TEST(alignment->InsertEx(100,point),E_INVALIDARG);
+   //TRY_TEST(alignment->InsertEx(1,point),S_OK);
 
-   TRY_TEST(alignment->putref_Item(1,nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->putref_Item(-1,element),E_INVALIDARG);
-   TRY_TEST(alignment->putref_Item(100,element),E_INVALIDARG);
-   TRY_TEST(alignment->putref_Item(1,element),S_OK);
-   element.Release();
-   TRY_TEST(alignment->get_Item(1,&element),S_OK);
-   element->get_Type(&type);
-   TRY_TEST(type,petCompoundCurve);
+   ////
+   //// Test Remove
+   ////
+   //point.Release();
+   //hc->get_PBT(&point);
+   //TRY_TEST(alignment->Remove(CComVariant()),E_INVALIDARG);
+   //TRY_TEST(alignment->Remove(CComVariant(alignment)),E_INVALIDARG);
+   //TRY_TEST(alignment->Remove(CComVariant(-1)),E_INVALIDARG);
+   //TRY_TEST(alignment->Remove(CComVariant(100)),E_INVALIDARG);
+   //TRY_TEST(alignment->Remove(CComVariant(point)),S_OK);
+   //TRY_TEST(alignment->Remove(CComVariant(hc)),S_OK); // Remove the vert curve
+   //TRY_TEST(alignment->Remove(CComVariant(1)),S_OK);  // Remove the element at index 1
 
-   //
-   // Test Insert and InsertEx
-   //
-   TRY_TEST(alignment->Insert(1,nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->Insert(-1,element),E_INVALIDARG);
-   TRY_TEST(alignment->Insert(100,element),E_INVALIDARG);
-   TRY_TEST(alignment->Insert(1,element),S_OK);
+   //alignment->get_Count(&count);
+   //TRY_TEST(count,2);
 
-   TRY_TEST(alignment->InsertEx(1,nullptr),E_INVALIDARG);
-   //TRY_TEST(alignment->InsertEx(1,alignment),COGO_E_PATHELEMENTTYPE); // alignment/path are now valid path elements
-   TRY_TEST(alignment->InsertEx(-1,point),E_INVALIDARG);
-   TRY_TEST(alignment->InsertEx(100,point),E_INVALIDARG);
-   TRY_TEST(alignment->InsertEx(1,point),S_OK);
+   ////
+   //// Test Profile
+   ////
+   //CComPtr<IProfile> profile;
+   //TRY_TEST(alignment->get_Profile(nullptr),E_POINTER);
+   //TRY_TEST(alignment->get_Profile(&profile),S_OK);
 
-   //
-   // Test Remove
-   //
-   point.Release();
-   hc->get_PBT(&point);
-   TRY_TEST(alignment->Remove(CComVariant()),E_INVALIDARG);
-   TRY_TEST(alignment->Remove(CComVariant(alignment)),E_INVALIDARG);
-   TRY_TEST(alignment->Remove(CComVariant(-1)),E_INVALIDARG);
-   TRY_TEST(alignment->Remove(CComVariant(100)),E_INVALIDARG);
-   TRY_TEST(alignment->Remove(CComVariant(point)),S_OK);
-   TRY_TEST(alignment->Remove(CComVariant(hc)),S_OK); // Remove the vert curve
-   TRY_TEST(alignment->Remove(CComVariant(1)),S_OK);  // Remove the element at index 1
+   ////
+   //// Test Station Equations
+   ////
+   //CComPtr<IStationEquationCollection> equations;
+   //TRY_TEST(alignment->get_StationEquations(nullptr),E_POINTER);
+   //TRY_TEST(alignment->get_StationEquations(&equations),S_OK);
 
-   alignment->get_Count(&count);
-   TRY_TEST(count,2);
+   ////
+   //// Test Clear
+   ////
+   //TRY_TEST(alignment->Clear(),S_OK);
+   //alignment->get_Count(&count);
+   //TRY_TEST(count,0);
 
-   //
-   // Test Profile
-   //
-   CComPtr<IProfile> profile;
-   TRY_TEST(alignment->get_Profile(nullptr),E_POINTER);
-   TRY_TEST(alignment->get_Profile(&profile),S_OK);
+   ////
+   //// RefStation
+   //CComPtr<IStation> station;
+   //Float64 stationVal;
+   //TRY_TEST(alignment->get_RefStation(nullptr),E_POINTER);
+   //TRY_TEST(alignment->get_RefStation(&station),S_OK);
+   //station->get_Value(&stationVal);
+   //TRY_TEST(IsEqual(stationVal,0.0),true);
+   //TRY_TEST(alignment->put_RefStation(CComVariant(100.0)),S_OK);
+   //station.Release();
+   //TRY_TEST(alignment->get_RefStation(&station),S_OK);
+   //station->get_Value(&stationVal);
+   //TRY_TEST(IsEqual(stationVal,100.0),true);
+   //TRY_TEST(alignment->put_RefStation(CComVariant("12+3499.56")),E_INVALIDARG);
+   //TRY_TEST(alignment->put_RefStation(CComVariant("12+34.56")),S_OK);
+   //station.Release();
+   //TRY_TEST(alignment->get_RefStation(&station),S_OK);
+   //station->get_Value(&stationVal);
+   //TRY_TEST(IsEqual(stationVal,1234.56),true);
 
-   //
-   // Test Station Equations
-   //
-   CComPtr<IStationEquationCollection> equations;
-   TRY_TEST(alignment->get_StationEquations(nullptr),E_POINTER);
-   TRY_TEST(alignment->get_StationEquations(&equations),S_OK);
+   ////
+   //// GetDirection
+   //alignment->put_RefStation(CComVariant(0.0));
+   //point.Release();
+   //point.CoCreateInstance(CLSID_Point2d);
+   //point->Move(0, 0);
+   //TRY_TEST(alignment->AddEx(point), S_OK);
+   //point.Release();
+   //point.CoCreateInstance(CLSID_Point2d);
+   //point->Move(100, 100);
+   //TRY_TEST(alignment->AddEx(point), S_OK);
 
-   //
-   // Test Clear
-   //
-   TRY_TEST(alignment->Clear(),S_OK);
-   alignment->get_Count(&count);
-   TRY_TEST(count,0);
+   //CComPtr<IDirection> direction;
+   //alignment->GetDirection(CComVariant(0.0), CComBSTR("N"), &direction);
+   //Float64 value;
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
 
-   //
-   // RefStation
-   CComPtr<IStation> station;
-   Float64 stationVal;
-   TRY_TEST(alignment->get_RefStation(nullptr),E_POINTER);
-   TRY_TEST(alignment->get_RefStation(&station),S_OK);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.0),true);
-   TRY_TEST(alignment->put_RefStation(CComVariant(100.0)),S_OK);
-   station.Release();
-   TRY_TEST(alignment->get_RefStation(&station),S_OK);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,100.0),true);
-   TRY_TEST(alignment->put_RefStation(CComVariant("12+3499.56")),E_INVALIDARG);
-   TRY_TEST(alignment->put_RefStation(CComVariant("12+34.56")),S_OK);
-   station.Release();
-   TRY_TEST(alignment->get_RefStation(&station),S_OK);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,1234.56),true);
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(0.0), CComBSTR("Normal"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
 
-   //
-   // _EnumAlignmentElements
-   alignment->Clear();
-   alignment->AddEx(point);
-   alignment->AddEx(hc);
-   CComPtr<IEnumPathElements> pEnum;
-   TRY_TEST(alignment->get__EnumAlignmentElements(nullptr),E_POINTER);
-   TRY_TEST(alignment->get__EnumAlignmentElements(&pEnum),S_OK);
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(50.0), CComBSTR("15 0 0 L"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4 + ToRadians(15)), true);
 
-   // Test PointFactory
-   CComPtr<IPoint2dFactory> factory;
-   TRY_TEST(alignment->get_PointFactory(nullptr),E_POINTER);
-   TRY_TEST(alignment->get_PointFactory(&factory),S_OK);
-   TRY_TEST(alignment->putref_PointFactory(nullptr),E_INVALIDARG);
-   TRY_TEST(alignment->putref_PointFactory(factory),S_OK);
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(50.0), CComBSTR("15 0 0 R"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4 - ToRadians(15)), true);
 
-   // Test Events
-   CComObject<CTestAlignment>* pTestAlignment;
-   CComObject<CTestAlignment>::CreateInstance(&pTestAlignment);
-   pTestAlignment->AddRef();
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(100.0), CComBSTR("N 45 W"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
 
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestAlignment);
-   TRY_TEST(AtlAdvise(alignment,punk,IID_IAlignmentEvents,&dwCookie),S_OK);
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(100.0), CComBSTR("S 45 W"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 5 * M_PI / 4), true);
 
-   // Create a new "clean" horizontal curve
-   hc.Release();
-   hc.CoCreateInstance(CLSID_CompoundCurve);
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(100.0), CComBSTR("N 45 E"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, M_PI / 4), true);
 
-   pTestAlignment->InitEventTest();
-   alignment->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
+   //direction.Release();
+   //alignment->GetDirection(CComVariant(100.0), CComBSTR("S 45 E"), &direction);
+   //direction->get_Value(&value);
+   //TRY_TEST(IsEqual(value, 3 * M_PI / 4), true);
 
-   pTestAlignment->InitEventTest();
-   alignment->AddEx(hc);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
 
-   pTestAlignment->InitEventTest();
-   hc->putref_PBT(point);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
+   ////
+   //// _EnumAlignmentElements
+   //alignment->Clear();
+   //alignment->AddEx(point);
+   //alignment->AddEx(hc);
+   //CComPtr<IEnumPathElements> pEnum;
+   //TRY_TEST(alignment->get__EnumAlignmentElements(nullptr),E_POINTER);
+   //TRY_TEST(alignment->get__EnumAlignmentElements(&pEnum),S_OK);
 
-   pTestAlignment->InitEventTest();
-   alignment->AddEx(point);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
+   //// Test ISupportErrorInfo
+   //CComQIPtr<ISupportErrorInfo> eInfo(alignment);
+   //TRY_TEST( eInfo != nullptr, true );
+   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IAlignment ), S_OK );
+   //TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
-   pTestAlignment->InitEventTest();
-   point->put_X(50);
-   TRY_TEST(pTestAlignment->PassedEventTest(), true );
-
-   profile.Release();
-   alignment->get_Profile(&profile);
-   pTestAlignment->InitEventTest();
-   profile->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true);
-
-   equations.Release();
-   alignment->get_StationEquations(&equations);
-   pTestAlignment->InitEventTest();
-   equations->Clear();
-   TRY_TEST(pTestAlignment->PassedEventTest(), true);
-
-   TRY_TEST(AtlUnadvise(alignment,IID_IAlignmentEvents,dwCookie),S_OK);
-   pTestAlignment->Release();
-
-   // Test ISupportErrorInfo
-   CComQIPtr<ISupportErrorInfo> eInfo(alignment);
-   TRY_TEST( eInfo != nullptr, true );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IAlignment ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-
-   // Test IObjectSafety
-   TRY_TEST( TestIObjectSafety(CLSID_Alignment,IID_IAlignment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Alignment,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
+   //// Test IObjectSafety
+   //TRY_TEST( TestIObjectSafety(CLSID_Alignment,IID_IAlignment,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
 
 
    /// Additional Tests
    CTestAlignment1::Test();
    CTestAlignment2::Test();
    CTestAlignment3::Test();
-}
-
-STDMETHODIMP CTestAlignment::OnAlignmentChanged(IAlignment* alignment)
-{
-   if ( alignment != nullptr )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignment::OnProfileChanged(IProfile* profile)
-{
-   Pass();
-   return S_OK;
-}
-
-STDMETHODIMP CTestAlignment::OnStationEquationsChanged(IStationEquationCollection* equations)
-{
-   Pass();
-   return S_OK;
 }

@@ -1,5 +1,3 @@
-#ifndef INCLUDED_WBFLDEBUG_H_
-#define INCLUDED_WBFLDEBUG_H_
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
 // Copyright © 1999-2022  Washington State Department of Transportation
@@ -24,7 +22,7 @@
 // 4500 3rd Ave SE, P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
+#pragma once
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -33,7 +31,7 @@
 #if defined _DEBUG
 
 // Enable full global checking if WBFL_DEBUG is defined
-// otherise, define each one of these symbols individual to
+// otherwise, define each one of these symbols individual to
 // enable a certain part of the checking subsystem
 #if defined WBFL_DEBUG
 #undef __ASSERTVALID
@@ -96,5 +94,3 @@
 #define $LINE MakeString( Stringize, __LINE__ )
 #define ReminderMsg __FILE__ "(" $LINE ") : Reminder: "
 #define Reminder(msg) message( ReminderMsg msg )
-
-#endif // INCLUDED_WBFLDEBUG_H_

@@ -195,7 +195,7 @@ public:
       return GetSection(stageIdx,Xs,sectionBias,coordinateSystem,ppSection);
    }
 
-	STDMETHOD(get_PrimaryShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
+	STDMETHOD(get_GirderShape)(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override
    {
       return GetPrimaryShape(Xs,sectionBias,coordinateSystem, ppShape);
    }
@@ -216,7 +216,7 @@ public:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr,true);
+      auto* pFunction = GetGirderProfile(ssMbr,true);
 
       CComPtr<IPolyShape> polyShape;
       polyShape.CoCreateInstance(CLSID_PolyShape);
@@ -243,8 +243,8 @@ public:
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal) override { return m_Impl.get_LayoutLength(pVal); }
    STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation) override { return m_Impl.put_Orientation(orientation); }
    STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation) override { return m_Impl.get_Orientation(orientation); }
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal) override { return m_Impl.GetHaunchDepth(pStartVal, pMidVal, pEndVal); }
-   STDMETHOD(SetHaunchDepth)(Float64 startVal, Float64 midVal, Float64 endVal) override { return m_Impl.SetHaunchDepth(startVal, midVal, endVal); }
+   STDMETHOD(GetHaunchDepth)(IDblArray** haunchVals) override { return m_Impl.GetHaunchDepth(haunchVals); }
+   STDMETHOD(SetHaunchDepth)(IDblArray* haunchVals) override { return m_Impl.SetHaunchDepth(haunchVals); }
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment, Float64* pVal) override { return m_Impl.ComputeHaunchDepth(distAlongSegment, pVal); }
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet) override { return m_Impl.put_Fillet(Fillet); }
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet) override { return m_Impl.get_Fillet(Fillet); }
@@ -409,7 +409,7 @@ public:
 
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
+      auto* pFunction = GetGirderProfile(ssMbr, false);
 
       for (const auto Xgp : xValues)
       {
@@ -516,7 +516,7 @@ public:
             CComQIPtr<ISplicedGirderSegment> prevSegment(m_Impl.m_pPrevSegment);
             prevSegment->get_ClosureJointLength(etEnd, &L1);
             CComPtr<IShape> prevShape;
-            m_Impl.m_pPrevSegment->get_PrimaryShape(prevL, sbLeft, cstGirder, &prevShape);
+            m_Impl.m_pPrevSegment->get_GirderShape(prevL, sbLeft, cstGirder, &prevShape);
             prevShape->get_Perimeter(&P1);
             CComPtr<IShapeProperties> prevShapeProps;
             prevShape->get_ShapeProperties(&prevShapeProps);
@@ -525,7 +525,7 @@ public:
             // left end of this segment
             get_ClosureJointLength(etStart, &L2);
             CComPtr<IShape> shape;
-            get_PrimaryShape(L2, sbRight, cstGirder, &shape);
+            get_GirderShape(L2, sbRight, cstGirder, &shape);
             shape->get_Perimeter(&P2);
             CComPtr<IShapeProperties> shapeProps;
             shape->get_ShapeProperties(&shapeProps);
@@ -539,7 +539,7 @@ public:
             // right end of this segment
             get_ClosureJointLength(etEnd, &L1);
             CComPtr<IShape> shape;
-            get_PrimaryShape(L, sbLeft, cstGirder, &shape);
+            get_GirderShape(L, sbLeft, cstGirder, &shape);
             shape->get_Perimeter(&P1);
             CComPtr<IShapeProperties> shapeProps;
             shape->get_ShapeProperties(&shapeProps);
@@ -549,7 +549,7 @@ public:
             CComQIPtr<ISplicedGirderSegment> nextSegment(m_Impl.m_pNextSegment);
             nextSegment->get_ClosureJointLength(etStart, &L2);
             CComPtr<IShape> nextShape;
-            m_Impl.m_pNextSegment->get_PrimaryShape(L2, sbRight, cstGirder, &nextShape);
+            m_Impl.m_pNextSegment->get_GirderShape(L2, sbRight, cstGirder, &nextShape);
             nextShape->get_Perimeter(&P2);
             CComPtr<IShapeProperties> nextShapeProps;
             nextShape->get_ShapeProperties(&nextShapeProps);
@@ -580,7 +580,7 @@ public:
       return m_ItemDataMgr.RemoveItemData(name);
    }
 
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/IndexType* count) override
    {
       return m_ItemDataMgr.GetItemDataCount(count);
    }
@@ -733,7 +733,7 @@ protected:
             // compute V and S
             auto iter(vCuts.begin());
             CComPtr<IShape> shape;
-            get_PrimaryShape(iter->first, iter->second, cstGirder, &shape);
+            get_GirderShape(iter->first, iter->second, cstGirder, &shape);
             Float64 prev_perimeter;
             shape->get_Perimeter(&prev_perimeter);
             CComPtr<IShapeProperties> shapeProps;
@@ -755,7 +755,7 @@ protected:
                SectionBias bias = iter->second;
 
                shape.Release();
-               get_PrimaryShape(X, bias, cstGirder, &shape);
+               get_GirderShape(X, bias, cstGirder, &shape);
                Float64 perimeter;
                shape->get_Perimeter(&perimeter);
 
@@ -817,7 +817,7 @@ protected:
       }
 
       CComPtr<IShape> primaryShape;
-      HRESULT hr = get_PrimaryShape(Xs, sectionBias, coordinateSystem,&primaryShape);
+      HRESULT hr = get_GirderShape(Xs, sectionBias, coordinateSystem,&primaryShape);
       ATLASSERT(SUCCEEDED(hr));
       if ( FAILED(hr) )
          return hr;
@@ -905,8 +905,8 @@ protected:
       section->AddSection(primaryShape,Efg,Ebg,Dfg,Dbg,VARIANT_TRUE);
 
       // add all the secondary shapes
-      std::vector<ShapeData>::iterator iter(m_Shapes.begin());
-      std::vector<ShapeData>::iterator end(m_Shapes.end());
+      auto iter(m_Shapes.begin());
+      auto end(m_Shapes.end());
       iter++; // skip the first shape, we already processed it
 
       for ( ; iter != end; iter++ )
@@ -977,7 +977,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, true);
+      auto* pFunction = GetGirderProfile(ssMbr, true);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);
@@ -988,7 +988,7 @@ protected:
    {
       CComPtr<ISuperstructureMember> ssMbr;
       get_SuperstructureMember(&ssMbr);
-      mathCompositeFunction2d* pFunction = GetGirderProfile(ssMbr, false);
+      auto* pFunction = GetGirderProfile(ssMbr, false);
 
       Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
       Float64 H = pFunction->Evaluate(Xgp);

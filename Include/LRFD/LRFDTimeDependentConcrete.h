@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -24,209 +24,209 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-#include <Material\ConcreteBase.h>
+#include <Lrfd\LRFDConcreteBase.h>
 
-
-struct LRFDCLASS lrfdLRFDTimeDependentConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+namespace WBFL
 {
-   lrfdLRFDTimeDependentConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), 
-      kvs(0),khs(0),kf(0),ktd(0) {}
-   Float64 kvs;
-   Float64 khs;
-   Float64 kf;
-   Float64 ktd;
-};
+   namespace LRFD
+   {
+      struct LRFDCLASS LRFDTimeDependentConcreteShrinkageDetails : public WBFL::Materials::ConcreteBaseShrinkageDetails
+      {
+         Float64 kvs = 0.0;
+         Float64 khs = 0.0;
+         Float64 kf = 0.0;
+         Float64 ktd = 0.0;
+      };
 
-struct LRFDCLASS lrfdLRFDTimeDependentConcreteCreepDetails : public matConcreteBaseCreepDetails
-{
-   lrfdLRFDTimeDependentConcreteCreepDetails() : matConcreteBaseCreepDetails() ,
-      kf(0), kc(0), kvs(0), khc(0), ktd(0) {}
-   Float64 kf;
-   Float64 kc;
-   Float64 kvs;
-   Float64 khc;
-   Float64 ktd;
-};
+      struct LRFDCLASS LRFDTimeDependentConcreteCreepDetails : public WBFL::Materials::ConcreteBaseCreepDetails
+      {
+         Float64 kf = 0.0;
+         Float64 kc = 0.0;
+         Float64 kvs = 0.0;
+         Float64 khc = 0.0;
+         Float64 ktd = 0.0;
+      };
 
-/*****************************************************************************
-CLASS 
-   lrfdLRFDTimeDependentConcrete
+      /// @brief Time-dependent concrete model based on the LRFD specifications. Since
+      /// the LRFD specifications don't have a time-dependent model for f'c and Ec
+      /// we will use the ACI 209 model
+      class LRFDCLASS LRFDTimeDependentConcrete : public LRFDConcreteBase
+      {
+      public:
+         static void GetModelParameters(WBFL::Materials::CuringType cure,WBFL::Materials::CementType cement,Float64* pA,Float64* pBeta);
 
-   Time-dependent concrete model based on the LRFD specifications. Since
-   the LRFD specifications don't have a time-dependent model for f'c and Ec
-   we will use the ACI 209 model
-*****************************************************************************/
+         LRFDTimeDependentConcrete(LPCTSTR name = _T("Unknown"));
+         LRFDTimeDependentConcrete(const LRFDTimeDependentConcrete&) = default;
+         virtual ~LRFDTimeDependentConcrete() override = default;
+         LRFDTimeDependentConcrete& operator=(const LRFDTimeDependentConcrete&) = default;
 
-class LRFDCLASS lrfdLRFDTimeDependentConcrete : public matConcreteBase
-{
-public:
-   enum CementType { TypeI, TypeII };
-   static void GetModelParameters(CureMethod cure,CementType cement,Float64* pA,Float64* pBeta);
+         // Set/Get the a parameter (days)
+         void SetA(Float64 a);
+         Float64 GetA() const;
 
-   lrfdLRFDTimeDependentConcrete(LPCTSTR name = _T("Unknown"));
+         // Set/Get the beta parameter
+         void SetBeta(Float64 b);
+         Float64 GetBeta() const;
 
-   // Set/Get the a parameter (days)
-   void SetA(Float64 a);
-   Float64 GetA() const;
+         // Set/Get the 28 day concrete strength
+         void SetFc28(Float64 fc);
+         Float64 GetFc28() const;
 
-   // Set/Get the beta parameter
-   void SetBeta(Float64 b);
-   Float64 GetBeta() const;
+         // Sets the 28 day strength by computing what it needs to be
+         // based on the current values of alpha and beta for
+         // a given concrete strength and the time that strength occurs
+         void SetFc28(Float64 fc,Float64 t);
 
-   // Set/Get the 28 day concrete strength
-   void SetFc28(Float64 fc);
-   Float64 GetFc28() const;
+         // Indicates if a user value for Ec is used. If not, it is computed
+         // from Fc28
+         void UserEc28(bool bUserEc);
+         bool UserEc28() const;
 
-   // Sets the 28 day strength by computing what it needs to be
-   // based on the current values of alpha and beta for
-   // a given concrete strength and the time that strength occurs
-   void SetFc28(Float64 fc,Float64 t);
+         // Set/Get the 28 day secant modulus
+         void SetEc28(Float64 Ec);
+         Float64 GetEc28() const;
 
-   // Indiciates if a user value for Ec is used. If not, it is comptued
-   // from Fc28
-   void UserEc28(bool bUserEc);
-   bool UserEc28() const;
+         // Sets the 28 day secant modulus by compute what it needs to be
+         // based on the current values of alpha and beta for the given
+         // value of Ec and the time that the modulus occurs
+         void SetEc28(Float64 Ec,Float64 t);
 
-   // Set/Get the 28 day secant modulus
-   void SetEc28(Float64 Ec);
-   Float64 GetEc28() const;
+         // Computes what the 28 day strength needs to be for a concrete strength
+         // fc occurring at concrete age with parameters a (alpha, days) and b (beta)
+         static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
+         static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
 
-   // Sets the 28 day scent modulus by compute what it need to be
-   // based on the current values of alpha and beta for the given
-   // value of Ec and the time that that modulus occurs
-   void SetEc28(Float64 Ec,Float64 t);
+         // Computes the values for Alpha and Beta giving a concrete strength (fc1) at age of t1,
+         // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
+         // Alpha is in system units, Beta is unit less
+         static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
 
-   // Computes what the 28 day strength needs to be for a concrete strength
-   // fc occuring at concrete age with parameters a (alpha, days) and b (beta)
-   static Float64 ComputeFc28(Float64 fc,Float64 age,Float64 a,Float64 b);
-   static Float64 ComputeEc28(Float64 ec,Float64 age,Float64 a,Float64 b);
+         // Returns the compressive strength of the concrete at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetFc(Float64 t) const override;
 
-   // Computes the values for Alpha and Beta giving a concrete strength (fc1) at at age of t1,
-   // and a later strength (fc2) at age t2. (fc1,fc2 are in system units, t1 and t2 are in days,
-   // Alpha is in system units, Beta is unitless
-   static void ComputeParameters(Float64 fc1,Float64 t1,Float64 fc2,Float64 t2,Float64* pA,Float64* pB);
+         // Returns the secant modulus of the concrete at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetEc(Float64 t) const override;
 
-   // aggregate correction and bounding factors.
-   // see NCHRP Report 496
-   void SetEcCorrectionFactors(Float64 K1,Float64 K2);
-   void GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetCreepCorrectionFactors(Float64 K1,Float64 K2);
-   void GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
-   void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
+         // Returns the modulus of rupture for shear calculations at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetShearFr(Float64 t) const override;
 
-   // Concrete density modification factor (LRFD2016 5.2.4.8)
-   void SetLambda(Float64 lambda);
-   Float64 GetLambda() const;
+         // Returns the modulus of rupture for flexure calculations at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetFlexureFr(Float64 t) const override;
 
-   // Returns the compressive strength of the concrete at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFc(Float64 t) const override;
+         // Returns the total free shrinkage that has occurred from time at casting
+         // to the time specified
+         virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
-   // Returns the secant modulus of the concrete at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetEc(Float64 t) const override;
+         // Returns the creep coefficient at time t for a loading applied at time tla
+         virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
-   // Returns the modulus of rupture for shear calculations at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetShearFr(Float64 t) const override;
+         // Creates a clone of this object
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBase> CreateClone() const override;
 
-   // Returns the modulus of rupture for flexure calculations at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFlexureFr(Float64 t) const override;
+         // Set/Get ultimate shrinkage strain
+         void SetUltimateShrinkageStrain(Float64 eu);
+         Float64 GetUltimateShrinkageStrain() const;
 
-   // Returns the total free shrinkage that has occured from time at casting
-   // to the time specified
-   virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
-   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
+         // Set/Get ultimate creep coefficient
+         void SetUltimateCreepCoefficient(Float64 cu);
+         Float64 GetUltimateCreepCoefficient() const;
 
-   // Returns the creep coefficient at time t for a loading applied at time tla
-   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
-   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
+         // Set/Get modulus of rupture coefficient for shear (k*sqrt(f'c))
+         void SetShearModulusOfRuptureCoefficient(Float64 k);
+         Float64 GetShearModulusOfRuptureCoefficient() const;
 
-   // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const override;
+         // Set/Get modulus of rupture coefficient for flexure (k*sqrt(f'c))
+         void SetFlexureModulusOfRuptureCoefficient(Float64 k);
+         Float64 GetFlexureModulusOfRuptureCoefficient() const;
 
-   // Set/Get ultimate shrinkage strain
-   void SetUltimateShrinkageStrain(Float64 eu);
-   Float64 GetUltimateShrinkageStrain() const;
+         Float64 GetRelativeHumidityFactorCreep() const;
+         Float64 GetRelativeHumidityFactorShrinkage() const;
+         Float64 GetSizeFactorCreep(Float64 t,Float64 tla) const;
+         Float64 GetSizeFactorShrinkage(Float64 t) const;
+         Float64 GetConcreteStrengthFactor() const;
 
-   // Set/Get ultimate creep coefficient
-   void SetUltimateCreepCoefficient(Float64 cu);
-   Float64 GetUltimateCreepCoefficient() const;
+         // PCI UHPC parameters
+         virtual void SetFirstCrackingStrength(Float64 ffc) override;
+         virtual Float64 GetFirstCrackingStrength() const override;
+         virtual void SetPostCrackingTensileStrength(Float64 frr) override;
+         virtual Float64 GetPostCrackingTensileStrength() const override;
+         virtual void SetAutogenousShrinkage(Float64 as) override;
+         virtual Float64 GetAutogenousShrinkage() const override;
 
-   // Set/Get modulus of rupture coefficient for shear (k*sqrt(f'c))
-   void SetShearModulusOfRuptureCoefficient(Float64 k);
-   Float64 GetShearModulusOfRuptureCoefficient() const;
+         // UHPC Parameters
+         virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
+         virtual Float64 GetCompressionResponseReductionFactor() const override;
+         virtual void SetCompressiveStrainLimit(Float64 ecu) override;
+         virtual void SetElasticTensileStrainLimit(Float64 etcr) override;
+         virtual Float64 GetElasticTensileStrainLimit() const override;
+         virtual void SetInitialEffectiveCrackingStrength(Float64 ft_cri) override;
+         virtual Float64 GetInitialEffectiveCrackingStrength() const override;
+         virtual void SetDesignEffectiveCrackingStrength(Float64 ft_cr) override;
+         virtual Float64 GetDesignEffectiveCrackingStrength() const override;
+         virtual void SetCrackLocalizationStrength(Float64 ft_loc) override;
+         virtual Float64 GetCrackLocalizationStrength() const override;
+         virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
+         virtual Float64 GetCrackLocalizationStrain() const override;
+         virtual void SetFiberOrientationReductionFactor(Float64 gamma_u) override;
+         virtual Float64 GetFiberOrientationReductionFactor() const override;
 
-   // Set/Get modulus of rupture coefficient for flexure (k*sqrt(f'c))
-   void SetFlexureModulusOfRuptureCoefficient(Float64 k);
-   Float64 GetFlexureModulusOfRuptureCoefficient() const;
+         virtual Float64 GetElasticCompressiveStrainLimit() const override;
+         virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const override;
 
-   Float64 GetRelativeHumidityFactorCreep() const;
-   Float64 GetRelativeHumidityFactorShrinkage() const;
-   Float64 GetSizeFactorCreep(Float64 t,Float64 tla) const;
-   Float64 GetSizeFactorShrinkage(Float64 t) const;
-   Float64 GetConcreteStrengthFactor() const;
+      private:
+         Float64 m_Eshu; // ultimate shrinkage strain
+         Float64 m_Cu;   // ultimate creep coefficient
+         Float64 m_Fc28;
+         Float64 m_Ec28;
+         Float64 m_A; // in system units
+         mutable Float64 m_Alpha; // convert to days
+         Float64 m_Beta; // unitless
+         bool m_bUserEc;
 
-   // PCI UHPC parameters
-   void SetFirstCrackStrength(Float64 ffc);
-   Float64 GetFirstCrackStrength() const;
-   void SetPostCrackingTensileStrength(Float64 frr);
-   Float64 GetPostCrackingTensileStrength() const;
-   void SetAutogenousShrinkage(Float64 as);
-   Float64 GetAutogenousShrinkage() const;
+         Float64 m_ShearFrCoefficient;
+         Float64 m_FlexureFrCoefficient;
 
-protected:
-   // prevent copying and assignment (use CreateClone instead)
-   lrfdLRFDTimeDependentConcrete(const lrfdLRFDTimeDependentConcrete& rOther);
-   lrfdLRFDTimeDependentConcrete& operator = (const lrfdLRFDTimeDependentConcrete& rOther) = delete;
+         mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
 
-private:
-   Float64 m_Eshu; // ultimate shrinkage strain
-   Float64 m_Cu;   // ultimate creep coefficient
-   Float64 m_Fc28;
-   Float64 m_Ec28;
-   Float64 m_A; // in system units
-   mutable Float64 m_Alpha; // convert to days
-   Float64 m_Beta; // unitless
-   bool m_bUserEc;
+         mutable Float64 m_khs; // relative humidity factor for shrinkage
+         mutable Float64 m_khc; // relative humidity factor for creep
+         mutable Float64 m_kf;  // concrete strength factor (only valid for pre-2005 LRFD)
 
-   Float64 m_ShearFrCoefficient;
-   Float64 m_FlexureFrCoefficient;
+         // PCI UHPC parameters
+         Float64 m_ffc; // first crack tensile strength
+         Float64 m_frr; // post-crack residual tensile strength
+         Float64 m_AutogenousShrinkage;
 
-   Float64 m_EcK1;
-   Float64 m_EcK2;
-   Float64 m_CreepK1;
-   Float64 m_CreepK2;
-   Float64 m_ShrinkageK1;
-   Float64 m_ShrinkageK2;
+         // UHPC
+         Float64 m_alpha_u;
+         Float64 m_ecu;
+         Float64 m_etcr;
+         Float64 m_ftcri;
+         Float64 m_ftcr;
+         Float64 m_ftloc;
+         Float64 m_etloc;
+         Float64 m_gamma_u;
+         bool m_bExperimental_ecu;
 
-   Float64 m_Lambda;
+         mutable bool m_bIsValid;
+         void Validate() const;
 
-   mutable Float64 m_Ec; // this is the validated Ec28 (could be user input or could be computed)
+         Float64 ModE(Float64 fc,Float64 density) const;
 
-   mutable Float64 m_khs; // relative humidity factor for shrinkage
-   mutable Float64 m_khc; // relative humidity factor for creep
-   mutable Float64 m_kf;  // concrete strength factor (only valid for pre-2005 LRFD)
+         Float64 ComputeConcreteStrengthFactor() const;
 
-   // PCI UHPC parameters
-   Float64 m_ffc; // first crack tensile strength
-   Float64 m_frr; // post-crack residual tensile strength
-   Float64 m_AutogenousShrinkage;
-
-   mutable bool m_bIsValid;
-   void Validate() const;
-
-   Float64 ModE(Float64 fc,Float64 density) const;
-
-   Float64 ComputeConcreteStrengthFactor() const;
-
-   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDTimeDependentConcreteShrinkageDetails>& pDetails) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+      };
+   };
 };

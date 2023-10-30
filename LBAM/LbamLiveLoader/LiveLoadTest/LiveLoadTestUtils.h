@@ -75,11 +75,11 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
+   const IndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
+   for (IndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -94,7 +94,7 @@ inline void CompLLForceResults(BSTR Stage, OptimizationType optmization, ForceEf
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
+   for (IndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -188,11 +188,11 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
+   const IndexType NUMPOIS=10;
    CComPtr<IIDArray> apois;
    apois.CoCreateInstance(CLSID_IDArray);
    apois->Reserve(NUMPOIS);
-   for (CollectionIndexType i = 0; i<NUMPOIS; i++)
+   for (IndexType i = 0; i<NUMPOIS; i++)
    {
       apois->Add((PoiIDType)i);
    }
@@ -207,7 +207,7 @@ inline void CompLLDeflResults(BSTR Stage, OptimizationType optmization, ForceEff
    apoi.CoCreateInstance(CLSID_IDArray);
    apoi->ReDim(1);
 
-   for (CollectionIndexType j = 0; j<NUMPOIS; j++)
+   for (IndexType j = 0; j<NUMPOIS; j++)
    {
       apoi->put_Item(0,(PoiIDType)j);
 
@@ -315,7 +315,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
    hr = gen_util->GetSupportIDsForStage(Model, Stage, &support_ids);
    ATLASSERT(SUCCEEDED(hr));
 
-   CollectionIndexType nSupportIDs;
+   IndexType nSupportIDs;
    support_ids->get_Count(&nSupportIDs);
 
    // compute enveloped results for all pois
@@ -328,7 +328,7 @@ inline void CompLLReactionResults(ILBAMModel* Model, BSTR Stage, OptimizationTyp
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
+   for (IndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
    {
       asup->put_Item(0, (SupportIDType)supportIDIdx);
 
@@ -414,7 +414,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
    hr = gen_util->GetSupportIDsForStage(Model, Stage, &support_ids);
    ATLASSERT(SUCCEEDED(hr));
 
-   CollectionIndexType nSupportIDs;
+   IndexType nSupportIDs;
    support_ids->get_Count(&nSupportIDs);
 
    // compute enveloped results for all pois
@@ -427,7 +427,7 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
    asup.CoCreateInstance(CLSID_IDArray);
    asup->ReDim(1);
 
-   for (CollectionIndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
+   for (IndexType supportIDIdx = 0; supportIDIdx < nSupportIDs; supportIDIdx++)
    {
       asup->put_Item(0, (SupportIDType)supportIDIdx);
 

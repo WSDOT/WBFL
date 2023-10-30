@@ -70,26 +70,26 @@ END_COM_MAP()
 	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // ISectionStressResult
-	STDMETHOD(get_LeftCount)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_LeftCount)(/*[out,retval]*/ IndexType *pVal) override;
 	STDMETHOD(AddLeftResult)(/*[in]*/ Float64 newVal) override;
-	STDMETHOD(SetLeftResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
-	STDMETHOD(GetLeftResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_RightCount)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(SetLeftResult)(/*[in]*/IndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetLeftResult)(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(get_RightCount)(/*[out,retval]*/ IndexType *pVal) override;
 	STDMETHOD(AddRightResult)(/*[in]*/ Float64 newVal) override;
-	STDMETHOD(SetRightResult)(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal) override;
-	STDMETHOD(GetRightResult)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal) override;
+	STDMETHOD(SetRightResult)(/*[in]*/IndexType index, /*[in]*/ Float64 newVal) override;
+	STDMETHOD(GetRightResult)(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ ISectionStressResult* *pClone) override;
 	STDMETHOD(CreateLeftStressResult)(/*[out,retval]*/IStressResult* *result) override;
 	STDMETHOD(CreateRightStressResult)(/*[out,retval]*/IStressResult* *result) override;
 	STDMETHOD(FactorAndSum)(/*[in]*/ISectionStressResult* incRes, /*[in]*/Float64 leftFactor,/*[in]*/Float64 rightFactor) override;
 
 // IHpStressResult
-	STDMETHOD(HpSumResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals) override;
-	STDMETHOD(HpSetResults)(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals) override;
+	STDMETHOD(HpSumResults)(/*[in]*/IndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/IndexType numRight, /*[in]*/Float64* rightVals) override;
+	STDMETHOD(HpSetResults)(/*[in]*/IndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/IndexType numRight, /*[in]*/Float64* rightVals) override;
 
 public:
-   typedef std::vector<Float64> Float64Vec;
-   typedef Float64Vec::iterator Float64Iterator;
+   using Float64Vec = std::vector<Float64>;
+	using Float64Iterator = Float64Vec::iterator;
    Float64Vec m_LeftResults;
    Float64Vec m_RightResults;
 };

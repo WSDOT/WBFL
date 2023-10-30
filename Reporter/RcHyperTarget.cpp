@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RcHyperTarget.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcHyperTarget::rptRcHyperTarget(const std::_tstring& YourTarget) :
    rptReportContent()
 {

@@ -59,10 +59,10 @@ public:
    virtual std::_tstring AsString() const;
 
    /// Sets the output format
-   void SetFormat(sysNumericFormatTool::Format format);
+   void SetFormat(WBFL::System::NumericFormatTool::Format format);
 
    /// Returns the output format
-   sysNumericFormatTool::Format GetFormat() const;
+   WBFL::System::NumericFormatTool::Format GetFormat() const;
 
    /// Sets the output precision
    void SetPrecision(Uint16 precision);
@@ -93,7 +93,7 @@ protected:
 
 private:
    bool m_bShowUnitTag;
-   sysNumericFormatTool::Format m_Format;
+   WBFL::System::NumericFormatTool::Format m_Format;
    Uint16 m_Precision;
    Uint16 m_Width;
 

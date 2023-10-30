@@ -43,11 +43,11 @@ interface iDisplayList : public IUnknown
    STDMETHOD_(IDType,GetID)() PURE;
 
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj) PURE;
+   STDMETHOD_(void,GetDisplayObject)(IndexType index,iDisplayObject** dispObj) PURE;
    STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj) PURE;
    STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,Clear)() PURE;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() PURE;
+   STDMETHOD_(IndexType,GetDisplayObjectCount)() PURE;
 
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,      DisplayObjectContainer* dispObjs) PURE;
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,    DisplayObjectContainer* dispObjs) PURE;

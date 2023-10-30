@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CSpans;
-typedef CComSegmentCollection< ISpans, ISpan, IEnumSpan, &IID_IEnumSpan,SpanIndexType> SpanCollImpl;
-typedef CPersistentCollection<CSpans, SpanCollImpl,SpanIndexType> PersistentSpanCollImpl;
+using SpanCollImpl = CComSegmentCollection< ISpans, ISpan, IEnumSpan, &IID_IEnumSpan, SpanIndexType>;
+using PersistentSpanCollImpl = CPersistentCollection<CSpans, SpanCollImpl,SpanIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CSpans

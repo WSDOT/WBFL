@@ -67,7 +67,7 @@ STDMETHODIMP CStrSave::Open(LPCTSTR name)
    {
       m_StrSave.BeginSave( &m_File);
    }
-   catch( sysXStructuredSave& e )
+   catch(WBFL::System::XStructuredSave& e )
    {
       return HandleException( e );
    }
@@ -81,7 +81,7 @@ STDMETHODIMP CStrSave::BeginUnit( LPCTSTR name, Float64 ver)
    {
       m_StrSave.BeginUnit( name, ver );
    }
-   catch( sysXStructuredSave& e )
+   catch(WBFL::System::XStructuredSave& e )
    {
       return HandleException( e );
    }
@@ -149,7 +149,7 @@ STDMETHODIMP CStrSave::put_Property( LPCTSTR name, VARIANT newVal)
          _ASSERTE(false);
       }
    }
-      catch( sysXStructuredSave& e )
+      catch(WBFL::System::XStructuredSave& e )
    {
       return HandleException( e );
    }
@@ -191,7 +191,7 @@ STDMETHODIMP CStrSave::EndUnit()
    {
       m_StrSave.EndUnit();
    }
-   catch( sysXStructuredSave& e )
+   catch(WBFL::System::XStructuredSave& e )
    {
       return HandleException( e );
    }
@@ -206,7 +206,7 @@ STDMETHODIMP CStrSave::Close()
       m_StrSave.EndSave();
       m_bOpen = FALSE;
    }
-   catch( sysXStructuredSave& e )
+   catch(WBFL::System::XStructuredSave& e )
    {
       return HandleException( e );
    }
@@ -223,14 +223,14 @@ STDMETHODIMP CStrSave::SaveRawUnit(LPCTSTR unitXML)
 /////////////////////////////////////////////////
 ////////////////////////////////////////////////
 
-HRESULT CStrSave::HandleException( sysXStructuredSave& e )
+HRESULT CStrSave::HandleException(WBFL::System::XStructuredSave& e )
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
    HRESULT hr;
 
-   switch( e.GetExplicitReason() )
+   switch( e.GetReasonCode() )
    {
-      case sysXStructuredSave::BadWrite:
+      case WBFL::System::XStructuredSave::BadWrite:
          hr = STRSAVE_E_BADWRITE;
          break;
    }
@@ -238,13 +238,13 @@ HRESULT CStrSave::HandleException( sysXStructuredSave& e )
    return hr;
 }
 
-HRESULT CStrSave::HandleException2(sysXStructuredSave& e)
+HRESULT CStrSave::HandleException2(WBFL::System::XStructuredSave& e)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-   switch( e.GetExplicitReason() )
+   switch( e.GetReasonCode() )
    {
-      case sysXStructuredSave::BadWrite:
+      case WBFL::System::XStructuredSave::BadWrite:
          return Error(STRSAVE_E_BADWRITE-STRSAVE_E_FIRST,IID_IStructuredSave,IDS_E_BADWRITE);
          break;
    }

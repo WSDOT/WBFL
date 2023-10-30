@@ -58,7 +58,7 @@ void COnMouseOverCursor::StartTracking(COnMouseOverCursor** ppParent)
 // display object... hence, there is no need to test this
 //void COnMouseOverCursor::OnMouseMove(UINT nFlags,CPoint point)
 //{
-//   // A MouseMove event occured before the timer expired... is the mouse over the target region?
+//   // A MouseMove event occurred before the timer expired... is the mouse over the target region?
 //   BOOL bInRegion = m_Rgn.PtInRegion(point);
 //
 //   if ( !bInRegion )

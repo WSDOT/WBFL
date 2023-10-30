@@ -29,6 +29,7 @@
 #include "CompositeShape.h"
 #include "CompositeShapeItem.h"
 #include "ShapeProperties.h"
+#include "Helper.h"
 #include <float.h>
 #include <MathEx.h>
 
@@ -47,8 +48,7 @@ STDMETHODIMP CCompositeShape::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ICompositeShape,
       &IID_IShape,
-      &IID_IXYPosition,
-		&IID_IStructuredStorage2,
+      &IID_IXYPosition
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -70,12 +70,6 @@ STDMETHODIMP CCompositeShape::get_XYPosition(IXYPosition **pVal)
    return QueryInterface(IID_IXYPosition, (void**)pVal);
 }
 
-STDMETHODIMP CCompositeShape::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
 STDMETHODIMP CCompositeShape::AddShapeEx(ICompositeShapeItem *ShapeItem)
 {
    return Add(ShapeItem);
@@ -93,18 +87,18 @@ STDMETHODIMP CCompositeShape::AddShape(IShape* shape, VARIANT_BOOL bVoid)
    return AddShapeEx(item);
 }
 
-STDMETHODIMP CCompositeShape::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CCompositeShape::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
-   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+   if ( idx < 0 || (IndexType)m_coll.size() <= idx )
       return E_INVALIDARG;
 
    m_coll[idx].second.m_T = pShapeItem;
    return S_OK;
 }
 
-STDMETHODIMP CCompositeShape::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CCompositeShape::Replace(IndexType idx,IShape* pShape)
 {
-   if ( idx < 0 || (CollectionIndexType)m_coll.size() <= idx )
+   if ( idx < 0 || (IndexType)m_coll.size() <= idx )
       return E_INVALIDARG;
 
    CComPtr<ICompositeShapeItem> shapeItem = m_coll[idx].second.m_T;
@@ -143,6 +137,44 @@ STDMETHODIMP CCompositeShape::FurthestDistance(ILine2d* line,Float64 *pVal)
    }
 
    *pVal = distance;
+
+   return S_OK;
+}
+
+STDMETHODIMP CCompositeShape::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CHECK_IN(line);
+   CHECK_RETOBJ(ppPoint);
+   CHECK_RETVAL(dist);
+
+   if (m_coll.size() == 0)
+   {
+      CreatePoint(WBFL::Geometry::Point2d(0, 0), ppPoint);
+      *dist = 0;
+      return S_OK;
+   }
+
+   Float64 distance = -DBL_MAX;
+   CComPtr<IPoint2d> furthestPoint;
+   for (auto& value : m_coll)
+   {
+      CComPtr<ICompositeShapeItem> item(value.second);
+
+      CComPtr<IShape> shape;
+      item->get_Shape(&shape);
+
+      CComPtr<IPoint2d> pnt;
+      Float64 this_distance;
+      shape->FurthestPoint(line, &pnt, &this_distance);
+      if (distance < this_distance)
+      {
+         distance = this_distance;
+         furthestPoint = pnt;
+      }
+   }
+
+   *dist = distance;
+   furthestPoint.CopyTo(ppPoint);
 
    return S_OK;
 }

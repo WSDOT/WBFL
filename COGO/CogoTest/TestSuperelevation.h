@@ -34,29 +34,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestSuperelevation :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ISuperelevationEvents
+class CTestSuperelevation
 {
 public:
    CTestSuperelevation();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestSuperelevation)
-   COM_INTERFACE_ENTRY(ISuperelevationEvents)
-END_COM_MAP()
-
-// ISuperelevationEvents
-public:
-	STDMETHOD(OnSuperelevationChanged)(ISuperelevation* Superelevation);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTSuperelevation_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

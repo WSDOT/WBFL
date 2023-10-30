@@ -67,15 +67,14 @@ template <class T, class ItemType, class StoredType, class EnumType, const IID* 
 class  CComKeyedCollection : public T
 {
 protected:
-   typedef typename std::map<IDType, CComPtr<ItemType>> ContainerType;
-   typedef typename ContainerType::iterator     ContainerIteratorType;
-   typedef typename ContainerType::value_type   ContainerValueType;
+   using ContainerType = typename std::map<IDType, CComPtr<ItemType>>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
    ContainerType m_coll;
 
-   typedef typename _CopyMapOfCComVariants<ContainerType> CopyVariantType;
-   typedef typename CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType > MapEnumType;
-
-   typedef typename _CustomCopy<ContainerType, ItemType> CustomCopyType;
+   using CopyVariantType = typename _CopyMapOfCComVariants<ContainerType>;
+   using MapEnumType = typename CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType >;
+   using CustomCopyType = typename _CustomCopy<ContainerType, ItemType>;
 
 public:
 	CComKeyedCollection()
@@ -93,7 +92,7 @@ public:
 	}
 
    // from atl
-	STDMETHOD(get_Count)(CollectionIndexType* pcount)
+	STDMETHOD(get_Count)(IndexType* pcount)
 	{
 		if (pcount == nullptr)
 			return E_POINTER;
@@ -121,14 +120,14 @@ public:
 	}
 
 public:
-   STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out]*/IDType* pid)
+   STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out]*/IDType* pid)
    {
       CHECK_RETVAL(pid);
 
       if (AccessMethod==atID)
       {
          // erase by id
-         ContainerType::iterator it(m_coll.find(IDorIndex));
+         auto it(m_coll.find(IDorIndex));
          if (it!=m_coll.end())
          {
             // must release element before erasing it
@@ -144,17 +143,17 @@ public:
       {
          // erase by index
          ATLASSERT(IDorIndex>=0);
-         ATLASSERT(IDorIndex < (CollectionIndexType)m_coll.size());
+         ATLASSERT(IDorIndex < (IndexType)m_coll.size());
 
-         if (IDorIndex<0 || (CollectionIndexType)m_coll.size()<=IDorIndex)
+         if (IDorIndex<0 || (IndexType)m_coll.size()<=IDorIndex)
          {
             return E_INVALIDARG;
          }
          else
          {
             // zero-based access
-            ContainerType::iterator it(m_coll.begin());
-            for (CollectionIndexType i = 0; i<IDorIndex; i++)
+            auto it(m_coll.begin());
+            for (IndexType i = 0; i<IDorIndex; i++)
             {
                it++;
             }
@@ -170,7 +169,7 @@ public:
    {
       CHECK_RETOBJ(pVal);
 
-      ContainerType::iterator it(m_coll.find(id));
+      auto it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          *pVal = it->second;
@@ -189,7 +188,7 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType> MyEnumType;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidenum, ItemType*, CustomCopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -205,18 +204,18 @@ public:
       return S_OK;
    }
 
-   STDMETHOD(get_Item)(CollectionIndexType idx, /*[out, retval]*/ ItemType* *pVal)
+   STDMETHOD(get_Item)(IndexType idx, /*[out, retval]*/ ItemType* *pVal)
    {
       CHECK_RETOBJ(pVal);
 
 		HRESULT hr = E_FAIL;
 
-      if (idx<0 || (CollectionIndexType)m_coll.size()<=idx)
+      if (idx<0 || (IndexType)m_coll.size()<=idx)
          return E_INVALIDARG;
 
  		// idx--; uncomment this line if you want one-based access
-		ContainerType::iterator iter(m_coll.begin());
-		ContainerType::iterator iterend(m_coll.end());
+		auto iter(m_coll.begin());
+		auto iterend(m_coll.end());
 		while (iter != iterend && idx > 0)
 		{
 			iter++;
@@ -235,8 +234,8 @@ public:
    STDMETHOD(Clear)()
    {
       // release all members first, then clear
-		ContainerType::iterator it(m_coll.begin());
-		ContainerType::iterator itend(m_coll.end());
+		auto it(m_coll.begin());
+		auto itend(m_coll.end());
       for (; it != itend; it++)
       {
          it->second.Release();
@@ -249,7 +248,7 @@ public:
 // Classes for local C++ clients
    StoredType* Find(IDType id)
    {
-      ContainerType::iterator it(m_coll.find(id));
+      auto it(m_coll.find(id));
       if (it!=m_coll.end())
       {
          // Get the COM pointer

@@ -72,7 +72,7 @@ private:
    bool IsNeutralAxisParallel(IPlane3d* strainPlane);
    void UpdateNeutralAxis(IPlane3d* strainPlane,ILine2d* line);
 
-   typedef struct SHAPEINFO
+   struct SHAPEINFO
    {
       IndexType ShapeIdx; // index of the shape in the general section model
       CComPtr<IShape> Shape;
@@ -80,11 +80,12 @@ private:
       CComPtr<IStressStrain> BgMaterial;
       CComPtr<IPlane3d> InitialStrain;
       Float64 Le; // elongation length (typically 1 unit, but can be different for unbonded reinforcement elements)
-      SHAPEINFO(IndexType shapeIdx, IShape* pShape, IStressStrain* pFG, IStressStrain* pBG, IPlane3d* pInitialStrain,Float64 Le) : ShapeIdx(shapeIdx), Shape(pShape), FgMaterial(pFG), BgMaterial(pBG), InitialStrain(pInitialStrain), Le(Le)
+      SHAPEINFO(IndexType shapeIdx, IShape* pShape, IStressStrain* pFG, IStressStrain* pBG, IPlane3d* pInitialStrain, Float64 Le) : ShapeIdx(shapeIdx), Shape(pShape), FgMaterial(pFG), BgMaterial(pBG), InitialStrain(pInitialStrain), Le(Le)
       {}
-   } SHAPEINFO;
+   };
+   using SHAPEINFO = SHAPEINFO;
 
-   typedef struct SLICEINFO
+   struct SLICEINFO
    {
       IndexType ShapeIdx; // index of the general section shape from which this slice is taken
       Float64 Area; // slice area
@@ -96,7 +97,8 @@ private:
       CComPtr<IStressStrain> FgMaterial;
       CComPtr<IStressStrain> BgMaterial;
       CComPtr<IShape> SliceShape;
-   } SLICEINFO;
+   };
+   using SLICEINFO = SLICEINFO;
 
    std::vector<SLICEINFO> m_Slices;
 

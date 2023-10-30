@@ -29,7 +29,7 @@
 #define __SHAPEPROPERTIES_H_
 
 #include "resource.h"       // main symbols
-
+#include <GeomModel/ShapeProperties.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CShapeProperties
@@ -38,9 +38,7 @@ class ATL_NO_VTABLE CShapeProperties :
    public ISupportErrorInfo,
 	public CComCoClass<CShapeProperties, &CLSID_ShapeProperties>,
    public IObjectSafetyImpl<CShapeProperties,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public IShapeProperties,
-   public IStructuredStorage2,
-   public IPersist
+   public IShapeProperties
 {
 public:
 	CShapeProperties()
@@ -48,7 +46,7 @@ public:
 	}
 
    HRESULT FinalConstruct();
-
+	void SetProperties(const WBFL::Geometry::ShapeProperties& props) { m_Properties = props; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SHAPEPROPERTIES)
 
@@ -56,36 +54,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CShapeProperties)
    COM_INTERFACE_ENTRY(IShapeProperties)
-   COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   // properties about centroidal axis
-   Float64   m_Area;
-   CComPtr<IPoint2d> m_pCentroid;
-   Float64   m_Ixx;
-   Float64   m_Iyy;
-   Float64   m_Ixy;
-   Float64   m_Xleft;   // Distance from centroid to left edge
-   Float64   m_Xright;  // Distance from centroid to right edge
-   Float64   m_Ytop;    // Distance from centroid to top edge
-   Float64   m_Ybottom; // Distance from centroid to bottom edge
-
-   // Current coordinate system
-   CoordinateSystemType m_CoordType;
-   CComPtr<IPoint2d> m_pOrigin;
-   Float64         m_Orientation;
-
-   // properties transformed into current coord sys
-   CComPtr<IPoint2d> m_pCurrCentroid;
-   Float64   m_CurrIxx;
-   Float64   m_CurrIyy;
-   Float64   m_CurrIxy;
-
-   void UpdateOrientation();
+   WBFL::Geometry::ShapeProperties m_Properties;
 
 // ISupportErrorInfo
 public:
@@ -93,7 +67,6 @@ public:
 
 // IShapeProperties
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(AddProperties)(/*[in]*/ IShapeProperties* props) override;
 	STDMETHOD(get_PrincipleDirection)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_CoordinateSystem)(/*[out, retval]*/ CoordinateSystemType *pVal) override;
@@ -124,15 +97,6 @@ public:
 	STDMETHOD(put_Centroid)(/*[in]*/ IPoint2d* newVal) override;
 	STDMETHOD(get_Area)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Area)(/*[in]*/ Float64 newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__SHAPEPROPERTIES_H_

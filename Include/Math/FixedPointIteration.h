@@ -21,166 +21,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_FIXEDPOINTITERATION_H_
-#define INCLUDED_MATH_FIXEDPOINTITERATION_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Math\MathExp.h>
-#include <Math\Function2d.h>
+#include <Math\Function.h>
+#include <functional>
 
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-class MATHCLASS mathXFixedPointIterationFailed : public sysXBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum Reason {
-      Unknown,        // The reason is unknown
-      MaxIterExceeded // The maximum number of iterations were exceeded
+   namespace Math
+   {
+      /// This class implements a fixed-point iteration method for finding a solution
+      /// to a function of the form  g(x) = x
+      ///
+      /// Reference: Numerical Analysis, 4th Edition, Burden & Faires
+      class MATHCLASS FixedPointIteration
+      {
+      public:
+         FixedPointIteration() = default;
+
+         virtual ~FixedPointIteration() = default;
+
+         /// @{
+         /// @brief Finds the solution to g(x) = x starting at xo
+         /// @param f Function to be evaluated
+         /// @param xo Starting point for the iteration
+         /// @param tol Convergence tolerance |g(x) - x| < tol
+         /// @param maxIter Maximum number of iterations
+         /// @return The solution to g(x) = x
+         virtual Float64 Solve(const Function& f,Float64 xo,Float64 tol,Uint32 maxIter=100) const;
+         virtual Float64 Solve(const std::function<Float64(Float64)>& f, Float64 xo, Float64 tol, Uint32 maxIter=100) const;
+         /// @}
+      };
    };
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   mathXFixedPointIterationFailed(Reason reason,Float64 last,LPCTSTR file,Int16 line);
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   mathXFixedPointIterationFailed(const mathXFixedPointIterationFailed& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~mathXFixedPointIterationFailed();
-
-   // GROUP: OPERATORS
-
-   //------------------------------------------------------------------------
-   // Assignment operator
-   mathXFixedPointIterationFailed& operator=(const mathXFixedPointIterationFailed& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   void Throw() const;
-   //------------------------------------------------------------------------
-   Float64 GetLast() const;
-   //------------------------------------------------------------------------
-   Int32 GetReason() const;
-   //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-   Float64 m_Last;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
 };
-
-/*****************************************************************************
-CLASS 
-   mathFixedPointIteration
-
-   This class implements a fixed-point iteration method for finding a solution
-   to a function of the form  g(x) = x
-
-DESCRIPTION
-   This class implements a fixed-point iteration method for finding a solution
-   to a function of the form  g(x) = x
-
-   Reference: Numerical Analysis, 4th Edition, Burden & Faires
-
-LOG
-   rab : 06.28.2005 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathFixedPointIteration
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   mathFixedPointIteration();
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~mathFixedPointIteration();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Finds the solution to g(x) = x starting at xo
-   virtual Float64 Solve(const mathFunction2d& f,Float64 xo,Float64 tol,long maxIter=100);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_MATH_FIXEDPOINTITERATION_H_

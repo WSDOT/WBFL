@@ -34,7 +34,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size );
+static bool is_valid_cookie( DWORD dwCookie, IndexType size );
 static int idx_from_cookie( DWORD dwCookie );
 
 /////////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ STDMETHODIMP CErrorLog::Close(DWORD dwCookie)
    return S_OK;
 }
 
-static bool is_valid_cookie( DWORD dwCookie, CollectionIndexType size )
+static bool is_valid_cookie( DWORD dwCookie, IndexType size )
 {
    return ( dwCookie > (DWORD)size ) ? false : true;
 }

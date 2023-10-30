@@ -42,8 +42,7 @@ STDMETHODIMP CCompositeShapeItem::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_ICompositeShapeItem,
-		&IID_IStructuredStorage2
+		&IID_ICompositeShapeItem
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -56,12 +55,7 @@ STDMETHODIMP CCompositeShapeItem::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CCompositeShapeItem::get_Shape(IShape **pVal)
 {
    CHECK_RETOBJ(pVal);
-   (*pVal) = m_Shape;
-   if ( *pVal )
-      (*pVal)->AddRef();
-
-
-	return S_OK;
+   return m_Shape.CopyTo(pVal);
 }
 
 STDMETHODIMP CCompositeShapeItem::putref_Shape(IShape *newVal)
@@ -84,45 +78,4 @@ STDMETHODIMP CCompositeShapeItem::put_Void(VARIANT_BOOL newVal)
 {
    m_bVoid = newVal;
 	return S_OK;
-}
-
-STDMETHODIMP CCompositeShapeItem::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IStructuredStorage2
-STDMETHODIMP CCompositeShapeItem::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("CompositeShapeItem"),1.0);
-   pSave->put_Property(CComBSTR("Void"),CComVariant(m_bVoid));
-   pSave->put_Property(CComBSTR("Shape"),CComVariant(m_Shape));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CCompositeShapeItem::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("CompositeShapeItem"));
-
-   pLoad->get_Property(CComBSTR("Void"),&var);
-   m_bVoid = var.boolVal;
-
-   pLoad->get_Property(CComBSTR("Shape"),&var);
-   if ( FAILED( _CopyVariantToInterface<IShape>::copy(&m_Shape,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
 }

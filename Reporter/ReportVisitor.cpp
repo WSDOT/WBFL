@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\ReportVisitor.h>        // class implementation
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptReportVisitor::rptReportVisitor()
 {
 }

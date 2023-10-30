@@ -174,10 +174,10 @@ library WBFLLBAMLoadCombiner
 	interface ILoadCombinationResultConfiguration : IUnknown
 	{
 		[propget, helpstring("property LoadCaseFactorCount"),helpcontext(IDH_LoadCombinationResultConfiguration_LoadCaseFactorCount)] 
-      HRESULT LoadCaseFactorCount([out, retval] CollectionIndexType *pVal);
+      HRESULT LoadCaseFactorCount([out, retval] IndexType *pVal);
 		
       [helpstring("method GetLoadCaseFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_GetLoadCaseFactor)] 
-      HRESULT GetLoadCaseFactor([in]CollectionIndexType index, [out]BSTR* loadCase, [out]Float64* factor);
+      HRESULT GetLoadCaseFactor([in]IndexType index, [out]BSTR* loadCase, [out]Float64* factor);
 		
       [helpstring("method AddLoadCaseFactor"),helpcontext(IDH_LoadCombinationResultConfiguration_AddLoadCaseFactor)] 
       HRESULT AddLoadCaseFactor( [in]BSTR loadCase, [in]Float64 factor);
@@ -192,10 +192,10 @@ library WBFLLBAMLoadCombiner
       HRESULT AddLiveLoadConfiguration([in]ILiveLoadConfiguration* Config);
 		
       [helpstring("method GetLiveLoadConfiguration"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadConfiguration)] 
-      HRESULT GetLiveLoadConfiguration([in] CollectionIndexType index,[out,retval]ILiveLoadConfiguration* *Config);
+      HRESULT GetLiveLoadConfiguration([in] IndexType index,[out,retval]ILiveLoadConfiguration* *Config);
 		
       [helpstring("method GetLiveLoadConfigurationCount"),helpcontext(IDH_LoadCombinationResultConfiguration_LiveLoadConfiguration)] 
-      HRESULT GetLiveLoadConfigurationCount([out,retval]CollectionIndexType* count);
+      HRESULT GetLiveLoadConfigurationCount([out,retval]IndexType* count);
 		
       [propget, helpstring("property SummationType"),helpcontext(IDH_LoadCombinationResultConfiguration_SummationType)] 
       HRESULT SummationType([out, retval] ResultsSummationType *pVal);
@@ -218,19 +218,19 @@ library WBFLLBAMLoadCombiner
       HRESULT Clear();
 		
       [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 		
       [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 		
       [helpstring("method Add"),helpcontext(IDH_LoadCombinationResults_Add)] 
       HRESULT Add([in]Float64 Result, [in]ILoadCombinationResultConfiguration* Config);
 		
       [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 Result, [in]ILoadCombinationResultConfiguration* Config);
+      HRESULT SetResult([in]IndexType index, [in]Float64 Result, [in]ILoadCombinationResultConfiguration* Config);
 		
       [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* Result, [out]ILoadCombinationResultConfiguration** Config);
+      HRESULT GetResult([in]IndexType index, [out]Float64* Result, [out]ILoadCombinationResultConfiguration** Config);
 	};
 
 	[
@@ -247,19 +247,19 @@ library WBFLLBAMLoadCombiner
       HRESULT Clear();
 		
       [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationSectionResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 		
       [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationSectionResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 		
       [helpstring("method Add"),helpcontext(IDH_LoadCombinationSectionResults_Add)] 
       HRESULT Add([in]Float64 leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]Float64 rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
 		
       [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationSectionResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]Float64 leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]Float64 rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+      HRESULT SetResult([in]IndexType index, [in]Float64 leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]Float64 rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
 		
       [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationSectionResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]Float64* leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]Float64* rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
+      HRESULT GetResult([in]IndexType index, [out]Float64* leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]Float64* rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
 	};
 
 	[
@@ -276,19 +276,19 @@ library WBFLLBAMLoadCombiner
       HRESULT Clear();
 		
       [helpstring("method Reserve"),helpcontext(IDH_LoadCombinationStressResults_Reserve)] 
-      HRESULT Reserve([in]CollectionIndexType size);
+      HRESULT Reserve([in]IndexType size);
 		
       [propget, helpstring("property Count"),helpcontext(IDH_LoadCombinationStressResults_Count)] 
-      HRESULT Count([out, retval] CollectionIndexType *pVal);
+      HRESULT Count([out, retval] IndexType *pVal);
 		
       [helpstring("method Add"),helpcontext(IDH_LoadCombinationStressResults_Add)] 
       HRESULT Add([in]IStressResult* leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
 		
       [helpstring("method SetResult"),helpcontext(IDH_LoadCombinationStressResults_SetResult)] 
-      HRESULT SetResult([in]CollectionIndexType index, [in]IStressResult* leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
+      HRESULT SetResult([in]IndexType index, [in]IStressResult* leftResult, [in]ILoadCombinationResultConfiguration* leftConfig, [in]IStressResult* rightResult, [in]ILoadCombinationResultConfiguration* rightConfig);
 		
       [helpstring("method GetResult"),helpcontext(IDH_LoadCombinationStressResults_GetResult)] 
-      HRESULT GetResult([in]CollectionIndexType index, [out]IStressResult** leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]IStressResult** rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
+      HRESULT GetResult([in]IndexType index, [out]IStressResult** leftResult, [out]ILoadCombinationResultConfiguration** leftConfig, [out]IStressResult** rightResult, [out]ILoadCombinationResultConfiguration** rightConfig);
 	};
 
 	[

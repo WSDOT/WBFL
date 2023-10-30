@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportDescription.h: interface for the CReportDescription class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #pragma once
 
 #include <ReportManager\ReportManagerExp.h>
@@ -34,42 +30,70 @@
 #include <memory>
 
 
-class CChapterBuilder;
-class CReportSpecification;
-
-class REPORTMANAGERCLASS CChapterInfo
+namespace WBFL
 {
-public:
-   std::_tstring Name;
-   std::_tstring Key;
-   Uint16 MaxLevel;
-   bool Select;
-
-   CChapterInfo() { Name = _T("Bad Chapter Name"); Key = _T("Bad Chapter Key"); MaxLevel = 0; Select = true;}
-   CChapterInfo(const CChapterInfo& other): Name(other.Name), Key(other.Key), MaxLevel(other.MaxLevel), Select(other.Select) {}
-
-   bool operator==(const CChapterInfo& other) const
+   namespace Reporting
    {
-      return (Name == other.Name ? true : false);
-   }
-};
+      class ChapterBuilder;
+      class ReportSpecification;
 
-class REPORTMANAGERCLASS CReportDescription  
-{
-public:
-	CReportDescription(LPCTSTR strRptName);
-	virtual ~CReportDescription();
+      /// Information about a Chapter used to populate the user interface elements
+      /// and generate a report specification.
+      class REPORTMANAGERCLASS ChapterInfo
+      {
+      public:
+         std::_tstring Key{ _T("Bad Chapter Key") }; ///< Identifier key
+         std::_tstring Name{ _T("Bad Chapter Name") }; ///< Name of the chapter
+         Uint16 MaxLevel{ 0 }; ///< Maximum level
+         bool Select{true}; ///< If true, the chapter is to be selected for creation in the user interface
 
-   LPCTSTR GetReportName() const;
-   void AddChapter(const CChapterBuilder* pChapterBuilder);
-   std::vector<CChapterInfo> GetChapterInfo() const;
-   IndexType GetChapterCount() const;
+         ChapterInfo() = default;
+         ChapterInfo(const ChapterInfo& other) = default;
 
-   void ConfigureReportSpecification(std::shared_ptr<CReportSpecification>& pRptSpec) const;
-   void ConfigureReportSpecification(const std::vector<CChapterInfo>& vChInfo, std::shared_ptr<CReportSpecification>& pRptSpec) const;
-   void ConfigureReportSpecification(const std::vector<std::_tstring>& chList, std::shared_ptr<CReportSpecification>& pRptSpec) const;
+         bool operator==(const ChapterInfo& other) const
+         {
+            return (Key == other.Key ? true : false);
+         }
+      };
 
-private:
-   std::_tstring m_ReportName;
-   std::vector<const CChapterBuilder*> m_ChapterBuilders; // do not delete these pointers
+      /// Description of a report
+      class REPORTMANAGERCLASS ReportDescription  
+      {
+      public:
+	      ReportDescription(const std::_tstring& strRptName);
+	      ~ReportDescription() = default;
+
+         /// Returns the report name
+         const std::_tstring& GetReportName() const;
+
+         /// Adds a chapter builder to the report description
+         void AddChapter(const std::shared_ptr<const ChapterBuilder>& pChapterBuilder);
+
+         /// Returns the chapter information
+         std::vector<ChapterInfo> GetChapterInfo() const;
+
+         /// Returns the number of chapters
+         IndexType GetChapterCount() const;
+
+         /// Configures the report specification based on the ChapterInfo
+         /// \param[out] pRptSpec The report specification. This specification is cleared and reset based on this ReportDescription
+         void ConfigureReportSpecification(std::shared_ptr<ReportSpecification>& pRptSpec) const;
+
+         /// Configures the report specification based on the ChapterInfo
+         void ConfigureReportSpecification(
+            const std::vector<ChapterInfo>& vChInfo, ///<[in] Chapter Information used to configure the specification
+            std::shared_ptr<ReportSpecification>& pRptSpec ///<[out] The report specification. This specification is cleared and reset based on this ReportDescription
+         ) const;
+
+         /// Configures the report specification based on the ChapterInfo
+         void ConfigureReportSpecification(
+            const std::vector<std::_tstring>& chList,  ///<[in] List of chapter keys for the chapters to be included in the report specification
+            std::shared_ptr<ReportSpecification>& pRptSpec ///<[out] The report specification. This specification is cleared and reset based on this ReportDescription
+         ) const;
+
+      private:
+         std::_tstring m_ReportName;
+         std::vector<std::shared_ptr<const ChapterBuilder>> m_ChapterBuilders;
+      };
+   };
 };

@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportBuilderManager.cpp: implementation of the CReportBuilderManager class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportBuilderManager.h>
@@ -37,49 +33,34 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CReportBuilderManager::CReportBuilderManager()
+std::shared_ptr<ReportBuilderManager> ReportBuilderManager::Create()
 {
+   return std::shared_ptr<ReportBuilderManager>(new ReportBuilderManager());
 }
 
-CReportBuilderManager::~CReportBuilderManager()
-{
-}
-
-void CReportBuilderManager::ClearAll()
+void ReportBuilderManager::ClearAll()
 {
    m_RptBuilders.clear();
 }
 
-void CReportBuilderManager::AddReportBuilder(CReportBuilder* pRptBuilder)
-{
-   std::_tstring strName = pRptBuilder->GetName();
-   std::shared_ptr<CReportBuilder> p(pRptBuilder);
-   m_RptBuilders.insert( std::make_pair( strName, p ) );
-}
-
-void CReportBuilderManager::AddReportBuilder(std::shared_ptr<CReportBuilder>& pRptBuilder)
+void ReportBuilderManager::AddReportBuilder(std::shared_ptr<ReportBuilder>& pRptBuilder)
 {
    std::_tstring strName = pRptBuilder->GetName();
    m_RptBuilders.insert( std::make_pair( strName, pRptBuilder ) );
 }
 
-CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
+IndexType ReportBuilderManager::GetReportBuilderCount(bool bIncludeHidden) const
 {
    if ( bIncludeHidden )
    {
       return m_RptBuilders.size();
    }
 
-   CollectionIndexType nReportBuilders = 0;
-   RptBuilderContainer::const_iterator iter(m_RptBuilders.begin());
-   RptBuilderContainer::const_iterator end(m_RptBuilders.end());
-   for ( ; iter != end; iter++ )
+   IndexType nReportBuilders = 0;
+   for(const auto& entry : m_RptBuilders)
    {
-      const RptBuilderEntry& entry = *iter;
       if ( !entry.second->Hidden() )
       {
          nReportBuilders++;
@@ -89,12 +70,12 @@ CollectionIndexType CReportBuilderManager::GetReportBuilderCount(bool bIncludeHi
    return nReportBuilders;
 }
 
-std::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<ReportBuilder> ReportBuilderManager::GetReportBuilder(LPCTSTR strReportName)
 {
    return GetReportBuilder(std::_tstring(strReportName));
 }
 
-std::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<ReportBuilder> ReportBuilderManager::GetReportBuilder(const std::_tstring& strReportName)
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
@@ -105,12 +86,28 @@ std::shared_ptr<CReportBuilder> CReportBuilderManager::GetReportBuilder(const st
    return (*found).second;
 }
 
-std::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<const ReportBuilder> ReportBuilderManager::GetReportBuilder(LPCTSTR strReportName) const
+{
+   return GetReportBuilder(std::_tstring(strReportName));
+}
+
+std::shared_ptr<const ReportBuilder> ReportBuilderManager::GetReportBuilder(const std::_tstring& strReportName) const
+{
+   RptBuilderContainer::const_iterator found = m_RptBuilders.find(strReportName);
+   if (found == m_RptBuilders.end())
+   {
+      return nullptr;
+   }
+
+   return (*found).second;
+}
+
+std::shared_ptr<ReportBuilder> ReportBuilderManager::RemoveReportBuilder(LPCTSTR strReportName)
 {
    return RemoveReportBuilder(std::_tstring(strReportName));
 }
 
-std::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<ReportBuilder> ReportBuilderManager::RemoveReportBuilder(const std::_tstring& strReportName)
 {
    RptBuilderContainer::iterator found = m_RptBuilders.find(strReportName);
    if ( found == m_RptBuilders.end() )
@@ -118,62 +115,61 @@ std::shared_ptr<CReportBuilder> CReportBuilderManager::RemoveReportBuilder(const
       return nullptr;
    }
 
-   std::shared_ptr<CReportBuilder> rptBuilder = (*found).second;
+   std::shared_ptr<ReportBuilder> rptBuilder = (*found).second;
 
    m_RptBuilders.erase(found);
 
    return rptBuilder;
 }
 
-std::vector<std::_tstring> CReportBuilderManager::GetReportNames(bool bIncludeHidden) const
+std::vector<std::_tstring> ReportBuilderManager::GetReportNames(bool bIncludeHidden) const
 {
    std::vector<std::_tstring> names;
-   RptBuilderContainer::const_iterator iter;
-   for ( iter = m_RptBuilders.begin(); iter != m_RptBuilders.end(); iter++ )
+   for (const auto& [name,builder] : m_RptBuilders)
    {
-      if ( bIncludeHidden || !(*iter).second->Hidden() )
+      if (bIncludeHidden || !builder->Hidden())
       {
-         names.push_back( (*iter).first );
+         names.emplace_back(name);
       }
    }
 
    return names;
 }
 
-CReportDescription CReportBuilderManager::GetReportDescription(LPCTSTR strReportName)
+ReportDescription ReportBuilderManager::GetReportDescription(LPCTSTR strReportName) const
 {
    return GetReportDescription(std::_tstring(strReportName));
 }
 
-CReportDescription CReportBuilderManager::GetReportDescription(const std::_tstring& strReportName)
+ReportDescription ReportBuilderManager::GetReportDescription(const std::_tstring& strReportName) const
 {
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   auto pRptBuilder = GetReportBuilder(strReportName);
    ATLASSERT( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetReportDescription();
 }
 
-const CBitmap* CReportBuilderManager::GetMenuBitmap(LPCTSTR strReportName)
+const CBitmap* ReportBuilderManager::GetMenuBitmap(LPCTSTR strReportName)
 {
    return GetMenuBitmap(std::_tstring(strReportName));
 }
 
-const CBitmap* CReportBuilderManager::GetMenuBitmap(const std::_tstring& strReportName)
+const CBitmap* ReportBuilderManager::GetMenuBitmap(const std::_tstring& strReportName)
 {
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   std::shared_ptr<ReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
    ATLASSERT( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetMenuBitmap();
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(LPCTSTR strReportName)
+std::shared_ptr<ReportSpecificationBuilder> ReportBuilderManager::GetReportSpecificationBuilder(LPCTSTR strReportName)
 {
    return GetReportSpecificationBuilder(std::_tstring(strReportName));
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const std::_tstring& strReportName)
+std::shared_ptr<ReportSpecificationBuilder> ReportBuilderManager::GetReportSpecificationBuilder(const std::_tstring& strReportName)
 {
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
+   std::shared_ptr<ReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
    if ( pRptBuilder == nullptr )
    {
       return nullptr;
@@ -182,16 +178,16 @@ std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpe
    return pRptBuilder->GetReportSpecificationBuilder();
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportBuilderManager::GetReportSpecificationBuilder(const CReportDescription& rptDesc)
+std::shared_ptr<ReportSpecificationBuilder> ReportBuilderManager::GetReportSpecificationBuilder(const ReportDescription& rptDesc)
 {
    return GetReportSpecificationBuilder( rptDesc.GetReportName() );
 }
 
-std::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec,std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<ReportBrowser> ReportBuilderManager::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<ReportSpecification>& pRptSpec,const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder) const
 {
    std::shared_ptr<rptReport> pReport = CreateReport(pRptSpec);
-   std::shared_ptr<CReportBrowser> pBrowser( std::make_shared<CReportBrowser>() );
-   bool bSuccess = pBrowser->Initialize(hwndParent,this,pRptSpec,pRptSpecBuilder,pReport);
+   std::shared_ptr<ReportBrowser> pBrowser( std::make_shared<ReportBrowser>() );
+   bool bSuccess = pBrowser->Initialize(hwndParent,shared_from_this(), pRptSpec, pRptSpecBuilder, pReport);
    if ( !bSuccess )
    {
       pBrowser = nullptr;
@@ -200,16 +196,16 @@ std::shared_ptr<CReportBrowser> CReportBuilderManager::CreateReportBrowser(HWND 
    return pBrowser;
 }
 
-INT_PTR CReportBuilderManager::DisplayReportDialog(DWORD flags, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+INT_PTR ReportBuilderManager::DisplayReportDialog(DWORD flags, const std::shared_ptr<ReportSpecification>& pRptSpec, const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    // flags will be used in the future to control attribues of the dialog
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
-   CReportDlg dlg(*this,pRptSpec,pRptSpecBuilder);
+   CReportDlg dlg(shared_from_this(), pRptSpec, pRptSpecBuilder);
    return dlg.DoModal();
 }
 
-std::shared_ptr<rptReport> CReportBuilderManager::CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<rptReport> ReportBuilderManager::CreateReport(const std::shared_ptr<ReportSpecification>& pRptSpec) const
 {
-   std::shared_ptr<CReportBuilder> pRptBuilder = GetReportBuilder(pRptSpec->GetReportName());
+   auto pRptBuilder = GetReportBuilder(pRptSpec->GetReportName());
    return pRptBuilder->CreateReport( pRptSpec );
 }

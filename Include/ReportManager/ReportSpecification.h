@@ -21,65 +21,90 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportSpecification.h: interface for the CReportSpecification class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_REPORTSPECIFICATION_H__7EF33026_9D78_49D4_A226_4681AD3B514C__INCLUDED_)
-#define AFX_REPORTSPECIFICATION_H__7EF33026_9D78_49D4_A226_4681AD3B514C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
-#include <ReportManager\ReportDescription.h> // for CChapterInfo
+#include <ReportManager\ReportDescription.h>
 
-class REPORTMANAGERCLASS CReportSpecification  
+namespace WBFL
 {
-public:
-	CReportSpecification(LPCTSTR strReportName);
-   CReportSpecification(const CReportSpecification& other);
-	virtual ~CReportSpecification();
+   namespace Reporting
+   {
+      /// Used by the ReportBuilder to create a report. 
+      /// A ReportSpecification defines the chapters that are to be included in a report and the reporting level.
+      /// This specification also specifies heading and footer text for the report. 
+      /// The right header is always the Date and the right footer is always Page # of #. 
+      /// The Left and Center header and footer text are user specified.
+      class REPORTMANAGERCLASS ReportSpecification
+      {
+      public:
+         ReportSpecification(const std::_tstring& strReportName);
+         ReportSpecification(const ReportSpecification& other) = default;
+	      virtual ~ReportSpecification() = default;
 
-   // report name = "Details Report"
-   void SetReportName(LPCTSTR strName);
-   std::_tstring GetReportName() const;
+         /// Sets the report name
+         /// Example: "Details Report"
+         void SetReportName(const std::_tstring&);
 
-   // report title = "Details Report for Span 1, Girder A"
-   // default returns the report name + " For " + ContextString
-   virtual std::_tstring GetReportTitle() const;
+         /// Gets the report name
+         const std::_tstring& GetReportName() const;
 
-   // context of report (e.g., "Span 1, Girder A"). Blank by default
-   virtual std::_tstring GetReportContextString() const;
+         /// Sets the report title
+         /// Example: "Details Report for Span 1, Girder A"
+         /// \return A string built up from GetReportName() + " For " + GetReportContextString()
+         virtual std::_tstring GetReportTitle() const;
 
-   void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
-   void SetChapterInfo(const std::vector<CChapterInfo>& chInfo);
-   std::vector<CChapterInfo> GetChapterInfo() const;
-   IndexType GetChapterCount() const;
-   void ClearChapters();
+         /// A string representing the context of report 
+         /// Example: "Span 1, Girder A"
+         /// The default implementation returns an empty string
+         virtual std::_tstring GetReportContextString() const;
 
-   // Text for printed report headers and footers
-   // The right header is always the Date, and the right footer is always Page # of #
-   void SetLeftHeader(LPCTSTR text);
-   std::_tstring GetLeftHeader() const;
-   void SetCenterHeader(LPCTSTR text);
-   std::_tstring GetCenterHeader() const;
-   void SetLeftFooter(LPCTSTR text);
-   std::_tstring GetLeftFooter() const;
-   void SetCenterFooter(LPCTSTR text);
-   std::_tstring GetCenterFooter() const;
+         /// Adds a chapter to the report, creating a ChapterInfo record
+         void AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level);
 
-   virtual HRESULT Validate() const;
+         /// Sets the ChapterInfo for the report
+         void SetChapterInfo(const std::vector<ChapterInfo>& chInfo);
 
-private:
-   std::_tstring m_ReportName;
-   std::vector<CChapterInfo> m_Chapters; /// chapter info for the chapters that are used in the report and the level at which to report
+         /// Returns the ChapterInfo
+         const std::vector<ChapterInfo>& GetChapterInfo() const;
 
-   std::_tstring m_LeftHeader;
-   std::_tstring m_CenterHeader;
-   std::_tstring m_LeftFooter;
-   std::_tstring m_CenterFooter;
+         /// Returns the number of chapters in the report
+         IndexType GetChapterCount() const;
+
+         /// Clears all chapters from the specification
+         void ClearChapters();
+
+         /// Sets the left header text
+         void SetLeftHeader(const std::_tstring& text);
+         /// Gets the left header text
+         const std::_tstring& GetLeftHeader() const;
+         /// Sets the center header text
+         void SetCenterHeader(const std::_tstring& text);
+         /// Returns the center header text
+         const std::_tstring& GetCenterHeader() const;
+         /// Sets the left footer text
+         void SetLeftFooter(const std::_tstring& text);
+         /// Returns the left footer text
+         const std::_tstring& GetLeftFooter() const;
+         /// Sets the center footer text
+         void SetCenterFooter(const std::_tstring& text);
+         /// Returns the center footer text
+         const std::_tstring& GetCenterFooter() const;
+
+         /// A self-validation check of the specification.
+         /// The default implemention returns true. Override this method to provide
+         /// application speicific validation
+         /// \return true if the specification is valid
+         virtual bool IsValid() const;
+
+      private:
+         std::_tstring m_ReportName;
+         std::vector<ChapterInfo> m_Chapters; /// chapter info for the chapters that are used in the report and the level at which to report
+
+         std::_tstring m_LeftHeader;
+         std::_tstring m_CenterHeader;
+         std::_tstring m_LeftFooter;
+         std::_tstring m_CenterFooter;
+      };
+   };
 };
-
-#endif // !defined(AFX_REPORTSPECIFICATION_H__7EF33026_9D78_49D4_A226_4681AD3B514C__INCLUDED_)

@@ -90,7 +90,7 @@ void CTestPointLoad::Test()
    TRY_TEST(pPointLoads->Create(0, 0, 0, 0, 0, 0, lotMember, &pPl),FEM2D_E_POINT_LOAD_WITH_ID_ALREADY_EXISTS);
    TRY_TEST_LC(pPointLoads->Create(3, 5, 1.0, 33.0, 44.0, 55.0, lotMember, &pPointLoad3));
 
-   CollectionIndexType num;
+   IndexType num;
    TRY_TEST_HR(pPointLoads->get_Count(&num));
    TRY_TEST(num, 2);
 
@@ -106,12 +106,12 @@ void CTestPointLoad::Test()
    TRY_TEST_HR(pPointLoad3->get_MemberID(&mbrID));
    TRY_TEST(mbrID, 42);
 
-   Fem2dLoadOrientation or;
-   TRY_TEST_HR(pPointLoad3->get_Orientation(&or));
-   TRY_TEST(or, lotMember);
+   Fem2dLoadOrientation orientation;
+   TRY_TEST_HR(pPointLoad3->get_Orientation(&orientation));
+   TRY_TEST(orientation, lotMember);
    TRY_TEST_LC(pPointLoad3->put_Orientation(lotGlobal));
-   TRY_TEST_HR(pPointLoad3->get_Orientation(&or));
-   TRY_TEST(or, lotGlobal);
+   TRY_TEST_HR(pPointLoad3->get_Orientation(&orientation));
+   TRY_TEST(orientation, lotGlobal);
 
    Float64 loc;
    TRY_TEST_HR(pPointLoad3->get_Location(&loc));

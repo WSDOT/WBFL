@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LIBRARYFW_LIBRARYFW_H_
-#define INCLUDED_LIBRARYFW_LIBRARYFW_H_
 #pragma once
 
 // This is a master include file for the Library Framework Package
@@ -35,7 +33,3 @@
 #include <LibraryFw\Library.h>
 #include <LibraryFw\LibraryEntry.h>
 #include <LibraryFw\LibraryManager.h>
-
-
-
-#endif // INCLUDED_LIBRARYFW_LIBRARYFW_H_

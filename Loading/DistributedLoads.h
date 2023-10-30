@@ -31,11 +31,11 @@
 #include "LoadingCP.h"
 #include "LoadingUtils.h"
 
-typedef CLoadItem<ldIDistributedLoadItem, ldIDistributedLoad, &IID_ldIDistributedLoadItem> CDistributedLoadItem;
+using CDistributedLoadItem = CLoadItem<ldIDistributedLoadItem, ldIDistributedLoad, &IID_ldIDistributedLoadItem>;
 class CDistributedLoads;
-typedef CLoadCollection<ldIDistributedLoads, &IID_ldIDistributedLoads, CDistributedLoads, 
+using DistributedLoadColl_Impl = CLoadCollection<ldIDistributedLoads, &IID_ldIDistributedLoads, CDistributedLoads,
                         ldIDistributedLoad, ldIDistributedLoadItem, CDistributedLoadItem, 
-                        ldIEnumDistributedLoad, &IID_ldIEnumDistributedLoad> DistributedLoadColl_Impl;
+                        ldIEnumDistributedLoad, &IID_ldIEnumDistributedLoad>;
 /////////////////////////////////////////////////////////////////////////////
 // CDistributedLoads
 class ATL_NO_VTABLE CDistributedLoads : 

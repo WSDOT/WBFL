@@ -59,6 +59,7 @@ void CUHPConcreteTest::Test()
    concrete->put_ftcr(8273708.7518); // 1.2 KSI
    concrete->put_ftloc(8273708.7518); // 1.2 KSI
    concrete->put_etloc(0.0045);
+   concrete->put_gamma(0.85);
 
    Float64 val;
    TRY_TEST( concrete->put_fc(0), E_INVALIDARG);
@@ -86,8 +87,8 @@ void CUHPConcreteTest::Test()
    TRY_TEST(IsEqual(val, 0.85*8273708.7518), true); // gamma*ft,cr
 
    // after crack localization
-   TRY_TEST(ss->ComputeStress(0.0050, &val), S_FALSE);
-   TRY_TEST(IsEqual(val, 0.85 * 8273708.7518), true);
+   TRY_TEST(ss->ComputeStress(0.0050, &val), S_OK);
+   TRY_TEST(IsEqual(val, 0.0), true);
 
    // compute stress for compression strain
 
@@ -97,7 +98,7 @@ void CUHPConcreteTest::Test()
 
    // plastic region
    TRY_TEST(ss->ComputeStress(-0.003, &val), S_OK);
-   TRY_TEST(IsEqual(val, -0.85*151684660.45), true); // stress plateu at alpha*f'c
+   TRY_TEST(IsEqual(val, -0.85*151684660.45), true); // stress plateau at alpha*f'c
 
    // after crushing
    TRY_TEST(ss->ComputeStress(-0.004, &val), S_FALSE); // -0.0035 is crushing
@@ -107,6 +108,6 @@ void CUHPConcreteTest::Test()
    TRY_TEST( eInfo != nullptr, true);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IUHPConcrete), S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStressStrain),       S_OK);
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_IStructuredStorage2), S_OK);
+   TRY_TEST(eInfo->InterfaceSupportsErrorInfo(IID_ISupportUnitServer), S_OK);
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo(IID_ISupportErrorInfo),   S_FALSE);
 }

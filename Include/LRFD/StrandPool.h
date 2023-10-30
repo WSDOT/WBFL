@@ -22,284 +22,121 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_STRANDPOOL_H_
-#define INCLUDED_LRFD_STRANDPOOL_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <map>
 #include <Lrfd\LrfdExp.h>
-#include <Material\PsStrand.h>
+#include <Materials/PsStrand.h>
 #include <Lrfd\PsStrand.h>
 #include <System\SingletonKiller.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
-
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-class lrfdStrandIter;
-
-/*****************************************************************************
-CLASS 
-   lrfdStrandPool
-
-   Flyweight pool for prestressing strands.
-
-
-DESCRIPTION
-   Flyweight pool for prestressing strands.  All of the strands described in
-   AASHTO M203 are stored in this flyweight pool.
-
-LOG
-   rab : 12.10.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdStrandPool
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
+   namespace LRFD
+   {
+      class StrandIter;
 
-   //------------------------------------------------------------------------
-   // Returns a pointer to an instance of the strand pool.
-   static lrfdStrandPool* GetInstance();
+      /// @brief Flyweight pool for prestressing strands.
+      class LRFDCLASS StrandPool
+      {
+      public:
+         StrandPool(const StrandPool&) = delete;
+         StrandPool& operator=(const StrandPool&) = delete;
 
-   //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int64 key,lrfdVersionMgr::Units units);
+         /// @brief Returns a pointer to an instance of the strand pool.
+         static const StrandPool* GetInstance();
 
-   //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(Int64 key);
+         const WBFL::Materials::PsStrand* GetStrand(Int64 key,BDSManager::Units units) const;
 
-   //------------------------------------------------------------------------
-   const matPsStrand* GetStrand(matPsStrand::Grade grade,
-                                matPsStrand::Type type,
-                                matPsStrand::Coating coating,
-                                matPsStrand::Size size );
+         const WBFL::Materials::PsStrand* GetStrand(Int64 key) const;
 
-   //------------------------------------------------------------------------
-   // Returns the lookup key for pStrand.  If pStrand is not a member of
-   // the strand pool, returns -1
-   Int64 GetStrandKey(const matPsStrand* pStrand);
+         const WBFL::Materials::PsStrand* GetStrand(WBFL::Materials::PsStrand::Grade grade,
+                                      WBFL::Materials::PsStrand::Type type,
+                                      WBFL::Materials::PsStrand::Coating coating,
+                                      WBFL::Materials::PsStrand::Size size ) const;
 
-   bool CompareStrands(const matPsStrand* pStrandA, const matPsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false);
+         /// @brief Returns the lookup key for pStrand.  If pStrand is not a member of the strand pool, returns -1
+         Int64 GetStrandKey(const WBFL::Materials::PsStrand* pStrand) const;
+         Int64 GetStrandKey(WBFL::Materials::PsStrand::Grade grade, WBFL::Materials::PsStrand::Type type, WBFL::Materials::PsStrand::Coating coating, WBFL::Materials::PsStrand::Size size) const;
 
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
+         bool CompareStrands(const WBFL::Materials::PsStrand* pStrandA, const WBFL::Materials::PsStrand* pStrandB, bool bCompareGrade = true, bool bCompareType = true, bool bCompareCoating = false, bool bCompareSize = false) const;
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
+      private:
+         static StrandPool* ms_pInstance;
+         using Pool = std::map<Int64, std::shared_ptr<WBFL::Materials::PsStrand> >;
+         static Pool ms_USStrand;
+         static Pool ms_SIStrand;
 
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
+         using Killer = WBFL::System::SingletonKiller<StrandPool>;
+         friend Killer;
+         static Killer ms_Killer;
 
+         StrandPool();
+         ~StrandPool() = default;
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         friend StrandIter;
+      };
 
-private:
-   // GROUP: DATA MEMBERS
-   static lrfdStrandPool* ms_pInstance;
-   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_USStrand;
-   static std::map<Int64, std::shared_ptr<matPsStrand> > ms_SIStrand;
+      /// @brief Iterates over the various strand stored in StrandPool. The strands are filtered by Grade and Type.
+      class LRFDCLASS StrandIter
+      {
+      public:
+         StrandIter(WBFL::Materials::PsStrand::Grade grade = WBFL::Materials::PsStrand::Grade::Gr1725,
+                        WBFL::Materials::PsStrand::Type type = WBFL::Materials::PsStrand::Type::LowRelaxation,
+                        WBFL::Materials::PsStrand::Coating coating = WBFL::Materials::PsStrand::Coating::None);
 
-   typedef sysSingletonKillerT<lrfdStrandPool> Killer;
-   friend Killer;
-   static Killer ms_Killer;
+         StrandIter(const StrandIter&) = default;
+         ~StrandIter() = default;
 
-   // GROUP: LIFECYCLE
+         StrandIter& operator=(const StrandIter&) = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdStrandPool();
+         virtual void Begin();
 
-   // Prevent accidental copying and assignment
-   lrfdStrandPool(const lrfdStrandPool&);
-   lrfdStrandPool& operator=(const lrfdStrandPool&) = delete;
+         virtual void End();
 
-   virtual ~lrfdStrandPool();
+         virtual void Next();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         virtual void Move(Int64 pos);
 
-   friend lrfdStrandIter;
+         virtual void MoveBy(Int64 dPos);
+
+         operator void*() const;
+
+         const WBFL::Materials::PsStrand* GetCurrentStrand() const;
+
+         /// @brief Sets the grade of prestress steel for which the available sizes will
+         /// be iterated over. Sets the iterator to the first element in the
+         /// iteration sequence.
+         void SetGrade(WBFL::Materials::PsStrand::Grade grade);
+
+         /// @brief Returns the grade of prestress steel for which the available sizes are being iterated over.
+         WBFL::Materials::PsStrand::Grade GetGrade() const;
+
+         /// @brief Sets the type of prestress steel for which the available sizes will
+         /// be iterated over. Sets the iterator to the first element in the
+         /// iteration sequence.
+         void SetType(WBFL::Materials::PsStrand::Type type);
+
+         /// @brief Returns the type of prestress steel for which the available sizes are being iterated over.
+         WBFL::Materials::PsStrand::Type GetType() const;
+
+         /// @brief Sets the coating type of prestress steel for which the available sizes will
+         /// be iterated over. Sets the iterator to the first element in the
+         /// iteration sequence.
+         void SetCoating(WBFL::Materials::PsStrand::Coating coating);
+
+         /// @brief Returns the coating type of prestress steel for which the available sizes are being iterated over.
+         WBFL::Materials::PsStrand::Coating GetCoating() const;
+
+      private:
+         std::vector< const WBFL::Materials::PsStrand* > m_Strands;
+         std::vector< const WBFL::Materials::PsStrand* >::iterator m_Begin;
+         std::vector< const WBFL::Materials::PsStrand* >::iterator m_End;
+         std::vector< const WBFL::Materials::PsStrand* >::iterator m_Current;
+         WBFL::Materials::PsStrand::Grade m_Grade;
+         WBFL::Materials::PsStrand::Type m_Type;
+         WBFL::Materials::PsStrand::Coating m_Coating;
+      };
+   };
 };
-
-
-/*****************************************************************************
-CLASS 
-   lrfdStrandIter
-
-   Iterates over the various strand stored in lrfdStrandPool.
-
-
-DESCRIPTION
-   Iterates over the various strand stored in lrfdStrandPool.
-   The strands are filtered by Grade and Type.
-
-LOG
-   rab : 12.10.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdStrandIter
-{
-public:
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdStrandIter(matPsStrand::Grade grade = matPsStrand::Gr1725,
-                  matPsStrand::Type type = matPsStrand::LowRelaxation,
-                  matPsStrand::Coating coating = matPsStrand::None);
-
-   //------------------------------------------------------------------------
-   lrfdStrandIter(const lrfdStrandIter& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   ~lrfdStrandIter();
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   lrfdStrandIter& operator=(const lrfdStrandIter& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual void Begin();
-
-   //------------------------------------------------------------------------
-   virtual void End();
-
-   //------------------------------------------------------------------------
-   virtual void Next();
-
-   //------------------------------------------------------------------------
-   virtual void Move(Int64 pos);
-
-   //------------------------------------------------------------------------
-   virtual void MoveBy(Int64 dPos);
-
-   //------------------------------------------------------------------------
-   operator void*() const;
-
-   //------------------------------------------------------------------------
-   const matPsStrand* GetCurrentStrand() const;
-
-   // GROUP: ACCESS
-
-   //------------------------------------------------------------------------
-   // Sets the grade of prestress steel for which the available sizes will
-   // be iterated over. Sets the iterator to the first element in the
-   // iteration sequence.
-   void SetGrade(matPsStrand::Grade grade);
-
-   //------------------------------------------------------------------------
-   // Returns the grade of prestress steel for which the available sizes
-   // are being iterated over.
-   matPsStrand::Grade GetGrade() const;
-
-   //------------------------------------------------------------------------
-   // Sets the type of prestress steel for which the available sizes will
-   // be iterated over. Sets the iterator to the first element in the
-   // iteration sequence.
-   void SetType(matPsStrand::Type type);
-
-   //------------------------------------------------------------------------
-   // Returns the type of prestress steel for which the available sizes
-   // are being iterated over.
-   matPsStrand::Type GetType() const;
-
-   //------------------------------------------------------------------------
-   // Sets the coating type of prestress steel for which the available sizes will
-   // be iterated over. Sets the iterator to the first element in the
-   // iteration sequence.
-   void SetCoating(matPsStrand::Coating coating);
-
-   //------------------------------------------------------------------------
-   // Returns the coating type of prestress steel for which the available sizes
-   // are being iterated over.
-   matPsStrand::Coating GetCoating() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeAssignment(const lrfdStrandIter& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   std::vector< const matPsStrand* > m_Strands;
-   std::vector< const matPsStrand* >::iterator m_Begin;
-   std::vector< const matPsStrand* >::iterator m_End;
-   std::vector< const matPsStrand* >::iterator m_Current;
-   matPsStrand::Grade m_Grade;
-   matPsStrand::Type m_Type;
-   matPsStrand::Coating m_Coating;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeCopy(const lrfdStrandIter& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_STRANDPOOL_H_

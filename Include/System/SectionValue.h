@@ -21,139 +21,69 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLDUED_SYSTEM_SECTIONVALUE_H_
-#define INCLDUED_SYSTEM_SECTIONVALUE_H_
 #pragma once
 
 #include <System\SysExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysSectionValue
-
-   Encapsulates the notion of a value at a section.
-
-
-DESCRIPTION
-   Encapsulates the notion of a value at a section.  In section based
-   analysis, it is not uncommon to have discontinuities at a section.
-   This class supports that by providing left and right values.
-
-BUGS
-   There are currently no known problems with this class.
-
-LOG
-   rab : 08.19.1997 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysSectionValue
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace System
+   {
+      /// Encapsulates the notion of a value at a section.  In section based
+      /// analysis, it is not uncommon to have discontinuities at a section.
+      /// This class supports that by providing left and right values.
+      class SYSCLASS SectionValue
+      {
+      public:
+         SectionValue(Float64 val = 0.);
+         SectionValue(Float64 left,Float64 right);
+         SectionValue(const SectionValue&) = default;
+         ~SectionValue() = default;
 
-   //------------------------------------------------------------------------
-   sysSectionValue(Float64 val = 0.);
+         SectionValue& operator=(const SectionValue&) = default;
 
-   //------------------------------------------------------------------------
-   sysSectionValue(Float64 left,Float64 right);
+         bool operator==(const SectionValue& rOther) const;
 
-   //------------------------------------------------------------------------
-   sysSectionValue(const sysSectionValue& rOther);
+         SectionValue& operator=(Float64 val);
+         SectionValue& operator+=(const SectionValue& rOther);
+         SectionValue& operator-=(const SectionValue& rOther);
+         SectionValue& operator*=(const SectionValue& rOther);
+         SectionValue& operator/=(const SectionValue& rOther);
+         SectionValue  operator-();
+         SectionValue& operator+=(Float64 val);
+         SectionValue& operator-=(Float64 val);
+         SectionValue& operator*=(Float64 val);
+         SectionValue& operator/=(Float64 val);
 
-   //------------------------------------------------------------------------
-   ~sysSectionValue();
+         /// Returns the value on the left of the section
+         Float64& Left();
 
-   // GROUP: OPERATORS
+         /// Returns the value on the left of the section
+         const Float64& Left() const;
 
-   //------------------------------------------------------------------------
-   sysSectionValue& operator=(const sysSectionValue& rOther);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator=(Float64 val);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator+=(const sysSectionValue& rOther);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator-=(const sysSectionValue& rOther);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator*=(const sysSectionValue& rOther);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator/=(const sysSectionValue& rOther);
-   //------------------------------------------------------------------------
-   sysSectionValue  operator-();
-   //------------------------------------------------------------------------
-   sysSectionValue& operator+=(Float64 val);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator-=(Float64 val);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator*=(Float64 val);
-   //------------------------------------------------------------------------
-   sysSectionValue& operator/=(Float64 val);
+         /// Returns the value on the right of the section
+         Float64& Right();
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
+         /// Returns the value on the right of the section
+         const Float64& Right() const;
 
-   //------------------------------------------------------------------------
-   Float64& Left();
-   //------------------------------------------------------------------------
-   const Float64& Left() const;
-   //------------------------------------------------------------------------
-   Float64& Right();
-   //------------------------------------------------------------------------
-   const Float64& Right() const;
+         /// Returns the value as a string. If the left and right values are equal, the string shows a single value,
+         /// otherwise the string shows left\\right
+         std::_tstring AsString() const;
 
-   //------------------------------------------------------------------------
-   std::_tstring AsString() const;
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void MakeCopy(const sysSectionValue& rOther);
-   void MakeAssignment(const sysSectionValue& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_Left;
-   Float64 m_Right;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         Float64 m_Left;
+         Float64 m_Right;
+      };
+   };
 };
 
-//------------------------------------------------------------------------
-SYSFUNC sysSectionValue operator+(const sysSectionValue& a,const sysSectionValue& b);
-
-//------------------------------------------------------------------------
-SYSFUNC sysSectionValue operator-(const sysSectionValue& a,const sysSectionValue& b);
-
-//------------------------------------------------------------------------
-SYSFUNC sysSectionValue operator*(const sysSectionValue& a,const sysSectionValue& b);
-SYSFUNC sysSectionValue operator*(const sysSectionValue& a,Float64 k);
-SYSFUNC sysSectionValue operator*(Float64 k,const sysSectionValue& a);
-
-//------------------------------------------------------------------------
-SYSFUNC sysSectionValue operator/(const sysSectionValue& a,const sysSectionValue& b);
-SYSFUNC sysSectionValue operator/(const sysSectionValue& a,Float64 k);
-SYSFUNC sysSectionValue operator/(Float64 k,const sysSectionValue& a);
-
-//------------------------------------------------------------------------
-SYSFUNC std::_tostream& operator<<(std::_tostream& os,const sysSectionValue& a);
-
-#endif // INCLDUED_SYSTEM_SECTIONVALUE_H_
+SYSFUNC WBFL::System::SectionValue operator+(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b);
+SYSFUNC WBFL::System::SectionValue operator-(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b);
+SYSFUNC WBFL::System::SectionValue operator*(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b);
+SYSFUNC WBFL::System::SectionValue operator*(const WBFL::System::SectionValue& a,Float64 k);
+SYSFUNC WBFL::System::SectionValue operator*(Float64 k,const WBFL::System::SectionValue& a);
+SYSFUNC WBFL::System::SectionValue operator/(const WBFL::System::SectionValue& a,const WBFL::System::SectionValue& b);
+SYSFUNC WBFL::System::SectionValue operator/(const WBFL::System::SectionValue& a,Float64 k);
+SYSFUNC WBFL::System::SectionValue operator/(Float64 k,const WBFL::System::SectionValue& a);
+SYSFUNC std::_tostream& operator<<(std::_tostream& os,const WBFL::System::SectionValue& a);

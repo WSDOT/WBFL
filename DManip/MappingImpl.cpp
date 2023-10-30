@@ -77,7 +77,7 @@ CMappingImpl::~CMappingImpl()
    // calls to PrepareDC and CleanUpDC. This is not good form.
    if (!m_Stack.empty())
    {
-      CollectionIndexType siz = m_Stack.size();
+      IndexType siz = m_Stack.size();
       ATLASSERT(false);
    }
 }

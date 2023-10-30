@@ -83,7 +83,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
 
    HRESULT hr;
    CComPtr<IShape> primaryShape;
-   hr = get_PrimaryShape(Xs,sectionBias,coordinateSystem,&primaryShape);
+   hr = get_GirderShape(Xs,sectionBias,coordinateSystem,&primaryShape);
    ATLASSERT(SUCCEEDED(hr));
    if ( FAILED(hr) )
    {
@@ -186,15 +186,15 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Section(StageIndexType stageIdx
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_PrimaryShape(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CComPtr<IShape> girderShape;
-   get_GirderShape(Xs, coordinateSystem, &girderShape);
+   get_BeamShape(Xs, coordinateSystem, &girderShape);
 
    CComPtr<IShape> shape;
    if (coordinateSystem == cstGirder)
    {
-      get_GirderShape(Xs, cstBridge, &shape);
+      get_BeamShape(Xs, cstBridge, &shape);
    }
    else
    {
@@ -250,7 +250,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetVolumeAndSurfaceArea(Float64* pV
          {
             Float64 X = 0;
             CComPtr<IShape> shape;
-            get_PrimaryShape(X, sbRight, cstGirder, &shape); // don't use the shape in m_Shapes. There is to flange thickening so we have to
+            get_GirderShape(X, sbRight, cstGirder, &shape); // don't use the shape in m_Shapes. There is to flange thickening so we have to
                                                               // get the primary shape so the effect of TFT is included
             Float64 prev_perimeter;
             shape->get_Perimeter(&prev_perimeter);
@@ -272,7 +272,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetVolumeAndSurfaceArea(Float64* pV
                X += dx;
 
                shape.Release();
-               get_PrimaryShape(X, sbLeft, cstGirder, &shape);
+               get_GirderShape(X, sbLeft, cstGirder, &shape);
 
                Float64 perimeter;
                shape->get_Perimeter(&perimeter);
@@ -535,7 +535,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BackgroundMaterial(IndexType in
    return S_OK;
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_GirderShape(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BeamShape(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -720,7 +720,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointMaterial(IMaterial** mater
 STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_JointShapes(Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJoint, IShape** ppRightJoint)
 {
    CComPtr<IShape> primaryShape;
-   get_PrimaryShape(Xs,sbRight, coordinateSystem,&primaryShape);
+   get_GirderShape(Xs,sbRight, coordinateSystem,&primaryShape);
    CComQIPtr<IJointedSection> section(primaryShape);
    ATLASSERT(section);
    return section->GetJointShapes(ppLeftJoint, ppRightJoint);
@@ -743,7 +743,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CThickenedFlangeBulbTeeSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }
@@ -788,7 +788,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IFlangedDecke
 {
    // This method puts pSection in Bridge Section Coordinates
 
-   // Get the point where the girder line is located in bridge section coordiantes
+   // Get the point where the girder line is located in bridge section coordinates
    // This point corresponds to the point on the top of the girder above the CL web
    CComPtr<IPoint2d> pntGirderLine;
    GB_GetSectionLocation(this, Xs, &pntGirderLine);
@@ -798,7 +798,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::AdjustPosition(Float64 Xs, IFlangedDecke
    // the right location, the entire shape will be moved to the correct location
 
    // the beam hook point is at the bottom CL of the web
-   // Adjust the position of the beam so that the hook point is horizonally aligned with pntGirderLine and
+   // Adjust the position of the beam so that the hook point is horizontally aligned with pntGirderLine and
    // is the CL height below pntGirderLine
 
    CComPtr<IPoint2d> pntBottomCL;
@@ -841,15 +841,18 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
    CComPtr<IPoint2d> leftTop, leftBottom, topCL, topCentral, rightTop, rightBottom;
    flangePoints->GetTopFlangePoints(&leftTop, &leftBottom, &topCL, &topCentral, &rightTop, &rightBottom);
 
-   // Get normal to our girderline
+   // Get normal to our girder line
    CComPtr<IPath> path;
    m_Impl.m_pGirderLine->get_Path(&path);
 
    CComPtr<IPoint2d> pntOnThisSegment;
-   path->LocatePoint(Xs, omtAlongDirection, 0.0, CComVariant(0.0), &pntOnThisSegment);
+   CComQIPtr<IPathElement> element(path);
+   element->LocatePoint(Xs, omtAlongDirection, 0.0, CComVariant(0.0), &pntOnThisSegment);
 
    CComPtr<IDirection> dirNormal;
-   path->Normal(Xs, &dirNormal);
+   element.Release();
+   path.QueryInterface(&element);
+   element->GetNormal(Xs, &dirNormal);
    Float64 normal;
    dirNormal->get_Value(&normal);
 
@@ -857,7 +860,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
    v.CoCreateInstance(CLSID_Vector2d);
    v->put_Direction(normal);
 
-   // create a line normal to our girderline
+   // create a line normal to our girder line
    CComPtr<ILine2d> line;
    line.CoCreateInstance(CLSID_Line2d);
    line->SetExplicit(pntOnThisSegment, v);
@@ -902,7 +905,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       CComQIPtr<IThickenedFlangeSegment> segment(leftSegment);
 
       CComPtr<IShape> leftGirderShape;
-      segment->get_GirderShape(distAlongLeftGirderLine,cstBridge, &leftGirderShape);
+      segment->get_BeamShape(distAlongLeftGirderLine,cstBridge, &leftGirderShape);
 
       CComQIPtr<IFlangedDeckedSection> leftSection(leftGirderShape);
 
@@ -1025,7 +1028,7 @@ HRESULT CThickenedFlangeBulbTeeSegment::CreateJointShapes(Float64 Xs, IFlangedDe
       CComQIPtr<IThickenedFlangeSegment> segment(rightSegment);
 
       CComPtr<IShape> rightGirderShape;
-      segment->get_GirderShape(distAlongRightGirderLine, cstBridge, &rightGirderShape);
+      segment->get_BeamShape(distAlongRightGirderLine, cstBridge, &rightGirderShape);
 
       CComQIPtr<IFlangedDeckedSection> rightSection(rightGirderShape);
 

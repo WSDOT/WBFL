@@ -34,29 +34,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestLineSegment2d :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ILineSegment2dEvents
+class ATL_NO_VTABLE CTestLineSegment2d
 {
 public:
    CTestLineSegment2d();
 
    static void Test();
 
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestLineSegment2d)
-   COM_INTERFACE_ENTRY(ILineSegment2dEvents)
-END_COM_MAP()
-
-// ILineSegment2dEvents
-public:
-	STDMETHOD(OnLineSegmentChanged)(ILineSegment2d* lineSegment);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 	static void TestISupportErrorInfo();
 };
 

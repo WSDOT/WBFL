@@ -70,10 +70,10 @@ public:
 
 // IInteractionCurveSolution
 public:
-   STDMETHOD(get_NeutralAxisDirection)(/*[in]*/CollectionIndexType index,/*[out,retval]*/Float64* angle) override;
-	STDMETHOD(get_MomentCurvatureSolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCurvatureSolution** solution) override;
+   STDMETHOD(get_NeutralAxisDirection)(/*[in]*/IndexType index,/*[out,retval]*/Float64* angle) override;
+	STDMETHOD(get_MomentCurvatureSolution)(/*[in]*/IndexType index,/*[out,retval]*/IMomentCurvatureSolution** solution) override;
 	STDMETHOD(AddSolutionPoint)(/*[in]*/Float64 angle,/*[in]*/IMomentCurvatureSolution* solution) override;
-	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
+	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/IndexType* nPoints) override;
 };
 
 #endif //__InteractionCurveSolution_H_

@@ -526,7 +526,7 @@ void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    CHRException hr;
 
    // reserve some space
-   CollectionIndexType num_pts = influenceLoadSet.size();
+   IndexType num_pts = influenceLoadSet.size();
    if (num_pts==0)
    {
       ATLASSERT(false);
@@ -746,7 +746,7 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    // such as when the poi is located at a hinge that is not over a support, or for Mz when the top of a support is hinged.
    // However, figuring this out is too much effort for very little optimization.
    // reserve some space
-   CollectionIndexType num_pts = influenceLoadSet.size();
+   IndexType num_pts = influenceLoadSet.size();
    if (num_pts==0)
    {
       ATLASSERT(false);

@@ -72,8 +72,8 @@ BEGIN_COM_MAP(CGenericBridge)
 END_COM_MAP()
 
 private:
-   void DoUpdateBridgeModel(long flags);
-
+   bool m_bDirtyPiers = true;
+   void UpdatePiers();
    CComPtr<IPierCollection> m_Piers;
 
    CComPtr<IBridgeGeometry> m_BridgeGeometry;
@@ -83,7 +83,7 @@ private:
    StageIndexType m_WearingSurfaceStage; // stage when wearing surface is applied (not applied if INVALID_INDEX)
 
    Float64 m_SacrificialDepth;
-   StageIndexType m_SacrificialDepthStage; // stage when deck surface is assumed to be reduced by the sacrifical depth (INVALID_INDEX if not used)
+   StageIndexType m_SacrificialDepthStage; // stage when deck surface is assumed to be reduced by the sacrificial depth (INVALID_INDEX if not used)
 
    CComPtr<IBridgeDeck> m_Deck;
 
@@ -92,7 +92,7 @@ private:
 
    std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>> m_SuperstructureMembers;
 
-   // Backdoor access to collections
+   // Back door access to collections
    CPierCollection* GetPierCollection();
 
 // ISupportsErrorInfo
@@ -103,6 +103,8 @@ public:
 public:
    STDMETHOD(get_BridgeGeometry)(IBridgeGeometry** bridgeGeometry) override;
    STDMETHOD(get_Alignment)(IAlignment** ppAlignment) override;
+   STDMETHOD(get_ProfileID)(/*[out, retval]*/ IDType* pProfileID) override;
+   STDMETHOD(get_SurfaceID)(/*[out, retval]*/ IDType* pSurfaceID) override;
    STDMETHOD(get_Piers)(/*[out,retval]*/ IPierCollection* *piers) override;
    STDMETHOD(get_Length)(/*[out,retval]*/Float64* length) override;
    STDMETHOD(get_SpanLength)(SpanIndexType spanIdx,Float64* length) override;
@@ -126,8 +128,6 @@ public:
    STDMETHOD(CreateSuperstructureMember)(GirderIDType id,GirderIDType leftSSMbrID,GirderIDType rightSSMbrID,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get_SuperstructureMember)(GirderIDType id,ISuperstructureMember** ppMbr) override;
    STDMETHOD(get__EnumSuperstructureMembers)(IEnumSuperstructureMembers* *enumSSMbrs) override;
-
-   STDMETHOD(UpdateBridgeModel)(long flags) override;
 
 // IStructuredStorage2
 public:

@@ -22,209 +22,170 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   dbgLog
-****************************************************************************/
-
 #include <System\Log.h>
 #include <iostream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::Debug;
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-dbgLog::dbgLog(): 
-m_NumErrors(0)
-{
-   m_pDumpCtx = &m_DefDumpCtx;
-}
-
-dbgLog::dbgLog(dbgDumpContext* pDumpCtx): 
-m_pDumpCtx( pDumpCtx ),
+Log::Log(): 
 m_NumErrors(0)
 {
 }
 
-dbgLog::~dbgLog()
+Log::Log(LogContext& context): 
+m_pContext( &context ),
+m_NumErrors(0)
 {
 }
 
-//======================== OPERATORS  =======================================
-
-dbgLog& dbgLog::operator<<(const std::_tstring& s)
+Log::~Log()
 {
-   *m_pDumpCtx << s;
+}
+
+Log& Log::operator<<(const std::_tstring& s)
+{
+   *m_pContext << s;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(LPCTSTR s)
+Log& Log::operator<<(LPCTSTR s)
 {
-   *m_pDumpCtx << s;
+   *m_pContext << s;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(TCHAR c)
+Log& Log::operator<<(TCHAR c)
 {
-   *m_pDumpCtx << c;
+   *m_pContext << c;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(bool n)
+Log& Log::operator<<(bool n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Int16 n)
+Log& Log::operator<<(Int16 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Uint16 n)
+Log& Log::operator<<(Uint16 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Int32 n)
+Log& Log::operator<<(Int32 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Uint32 n)
+Log& Log::operator<<(Uint32 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Int64 n)
+Log& Log::operator<<(Int64 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Uint64 n)
+Log& Log::operator<<(Uint64 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Float32 n)    
+Log& Log::operator<<(Float32 n)    
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Float64 n)
+Log& Log::operator<<(Float64 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(Float80 n)
+Log& Log::operator<<(Float80 n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-dbgLog& dbgLog::operator<<(void * n)
+Log& Log::operator<<(void * n)
 {
-   *m_pDumpCtx << n;
+   *m_pContext << n;
    return *this;
 }
 
-// wild-ass code to make the manipulator stuff work.
-dbgLog& dbgLog::operator<<(dbgLog& (*pf)(dbgLog&))
+Log& Log::operator<<(Log& (*pf)(Log&))
 {
    (*pf)(*this);
    return *this;
 }
 
-
-//======================== OPERATIONS =======================================
-void dbgLog::AddEntryToLog(std::_tstring& msg,  dbgLog::EntryType type)
+void Log::LogTestResult(const std::_tstring& msg,  TestResult type)
 {
-   if (type == dbgLog::Failed)
+   if (type == Log::TestResult::Failed)
    {
       m_NumErrors++; // can set a break here when test fails
    }
 
-   LogEntry ent;
-   ent.Type = type;
-   ent.Msg  = msg;
-
-   m_ErrorLog.push_back(ent);
+   m_ErrorLog.emplace_back(type,msg);
 }
 
-size_t dbgLog::GetNumEntries() const
+size_t Log::GetNumEntries() const
 {
    return m_ErrorLog.size();
 }
 
-size_t dbgLog::GetNumErrors() const
+size_t Log::GetNumErrors() const
 {
    return m_NumErrors;
 }
 
-size_t dbgLog::GetTestCount(EntryType type) const
+size_t Log::GetTestCount(TestResult type) const
 {
-   size_t cTests = 0;
-   for ( ConstEntryVecIterator i = m_ErrorLog.begin(); i != m_ErrorLog.end(); i++ )
-   {
-      if ( (*i).Type == type )
-         cTests++;
-   }
-
+   size_t cTests = std::count_if(m_ErrorLog.begin(), m_ErrorLog.end(), [&](const auto& error) {return (error.first == type); });
    return cTests;
 }
 
-void dbgLog::DumpFilteredLog(dbgLog::EntryType type)
+void Log::DumpFilteredLog(TestResult type) const
 {
-   for (EntryVecIterator i=m_ErrorLog.begin(); i!=m_ErrorLog.end(); i++)
+   std::for_each(m_ErrorLog.begin(), m_ErrorLog.end(),[&](const auto& error) {if (error.first == type) *m_pContext << error.second << endl; });
+}
+
+void Log::DumpEntireLog() const
+{
+   std::for_each(m_ErrorLog.begin(), m_ErrorLog.end(), [&](const auto& error) {*m_pContext << error.second << endl; });
+}
+
+void Log::SetLogContext(LogContext& context) 
+{ 
+   m_pContext = &context;
+}
+
+LogContext& Log::GetLogContext() 
+{ 
+   return *m_pContext;
+}
+
+namespace WBFL
+{
+   namespace Debug
    {
-      if ((*i).Type==type)
+      Log& endl(Log& rl)
       {
-        // endl doesn't seem to be working correctly in this special case.
-         *m_pDumpCtx << (*i).Msg << endl;
+         rl << _T("\n");
+         return rl;
       }
    }
 }
-
-void dbgLog::DumpEntireLog()
-{
-   for (EntryVecIterator i=m_ErrorLog.begin(); i!=m_ErrorLog.end(); i++)
-   {
-      // endl doesn't seem to be working correctly in this special case.
-      *m_pDumpCtx << (*i).Msg << endl;
-   }
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================

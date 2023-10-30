@@ -34,8 +34,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #include <afxdisp.h>
 #include <afxdlgs.h>
@@ -55,6 +55,12 @@ extern CComModule _Module;
 #include <WBFLComCollections.h>
 
 #include <memory>
+
+
+// #import is not compatible with the /MP compiler option
+// https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
+// #import directives into the PCH
+#import  <msxml6.dll> rename_namespace("MSXML")
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

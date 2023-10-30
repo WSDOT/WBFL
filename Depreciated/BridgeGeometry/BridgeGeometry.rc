@@ -1,0 +1,149 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include <WBFLVersion.h>
+#endif
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include <WBFLVersion.h>\r\n"
+    "#endif\r\n"
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "1 TYPELIB ""WBFLBridgeGeometry.tlb""\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 7,1,0,1
+ PRODUCTVERSION 7,1,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "Comments", "A member of the Alternate Route Project"
+            VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "FileDescription", "WBFL Bridge Geometry Module"
+            VALUE "FileVersion", "7.1.0.1"
+            VALUE "InternalName", "WBFLBridgeGeometry"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "OriginalFilename", "WBFLBridgeGeometry.DLL"
+            VALUE "ProductName", "WBFL"
+            VALUE "ProductVersion", "7.1.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_BRIDGEGEOMETRY      REGISTRY                "BridgeGeometry.rgs"
+IDR_BRIDGE              REGISTRY                "Bridge.rgs"
+IDR_PIERLINE            REGISTRY                "PierLine.rgs"
+IDR_PIERLINECOLLECTION  REGISTRY                "PierLineCollection.rgs"
+IDR_PATHCOLLECTION      REGISTRY                "PathCollection.rgs"
+IDR_ALIGNMENTOFFSETLAYOUTLINEFACTORY REGISTRY                "AlignmentOffsetLayoutLineFactory.rgs"
+IDR_GIRDERLINE          REGISTRY                "GirderLine.rgs"
+IDR_DIAPHRAGMLINE       REGISTRY                "DiaphragmLine.rgs"
+IDR_SINGLEGIRDERLINEFACTORY REGISTRY                "SingleGirderLineFactory.rgs"
+IDR_SIMPLEGIRDERLINEFACTORY REGISTRY                "SimpleGirderLineFactory.rgs"
+IDR_EQUALSPACEDIAPHRAGMLINEFACTORY REGISTRY                "EqualSpaceDiaphragmLineFactory.rgs"
+IDR_SINGLEDIAPHRAGMLINEFACTORY REGISTRY                "SingleDiaphragmLineFactory.rgs"
+IDR_THROUGHPOINTDIAPHRAGMLINEFACTORY REGISTRY                "ThroughPointDiaphragmLineFactory.rgs"
+IDR_SIMPLEDECKBOUNDARYFACTORY REGISTRY                "SimpleDeckBoundaryFactory.rgs"
+IDR_DECKBOUNDARY        REGISTRY                "DeckBoundary.rgs"
+IDR_UNIFORMSPACINGLAYOUTLINEFACTORY REGISTRY                "UniformSpacingLayoutLineFactory.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_PROJNAME            "BridgeGeometry"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_E_INITIALIZATION    "Error initializing bridge geometry model. Only call this method once."
+    IDS_E_INVALIDSTATION    "Invalid station"
+    IDS_E_ID                "ID is invalid or is already in use"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+1 TYPELIB "WBFLBridgeGeometry.tlb"
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

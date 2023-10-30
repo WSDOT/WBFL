@@ -28,40 +28,31 @@
 #endif
 
 #include <System\SysLib.h>
-
 #include <System\Checks.h>
 #include <System\XProgrammingError.h>
 #include <strstream>
 
-/*#if !defined _DEBUG
-#include <stdexcept>
-#endif
-  */ 
+using namespace WBFL::Debug;
+
 DIAG_DEFINE_GROUP(Def,1,0);
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+bool Diagnostics::bWarnPopup = true;
 
-bool dbgDiagBase::bWarnPopup = true;
-
-void dbgDiagBase::Watch( LPCTSTR group, LPCTSTR msg,
-                         LPCTSTR fname, Uint32 line )
+void Diagnostics::Watch(const std::_tstring& group, const std::_tstring& msg,
+                         const std::_tstring& fname, Uint32 line )
 {
-   dbgDiagBase::Message( _T("Watch"), group, msg, fname, line, false );
+   Diagnostics::Message( _T("Watch"), group, msg, fname, line, false );
 }
 
-void dbgDiagBase::Warn( LPCTSTR group, LPCTSTR msg,
-                        LPCTSTR fname, Uint32 line )
+void Diagnostics::Warn( const std::_tstring& group, const std::_tstring& msg,
+                        const std::_tstring& fname, Uint32 line )
 {
-   dbgDiagBase::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
+   Diagnostics::Message( _T("Warn"), group, msg, fname, line, bWarnPopup );
 }
 
-void dbgDiagBase::Message( LPCTSTR type,
-                           LPCTSTR group, LPCTSTR msg,
-                           LPCTSTR fname, Uint32 line, bool bPopup)
+void Diagnostics::Message( const std::_tstring& type,
+                           const std::_tstring& group, const std::_tstring& msg,
+                           const std::_tstring& fname, Uint32 line, bool bPopup)
 {
     std::_tostringstream out;
     out << type << _T(' ') << fname << _T(' ') << line
@@ -74,59 +65,73 @@ void dbgDiagBase::Message( LPCTSTR type,
       ::MessageBox(0, message.c_str(), _T("Warning"), MB_OK | MB_ICONWARNING );
 }
 
-void dbgDiagBase::Output( LPCTSTR msg )
+void Diagnostics::Output( const std::_tstring& msg )
 {
-    ::OutputDebugString(msg);
+    ::OutputDebugString(msg.c_str());
 }
 
-void dbgDiagBase::EnableWarnPopup(bool bEnable)
+void Diagnostics::EnableWarnPopup(bool bEnable)
 {
    bWarnPopup = bEnable;
 }
 
-bool dbgDiagBase::IsWarnPopupEnabled()
+bool Diagnostics::IsWarnPopupEnabled()
 {
    return bWarnPopup;
 }
 
-void dbgMessage::Precondition(LPCTSTR s,LPCTSTR file, Int32 line)
+bool Message::m_bPopup = true;
+
+void Message::Precondition(const std::_tstring& s,const std::_tstring& file, Uint32 line)
+{
+   if (IsPopupEnabled())
+   {
+#if defined _DEBUG
+#if defined _UNICODE
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
+#else
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Precondition] %s\n"), s.c_str()) == 1)
+#endif
+         _CrtDbgBreak();
+#endif
+   }
+    throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::Precondition,file,line);
+}
+
+void Message::Check(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Check] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Precondition] %s\n"),s) == 1 )
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Check] %s\n"), s.c_str()) == 1)
 #endif
        _CrtDbgBreak();
-#else
-    throw sysXProgrammingError(sysXProgrammingError::InvalidValue,file,line);
 #endif
 }
 
-void dbgMessage::Check(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::AssertValidFailed(const std::_tstring& s,const std::_tstring& file, Uint32 line)
 {
+   if (IsPopupEnabled())
+   {
 #if defined _DEBUG
 #if defined _UNICODE
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
+      if (_CrtDbgReportW(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Assert Valid Failed] %s\n"), s.c_str()) == 1)
 #else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Check] %s\n"),s) == 1 )
+      if (_CrtDbgReport(_CRT_ASSERT, file.c_str(), line, nullptr, _T("[Assert Valid Failed] %s\n"), s.c_str()) == 1)
 #endif
-       _CrtDbgBreak();
-#else
-    throw sysXProgrammingError(sysXProgrammingError::CodeFault,file,line);
+            _CrtDbgBreak();
 #endif
+   }
+   throw WBFL::System::XProgrammingError(WBFL::System::XProgrammingError::AssertValidFailed,file,line);
 }
 
-void dbgMessage::AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line)
+void Message::EnablePopup(bool bEnable)
 {
-#if defined _DEBUG
-    if ( _CrtDbgReportW(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
-#if defined _UNICODE
-#else
-    if ( _CrtDbgReport(_CRT_ASSERT,file,line,nullptr,_T("[Assert Valid Failed] %s\n"),s) == 1 )
-#endif
-       _CrtDbgBreak();
-#else
-    throw sysXProgrammingError(sysXProgrammingError::AssertValidFailed,file,line);
-#endif
+   m_bPopup = bEnable;
+}
+
+bool Message::IsPopupEnabled()
+{
+   return m_bPopup;
 }

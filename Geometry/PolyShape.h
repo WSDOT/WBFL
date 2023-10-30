@@ -30,10 +30,7 @@
 
 #include "resource.h"       // main symbols
 #include "Helper.h"
-#include <GeometricPrimitives\Primitives.h>
-
-
-class gpLine2d;
+#include <GeomModel/Polygon.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPolyShape
@@ -44,14 +41,14 @@ class ATL_NO_VTABLE CPolyShape :
    public IObjectSafetyImpl<CPolyShape,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
    public IPolyShape,
    public IShape,
-   public IXYPosition,
-   public IStructuredStorage2,
-   public IPersist
+   public IXYPosition
 {
 public:
 	CPolyShape()
 	{
 	}
+
+   void SetPolygon(const WBFL::Geometry::Polygon& polygon) { m_Polygon = polygon; }
 
    HRESULT FinalConstruct();
    void FinalRelease();
@@ -62,12 +59,10 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPolyShape)
    COM_INTERFACE_ENTRY(IPolyShape)
-   COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IShape)
    COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportErrorInfo
@@ -76,22 +71,25 @@ public:
 
 // IPolyShape
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Points)(/*[out,retval]*/IPoint2dCollection** coll) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(get_Point)(/*[in]*/ CollectionIndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
-   STDMETHOD(GetPoint)(/*[in] */ CollectionIndexType index, /*[out]*/ Float64* pX, /*[out]*/ Float64* pY) override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Point)(/*[in]*/ IndexType index, /*[out, retval]*/ IPoint2d* *pVal) override;
+   STDMETHOD(GetPoint)(/*[in] */ IndexType index, /*[out]*/ Float64* pX, /*[out]*/ Float64* pY) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(RemovePoint)(/*[in]*/ CollectionIndexType index) override;
-   STDMETHOD(ChangePoint)(/*[in]*/ CollectionIndexType index, /*[in]*/ Float64 x, /*[in]*/ Float64 y) override;
-   STDMETHOD(ChangePointEx)(/*[in]*/ CollectionIndexType index, /*[in]*/ IPoint2d* pPoint) override;
+	STDMETHOD(RemovePoint)(/*[in]*/ IndexType index) override;
+   STDMETHOD(ChangePoint)(/*[in]*/ IndexType index, /*[in]*/ Float64 x, /*[in]*/ Float64 y) override;
+   STDMETHOD(ChangePointEx)(/*[in]*/ IndexType index, /*[in]*/ IPoint2d* pPoint) override;
+   STDMETHOD(SetPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
    STDMETHOD(AddPoints)(/*[in]*/ IPoint2dCollection* pPoints) override;
 	STDMETHOD(AddPointEx)(/*[in]*/ IPoint2d* pPoint) override;
    STDMETHOD(AddPoint)(/*[in]*/ Float64 x,/*[in]*/ Float64 y) override;
+   STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt) override;
+   STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
 
 // IShape
+	STDMETHOD(FurthestPoint)(/*[in]*/ILine2d* line, /*[out]*/ IPoint2d** ppPoint, /*[out]*/Float64* dist) override;
 	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
@@ -111,67 +109,9 @@ public:
 	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 private:
-   HRESULT ClipWithLine(gpLine2d& theLine, IShape** pShape);
-
-   // Simple collection of points
-   std::vector<gpPoint2d> m_Points;
-
-   void GetLocatorPoint(LocatorPointType lp, Float64* x, Float64* y);
-
-   // dirty flags to signal completion of different computations and cached properties
-   bool m_DirtyBoundingBox;
-   bool m_DirtyProperties;
-
-   // cached shape properties
-   struct ShapeProps
-   {
-      Float64 Area;
-      Float64 Ixx;
-      Float64 Iyy;
-      Float64 Ixy;
-      Float64 Xleft;
-      Float64 Xright;
-      Float64 Ytop;
-      Float64 Ybottom;
-      Float64 Cx;  // centriod coord's
-      Float64 Cy;
-
-      ShapeProps()
-      {
-         Init();
-      }
-      void Init();
-
-      void Offset(Float64 dx, Float64 dy)
-      {
-         Xleft += dx;
-         Xright += dx;
-         Ytop += dy;
-         Ybottom += dy;
-         Cx += dx;
-         Cy += dy;
-      }
-      HRESULT CreateIShapeProperties(IShapeProperties ** props);
-
-   } m_ShapeProps;
-
-
-   // cached bounding rectangle
-   gpRect2d m_BoundingRect;
-
-   void MakeDirty() { m_DirtyBoundingBox = m_DirtyProperties = true; }
-   void UpdateBoundingBox();
-   void UpdateShapeProperties();
+   WBFL::Geometry::Polygon m_Polygon;
+   CComPtr<IPoint2d> m_HookPoint;
 };
 
 #endif //__POLYSHAPE_H_

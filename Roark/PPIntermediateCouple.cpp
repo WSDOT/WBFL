@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -22,77 +22,80 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <Roark\RoarkLib.h>
-#include <Roark\Roark.h>
-#include <MathEx.h>
+#include <Roark/RoarkLib.h>
+#include <Roark/PPIntermediateCouple.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
-rkPPIntermediateCouple::rkPPIntermediateCouple(Float64 Mo,Float64 La,Float64 l,Float64 e,Float64 i) :
-rkRoarkBeam(l,e,i)
+using namespace WBFL::Beams;
+
+PPIntermediateCouple::PPIntermediateCouple(Float64 Mo,Float64 La,Float64 l,Float64 ei) :
+RoarkBeam(l,ei)
 {
    M = Mo;
    a = La;
 }
 
-rkPPIntermediateCouple::rkPPIntermediateCouple(const rkPPIntermediateCouple& rOther) :
-rkRoarkBeam( rOther )
+std::shared_ptr<RoarkBeam> PPIntermediateCouple::CreateClone() const
 {
-   M = rOther.M;
-   a = rOther.a;
+   return std::make_shared<PPIntermediateCouple>(M,a,GetL(),GetEI());
 }
 
-rkRoarkBeam* rkPPIntermediateCouple::CreateClone() const
+void PPIntermediateCouple::SetLa(Float64 la)
 {
-   return new rkPPIntermediateCouple( *this );
+   a = la;
 }
 
-Float64 rkPPIntermediateCouple::GetLa() const
+Float64 PPIntermediateCouple::GetLa() const
 {
    return a;
 }
 
-Float64 rkPPIntermediateCouple::GetMo() const
+void PPIntermediateCouple::SetMo(Float64 mo)
+{
+   M = mo;
+}
+
+Float64 PPIntermediateCouple::GetMo() const
 {
    return M;
 }
 
-void rkPPIntermediateCouple::GetReactions(Float64 *pRa,Float64* pRb) const
+std::pair<Float64, Float64> PPIntermediateCouple::GetReactions() const
 {
-   *pRa = M/L;
-   *pRb = -M/L;
+   Float64 L = GetL();
+   Float64 Ra = M/L;
+   Float64 Rb = -M/L;
+   return std::make_pair(Ra, Rb);
 }
 
-void rkPPIntermediateCouple::GetMoments(Float64* pMa,Float64* pMb) const
+std::pair<Float64, Float64>PPIntermediateCouple::GetMoments() const
 {
-   *pMa = 0.0;
-   *pMb = 0.0;
+   return std::make_pair(0.0, 0.0);
 }
 
-void rkPPIntermediateCouple::GetRotations(Float64* pra,Float64* prb) const
+std::pair<Float64, Float64>PPIntermediateCouple::GetRotations() const
 {
-   *pra = ComputeRotation(0.0);
-   *prb = ComputeRotation(L);
+   Float64 L = GetL();
+   return std::make_pair(ComputeRotation(0.0), ComputeRotation(L));
 }
 
-void rkPPIntermediateCouple::GetDeflections(Float64* pYa,Float64* pYb) const
+std::pair<Float64, Float64> PPIntermediateCouple::GetDeflections() const
 {
-   *pYa = ComputeDeflection(0.0);
-   *pYb = ComputeDeflection(L);
+   Float64 L = GetL();
+   return std::make_pair(ComputeDeflection(0.0), ComputeDeflection(L));
 }
 
-sysSectionValue rkPPIntermediateCouple::ComputeShear(Float64 /*x*/) const
+WBFL::System::SectionValue PPIntermediateCouple::ComputeShear(Float64 /*x*/) const
 {
+   Float64 L = GetL();
    return M/L;
 }
 
-sysSectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) const
+WBFL::System::SectionValue PPIntermediateCouple::ComputeMoment(Float64 x) const
 {
-   sysSectionValue m;
+   WBFL::System::SectionValue m;
+
+   Float64 L = GetL();
 
    // Compute moments left and right of a
    Float64 left  = M*x/L;
@@ -121,9 +124,11 @@ sysSectionValue rkPPIntermediateCouple::ComputeMoment(Float64 x) const
    return m;
 }
 
-Float64 rkPPIntermediateCouple::ComputeRotation(Float64 x) const
+Float64 PPIntermediateCouple::ComputeRotation(Float64 x) const
 {
-   Float64 r;
+   Float64 r = 0;
+
+   auto [L,EI] = GetProperties();
 
    if ( x < a )
    {
@@ -139,9 +144,11 @@ Float64 rkPPIntermediateCouple::ComputeRotation(Float64 x) const
    return r;
 }
 
-Float64 rkPPIntermediateCouple::ComputeDeflection(Float64 x) const
+Float64 PPIntermediateCouple::ComputeDeflection(Float64 x) const
 {
-   Float64 y;
+   Float64 y = 0;
+
+   auto [L,EI] = GetProperties();
 
    if ( x < a )
    {
@@ -156,39 +163,3 @@ Float64 rkPPIntermediateCouple::ComputeDeflection(Float64 x) const
 
    return y;
 }
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool rkPPIntermediateCouple::AssertValid() const
-{
-   if ( a < 0 || L < a )  // a must be on the beam
-      return false;
-
-   return rkRoarkBeam::AssertValid();
-}
-
-void rkPPIntermediateCouple::Dump(dbgDumpContext& os) const
-{
-   os << "Dump for rkPPIntermediateCouple" << endl;
-   os << " a = " << a << endl;
-   os << " M = " << M << endl;
-   rkRoarkBeam::Dump( os );
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-#include "Private.h"
-bool rkPPIntermediateCouple::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("rkPPIntermediateCouple");
-
-// Don't run this test with the concentrated moment anywhere but the ends of the girder.
-// The numerical integration routine can't handle the discontinuity in the moment diagram
-// caused by the concentrated load.
-//   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,5,10,1,1)) );
-   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,0,10,1,1)) );
-   TRY_TESTME( Test_Numerical(rlog,rkPPIntermediateCouple(10,10,10,1,1)) );
-
-   TESTME_EPILOG("PPIntermediateCouple");
-}
-#endif // _UNITTEST

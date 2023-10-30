@@ -29,6 +29,7 @@
 
 interface IPoint2d;
 interface iDataSet2d;
+interface iDisplayObject;
 
 // {12761816-B9BD-4f41-9BFB-8713C252C3DB}
 DEFINE_GUID(IID_iDataPointFactory, 
@@ -67,13 +68,13 @@ interface iGraphXyDisplayObject : public IUnknown
    STDMETHOD_(void,put_GraphBounds)(IRect2d* newVal) PURE;
    STDMETHOD_(void,get_Title)(BSTR *pVal) PURE;
    STDMETHOD_(void,put_Title)(BSTR newVal) PURE;
-   STDMETHOD_(void,DataCount)(CollectionIndexType *pVal) PURE;
+   STDMETHOD_(void,DataCount)(IndexType *pVal) PURE;
    STDMETHOD_(void,AddData)(iGraphXyDataProvider* data) PURE;
-   STDMETHOD_(HRESULT,GetData)(CollectionIndexType idx, iGraphXyDataProvider** data) PURE;
+   STDMETHOD_(HRESULT,GetData)(IndexType idx, iGraphXyDataProvider** data) PURE;
    STDMETHOD_(HRESULT,Commit)() PURE;
    STDMETHOD_(HRESULT,ClearData)() PURE;
-   STDMETHOD_(void,get_NumberOfMajorIncrements)(CollectionIndexType *pVal) PURE;
-   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(CollectionIndexType newVal) PURE;
+   STDMETHOD_(void,get_NumberOfMajorIncrements)(IndexType *pVal) PURE;
+   STDMETHOD_(HRESULT,put_NumberOfMajorIncrements)(IndexType newVal) PURE;
    STDMETHOD_(void,get_DoDisplayAxisValues)(BOOL *pVal) PURE;
    STDMETHOD_(void,put_DoDisplayAxisValues)(BOOL newVal) PURE;
    STDMETHOD_(void,get_DoDisplayGrid)(BOOL *pVal) PURE;

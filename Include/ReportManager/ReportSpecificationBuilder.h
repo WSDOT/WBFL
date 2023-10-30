@@ -21,36 +21,35 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportSpecificationBuilder.h: interface for the CReportSpecificationBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_REPORTSPECIFICATIONBUILDER_H__61D4A42A_E3A2_417F_AFAA_A62C9E163716__INCLUDED_)
-#define AFX_REPORTSPECIFICATIONBUILDER_H__61D4A42A_E3A2_417F_AFAA_A62C9E163716__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportDescription.h>
 
-
-class REPORTMANAGERCLASS CReportSpecificationBuilder  
+namespace WBFL
 {
-public:
-	CReportSpecificationBuilder();
-	virtual ~CReportSpecificationBuilder();
+   namespace Reporting
+   {
+      /// A class to create a ReportSpecification based on a ReportDescription
+      class REPORTMANAGERCLASS ReportSpecificationBuilder  
+      {
+      public:
+	      ReportSpecificationBuilder() = default;
+	      virtual ~ReportSpecificationBuilder() = default;
 
-   // the second parameter is a previously created report specification that can be used
-   // to initialize the user interface when editing 
-   virtual std::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec);
-   virtual std::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
-
-protected:
-   std::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<CChapterInfo>& vChInfo);
-   std::shared_ptr<CReportSpecification> DoCreateReportSpec(const CReportDescription& rptDesc,const std::vector<std::_tstring>& vChList);
+         // the second parameter is a previously created report specification that can be used
+         // to initialize the user interface when editing 
+         /// Displays a user interface to guide the user in create a report specification
+         virtual std::shared_ptr<ReportSpecification> CreateReportSpec(
+            const ReportDescription& rptDesc,  ///< The report description
+            std::shared_ptr<ReportSpecification> pRptSpec ///< A previously create report specification used to initialize the user interface. May be nullptr
+         ) const;
+         
+         /// Creates a default report specification without display a user interface
+         virtual std::shared_ptr<ReportSpecification> CreateDefaultReportSpec(
+            const ReportDescription& rptDesc ///< The report description
+         ) const;
+      };
+   };
 };
-
-#endif // !defined(AFX_REPORTSPECIFICATIONBUILDER_H__61D4A42A_E3A2_417F_AFAA_A62C9E163716__INCLUDED_)

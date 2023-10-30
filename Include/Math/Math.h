@@ -31,21 +31,27 @@
    #error It is for external users only
 #endif
 
-#include <Math\BrentsRootFinder2d.h>
-#include <Math\BisectionRootFinder2d.h>
-#include <Math\CoordMapper1d.h>
-#include <Math\Function2d.h>
-#include <Math\LinFunc2d.h>
-#include <Math\Polynomial2d.h>
-#include <Math\QuadraticSolver.h>
-#include <Math\CubicSolver.h>
-#include <Math\RootFinder2d.h>
-#include <Math\PwLinearFunction2d.h>
-#include <Math\PwLinearFunction2dUsingPoints.h>
-#include <Math\FixedPointIteration.h>
-#include <Math\NumericIntegrator2d.h>
-#include <Math\TrapezoidalRuleIntegrator.h>
+#include <Math\BisectionRootFinder.h>
+#include <Math\BrentsRootFinder.h>
 #include <Math\CDRatio.h>
+#include <Math\CompositeFunction.h>
+#include <Math\CoordMapper1d.h>
+#include <Math\CubicSolver.h>
+#include <Math\FixedPointIteration.h>
+#include <Math\Function.h>
+#include <Math\LinearFunction.h>
 #include <Math\MathUtils.h>
+#include <Math\NumericIntegration.h>
+#include <Math\PolynomialFunction.h>
+#include <Math\PiecewiseFunction.h>
+#include <Math\QuadraticSolver.h>
+#include <Math\Range.h>
+#include <Math\RootFinder.h>
+#include <Math\TrapezoidalRuleIntegrator.h>
+#include <Math\UnsymmetricBandedMatrix.h>
+#include <Math\XFixedPointIteration.h>
+#include <Math\XFunction.h>
+#include <Math\XNumericIntegration.h>
+#include <Math\XRootFinder.h>
 
 #endif // INCLUDED_MATH_MATH_H_

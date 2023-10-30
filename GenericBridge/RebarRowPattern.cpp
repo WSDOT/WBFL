@@ -108,7 +108,7 @@ STDMETHODIMP CRebarRowPattern::get_Hook(/*[in]*/DirectionType side,/*[out,retval
    return S_OK;
 }
 
-STDMETHODIMP CRebarRowPattern::get_Count(CollectionIndexType* count)
+STDMETHODIMP CRebarRowPattern::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_Count;
@@ -121,10 +121,10 @@ STDMETHODIMP CRebarRowPattern::put_Count(RowIndexType count)
    return S_OK;
 }
 
-STDMETHODIMP CRebarRowPattern::get_Location(Float64 distFromStartOfPattern,CollectionIndexType barIdx,IPoint2d** location)
+STDMETHODIMP CRebarRowPattern::get_Location(Float64 distFromStartOfPattern,IndexType barIdx,IPoint2d** location)
 {
    CHECK_RETOBJ(location);
-   if ( barIdx < 0 || (CollectionIndexType)m_Count < barIdx )
+   if ( barIdx < 0 || (IndexType)m_Count < barIdx )
       return E_INVALIDARG;
 
 

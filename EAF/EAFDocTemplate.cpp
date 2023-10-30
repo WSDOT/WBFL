@@ -147,13 +147,12 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMR
          return nullptr;
       }
    }
-   catch(sysXStructuredLoad& e)
+   catch(WBFL::System::XStructuredLoad& e)
    {
-      std::_tstring msg;
-      e.GetErrorMessage(&msg);
+      std::_tstring msg = e.GetErrorMessage();
 
       CString strMsg;
-      strMsg.Format(_T("An error occured while opening %s\n\n%s"),lpszPathName,msg.c_str());
+      strMsg.Format(_T("An error occurred while opening %s\n\n%s"),lpszPathName,msg.c_str());
       AfxMessageBox(strMsg,MB_OK);
 
       pDocument->m_bAutoDelete = TRUE; // pDocument will be deleted when the frame window is destroyed

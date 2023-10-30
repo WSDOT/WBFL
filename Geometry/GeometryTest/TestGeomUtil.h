@@ -43,7 +43,6 @@ public:
 
 private:
 	static void TestISupportErrorInfo();
-	static void Test3d();
 	static void Test2d();
 };
 

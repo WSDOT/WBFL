@@ -25,13 +25,21 @@
 
 #include <Stability/StabilityExp.h>
 #include <Stability/AnalysisPoint.h>
-#include <Material/ConcreteEx.h>
 
-class gpPoint2d;
 interface ISegment;
 
 namespace WBFL
 {
+   namespace Geometry
+   {
+      class Point2d;
+   };
+
+   namespace Materials
+   {
+      class SimpleConcrete;
+   };
+
    namespace Stability
    {
       ///  Abstract interface for defining a girder for stability analysis
@@ -87,7 +95,7 @@ namespace WBFL
          /// \param[out] pTR top right stress point
          /// \param[out] pBL bottom left stress point
          /// \param[out] pBR bottom right stress point
-         virtual void GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
+         virtual void GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const = 0;
 
          /// Gets the stress points at a specified location
          /// \param[in] X location along the girder
@@ -95,11 +103,11 @@ namespace WBFL
          /// \param[out] pTR top right stress point
          /// \param[out] pBL bottom left stress point
          /// \param[out] pBR bottom right stress point
-         virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const = 0;
+         virtual void GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const = 0;
 
          /// Returns additional loads applied to the girder. The first parameters is the location of the load measured from
-         /// the left end of the girder and the second is the magintude of the load. Positive values are in the direction of gravity (downwards).
-         /// These loads can be used to model cast-in-place elements such as end diaphraphms in U-Beam girders
+         /// the left end of the girder and the second is the magnitude of the load. Positive values are in the direction of gravity (downwards).
+         /// These loads can be used to model cast-in-place elements such as end diaphragms in U-Beam girders
          virtual std::vector<std::pair<Float64, Float64>> GetAdditionalLoads() const = 0;
 
          /// Drag coefficient for wind loads
@@ -126,7 +134,7 @@ namespace WBFL
          virtual bool GetFpe(LPCTSTR strName, Float64 X, Float64* pFpe, Float64* pXps, Float64* pYps) const = 0;
 
          /// Returns the concrete model
-         virtual const matConcreteEx& GetConcrete() const = 0;
+         virtual const WBFL::Materials::SimpleConcrete& GetConcrete() const = 0;
 
          /// Returns the yield strength of rebar. Only used if the girder is modeled with an ISection object
          virtual Float64 GetRebarYieldStrength() const = 0;
@@ -146,7 +154,7 @@ namespace WBFL
          /// The 1" in the expression is the sweep growth.
          virtual Float64 GetSweepGrowth() const = 0;
 
-         /// Lateral offset from CL Girder and Roll Axis to account for accidiental mis-alignment
+         /// Lateral offset from CL Girder and Roll Axis to account for accidental mis-alignment
          virtual Float64 GetSupportPlacementTolerance() const = 0;
 
          /// Returns the camber. This is the natural camber. Do not include formed camber (precamber).
@@ -168,7 +176,7 @@ namespace WBFL
 
          /// Returns the method that wind loading is defined and the wind load parameter
          virtual void GetWindLoading(
-            WindType* pType, ///< Method for defining wind load
+            WindLoadType* pType, ///< Method for defining wind load
             Float64* pLoad ///< The wind load parameter (wind speed or wind pressure). 
          ) const = 0;
 
@@ -217,7 +225,7 @@ namespace WBFL
          /// Returns how impact is used in the analysis
          virtual HaulingImpact GetImpactUsage() const = 0;
 
-         /// Returns the superelevation rate (always a postive value)
+         /// Returns the superelevation rate (always a positive value)
          virtual Float64 GetSuperelevation() const = 0;
 
          /// Returns the velocity of the truck. Used for computing centrifugal force.
@@ -250,7 +258,7 @@ namespace WBFL
          /// seated end of the girder
          virtual Float64 GetYRollLiftEnd() const = 0;
 
-         /// Lateral offset from CL Girder and Roll Axis at the lifting point to account for accidiental mis-alignment
+         /// Lateral offset from CL Girder and Roll Axis at the lifting point to account for accidental mis-alignment
          virtual Float64 GetLiftPlacementTolerance() const = 0;
       };
    }

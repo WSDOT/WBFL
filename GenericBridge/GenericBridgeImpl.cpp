@@ -82,11 +82,6 @@ CPierCollection* CGenericBridge::GetPierCollection()
 
 /////////////////////////////////////////////////////
 // IGenericBridge implementation
-STDMETHODIMP CGenericBridge::UpdateBridgeModel(long flags)
-{
-   DoUpdateBridgeModel(flags);
-   return S_OK;
-}
 
 STDMETHODIMP CGenericBridge::get_BridgeGeometry(IBridgeGeometry** bridgeGeometry)
 {
@@ -97,6 +92,16 @@ STDMETHODIMP CGenericBridge::get_BridgeGeometry(IBridgeGeometry** bridgeGeometry
 STDMETHODIMP CGenericBridge::get_Alignment(IAlignment** ppAlignment)
 {
    return m_BridgeGeometry->get_BridgeAlignment(ppAlignment);
+}
+
+STDMETHODIMP CGenericBridge::get_ProfileID(IDType* pProfileID)
+{
+   return m_BridgeGeometry->get_ProfileID(pProfileID);
+}
+
+STDMETHODIMP CGenericBridge::get_SurfaceID(IDType* pSurfaceID)
+{
+   return m_BridgeGeometry->get_SurfaceID(pSurfaceID);
 }
 
 STDMETHODIMP CGenericBridge::get_Deck(IBridgeDeck** deck)
@@ -123,7 +128,7 @@ STDMETHODIMP CGenericBridge::putref_Deck(IBridgeDeck* deck)
 STDMETHODIMP CGenericBridge::get_Piers(IPierCollection* *piers)
 {
    CHECK_RETOBJ(piers);
-
+   UpdatePiers();
    (*piers) = m_Piers;
    (*piers)->AddRef();
 
@@ -133,6 +138,8 @@ STDMETHODIMP CGenericBridge::get_Piers(IPierCollection* *piers)
 STDMETHODIMP CGenericBridge::get_Length(Float64* length)
 {
    CHECK_RETVAL(length);
+
+   UpdatePiers();
    PierIndexType nPiers;
    m_Piers->get_Count(&nPiers);
    CComPtr<IBridgePier> objFirstPier, objLastPier;
@@ -158,6 +165,8 @@ STDMETHODIMP CGenericBridge::get_Length(Float64* length)
 STDMETHODIMP CGenericBridge::get_SpanLength(SpanIndexType spanIdx,Float64* length)
 {
    CHECK_RETVAL(length);
+   UpdatePiers();
+
    PierIndexType startPierIdx = (PierIndexType)spanIdx;
    PierIndexType endPierIdx = startPierIdx + 1;
 
@@ -184,7 +193,6 @@ STDMETHODIMP CGenericBridge::get_SpanLength(SpanIndexType spanIdx,Float64* lengt
 }
 
 STDMETHODIMP CGenericBridge::get_LeftBarrier(ISidewalkBarrier** barrier)
-
 {
    CHECK_RETOBJ(barrier);
    (*barrier) = m_LeftBarrier;
@@ -347,7 +355,7 @@ STDMETHODIMP CGenericBridge::get_SuperstructureMember(GirderIDType id,ISuperstru
 
 STDMETHODIMP CGenericBridge::get__EnumSuperstructureMembers(IEnumSuperstructureMembers* *enumSSMbrs)
 {
-   typedef _CopyInterfacePair<ISuperstructureMember,std::pair<const GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>> _CopyType;
+   using _CopyType = _CopyInterfacePair<ISuperstructureMember,std::pair<const GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>;
 
    CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>* pEnum = nullptr;
    HRESULT hr = CComObject<CComEnumOnSTL<IEnumSuperstructureMembers,&IID_IEnumSuperstructureMembers,ISuperstructureMember*,_CopyType,std::map<GirderIDType,CAdapt<CComPtr<ISuperstructureMember>>>>>::CreateInstance(&pEnum);
@@ -509,15 +517,10 @@ STDMETHODIMP CGenericBridge::Save(IStructuredSave2* save)
 //}
 //#endif // _DEBUG
 
-void CGenericBridge::DoUpdateBridgeModel(long flags)
+void CGenericBridge::UpdatePiers()
 {
-   m_BridgeGeometry->UpdateGeometry(flags);
-
-   if (flags & BGF_PIERS)
+   if (m_bDirtyPiers)
    {
-      ////////////////////////////////
-      // Create Pier Objects
-      ////////////////////////////////
       CPierCollection* pPiers = GetPierCollection();
       pPiers->Clear();
 
@@ -528,6 +531,12 @@ void CGenericBridge::DoUpdateBridgeModel(long flags)
          CComPtr<IPierLine> pierLine;
          m_BridgeGeometry->GetPierLine(pierIdx, &pierLine);
 
+#if defined _DEBUG
+         IndexType idx;
+         pierLine->get_Index(&idx);
+         ATLASSERT(idx == pierIdx);
+#endif
+
          CComObject<CBridgePier>* pPier;
          CComObject<CBridgePier>::CreateInstance(&pPier);
 
@@ -537,5 +546,6 @@ void CGenericBridge::DoUpdateBridgeModel(long flags)
          pier = pPier;
          pPiers->Add(pier);
       }
+      m_bDirtyPiers = false;
    }
 }

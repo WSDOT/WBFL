@@ -107,7 +107,7 @@ HRESULT CTestOverhang::Test()
    }
 
    // compute location of all pois
-   CollectionIndexType cnt;
+   IndexType cnt;
    poilist->get_Count(&cnt);
    std::vector<Float64> poi_locs;
    poi_locs.reserve(cnt);
@@ -321,8 +321,8 @@ HRESULT CTestOverhang::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 1"), &vlocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray, CollectionIndexType> locs(vlocs);
-      CollectionIndexType size = locs.Size();
+      TIArrayHelper<Float64, IDblArray, IndexType> locs(vlocs);
+      IndexType size = locs.Size();
       TRY_TEST(size,6);
       TRY_TEST( IsEqual(locs[0],-10.00000, 1.0e-4), true);
       TRY_TEST( IsEqual(locs[1],  1.43582, 1.0e-4), true);
@@ -336,9 +336,9 @@ HRESULT CTestOverhang::Test()
       CComPtr<IDblArray> vlocs;
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 2"), &vlocs);
       ATLASSERT(SUCCEEDED(hr));
-      TIArrayHelper<Float64, IDblArray, CollectionIndexType> locs(vlocs);
+      TIArrayHelper<Float64, IDblArray, IndexType> locs(vlocs);
 
-      CollectionIndexType size = locs.Size();
+      IndexType size = locs.Size();
       TRY_TEST(size,6);
       TRY_TEST( IsEqual(locs[0],-10.00000, 1.0e-4), true);
       TRY_TEST( IsEqual(locs[1],  1.50335, 1.0e-4), true);
@@ -385,11 +385,11 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
    Float64 left_overhang;
    ssms->get_Offset(&left_overhang);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
+   for(IndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -403,9 +403,9 @@ void CTestOverhang::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std::ve
    CComPtr<IPOIs> pois;
    pModel->get_POIs(&pois);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i, &poi_id);
@@ -692,12 +692,12 @@ ILBAMModel* CTestOverhang::CreateModel(bool doPois)
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   TCHAR* lgns[]={_T("Point Loads"),_T("Distributed Loads")};
+   CComBSTR lgns[]={_T("Point Loads"),_T("Distributed Loads")};
    for (long i = 0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
-      TRY_TEST( pLoadGroup->put_Name( CComBSTR(lgns[i]) ), S_OK );
+      TRY_TEST( pLoadGroup->put_Name( lgns[i] ), S_OK );
       TRY_TEST(pLoadGroups->Add(pLoadGroup), S_OK);
    }
 

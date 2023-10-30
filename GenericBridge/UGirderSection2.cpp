@@ -144,6 +144,26 @@ STDMETHODIMP CUGirderSection2::get_Beam(IUBeam2** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CUGirderSection2::get_GirderShape(IShape** ppShape)
+{
+   return m_Beam->get_Shape(ppShape);
+}
+
+STDMETHODIMP CUGirderSection2::get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+{
+   CHECK_RETVAL(pnVoids);
+   *pnVoids = 0;
+   return S_OK;
+}
+
+STDMETHODIMP CUGirderSection2::get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   ATLASSERT(false);
+   *ppShape = nullptr;
+   return E_INVALIDARG;
+}
+
 STDMETHODIMP CUGirderSection2::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
    // work point is at top center
@@ -559,23 +579,23 @@ STDMETHODIMP CUGirderSection2::GetWebSections(IDblArray** ppY, IDblArray** ppW, 
    {
       (*ppY)->Add(-(D4 + D5));
       (*ppW)->Add(2 * t_web);
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
    }
    else
    {
       (*ppY)->Add(-(D4 + D5));
       (*ppW)->Add(2 * (W7*(D6-D4-D5)/D6 + t_web));
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
 
       (*ppY)->Add(-D6);
       (*ppW)->Add(2 * t_web);
-      (*ppDesc)->Add(_T("Interior Web Transition"));
+      (*ppDesc)->Add(CComBSTR("Interior Web Transition"));
    }
 
 
    (*ppY)->Add(-D1 + D2 + D3);
    (*ppW)->Add(2 * t_web);
-   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+   (*ppDesc)->Add(CComBSTR("Bottom Flange - Web"));
 
    return S_OK;
 }
@@ -613,6 +633,11 @@ STDMETHODIMP CUGirderSection2::GetWebWidthProjectionsForDebonding(IUnkArray** pp
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CUGirderSection2::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   return m_Shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CUGirderSection2::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    return m_Shape->FurthestDistance(line,pVal);
@@ -738,17 +763,17 @@ STDMETHODIMP CUGirderSection2::get__NewEnum(IUnknown* *pVal)
    return m_CompositeShape->get__NewEnum(pVal);
 }
 
-STDMETHODIMP CUGirderSection2::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+STDMETHODIMP CUGirderSection2::get_Item(IndexType idx, ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);
 }
 
-STDMETHODIMP CUGirderSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CUGirderSection2::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
-STDMETHODIMP CUGirderSection2::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CUGirderSection2::Replace(IndexType idx,IShape* pShape)
 {
    return m_CompositeShape->Replace(idx,pShape);
 }
@@ -763,7 +788,7 @@ STDMETHODIMP CUGirderSection2::AddShapeEx(ICompositeShapeItem* shapeItem)
    return m_CompositeShape->AddShapeEx(shapeItem);
 }
 
-STDMETHODIMP CUGirderSection2::Remove(CollectionIndexType idx)
+STDMETHODIMP CUGirderSection2::Remove(IndexType idx)
 {
    return m_CompositeShape->Remove(idx);
 }
@@ -773,7 +798,7 @@ STDMETHODIMP CUGirderSection2::Clear()
    return m_CompositeShape->Clear();
 }
 
-STDMETHODIMP CUGirderSection2::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CUGirderSection2::get_Count(IndexType *pVal)
 {
    return m_CompositeShape->get_Count(pVal);
 }
@@ -787,9 +812,4 @@ STDMETHODIMP CUGirderSection2::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return m_CompositeShape->get_XYPosition(pVal);
-}
-
-STDMETHODIMP CUGirderSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)
-{
-   return m_CompositeShape->get_StructuredStorage(pStrStg);
 }

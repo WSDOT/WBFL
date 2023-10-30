@@ -28,7 +28,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CRebarMaterialComboBox window
 
-void MFCTOOLSFUNC DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,matRebar::Type& type,matRebar::Grade& grade);
+void MFCTOOLSFUNC DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Grade& grade);
 
 class MFCTOOLSCLASS CRebarMaterialComboBox : public CComboBox
 {
@@ -40,8 +40,8 @@ public:
 
    void Initialize(bool bFilterBySpec=true);
 
-   void GetMaterial(matRebar::Type* pType,matRebar::Grade* pGrade);
-   void SetMaterial(matRebar::Type type,matRebar::Grade grade);
+   void GetMaterial(WBFL::Materials::Rebar::Type* pType,WBFL::Materials::Rebar::Grade* pGrade);
+   void SetMaterial(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade);
 
 // Attributes
 public:

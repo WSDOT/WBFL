@@ -9,7 +9,7 @@
 #include "ModelPropertiesDlg.h"
 
 #include <MathEx.h>
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -18,6 +18,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 #define ID(_id_) _T("'") << (_id_+1) << _T("'")
+
+using namespace WBFL::Units;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc
@@ -213,9 +215,9 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
    CComPtr<IFem2dJointCollection> joints;
    m_Model->get_Joints(&joints);
-   CollectionIndexType nJoints;
+   IndexType nJoints;
    joints->get_Count(&nJoints);
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -226,14 +228,14 @@ void CFEA2DDoc::OnGTStrudl()
       JointIDType id;
       joint->get_ID(&id);
 
-      x = ::ConvertFromSysUnits(x, unitMeasure::Feet);
-      y = ::ConvertFromSysUnits(y, unitMeasure::Feet);
+      x = ::ConvertFromSysUnits(x, Measure::Feet);
+      y = ::ConvertFromSysUnits(y, Measure::Feet);
       ofile << ID(id) << _T(" ") << x << _T(" ") << y << std::endl;
    }
 
    // Status Support
    ofile << _T("STATUS SUPPORT");
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -253,7 +255,7 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Joint Releases
    ofile << _T("JOINT RELEASES") << std::endl;
-   for ( CollectionIndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
+   for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
       CComPtr<IFem2dJoint> joint;
       joints->get_Item(jntIdx,&joint);
@@ -298,9 +300,9 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("MEMBER INCIDENCES") << std::endl;
    CComPtr<IFem2dMemberCollection> members;
    m_Model->get_Members(&members);
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    members->get_Count(&nMembers);
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx,&member);
@@ -317,7 +319,7 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Member Releases
    ofile << _T("MEMBER RELEASES") << std::endl;
-   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx, &member);
@@ -373,7 +375,7 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("$ WSDOT Internal FEM model has EA and EI. Strudl wants E, A, and I.") << std::endl;
    ofile << _T("$ The properties below for A are really EA (kip) and I are really EI (kip*in^2).") << std::endl;
    ofile << _T("$ E will be set to 1.0 below.") << std::endl;
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> member;
       members->get_Item(mbrIdx,&member);
@@ -386,10 +388,10 @@ void CFEA2DDoc::OnGTStrudl()
       member->get_EI(&EI);
 
       // (ksi)*(in2) = kip
-      EA = ::ConvertFromSysUnits(EA, unitMeasure::Kip);
+      EA = ::ConvertFromSysUnits(EA, Measure::Kip);
 
       // (ksi)*(in4) = kip*in2
-      EI = ::ConvertFromSysUnits(EI, unitMeasure::KipInch2);
+      EI = ::ConvertFromSysUnits(EI, Measure::KipInch2);
       ofile << ID(mbrID) << _T(" AX ") << EA << _T(" IZ ") << EI << std::endl;
    }
    ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
@@ -408,9 +410,9 @@ void CFEA2DDoc::OnGTStrudl()
    CComPtr<IFem2dLoadingCollection> loadings;
    m_Model->get_Loadings(&loadings);
 
-   CollectionIndexType nLoadings;
+   IndexType nLoadings;
    loadings->get_Count(&nLoadings);
-   for ( CollectionIndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
+   for ( IndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(ldIdx,&loading);
@@ -424,10 +426,10 @@ void CFEA2DDoc::OnGTStrudl()
       CComPtr<IFem2dDistributedLoadCollection> distLoads;
       loading->get_DistributedLoads(&distLoads);
 
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       distLoads->get_Count(&nLoads);
 
-      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      for ( IndexType idx = 0; idx < nLoads; idx++ )
       {
          CComPtr<IFem2dDistributedLoad> load;
          distLoads->get_Item(idx,&load);
@@ -441,10 +443,10 @@ void CFEA2DDoc::OnGTStrudl()
          load->get_WStart(&wStart);
          load->get_WEnd(&wEnd);
 
-         xStart = ::ConvertFromSysUnits(xStart, unitMeasure::Feet);
-         xEnd = ::ConvertFromSysUnits(xEnd, unitMeasure::Feet);
-         wStart = ::ConvertFromSysUnits(wStart, unitMeasure::KipPerFoot);
-         wEnd = ::ConvertFromSysUnits(wEnd, unitMeasure::KipPerFoot);
+         xStart = ::ConvertFromSysUnits(xStart, Measure::Feet);
+         xEnd = ::ConvertFromSysUnits(xEnd, Measure::Feet);
+         wStart = ::ConvertFromSysUnits(wStart, Measure::KipPerFoot);
+         wEnd = ::ConvertFromSysUnits(wEnd, Measure::KipPerFoot);
 
          if (!IsZero(wStart) && !IsZero(wEnd))
          {
@@ -465,7 +467,7 @@ void CFEA2DDoc::OnGTStrudl()
 
       pointLoads->get_Count(&nLoads);
 
-      for ( CollectionIndexType idx = 0; idx < nLoads; idx++ )
+      for ( IndexType idx = 0; idx < nLoads; idx++ )
       {
          CComPtr<IFem2dPointLoad> load;
          pointLoads->get_Item(idx,&load);
@@ -477,8 +479,8 @@ void CFEA2DDoc::OnGTStrudl()
          load->GetForce(&Fx,&Fy,&Mz);
          load->get_Location(&X);
 
-         X = ::ConvertFromSysUnits(X, unitMeasure::Feet);
-         Fy = ::ConvertToSysUnits(Fy, unitMeasure::Kip);
+         X = ::ConvertFromSysUnits(X, Measure::Feet);
+         Fy = ::ConvertToSysUnits(Fy, Measure::Kip);
 
          if ( !IsZero(Fy) )
          {

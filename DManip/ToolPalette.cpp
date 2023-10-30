@@ -82,7 +82,7 @@ void CToolPalette::AddTool(iTool* tool)
    m_ctrlToolTip.AddTool(pWnd,tool->GetToolTipText(),rTool,tool->GetID());
 }
 
-void CToolPalette::GetTool(CollectionIndexType idx,iTool** tool)
+void CToolPalette::GetTool(IndexType idx,iTool** tool)
 {
    *tool = 0;
 
@@ -111,7 +111,7 @@ void CToolPalette::FindTool(IDType id,iTool** tool)
 
 }
 
-void CToolPalette::RemoveTool(CollectionIndexType idx)
+void CToolPalette::RemoveTool(IndexType idx)
 {
    if ( idx < 0 || m_Tools.size() <= idx )
       return; // Index is out of range

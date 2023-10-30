@@ -100,7 +100,7 @@ private:
                                        VARIANT_BOOL computeConfig, OptimizationType optimization);
 
    void EnvelopeLiveLoadSectionResults(ILiveLoadModelSectionResults* res1, ILiveLoadModelSectionResults* res2,
-                                       VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx);
+                                       VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, IndexType engineIdx);
 
 
    CLBAMModelEnveloper*  m_pEnveloper;
@@ -109,8 +109,8 @@ private:
    // this is used in order to determine the controlling model when computing stresses
    struct LRPair
    {
-      CollectionIndexType Left;
-      CollectionIndexType Right;
+      IndexType Left;
+      IndexType Right;
 
       LRPair():
       Left(0),

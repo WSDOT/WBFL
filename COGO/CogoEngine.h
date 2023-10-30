@@ -79,10 +79,6 @@ public:
    STDMETHOD(get_Project)(/*[out, retval]*/ IProject2* *pVal) override;
    STDMETHOD(get_Divide)(/*[out, retval]*/ IDivide2* *pVal) override;
    STDMETHOD(get_Tangent)(/*[out, retval]*/ ITangent2* *pVal) override;
-   STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override;
-   STDMETHOD(get_PointFactory)(/*[out,retval]*/ IPoint2dFactory** factory) override;
-   STDMETHOD(putref_LineSegmentFactory)(/*[in]*/ ILineSegment2dFactory* factory) override;
-   STDMETHOD(get_LineSegmentFactory)(/*[out,retval]*/ILineSegment2dFactory** factory) override;
 
 // IMeasure2
 public:
@@ -115,25 +111,20 @@ public:
 public:
    STDMETHOD(PointOnLineByPoints)(/*[in]*/ IPoint2d* pnt, /*[in]*/ IPoint2d* start, /*[in]*/ IPoint2d* end, /*[in]*/ Float64 offset,/*[out,retval]*/IPoint2d** point) override;
    STDMETHOD(PointOnLineSegment)(/*[in]*/ IPoint2d* from,/*[in]*/ ILineSegment2d* seg, /*[in]*/ Float64 offset, /*[out,retval]*/ IPoint2d** point) override;
-   STDMETHOD(PointOnCurve)(/*[in]*/ IPoint2d* pnt, /*[in]*/ ICompoundCurve* curve,/*[out,retval]*/ IPoint2d** point) override;
 
 // IDivide2
 public:
-   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ CollectionIndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
-	STDMETHOD(CompoundCurve)(/*[in]*/ ICompoundCurve* curve, /*[in]*/ CollectionIndexType nParts, /*[out,retval]*/ IPoint2dCollection** points) override;
-   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ CollectionIndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points) override;
+   STDMETHOD(Arc)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* vertex, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(BetweenPoints)(/*[in]*/ IPoint2d* from, /*[in]*/ IPoint2d* to,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(LineSegment)(/*[in]*/ ILineSegment2d* seg,/*[in]*/ IndexType nParts,/*[out,retval]*/ IPoint2dCollection** points) override;
+	STDMETHOD(CompoundCurve)(/*[in]*/ ICompoundCurve* curve, /*[in]*/ IndexType nParts, /*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(Path)(/*[in]*/IPath* pPath,/*[in]*/ IndexType nParts,/*[in]*/ Float64 start,/*[in]*/ Float64 end,/*[out,retval]*/IPoint2dCollection** points) override;
 
 // ITangent2
 public:
    STDMETHOD(External)(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 radius1,/*[in]*/ IPoint2d* center2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** t1,/*[out]*/ IPoint2d** t2) override;
    STDMETHOD(Cross)(/*[in]*/ IPoint2d* center1, /*[in]*/ Float64 radius1,/*[in]*/ IPoint2d* center2, /*[in]*/ Float64 radius2, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** t1,/*[out]*/ IPoint2d** t2) override;
    STDMETHOD(Point)(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radius,/*[in]*/ IPoint2d* point, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** tangent) override;
-
-private:
-   CComPtr<IGeomUtil2d> m_GeomUtil;
-   HRESULT CreateParallelLine(IPoint2d* pnt,IDirection* objDir,Float64 offset,ILine2d** line);
 };
 
 #endif //__COGOENGINE_H_

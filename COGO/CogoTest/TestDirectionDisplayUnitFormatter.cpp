@@ -101,7 +101,7 @@ void CTestDirectionDisplayUnitFormatter::Test()
    // use custom annotations
    fmtr->put_CondensedFormat(VARIANT_FALSE);
 
-   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),COGO_E_BADFORMATTAG);
+   TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("xxx"),&bstrTest),E_INVALIDARG);
 
    TRY_TEST(fmtr->Format(M_PI/4,CComBSTR("d,m,s"),&bstrTest),S_OK);
    TRY_TEST( wcscmp(bstrTest,CComBSTR("N 45d 00m 00.00s E")), 0);
@@ -168,41 +168,7 @@ void CTestDirectionDisplayUnitFormatter::Test()
    TRY_TEST(fmtr->Format(3*M_PI/4,CComBSTR("°,\',\""),&bstrTest),S_OK);
    TRY_TEST( _tcscmp(bstrTest,CComBSTR("315°")), 0);
 
-   /// Test Events
-   fmtr->put_CondensedFormat(VARIANT_FALSE);
-   fmtr->put_BearingFormat(VARIANT_TRUE);
-   CComObject<CTestDirectionDisplayUnitFormatter>* pTest;
-   CComObject<CTestDirectionDisplayUnitFormatter>::CreateInstance(&pTest);
-   pTest->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTest);
-   TRY_TEST(AtlAdvise(fmtr,punk,IID_IDisplayUnitFormatterEvents,&dwCookie),S_OK);
-
-   pTest->InitEventTest();
-   fmtr->put_CondensedFormat(VARIANT_TRUE);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   fmtr->put_BearingFormat(VARIANT_FALSE);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   pTest->InitEventTest();
-   fmtr->FormatSpecifiers(4,2,tjLeft,nftFixed,0.1);
-   TRY_TEST(pTest->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(fmtr,IID_IDisplayUnitFormatterEvents,dwCookie),S_OK);
-   pTest->Release();
-
-
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_DirectionDisplayUnitFormatter,IID_IDirectionDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
    TRY_TEST( TestIObjectSafety(CLSID_DirectionDisplayUnitFormatter,IID_IDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestDirectionDisplayUnitFormatter::OnFormatChanged()
-{
-//   ::MessageBox(nullptr,"OnFormatChanged","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

@@ -53,7 +53,7 @@ void CTestWidening::Test()
 #pragma Reminder("UPDATE: methods that are not tested")
       //[helpstring("method Init")] HRESULT Init([in]IProfile* pProfile,[in] VARIANT varBeginStation,[in] VARIANT varBeginFullStation, [in] VARIANT varEndFullStation,[in] VARIANT varEndStation,[in] Float64 widening,[in]IndexType pnt1,[in]IndexType pnt2);
       //[propget, helpstring("property Profile")] HRESULT Profile([out, retval] IProfile* *pVal);
-      //[propputref, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
+      //[propput, helpstring("property Profile")] HRESULT Profile([in] IProfile* newVal);
       //[helpstring("method Clone")] HRESULT Clone([out,retval]IWidening** ppClone);
 
    CComPtr<IStation> objStation;
@@ -159,64 +159,12 @@ void CTestWidening::Test()
    TRY_TEST(pWidening->get_Segment(0,&segmentIdx),S_OK);
    TRY_TEST(segmentIdx,5);
 
-   CComPtr<IStructuredStorage2> ss;
-   TRY_TEST(pWidening->get_StructuredStorage(nullptr),E_POINTER);
-   TRY_TEST(pWidening->get_StructuredStorage(&ss),S_OK);
-   TRY_TEST(ss != nullptr,true);
-
-
-   // Test Events
-   CComObject<CTestWidening>* pTestWidening;
-   CComObject<CTestWidening>::CreateInstance(&pTestWidening);
-   pTestWidening->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestWidening);
-   TRY_TEST(AtlAdvise(pWidening,punk,IID_IWideningEvents,&dwCookie),S_OK);
-
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_BeginTransition(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_BeginFullWidening(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_EndFullWidening(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_EndTransition(CComVariant(200.0)),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_Segment(1,5),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-   pTestWidening->InitEventTest();
-   TRY_TEST(pWidening->put_Widening(10.0),S_OK);
-   TRY_TEST(pTestWidening->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(pWidening,IID_IWideningEvents,dwCookie),S_OK);
-   pTestWidening->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pWidening);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IWidening ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_Widening,IID_IWidening,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_Widening,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestWidening::OnWideningChanged(IWidening* Widening)
-{
-   Pass();
-   return S_OK;
 }

@@ -34,6 +34,5 @@ MFCTOOLS
 DESCRIPTION
    Support library that provides mfc services.
 *****************************************************************************/
-#include <Private\WbflPackage.h>
 
 #endif // INCLUDED_MFCTOOLS_MFCTOOLSLIB_H_

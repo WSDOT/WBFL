@@ -67,7 +67,7 @@ void CTestMultiWeb2::TestIMultiWeb2()
    // Verify initialization. All dimensions should be zero.
    // Hook point (bottom center) should be zero.
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IPoint2d> pntVal;
 
    TRY_TEST( beam->get_H1(nullptr), E_POINTER );
@@ -308,7 +308,7 @@ void CTestMultiWeb2::TestIShape()
    // Bounding Box
    //
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IRect2d> box;
    TRY_TEST( shape->get_BoundingBox(nullptr), E_POINTER );
    TRY_TEST( shape->get_BoundingBox(&box), S_OK );
@@ -406,7 +406,7 @@ void CTestMultiWeb2::TestIShape()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IMultiWeb2> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    beamClone->get_H1(&val);
    TRY_TEST( IsEqual(val,20.00), true );
@@ -477,520 +477,374 @@ void CTestMultiWeb2::TestIShape()
 
 void CTestMultiWeb2::TestIXYPosition()
 {
-//   CComPtr<IXYPosition> position;
-//   TRY_TEST( position.CoCreateInstance( CLSID_MultiWeb2 ), S_OK);
-//
-//   CComQIPtr<IMultiWeb2> beam(position);
-//   CComQIPtr<IShape> shape(position);
-//
-//   CComPtr<IPoint2d> hookPnt;
-//   hookPnt.CoCreateInstance( CLSID_Point2d );
-//   hookPnt->Move(0,0);
-//
-//   // Use some real dimensions (2'-3" by 6' with 3 webs)
-//   beam->putref_HookPoint(hookPnt);
-//   beam->put_D1( 6.00);
-//   beam->put_D2(21.00);
-//   beam->put_W1(13.125);
-//   beam->put_W2(12.0);
-//   beam->put_T1(7.25);
-//   beam->put_T2(5.25);
-//   beam->put_WebCount(3);
-//
-//   //
-//   // MoveEx (tests Offset as well)
-//   //
-//   CComPtr<IPoint2d> from;
-//   from.CoCreateInstance( CLSID_Point2d );
-//   from->Move(0,0);
-//
-//   CComPtr<IPoint2d> to;
-//   to.CoCreateInstance( CLSID_Point2d );
-//   to->Move(100,100);
-//
-//   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
-//   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
-//   TRY_TEST( position->MoveEx(from,to), S_OK );
-//
-//   // Check the points
-//   CComPtr<IPoint2dCollection> coll;
-//   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
-//   TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-//   long cPoints;
-//   coll->get_Count(&cPoints);
-//   TRY_TEST( cPoints,16);
-//
-//   CComPtr<IEnumPoint2d> Enum;
-//   coll->get__Enum(&Enum);
-//   CComPtr<IPoint2d> points[16];
-//   ULONG fetched;
-//   Enum->Next(cPoints,&points[0],&fetched);
-//   TRY_TEST( fetched, cPoints );
-//
-//   Float64 x,y;
-//
-//   points[0]->get_X(&x);
-//   points[0]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000+100), true );
-//   TRY_TEST( IsEqual(y,  0.000+100), true );
-//
-//   points[1]->get_X(&x);
-//   points[1]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[2]->get_X(&x);
-//   points[2]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-22.875+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[3]->get_X(&x);
-//   points[3]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-21.875+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[4]->get_X(&x);
-//   points[4]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-16.625+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[5]->get_X(&x);
-//   points[5]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-15.625+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[6]->get_X(&x);
-//   points[6]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -3.625+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[7]->get_X(&x);
-//   points[7]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -2.625+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[8]->get_X(&x);
-//   points[8]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  2.625+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[9]->get_X(&x);
-//   points[9]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  3.625+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[10]->get_X(&x);
-//   points[10]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,15.625+100), true );
-//   TRY_TEST( IsEqual(y,-6.000+100), true );
-//
-//   points[11]->get_X(&x);
-//   points[11]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 16.625+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[12]->get_X(&x);
-//   points[12]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 21.875+100), true );
-//   TRY_TEST( IsEqual(y,-27.000+100), true );
-//
-//   points[13]->get_X(&x);
-//   points[13]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 22.875+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[14]->get_X(&x);
-//   points[14]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000+100), true );
-//   TRY_TEST( IsEqual(y, -6.000+100), true );
-//
-//   points[15]->get_X(&x);
-//   points[15]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000+100), true );
-//   TRY_TEST( IsEqual(y,  0.000+100), true );
-//
-//   //
-//   // OffsetEx
-//   //
-//
-//   CComPtr<ISize2d> size;
-//   size.CoCreateInstance( CLSID_Size2d );
-//   size->put_Dx(-100);
-//   size->put_Dy(-100);
-//
-//   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
-//   TRY_TEST(position->OffsetEx(size), S_OK);
-//
-//   // Check the points
-//   coll.Release();
-//   Enum.Release();
-//   for ( int i = 0; i < cPoints; i++ )
-//      points[i].Release();
-//   
-//   shape->get_PolyPoints(&coll);
-//   coll->get_Count(&cPoints);
-//   TRY_TEST( cPoints,16);
-//
-//   coll->get__Enum(&Enum);
-//   Enum->Next(cPoints,&points[0],&fetched);
-//   TRY_TEST( fetched, cPoints );
-//
-//   points[0]->get_X(&x);
-//   points[0]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000), true );
-//   TRY_TEST( IsEqual(y,  0.000), true );
-//
-//   points[1]->get_X(&x);
-//   points[1]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[2]->get_X(&x);
-//   points[2]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-22.875), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[3]->get_X(&x);
-//   points[3]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-21.875), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[4]->get_X(&x);
-//   points[4]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-16.625), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[5]->get_X(&x);
-//   points[5]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-15.625), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[6]->get_X(&x);
-//   points[6]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -3.625), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[7]->get_X(&x);
-//   points[7]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -2.625), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[8]->get_X(&x);
-//   points[8]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  2.625), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[9]->get_X(&x);
-//   points[9]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  3.625), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[10]->get_X(&x);
-//   points[10]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,15.625), true );
-//   TRY_TEST( IsEqual(y,-6.000), true );
-//
-//   points[11]->get_X(&x);
-//   points[11]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 16.625), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[12]->get_X(&x);
-//   points[12]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 21.875), true );
-//   TRY_TEST( IsEqual(y,-27.000), true );
-//
-//   points[13]->get_X(&x);
-//   points[13]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 22.875), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[14]->get_X(&x);
-//   points[14]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000), true );
-//   TRY_TEST( IsEqual(y, -6.000), true );
-//
-//   points[15]->get_X(&x);
-//   points[15]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000), true );
-//   TRY_TEST( IsEqual(y,  0.000), true );
-//
-//   //
-//   // LocatorPoint property
-//   //
-//   hookPnt->Move(0,0);
-//   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
-//   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
-//
-//   // BottomLeft
-//   hookPnt->Move(0,0);
-//   to->Move(100,100);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpBottomLeft, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpBottomLeft, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.000), true );
-//   TRY_TEST(IsEqual(y,100.000), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,136.000), true );
-//   TRY_TEST(IsEqual(y,127.000), true );
-//
-//   // BottomCenter
-//   hookPnt->Move(0.0,0.0);
-//   to->Move(100.000,100.000);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpBottomCenter, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpBottomCenter, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.000), true );
-//   TRY_TEST(IsEqual(y,100.000), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,127.0), true );
-//
-//   // BottomRight
-//   hookPnt->Move(0,0);
-//   to->Move(100.000,100.000);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpBottomRight, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpBottomRight, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.000), true );
-//   TRY_TEST(IsEqual(y,100.000), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0-36), true );
-//   TRY_TEST(IsEqual(y,127.0), true );
-//
-//   // CenterLeft
-//   hookPnt->Move(0,0);
-//   to->Move(100,100);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpCenterLeft, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpCenterLeft, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,136.0), true );
-//   TRY_TEST(IsEqual(y,113.5), true );
-//
-//   // CenterCenter
-//   hookPnt->Move(0,0);
-//   to->Move(100,100);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpCenterCenter, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpCenterCenter, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.000), true );
-//   TRY_TEST(IsEqual(y,100.000), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,113.5), true );
-//
-//   // CenterRight
-//   hookPnt->Move(0,0);
-//   to->Move(100.0,100.0);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpCenterRight, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpCenterRight, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,64.0), true );
-//   TRY_TEST(IsEqual(y,113.5), true );
-//
-//   // TopLeft
-//   hookPnt->Move(0,0);
-//   to->Move(100.0,100.0);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpTopLeft, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpTopLeft, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,136.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//
-//   // TopCenter
-//   hookPnt->Move(0,0);
-//   to->Move(100.0,100.0);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpTopCenter, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpTopCenter, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//
-//   // TopRight
-//   hookPnt->Move(0,0);
-//   to->Move(100.0,100.0);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpTopRight, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpTopRight, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x, 64.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//
-//   // HookPoint
-//   hookPnt->Move(0,0);
-//   to->Move(100,100);
-//   from.Release();
-//   TRY_TEST( position->put_LocatorPoint( lpHookPoint, to ), S_OK );
-//   TRY_TEST( position->get_LocatorPoint( lpHookPoint, &from ), S_OK );
-//   from->get_X(&x);
-//   from->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,100.0), true );
-//   hookPnt->get_X(&x);
-//   hookPnt->get_Y(&y);
-//   TRY_TEST(IsEqual(x,100.0), true );
-//   TRY_TEST(IsEqual(y,127.0), true );
-//
-//   //
-//   // RotateEx (Provides coverage of Rotate)
-//   //
-//   hookPnt->Move(0,0);
-//   CComPtr<IPoint2d> c;
-//   c.CoCreateInstance( CLSID_Point2d );
-//   c->put_X(0);
-//   c->put_Y(0);
-//
-//   TRY_TEST( position->RotateEx(nullptr,M_PI), E_INVALIDARG );
-//   TRY_TEST( position->RotateEx(c,M_PI), S_OK );
-//
-//   // Check the points
-//   coll.Release();
-//   Enum.Release();
-//   for (i = 0; i < cPoints; i++ )
-//      points[i].Release();
-//   
-//   shape->get_PolyPoints(&coll);
-//   coll->get_Count(&cPoints);
-//   TRY_TEST( cPoints,16);
-//
-//   coll->get__Enum(&Enum);
-//   Enum->Next(cPoints,&points[0],&fetched);
-//   TRY_TEST( fetched, cPoints );
-//
-//   points[0]->get_X(&x);
-//   points[0]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000), true );
-//   TRY_TEST( IsEqual(y,  0.000), true );
-//
-//   points[1]->get_X(&x);
-//   points[1]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 36.000), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[2]->get_X(&x);
-//   points[2]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 22.875), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[3]->get_X(&x);
-//   points[3]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 21.875), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[4]->get_X(&x);
-//   points[4]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 16.625), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[5]->get_X(&x);
-//   points[5]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, 15.625), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[6]->get_X(&x);
-//   points[6]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  3.625), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[7]->get_X(&x);
-//   points[7]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,  2.625), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[8]->get_X(&x);
-//   points[8]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -2.625), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[9]->get_X(&x);
-//   points[9]->get_Y(&y);
-//   TRY_TEST( IsEqual(x, -3.625), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[10]->get_X(&x);
-//   points[10]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-15.625), true );
-//   TRY_TEST( IsEqual(y, 6.000), true );
-//
-//   points[11]->get_X(&x);
-//   points[11]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-16.625), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[12]->get_X(&x);
-//   points[12]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-21.875), true );
-//   TRY_TEST( IsEqual(y, 27.000), true );
-//
-//   points[13]->get_X(&x);
-//   points[13]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-22.875), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[14]->get_X(&x);
-//   points[14]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000), true );
-//   TRY_TEST( IsEqual(y,  6.000), true );
-//
-//   points[15]->get_X(&x);
-//   points[15]->get_Y(&y);
-//   TRY_TEST( IsEqual(x,-36.000), true );
-//   TRY_TEST( IsEqual(y,  0.000), true );
-//
+   CComPtr<IXYPosition> position;
+   TRY_TEST( position.CoCreateInstance( CLSID_MultiWeb2 ), S_OK);
+
+   CComQIPtr<IMultiWeb2> beam(position);
+   CComQIPtr<IShape> shape(position);
+
+   // Use some real dimensions
+   beam->put_H1(20.00);
+   beam->put_H2(3.00);
+   beam->put_H3(6.00);
+   beam->put_W1(30.00);
+   beam->put_W2(36.0);
+   beam->put_T1(1.25);
+   beam->put_T2(5.25);
+   beam->put_T3(2.25);
+   beam->put_T4(2.25);
+   beam->put_T5(6.00);
+   beam->put_F1(3.00);
+   beam->put_F2(5.00);
+   beam->put_WebCount(4);
+
+   //
+   // MoveEx (tests Offset as well)
+   //
+   CComPtr<IPoint2d> from;
+   from.CoCreateInstance( CLSID_Point2d );
+   from->Move(0,0);
+
+   CComPtr<IPoint2d> to;
+   to.CoCreateInstance( CLSID_Point2d );
+   to->Move(100,100);
+
+   TRY_TEST( position->MoveEx(nullptr,to), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,nullptr), E_INVALIDARG );
+   TRY_TEST( position->MoveEx(from,to), S_OK );
+
+   // Check the points
+   CComPtr<IPoint2dCollection> coll;
+   TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
+   TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
+   IndexType cPoints;
+   coll->get_Count(&cPoints);
+   TRY_TEST( cPoints,29);
+
+   CComPtr<IEnumPoint2d> Enum;
+   coll->get__Enum(&Enum);
+   CComPtr<IPoint2d> points[29];
+   ULONG fetched;
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
+
+   Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, -3.25, 129.0);
+   TEST_POINT(points, 203.25, 129.0);
+   TEST_POINT(points, 203.25, 123.0);
+   TEST_POINT(points, 176.25, 120.0);
+   TEST_POINT(points, 173.25, 117.0);
+   TEST_POINT(points, 172.0, 100.0);
+   TEST_POINT(points, 166.75, 100.0);
+   TEST_POINT(points, 164.5, 117.0);
+   TEST_POINT(points, 161.5, 120.0);
+   TEST_POINT(points, 133.5, 120.0);
+   TEST_POINT(points, 128.5, 115.0);
+   TEST_POINT(points, 126.25, 100.0);
+   TEST_POINT(points, 120.25, 100.0);
+   TEST_POINT(points, 118.0, 115.0);
+   TEST_POINT(points, 113.0, 120.0);
+   TEST_POINT(points, 87.0, 120.0);
+   TEST_POINT(points, 82.0, 115.0);
+   TEST_POINT(points, 79.75, 100.0);
+   TEST_POINT(points, 73.75, 100.0);
+   TEST_POINT(points, 71.5, 115.0);
+   TEST_POINT(points, 66.5, 120.0);
+   TEST_POINT(points, 38.5, 120.0);
+   TEST_POINT(points, 35.5, 117.0);
+   TEST_POINT(points, 33.25, 100.0);
+   TEST_POINT(points, 28.0, 100.0);
+   TEST_POINT(points, 26.75, 117.0);
+   TEST_POINT(points, 23.75, 120.0);
+   TEST_POINT(points, -3.25, 123.0);
+   TEST_POINT(points, -3.25, 129.0);
+
+   //
+   // OffsetEx
+   //
+
+   CComPtr<ISize2d> size;
+   size.CoCreateInstance( CLSID_Size2d );
+   size->put_Dx(-100);
+   size->put_Dy(-100);
+
+   TRY_TEST(position->OffsetEx(nullptr), E_INVALIDARG );
+   TRY_TEST(position->OffsetEx(size), S_OK);
+
+   // Check the points
+   coll.Release();
+   Enum.Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
+   
+   shape->get_PolyPoints(&coll);
+   coll->get_Count(&cPoints);
+   TRY_TEST( cPoints,29);
+
+   coll->get__Enum(&Enum);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
+
+   i = 0;
+   TEST_POINT(points, -103.25, 29.0);
+   TEST_POINT(points, 103.25, 29.0);
+   TEST_POINT(points, 103.25, 23.0);
+   TEST_POINT(points, 76.25, 20.0);
+   TEST_POINT(points, 73.25, 17.0);
+   TEST_POINT(points, 72.0, 0.0);
+   TEST_POINT(points, 66.75, 0.0);
+   TEST_POINT(points, 64.5, 17.0);
+   TEST_POINT(points, 61.5, 20.0);
+   TEST_POINT(points, 33.5, 20.0);
+   TEST_POINT(points, 28.5, 15.0);
+   TEST_POINT(points, 26.25, 0.0);
+   TEST_POINT(points, 20.25, 0.0);
+   TEST_POINT(points, 18.0, 15.0);
+   TEST_POINT(points, 13.0, 20.0);
+   TEST_POINT(points, -13.0, 20.0);
+   TEST_POINT(points, -18.0, 15.0);
+   TEST_POINT(points, -20.25, 0.0);
+   TEST_POINT(points, -26.25, 0.0);
+   TEST_POINT(points, -28.5, 15.0);
+   TEST_POINT(points, -33.5, 20.0);
+   TEST_POINT(points, -61.5, 20.0);
+   TEST_POINT(points, -64.5, 17.0);
+   TEST_POINT(points, -66.75, 0.0);
+   TEST_POINT(points, -72.0, 0.0);
+   TEST_POINT(points, -73.25, 17.0);
+   TEST_POINT(points, -76.25, 20.0);
+   TEST_POINT(points, -103.25, 23.0);
+   TEST_POINT(points, -103.25, 29.0);
+
+   //
+   // LocatorPoint property
+   //
+   CComPtr<IPoint2d> hookPnt;
+   beam->get_HookPoint(&hookPnt);
+
+   hookPnt->Move(0,0);
+   TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
+   TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
+
+   // BottomLeft
+   hookPnt->Move(0,0);
+   to->Move(100,100);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpBottomLeft, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpBottomLeft, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.000), true );
+   TRY_TEST(IsEqual(y,100.000), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,203.25), true );
+   TRY_TEST(IsEqual(y,100.000), true );
+
+   // BottomCenter
+   hookPnt->Move(0.0,0.0);
+   to->Move(100.000,100.000);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpBottomCenter, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpBottomCenter, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.000), true );
+   TRY_TEST(IsEqual(y,100.000), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+
+   // BottomRight
+   hookPnt->Move(0,0);
+   to->Move(100.000,100.000);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpBottomRight, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpBottomRight, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.000), true );
+   TRY_TEST(IsEqual(y,100.000), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,-3.25), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+
+   // CenterLeft
+   hookPnt->Move(0,0);
+   to->Move(100,100);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpCenterLeft, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpCenterLeft, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,203.25), true );
+   TRY_TEST(IsEqual(y,85.5), true );
+
+   // CenterCenter
+   hookPnt->Move(0,0);
+   to->Move(100,100);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpCenterCenter, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpCenterCenter, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.000), true );
+   TRY_TEST(IsEqual(y,100.000), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,85.5), true );
+
+   // CenterRight
+   hookPnt->Move(0,0);
+   to->Move(100.0,100.0);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpCenterRight, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpCenterRight, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,-3.25), true );
+   TRY_TEST(IsEqual(y,85.5), true );
+
+   // TopLeft
+   hookPnt->Move(0,0);
+   to->Move(100.0,100.0);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpTopLeft, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpTopLeft, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,203.25), true );
+   TRY_TEST(IsEqual(y,71.0), true );
+
+   // TopCenter
+   hookPnt->Move(0,0);
+   to->Move(100.0,100.0);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpTopCenter, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpTopCenter, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,71.0), true );
+
+   // TopRight
+   hookPnt->Move(0,0);
+   to->Move(100.0,100.0);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpTopRight, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpTopRight, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x, -3.25), true );
+   TRY_TEST(IsEqual(y, 71.0), true );
+
+   // HookPoint
+   hookPnt->Move(0,0);
+   to->Move(100,100);
+   from.Release();
+   TRY_TEST( position->put_LocatorPoint( lpHookPoint, to ), S_OK );
+   TRY_TEST( position->get_LocatorPoint( lpHookPoint, &from ), S_OK );
+   from->get_X(&x);
+   from->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+   hookPnt->get_X(&x);
+   hookPnt->get_Y(&y);
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
+
+   //
+   // RotateEx (Provides coverage of Rotate)
+   //
+   hookPnt->Move(0,0);
+   CComPtr<IPoint2d> c;
+   c.CoCreateInstance( CLSID_Point2d );
+   c->put_X(0);
+   c->put_Y(0);
+
+   TRY_TEST( position->RotateEx(nullptr,M_PI), E_INVALIDARG );
+   TRY_TEST( position->RotateEx(c,M_PI), S_OK );
+
+   // Check the points
+   coll.Release();
+   Enum.Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
+   
+   shape->get_PolyPoints(&coll);
+   coll->get_Count(&cPoints);
+   TRY_TEST( cPoints,29);
+
+   coll->get__Enum(&Enum);
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
+
+   i = 0;
+   TEST_POINT(points, 103.25, -29.0);
+   TEST_POINT(points, -103.25, -29.0);
+   TEST_POINT(points, -103.25, -23.0);
+   TEST_POINT(points, -76.25, -20.0);
+   TEST_POINT(points, -73.25, -17.0);
+   TEST_POINT(points, -72.0, 0.0);
+   TEST_POINT(points, -66.75, 0.0);
+   TEST_POINT(points, -64.5, -17.0);
+   TEST_POINT(points, -61.5, -20.0);
+   TEST_POINT(points, -33.5, -20.0);
+   TEST_POINT(points, -28.5, -15.0);
+   TEST_POINT(points, -26.25, 0.0);
+   TEST_POINT(points, -20.25, 0.0);
+   TEST_POINT(points, -18.0, -15.0);
+   TEST_POINT(points, -13.0, -20.0);
+   TEST_POINT(points, 13.0, -20.0);
+   TEST_POINT(points, 18.0, -15.0);
+   TEST_POINT(points, 20.25, 0.0);
+   TEST_POINT(points, 26.25, 0.0);
+   TEST_POINT(points, 28.5, -15.0);
+   TEST_POINT(points, 33.5, -20.0);
+   TEST_POINT(points, 61.5, -20.0);
+   TEST_POINT(points, 64.5, -17.0);
+   TEST_POINT(points, 66.75, 0.0);
+   TEST_POINT(points, 72.0, 0.0);
+   TEST_POINT(points, 73.25, -17.0);
+   TEST_POINT(points, 76.25, -20.0);
+   TEST_POINT(points, 103.25, -23.0);
+   TEST_POINT(points, 103.25, -29.0);
 }
 
 void CTestMultiWeb2::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_MultiWeb2 ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IMultiWeb2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

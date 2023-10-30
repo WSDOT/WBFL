@@ -43,8 +43,7 @@ STDMETHODIMP CPoint2d::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
-		&IID_IPoint2d,
-      &IID_IStructuredStorage2
+		&IID_IPoint2d
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -61,23 +60,20 @@ HRESULT CPoint2d::FinalConstruct()
 
 void CPoint2d::FinalRelease()
 {
-   m_X = 0.0;
-   m_Y = 0.0;
 }
 
 STDMETHODIMP CPoint2d::get_X(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X;
+   *pVal = m_pPoint->X();
 
 	return S_OK;
 }
 
 STDMETHODIMP CPoint2d::put_X(Float64 newVal)
 {
-   m_X = newVal;
-   Fire_OnPointChanged(this);
+   m_pPoint->X() = newVal;
 	return S_OK;
 }
 
@@ -85,24 +81,20 @@ STDMETHODIMP CPoint2d::get_Y(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y;
+   *pVal = m_pPoint->Y();
 
 	return S_OK;
 }
 
 STDMETHODIMP CPoint2d::put_Y(Float64 newVal)
 {
-   m_Y = newVal;
-   Fire_OnPointChanged(this);
+   m_pPoint->Y() = newVal;
 	return S_OK;
 }
 
 STDMETHODIMP CPoint2d::Move(Float64 x, Float64 y)
 {
-   m_X = x;
-   m_Y = y;
-
-   Fire_OnPointChanged(this);
+   m_pPoint->Move(x, y);
 	return S_OK;
 }
 
@@ -118,10 +110,7 @@ STDMETHODIMP CPoint2d::MoveEx(IPoint2d *pPoint)
 
 STDMETHODIMP CPoint2d::Offset(Float64 dx, Float64 dy)
 {
-   m_X += dx;
-   m_Y += dy;
-
-   Fire_OnPointChanged(this);
+   m_pPoint->Offset(dx, dy);
 	return S_OK;
 }
 
@@ -137,14 +126,7 @@ STDMETHODIMP CPoint2d::OffsetEx(ISize2d *pSize)
 
 STDMETHODIMP CPoint2d::Rotate(Float64 cx, Float64 cy, Float64 angle)
 {
-   Float64 x,y;
-   x = (m_X - cx)*cos(angle) - (m_Y - cy)*sin(angle) + cx;
-   y = (m_Y - cy)*cos(angle) + (m_X - cx)*sin(angle) + cy;
-
-   m_X = x;
-   m_Y = y;
-
-   Fire_OnPointChanged(this);
+   m_pPoint->Rotate(WBFL::Geometry::Point2d(cx, cy), angle);
 	return S_OK;
 }
 
@@ -158,16 +140,10 @@ STDMETHODIMP CPoint2d::RotateEx(IPoint2d *pCenter, Float64 angle)
    return Rotate(cx,cy,angle);
 }
 
-STDMETHODIMP CPoint2d::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
 STDMETHODIMP CPoint2d::Distance(Float64 x,Float64 y,Float64* pDistance)
 {
    CHECK_RETVAL(pDistance);
-   *pDistance = sqrt( (m_X-x)*(m_X-x) + (m_Y-y)*(m_Y-y) );
+   *pDistance = m_pPoint->Distance(WBFL::Geometry::Point2d(x, y));
    return S_OK;
 }
 
@@ -182,8 +158,8 @@ STDMETHODIMP CPoint2d::DistanceEx(IPoint2d* pOther,Float64* pDistance)
 STDMETHODIMP CPoint2d::Size(Float64 x, Float64 y, ISize2d** ppSize)
 {
    CHECK_RETOBJ(ppSize);
-   Float64 dx = m_X - x;
-   Float64 dy = m_Y - y;
+   Float64 dx = m_pPoint->X() - x;
+   Float64 dy = m_pPoint->Y() - y;
    CComPtr<ISize2d> size;
    size.CoCreateInstance(CLSID_Size2d);
    size->put_Dx(dx);
@@ -207,7 +183,7 @@ STDMETHODIMP CPoint2d::SameLocation(IPoint2d* pOther)
    Float64 x,y;
    pOther->Location(&x,&y);
 
-   if ( IsEqual(m_X,x) && IsEqual(m_Y,y) )
+   if ( IsEqual(m_pPoint->X(),x) && IsEqual(m_pPoint->Y(),y) )
       return S_OK;
    else
       return S_FALSE;
@@ -218,8 +194,7 @@ STDMETHODIMP CPoint2d::Location(Float64* pX,Float64* pY)
    CHECK_RETVAL(pX);
    CHECK_RETVAL(pY);
 
-   *pX = m_X;
-   *pY = m_Y;
+   std::tie(*pX, *pY) = m_pPoint->GetLocation();
    return S_OK;
 }
 
@@ -231,53 +206,10 @@ STDMETHODIMP CPoint2d::Clone(IPoint2d** ppPoint)
    if ( FAILED(hr) )
       return hr;
 
+   pPoint->m_pPoint = std::make_shared<WBFL::Geometry::Point2d>(*m_pPoint);
+
    (*ppPoint) = pPoint;
    (*ppPoint)->AddRef();
-
-   (*ppPoint)->Move(m_X,m_Y);
-
-   return S_OK;
-}
-
-// IPersist
-STDMETHODIMP CPoint2d::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CPoint2d::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("Point2d"),1.0);
-   pSave->put_Property(CComBSTR("X"),CComVariant(m_X));
-   pSave->put_Property(CComBSTR("Y"),CComVariant(m_Y));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CPoint2d::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("Point2d"));
-   
-   pLoad->get_Property(CComBSTR("X"),&var);
-   m_X = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y"),&var);
-   m_Y = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
 
    return S_OK;
 }

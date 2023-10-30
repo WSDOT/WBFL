@@ -37,11 +37,11 @@ public:
    HRESULT AddItemData(BSTR name,IUnknown* data);
    HRESULT GetItemData(BSTR name,IUnknown** data);
    HRESULT RemoveItemData(BSTR name);
-   HRESULT GetItemDataCount(CollectionIndexType* count);
+   HRESULT GetItemDataCount(IndexType* count);
 
 private:
 
-   typedef std::map<std::_tstring,CComPtr<IUnknown> > ItemDataCollection;
+   using ItemDataCollection = std::map<std::_tstring,CComPtr<IUnknown>>;
    ItemDataCollection m_Items;
 };
 

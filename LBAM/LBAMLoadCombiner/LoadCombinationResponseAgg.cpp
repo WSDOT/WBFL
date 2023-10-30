@@ -55,11 +55,11 @@ class LoadCombinationEngineBase
    m_CreateConfig(createConfig)
    {
       CHRException hr; // yes, we can throw from here
-      CollectionIndexType numres;
+      IndexType numres;
       hr = POIs->get_Count(&numres);
 
       // initialize list of combination factors in same order as our pois
-      for (CollectionIndexType i = 0; i<numres; i++)
+      for (IndexType i = 0; i<numres; i++)
       {
          // get load modifiers
          PoiIDType id;
@@ -110,11 +110,11 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
                          IGetCombinationFactors* ifactors, bool createConfig, bool isPOIs ):
    LoadCombinationEngineBase(POIs, Stage,  summ, lmType, ifactors, createConfig, isPOIs )
    {
-      CollectionIndexType numres = m_ComboFactors.size();
+      IndexType numres = m_ComboFactors.size();
       CreateResults(numres, summ);
    }
 
-   void CreateResults(CollectionIndexType numRes, ResultsSummationType summ)
+   void CreateResults(IndexType numRes, ResultsSummationType summ)
    {
       CHRException hr;
       CComObject<CLoadCombinationResults>* results;
@@ -131,8 +131,8 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i = 0; i<size; i++)
+      IndexType size = m_ComboFactors.size();
+      for (IndexType i = 0; i<size; i++)
       {
          CComPtr<IResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -186,8 +186,8 @@ class LoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i = 0; i<size; i++)
+      IndexType size = m_ComboFactors.size();
+      for (IndexType i = 0; i<size; i++)
       {
          Float64 llresult;
          CComPtr<ILiveLoadConfiguration> llconfig;
@@ -231,11 +231,11 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       m_Flip = doFlip ? -1 : 1;
 
-      CollectionIndexType numres = m_ComboFactors.size();
+      IndexType numres = m_ComboFactors.size();
       CreateResults(numres, summ);
    }
 
-   void CreateResults(CollectionIndexType numRes, ResultsSummationType summ)
+   void CreateResults(IndexType numRes, ResultsSummationType summ)
    {
       CHRException hr;
       CComObject<CLoadCombinationSectionResults>* results;
@@ -252,8 +252,8 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i = 0; i<size; i++)
+      IndexType size = m_ComboFactors.size();
+      for (IndexType i = 0; i<size; i++)
       {
          CComPtr<ISectionResult3D> res3d;
          hr = loadCaseResults->get_Item(i, &res3d);
@@ -331,8 +331,8 @@ class SectionLoadCombinationEngine: protected LoadCombinationEngineBase
    {
       CHRException hr;
       // loop over all pois
-      CollectionIndexType size = m_ComboFactors.size();
-      for (CollectionIndexType i = 0; i<size; i++)
+      IndexType size = m_ComboFactors.size();
+      for (IndexType i = 0; i<size; i++)
       {
          Float64 left_llresult, right_llresult;
          CComPtr<ILiveLoadConfiguration> left_llconfig, right_llconfig;
@@ -381,12 +381,12 @@ inline bool CompareMin(Float64 newv, Float64 oldv)
 }
 
 // Single values
-static void ComputeLlmMax(CollectionIndexType numPois, bool (*Compare)(Float64, Float64), 
+static void ComputeLlmMax(IndexType numPois, bool (*Compare)(Float64, Float64), 
                        ILiveLoadModelResults* newResults, ILiveLoadModelResults* envResults)
 {
    CHRException hr;
    // Perform comparison of new results with previously enveloped results
-   for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+   for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
    {
       // pull out new result to compare with
       Float64 new_result;
@@ -407,12 +407,12 @@ static void ComputeLlmMax(CollectionIndexType numPois, bool (*Compare)(Float64, 
 }
 
 // section values
-static void ComputeLlmMax(CollectionIndexType numPois, bool (*leftCompare)(Float64, Float64), bool (*rightCompare)(Float64, Float64), 
+static void ComputeLlmMax(IndexType numPois, bool (*leftCompare)(Float64, Float64), bool (*rightCompare)(Float64, Float64), 
                           ILiveLoadModelSectionResults* newResults, ILiveLoadModelSectionResults* envResults)
 {
    CHRException hr;
    // Perform comparison of new results with previously enveloped results
-   for (CollectionIndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
+   for (IndexType poiIdx = 0; poiIdx < numPois; poiIdx++)
    {
       // pull out new result to compare with
       Float64 new_left_result, new_right_result;
@@ -454,7 +454,7 @@ static void ComputeLlmMax(CollectionIndexType numPois, bool (*leftCompare)(Float
          right_config = old_right_config;
       }
 
-      // only need to update if a new maximum occured
+      // only need to update if a new maximum occurred
       if (new_max_occurred)
       {
          hr = envResults->SetResult(poiIdx,left_result, left_config, right_result, right_config);
@@ -518,8 +518,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
+      IndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (IndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -555,14 +555,14 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
                hr = m_pCombiner->m_pLiveLoadModelResponse->ComputeForces(POIs, Stage, llt, orientation, 
                                                            effect, optimization, vlcDefault, includeImpact, VARIANT_TRUE, computeConfig,
                                                            &liveload_results);
-               CollectionIndexType ll_size;
+               IndexType ll_size;
                hr = liveload_results->get_Count(&ll_size);
 
                CMB_HANDLE_CANCEL_PROGRESS();
 
                if (ll_size>0)  // it's possible that no live load results exist for the given ll model
                {
-                  CollectionIndexType poisiz;
+                  IndexType poisiz;
                   hr = POIs->get_Count(&poisiz);
                   ATLASSERT(ll_size==poisiz);
 
@@ -589,7 +589,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
                fright_compare = &CompareMax;
             }
 
-            CollectionIndexType num_pois;
+            IndexType num_pois;
             POIs->get_Count(&num_pois);
 
             bool first=true;
@@ -622,7 +622,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
             }
 
             // Factor and store enveloped llm results
-            CollectionIndexType ll_size;
+            IndexType ll_size;
             hr = env_liveload_results->get_Count(&ll_size);
 
             if (ll_size>0)  // it's possible that no live load results exist for the given ll model
@@ -679,8 +679,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
+      IndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (IndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -742,7 +742,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
                fright_compare = &CompareMax;
             }
 
-            CollectionIndexType num_pois;
+            IndexType num_pois;
             POIs->get_Count(&num_pois);
 
             bool first=true;
@@ -775,7 +775,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
             }
 
             // Factor and store enveloped llm results
-            CollectionIndexType ll_size;
+            IndexType ll_size;
             hr = env_liveload_results->get_Count(&ll_size);
 
             if (ll_size>0)  // it's possible that no live load results exist for the given ll model
@@ -830,8 +830,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
+      IndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (IndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -890,7 +890,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
                fcompare  = &CompareMin;
             }
 
-            CollectionIndexType num_pois;
+            IndexType num_pois;
             POIs->get_Count(&num_pois);
 
             bool first=true;
@@ -924,7 +924,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
             }
 
             // Factor and store enveloped llm results
-            CollectionIndexType ll_size;
+            IndexType ll_size;
             hr = env_liveload_results->get_Count(&ll_size);
 
             if (ll_size>0)  // it's possible that no live load results exist for the given ll model
@@ -980,8 +980,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // loop over load case results and apply them to combination
-      CollectionIndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
-      for (CollectionIndexType i_combo = 0; i_combo<num_combos; i_combo++)
+      IndexType num_combos = rcombo_data.m_LoadCaseFactors.size();
+      for (IndexType i_combo = 0; i_combo<num_combos; i_combo++)
       {
          CLoadCombiner::ComboData::LoadCaseFactors& rfactors = rcombo_data.m_LoadCaseFactors[i_combo];
 
@@ -1040,7 +1040,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
                fcompare  = &CompareMin;
             }
 
-            CollectionIndexType num_pois;
+            IndexType num_pois;
             POIs->get_Count(&num_pois);
 
             bool first=true;

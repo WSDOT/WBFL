@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportBuilder.cpp: implementation of the CReportBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportBuilder.h>
@@ -38,78 +34,69 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CReportBuilder::CReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :
+ReportBuilder::ReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :
 m_Name(strName),
 m_bHidden(bHidden),
-m_bIncludeTimingChapter(bIncludeTimingChapter),
-m_pRptSpecBuilder( new CReportSpecificationBuilder )
+m_bIncludeTimingChapter(bIncludeTimingChapter)
 {
-   m_pBitmap = nullptr;
 }
 
-CReportBuilder::~CReportBuilder()
-{
-
-}
-
-LPCTSTR CReportBuilder::GetName() const
+LPCTSTR ReportBuilder::GetName() const
 {
    return m_Name.c_str();
 }
 
-void CReportBuilder::Hidden(bool bHide)
+void ReportBuilder::Hidden(bool bHide)
 {
    m_bHidden = bHide;
 }
 
-bool CReportBuilder::Hidden() const
+bool ReportBuilder::Hidden() const
 {
    return m_bHidden;
 }
 
-void CReportBuilder::IncludeTimingChapter(bool bInclude)
+void ReportBuilder::IncludeTimingChapter(bool bInclude)
 {
    m_bIncludeTimingChapter = bInclude;
 }
 
-bool CReportBuilder::IncludeTimingChapter() const
+bool ReportBuilder::IncludeTimingChapter() const
 {
    return m_bIncludeTimingChapter;
 }
 
-void CReportBuilder::AddTitlePageBuilder(std::shared_ptr<CTitlePageBuilder>& pTitlePageBuilder)
+void ReportBuilder::AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder)
 {
    m_pTitlePageBuilder = pTitlePageBuilder;
 }
 
-std::shared_ptr<CTitlePageBuilder> CReportBuilder::GetTitlePageBuilder()
+std::shared_ptr<TitlePageBuilder> ReportBuilder::GetTitlePageBuilder()
 {
    return m_pTitlePageBuilder;
 }
 
-void CReportBuilder::AddChapterBuilder(std::shared_ptr<CChapterBuilder>& pChapterBuilder)
+void ReportBuilder::AddChapterBuilder(std::shared_ptr<ChapterBuilder> pChapterBuilder)
 {
    m_ChapterBuilders.push_back( pChapterBuilder );
 }
 
-bool CReportBuilder::InsertChapterBuilder(std::shared_ptr<CChapterBuilder>& pNewChapterBuilder,LPCTSTR strAfterChapter)
+bool ReportBuilder::InsertChapterBuilder(std::shared_ptr<ChapterBuilder> pNewChapterBuilder,LPCTSTR strKey)
 {
-   std::_tstring tstrAfterChapter(strAfterChapter);
+   std::_tstring tstrAfterChapterKey(strKey);
 
    ChapterBuilderContainer::iterator iter(m_ChapterBuilders.begin());
    ChapterBuilderContainer::iterator end(m_ChapterBuilders.end());
    for ( ; iter != end; iter++ )
    {
-      std::shared_ptr<CChapterBuilder>& pChapterBuilder(*iter);
-      if ( std::_tstring(pChapterBuilder->GetName()) == tstrAfterChapter )
+      std::shared_ptr<ChapterBuilder>& pChapterBuilder(*iter);
+      if ( std::_tstring(pChapterBuilder->GetKey()) == tstrAfterChapterKey )
       {
          iter++;
-         std::shared_ptr<CChapterBuilder>& pChBldr(*iter);
-         if ( std::_tstring(pChBldr->GetName()) == std::_tstring(pNewChapterBuilder->GetName()) )
+         std::shared_ptr<ChapterBuilder>& pChBldr(*iter);
+         if ( std::_tstring(pChBldr->GetKey()) == std::_tstring(pNewChapterBuilder->GetKey()) )
          {
             // a chapter with that name already exists
             return false;
@@ -123,16 +110,16 @@ bool CReportBuilder::InsertChapterBuilder(std::shared_ptr<CChapterBuilder>& pNew
    return false;
 }
 
-bool CReportBuilder::RemoveChapterBuilder(LPCTSTR lpszChapterName)
+bool ReportBuilder::RemoveChapterBuilder(LPCTSTR strKey)
 {
-   std::_tstring strAfterChapter(lpszChapterName);
+   std::_tstring strAfterChapterKey(strKey);
 
    ChapterBuilderContainer::iterator iter(m_ChapterBuilders.begin());
    ChapterBuilderContainer::iterator end(m_ChapterBuilders.end());
    for ( ; iter != end; iter++ )
    {
-      std::shared_ptr<CChapterBuilder>& pChapterBuilder(*iter);
-      if ( std::_tstring(pChapterBuilder->GetName()) == strAfterChapter )
+      std::shared_ptr<ChapterBuilder>& pChapterBuilder(*iter);
+      if ( std::_tstring(pChapterBuilder->GetKey()) == strAfterChapterKey )
       {
          m_ChapterBuilders.erase(iter);
          return true;
@@ -142,17 +129,17 @@ bool CReportBuilder::RemoveChapterBuilder(LPCTSTR lpszChapterName)
    return false;
 }
 
-CollectionIndexType CReportBuilder::GetChapterBuilderCount() const
+IndexType ReportBuilder::GetChapterBuilderCount() const
 {
    return m_ChapterBuilders.size();
 }
 
-std::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(CollectionIndexType idx)
+std::shared_ptr<ChapterBuilder> ReportBuilder::GetChapterBuilder(IndexType idx)
 {
    return m_ChapterBuilders[idx];
 }
 
-std::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(LPCTSTR strKey)
+std::shared_ptr<ChapterBuilder> ReportBuilder::GetChapterBuilder(LPCTSTR strKey)
 {
    for( const auto& pChBuilder : m_ChapterBuilders)
    {
@@ -165,32 +152,54 @@ std::shared_ptr<CChapterBuilder> CReportBuilder::GetChapterBuilder(LPCTSTR strKe
    return nullptr;
 }
 
-CReportDescription CReportBuilder::GetReportDescription()
+std::shared_ptr<const ChapterBuilder> ReportBuilder::GetChapterBuilder(IndexType idx) const
 {
-   CReportDescription rptDesc(m_Name.c_str());
+   return m_ChapterBuilders[idx];
+}
+
+std::shared_ptr<const ChapterBuilder> ReportBuilder::GetChapterBuilder(LPCTSTR strKey) const
+{
+   for (const auto& pChBuilder : m_ChapterBuilders)
+   {
+      if (std::_tstring(pChBuilder->GetKey()) == std::_tstring(strKey))
+      {
+         return pChBuilder;
+      }
+   }
+
+   return nullptr;
+}
+
+ReportDescription ReportBuilder::GetReportDescription() const
+{
+   ReportDescription rptDesc(m_Name.c_str());
 
    for( const auto& pChBuilder : m_ChapterBuilders)
    {
-      const CChapterBuilder* pBuilder = pChBuilder.get();
-      rptDesc.AddChapter( pBuilder );
+      rptDesc.AddChapter(pChBuilder);
    }
 
    return rptDesc;
 }
 
-void CReportBuilder::SetReportSpecificationBuilder(std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder)
+void ReportBuilder::SetReportSpecificationBuilder(std::shared_ptr<ReportSpecificationBuilder> pRptSpecBuilder)
 {
    m_pRptSpecBuilder = pRptSpecBuilder;
 }
 
-std::shared_ptr<CReportSpecificationBuilder> CReportBuilder::GetReportSpecificationBuilder()
+std::shared_ptr<ReportSpecificationBuilder> ReportBuilder::GetReportSpecificationBuilder()
 {
    return m_pRptSpecBuilder;
 }
 
-bool CReportBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<const ReportSpecificationBuilder> ReportBuilder::GetReportSpecificationBuilder() const
 {
-   std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
+   return m_pRptSpecBuilder;
+}
+
+bool ReportBuilder::NeedsUpdate(const std::shared_ptr<const ReportHint> pHint, const std::shared_ptr<const ReportSpecification> pRptSpec) const
+{
+   std::vector<ChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
    if ( m_pTitlePageBuilder.get() != nullptr && m_pTitlePageBuilder->NeedsUpdate(pHint,pRptSpec) )
    {
@@ -199,8 +208,8 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpec
 
    for( const auto& chInfo : vchInfo)
    {
-      std::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
-      if ( pChBuilder && pChBuilder->NeedsUpdate(pHint,pRptSpec.get(),chInfo.MaxLevel) )
+      auto pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
+      if ( pChBuilder && pChBuilder->NeedsUpdate(pHint,pRptSpec,chInfo.MaxLevel) )
       {
          return true;
       }
@@ -209,19 +218,19 @@ bool CReportBuilder::NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpec
    return false;
 }
 
-std::shared_ptr<rptReport> CReportBuilder::CreateReport(std::shared_ptr<CReportSpecification>& pRptSpec)
+std::shared_ptr<rptReport> ReportBuilder::CreateReport(const std::shared_ptr<const ReportSpecification> pRptSpec) const
 {
-   sysTime start;
+   WBFL::System::Time start;
 
    std::shared_ptr<rptReport> pReport( std::make_shared<rptReport>(pRptSpec->GetReportName()) );
-   std::vector<CChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
+   std::vector<ChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
    for( const auto& chInfo : vchInfo)
    {
-      std::shared_ptr<CChapterBuilder> pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
+      auto pChBuilder = GetChapterBuilder( chInfo.Key.c_str() );
       if ( pChBuilder )
       {
-         rptChapter* pChapter = pChBuilder->Build( pRptSpec.get(), chInfo.MaxLevel );
+         rptChapter* pChapter = pChBuilder->Build( pRptSpec, chInfo.MaxLevel );
          if ( pChapter )
          {
             (*pReport) << pChapter;
@@ -236,10 +245,10 @@ std::shared_ptr<rptReport> CReportBuilder::CreateReport(std::shared_ptr<CReportS
       pReport->InsertChapterAt(0, pTitlePage);
    }
 
-   sysTime end;
+   WBFL::System::Time end;
    if ( m_bIncludeTimingChapter )
    {
-      CTimeChapterBuilder timeChapterBuilder;
+      TimeChapterBuilder timeChapterBuilder;
       rptChapter* pChapter = timeChapterBuilder.Build(start,end);
       (*pReport) << pChapter;
    }
@@ -247,12 +256,12 @@ std::shared_ptr<rptReport> CReportBuilder::CreateReport(std::shared_ptr<CReportS
    return pReport;
 }
 
-void CReportBuilder::SetMenuBitmap(const CBitmap* pBmp)
+void ReportBuilder::SetMenuBitmap(const CBitmap* pBmp)
 {
    m_pBitmap = pBmp;
 }
 
-const CBitmap* CReportBuilder::GetMenuBitmap()
+const CBitmap* ReportBuilder::GetMenuBitmap()
 {
    return m_pBitmap;
 }

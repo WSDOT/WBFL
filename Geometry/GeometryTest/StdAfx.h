@@ -35,8 +35,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
-
 #include <ObjBase.h>
 #include <AtlBase.h>
 //You may derive a class from CComModule and use it if you want to override
@@ -48,6 +46,7 @@ extern CComModule _Module;
 #include "Test.h"
 
 #include <MathEx.h>
+#include <WBFLTest.h>
 
 
 inline bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions)
@@ -63,6 +62,8 @@ inline bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptio
    safety->GetInterfaceSafetyOptions(riid,&dwSupported,&dwEnabled);
    return dwSupported == dwSupportedOptions;
 }
+
+#define TEST_POINT(_point_,_x_,_y_) _point_[i]->get_X(&x); _point_[i++]->get_Y(&y); TRY_TEST(IsEqual(x,_x_),true); TRY_TEST(IsEqual(y,_y_),true);
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

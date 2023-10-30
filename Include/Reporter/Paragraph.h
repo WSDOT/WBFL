@@ -40,9 +40,9 @@ class REPORTERCLASS rptParagraph : public rptReportItem
 {
 public:
 
-   typedef std::vector<std::shared_ptr<rptReportContent> > ContentVec;
-   typedef ContentVec::iterator ParagraphContentIterator;
-   typedef ContentVec::const_iterator ConstParagraphContentIterator;
+   using ContentVec = std::vector<std::shared_ptr<rptReportContent>>;
+   using ParagraphContentIterator = ContentVec::iterator;
+   using ConstParagraphContentIterator = ContentVec::const_iterator;
 
    /// Creates an unnamed paragraph that inherits the style of the parent chapter
    rptParagraph();
@@ -68,6 +68,8 @@ public:
    /// Insertion operator for report content. The paragraph takes ownership of the content and will delete it when it is no longer used.
    virtual rptParagraph& operator << (rptReportContent* pContent );
    
+   virtual rptParagraph& operator << (std::shared_ptr<rptReportContent>& pContent);
+
    rptParagraph& operator << (const std::_tstring& str);
    rptParagraph& operator << (LPCTSTR str);
    rptParagraph& operator << (Int8 value);

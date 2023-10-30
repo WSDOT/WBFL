@@ -27,6 +27,7 @@
 // function for setting up segements
 void SetupSegment(ISegment* pseg);
 
+#if !defined SKIP_TEMPLATE
 // template class for testing segments portion of member interfaces
 
 template <class TTest, class TSegs>
@@ -923,3 +924,5 @@ HRESULT TestSegments(TTest* pMe, TSegs* pSegs)
 
    return S_OK;
 }
+
+#endif

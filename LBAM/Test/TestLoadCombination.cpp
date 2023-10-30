@@ -142,7 +142,7 @@ void CTestLoadCombination::Test()
    TRY_TEST( pLoadCombination->get_LiveLoadModelApplicationType(&lmat), S_OK );
    TRY_TEST( lmat, llmaEnvelope);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( pLoadCombination->get_LoadCaseFactorCount(&cnt), S_OK );
    TRY_TEST(cnt, 0);
 

@@ -71,10 +71,10 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
-   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
-   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
-   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -175,6 +175,20 @@ void CCrackedSectionSolverTest::TestRectangularBeam()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,81.755394),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 81.755394), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1435324.2471274068), true);
+   
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 1080016839.2639580), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam1()
@@ -186,10 +200,10 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
-   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
-   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
-   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -289,6 +303,20 @@ void CCrackedSectionSolverTest::TestTeeBeam1()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,101.425427),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 101.425427), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1150707.9739471173), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 380133591.91453171), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam2()
@@ -300,10 +328,10 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
-   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
-   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
-   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -403,6 +431,20 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,52.15599),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, 52.15599), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 9822852.5720759369), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 16603253157.345383), true);
 }
 
 void CCrackedSectionSolverTest::TestTeeBeam3()
@@ -414,10 +456,10 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    unit_server.CoCreateInstance(CLSID_UnitServer);
    
    // base units of kip and ksi
-   hr = unit_server->SetBaseUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
-   unitSysUnitsMgr::SetMassUnit(unitMeasure::_12KSlug);
-   unitSysUnitsMgr::SetLengthUnit(unitMeasure::Inch);
-   unitSysUnitsMgr::SetTimeUnit(unitMeasure::Second);
+   hr = unit_server->SetSystemUnits(CComBSTR("12kslug"),CComBSTR("in"),CComBSTR("sec"),CComBSTR("F"),CComBSTR("deg"));
+   WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+   WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+   WBFL::Units::System::SetTimeUnit(WBFL::Units::Measure::Second);
 
    // Get a general section
    CComPtr<IGeneralSection> section;
@@ -522,4 +564,18 @@ void CCrackedSectionSolverTest::TestTeeBeam3()
    Float64 y;
    pntCG->get_Y(&y);
    TRY_TEST(IsEqual(y,-11.781458),true);
+
+   CComPtr<IElasticProperties> props;
+   solution->get_ElasticProperties(&props);
+   pntCG.Release();
+   props->get_Centroid(&pntCG);
+   pntCG->get_Y(&y);
+   TRY_TEST(IsEqual(y, -11.781458), true);
+
+   Float64 value;
+   props->get_EA(&value);
+   TRY_TEST(IsEqual(value, 1251805.8138490969), true);
+
+   props->get_EIxx(&value);
+   TRY_TEST(IsEqual(value, 708414513.80776465), true);
 }

@@ -36,7 +36,7 @@
 #include <functional>
 
 class CFlangedBeam;
-typedef CGirderSectionImpl<CFlangedBeam, &CLSID_FlangedGirderSection, IFlangedGirderSection, &IID_IFlangedGirderSection, IPrecastBeam, &CLSID_PrecastBeam> CFlangedBeamImpl;
+using CFlangedBeamImpl = CGirderSectionImpl<CFlangedBeam, &CLSID_FlangedGirderSection, IFlangedGirderSection, &IID_IFlangedGirderSection, IPrecastBeam, &CLSID_PrecastBeam>;
 
 class CFlangedBeam : 
    public CFlangedBeamImpl,
@@ -70,7 +70,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -78,7 +78,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -234,7 +234,7 @@ public:
 };
 
 class CFlangedBeam2;
-typedef CGirderSectionImpl<CFlangedBeam2, &CLSID_FlangedGirderSection2, IFlangedGirderSection2, &IID_IFlangedGirderSection2, IPrecastBeam2, &CLSID_PrecastBeam2> CFlangedBeam2Impl;
+using CFlangedBeam2Impl = CGirderSectionImpl<CFlangedBeam2, &CLSID_FlangedGirderSection2, IFlangedGirderSection2, &IID_IFlangedGirderSection2, IPrecastBeam2, &CLSID_PrecastBeam2>;
 
 class CFlangedBeam2 :
    public CFlangedBeam2Impl,
@@ -268,7 +268,7 @@ public:
       return m_Beam->get_D6(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
          return E_INVALIDARG;
@@ -276,7 +276,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
          return E_INVALIDARG;
@@ -430,7 +430,7 @@ public:
 };
 
 class CBulbTeeSection;
-typedef CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2> CBulbTeeSectionBase;
+using CBulbTeeSectionBase = CGirderSectionImpl<CBulbTeeSection, &CLSID_BulbTeeSection, IBulbTeeSection, &IID_IBulbTeeSection, IBulbTee2, &CLSID_BulbTee2>;
 class CBulbTeeSection : 
    public CBulbTeeSectionBase,
    public IAsymmetricSection,
@@ -720,7 +720,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -730,7 +730,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -974,7 +974,7 @@ public:
       return m_Beam->get_D5(tf); // NUBeam
    } 
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -982,7 +982,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx,Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx,Float64* tFlange) override
    {
       if ( idx != 0 )
          return E_INVALIDARG;
@@ -1086,7 +1086,7 @@ public:
 };
 
 class CNUDeckedBulbTeeSection;
-typedef CGirderSectionImpl<CNUDeckedBulbTeeSection, &CLSID_NUDeckedBulbTeeSection, INUDeckedBulbTeeSection, &IID_INUDeckedBulbTeeSection, INUDeckedIBeam, &CLSID_NUDeckedIBeam> CNUDeckedBulbTeeSectionBase;
+using CNUDeckedBulbTeeSectionBase = CGirderSectionImpl<CNUDeckedBulbTeeSection, &CLSID_NUDeckedBulbTeeSection, INUDeckedBulbTeeSection, &IID_INUDeckedBulbTeeSection, INUDeckedIBeam, &CLSID_NUDeckedIBeam>;
 class CNUDeckedBulbTeeSection :
    public CNUDeckedBulbTeeSectionBase,
    //public IAsymmetricSection,
@@ -1364,7 +1364,7 @@ public:
       return m_Beam->get_D4(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1374,7 +1374,7 @@ public:
       return m_Beam->get_D1(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1589,7 +1589,7 @@ public:
 };
 
 class CPCIDeckedBulbTeeSection;
-typedef CGirderSectionImpl<CPCIDeckedBulbTeeSection, &CLSID_PCIDeckedBulbTeeSection, IPCIDeckedBulbTeeSection, &IID_IPCIDeckedBulbTeeSection, IPCIDeckedIBeam, &CLSID_PCIDeckedIBeam> CPCIDeckedBulbTeeSectionBase;
+using CPCIDeckedBulbTeeSectionBase = CGirderSectionImpl<CPCIDeckedBulbTeeSection, &CLSID_PCIDeckedBulbTeeSection, IPCIDeckedBulbTeeSection, &IID_IPCIDeckedBulbTeeSection, IPCIDeckedIBeam, &CLSID_PCIDeckedIBeam>;
 class CPCIDeckedBulbTeeSection :
    public CPCIDeckedBulbTeeSectionBase,
    //public IAsymmetricSection,
@@ -1872,7 +1872,7 @@ public:
       return m_Beam->get_D9(tf); // IBeam
    }
 
-   STDMETHODIMP get_TopFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_TopFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {
@@ -1882,7 +1882,7 @@ public:
       return m_Beam->get_D7(tFlange);
    }
 
-   STDMETHODIMP get_BottomFlangeThickness(CollectionIndexType idx, Float64* tFlange) override
+   STDMETHODIMP get_BottomFlangeThickness(IndexType idx, Float64* tFlange) override
    {
       if (idx != 0)
       {

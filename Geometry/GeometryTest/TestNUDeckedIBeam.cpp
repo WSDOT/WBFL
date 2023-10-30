@@ -341,20 +341,16 @@ void CTestNUDeckedIBeam::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_NUDeckedIBeam ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_INUDeckedIBeam ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }
-
-
-#define TEST_POINT(_point_,_x_,_y_) _point_[i]->get_X(&x); _point_[i++]->get_Y(&y); TRY_TEST(IsEqual(x,_x_,0.0001),true); TRY_TEST(IsEqual(y,_y_,0.0001),true);
 
 void CTestNUDeckedIBeam::TestIShape()
 {
@@ -503,8 +499,8 @@ void CTestNUDeckedIBeam::TestIShape2()
 	TRY_TEST(shape->get_PolyPoints(nullptr), E_POINTER);
 	TRY_TEST(shape->get_PolyPoints(&coll), S_OK);
 
-	const CollectionIndexType nPoints = 96; // number of expected points
-	CollectionIndexType cPoints;
+	const IndexType nPoints = 99; // number of expected points
+	IndexType cPoints;
 	coll->get_Count(&cPoints);
 	TRY_TEST(cPoints, nPoints);
 
@@ -517,113 +513,107 @@ void CTestNUDeckedIBeam::TestIShape2()
 
 	Float64 x, y;
 	int i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, -18.000000, 0.000000);
+   TEST_POINT(points, -19.000000, 1.000000);
+   TEST_POINT(points, -19.000000, 5.000000);
+   TEST_POINT(points, -14.919567, 6.920204);
+   TEST_POINT(points, -13.784272, 7.494207);
+   TEST_POINT(points, -12.683233, 8.131457);
+   TEST_POINT(points, -11.619970, 8.829917);
+   TEST_POINT(points, -10.597881, 9.587353);
+   TEST_POINT(points, -9.620235, 10.401345);
+   TEST_POINT(points, -8.690156, 11.269289);
+   TEST_POINT(points, -7.810618, 12.188412);
+   TEST_POINT(points, -6.984432, 13.155775);
+   TEST_POINT(points, -6.214240, 14.168286);
+   TEST_POINT(points, -5.502503, 15.222708);
+   TEST_POINT(points, -4.851498, 16.315670);
+   TEST_POINT(points, -4.263305, 17.443679);
+   TEST_POINT(points, -3.739804, 18.603127);
+   TEST_POINT(points, -3.282669, 19.790310);
+   TEST_POINT(points, -2.893361, 21.001431);
+   TEST_POINT(points, -2.573126, 22.232619);
+   TEST_POINT(points, -2.322985, 23.479937);
+   TEST_POINT(points, -2.143741, 24.739400);
+   TEST_POINT(points, -2.035964, 26.006980);
+   TEST_POINT(points, -2.000000, 27.278625);
+   TEST_POINT(points, -2.000000, 89.099500);
+   TEST_POINT(points, -2.030436, 89.879106);
+   TEST_POINT(points, -2.121557, 90.653967);
+   TEST_POINT(points, -2.272810, 91.419366);
+   TEST_POINT(points, -2.483274, 92.170643);
+   TEST_POINT(points, -2.751667, 92.903226);
+   TEST_POINT(points, -3.076356, 93.612655);
+   TEST_POINT(points, -3.455364, 94.294612);
+   TEST_POINT(points, -3.886384, 94.944946);
+   TEST_POINT(points, -4.366793, 95.559698);
+   TEST_POINT(points, -4.893667, 96.135125);
+   TEST_POINT(points, -5.463797, 96.667726);
+   TEST_POINT(points, -6.073714, 97.154259);
+   TEST_POINT(points, -6.719705, 97.591761);
+   TEST_POINT(points, -7.397838, 97.977569);
+   TEST_POINT(points, -8.103985, 98.309335);
+   TEST_POINT(points, -8.833848, 98.585041);
+   TEST_POINT(points, -9.582983, 98.803006);
+   TEST_POINT(points, -10.346831, 98.961905);
+   TEST_POINT(points, -11.120742, 99.060770);
+   TEST_POINT(points, -11.900005, 99.099000);
+   TEST_POINT(points, -13.000000, 105.000000);
+   TEST_POINT(points, -62.000000, 106.000000);
+   TEST_POINT(points, -63.000000, 108.000000);
+   TEST_POINT(points, 0.000000, 108.000000);
+   TEST_POINT(points, 63.000000, 108.000000);
+   TEST_POINT(points, 62.000000, 106.000000);
+   TEST_POINT(points, 13.000000, 105.000000);
+   TEST_POINT(points, 11.900005, 99.099000);
+   TEST_POINT(points, 11.120742, 99.060770);
+   TEST_POINT(points, 10.346831, 98.961905);
+   TEST_POINT(points, 9.582983, 98.803006);
+   TEST_POINT(points, 8.833848, 98.585041);
+   TEST_POINT(points, 8.103985, 98.309335);
+   TEST_POINT(points, 7.397838, 97.977569);
+   TEST_POINT(points, 6.719705, 97.591761);
+   TEST_POINT(points, 6.073714, 97.154259);
+   TEST_POINT(points, 5.463797, 96.667726);
+   TEST_POINT(points, 4.893667, 96.135125);
+   TEST_POINT(points, 4.366793, 95.559698);
+   TEST_POINT(points, 3.886384, 94.944946);
+   TEST_POINT(points, 3.455364, 94.294612);
+   TEST_POINT(points, 3.076356, 93.612655);
+   TEST_POINT(points, 2.751667, 92.903226);
+   TEST_POINT(points, 2.483274, 92.170643);
+   TEST_POINT(points, 2.272810, 91.419366);
+   TEST_POINT(points, 2.121557, 90.653967);
+   TEST_POINT(points, 2.030436, 89.879106);
+   TEST_POINT(points, 2.000000, 89.099500);
+   TEST_POINT(points, 2.000000, 27.278625);
+   TEST_POINT(points, 2.035964, 26.006980);
+   TEST_POINT(points, 2.143741, 24.739400);
+   TEST_POINT(points, 2.322985, 23.479937);
+   TEST_POINT(points, 2.573126, 22.232619);
+   TEST_POINT(points, 2.893361, 21.001431);
+   TEST_POINT(points, 3.282669, 19.790310);
+   TEST_POINT(points, 3.739804, 18.603127);
+   TEST_POINT(points, 4.263305, 17.443679);
+   TEST_POINT(points, 4.851498, 16.315670);
+   TEST_POINT(points, 5.502503, 15.222708);
+   TEST_POINT(points, 6.214240, 14.168286);
+   TEST_POINT(points, 6.984432, 13.155775);
+   TEST_POINT(points, 7.810618, 12.188412);
+   TEST_POINT(points, 8.690156, 11.269289);
+   TEST_POINT(points, 9.620235, 10.401345);
+   TEST_POINT(points, 10.597881, 9.587353);
+   TEST_POINT(points, 11.619970, 8.829917);
+   TEST_POINT(points, 12.683233, 8.131457);
+   TEST_POINT(points, 13.784272, 7.494207);
+   TEST_POINT(points, 14.919567, 6.920204);
+   TEST_POINT(points, 19.000000, 5.000000);
+   TEST_POINT(points, 19.000000, 1.000000);
+   TEST_POINT(points, 18.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   // dump for plotting
-	//for (int j = 0; j < nPoints; j++)
-	//{
-	//	CComPtr<IPoint2d> pnt;
-	//	points[j]->Location(&x, &y);
-	//	std::cout << x << ", " << y << std::endl;
-	//}
-
-
-   TEST_POINT(points, -18.0, 0.0);
-   TEST_POINT(points, -19.0, 1.0);
-   TEST_POINT(points, -19.0, 5.0);
-   TEST_POINT(points, -14.9196, 6.9202);
-   TEST_POINT(points, -13.7843, 7.49421);
-   TEST_POINT(points, -12.6832, 8.13146);
-   TEST_POINT(points, -11.62, 8.82992);
-   TEST_POINT(points, -10.5979, 9.58735);
-   TEST_POINT(points, -9.62023, 10.4013);
-   TEST_POINT(points, -8.69016, 11.2693);
-   TEST_POINT(points, -7.81062, 12.1884);
-   TEST_POINT(points, -6.98443, 13.1558);
-   TEST_POINT(points, -6.21424, 14.1683);
-   TEST_POINT(points, -5.5025, 15.2227);
-   TEST_POINT(points, -4.8515, 16.3157);
-   TEST_POINT(points, -4.2633, 17.4437);
-   TEST_POINT(points, -3.7398, 18.6031);
-   TEST_POINT(points, -3.28267, 19.7903);
-   TEST_POINT(points, -2.89336, 21.0014);
-   TEST_POINT(points, -2.57313, 22.2326);
-   TEST_POINT(points, -2.32299, 23.4799);
-   TEST_POINT(points, -2.14374, 24.7394);
-   TEST_POINT(points, -2.03596, 26.007);
-   TEST_POINT(points, -2.0, 27.2786);
-   TEST_POINT(points, -2.0, 89.0995);
-   TEST_POINT(points, -2.03044, 89.8791);
-   TEST_POINT(points, -2.12156, 90.654);
-   TEST_POINT(points, -2.27281, 91.4194);
-   TEST_POINT(points, -2.48327, 92.1706);
-   TEST_POINT(points, -2.75167, 92.9032);
-   TEST_POINT(points, -3.07636, 93.6127);
-   TEST_POINT(points, -3.45536, 94.2946);
-   TEST_POINT(points, -3.88638, 94.9449);
-   TEST_POINT(points, -4.36679, 95.5597);
-   TEST_POINT(points, -4.89367, 96.1351);
-   TEST_POINT(points, -5.4638, 96.6677);
-   TEST_POINT(points, -6.07371, 97.1543);
-   TEST_POINT(points, -6.71971, 97.5918);
-   TEST_POINT(points, -7.39784, 97.9776);
-   TEST_POINT(points, -8.10399, 98.3093);
-   TEST_POINT(points, -8.83385, 98.585);
-   TEST_POINT(points, -9.58298, 98.803);
-   TEST_POINT(points, -10.3468, 98.9619);
-   TEST_POINT(points, -11.1207, 99.0608);
-   TEST_POINT(points, -11.9, 99.099);
-   TEST_POINT(points, -13.0, 105.0);
-   TEST_POINT(points, -62.0, 106.0);
-   TEST_POINT(points, -63.0, 108.0);
-   TEST_POINT(points, 63.0, 108.0);
-   TEST_POINT(points, 62.0, 106.0);
-   TEST_POINT(points, 13.0, 105.0);
-   TEST_POINT(points, 11.9, 99.099);
-   TEST_POINT(points, 11.1207, 99.0608);
-   TEST_POINT(points, 10.3468, 98.9619);
-   TEST_POINT(points, 9.58298, 98.803);
-   TEST_POINT(points, 8.83385, 98.585);
-   TEST_POINT(points, 8.10399, 98.3093);
-   TEST_POINT(points, 7.39784, 97.9776);
-   TEST_POINT(points, 6.71971, 97.5918);
-   TEST_POINT(points, 6.07371, 97.1543);
-   TEST_POINT(points, 5.4638, 96.6677);
-   TEST_POINT(points, 4.89367, 96.1351);
-   TEST_POINT(points, 4.36679, 95.5597);
-   TEST_POINT(points, 3.88638, 94.9449);
-   TEST_POINT(points, 3.45536, 94.2946);
-   TEST_POINT(points, 3.07636, 93.6127);
-   TEST_POINT(points, 2.75167, 92.9032);
-   TEST_POINT(points, 2.48327, 92.1706);
-   TEST_POINT(points, 2.27281, 91.4194);
-   TEST_POINT(points, 2.12156, 90.654);
-   TEST_POINT(points, 2.03044, 89.8791);
-   TEST_POINT(points, 2.0, 89.0995);
-   TEST_POINT(points, 2.0, 27.2786);
-   TEST_POINT(points, 2.03596, 26.007);
-   TEST_POINT(points, 2.14374, 24.7394);
-   TEST_POINT(points, 2.32299, 23.4799);
-   TEST_POINT(points, 2.57313, 22.2326);
-   TEST_POINT(points, 2.89336, 21.0014);
-   TEST_POINT(points, 3.28267, 19.7903);
-   TEST_POINT(points, 3.7398, 18.6031);
-   TEST_POINT(points, 4.2633, 17.4437);
-   TEST_POINT(points, 4.8515, 16.3157);
-   TEST_POINT(points, 5.5025, 15.2227);
-   TEST_POINT(points, 6.21424, 14.1683);
-   TEST_POINT(points, 6.98443, 13.1558);
-   TEST_POINT(points, 7.81062, 12.1884);
-   TEST_POINT(points, 8.69016, 11.2693);
-   TEST_POINT(points, 9.62023, 10.4013);
-   TEST_POINT(points, 10.5979, 9.58735);
-   TEST_POINT(points, 11.62, 8.82992);
-   TEST_POINT(points, 12.6832, 8.13146);
-   TEST_POINT(points, 13.7843, 7.49421);
-   TEST_POINT(points, 14.9196, 6.9202);
-   TEST_POINT(points, 19.0, 5.0);
-   TEST_POINT(points, 19.0, 1.0);
-   TEST_POINT(points, 18.0, 0.0);
-	TRY_TEST(i, nPoints);
+   TRY_TEST(i, nPoints);
 
 	//
 	// Clone
@@ -633,7 +623,7 @@ void CTestNUDeckedIBeam::TestIShape2()
 	TRY_TEST(shape->Clone(&clone), S_OK);
 
 	CComQIPtr<INUDeckedIBeam> beamClone(clone);
-	TRY_TEST(beamClone != 0, true);
+	TRY_TEST(beamClone != nullptr, true);
 
 	Float64 val;
 

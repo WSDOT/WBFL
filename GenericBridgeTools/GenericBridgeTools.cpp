@@ -40,7 +40,6 @@
 
 #include <WBFLCogo_i.c>
 #include <WBFLGeometry_i.c>
-#include <WBFLSections_i.c>
 #include <WBFLTools_i.c>
 #include <WBFLRCCapacity_i.c>
 #include <WBFLGenericBridge_i.c>

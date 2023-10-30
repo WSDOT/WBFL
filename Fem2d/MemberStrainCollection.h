@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "MemberStrain.h"
 
-typedef CLoadsCollection<IFem2dMemberStrainCollection, IFem2dMemberStrain, CMemberStrain, IFem2dEnumMemberStrain, &IID_IFem2dEnumMemberStrain,LoadIDType> MemberStrainCollImpl;
+using MemberStrainCollImpl = CLoadsCollection<IFem2dMemberStrainCollection, IFem2dMemberStrain, CMemberStrain, IFem2dEnumMemberStrain, &IID_IFem2dEnumMemberStrain,LoadIDType>;
 
 class ModelEvents;
 
@@ -75,7 +75,7 @@ END_COM_MAP()
 // IFem2dMemberStrainCollection
 public:
 	STDMETHOD(Create)(/*[in]*/LoadIDType ID,  /*[in]*/MemberIDType member, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain,  /*[out, retval]*/ IFem2dMemberStrain** pVal) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadIDType* pid) override;
 	STDMETHOD(Clear)() override;
 };
 

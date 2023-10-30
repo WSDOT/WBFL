@@ -33,12 +33,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMemberEvents> events(sp);
          if (events)
@@ -57,76 +57,76 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
             events->OnSuperstructureMembersChanged(SuperstructureMember,Stage,change);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersAdded(ISuperstructureMember * SuperstructureMember, CollectionIndexType index)
+	VOID Fire_OnSuperstructureMembersAdded(ISuperstructureMember * SuperstructureMember, IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
             events->OnSuperstructureMembersAdded(SuperstructureMember,index);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersBeforeRemove(ISuperstructureMember * SuperstructureMember, CollectionIndexType index)
+	VOID Fire_OnSuperstructureMembersBeforeRemove(ISuperstructureMember * SuperstructureMember, IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
             events->OnSuperstructureMembersBeforeRemove(SuperstructureMember,index);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersMoveTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnSuperstructureMembersMoveTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
             events->OnSuperstructureMembersMoveTo(from,to);
 		}
 	}
-	VOID Fire_OnSuperstructureMembersCopyTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnSuperstructureMembersCopyTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
@@ -137,12 +137,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )
@@ -153,12 +153,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISuperstructureMembersEvents> events(sp);
          if ( events )

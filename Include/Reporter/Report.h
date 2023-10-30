@@ -39,10 +39,10 @@
 class REPORTERCLASS rptReport : public rptReportLayoutItem
 {
 public:
-   typedef std::vector<std::shared_ptr<rptChapter> > ChapterVec;
-   typedef ChapterVec::iterator ChapterListIterator;
-   typedef ChapterVec::const_iterator ConstChapterListIterator;
-   typedef ChapterVec::size_type ChapterListSizeType;
+   using ChapterVec = std::vector<std::shared_ptr<rptChapter>>;
+   using ChapterListIterator = ChapterVec::iterator;
+   using ConstChapterListIterator = ChapterVec::const_iterator;
+   using ChapterListSizeType = ChapterVec::size_type;
 
    /// Report with default style and page layout
    rptReport(const std::_tstring& rReportName = _T(""));

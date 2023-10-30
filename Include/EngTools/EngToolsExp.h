@@ -44,12 +44,7 @@
 #define ENGTOOLSTPL   extern template class ENGTOOLSCLASS
 #endif
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_ENGTOOLS_AUTOLIB_H_
 #include <EngTools\AutoLib.h>
-#endif
+#include <WBFLAll.h>
 
 #endif // INCLUDED_ENGTOOLS_ENGTOOLSEXP_H_

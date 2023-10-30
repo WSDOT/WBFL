@@ -74,7 +74,7 @@ HRESULT CStructuredSave2::Open(/*[in]*/ BSTR strFileName)
       if (m_bOpen)
          THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
 
-      FileStream* pstrm = new(FileStream);
+      WBFL::System::FileStream* pstrm = new(WBFL::System::FileStream);
       if (pstrm==0)
          THROW_IDS(IDS_STRSAVE_E_CANTOPEN,STRSAVE_E_CANTOPEN,IDH_STRSAVE_E_CANTOPEN);
 
@@ -163,11 +163,11 @@ void CStructuredSave2::EndSave()
    {
       ATLASSERT((bool)m_spObjectTable);
 
-      MSXML::IXMLDOMNodePtr& ptop = m_spDoc->lastChild;
+      MSXML::IXMLDOMNodePtr ptop = m_spDoc->lastChild;
       if (!(bool)ptop)
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
 
-      MSXML::IXMLDOMNodePtr& pchild = ptop->appendChild(m_spObjectTable);
+      MSXML::IXMLDOMNodePtr pchild = ptop->appendChild(m_spObjectTable);
       if (!(bool)pchild)
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
 
@@ -432,7 +432,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
       ATLASSERT(m_ObjectSet.size()==0); // better not have any objects stored yet
 
       // create and store object table in a separate element until the end of the save
-      MSXML::IXMLDOMNodePtr pot = MakeChildNode(OLESTR("ObjectTable"), 1.0);
+      MSXML::IXMLDOMNodePtr pot = MakeChildNode(CComBSTR("ObjectTable"), 1.0);
       if (!(bool)pot)
       {
          ATLASSERT(false);
@@ -509,7 +509,7 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
       }
 
-      hr = this->put_Property(OLESTR("CLSID"), _variant_t(postr));
+      hr = this->put_Property(CComBSTR("CLSID"), _variant_t(postr));
       if (FAILED(hr))
       {
          ATLASSERT(false);
@@ -548,8 +548,8 @@ void CStructuredSave2::Property(BSTR name, IUnknown *pUnk, MSXML::IXMLDOMNodePtr
    // We've dealt with writing our object to the object table, now 
    // let's write the reference.
    pChild->text = object_name;
-   MSXML::IXMLDOMNodePtr& rback = m_NodeStack.back().spCurrentNode;
-   MSXML::IXMLDOMNodePtr& pc = rback->appendChild(pChild);
+   MSXML::IXMLDOMNodePtr rback = m_NodeStack.back().spCurrentNode;
+   MSXML::IXMLDOMNodePtr pc = rback->appendChild(pChild);
    if (!(bool)pc)
          THROW_IDS(IDS_STRSAVE_E_BADWRITE,STRSAVE_E_BADWRITE,IDH_STRSAVE_E_BADWRITE);
 }

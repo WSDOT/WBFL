@@ -27,7 +27,8 @@
 
 #include <MfcTools\MfcToolsExp.h>
 #include <MfcTools\CacheEdit.h>
-#include <Units\SysUnits.h>
+#include <System\Tokenizer.h>
+#include <Units\Convert.h>
 #include <limits>
 
 void MFCTOOLSFUNC DDX_String(CDataExchange* pDX,int nIDC, std::_tstring& str);
@@ -83,10 +84,15 @@ void DDX_Keyword(CDataExchange* pDX,int nIDC,LPCTSTR lpszKeyword,T& value)
    }
    else
    {
-      if ( value == -1 )
-         DDX_Text(pDX,nIDC,CString(lpszKeyword));
+      if (value == -1)
+      {
+         CString strKeyword(lpszKeyword);
+         DDX_Text(pDX, nIDC, strKeyword);
+      }
       else
-         DDX_Text(pDX,nIDC,value);
+      {
+         DDX_Text(pDX, nIDC, value);
+      }
    }
 }
 
@@ -100,7 +106,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
 {
    pDX->PrepareEditCtrl(nIDC);
 
-   sysTokenizer tokenizer(_T("|"));
+   WBFL::System::Tokenizer tokenizer(_T("|"));
    tokenizer.push_back(lpszKeywords);
    if ( pDX->m_bSaveAndValidate )
    {
@@ -109,8 +115,8 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
       strText.Trim();
       int keywordCount = 1;
       bool bTokenFound = false;
-      sysTokenizer::iterator iter = tokenizer.begin();
-      sysTokenizer::iterator end = tokenizer.end();
+      WBFL::System::Tokenizer::iterator iter = tokenizer.begin();
+      WBFL::System::Tokenizer::iterator end = tokenizer.end();
       for (; iter != end; iter++, keywordCount++)
       {
          CString strToken(iter->c_str());
@@ -147,7 +153,7 @@ void DDX_KeywordUnitValueAndTag(CDataExchange* pDX,int nIDC,int nIDCTag,LPCTSTR 
          int tokenIdx = (int)abs(value)-1;
          ATLASSERT(tokenIdx < tokenizer.size());
          CString strToken(tokenizer[tokenIdx].c_str());
-         DDX_Text(pDX, nIDC, CString(strToken));
+         DDX_Text(pDX, nIDC, strToken);
          DDX_Tag(pDX, nIDCTag, umIndirectMeasure);
       }
       else
@@ -170,7 +176,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, T& value, T limit, bool b
    {
       CString msg;
       msg.Format(_T("Please enter a number that is greater than %f %s"), 
-                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -191,7 +197,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, T& value, T limit, bool bUnitM
    {
       CString msg;
       msg.Format(_T("Please enter a number that is at least %f %s"), 
-                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -212,7 +218,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, T& value, T limit, bool bUni
    {
       CString msg;
       msg.Format(_T("Please enter a number that is less than %f %s"), 
-                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -233,7 +239,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, T& value, T limit, bool bUnitM
    {
       CString msg;
       msg.Format(_T("Please enter a number that is not more than %f %s"), 
-                 ::ConvertFromSysUnits( limit, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -254,8 +260,8 @@ void DDV_UnitValueRange(CDataExchange* pDX, T& value, T min, T max, bool bUnitMo
    {
       CString msg;
       msg.Format(_T("Please enter a number in the range %f to %f %s"), 
-                 ::ConvertFromSysUnits( min, displayUnit ), 
-                 ::ConvertFromSysUnits( max, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( min, displayUnit ), 
+                 WBFL::Units::ConvertFromSysUnits( max, displayUnit ), 
                  displayUnit.UnitTag().c_str() );
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
 	   pDX->Fail();
@@ -298,11 +304,11 @@ void DDX_UnitValue( CDataExchange* pDX, int nIDC, T& data, bool bUnitModeSI, con
 	{
       Float64 f;
       DDX_Text( pDX, nIDC, f);
-      data = ::ConvertToSysUnits( f, displayUnit );
+      data = WBFL::Units::ConvertToSysUnits( f, displayUnit );
 	}
 	else
 	{
-      Float64 f = ::ConvertFromSysUnits( data, displayUnit );
+      Float64 f = WBFL::Units::ConvertFromSysUnits( data, displayUnit );
       DDX_Text( pDX, nIDC, f );
 	}
 }
@@ -315,11 +321,11 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, T& data, bo
 	{
       Float64 f;
       DDX_Text( pDX, nIDC, f);
-      data = ::ConvertToSysUnits( f, displayUnit );
+      data = WBFL::Units::ConvertToSysUnits( f, displayUnit );
 	}
 	else
 	{
-      Float64 f = ::ConvertFromSysUnits( data, displayUnit );
+      Float64 f = WBFL::Units::ConvertFromSysUnits( data, displayUnit );
       DDX_Text( pDX, nIDC, f );
 
       std::_tstring tag = displayUnit.UnitTag();
@@ -378,14 +384,14 @@ void DDX_CBItemData(CDataExchange* pDX,int nIDC, const T* vData,T& itemData)
    {
       int selidx = pCB->GetCurSel();
       if ( selidx != CB_ERR )
-         itemdata = vData[pCB->GetItemData(selidx)];
+         itemData = vData[pCB->GetItemData(selidx)];
    }
    else
    {
       int count = pCB->GetCount();
       for ( int i = 0; i < count; i++ )
       {
-         if ( vData[pCB->GetItemData(i)] == itemdata )
+         if ( vData[pCB->GetItemData(i)] == itemData )
          {
             pCB->SetCurSel(i);
             return;
@@ -451,14 +457,14 @@ void DDX_UnitValue( CDataExchange* pDX, int nIDC, Float64& data, const U& umIndi
 	{
       Float64 f;
       DDX_Text( pDX, nIDC, f);
-      data = ::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
+      data = WBFL::Units::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
 	}
 	else
 	{
       CString strValue;
       if (data!=Float64_Inf) // Infinite values create a blank line
       {
-         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
+         strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,WBFL::Units::ConvertFromSysUnits( data, umIndirectMeasure.UnitOfMeasure ) );
          strValue.TrimLeft();
       }
       DDX_Text( pDX, nIDC, strValue );
@@ -474,13 +480,13 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
       if ( pWnd->IsKindOf( RUNTIME_CLASS(CCacheEdit) ) && pWnd->IsWindowEnabled() == FALSE )
       {
          data = ((CCacheEdit*)(pWnd))->GetDefaultValue();
-         data = ::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure );
+         data = WBFL::Units::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure );
          return;
       }
 
       Float64 f;
       DDX_Text( pDX, nIDC, f);
-      data = ::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
+      data = WBFL::Units::ConvertToSysUnits( f, umIndirectMeasure.UnitOfMeasure );
 	}
 	else
 	{
@@ -488,7 +494,7 @@ void DDX_UnitValueAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& da
       Float64 value = data; // make a copy because we are going to change it...
       if (value!=Float64_Inf) // Infinite values create a blank line
       {
-         value = ::ConvertFromSysUnits( value, umIndirectMeasure.UnitOfMeasure );
+         value = WBFL::Units::ConvertFromSysUnits( value, umIndirectMeasure.UnitOfMeasure );
          strValue.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,value );
          strValue.TrimLeft();
       }
@@ -524,18 +530,18 @@ void DDX_OffsetAndTag( CDataExchange* pDX, int nIDC, int nIDCTag, Float64& data,
          sign = -1;
       
       data = _tstof(strOffset);
-      data = ::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure);
+      data = WBFL::Units::ConvertToSysUnits( data, umIndirectMeasure.UnitOfMeasure);
       data *= sign;
 	}
 	else
 	{
       CString strOffset;
       if ( data < 0 )
-         strOffset.Format(_T("%*.*f L"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f L"),umIndirectMeasure.Width,umIndirectMeasure.Precision,WBFL::Units::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
       else if ( 0 < data )
-         strOffset.Format(_T("%*.*f R"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f R"),umIndirectMeasure.Width,umIndirectMeasure.Precision,WBFL::Units::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
       else
-         strOffset.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
+         strOffset.Format(_T("%*.*f"),umIndirectMeasure.Width,umIndirectMeasure.Precision,WBFL::Units::ConvertFromSysUnits( fabs(data), umIndirectMeasure.UnitOfMeasure ) );
 
       strOffset.TrimLeft();
 
@@ -557,7 +563,7 @@ void DDV_UnitValueGreaterThanLimit(CDataExchange* pDX, int nIDC, T& value, T lim
       CString msg;
       msg.Format(message, 
                  umIndirectMeasure.Width,umIndirectMeasure.Precision,
-                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -578,7 +584,7 @@ void DDV_UnitValueLimitOrMore(CDataExchange* pDX, int nIDC, T& value, T limit, c
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
-                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -600,7 +606,7 @@ void DDV_UnitValueLessThanLimit(CDataExchange* pDX, int nIDC, T& value, T limit,
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
-                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure  ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure  ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -623,7 +629,7 @@ void DDV_UnitValueLimitOrLess(CDataExchange* pDX, int nIDC, T& value, T limit, c
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(message, 
-                 ::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
+                 WBFL::Units::ConvertFromSysUnits( limit, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
@@ -673,8 +679,8 @@ void DDV_UnitValueRange(CDataExchange* pDX, int nIDC, T& value, T min, T max, co
       pDX->PrepareEditCtrl(nIDC);
       CString msg;
       msg.Format(_T("Please enter a number in the range %f to %f %s"), 
-                 ::ConvertFromSysUnits( min, umIndirectMeasure.UnitOfMeasure ), 
-                 ::ConvertFromSysUnits( max, umIndirectMeasure.UnitOfMeasure ), 
+                 WBFL::Units::ConvertFromSysUnits( min, umIndirectMeasure.UnitOfMeasure ), 
+                 WBFL::Units::ConvertFromSysUnits( max, umIndirectMeasure.UnitOfMeasure ), 
                  umIndirectMeasure.UnitOfMeasure.UnitTag().c_str() );
 	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
 	   pDX->Fail();

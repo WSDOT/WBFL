@@ -1253,16 +1253,16 @@ void CEAFMainFrame::SetToolBarState(CToolBar* pToolBar,BOOL bShow)
    }
 
    DWORD dwStyle = pToolBar->GetBarStyle();
-   BOOL bToolTipsEnabled = sysFlags<DWORD>::IsSet( dwStyle, CBRS_TOOLTIPS );
+   BOOL bToolTipsEnabled = WBFL::System::Flags<DWORD>::IsSet( dwStyle, CBRS_TOOLTIPS );
    if ( bToolTipsEnabled && !m_bShowToolTips || !bToolTipsEnabled && m_bShowToolTips )
    {
       if ( m_bShowToolTips )
       {
-         sysFlags<DWORD>::Set( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+         WBFL::System::Flags<DWORD>::Set( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
       }
       else
       {
-         sysFlags<DWORD>::Clear( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
+         WBFL::System::Flags<DWORD>::Clear( &dwStyle, CBRS_TOOLTIPS | CBRS_FLYBY );
       }
 
       pToolBar->SetBarStyle( dwStyle );

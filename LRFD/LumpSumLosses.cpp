@@ -27,25 +27,13 @@
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
+using namespace WBFL::LRFD;
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdLumpSumLosses::lrfdLumpSumLosses()
-{
-}
-
-lrfdLumpSumLosses::lrfdLumpSumLosses(Float64 ApsPerm,
+LumpSumLosses::LumpSumLosses(Float64 ApsPerm,
                                      Float64 ApsTemp,
                                      Float64 FpjPerm,
                                      Float64 FpjTemp,
-                                     lrfdLosses::TempStrandUsage usage,
+                                     Losses::TempStrandUsage usage,
                                      Float64 beforeXfer,
                                      Float64 afterXfer,
                                      Float64 atLifting,
@@ -55,7 +43,7 @@ lrfdLumpSumLosses::lrfdLumpSumLosses(Float64 ApsPerm,
                                      Float64 afterDeckPlacement,
                                      Float64 afterSIDL,
                                      Float64 final) :
-lrfdLosses()
+Losses()
 {
    m_ApsPerm                 = ApsPerm;
    m_ApsTemp                 = ApsTemp;
@@ -74,65 +62,66 @@ lrfdLosses()
    m_Final                   = final;
 }
 
-lrfdLumpSumLosses::~lrfdLumpSumLosses()
-{
-}
-
-Float64 lrfdLumpSumLosses::PermanentStrand_BeforeTransfer() const
+Float64 LumpSumLosses::PermanentStrand_BeforeTransfer() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_BeforeXfer : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AfterTransfer() const
+Float64 LumpSumLosses::PermanentStrand_AfterTransfer() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterXfer : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AtLifting() const
+Float64 LumpSumLosses::PermanentStrand_AtLifting() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AtLifting : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AtShipping() const
+Float64 LumpSumLosses::PermanentStrand_AtShipping() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AtShipping : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
+Float64 LumpSumLosses::PermanentStrand_AfterTemporaryStrandInstallation() const
 {
-   return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AtShipping : 0;
+   if (m_TempStrandUsage == Losses::TempStrandUsage::Pretensioned || m_TempStrandUsage == Losses::TempStrandUsage::PTBeforeLifting)
+      return PermanentStrand_AfterTransfer();
+   else if (m_TempStrandUsage == Losses::TempStrandUsage::PTBeforeLifting)
+      return PermanentStrand_AtLifting();
+   else
+      return PermanentStrand_AtShipping();
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
+Float64 LumpSumLosses::PermanentStrand_BeforeTemporaryStrandRemoval() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_BeforeTempStrandRemoval : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
+Float64 LumpSumLosses::PermanentStrand_AfterTemporaryStrandRemoval() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterTempStrandRemoval : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AfterDeckPlacement() const
+Float64 LumpSumLosses::PermanentStrand_AfterDeckPlacement() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterDeckPlacement : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_AfterSIDL() const
+Float64 LumpSumLosses::PermanentStrand_AfterSIDL() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_AfterSIDL : 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_Final() const
+Float64 LumpSumLosses::PermanentStrand_Final() const
 {
    return (m_ApsPerm != 0 && m_FpjPerm != 0) ? m_Final : 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTransfer() const
+Float64 LumpSumLosses::TemporaryStrand_BeforeTransfer() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
-      return (m_TempStrandUsage == lrfdLosses::tsPretensioned ? m_BeforeXfer : 0);
+      return (m_TempStrandUsage == Losses::TempStrandUsage::Pretensioned ? m_BeforeXfer : 0);
    }
    else
    {
@@ -140,11 +129,11 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTransfer() const
    }
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTransfer() const
+Float64 LumpSumLosses::TemporaryStrand_AfterTransfer() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
-      return (m_TempStrandUsage == lrfdLosses::tsPretensioned ? m_AfterXfer : 0);
+      return (m_TempStrandUsage == Losses::TempStrandUsage::Pretensioned ? m_AfterXfer : 0);
    }
    else
    {
@@ -152,12 +141,12 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTransfer() const
    }
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AtLifting() const
+Float64 LumpSumLosses::TemporaryStrand_AtLifting() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
-      return (m_TempStrandUsage == lrfdLosses::tsPTAfterLifting ||
-              m_TempStrandUsage == lrfdLosses::tsPTBeforeShipping ) ? 0 : m_AtLifting;
+      return (m_TempStrandUsage == Losses::TempStrandUsage::PTAfterLifting ||
+              m_TempStrandUsage == Losses::TempStrandUsage::PTBeforeShipping ) ? 0 : m_AtLifting;
    }
    else
    {
@@ -165,7 +154,7 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AtLifting() const
    }
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AtShipping() const
+Float64 LumpSumLosses::TemporaryStrand_AtShipping() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
@@ -177,24 +166,24 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AtShipping() const
    }
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
+Float64 LumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
       switch ( m_TempStrandUsage )
       {
-      case lrfdLosses::tsPretensioned:
+      case Losses::TempStrandUsage::Pretensioned:
          return m_AfterXfer;
 
-      case lrfdLosses::tsPTBeforeLifting:
-      case lrfdLosses::tsPTAfterLifting:
+      case Losses::TempStrandUsage::PTBeforeLifting:
+      case Losses::TempStrandUsage::PTAfterLifting:
          return 0;
 
-      case lrfdLosses::tsPTBeforeShipping:
+      case Losses::TempStrandUsage::PTBeforeShipping:
          return 0;
 
       default:
-         ASSERT(false); // is there a new temporary strand usage?
+         CHECK(false); // is there a new temporary strand usage?
          return 0;
       }
    }
@@ -202,7 +191,7 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandInstallation() co
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
+Float64 LumpSumLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
 {
    if ( m_ApsTemp != 0 && m_FpjTemp != 0 )
    {
@@ -214,184 +203,170 @@ Float64 lrfdLumpSumLosses::TemporaryStrand_BeforeTemporaryStrandRemoval() const
    }
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
+Float64 LumpSumLosses::TemporaryStrand_AfterTemporaryStrandRemoval() const
 {
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AfterDeckPlacement() const
+Float64 LumpSumLosses::TemporaryStrand_AfterDeckPlacement() const
 {
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_AfterSIDL() const
+Float64 LumpSumLosses::TemporaryStrand_AfterSIDL() const
 {
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_Final() const
+Float64 LumpSumLosses::TemporaryStrand_Final() const
 {
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
+Float64 LumpSumLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return m_AtShipping;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_TimeDependentLossesAtShipping() const
+Float64 LumpSumLosses::PermanentStrand_TimeDependentLossesAtShipping() const
 {
    return m_AtShipping;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
+Float64 LumpSumLosses::PermanentStrand_RelaxationLossesBeforeTransfer() const
 {
    // Initial relaxation is not know for lump sum
    // return 0
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
+Float64 LumpSumLosses::TemporaryStrand_RelaxationLossesBeforeTransfer() const
 {
    // Initial relaxation is not know for lump sum
    // return 0
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::PermanentStrand_ElasticShorteningLosses() const
+Float64 LumpSumLosses::PermanentStrand_ElasticShorteningLosses() const
 {
    // elastic shortening losses are not know when lump sum is used
    // simply return 0
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TemporaryStrand_ElasticShorteningLosses() const
+Float64 LumpSumLosses::TemporaryStrand_ElasticShorteningLosses() const
 {
    // elastic shortening losses are not know when lump sum is used
    // simply return 0
    return 0;
 }
 
-Float64 lrfdLumpSumLosses::TimeDependentLossesBeforeDeck() const
+Float64 LumpSumLosses::TimeDependentLossesBeforeDeck() const
 {
    return m_AfterTempStrandRemoval;
 }
 
-Float64 lrfdLumpSumLosses::TimeDependentLossesAfterDeck() const
+Float64 LumpSumLosses::TimeDependentLossesAfterDeck() const
 {
    return m_AfterDeckPlacement;
 }
 
-Float64 lrfdLumpSumLosses::TimeDependentLosses() const
+Float64 LumpSumLosses::TimeDependentLosses() const
 {
    return m_Final;
 }
 
-Float64 lrfdLumpSumLosses::GetBeforeXferLosses() const
+Float64 LumpSumLosses::GetBeforeXferLosses() const
 {
    return m_BeforeXfer;
 }
 
-Float64 lrfdLumpSumLosses::GetAfterXferLosses() const
+Float64 LumpSumLosses::GetAfterXferLosses() const
 {
    return m_AfterXfer;
 }
 
-Float64 lrfdLumpSumLosses::GetLiftingLosses() const
+Float64 LumpSumLosses::GetLiftingLosses() const
 {
    return m_AtLifting;
 }
 
-Float64 lrfdLumpSumLosses::GetShippingLosses() const
+Float64 LumpSumLosses::GetShippingLosses() const
 {
    return m_AtShipping;
 }
 
-Float64 lrfdLumpSumLosses::GetBeforeTempStrandRemovalLosses() const
+Float64 LumpSumLosses::GetBeforeTempStrandRemovalLosses() const
 {
    return m_BeforeTempStrandRemoval;
 }
 
-Float64 lrfdLumpSumLosses::GetAfterTempStrandRemovalLosses() const
+Float64 LumpSumLosses::GetAfterTempStrandRemovalLosses() const
 {
    return m_AfterTempStrandRemoval;
 }
 
-Float64 lrfdLumpSumLosses::GetAfterDeckPlacementLosses() const
+Float64 LumpSumLosses::GetAfterDeckPlacementLosses() const
 {
    return m_AfterDeckPlacement;
 }
 
-Float64 lrfdLumpSumLosses::GetFinalLosses() const
+Float64 LumpSumLosses::GetFinalLosses() const
 {
    return m_Final;
 }
 
-void lrfdLumpSumLosses::SetBeforeXferLosses(Float64 loss)
+void LumpSumLosses::SetBeforeXferLosses(Float64 loss)
 {
    m_BeforeXfer = loss;
 }
 
-void lrfdLumpSumLosses::SetAfterXferLosses(Float64 loss)
+void LumpSumLosses::SetAfterXferLosses(Float64 loss)
 {
    m_AfterXfer = loss;
 }
 
-void lrfdLumpSumLosses::SetLiftingLosses(Float64 loss)
+void LumpSumLosses::SetLiftingLosses(Float64 loss)
 {
    m_AtLifting = loss;
 }
 
-void lrfdLumpSumLosses::SetShippingLosses(Float64 loss)
+void LumpSumLosses::SetShippingLosses(Float64 loss)
 {
    m_AtShipping = loss;
 }
 
-void lrfdLumpSumLosses::SetBeforeTempStrandRemovalLosses(Float64 loss)
+void LumpSumLosses::SetBeforeTempStrandRemovalLosses(Float64 loss)
 {
    m_BeforeTempStrandRemoval = loss;
 }
 
-void lrfdLumpSumLosses::SetAfterTempStrandRemovalLosses(Float64 loss)
+void LumpSumLosses::SetAfterTempStrandRemovalLosses(Float64 loss)
 {
    m_AfterTempStrandRemoval = loss;
 }
 
-void lrfdLumpSumLosses::SetAfterDeckPlacementLosses(Float64 loss)
+void LumpSumLosses::SetAfterDeckPlacementLosses(Float64 loss)
 {
    m_AfterDeckPlacement = loss;
 }
 
-void lrfdLumpSumLosses::SetFinalLosses(Float64 loss)
+void LumpSumLosses::SetFinalLosses(Float64 loss)
 {
    m_Final = loss;
 }
 
-void lrfdLumpSumLosses::ValidateParameters() const
+void LumpSumLosses::ValidateParameters() const
 {
 }
 
-void lrfdLumpSumLosses::UpdateLongTermLosses() const
+void LumpSumLosses::UpdateLongTermLosses() const
 {
 }
 
-void lrfdLumpSumLosses::UpdateHaulingLosses() const
+void LumpSumLosses::UpdateHaulingLosses() const
 {
 }
 
 //======================== ACCESS     =======================================
 //======================== INQUERY    =======================================
-
-#if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
-#include <Lrfd\AutoVersion.h>
-bool lrfdLumpSumLosses::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("lrfdLumpSumLosses");
-
-   TESTME_EPILOG("lrfdLumpSumLosses");
-}
-
-#endif // _UNITTEST
-
-

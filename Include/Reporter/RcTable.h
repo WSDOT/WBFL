@@ -157,7 +157,7 @@ public:
 
    /// Fills a columne with section values by using the given rptRcSectionValue object as a prototype.
    /// This function will append the data to any other data that exists in the column.
-   void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<sysSectionValue>& vValues);
+   void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<WBFL::System::SectionValue>& vValues);
 
    /// Fills a column with integer values by using the given rptRcInt object as a prototype.
    /// This function will append the data to any other data that exists in the column.
@@ -254,8 +254,8 @@ private:
 
    // 2D array of paragraphs - the table data
    // Column Headers are held in row zero
-   typedef std::vector<rptTableCellParagraph>  ColumnVector;
-   typedef std::vector<ColumnVector> TableData;
+   using ColumnVector = std::vector<rptTableCellParagraph>;
+   using TableData = std::vector<ColumnVector>;
    TableData m_TableData;
 
    // width of table column widths in inches

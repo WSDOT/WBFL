@@ -21,53 +21,22 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_TRAPEZOIDALRULEINTEGRATOR_H_
-#define INCLUDED_MATH_TRAPEZOIDALRULEINTEGRATOR_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Math\MathExp.h>
-#include <Math\NumericIntegrator2d.h>
+#include <Math\NumericIntegration.h>
+#include <Math\Function.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   mathTrapezoidalRuleIntegrator
-
-   Utility class to integrate functions using the trapezoidal rule
-
-
-DESCRIPTION
-   Utility class to integrate functions using the trapezoidal rule
-
-LOG
-   rab : 06.24.2008 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathTrapezoidalRuleIntegrator : public mathNumericIntegrator2d
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-   virtual Float64 Evaluate(const mathFunction2d& f,Float64 xMin,Float64 xMax,Uint16 nIntervals) override;
-
+   namespace Math
+   {
+   /// Integrates functions using the trapezoidal rule
+      class MATHCLASS TrapezoidalRuleIntegrator : public NumericIntegration
+      {
+      public:
+         virtual Float64 Evaluate(const Function& f,Float64 xMin,Float64 xMax,Uint16 nIntervals) const override;
+         virtual Float64 Evaluate(const std::function<Float64(Float64)>& f, Float64 xMin, Float64 xMax, Uint16 nIntervals) const override;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_MATH_TRAPEZOIDALRULEINTEGRATOR_H_

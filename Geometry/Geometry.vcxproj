@@ -53,12 +53,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
@@ -96,6 +97,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -108,13 +112,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\Geometry.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -166,6 +171,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -176,14 +183,17 @@
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\Geometry.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -197,6 +207,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\WBFLTools\WBFLTools.vcxproj">
       <Project>{3c66a5db-a451-4912-a984-ddbf2e890495}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
@@ -210,11 +223,15 @@
     <ClCompile Include="BulbTee2.cpp" />
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="CircularSegment.cpp" />
+    <ClCompile Include="CompositeBeam.cpp" />
+    <ClCompile Include="CompositeSectionEx.cpp" />
+    <ClCompile Include="CompositeSectionItemEx.cpp" />
     <ClCompile Include="CompositeShape.cpp" />
     <ClCompile Include="CompositeShapeItem.cpp" />
     <ClCompile Include="CoordinateXform2d.cpp" />
     <ClCompile Include="CoordinateXform3d.cpp" />
     <ClCompile Include="DeckedSlabBeam.cpp" />
+    <ClCompile Include="ElasticProperties.cpp" />
     <ClCompile Include="GenericShape.cpp" />
     <ClCompile Include="Geometry.cpp" />
     <ClCompile Include="GeomHelper.cpp" />
@@ -223,6 +240,7 @@
     <ClCompile Include="Line2d.cpp" />
     <ClCompile Include="LineSegment2d.cpp" />
     <ClCompile Include="LineSegment3d.cpp" />
+    <ClCompile Include="MassProperties.cpp" />
     <ClCompile Include="MultiWeb.cpp" />
     <ClCompile Include="MultiWeb2.cpp" />
     <ClCompile Include="NUBeam.cpp" />
@@ -237,10 +255,8 @@
     <ClCompile Include="PolyShape.cpp" />
     <ClCompile Include="PrecastBeam.cpp" />
     <ClCompile Include="PrecastBeam2.cpp" />
-    <ClCompile Include="PrimitiveFactory.cpp" />
     <ClCompile Include="Rect2d.cpp" />
     <ClCompile Include="Rectangle.cpp" />
-    <ClCompile Include="ShapeCollection.cpp" />
     <ClCompile Include="ShapeProperties.cpp" />
     <ClCompile Include="Size2d.cpp" />
     <ClCompile Include="Size3d.cpp" />
@@ -264,17 +280,21 @@
     <None Include="BulbTee2.rgs" />
     <None Include="Circle.rgs" />
     <None Include="CircularSegment.rgs" />
+    <None Include="CompositeBeam.rgs" />
+    <None Include="CompositeSectionEx.rgs" />
+    <None Include="CompositeSectionItemEx.rgs" />
     <None Include="CompositeShape.rgs" />
     <None Include="CompositeShapeItem.rgs" />
     <None Include="CoordinateXform2d.rgs" />
     <None Include="CoordinateXform3d.rgs" />
-    <None Include="DeckedSlabBeam.rgs" />
+    <None Include="ElasticProperties.rgs" />
     <None Include="GenericShape.rgs" />
     <None Include="Geometry.def" />
     <None Include="GeomUtil.rgs" />
     <None Include="Line2d.rgs" />
     <None Include="LineSegment2d.rgs" />
     <None Include="LineSegment3d.rgs" />
+    <None Include="MassProperties.rgs" />
     <None Include="MultiWeb.rgs" />
     <None Include="MultiWeb2.rgs" />
     <None Include="NUBeam.rgs" />
@@ -289,7 +309,6 @@
     <None Include="PolyShape.rgs" />
     <None Include="PrecastBeam.rgs" />
     <None Include="PrecastBeam2.rgs" />
-    <None Include="PrimitiveFactory.rgs" />
     <None Include="Rect2d.rgs" />
     <None Include="Rectangle.rgs" />
     <None Include="ShapeCollection.rgs" />
@@ -323,18 +342,23 @@
     <ClInclude Include="BulbTee2.h" />
     <ClInclude Include="Circle.h" />
     <ClInclude Include="CircularSegment.h" />
+    <ClInclude Include="CompositeBeam.h" />
+    <ClInclude Include="CompositeSectionEx.h" />
+    <ClInclude Include="CompositeSectionItemEx.h" />
     <ClInclude Include="CompositeShape.h" />
     <ClInclude Include="CompositeShapeItem.h" />
     <ClInclude Include="CoordinateXform2d.h" />
     <ClInclude Include="CoordinateXform3d.h" />
     <ClInclude Include="DeckedSlabBeam.h" />
+    <ClInclude Include="ElasticProperties.h" />
     <ClInclude Include="GenericShape.h" />
-    <ClInclude Include="GeometryCP.h" />
     <ClInclude Include="GeomUtil.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="IShapeImpl.h" />
     <ClInclude Include="Line2d.h" />
     <ClInclude Include="LineSegment2d.h" />
     <ClInclude Include="LineSegment3d.h" />
+    <ClInclude Include="MassProperties.h" />
     <ClInclude Include="MultiWeb.h" />
     <ClInclude Include="MultiWeb2.h" />
     <ClInclude Include="NUBeam.h" />
@@ -349,11 +373,9 @@
     <ClInclude Include="PolyShape.h" />
     <ClInclude Include="PrecastBeam.h" />
     <ClInclude Include="PrecastBeam2.h" />
-    <ClInclude Include="PrimitiveFactory.h" />
     <ClInclude Include="Rect2d.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="ShapeCollection.h" />
     <ClInclude Include="ShapeProperties.h" />
     <ClInclude Include="Size2d.h" />
     <ClInclude Include="Size3d.h" />

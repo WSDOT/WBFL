@@ -348,7 +348,7 @@ void CTestCircle::TestIShape()
    TRY_TEST( shape->Clone(&clone), S_OK );
 
    CComQIPtr<ICircle> circle_clone(clone);
-   TRY_TEST( circle_clone != 0, true );
+   TRY_TEST( circle_clone != nullptr, true );
    pnt.Release();
    circle_clone->get_Center(&pnt);
    pnt->get_X(&cgx);
@@ -364,7 +364,7 @@ void CTestCircle::TestIShape()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
    TRY_TEST( cPoints,37);
    
@@ -413,7 +413,7 @@ void CTestCircle::TestIShape()
    TRY_TEST( shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST( shape->ClipWithLine(line,nullptr),  E_POINTER );
    TRY_TEST( shape->ClipWithLine(line,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    props.Release();
    clip->get_ShapeProperties(&props);
    props->get_Area(&area);
@@ -426,13 +426,13 @@ void CTestCircle::TestIShape()
    line->ThroughPoints(p1,p2);
    clip.Release();
    TRY_TEST( shape->ClipWithLine(line,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    props.Release();
    clip->get_ShapeProperties(&props);
    props->get_Area(&area);
    TRY_TEST( IsEqual(area,M_PI*radius*radius), true );
    CComQIPtr<ICircle> clipCircle(clip);
-   TRY_TEST( clipCircle != 0, true );
+   TRY_TEST( clipCircle != nullptr, true );
 
    // Clip against line such that the entire circle is removed
    p1->Move(0,-50);
@@ -481,7 +481,7 @@ void CTestCircle::TestIShape()
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
    circle_clone.Release();
    clip->QueryInterface( &circle_clone );
-   TRY_TEST( circle_clone != 0, true );
+   TRY_TEST( circle_clone != nullptr, true );
 
    // Clip away the top half of the circle
    // Verify by checking the area (should be half the area of the circle)
@@ -492,7 +492,7 @@ void CTestCircle::TestIShape()
 
    clip.Release();
    TRY_TEST( shape->ClipIn(clipRect,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    props.Release();
    clip->get_ShapeProperties(&props);
    props->get_Area(&area);
@@ -757,13 +757,12 @@ void CTestCircle::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Circle ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICircle ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -773,7 +772,7 @@ void CTestCircle::TestIObjectSafety()
 {
    CComPtr<IObjectSafety> safety;
    TRY_TEST( safety.CoCreateInstance( CLSID_Circle ), S_OK );
-   TRY_TEST( safety != 0, true );
+   TRY_TEST( safety != nullptr, true );
 
    DWORD dwSupported;
    DWORD dwEnabled;
@@ -781,10 +780,6 @@ void CTestCircle::TestIObjectSafety()
    TRY_TEST( safety->SetInterfaceSafetyOptions( IID_IUnknown, INTERFACESAFE_FOR_UNTRUSTED_CALLER, INTERFACESAFE_FOR_UNTRUSTED_CALLER), S_OK);
 
    TRY_TEST( safety->GetInterfaceSafetyOptions( IID_ICircle, &dwSupported, &dwEnabled ), S_OK );
-   TRY_TEST( dwSupported, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
-   TRY_TEST( dwEnabled, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
-
-   TRY_TEST( safety->GetInterfaceSafetyOptions( IID_IStructuredStorage2, &dwSupported, &dwEnabled ), S_OK );
    TRY_TEST( dwSupported, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
    TRY_TEST( dwEnabled, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
 

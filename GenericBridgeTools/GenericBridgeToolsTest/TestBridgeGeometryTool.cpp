@@ -104,6 +104,9 @@ void CTestBridgeGeometryTool::TestSplicedGirderBridge()
    TRY_TEST(tool->DeckOverhangBySSMbr(bridge,0,50.0,nullptr,qcbLeft,&overhang),S_OK);
    TRY_TEST(IsEqual(overhang,6.0),true);
 
+   TRY_TEST(tool->DeckOverhangBySSMbr(bridge, 0, 50.0, nullptr, qcbRight, &overhang), S_OK);
+   TRY_TEST(IsEqual(overhang, 26.0), true);
+
    Float64 spacing;
    TRY_TEST(tool->GirderSpacingBySSMbr(bridge,1,50.0,0,&spacing),S_OK);
    TRY_TEST(IsEqual(spacing,10.0),true);

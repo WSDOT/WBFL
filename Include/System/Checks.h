@@ -20,35 +20,30 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------
-//   Diagnostic macros for checking:
-//
-//     PRECONDITION[X]  Used to check values you don't have direct control over
-//     CHECK[X]         Used to check values you do have direct control over
-//     ASSERTVALID[X]   Calls you class's AssertValid() method
-//     WATCH[X]         Output a tracing text stream
-//     WARN[X]          Output a warning text stream
-//
-//   Based on the following switches:
-//     __PRECONDITION  When defined enables PRECONDITION
-//     __CHECK         When defined enables CHECK
-//     __ASSERTVALID   When defined enables ASSERTVALID
-//     __WATCH         When defined enables WATCH
-//     __WARN          When defined enables WARN
-//
-//   ASSERTVALID, WATCH, and WARN are always compiled out of release builds.
-//----------------------------------------------------------------------------
-#ifndef INCLUDED_SYSTEM_CHECKS_H_
-#define INCLUDED_SYSTEM_CHECKS_H_
 #pragma once
 
 #ifndef __cplusplus
 #error Must use C++ for CHECKS.H
 #endif
 
-#include <WBFLTypes.h>
-#include <System\DbgBuild.h>
+// Diagnostic macros for checking:
+//
+//   PRECONDITION[X]  Used to check values you don't have direct control over
+//   CHECK[X]         Used to check values you do have direct control over
+//   ASSERTVALID[X]   Calls you class's AssertValid() method
+//   WATCH[X]         Output a tracing text stream
+//   WARN[X]          Output a warning text stream
+//
+// Based on the following switches:
+//   __PRECONDITION  When defined enables PRECONDITION
+//   __CHECK         When defined enables CHECK
+//   __ASSERTVALID   When defined enables ASSERTVALID
+//   __WATCH         When defined enables WATCH
+//   __WARN          When defined enables WARN
+//
+// ASSERTVALID, WATCH, and WARN are always compiled out of release builds.
+
+#include <System\SysExp.h>
 #include <sstream>
 
 #if !defined _DEBUG
@@ -61,46 +56,63 @@
 #define DIAG_GROUP_ENABLE  1
 #define MAX_DIAG_GROUP_LEVEL 127
 
-//
-// dbgDiagBase - this class forms the base for dbgDiagGroup classes and
-// handles basic message output.
-//
-
-class SYSCLASS dbgDiagBase
+namespace WBFL
 {
-public:
-   static void EnableWarnPopup(bool bEnable);
-   static bool IsWarnPopupEnabled();
+   namespace Debug
+   {
+      /// Base class for the dbgDiagGroup classes and handles basic message output
+      class SYSCLASS Diagnostics
+      {
+      public:
+         /// When enabled, warnings are displayed in a popup window
+         static void EnableWarnPopup(bool bEnable);
+         /// Returns true if warning popup is enabled
+         static bool IsWarnPopupEnabled();
 
-protected:
-   static void Watch( LPCTSTR group, LPCTSTR msg,
-                      LPCTSTR fname, Uint32 line );
-   static void Warn( LPCTSTR group, LPCTSTR msg,
-                     LPCTSTR fname, Uint32 line );
+      protected:
+         static void Watch(const std::_tstring& group, const std::_tstring& msg,
+            const std::_tstring& fname, Uint32 line );
+         static void Warn(const std::_tstring& group, const std::_tstring& msg,
+            const std::_tstring& fname, Uint32 line );
 
-public:
-    struct Flags
-    {
-        Uint8 Enabled : 1;
-        Uint8 Level   : 7;
-    };
+      public:
+          struct Flags
+          {
+              Uint8 Enabled : 1;
+              Uint8 Level   : 7;
+          };
 
-private:
-    static bool bWarnPopup;
+      private:
+          static bool bWarnPopup;
 
-    static void Message( LPCTSTR type,
-                         LPCTSTR group, LPCTSTR msg,
-                         LPCTSTR fname, Uint32 line, bool bPopup );
-    static void Output( LPCTSTR msg );
-};
+          static void Message(const std::_tstring& type,
+             const std::_tstring& group, const std::_tstring& msg,
+             const std::_tstring& fname, Uint32 line, bool bPopup );
+          static void Output(const std::_tstring& msg );
+      };
 
+      /// Class that displays debugging messages
+      class SYSCLASS Message
+      {
+      public:
+         /// @brief Called by the PRECONDITION macro. Throws XProgrammingError if the precondition is not satisfied. 
+         static void Precondition(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         /// @brief Called by the CHECK macro. 
+         static void Check(const std::_tstring& s, const std::_tstring& file, Uint32 line);
+         /// @brief Called by the ASSERTVALID macro. Throws XProgrammingError if AssertValid is false
+         static void AssertValidFailed(const std::_tstring& s, const std::_tstring& file, Uint32 line);
 
-class SYSCLASS dbgMessage
-{
-public:
-   static void Precondition(LPCTSTR s,LPCTSTR file, Int32 line);
-   static void Check(LPCTSTR s,LPCTSTR file, Int32 line);
-   static void AssertValidFailed(LPCTSTR s,LPCTSTR file, Int32 line);
+         /// @brief Enables or disables popup message window for Precondition and AssertValidFailed.
+         /// When running unit tests, popup messages can be a neusance when trying to test failed preconditions.
+         static void EnablePopup(bool bEnable);
+
+         /// @brief Returns true if popup message window is enabled
+         static bool IsPopupEnabled();
+
+      private:
+         static bool m_bPopup;
+      };
+   };
 };
 
 
@@ -111,7 +123,7 @@ public:
 #if defined __PRECONDITION
 
 #define PRECONDITIONX(p,s)   \
-   if(!(p)) { dbgMessage::Precondition(s,_T(__FILE__),__LINE__);}
+   if(!(p)) { WBFL::Debug::Message::Precondition(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -126,7 +138,7 @@ public:
 #if defined __CHECK
 
 #define CHECKX(p,s)   \
-   if(!(p)) { dbgMessage::Check(s,_T(__FILE__),__LINE__);}
+   if(!(p)) { WBFL::Debug::Message::Check(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -142,7 +154,7 @@ public:
 #if defined __ASSERTVALID
 
 #define ASSERTVALIDX(s) \
-   if (!AssertValid()) { dbgMessage::AssertValidFailed(s,_T(__FILE__),__LINE__);}
+   if (!AssertValid()) { WBFL::Debug::Message::AssertValidFailed(s,_T(__FILE__),__LINE__);}
 
 #else
 
@@ -164,14 +176,14 @@ public:
 #endif
 
 #define DECLARE_DIAG_GROUP(g,qual)                                         \
-class qual dbgDiagGroup##g : private dbgDiagBase                           \
+class qual dbgDiagGroup##g : private WBFL::Debug::Diagnostics                           \
 {                                                                          \
 public:                                                                    \
-    static void Watch( Uint8 level, LPCTSTR msg,                       \
-                       LPCTSTR fname, Uint32 line );                   \
+    static void Watch( Uint8 level, const std::_tstring& msg,                       \
+                       const std::_tstring& fname, Uint32 line );                   \
                                                                            \
-    static void Warn( Uint8 level, LPCTSTR msg,                        \
-                      LPCTSTR fname, Uint32 line );                    \
+    static void Warn( Uint8 level, const std::_tstring& msg,                        \
+                      const std::_tstring& fname, Uint32 line );                    \
                                                                            \
     static void Enable(Uint8 enabled)                                      \
                     { Flags.Enabled = Uint8(enabled ? 1 : 0); }            \
@@ -182,7 +194,7 @@ public:                                                                    \
                                                                            \
 private:                                                                   \
      static Flags Flags;                                                   \
-     static LPTSTR Name;                                                    \
+     static LPCTSTR Name;                                                    \
 }
 
 #define DIAG_DECLARE_GROUP(g)                                              \
@@ -190,30 +202,30 @@ DECLARE_DIAG_GROUP(g,DIAG_IMPORT);
 
 #define DIAG_DEFINE_GROUP(g,e,l)                                           \
 DECLARE_DIAG_GROUP(g,DIAG_EXPORT);                                         \
-void dbgDiagGroup##g::Watch( Uint8 level, LPCTSTR msg,                 \
-                             LPCTSTR fname, Uint32 line )              \
+void dbgDiagGroup##g::Watch( Uint8 level, const std::_tstring& msg,                 \
+                             const std::_tstring& fname, Uint32 line )              \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
-          dbgDiagBase::Watch( Name, msg, fname, line );                    \
+          WBFL::Debug::Diagnostics::Watch( Name, msg, fname, line );                    \
 }                                                                          \
                                                                            \
-void dbgDiagGroup##g::Warn( Uint8 level, LPCTSTR msg,                  \
-                            LPCTSTR fname, Uint32 line )               \
+void dbgDiagGroup##g::Warn( Uint8 level, const std::_tstring& msg,                  \
+                            const std::_tstring& fname, Uint32 line )               \
 {                                                                          \
      if( IsEnabled() && level <= GetLevel() )                              \
-          dbgDiagBase::Warn( Name, msg, fname, line );                     \
+          WBFL::Debug::Diagnostics::Warn( Name, msg, fname, line );                     \
 }                                                                          \
                                                                            \
-LPTSTR dbgDiagGroup##g::Name = _T(#g);                                          \
-dbgDiagBase::Flags dbgDiagGroup##g::Flags = { (e), (l) }
+LPCTSTR dbgDiagGroup##g::Name = _T(#g);                                          \
+WBFL::Debug::Diagnostics::Flags dbgDiagGroup##g::Flags = { (e), (l) }
 
 #define DIAG_ENABLE(g,s)            dbgDiagGroup##g::Enable(s)
 #define DIAG_ISENABLED(g)           dbgDiagGroup##g::IsEnabled()
 #define DIAG_SETLEVEL(g,l)          dbgDiagGroup##g::SetLevel(l)
 #define DIAG_GETLEVEL(g)            dbgDiagGroup##g::GetLevel()
 
-#define DIAG_WARNPOPUP(b)           dbgDiagBase::EnableWarnPopup(b)
-#define DIAG_ISENABLED_WARNPOPUP    dbgDiagBase::IsWarnPopupEnabled()
+#define DIAG_WARNPOPUP(b)           WBFL::Debug::Diagnostics::EnableWarnPopup(b)
+#define DIAG_ISENABLED_WARNPOPUP    WBFL::Debug::Diagnostics::IsWarnPopupEnabled()
 
 #if !defined( BUILD_CHECKS ) && !defined( _DEF_DECLARED )
 #define _DEF_DECLARED
@@ -261,5 +273,3 @@ DECLARE_DIAG_GROUP(Def, SYSCLASS);
     #define WARN(c,m)                   __noop
     #define WARNX(g,c,l,m)              __noop
 #endif
-
-#endif  // INCLUDED_DEBUGTOOLS_CHECKS_H_

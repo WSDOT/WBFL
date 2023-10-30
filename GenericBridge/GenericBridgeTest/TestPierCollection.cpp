@@ -59,15 +59,32 @@ void CTestPierCollection::Test()
    CComPtr<IBridgeGeometry> bridgeGeometry;
    bridge->get_BridgeGeometry(&bridgeGeometry);
 
-   CogoObjectID alignmentID;
-   bridgeGeometry->get_BridgeAlignmentID(&alignmentID);
+   IDType alignmentID = 0;
+   IDType profileID = 0;
 
-   CComPtr<IPierLine> pierLine;
-   bridgeGeometry->CreatePierLine(0,alignmentID,CComVariant(0.00),CComBSTR("Normal"),10,-5,&pierLine);
-   pierLine.Release();
-   bridgeGeometry->CreatePierLine(1,alignmentID,CComVariant(100.00),CComBSTR("Normal"),10,-5,&pierLine);
+   CComPtr<IAlignment> alignment;
+   alignment.CoCreateInstance(CLSID_Alignment);
+   
+   bridgeGeometry->AddAlignment(alignmentID, alignment);
+   bridgeGeometry->put_BridgeAlignmentID(alignmentID);
 
-   bridge->UpdateBridgeModel(GF_ALL);
+   CComPtr<ISinglePierLineFactory> pier_1_factory;
+   pier_1_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_1_factory->put_AlignmentID(alignmentID);
+   pier_1_factory->put_Station(CComVariant(0.0));
+   pier_1_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_1_factory->put_Length(10);
+   pier_1_factory->put_Offset(-5);
+   bridgeGeometry->AddPierLineFactory(pier_1_factory);
+
+   CComPtr<ISinglePierLineFactory> pier_2_factory;
+   pier_2_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_2_factory->put_AlignmentID(alignmentID);
+   pier_2_factory->put_Station(CComVariant(100.0));
+   pier_2_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_2_factory->put_Length(10);
+   pier_2_factory->put_Offset(-5);
+   bridgeGeometry->AddPierLineFactory(pier_2_factory);
 
    CComPtr<IPierCollection> piers;
    bridge->get_Piers(&piers);

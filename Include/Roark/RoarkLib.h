@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -22,20 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ROARK_ROARKLIB_H_
-#define INCLUDED_ROARK_ROARKLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   Roark
-
-   Roark's Formulas for simple beams
-
-DESCRIPTION
-   Roark's Formulas for simple beams
-*****************************************************************************/
-
-#include <Private\WBFLPackage.h>
-
-#endif // INCLUDED_ROARK_ROARKLIB_H_
+#include <MathEx.h>

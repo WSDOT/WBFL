@@ -51,11 +51,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -68,7 +69,6 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/Zm600  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\Include;..\..\Include\$(Platform);..\..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -85,6 +85,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -94,14 +96,17 @@
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -125,7 +130,6 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/Zm600  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\..\Include;..\..\Include\$(Platform);..\..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -139,6 +143,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -150,14 +157,14 @@
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
       <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -190,16 +197,20 @@
     <ClCompile Include="TestBulbTee2.cpp" />
     <ClCompile Include="TestCircle.cpp" />
     <ClCompile Include="TestCircularSegment.cpp" />
+    <ClCompile Include="TestCompositeBeam.cpp" />
+    <ClCompile Include="TestCompositeSectionEx.cpp" />
     <ClCompile Include="TestCompositeShape.cpp" />
     <ClCompile Include="TestCompositeShapeItem.cpp" />
     <ClCompile Include="TestCoordinateXform2d.cpp" />
     <ClCompile Include="TestCoordinateXform3d.cpp" />
     <ClCompile Include="TestDeckedSlabBeam.cpp" />
+    <ClCompile Include="TestElasticProperties.cpp" />
     <ClCompile Include="TestGenericShape.cpp" />
     <ClCompile Include="TestGeomUtil.cpp" />
     <ClCompile Include="TestLine2d.cpp" />
     <ClCompile Include="TestLineSegment2d.cpp" />
     <ClCompile Include="TestLineSegment3d.cpp" />
+    <ClCompile Include="TestMassProperties.cpp" />
     <ClCompile Include="TestMultiWeb.cpp" />
     <ClCompile Include="TestMultiWeb2.cpp" />
     <ClCompile Include="TestNUBeam.cpp" />
@@ -216,10 +227,8 @@
     <ClCompile Include="TestPolyShape.cpp" />
     <ClCompile Include="TestPrecastBeam.cpp" />
     <ClCompile Include="TestPrecastBeam2.cpp" />
-    <ClCompile Include="TestPrimitiveFactory.cpp" />
     <ClCompile Include="TestRect2d.cpp" />
     <ClCompile Include="TestRectangle.cpp" />
-    <ClCompile Include="TestShapeCollection.cpp" />
     <ClCompile Include="TestShapeProperties.cpp" />
     <ClCompile Include="TestSize2d.cpp" />
     <ClCompile Include="TestSize3d.cpp" />
@@ -242,16 +251,20 @@
     <ClInclude Include="TestBulbTee2.h" />
     <ClInclude Include="TestCircle.h" />
     <ClInclude Include="TestCircularSegment.h" />
+    <ClInclude Include="TestCompositeBeam.h" />
+    <ClInclude Include="TestCompositeSectionEx.h" />
     <ClInclude Include="TestCompositeShape.h" />
     <ClInclude Include="TestCompositeShapeItem.h" />
     <ClInclude Include="TestCoordinateXform2d.h" />
     <ClInclude Include="TestCoordinateXform3d.h" />
     <ClInclude Include="TestDeckedSlabBeam.h" />
+    <ClInclude Include="TestElasticProperties.h" />
     <ClInclude Include="TestGenericShape.h" />
     <ClInclude Include="TestGeomUtil.h" />
     <ClInclude Include="TestLine2d.h" />
     <ClInclude Include="TestLineSegment2d.h" />
     <ClInclude Include="TestLineSegment3d.h" />
+    <ClInclude Include="TestMassProperties.h" />
     <ClInclude Include="TestMultiWeb.h" />
     <ClInclude Include="TestMultiWeb2.h" />
     <ClInclude Include="TestNUBeam.h" />
@@ -266,10 +279,8 @@
     <ClInclude Include="TestPolyShape.h" />
     <ClInclude Include="TestPrecastBeam.h" />
     <ClInclude Include="TestPrecastBeam2.h" />
-    <ClInclude Include="TestPrimitiveFactory.h" />
     <ClInclude Include="TestRect2d.h" />
     <ClInclude Include="TestRectangle.h" />
-    <ClInclude Include="TestShapeCollection.h" />
     <ClInclude Include="TestShapeProperties.h" />
     <ClInclude Include="TestSize2d.h" />
     <ClInclude Include="TestSize3d.h" />

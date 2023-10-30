@@ -21,10 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ReportSpecification.cpp: implementation of the CReportSpecification class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "ReportManager.h"
 #include <ReportManager\ReportSpecification.h>
@@ -35,43 +31,24 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::Reporting;
 
-CReportSpecification::CReportSpecification(LPCTSTR strReportName) :
-m_ReportName(strReportName)
+ReportSpecification::ReportSpecification(const std::_tstring& strReportName) :
+   m_ReportName(strReportName)
 {
-
 }
 
-CReportSpecification::CReportSpecification(const CReportSpecification& other)
-{
-   m_ReportName = other.m_ReportName;
-   m_Chapters = other.m_Chapters;
-
-   m_LeftHeader = other.m_LeftHeader;
-   m_CenterHeader = other.m_CenterHeader;
-   m_LeftFooter = other.m_LeftFooter;
-   m_CenterFooter = other.m_CenterFooter;
-}
-
-CReportSpecification::~CReportSpecification()
-{
-
-}
-
-void CReportSpecification::SetReportName(LPCTSTR strName)
+void ReportSpecification::SetReportName(const std::_tstring& strName)
 {
    m_ReportName = strName;
 }
 
-std::_tstring CReportSpecification::GetReportName() const
+const std::_tstring& ReportSpecification::GetReportName() const
 {
-   return m_ReportName.c_str();
+   return m_ReportName;
 }
 
-std::_tstring CReportSpecification::GetReportTitle() const
+std::_tstring ReportSpecification::GetReportTitle() const
 {
    auto context = GetReportContextString();
    if(context.empty())
@@ -80,83 +57,83 @@ std::_tstring CReportSpecification::GetReportTitle() const
       return GetReportName() + _T(" for ") + context;
 }
 
-std::_tstring CReportSpecification::GetReportContextString() const
+std::_tstring ReportSpecification::GetReportContextString() const
 {
    // blank string by default
    return std::_tstring();
 }
 
-void CReportSpecification::AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level)
+void ReportSpecification::AddChapter(LPCTSTR strName,LPCTSTR strKey,Uint16 level)
 {
-   CChapterInfo chInfo;
+   ChapterInfo chInfo;
    chInfo.Name = strName;
    chInfo.Key = strKey;
    chInfo.MaxLevel = level;
    m_Chapters.push_back(chInfo);
 }
 
-void CReportSpecification::SetChapterInfo(const std::vector<CChapterInfo>& chInfo)
+void ReportSpecification::SetChapterInfo(const std::vector<ChapterInfo>& chInfo)
 {
    m_Chapters = chInfo;
 }
 
-std::vector<CChapterInfo> CReportSpecification::GetChapterInfo() const
+const std::vector<ChapterInfo>& ReportSpecification::GetChapterInfo() const
 {
    return m_Chapters;
 }
 
-IndexType CReportSpecification::GetChapterCount() const
+IndexType ReportSpecification::GetChapterCount() const
 {
    return m_Chapters.size();
 }
 
-void CReportSpecification::ClearChapters()
+void ReportSpecification::ClearChapters()
 {
    m_Chapters.clear();
 }
 
 
-HRESULT CReportSpecification::Validate() const
+bool ReportSpecification::IsValid() const
 {
-   return S_OK;
+   return true;
 }
 
-void CReportSpecification::SetLeftHeader(LPCTSTR text)
+void ReportSpecification::SetLeftHeader(const std::_tstring& text)
 {
    m_LeftHeader = text;
 }
 
-std::_tstring CReportSpecification::GetLeftHeader() const
+const std::_tstring& ReportSpecification::GetLeftHeader() const
 {
    return m_LeftHeader;
 }
 
-void CReportSpecification::SetCenterHeader(LPCTSTR text)
+void ReportSpecification::SetCenterHeader(const std::_tstring& text)
 {
    m_CenterHeader = text;
 }
 
-std::_tstring CReportSpecification::GetCenterHeader() const
+const std::_tstring& ReportSpecification::GetCenterHeader() const
 {
    return m_CenterHeader;
 }
 
-void CReportSpecification::SetLeftFooter(LPCTSTR text)
+void ReportSpecification::SetLeftFooter(const std::_tstring& text)
 {
    m_LeftFooter = text;
 }
 
-std::_tstring CReportSpecification::GetLeftFooter() const
+const std::_tstring& ReportSpecification::GetLeftFooter() const
 {
    return m_LeftFooter;
 }
 
-void CReportSpecification::SetCenterFooter(LPCTSTR text)
+void ReportSpecification::SetCenterFooter(const std::_tstring& text)
 {
    m_CenterFooter = text;
 }
 
-std::_tstring CReportSpecification::GetCenterFooter() const
+const std::_tstring& ReportSpecification::GetCenterFooter() const
 {
    return m_CenterFooter;
 }

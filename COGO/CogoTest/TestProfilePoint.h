@@ -34,30 +34,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestProfilePoint :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IProfilePointEvents
+class CTestProfilePoint
 {
 public:
    CTestProfilePoint();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestProfilePoint)
-   COM_INTERFACE_ENTRY(IProfilePointEvents)
-END_COM_MAP()
-
-
-// IProfilePointEvents
-public:
-	STDMETHOD(OnProfilePointChanged)(IProfilePoint* pp);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTProfilePoint_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

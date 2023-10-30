@@ -34,7 +34,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override
@@ -52,7 +53,6 @@ extern CComModule _Module;
 #include <WBFLGeometry.h>
 #include <WBFLUnitServer.h>
 #include <WBFLCogo.h>
-#include <WBFLSections.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

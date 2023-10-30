@@ -21,18 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\UnitTest.h>
-#include <System\dllTest.h>
+#include <GeomModel/GeomModelLib.h>
 
-#include <initguid.h>
-#include <WBFLGeometry_i.c>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -40,10 +30,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
-{
-   return gmUnitTest::TestMe(rlog);
 }

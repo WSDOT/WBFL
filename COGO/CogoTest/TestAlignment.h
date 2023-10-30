@@ -34,31 +34,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestAlignment :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IAlignmentEvents
+class CTestAlignment
 {
 public:
    CTestAlignment();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestAlignment)
-   COM_INTERFACE_ENTRY(IAlignmentEvents)
-END_COM_MAP()
-
-// IAlignmentEvents
-public:
-	STDMETHOD(OnAlignmentChanged)(IAlignment* alignment);
-	STDMETHOD(OnProfileChanged)(IProfile* profile);
-   STDMETHOD(OnStationEquationsChanged)(IStationEquationCollection* equations);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 };
 
 #endif // !defined(AFX_TESTAlignment_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

@@ -333,217 +333,217 @@ eafTypes::UnitMode CEAFDocProxyAgent::GetUnitMode()
    return pApp->GetUnitsMode();
 }
 
-const unitStationFormat& CEAFDocProxyAgent::GetStationFormat()
+const WBFL::Units::StationFormat& CEAFDocProxyAgent::GetStationFormat()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->StationFormat;
 }
 
-const unitmgtScalar& CEAFDocProxyAgent::GetScalarFormat()
+const WBFL::Units::ScalarData& CEAFDocProxyAgent::GetScalarFormat()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Scalar;
 }
 
-const unitmgtScalar& CEAFDocProxyAgent::GetPercentageFormat()
+const WBFL::Units::ScalarData& CEAFDocProxyAgent::GetPercentageFormat()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Percentage;
 }
 
-const unitmgtLengthData& CEAFDocProxyAgent::GetComponentDimUnit()
+const WBFL::Units::LengthData& CEAFDocProxyAgent::GetComponentDimUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ComponentDim;
 }
 
-const unitmgtLengthData& CEAFDocProxyAgent::GetXSectionDimUnit()
+const WBFL::Units::LengthData& CEAFDocProxyAgent::GetXSectionDimUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->XSectionDim;
 }
 
-const unitmgtLengthData& CEAFDocProxyAgent::GetSpanLengthUnit()
+const WBFL::Units::LengthData& CEAFDocProxyAgent::GetSpanLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SpanLength;
 }
 
-const unitmgtLengthData&  CEAFDocProxyAgent::GetAlignmentLengthUnit()
+const WBFL::Units::LengthData&  CEAFDocProxyAgent::GetAlignmentLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->AlignmentLength;
 }
 
-const unitmgtLengthData&  CEAFDocProxyAgent::GetDeflectionUnit()
+const WBFL::Units::LengthData&  CEAFDocProxyAgent::GetDeflectionUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Deflection;
 }
 
-const unitmgtLength2Data& CEAFDocProxyAgent::GetAreaUnit()
+const WBFL::Units::Length2Data& CEAFDocProxyAgent::GetAreaUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Area;
 }
 
-const unitmgtLength4Data& CEAFDocProxyAgent::GetMomentOfInertiaUnit()
+const WBFL::Units::Length4Data& CEAFDocProxyAgent::GetMomentOfInertiaUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MomentOfInertia;
 }
 
-const unitmgtLength3Data& CEAFDocProxyAgent::GetSectModulusUnit()
+const WBFL::Units::Length3Data& CEAFDocProxyAgent::GetSectModulusUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SectModulus;
 }
 
-const unitmgtPressureData& CEAFDocProxyAgent::GetStressUnit()
+const WBFL::Units::PressureData& CEAFDocProxyAgent::GetStressUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Stress;
 }
 
-const unitmgtPressureData& CEAFDocProxyAgent::GetModEUnit()
+const WBFL::Units::PressureData& CEAFDocProxyAgent::GetModEUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ModE;
 }
 
-const unitmgtForceData& CEAFDocProxyAgent::GetGeneralForceUnit()
+const WBFL::Units::ForceData& CEAFDocProxyAgent::GetGeneralForceUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->GeneralForce;
 }
 
-const unitmgtForceData& CEAFDocProxyAgent::GetTonnageUnit()
+const WBFL::Units::ForceData& CEAFDocProxyAgent::GetTonnageUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Tonnage;
 }
 
-const unitmgtForceData& CEAFDocProxyAgent::GetShearUnit()
+const WBFL::Units::ForceData& CEAFDocProxyAgent::GetShearUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Shear;
 }
 
-const unitmgtMomentData& CEAFDocProxyAgent::GetMomentUnit()
+const WBFL::Units::MomentData& CEAFDocProxyAgent::GetMomentUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Moment;
 }
 
-const unitmgtMomentData& CEAFDocProxyAgent::GetSmallMomentUnit()
+const WBFL::Units::MomentData& CEAFDocProxyAgent::GetSmallMomentUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallMoment;
 }
 
-const unitmgtAngleData& CEAFDocProxyAgent::GetAngleUnit()
+const WBFL::Units::AngleData& CEAFDocProxyAgent::GetAngleUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Angle;
 }
 
-const unitmgtAngleData& CEAFDocProxyAgent::GetRadAngleUnit()
+const WBFL::Units::AngleData& CEAFDocProxyAgent::GetRadAngleUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->RadAngle;
 }
 
-const unitmgtDensityData& CEAFDocProxyAgent::GetDensityUnit()
+const WBFL::Units::DensityData& CEAFDocProxyAgent::GetDensityUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Density;
 }
 
-const unitmgtMassPerLengthData& CEAFDocProxyAgent::GetMassPerLengthUnit()
+const WBFL::Units::MassPerLengthData& CEAFDocProxyAgent::GetMassPerLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MassPerLength;
 }
 
-const unitmgtForcePerLengthData& CEAFDocProxyAgent::GetForcePerLengthUnit()
+const WBFL::Units::ForcePerLengthData& CEAFDocProxyAgent::GetForcePerLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ForcePerLength;
 }
 
-const unitmgtMomentPerAngleData& CEAFDocProxyAgent::GetMomentPerAngleUnit()
+const WBFL::Units::MomentPerAngleData& CEAFDocProxyAgent::GetMomentPerAngleUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->MomentPerAngle;
 }
 
-const unitmgtTimeData& CEAFDocProxyAgent::GetShortTimeUnit()
+const WBFL::Units::TimeData& CEAFDocProxyAgent::GetShortTimeUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time;
 }
 
-const unitmgtTimeData& CEAFDocProxyAgent::GetWholeDaysUnit()
+const WBFL::Units::TimeData& CEAFDocProxyAgent::GetWholeDaysUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time2;
 }
 
-const unitmgtTimeData& CEAFDocProxyAgent::GetFractionalDaysUnit()
+const WBFL::Units::TimeData& CEAFDocProxyAgent::GetFractionalDaysUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Time3;
 }
 
-const unitmgtAreaPerLengthData& CEAFDocProxyAgent::GetAvOverSUnit()
+const WBFL::Units::AreaPerLengthData& CEAFDocProxyAgent::GetAvOverSUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->AvOverS;
 }
 
-const unitmgtForceLength2Data& CEAFDocProxyAgent::GetStiffnessUnit()
+const WBFL::Units::ForceLength2Data& CEAFDocProxyAgent::GetStiffnessUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->ForceLength2;
 }
 
-const unitmgtSqrtPressureData& CEAFDocProxyAgent::GetTensionCoefficientUnit()
+const WBFL::Units::SqrtPressureData& CEAFDocProxyAgent::GetTensionCoefficientUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SqrtPressure;
 }
 
-const unitmgtPerLengthData& CEAFDocProxyAgent::GetPerLengthUnit()
+const WBFL::Units::PerLengthData& CEAFDocProxyAgent::GetPerLengthUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->PerLength;
 }
 
-const unitmgtPerLengthData& CEAFDocProxyAgent::GetCurvatureUnit()
+const WBFL::Units::PerLengthData& CEAFDocProxyAgent::GetCurvatureUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Curvature;
 }
 
-const unitmgtPressureData& CEAFDocProxyAgent::GetSidewalkPressureUnit()
+const WBFL::Units::PressureData& CEAFDocProxyAgent::GetSidewalkPressureUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallStress;
 }
 
-const unitmgtPressureData& CEAFDocProxyAgent::GetOverlayWeightUnit()
+const WBFL::Units::PressureData& CEAFDocProxyAgent::GetOverlayWeightUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->SmallStress;
 }
 
-const unitmgtPressureData& CEAFDocProxyAgent::GetWindPressureUnit()
+const WBFL::Units::PressureData& CEAFDocProxyAgent::GetWindPressureUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->WindPressure;
 }
 
-const unitmgtVelocityData& CEAFDocProxyAgent::GetVelocityUnit()
+const WBFL::Units::VelocityData& CEAFDocProxyAgent::GetVelocityUnit()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetDisplayUnits()->Velocity;
@@ -571,7 +571,7 @@ bool CEAFDocProxyAgent::RemoveByID(StatusItemIDType id)
    return m_pDoc->GetStatusCenter().RemoveByID(id);
 }
 
-bool CEAFDocProxyAgent::RemoveByIndex(CollectionIndexType index)
+bool CEAFDocProxyAgent::RemoveByIndex(IndexType index)
 {
    return m_pDoc->GetStatusCenter().RemoveByIndex(index);
 }
@@ -586,7 +586,7 @@ CEAFStatusItem* CEAFDocProxyAgent::GetByID(StatusItemIDType id)
    return m_pDoc->GetStatusCenter().GetByID(id);
 }
 
-CEAFStatusItem* CEAFDocProxyAgent::GetByIndex(CollectionIndexType index)
+CEAFStatusItem* CEAFDocProxyAgent::GetByIndex(IndexType index)
 {
    return m_pDoc->GetStatusCenter().GetByIndex(index);
 }
@@ -601,21 +601,21 @@ eafTypes::StatusSeverityType CEAFDocProxyAgent::GetSeverity()
    return m_pDoc->GetStatusCenter().GetSeverity();
 }
 
-CollectionIndexType CEAFDocProxyAgent::Count()
+IndexType CEAFDocProxyAgent::Count()
 {
    return m_pDoc->GetStatusCenter().Count();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 // IEAFTransactions
-void CEAFDocProxyAgent::Execute(txnTransaction& rTxn)
+void CEAFDocProxyAgent::Execute(const CEAFTransaction& rTxn)
 {
    m_pDoc->Execute(rTxn);
 }
 
-void CEAFDocProxyAgent::Execute(txnTransaction* pTxn)
+void CEAFDocProxyAgent::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
 {
-   m_pDoc->Execute(pTxn);
+   m_pDoc->Execute(std::move(pTxn));
 }
 
 void CEAFDocProxyAgent::Undo()
@@ -633,42 +633,42 @@ void CEAFDocProxyAgent::Repeat()
   m_pDoc->Repeat();
 }
 
-bool CEAFDocProxyAgent::CanUndo()
+bool CEAFDocProxyAgent::CanUndo() const
 {
    return m_pDoc->CanUndo();
 }
 
-bool CEAFDocProxyAgent::CanRedo()
+bool CEAFDocProxyAgent::CanRedo() const
 {
    return m_pDoc->CanRedo();
 }
 
-bool CEAFDocProxyAgent::CanRepeat()
+bool CEAFDocProxyAgent::CanRepeat() const
 {
    return m_pDoc->CanRepeat();
 }
 
-std::_tstring CEAFDocProxyAgent::UndoName()
+std::_tstring CEAFDocProxyAgent::UndoName() const
 {
    return m_pDoc->UndoName();
 }
 
-std::_tstring CEAFDocProxyAgent::RedoName()
+std::_tstring CEAFDocProxyAgent::RedoName() const
 {
    return m_pDoc->RedoName();
 }
 
-std::_tstring CEAFDocProxyAgent::RepeatName()
+std::_tstring CEAFDocProxyAgent::RepeatName() const
 {
    return m_pDoc->RepeatName();
 }
 
-CollectionIndexType CEAFDocProxyAgent::GetTxnCount()
+IndexType CEAFDocProxyAgent::GetTxnCount() const
 {
    return m_pDoc->GetTxnCount();
 }
 
-CollectionIndexType CEAFDocProxyAgent::GetUndoCount()
+IndexType CEAFDocProxyAgent::GetUndoCount() const
 {
    return m_pDoc->GetUndoCount();
 }

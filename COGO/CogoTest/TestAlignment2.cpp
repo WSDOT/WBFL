@@ -72,12 +72,12 @@ void CTestAlignment2::Test1()
    Float64 stationVal, offset;
 
    // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,0.00),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
@@ -89,19 +89,19 @@ void CTestAlignment2::Test1()
    TRY_TEST(IsEqual(y, -10.0),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    // Sta 2+00
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(200.0),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(200.0),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,0.00),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(200.0),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(200.0),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
@@ -113,7 +113,7 @@ void CTestAlignment2::Test1()
    TRY_TEST(IsEqual(y, -10.0),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,200.00),true);
@@ -121,72 +121,74 @@ void CTestAlignment2::Test1()
 
 void CTestAlignment2::Test2()
 {
-   // Test an alignment that consists of a single point
-   CComPtr<IAlignment> alignment;
-   alignment.CoCreateInstance(CLSID_Alignment);
+   // Single point alignments are no longer permitted - point is not a path element
+   
+   //// Test an alignment that consists of a single point
+   //CComPtr<IAlignment> alignment;
+   //alignment.CoCreateInstance(CLSID_Alignment);
 
-   alignment->put_RefStation(CComVariant(100.00));
+   //alignment->put_RefStation(CComVariant(100.00));
 
-   CComPtr<IPoint2d> p1;
-   p1.CoCreateInstance(CLSID_Point2d);
-   p1->Move(50,50);
-   alignment->AddEx(p1);
+   //CComPtr<IPoint2d> p1;
+   //p1.CoCreateInstance(CLSID_Point2d);
+   //p1->Move(50,50);
+   //alignment->AddEx(p1);
 
-   //////////////
-   // Bearing, Normal, LocatePoint, Station, and Offset
-   CComPtr<IDirection> dir;
-   Float64 dirVal;
-   CComPtr<IPoint2d> pnt;
-   Float64 x,y;
-   CComPtr<IStation> station;
-   Float64 stationVal, offset;
+   ////////////////
+   //// Bearing, Normal, LocatePoint, Station, and Offset
+   //CComPtr<IDirection> dir;
+   //Float64 dirVal;
+   //CComPtr<IPoint2d> pnt;
+   //Float64 x,y;
+   //CComPtr<IStation> station;
+   //Float64 stationVal, offset;
 
-   // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
+   //// Sta 0+00
+   //TRY_TEST(alignment->GetBearing(CComVariant(0.00),&dir),S_OK);
+   //dir->get_Value(&dirVal);
+   //TRY_TEST(IsEqual(dirVal,0.00),true);
 
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
-   pnt.Release();
+   //dir.Release();
+   //TRY_TEST(alignment->GetNormal(CComVariant(0.00),&dir),S_OK);
+   //dir->get_Value(&dirVal);
+   //TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
+   //pnt.Release();
 
-   TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,-50.0),true);
-   TRY_TEST(IsEqual(y, 40.0),true);
+   //TRY_TEST(alignment->LocatePoint(CComVariant(0),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
+   //pnt->get_X(&x);
+   //pnt->get_Y(&y);
+   //TRY_TEST(IsEqual(x,-50.0),true);
+   //TRY_TEST(IsEqual(y, 40.0),true);
 
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,0.00),true);
+   //station.Release();
+   //TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
+   //TRY_TEST(IsEqual(offset,10.0),true);
+   //station->get_Value(&stationVal);
+   //TRY_TEST(IsEqual(stationVal,0.00),true);
 
-   // Sta 2+00
-   dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(200.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,0.00),true);
+   //// Sta 2+00
+   //dir.Release();
+   //TRY_TEST(alignment->GetBearing(CComVariant(200.00),&dir),S_OK);
+   //dir->get_Value(&dirVal);
+   //TRY_TEST(IsEqual(dirVal,0.00),true);
 
-   dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(200.00),&dir),S_OK);
-   dir->get_Value(&dirVal);
-   TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
+   //dir.Release();
+   //TRY_TEST(alignment->GetNormal(CComVariant(200.00),&dir),S_OK);
+   //dir->get_Value(&dirVal);
+   //TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
 
-   pnt.Release();
-   TRY_TEST(alignment->LocatePoint(CComVariant(200),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
-   pnt->get_X(&x);
-   pnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,150.0),true);
-   TRY_TEST(IsEqual(y, 40.0),true);
+   //pnt.Release();
+   //TRY_TEST(alignment->LocatePoint(CComVariant(200),omtAlongDirection, 10,CComVariant(dirVal),&pnt),S_OK);
+   //pnt->get_X(&x);
+   //pnt->get_Y(&y);
+   //TRY_TEST(IsEqual(x,150.0),true);
+   //TRY_TEST(IsEqual(y, 40.0),true);
 
-   station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
-   TRY_TEST(IsEqual(offset,10.0),true);
-   station->get_Value(&stationVal);
-   TRY_TEST(IsEqual(stationVal,200.00),true);
+   //station.Release();
+   //TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
+   //TRY_TEST(IsEqual(offset,10.0),true);
+   //station->get_Value(&stationVal);
+   //TRY_TEST(IsEqual(stationVal,200.00),true);
 }
 
 void CTestAlignment2::Test3()
@@ -205,11 +207,11 @@ void CTestAlignment2::Test3()
    end.CoCreateInstance(CLSID_Point2d);
    end->Move(250,250);
 
-   CComPtr<ILineSegment2d> ls;
-   ls.CoCreateInstance(CLSID_LineSegment2d);
-   ls->putref_StartPoint(start);
-   ls->putref_EndPoint(end);
-   alignment->AddEx(ls);
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(start, end);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
    //////////////
    // Bearing, Normal, LocatePoint, Station, and Offset
@@ -221,12 +223,12 @@ void CTestAlignment2::Test3()
    Float64 stationVal, offset;
 
    // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
@@ -238,19 +240,19 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(y,-27.7817,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    // Sta 1+50
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(150.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(150.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(150.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(150.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
@@ -262,19 +264,19 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(y, 78.2843,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,150.00),true);
 
    // Sta 5+00
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(500.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(500.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(500.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(500.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,M_PI/4 + 3*PI_OVER_2),true);
    pnt.Release();
@@ -286,7 +288,7 @@ void CTestAlignment2::Test3()
    TRY_TEST(IsEqual(y, 325.77164),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,500.00),true);
@@ -314,13 +316,14 @@ void CTestAlignment2::Test4()
 
    CComPtr<ICompoundCurve> hc;
    hc.CoCreateInstance(CLSID_CompoundCurve);
-   hc->putref_PBT(pbt);
-   hc->putref_PI(pi);
-   hc->putref_PFT(pft);
+   hc->put_PBT(pbt);
+   hc->put_PI(pi);
+   hc->put_PFT(pft);
    hc->put_Radius(500);
    hc->put_SpiralLength(spEntry,100);
    hc->put_SpiralLength(spExit,200);
-   alignment->AddEx(hc);
+   CComQIPtr<IPathElement> element(hc);
+   alignment->AddPathElement(element);
 
    //////////////
    // Bearing,Normal, LocatePoint, Station, and Offset
@@ -332,12 +335,12 @@ void CTestAlignment2::Test4()
    Float64 stationVal, offset;
 
    // Sta 0+00
-   TRY_TEST(alignment->Bearing(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,0.00),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(0.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(0.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,3*PI_OVER_2),true);
    pnt.Release();
@@ -349,19 +352,19 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(y, 990.0000,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,0.00),true);
 
    // Sta 1+50
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(150.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(150.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,6.2581853),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(150.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(150.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,6.2581853 - PI_OVER_2),true);
 
@@ -373,19 +376,19 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(y,989.5865,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,150.00),true);
 
    // Sta 2+50
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(250.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(250.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,6.083185),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(250.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(250.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,6.083185 - PI_OVER_2),true);
 
@@ -397,19 +400,19 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(y,979.3996,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset, 10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,250.00),true);
 
    // Sta 4+50
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(450.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(450.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,5.68345),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(450.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(450.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,5.68345 - PI_OVER_2),true);
 
@@ -421,19 +424,19 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(y,903.5804,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset, 10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,450.00),true);
 
    // Sta 6+50
    dir.Release();
-   TRY_TEST(alignment->Bearing(CComVariant(650.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(650.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,5.497787),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(650.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(650.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,5.497787 - PI_OVER_2),true);
 
@@ -445,7 +448,7 @@ void CTestAlignment2::Test4()
    TRY_TEST(IsEqual(y,772.2239,0.001),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset, 10.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,650.00),true);
@@ -470,17 +473,17 @@ void CTestAlignment2::Test5()
    p3->Move(10,10);
    p4->Move(20,10);
 
-   CComPtr<ILineSegment2d> ls1, ls2;
-   ls1.CoCreateInstance(CLSID_LineSegment2d);
-   ls2.CoCreateInstance(CLSID_LineSegment2d);
+   CComPtr<IPathSegment> segment1, segment2;
+   segment1.CoCreateInstance(CLSID_PathSegment);
+   segment2.CoCreateInstance(CLSID_PathSegment);
 
-   ls1->putref_StartPoint(p1);
-   ls1->putref_EndPoint(p2);
-   ls2->putref_StartPoint(p3);
-   ls2->putref_EndPoint(p4);
+   segment1->ThroughPoints(p1, p2);
+   segment2->ThroughPoints(p3, p4);
 
-   alignment->AddEx(ls1);
-   alignment->AddEx(ls2);
+   CComQIPtr<IPathElement> element1(segment1);
+   CComQIPtr<IPathElement> element2(segment2);
+   alignment->AddPathElement(element1);
+   alignment->AddPathElement(element2);
 
    //////////////
    // Bearing,Normal,LocatePoint, Station, and Offset
@@ -492,12 +495,12 @@ void CTestAlignment2::Test5()
    Float64 stationVal, offset;
 
    // Sta 1+15
-   TRY_TEST(alignment->Bearing(CComVariant(115.00),&dir),S_OK);
+   TRY_TEST(alignment->GetBearing(CComVariant(115.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,PI_OVER_2),true);
 
    dir.Release();
-   TRY_TEST(alignment->Normal(CComVariant(115.00),&dir),S_OK);
+   TRY_TEST(alignment->GetNormal(CComVariant(115.00),&dir),S_OK);
    dir->get_Value(&dirVal);
    TRY_TEST(IsEqual(dirVal,0.0),true);
    pnt.Release();
@@ -509,7 +512,7 @@ void CTestAlignment2::Test5()
    TRY_TEST(IsEqual(y,  5.0),true);
 
    station.Release();
-   TRY_TEST(alignment->Offset(pnt,&station,&offset),S_OK);
+   TRY_TEST(alignment->StationAndOffset(pnt,&station,&offset),S_OK);
    TRY_TEST(IsEqual(offset,3.0),true);
    station->get_Value(&stationVal);
    TRY_TEST(IsEqual(stationVal,115.00),true);

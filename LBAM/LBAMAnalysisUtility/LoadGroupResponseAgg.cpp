@@ -78,7 +78,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, IIDArray* POIs
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -87,7 +87,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, IIDArray* POIs
       std::vector< CAdapt< CComPtr<ISectionResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -104,14 +104,14 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeForces(BSTR loadGroup, IIDArray* POIs
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // controlling results are placed in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadGroupSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,true,ieng);
       }
@@ -134,7 +134,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, IIDArray*
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -143,7 +143,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, IIDArray*
       std::vector< CAdapt< CComPtr<ISectionResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -160,14 +160,14 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeDeflections(BSTR loadGroup, IIDArray*
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // controlling results are placed in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadGroupSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,false,ieng);
       }
@@ -190,7 +190,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, IIDArray* P
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -199,7 +199,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, IIDArray* P
       std::vector< CAdapt< CComPtr<IResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -216,13 +216,13 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeReactions(BSTR loadGroup, IIDArray* P
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.assign(poi_cnt,LRPair());
 
       // now that we have all results from all engines, envelope them
       // controlling results are placed in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadGroupResults(result_vec[0].m_T,result_vec[ieng].m_T);
       }
@@ -245,7 +245,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, II
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -254,7 +254,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, II
       std::vector< CAdapt< CComPtr<IResult3Ds> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -271,14 +271,14 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeSupportDeflections(BSTR loadGroup, II
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // controlling results are placed in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadGroupResults(result_vec[0].m_T,result_vec[ieng].m_T);
       }
@@ -301,7 +301,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, IIDArray* PO
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -310,7 +310,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, IIDArray* PO
       std::vector< CAdapt< CComPtr<ISectionStressResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -327,14 +327,14 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, IIDArray* PO
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // controlling results are placed in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadGroupSectionStressResults(result_vec[0].m_T,result_vec[ieng].m_T);
       }
@@ -350,7 +350,7 @@ STDMETHODIMP CLoadGroupResponseAgg::ComputeStresses(BSTR loadGroup, IIDArray* PO
 }
 
 // Make sure maximum value is in res1
-void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,CollectionIndexType engineIdx)
+void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* res1, ISectionResult3Ds* res2,bool doFlip,IndexType engineIdx)
 {
    CHRException hr;
 
@@ -378,10 +378,10 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionResults(ISectionResult3Ds* r
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ISectionResult3D> sr1, sr2;
 
@@ -472,10 +472,10 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupResults(IResult3Ds* res1, IResult3D
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<IResult3D> r1,r2;
 
@@ -534,18 +534,18 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionStressResults(ISectionStress
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ISectionStressResult> sr1, sr2;
 
       res1->get_Item(ipoi,&sr1);
       res2->get_Item(ipoi,&sr2);
 
-      CollectionIndexType lcount1, rcount1;
-      CollectionIndexType lcount2, rcount2;
+      IndexType lcount1, rcount1;
+      IndexType lcount2, rcount2;
 
       sr1->get_LeftCount(&lcount1);
       sr1->get_RightCount(&rcount1);
@@ -559,7 +559,7 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionStressResults(ISectionStress
          hr = E_FAIL;
 
       // left section of stress point
-      for ( CollectionIndexType spIdx = 0; spIdx < lcount1; spIdx++ )
+      for ( IndexType spIdx = 0; spIdx < lcount1; spIdx++ )
       {
          Float64 f1, f2;
 
@@ -573,7 +573,7 @@ void CLoadGroupResponseAgg::EnvelopeLoadGroupSectionStressResults(ISectionStress
       }
 
       // right section of stress point
-      for ( CollectionIndexType spIdx = 0; spIdx < rcount1; spIdx++ )
+      for ( IndexType spIdx = 0; spIdx < rcount1; spIdx++ )
       {
          Float64 f1, f2;
 

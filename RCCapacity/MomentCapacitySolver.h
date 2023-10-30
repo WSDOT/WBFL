@@ -32,6 +32,11 @@
 #include <WBFLUnitServer.h>
 #include <vector>
 
+//#define _MOMENT_CAPACITY_LOGGING
+// uncomment this preprocessor directive to enable logging of the moment capacity solution
+// logging produces 2 files, MomentCapacity.log records the strain guess and resulting axial force, good for plotting
+// MomentCapacityDetails.log records the slice-by-slice calculation details for each strain guess
+
 /////////////////////////////////////////////////////////////////////////////
 // CMomentCapacitySolver
 class ATL_NO_VTABLE CMomentCapacitySolver : 
@@ -43,10 +48,7 @@ class ATL_NO_VTABLE CMomentCapacitySolver :
 public:
 	CMomentCapacitySolver()
 	{
-      m_bFurthestPointUpdated = false;
-      m_XFurthest = -999999;
-      m_YFurthest = -999999;
-
+      m_bAnalysisPointUpdated = false;
       m_bUpdateLimits = true;
 	}
 
@@ -68,13 +70,15 @@ private:
    CComPtr<IGeneralSectionSolution> m_GeneralSolution;
    CComPtr<IGeneralSectionSolution> m_TensionSolution;
    CComPtr<IGeneralSectionSolution> m_CompressionSolution;
-   CComPtr<IPlane3d> m_StrainPlane;
+   CComPtr<IPlane3d> m_IncrementalStrainPlane;
    CComPtr<IPoint3d> m_P1, m_P2, m_P3;
    Float64 m_AxialTolerance;
    long m_MaxIter;
-   bool m_bFurthestPointUpdated;
-   Float64 m_XFurthest, m_YFurthest;
-   Float64 m_Top, m_Bottom;
+   bool m_bAnalysisPointUpdated;
+   CComPtr<IPoint2d> m_ExtremeCompressionPoint; // this is compression side point furthest from the neutral axis
+   CComPtr<IPoint2d> m_ExtremeTensionPoint; // this is the tension side point furthest from the neutral axis
+   CComPtr<IPoint2d> m_ControlPoint; // this point is varied in the Z direction to manipulate the strain plane
+   CComPtr<IPoint2d> m_FixedPoint; // this point is the fixed control point (like the point of -0.003 compression strain at the top of a section)
 
    bool m_bUpdateLimits;
    Float64 m_FzTensionLimit, m_MxTensionLimit, m_MyTensionLimit, m_eoTensionLimit;
@@ -82,13 +86,18 @@ private:
    HRESULT UpdateLimits();
 
    void UpdateStrainPlane(Float64 angle,Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 eo);
-   void UpdateFurthestPoint(Float64 angle, SolutionMethod solutionMethod);
+   void UpdateAnalysisPoints(Float64 angle, SolutionMethod solutionMethod,Float64 strainLocation);
+   void UpdateControlPoints(Float64 angle, SolutionMethod solutionMethod, Float64 strainLocation);
    HRESULT GetNeutralAxisParameterRange(Float64 k_or_ec,Float64 strainLocation,SolutionMethod solutionMethod,Float64 angle,Float64 Fz,Float64* peo_lower,Float64* peo_upper,Float64* pFz_lower,Float64* pFz_upper);
    HRESULT AnalyzeSection(Float64 Fz,Float64 angle,Float64 k_or_ec,SolutionMethod solutionMethod, Float64 strainLocation,IMomentCapacitySolution** solution);
    HRESULT ZeroCapacitySolution(IMomentCapacitySolution** solution);
 
-   void UpdateStrainPlane2(Float64 naAngle, Float64 x, Float64 y, Float64 ec, Float64 k);
-   HRESULT AnalyzeSection2(Float64 Fz, Float64 naAngle, Float64 k_or_ec, SolutionMethod solutionMethod, Float64 strainLocation, IMomentCapacitySolution** solution);
+#if defined _MOMENT_CAPACITY_LOGGING
+   void LogSolution();
+   CComPtr<ILogFile> m_LogFile;
+   DWORD m_dwCookie1;
+   DWORD m_dwCookie2;
+#endif
 
 // ISupportsErrorInfo
 public:

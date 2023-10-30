@@ -21,285 +21,228 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_TIME_H_
-#define INCLUDED_SYSTEM_TIME_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <System\SysExp.h>
+#include <System\Date.h>
 #include <istream>
 #include <ostream>
 #include <string>
-#include <System\SysExp.h>
-#include <System\Date.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class sysTime;
-
-
-// MISCELLANEOUS
-//
-
-typedef Uint16 HourTy;
-typedef Uint16 MinuteTy;
-typedef Uint16 SecondTy;
-typedef Uint32 ClockTy;
-
-static const Uint32 secFrom_Jan_1_1901_to_Jan_1_1970 = 2177452800L;
-
-/*****************************************************************************
-CLASS 
-   sysTime
-
-   Utility time class
-
-
-DESCRIPTION
-   The class may be used for various Time-related activities.
-
-LOG
-   rdp : 05.04.1997 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysTime
+namespace WBFL
 {
+   namespace System
+   {
+      class Time;
 
-public:
+      using HourTy = Uint16;
+      using MinuteTy = Uint16;
+      using SecondTy = Uint16;
+      using ClockTy = Uint32;
 
-    friend sysDate::sysDate( const sysTime  & );
+      static const Uint32 secFrom_Jan_1_1901_to_Jan_1_1970 = 2177452800L;
 
-   // GROUP: LIFECYCLE
-   //------------------------------------------------------------------------
-   // Construct with the current time
-    sysTime();
+      /// The class may be used for various Time-related activities.
+      class SYSCLASS Time
+      {
 
-   //------------------------------------------------------------------------
-   // Construct with the Seconds since Jan 1, 1901.
-    sysTime( ClockTy s ); 
+      public:
+          /// Construct with the current time
+          Time();
 
-   //------------------------------------------------------------------------
-   // construct an explicit time
-    sysTime( HourTy h, MinuteTy m, SecondTy s = 0 );
+          /// Construct with the Seconds since Jan 1, 1901.
+          Time( ClockTy s ); 
 
-   //------------------------------------------------------------------------
-   // Specified time and today's date or a given date and time
-    sysTime( const sysDate  &, HourTy h=0, MinuteTy m=0, SecondTy s=0 );
+          /// construct an explicit time
+          Time( HourTy h, MinuteTy m, SecondTy s = 0 );
+
+          /// Specified time and today's date or a given date and time
+          Time( const Date  &, HourTy h=0, MinuteTy m=0, SecondTy s=0 );
                                 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Write times:
-    SYSCLASS friend std::_tostream  &  operator << ( std::_tostream  &, const sysTime  & );
+          // Boolean operators.
+          bool operator <  ( const Time  & t ) const;
+          bool operator <= ( const Time  & t ) const;
+          bool operator >  ( const Time  & t ) const;
+          bool operator >= ( const Time  & t ) const;
+          bool operator == ( const Time  & t ) const;
+          bool operator != ( const Time  & t ) const;
+          bool Between( const Time  & a, const Time  & b ) const;
+
+          // Add or subtract seconds.
+          void operator++();
+          void operator--();
+          void operator+=(long s);
+          void operator-=(long s);
+
+          /// return a string representation of the time
+          std::_tstring AsString() const;
+
+          /// compare with a time
+          Int16 CompareTo( const Time  & ) const;
+
+          /// return a unique hash value for the current date and time
+          Uint16 Hash() const;
+
+          /// hour: local time
+          HourTy Hour() const;
+
+          /// hour : GMT
+          HourTy HourGMT() const;
+
+          /// is the time in DST
+          bool IsDST() const;
+
+          /// is the time valid
+          bool IsValid() const;
+
+          /// return the max of two times
+          Time Max( const Time  & t ) const;
+
+          /// return the min of two times
+          Time Min( const Time  & t ) const;
+
+          /// minute: local time
+          MinuteTy Minute() const;
+
+          /// minute: GMT
+          MinuteTy MinuteGMT() const;
+
+          /// second: local time or GMT
+          SecondTy Second() const;
+
+          /// return number of seconds since 1/1/1901.
+          ClockTy Seconds() const;
 
 
-    // Boolean operators.
-    bool operator <  ( const sysTime  & t ) const;
-    bool operator <= ( const sysTime  & t ) const;
-    bool operator >  ( const sysTime  & t ) const;
-    bool operator >= ( const sysTime  & t ) const;
-    bool operator == ( const sysTime  & t ) const;
-    bool operator != ( const sysTime  & t ) const;
-    bool Between( const sysTime  & a, const sysTime  & b ) const;
+          /// Start of DST for given year.
+          static Time BeginDST( Uint16 year );
 
-    // Add or subtract seconds.
-    SYSCLASS friend sysTime  operator + ( const sysTime  & t, long s );
-    SYSCLASS friend sysTime  operator + ( long s, const sysTime  & t );
-    SYSCLASS friend sysTime operator - ( const sysTime  & t, long s );
-    SYSCLASS friend sysTime operator - ( long s, const sysTime  & t );
-    void operator++();
-    void operator--();
-    void operator+=(long s);
-    void operator-=(long s);
+          /// End of DST for given year.
+          static Time EndDST( Uint16 year );
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // return a string representation of the time
-    std::_tstring AsString() const;
+          /// Set whether to include date when printing time
+          static bool PrintDate( bool );
+          static bool PrintDate();
 
-   //------------------------------------------------------------------------
-    // compare with a time
-    Int16 CompareTo( const sysTime  & ) const;
+      protected:
 
-   //------------------------------------------------------------------------
-    // return a unique hash value for the current date and time
-    Uint16 Hash() const;
+          static bool AssertDate( const Date  & );
+          static const Date RefDate;
+          static const Date MaxDate;
 
-   //------------------------------------------------------------------------
-   // hour: local time
-    HourTy Hour() const;
+      private:
 
-   //------------------------------------------------------------------------
-   // hour : GMT
-    HourTy HourGMT() const;
+          ClockTy Sec;        // Seconds since 1/1/1901.
+          static bool PrintDateFlag;  // True to print date along with time.
 
-   //------------------------------------------------------------------------
-    // is the time in DST
-    bool IsDST() const;
+          ClockTy LocalSecs() const;
+          static Time BuildLocal( const Date  &, HourTy );
 
-   //------------------------------------------------------------------------
-    // is the time valid
-    bool IsValid() const;
+          friend Date::Date(const Time&);
+          SYSCLASS friend std::_tostream& operator<<(std::_tostream&, const Time&);
+          SYSCLASS friend Time operator + (const Time& t, long s);
+          SYSCLASS friend Time operator + (long s, const Time& t);
+          SYSCLASS friend Time operator - (const Time& t, long s);
+          SYSCLASS friend Time operator - (long s, const Time& t);
+      };
 
-   //------------------------------------------------------------------------
-   // return the max of two times
-    sysTime Max( const sysTime  & t ) const;
+      #if defined( BI_OLDNAMES )
+      #define BI_Time Time
+      #endif
 
-   //------------------------------------------------------------------------
-   // return the min of two times
-    sysTime Min( const sysTime  & t ) const;
+      inline Time::Time( ClockTy s )
+      {
+          Sec = s;
+      }
 
-   //------------------------------------------------------------------------
-   // minute: local time
-    MinuteTy Minute() const;
+      inline bool Time::IsValid() const
+      {
+          return Sec > 0;
+      }
 
-   //------------------------------------------------------------------------
-   // minute: GMT
-    MinuteTy MinuteGMT() const;
+      inline ClockTy Time::Seconds() const
+      {
+          return Sec;
+      }
 
-   //------------------------------------------------------------------------
-   // second: local time or GMT
-    SecondTy Second() const;
+      inline bool Time::operator <  ( const Time& t ) const
+      {
+          return Sec < t.Sec;
+      }
 
-   //------------------------------------------------------------------------
-   // return number of seconds since 1/1/1901.
-    ClockTy Seconds() const;
+      inline bool Time::operator <= ( const Time& t ) const
+      {
+          return Sec <= t.Sec;
+      }
 
+      inline bool Time::operator >  ( const Time& t ) const
+      {
+          return Sec > t.Sec;
+      }
 
-    // Static member functions:
-   //------------------------------------------------------------------------
-   // Start of DST for given year.
-    static sysTime BeginDST( Uint16 year );
+      inline bool Time::operator >= ( const Time& t ) const
+      {
+          return Sec >= t.Sec;
+      }
 
-   //------------------------------------------------------------------------
-   // End of DST for given year.
-    static sysTime EndDST( Uint16 year );
+      inline bool Time::operator == ( const Time& t ) const
+      {
+          return Sec == t.Sec;
+      }
 
-   //------------------------------------------------------------------------
-   // Set whether to include date when printing time
-    static bool PrintDate( bool );
+      inline bool Time::operator != ( const Time& t ) const
+      {
+          return Sec != t.Sec;
+      }
 
-#if defined _UNITTEST
-    static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
+      inline bool Time::Between( const Time& a, const Time& b ) const
+      {
+          return *this >= a && *this <= b;
+      }
 
-protected:
+      SYSCLASS inline Time operator + ( const Time& t, long s )
+      {
+          return Time(t.Sec+s);
+      }
 
-    static bool AssertDate( const sysDate  & );
-    static const sysDate RefDate;
-    static const sysDate MaxDate;
+      SYSCLASS inline Time operator + ( long s, const Time& t )
+      {
+          return Time(t.Sec+s);
+      }
 
-private:
+      SYSCLASS inline Time operator - ( const Time& t, long s )
+      {
+          return Time(t.Sec-s);
+      }
 
-    ClockTy Sec;        // Seconds since 1/1/1901.
-    static bool PrintDateFlag;  // True to print date along with time.
+      SYSCLASS inline Time operator - ( long s, const Time& t )
+      {
+          return Time(t.Sec-s);
+      }
 
-    ClockTy LocalSecs() const;
-    static sysTime BuildLocal( const sysDate  &, HourTy );
+      inline void Time::operator++()
+      {
+          Sec += 1;
+      }
 
+      inline void Time::operator--()
+      {
+          Sec -= 1;
+      }
+
+      inline void Time::operator+=(long s)
+      {
+          Sec += s;
+      }
+
+      inline void Time::operator-=(long s)
+      {
+          Sec -= s;
+      }
+
+      SYSCLASS inline Uint16 HashValue( Time  & t )
+      {
+          return t.Hash();
+      }
+   };
 };
-
-#if defined( BI_OLDNAMES )
-#define BI_Time sysTime
-#endif
-
-inline sysTime::sysTime( ClockTy s )
-{
-    Sec = s;
-}
-
-inline bool sysTime::IsValid() const
-{
-    return Sec > 0;
-}
-
-inline ClockTy sysTime::Seconds() const
-{
-    return Sec;
-}
-
-inline bool sysTime::operator <  ( const sysTime& t ) const
-{
-    return Sec < t.Sec;
-}
-
-inline bool sysTime::operator <= ( const sysTime& t ) const
-{
-    return Sec <= t.Sec;
-}
-
-inline bool sysTime::operator >  ( const sysTime& t ) const
-{
-    return Sec > t.Sec;
-}
-
-inline bool sysTime::operator >= ( const sysTime& t ) const
-{
-    return Sec >= t.Sec;
-}
-
-inline bool sysTime::operator == ( const sysTime& t ) const
-{
-    return Sec == t.Sec;
-}
-
-inline bool sysTime::operator != ( const sysTime& t ) const
-{
-    return Sec != t.Sec;
-}
-
-inline bool sysTime::Between( const sysTime& a, const sysTime& b ) const
-{
-    return *this >= a && *this <= b;
-}
-
-SYSCLASS inline sysTime operator + ( const sysTime& t, long s )
-{
-    return sysTime(t.Sec+s);
-}
-
-SYSCLASS inline sysTime operator + ( long s, const sysTime& t )
-{
-    return sysTime(t.Sec+s);
-}
-
-SYSCLASS inline sysTime operator - ( const sysTime& t, long s )
-{
-    return sysTime(t.Sec-s);
-}
-
-SYSCLASS inline sysTime operator - ( long s, const sysTime& t )
-{
-    return sysTime(t.Sec-s);
-}
-
-inline void sysTime::operator++()
-{
-    Sec += 1;
-}
-
-inline void sysTime::operator--()
-{
-    Sec -= 1;
-}
-
-inline void sysTime::operator+=(long s)
-{
-    Sec += s;
-}
-
-inline void sysTime::operator-=(long s)
-{
-    Sec -= s;
-}
-
-SYSCLASS inline Uint16 HashValue( sysTime  & t )
-{
-    return t.Hash();
-}
-
-
-#endif  // INCLUDED_SYSTEM_TIME_H_

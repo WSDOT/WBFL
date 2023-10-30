@@ -55,41 +55,19 @@ void CTestGeomUtil::Test()
    CComPtr<IGeomUtil> util;
    TRY_TEST( util.CoCreateInstance( CLSID_GeomUtil ), S_OK );
 
-   TRY_TEST( util->putref_Point2dFactory(nullptr), E_INVALIDARG );
-   TRY_TEST( util->get_Point2dFactory(nullptr), E_POINTER );
-
-   TRY_TEST( util->putref_Point3dFactory(nullptr), E_INVALIDARG );
-   TRY_TEST( util->get_Point3dFactory(nullptr), E_POINTER );
-
-   TRY_TEST( util->putref_Line2dFactory(nullptr), E_INVALIDARG );
-   TRY_TEST( util->get_Line2dFactory(nullptr), E_POINTER );
-
-   TRY_TEST( util->putref_LineSegment2dFactory(nullptr), E_INVALIDARG );
-   TRY_TEST( util->get_LineSegment2dFactory(nullptr), E_POINTER );
-
    // Test Interface Pointers
    CComPtr<IGeomUtil2d> geom2d;
    TRY_TEST(util->get_Geom2d(nullptr), E_POINTER );
    TRY_TEST(util->get_Geom2d(&geom2d), S_OK );
    TRY_TEST(geom2d != nullptr,true );
 
-   CComPtr<IGeomUtil3d> geom3d;
-   TRY_TEST(util->get_Geom3d(nullptr), E_POINTER );
-   TRY_TEST(util->get_Geom3d(&geom3d), S_OK );
-   TRY_TEST(geom3d != nullptr,true );
-
    CComPtr<IUnknown> punk1;
    CComPtr<IUnknown> punk2;
-   CComPtr<IUnknown> punk3;
    util->QueryInterface(&punk1);
    geom2d->QueryInterface(&punk2);
-   geom3d->QueryInterface(&punk3);
    TRY_TEST( punk1 == punk2, true );
-   TRY_TEST( punk1 == punk3, true );
-   TRY_TEST( punk2 == punk3, true );
 
    Test2d();
-   Test3d();
    TestISupportErrorInfo();
 }
 
@@ -141,56 +119,24 @@ void CTestGeomUtil::Test2d()
    TRY_TEST(IsEqual(angle,0.2614788157),true);
 
    //
-   // AreLinesColinear
-   //
-   CComPtr<IPoint2d> p4;
-   p4.CoCreateInstance( CLSID_Point2d );
-   
-   p1->Move( 5, 5);
-   p2->Move(15,15);
-   p3->Move(25,25);
-   p4->Move(35,35);
-
-   CComPtr<ILine2d> l1;
-   l1.CoCreateInstance( CLSID_Line2d );
-   l1->ThroughPoints(p1,p2);
-
-   CComPtr<ILine2d> l2;
-   l2.CoCreateInstance( CLSID_Line2d );
-   l2->ThroughPoints(p3,p4);
-
-   VARIANT_BOOL bColinear;
-   TRY_TEST( util2d->AreLinesColinear(nullptr,l2,&bColinear), E_INVALIDARG );
-   TRY_TEST( util2d->AreLinesColinear(l1,nullptr,&bColinear), E_INVALIDARG );
-   TRY_TEST( util2d->AreLinesColinear(l1,l2,nullptr), E_POINTER );
-   TRY_TEST( util2d->AreLinesColinear(l1,l2,&bColinear), S_OK );
-   TRY_TEST( bColinear, VARIANT_TRUE );
-
-   l2->ThroughPoints(p4,p3); // Reverse l2
-   TRY_TEST( util2d->AreLinesColinear(l1,l2,&bColinear), S_OK );
-   TRY_TEST( bColinear, VARIANT_TRUE );
-
-   p4->Move(3,4);
-   l2->ThroughPoints(p3,p4);
-   TRY_TEST( util2d->AreLinesColinear(l1,l2,&bColinear), S_OK );
-   TRY_TEST( bColinear, VARIANT_FALSE );
-
-   //
    // AreLineSegmentsParallel
    //
    CComPtr<ILineSegment2d> seg1;
    seg1.CoCreateInstance( CLSID_LineSegment2d );
    p1->Move(-10,-10);
    p2->Move(-20,-20);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
+
+   CComPtr<IPoint2d> p4;
+   p4.CoCreateInstance(CLSID_Point2d);
 
    CComPtr<ILineSegment2d> seg2;
    seg2.CoCreateInstance( CLSID_LineSegment2d );
    p3->Move(  0,-20);
    p4->Move(-20,-40);
-   seg2->putref_StartPoint(p3);
-   seg2->putref_EndPoint(p4);
+   seg2->put_StartPoint(p3);
+   seg2->put_EndPoint(p4);
 
    VARIANT_BOOL bParallel;
    TRY_TEST( util2d->AreLineSegmentsParallel(seg1,nullptr,&bParallel), E_INVALIDARG );
@@ -200,12 +146,19 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( bParallel, VARIANT_TRUE );
 
    p4->Offset(3,5);
+   seg2->put_EndPoint(p4);
    TRY_TEST( util2d->AreLineSegmentsParallel(seg1,seg2,&bParallel), S_OK );
    TRY_TEST( bParallel, VARIANT_FALSE );
 
    //
    // AreLinesParallel
    //
+   CComPtr<ILine2d> l1;
+   l1.CoCreateInstance(CLSID_Line2d);
+
+   CComPtr<ILine2d> l2;
+   l2.CoCreateInstance(CLSID_Line2d);
+
    p1->Move(-10,-10);
    p2->Move(-20,-20);
    l1->ThroughPoints(p1,p2);
@@ -510,8 +463,8 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(0,0);
    p2->Move(10,10);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
    seg2.Release();
    TRY_TEST( util2d->CreateParallelLineSegment(nullptr,10.0,&seg2), E_INVALIDARG );
    TRY_TEST( util2d->CreateParallelLineSegment(seg1,10.0,nullptr),    E_POINTER );
@@ -549,22 +502,6 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( bParallel, VARIANT_TRUE );
 
    //
-   // Distance
-   //
-   p1->Move(-20,30);
-   p2->Move(80,45);
-   Float64 dist;
-   TRY_TEST( util2d->Distance(nullptr,p2,&dist), E_INVALIDARG );
-   TRY_TEST( util2d->Distance(p1,nullptr,&dist), E_INVALIDARG );
-   TRY_TEST( util2d->Distance(p1,p2,nullptr),    E_POINTER );
-   TRY_TEST( util2d->Distance(p1,p2,&dist),    S_OK );
-   TRY_TEST( IsEqual(dist,101.118742), true );
-
-   p2->Move(-20,30);
-   TRY_TEST( util2d->Distance(p1,p2,&dist),    S_OK );
-   TRY_TEST( IsEqual(dist,0.0), true );
-
-   //
    // DivideArc
    //
    p1->Move(10,0);
@@ -579,7 +516,7 @@ void CTestGeomUtil::Test2d()
 
    TRY_TEST( util2d->DivideArc(p1,p2,p3,0,&points),   E_INVALIDARG );
    TRY_TEST( util2d->DivideArc(p1,p2,p3,1,&points),   S_OK );
-   CollectionIndexType count;
+   IndexType count;
    points->get_Count(&count);
    TRY_TEST( count, 2 );
 
@@ -619,110 +556,6 @@ void CTestGeomUtil::Test2d()
    point[4]->get_Y(&y);
    TRY_TEST( IsEqual(x,-10.0), true );
    TRY_TEST( IsEqual(y,  0.0), true );
-
-   //
-   // DivideLineSegment
-   //
-   p1->Move(10,10);
-   p2->Move(30,30);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
-
-   points.Release();
-   TRY_TEST( util2d->DivideLineSegment(nullptr,4,&points), E_INVALIDARG );
-   TRY_TEST( util2d->DivideLineSegment(seg1,-1,&points), E_INVALIDARG );
-   TRY_TEST( util2d->DivideLineSegment(seg1,4,nullptr), E_POINTER );
-   TRY_TEST( util2d->DivideLineSegment(seg1,0,&points), E_INVALIDARG );
-
-   points.Release();
-   TRY_TEST( util2d->DivideLineSegment(seg1,1,&points), S_OK );
-   points->get_Count(&count);
-   TRY_TEST( count, 2 );
-
-   points.Release();
-   TRY_TEST( util2d->DivideLineSegment(seg1,4,&points), S_OK );
-   points->get_Count(&count);
-   TRY_TEST( count, 5 );
-
-   point[0].Release();
-   point[1].Release();
-   point[2].Release();
-   point[3].Release();
-   point[4].Release();
-
-   Enum.Release();
-   points->get__Enum(&Enum);
-   Enum->Next(5, &point[0], &fetched);
-   TRY_TEST( fetched, 5 );
-   point[0]->get_X(&x);
-   point[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,10.0), true );
-   TRY_TEST( IsEqual(y,10.0), true );
-
-   point[1]->get_X(&x);
-   point[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
-
-   point[2]->get_X(&x);
-   point[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,20.0), true );
-   TRY_TEST( IsEqual(y,20.0), true );
-
-   point[3]->get_X(&x);
-   point[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,25.0), true );
-   TRY_TEST( IsEqual(y,25.0), true );
-
-   point[4]->get_X(&x);
-   point[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,30.0), true );
-   TRY_TEST( IsEqual(y,30.0), true );
-
-
-   //
-   // DoesLineContainPoint
-   //
-   p1->Move(-10,-10);
-   p2->Move(-50, 20);
-   l1->ThroughPoints(p1,p2);
-   p3->Move(-30,5);
-   p4->Move(0,0);
-   VARIANT_BOOL bContains;
-   TRY_TEST( util2d->DoesLineContainPoint(nullptr,p3,1.0e-6,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineContainPoint(l1,nullptr,1.0e-6,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,1.0e-6,nullptr),         E_POINTER );
-
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p3,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_TRUE );
-
-   TRY_TEST( util2d->DoesLineContainPoint(l1,p4,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_FALSE );
-
-   //
-   // DoesLineSegmentContainPoint
-   //
-   p1->Move(-10,-10);
-   p2->Move(-50, 20);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
-   p3->Move(-30,5);
-   p4->Move(0,0);
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(nullptr,p3,1.0e-6,&bContains),   E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,nullptr,1.0e-6,&bContains), E_INVALIDARG );
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,1.0e-6,nullptr),         E_POINTER );
-
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p3,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_TRUE );
-
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p4,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_FALSE );
-
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p1,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_TRUE );
-
-   TRY_TEST( util2d->DoesLineSegmentContainPoint(seg1,p2,1.0e-6,&bContains), S_OK );
-   TRY_TEST( bContains, VARIANT_TRUE );
 
    //
    // GenerateCircle
@@ -780,8 +613,8 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,0);
    p4->Move(0,10);
    l1->ThroughPoints(p1,p2);
-   seg1->putref_StartPoint(p3);
-   seg1->putref_EndPoint(p4);
+   seg1->put_StartPoint(p3);
+   seg1->put_EndPoint(p4);
 
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(nullptr,seg1,&intersect1), E_INVALIDARG );
@@ -789,34 +622,42 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,nullptr), E_POINTER );
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
 
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
    TRY_TEST( IsEqual(y,5.0), true );
 
    p4->Move(100,100);
+   seg1->put_EndPoint(p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
+   intersect1->get_X(&x);
+   intersect1->get_Y(&y);
+   TRY_TEST(IsEqual(x, 100.0), true);
+   TRY_TEST(IsEqual(y, 100.0), true);
 
    p3->Move(0,0);
    p4->Move(10,10);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
-   TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_FALSE );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p3->Move(10,15);
    p4->Move(10,15);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
-   TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_FALSE);
+   TRY_TEST( intersect1 == nullptr, true );
 
    p3->Move(5,5);
    p4->Move(5,5);
+   seg1->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->IntersectLineWithLineSegment(l1,seg1,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
@@ -830,8 +671,8 @@ void CTestGeomUtil::Test2d()
    p3->Move(10,0);
    p4->Move(0,10);
    l1->ThroughPoints(p1,p2);
-   seg1->putref_StartPoint(p3);
-   seg1->putref_EndPoint(p4);
+   seg1->put_StartPoint(p3);
+   seg1->put_EndPoint(p4);
 
    TRY_TEST( util2d->IsLineParallelToLineSegment(nullptr,seg1,&bParallel), E_INVALIDARG );
    TRY_TEST( util2d->IsLineParallelToLineSegment(l1,nullptr,&bParallel),   E_INVALIDARG );
@@ -841,6 +682,7 @@ void CTestGeomUtil::Test2d()
 
    p3->Move(0,10);
    p4->Move(10,20);
+   seg1->ThroughPoints(p3, p4);
    TRY_TEST( util2d->IsLineParallelToLineSegment(l1,seg1,&bParallel),   S_OK );
    TRY_TEST( bParallel, VARIANT_TRUE);
 
@@ -959,8 +801,8 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( util2d->LineLineIntersect(l1,nullptr,&intersect1), E_INVALIDARG );
    TRY_TEST( util2d->LineLineIntersect(l1,l2,nullptr),          E_POINTER );
 
-   TRY_TEST( util2d->LineLineIntersect(l1,l2,&intersect1), S_OK );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( util2d->LineLineIntersect(l1,l2,&intersect1), S_FALSE );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(10,10);
@@ -971,21 +813,11 @@ void CTestGeomUtil::Test2d()
    l2->ThroughPoints(p3,p4);
    intersect1.Release();
    TRY_TEST( util2d->LineLineIntersect(l1,l2,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
    TRY_TEST( IsEqual(y,5.0), true );
-
-   //
-   // Magnitude
-   //
-   Float64 mag;
-   p1->Move(10,10);
-   TRY_TEST( util2d->Magnitude(nullptr,&mag), E_INVALIDARG );
-   TRY_TEST( util2d->Magnitude(p1,nullptr), E_POINTER );
-   TRY_TEST( util2d->Magnitude(p1,&mag), S_OK );
-   TRY_TEST( IsEqual(mag,14.1421356), true );
 
    //
    // PointOnLineNearest
@@ -1068,13 +900,13 @@ void CTestGeomUtil::Test2d()
    //
    p1->Move(10,0);
    p2->Move(10,10);
-   seg1->putref_StartPoint(p1);
-   seg1->putref_EndPoint(p2);
+   seg1->put_StartPoint(p1);
+   seg1->put_EndPoint(p2);
 
    p3->Move(20,0);
    p4->Move(20,10);
-   seg2->putref_StartPoint(p3);
-   seg2->putref_EndPoint(p4);
+   seg2->put_StartPoint(p3);
+   seg2->put_EndPoint(p4);
 
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(nullptr,seg2,&intersect1), E_INVALIDARG );
@@ -1082,15 +914,17 @@ void CTestGeomUtil::Test2d()
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,nullptr),        E_POINTER );
 
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
@@ -1098,19 +932,23 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(0,0);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(5,5);
    p2->Move(5,5);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,0);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
@@ -1118,19 +956,23 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(0,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(5,5);
    p4->Move(5,5);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,5.0), true );
@@ -1138,19 +980,23 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(5,5);
    p2->Move(5,5);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,10);
    p4->Move(10,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(10,10);
    p2->Move(10,10);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(10,10);
    p4->Move(10,10);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_OK );
-   TRY_TEST( intersect1 != 0, true );
+   TRY_TEST( intersect1 != nullptr, true );
    intersect1->get_X(&x);
    intersect1->get_Y(&y);
    TRY_TEST( IsEqual(x,10.0), true );
@@ -1158,19 +1004,23 @@ void CTestGeomUtil::Test2d()
 
    p1->Move(0,0);
    p2->Move(4,4);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(10,0);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    p1->Move(0,0);
    p2->Move(4,4);
+   seg1->ThroughPoints(p1, p2);
    p3->Move(0,10);
    p4->Move(5,4);
+   seg2->ThroughPoints(p3, p4);
    intersect1.Release();
    TRY_TEST( util2d->SegSegIntersect(seg1,seg2,&intersect1), S_FALSE );
-   TRY_TEST( intersect1 == 0, true );
+   TRY_TEST( intersect1 == nullptr, true );
 
    //
    // ShortestOffsetToPoint
@@ -1180,6 +1030,7 @@ void CTestGeomUtil::Test2d()
    l1->ThroughPoints(p1,p2);
 
    p3->Move(10,20);
+   Float64 dist;
    TRY_TEST( util2d->ShortestOffsetToPoint(nullptr,p3,&dist), E_INVALIDARG );
    TRY_TEST( util2d->ShortestOffsetToPoint(l1,nullptr,&dist), E_INVALIDARG );
    TRY_TEST( util2d->ShortestOffsetToPoint(l1,p3,nullptr),    E_POINTER );
@@ -1205,46 +1056,11 @@ void CTestGeomUtil::Test2d()
    TRY_TEST(bInTriangle,VARIANT_FALSE);
 }
 
-void CTestGeomUtil::Test3d()
-{
-   CComPtr<IGeomUtil3d> util3d;
-   TRY_TEST( util3d.CoCreateInstance( CLSID_GeomUtil ), S_OK );
-
-   // Distance
-   CComPtr<IPoint3d> p1;
-   p1.CoCreateInstance( CLSID_Point3d );
-   p1->Move(10,10,10);
-
-   CComPtr<IPoint3d> p2;
-   p2.CoCreateInstance( CLSID_Point3d );
-   p2->Move(30,40,50);
-
-   Float64 dist;
-   TRY_TEST( util3d->Distance(nullptr,p2,&dist),E_INVALIDARG);
-   TRY_TEST( util3d->Distance(p1,nullptr,&dist),E_INVALIDARG);
-   TRY_TEST( util3d->Distance(p1,p2,nullptr),E_POINTER);
-   TRY_TEST( util3d->Distance(p1,p2,&dist), S_OK );
-   TRY_TEST( IsEqual(dist,53.851648), true );
-
-   p2->Move(10,10,10);
-   TRY_TEST( util3d->Distance(p1,p2,&dist), S_OK );
-   TRY_TEST( IsEqual(dist,0.0), true );
-
-   // Magnitude
-   Float64 mag;
-   p1->Move(10,10,10);
-   TRY_TEST( util3d->Magnitude(nullptr,&mag), E_INVALIDARG );
-   TRY_TEST( util3d->Magnitude(p1,nullptr), E_POINTER );
-   TRY_TEST( util3d->Magnitude(p1,&mag), S_OK );
-   TRY_TEST( IsEqual(mag,17.320508), true );
-}
-
 void CTestGeomUtil::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_GeomUtil ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IGeomUtil ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IGeomUtil2d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IGeomUtil3d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }

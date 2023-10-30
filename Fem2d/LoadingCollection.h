@@ -35,7 +35,7 @@
 #include "CircularChild.h"
 #include "Loading.h"
 
-typedef CModelCollection<IFem2dLoadingCollection, IFem2dLoading, CLoading, IFem2dEnumLoading, &IID_IFem2dEnumLoading,LoadCaseIDType> LoadingCollImpl;
+using LoadingCollImpl = CModelCollection<IFem2dLoadingCollection, IFem2dLoading, CLoading, IFem2dEnumLoading, &IID_IFem2dEnumLoading,LoadCaseIDType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoadingCollection
@@ -71,7 +71,7 @@ END_COM_MAP()
 // IFem2dLoadingCollection
 public:
 	STDMETHOD(Create)(/*[in]*/LoadCaseIDType ID,/*[out,retval]*/IFem2dLoading* *ppLoading) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType IDorIndex, /*[in]*/Fem2dAccessType AccessMethod,/*[out,retval]*/LoadCaseIDType* pid) override;
 	STDMETHOD(RemoveIDLessThan)(/*[in]*/LoadCaseIDType id) override;
 	STDMETHOD(Clear)() override;
 };

@@ -58,7 +58,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Clear()
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationSectionResults::Reserve(CollectionIndexType size)
+STDMETHODIMP CLoadCombinationSectionResults::Reserve(IndexType size)
 {
    if (size<0)
       return E_INVALIDARG;
@@ -68,7 +68,7 @@ STDMETHODIMP CLoadCombinationSectionResults::Reserve(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationSectionResults::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLoadCombinationSectionResults::get_Count(IndexType *pVal)
 {
 	CHECK_RETVAL(pVal);
 
@@ -85,10 +85,10 @@ STDMETHODIMP CLoadCombinationSectionResults::Add(Float64 leftResult, ILoadCombin
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationSectionResults::SetResult(CollectionIndexType index, Float64 leftResult, ILoadCombinationResultConfiguration *leftConfig, Float64 rightResult, ILoadCombinationResultConfiguration *rightConfig)
+STDMETHODIMP CLoadCombinationSectionResults::SetResult(IndexType index, Float64 leftResult, ILoadCombinationResultConfiguration *leftConfig, Float64 rightResult, ILoadCombinationResultConfiguration *rightConfig)
 {
 
-   if (index < 0 || (CollectionIndexType)m_ComboResults.size() <= index)
+   if (index < 0 || (IndexType)m_ComboResults.size() <= index)
       return E_INVALIDARG;
 
    ComboRes& rres = m_ComboResults[index];
@@ -101,11 +101,11 @@ STDMETHODIMP CLoadCombinationSectionResults::SetResult(CollectionIndexType index
 	return S_OK;
 }
 
-STDMETHODIMP CLoadCombinationSectionResults::GetResult(CollectionIndexType index, Float64* leftResult, ILoadCombinationResultConfiguration **leftConfig, Float64* rightResult, ILoadCombinationResultConfiguration **rightConfig)
+STDMETHODIMP CLoadCombinationSectionResults::GetResult(IndexType index, Float64* leftResult, ILoadCombinationResultConfiguration **leftConfig, Float64* rightResult, ILoadCombinationResultConfiguration **rightConfig)
 {
    HRESULT hr;
 
-   if (index < 0 || (CollectionIndexType)m_ComboResults.size() <= index)
+   if (index < 0 || (IndexType)m_ComboResults.size() <= index)
       return E_INVALIDARG;
 
 	CHECK_RETVAL(leftResult);
@@ -134,7 +134,7 @@ STDMETHODIMP CLoadCombinationSectionResults::GetResult(CollectionIndexType index
 }
 
 
-HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size, bool createConfig, ResultsSummationType summ)
+HRESULT CLoadCombinationSectionResults::AllocateResults(IndexType size, bool createConfig, ResultsSummationType summ)
 {
    HRESULT hr;
 
@@ -148,7 +148,7 @@ HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size
 
    m_ComboResults.reserve(size);
 
-   for (CollectionIndexType i = 0; i<size; i++)
+   for (IndexType i = 0; i<size; i++)
    {
       CComPtr<ILoadCombinationResultConfiguration> left_config;
       CComPtr<ILoadCombinationResultConfiguration> right_config;
@@ -187,9 +187,9 @@ HRESULT CLoadCombinationSectionResults::AllocateResults(CollectionIndexType size
 }
 
 
-HRESULT CLoadCombinationSectionResults::SumResultNoConfig(CollectionIndexType index, Float64 leftResult, Float64 rightResult)
+HRESULT CLoadCombinationSectionResults::SumResultNoConfig(IndexType index, Float64 leftResult, Float64 rightResult)
 {
-   ATLASSERT(0 <= index && index < (CollectionIndexType)m_ComboResults.size());
+   ATLASSERT(0 <= index && index < (IndexType)m_ComboResults.size());
 
    ComboRes& rres = m_ComboResults[index];
 
@@ -199,12 +199,12 @@ HRESULT CLoadCombinationSectionResults::SumResultNoConfig(CollectionIndexType in
    return S_OK;
 }
 
-HRESULT CLoadCombinationSectionResults::SumResult(CollectionIndexType index, BSTR loadCase, Float64 leftResult, Float64 leftFactor, Float64 rightResult, Float64 rightFactor)
+HRESULT CLoadCombinationSectionResults::SumResult(IndexType index, BSTR loadCase, Float64 leftResult, Float64 leftFactor, Float64 rightResult, Float64 rightFactor)
 {
    CHECK_IN(loadCase);
 
    HRESULT hr;
-   ATLASSERT(0 <= index && index < (CollectionIndexType)m_ComboResults.size());
+   ATLASSERT(0 <= index && index < (IndexType)m_ComboResults.size());
 
    ComboRes& rres = m_ComboResults[index];
 
@@ -231,12 +231,12 @@ HRESULT CLoadCombinationSectionResults::SumResult(CollectionIndexType index, BST
    return S_OK;
 }
 
-HRESULT CLoadCombinationSectionResults::SumLLResult(CollectionIndexType index, Float64 leftResult, ILiveLoadConfiguration* leftConfig, Float64 rightResult, 
+HRESULT CLoadCombinationSectionResults::SumLLResult(IndexType index, Float64 leftResult, ILiveLoadConfiguration* leftConfig, Float64 rightResult, 
                                              ILiveLoadConfiguration* rightConfig, Float64 Factor)
 {
 
    HRESULT hr;
-   ATLASSERT(0 <= index && index < (CollectionIndexType)m_ComboResults.size());
+   ATLASSERT(0 <= index && index < (IndexType)m_ComboResults.size());
 
    ComboRes& rres = m_ComboResults[index];
 
@@ -396,13 +396,13 @@ STDMETHODIMP CLoadCombinationSectionResults::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_ComboResults.size();
+      IndexType cnt = m_ComboResults.size();
 
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType ic = 0; ic<cnt; ic++)
+      for (IndexType ic = 0; ic<cnt; ic++)
       {
          const ComboRes& llres = m_ComboResults[ic];
 

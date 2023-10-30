@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_GEOMMODEL_H_
-#define INCLUDED_GEOMMODEL_GEOMMODEL_H_
 #pragma once
 
 // This is a master include file for the Geometric Modeling Package
@@ -32,27 +30,46 @@
 #endif
 
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\Circle.h>
-#include <GeomModel\CircularSegment.h>
-#include <GeomModel\CompositeShape.h>
-#include <GeomModel\ElasticProperties.h>
-#include <GeomModel\IShape.h>
-#include <GeomModel\IPrecastBeam.h>
-#include <GeomModel\UBeam.h>
-#include <GeomModel\NUBeam.h>
-#include <GeomModel\MassProperties.h>
-#include <GeomModel\Polygon.h>
-#include <GeomModel\PrecastBeam.h>
-#include <GeomModel\TrafficBarrier.h>
-#include <GeomModel\Properties.h>
-#include <GeomModel\Rectangle.h>
-#include <GeomModel\Section.h>
-#include <GeomModel\SectionListener.h>
-#include <GeomModel\ShapeImp.h>
-#include <GeomModel\ShapeListener.h>
-#include <GeomModel\ShapeUtils.h>
-#include <GeomModel\Triangle.h>
-#include <GeomModel\WsdotPrecastBeams.h>
-
-#endif // INCLUDED_GEOMMODEL_GEOMMODEL_H_
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Arc.h>
+#include <GeomModel/GeomOp2d.h>
+#include <GeomModel/Primitives.h>
+#include <GeomModel/Primitives3d.h>
+#include <GeomModel/Line2d.h>
+#include <GeomModel/LineSegment2d.h>
+#include <GeomModel/LineSegment3d.h>
+#include <GeomModel/Vector2d.h>
+#include <GeomModel/Circle2d.h>
+#include <GeomModel/Circle.h>
+#include <GeomModel/CircularSegment.h>
+#include <GeomModel/CompositeShape.h>
+#include <GeomModel/CompositeBeam.h>
+#include <GeomModel/ElasticProperties.h>
+#include <GeomModel/Shape.h>
+#include <GeomModel/FlangedBeam.h>
+#include <GeomModel/UBeam.h>
+#include <GeomModel/UBeam2.h>
+#include <GeomModel/NUBeam.h>
+#include <GeomModel/MassProperties.h>
+#include <GeomModel/Polygon.h>
+#include <GeomModel/PrecastBeam.h>
+#include <GeomModel/TrafficBarrier.h>
+#include <GeomModel/ShapeProperties.h>
+#include <GeomModel/Rectangle.h>
+#include <GeomModel/Section.h>
+#include <GeomModel/ShapeImpl.h>
+#include <GeomModel/Triangle.h>
+#include <GeomModel/CoordinateXform2d.h>
+#include <GeomModel/CoordinateXform3d.h>
+#include <GeomModel/BulbTee.h>
+#include <GeomModel/PlateGirder.h>
+#include <GeomModel/MultiWeb.h>
+#include <GeomModel/MultiWeb2.h>
+#include <GeomModel/NUDeckedIBeam.h>
+#include <GeomModel/PCIDeckedIBeam.h>
+#include <GeomModel/VoidedSlab.h>
+#include <GeomModel/VoidedSlab2.h>
+#include <GeomModel/BoxBeam.h>
+#include <GeomModel/DeckedSlabBeam.h>
+#include <GeomModel/GenericShape.h>
+#include <GeomModel/GeomOp2d.h>

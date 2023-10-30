@@ -37,13 +37,13 @@ class REPORTERCLASS rptRcVisitor;
 class REPORTERCLASS rptRcComposite : public rptReportContent
 {
 public:
-   typedef std::vector<std::shared_ptr<rptReportContent> > ContentVec;
-   typedef ContentVec::iterator ContentIterator;
-   typedef ContentVec::const_iterator ConstContentIterator;
+   using ContentVec = std::vector<std::shared_ptr<rptReportContent>>;
+   using ContentIterator = ContentVec::iterator;
+   using ConstContentIterator = ContentVec::const_iterator;
 
    rptRcComposite();
 
-   /// constructor that takes count rptReportContent* arguements
+   /// constructor that takes count rptReportContent* arguments
    ///
    /// Example 
    ///
@@ -67,6 +67,8 @@ public:
 
    // Appends report content. Takes ownership of the content and will delete it when it is no longer used.
    virtual void AddContent(rptReportContent* PContent);
+
+   virtual void AddContent(std::shared_ptr<rptReportContent>& pContent);
 
    /// Returns true if the composite is empty
    bool Empty();

@@ -70,9 +70,9 @@ public:
 
 // IInteractionCapacityCurveSolution
 public:
-	STDMETHOD(get_MomentCapacitySolution)(/*[in]*/CollectionIndexType index,/*[out,retval]*/IMomentCapacitySolution** solution) override;
+	STDMETHOD(get_MomentCapacitySolution)(/*[in]*/IndexType index,/*[out,retval]*/IMomentCapacitySolution** solution) override;
 	STDMETHOD(AddSolutionPoint)(/*[in]*/IMomentCapacitySolution* solution) override;
-	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/CollectionIndexType* nPoints) override;
+	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/IndexType* nPoints) override;
 };
 
 #endif //__InteractionCapacityCurveSolution_H_

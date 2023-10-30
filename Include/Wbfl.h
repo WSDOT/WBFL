@@ -45,16 +45,15 @@
 #endif // USE_WBFL_DEPRECIATED
 
 #include <EngTools\EngTools.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
-#include <GeomModel\GeomModel.h>
-#include <GraphicsLib\GraphicsLib.h>
+#include <GeomModel/GeomModel.h>
+#include <CoordGeom\CoordGeom.h>
+#include <Graphing\Graphing.h>
 #include <LibraryFw\LibraryFw.h>
 #include <LRFD\LRFD.h>
-#include <Material\Material.h>
+#include <Materials/Materials.h>
 #include <Math\Math.h>
-#include <ReinforcedConcrete\ReinforcedConcrete.h>
+#include <RCSection\RCSection.h>
 #include <Reporter\Reporter.h>
-#include <UnitMgt\UnitMgt.h>
 #include <Units\Units.h>
 
 #endif // INCLUDED_WBFL_H_

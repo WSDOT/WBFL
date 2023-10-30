@@ -85,21 +85,21 @@ public:
 // IGeneralSection
 public:
    STDMETHOD(AddShape)(/*[in]*/BSTR bstrName,/*[in]*/IShape* pShape,/*[in]*/IStressStrain* pfgMaterial,/*[in]*/IStressStrain* pbgMaterial,/*[in]*/IPlane3d* initialStrain,/*[in]*/Float64 Le,/*[in]*/VARIANT_BOOL vbPrimaryShape) override;
-   STDMETHOD(get_ShapeCount)(/*[out,retval]*/CollectionIndexType* nShapes) override;
-   STDMETHOD(put_PrimaryShape)(/*[in]*/IndexType shapeIdx) override;
-   STDMETHOD(get_PrimaryShape)(/*[out, retval]*/IndexType* pShapeIdx) override;
-   STDMETHOD(put_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/BSTR bstrName) override;
-   STDMETHOD(get_Name)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/BSTR* pbstrName) override;
-   STDMETHOD(get_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IShape** pShape) override;
-   STDMETHOD(putref_Shape)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IShape* pShape) override;
-   STDMETHOD(get_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
-   STDMETHOD(putref_ForegroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
-   STDMETHOD(get_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
-   STDMETHOD(putref_BackgroundMaterial)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
-   STDMETHOD(get_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[out,retval]*/IPlane3d** pStrainPlane) override;
-   STDMETHOD(putref_InitialStrain)(/*[in]*/CollectionIndexType shapeIdx,/*[in]*/IPlane3d* strandPlane) override;
-   STDMETHOD(get_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[out, retval]*/Float64* Le);
-   STDMETHOD(put_ElongationLength)(/*[in]*/CollectionIndexType shapeIdx, /*[in]*/Float64 Le);
+   STDMETHOD(get_ShapeCount)(/*[out,retval]*/IndexType* nShapes) override;
+   STDMETHOD(put_PrimaryShapeIndex)(/*[in]*/IndexType shapeIdx) override;
+   STDMETHOD(get_PrimaryShapeIndex)(/*[out, retval]*/IndexType* pShapeIdx) override;
+   STDMETHOD(put_Name)(/*[in]*/IndexType shapeIdx, /*[in]*/BSTR bstrName) override;
+   STDMETHOD(get_Name)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/BSTR* pbstrName) override;
+   STDMETHOD(get_Shape)(/*[in]*/IndexType shapeIdx,/*[out,retval]*/IShape** pShape) override;
+   STDMETHOD(putref_Shape)(/*[in]*/IndexType shapeIdx,/*[in]*/IShape* pShape) override;
+   STDMETHOD(get_ForegroundMaterial)(/*[in]*/IndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
+   STDMETHOD(putref_ForegroundMaterial)(/*[in]*/IndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
+   STDMETHOD(get_BackgroundMaterial)(/*[in]*/IndexType shapeIdx,/*[out,retval]*/IStressStrain** pMaterial) override;
+   STDMETHOD(putref_BackgroundMaterial)(/*[in]*/IndexType shapeIdx,/*[in]*/IStressStrain* pMaterial) override;
+   STDMETHOD(get_InitialStrain)(/*[in]*/IndexType shapeIdx,/*[out,retval]*/IPlane3d** pStrainPlane) override;
+   STDMETHOD(putref_InitialStrain)(/*[in]*/IndexType shapeIdx,/*[in]*/IPlane3d* strandPlane) override;
+   STDMETHOD(get_ElongationLength)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/Float64* Le);
+   STDMETHOD(put_ElongationLength)(/*[in]*/IndexType shapeIdx, /*[in]*/Float64 Le);
 
 // IStructuredStorage2
 public:

@@ -58,18 +58,15 @@ void CTestMeasure::Test()
    CComQIPtr<ICogoModel> model(measure);
    TRY_TEST( model != nullptr, true );
 
-   CComPtr<IPointCollection> points;
-   model->get_Points(&points);
-
-   points->Add(1,10.0,10.0,nullptr);
-   points->Add(2,40.0,20.0,nullptr);
-   points->Add(3,40.0, 0.0,nullptr);
+   model->StorePoint(1,10.0,10.0);
+   model->StorePoint(2,40.0,20.0);
+   model->StorePoint(3,40.0, 0.0);
 
    // Test Distance
    Float64 dist;
    TRY_TEST(measure->Distance(1,2,nullptr),E_POINTER);
-   TRY_TEST(measure->Distance(-1,2,&dist),COGO_E_POINTNOTFOUND);
-   TRY_TEST(measure->Distance(1,-2,&dist),COGO_E_POINTNOTFOUND);
+   TRY_TEST(measure->Distance(-1,2,&dist),E_FAIL);
+   TRY_TEST(measure->Distance(1,-2,&dist), E_FAIL);
    TRY_TEST(measure->Distance(1,2,&dist),S_OK);
    TRY_TEST(IsEqual(dist,31.62277660),true);
 
@@ -78,21 +75,21 @@ void CTestMeasure::Test()
 
    // Test Angle
    // Angle is implemented by WBFLGeometry...
-   // All we need here is a simple intergration test
-   points->Clear();
-   points->Add(1,10.0, 0.0,nullptr);
-   points->Add(2, 0.0, 0.0,nullptr);
-   points->Add(3, 0.0,10.0,nullptr);
+   // All we need here is a simple integration test
+   model->ClearPoints();
+   model->StorePoint(1,10.0, 0.0);
+   model->StorePoint(2, 0.0, 0.0);
+   model->StorePoint(3, 0.0,10.0);
 
    CComPtr<IAngle> angle;
    Float64 val;
    TRY_TEST(measure->Angle(2,1,3,nullptr),E_POINTER);
-   TRY_TEST(measure->Angle(-2,1,3,&angle),COGO_E_POINTNOTFOUND);
-   TRY_TEST(measure->Angle(2,-1,3,&angle),COGO_E_POINTNOTFOUND);
-   TRY_TEST(measure->Angle(2,1,-3,&angle),COGO_E_POINTNOTFOUND);
-   TRY_TEST(measure->Angle(2,1,1,&angle),COGO_E_ANGLE);
-   TRY_TEST(measure->Angle(2,2,3,&angle),COGO_E_ANGLE);
-   TRY_TEST(measure->Angle(1,1,3,&angle),COGO_E_ANGLE);
+   TRY_TEST(measure->Angle(-2,1,3,&angle), E_INVALIDARG);
+   TRY_TEST(measure->Angle(2,-1,3,&angle), E_INVALIDARG);
+   TRY_TEST(measure->Angle(2,1,-3,&angle), E_INVALIDARG);
+   TRY_TEST(measure->Angle(2,1,1,&angle), E_INVALIDARG);
+   TRY_TEST(measure->Angle(2,2,3,&angle), E_INVALIDARG);
+   TRY_TEST(measure->Angle(1,1,3,&angle), E_INVALIDARG);
 
    TRY_TEST(measure->Angle(1,2,3,&angle),S_OK);
    angle->get_Value(&val);
@@ -106,13 +103,13 @@ void CTestMeasure::Test()
    //
    // Test Direction
    //
-   points->Clear();
-   points->Add(1,10.0,10.0,nullptr);
-   points->Add(2,20.0,20.0,nullptr);
+   model->ClearPoints();
+   model->StorePoint(1,10.0,10.0);
+   model->StorePoint(2,20.0,20.0);
    CComPtr<IDirection> dir;
    TRY_TEST(measure->Direction( 1,2,nullptr),E_POINTER);
-   TRY_TEST(measure->Direction(-1,2,&dir),COGO_E_POINTNOTFOUND);
-   TRY_TEST(measure->Direction(1,-2,&dir),COGO_E_POINTNOTFOUND);
+   TRY_TEST(measure->Direction(-1,2,&dir), E_FAIL);
+   TRY_TEST(measure->Direction(1,-2,&dir), E_FAIL);
    TRY_TEST(measure->Direction( 1,2,&dir),S_OK);
    NSDirectionType ns;
    EWDirectionType ew;
@@ -157,18 +154,18 @@ void CTestMeasure::Test()
    TRY_TEST(ew,ewEast);
 
    // Test Area
-   points->Clear();
-   points->Add(1,0,0,nullptr);
-   points->Add(2,10,0,nullptr);
-   points->Add(3,10,10,nullptr);
-   points->Add(4,0,10,nullptr);
+   model->ClearPoints();
+   model->StorePoint(1,0,0);
+   model->StorePoint(2,10,0);
+   model->StorePoint(3,10,10);
+   model->StorePoint(4,0,10);
 
    SAFEARRAY* keys;
    SAFEARRAYBOUND bounds = { 4, 10 };
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
 
@@ -185,7 +182,7 @@ void CTestMeasure::Test()
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       if ( (i-bounds.lLbound) == 2 )
          key = 400;
 
@@ -193,7 +190,7 @@ void CTestMeasure::Test()
    }
    varKeys.vt = VT_ARRAY | VT_I4;
    varKeys.parray = keys;
-   TRY_TEST(measure->Area(varKeys,&area),COGO_E_POINTNOTFOUND);
+   TRY_TEST(measure->Area(varKeys,&area), E_FAIL);
    SafeArrayDestroy(keys);
 
    // Try an array with less than 3 elements
@@ -201,12 +198,12 @@ void CTestMeasure::Test()
    keys = SafeArrayCreate(VT_I4,1,&bounds);
    for ( LONG i = bounds.lLbound; i < (LONG)(bounds.lLbound+bounds.cElements); i++ )
    {
-      CogoObjectID key = CogoObjectID(i - bounds.lLbound + 1);
+      IDType key = IDType(i - bounds.lLbound + 1);
       SafeArrayPutElement(keys,&i,&key);
    }
    varKeys.vt = VT_ARRAY | VT_I4;
    varKeys.parray = keys;
-   TRY_TEST(measure->Area(varKeys,&area),COGO_E_THREEPNTSREQD);
+   TRY_TEST(measure->Area(varKeys,&area),E_INVALIDARG);
 //   SafeArrayDestroy(keys); // This is causing the test code to crash. I don't know why.
                              // Since this is a test driver, who cares if it leaks a little
                              // memory. Time to move on. RAB: 11/14/2001

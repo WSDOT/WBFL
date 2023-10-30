@@ -22,12 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysTime
-****************************************************************************/
-
 #include <System\Time.h>
 #include <sstream>
 #include <string>
@@ -35,11 +29,7 @@ CLASS
 #include <iomanip>
 #include <time.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::System;
 
 enum TimeZone { CarolineIslands=-11,    MarianaIslands,         Japan, 
                 China,                  minusSeven,             minusSix, 
@@ -54,20 +44,20 @@ static const Uint32 SECONDS_IN_DAY  = 86400L;
 static const Uint32 SECONDS_IN_HOUR = 3600L;
 static const Uint16 SECONDS_IN_MIN  = 60;
 
-struct sysIniTime
+struct IniTime
 {
-    sysIniTime()
+    IniTime()
         { _tzset(); }
 };
 
-static sysIniTime cludgeTime;      // To force the call to tzset()
+static IniTime cludgeTime; // To force the call to tzset()
 
 
-const sysDate sysTime::RefDate( (DayTy)0, (YearTy)0 );
-const sysDate sysTime::MaxDate( (DayTy)49709L, (YearTy)0 ); // ((2**32)-1)/SECONDS_IN_DAY -1
+const Date Time::RefDate( (DayTy)0, (YearTy)0 );
+const Date Time::MaxDate( (DayTy)49709L, (YearTy)0 ); // ((2**32)-1)/SECONDS_IN_DAY -1
 static const Int16 SUNDAY = 7;
 
-bool sysTime::AssertDate( const sysDate  & date )
+bool Time::AssertDate( const Date  & date )
 {
     return date.Between(RefDate,MaxDate);
 }   
@@ -78,11 +68,11 @@ bool sysTime::AssertDate( const sysDate  & date )
 //
 // Adjust for local time zone and Daylight Savings Time.
 //
-ClockTy sysTime::LocalSecs() const
+ClockTy Time::LocalSecs() const
 {
 	long s;
 	_get_timezone(&s);
-    sysTime local_time( Sec - s );
+    Time local_time( Sec - s );
     if (local_time.IsDST())
         local_time.Sec += SECONDS_IN_HOUR;
     return local_time.Sec;
@@ -91,11 +81,11 @@ ClockTy sysTime::LocalSecs() const
 //
 // Builds the time from a local time, adjusting to GMT.  Does *not* adjust for DST.
 //
-sysTime sysTime::BuildLocal( const sysDate  & date, HourTy h )
+Time Time::BuildLocal( const Date  & date, HourTy h )
 {
 	long s;
 	_get_timezone(&s);
-    return sysTime( SECONDS_IN_DAY * (date-RefDate) + 
+    return Time( SECONDS_IN_DAY * (date-RefDate) + 
                   SECONDS_IN_HOUR * h + 
                   s );
 }
@@ -108,21 +98,21 @@ sysTime sysTime::BuildLocal( const sysDate  & date, HourTy h )
 // Note that the time returned is the time at which DST starts locally,
 // but it is returned in GMT.
 //
-sysTime sysTime::BeginDST( Uint16 year )
+Time Time::BeginDST( Uint16 year )
 {
     if( year > 1986 ) 
         {
-        sysDate endMarch(31, 3, year);
+        Date endMarch(31, 3, year);
         return BuildLocal( endMarch.Previous(SUNDAY)+7, 2 );
         }
 
     // Ah, remember those energy conscious years...???
     if( year==1974 )
-        return BuildLocal( sysDate(6,1,1974), 2 );
+        return BuildLocal( Date(6,1,1974), 2 );
     if( year==1975 )
-        return BuildLocal( sysDate(23,2,1975), 2 );
+        return BuildLocal( Date(23,2,1975), 2 );
 
-    sysDate endApril( 30, 4, year );
+    Date endApril( 30, 4, year );
     return BuildLocal( endApril.Previous(SUNDAY), 2 );
 }
 
@@ -132,9 +122,9 @@ sysTime sysTime::BeginDST( Uint16 year )
 // Note that the time returned is the time at which DST ends locally,
 // but it is returned in GMT.
 //
-sysTime sysTime::EndDST( Uint16 year )
+Time Time::EndDST( Uint16 year )
 {
-    sysDate endOctober( 31, 10, year );
+    Date endOctober( 31, 10, year );
     return BuildLocal( endOctober.Previous(SUNDAY), 1 );
 }
 
@@ -143,9 +133,9 @@ sysTime sysTime::EndDST( Uint16 year )
 //                            constructors
 
 //
-// Construct sysTime with current time (seconds since Jan 1, 1901).
+// Construct Time with current time (seconds since Jan 1, 1901).
 //
-sysTime::sysTime()
+Time::Time()
 {
   time_t ltime;
   time(&ltime);
@@ -154,11 +144,11 @@ sysTime::sysTime()
 
   // Construct the date.  The time struct returns int, so casts are used.
   //
-  sysDate today( (DayTy)t.tm_mday,
+  Date today( (DayTy)t.tm_mday,
                (MonthTy)(t.tm_mon + 1),
                (YearTy)t.tm_year+1900 );
 
-  *this = sysTime( today, 
+  *this = Time( today, 
                  (HourTy)t.tm_hour, 
                  (MinuteTy)t.tm_min, 
                  (SecondTy)t.tm_sec );
@@ -167,9 +157,9 @@ sysTime::sysTime()
 //
 // Specified time and today's date:
 //
-sysTime::sysTime( HourTy h, MinuteTy m, SecondTy s )
+Time::Time( HourTy h, MinuteTy m, SecondTy s )
 {
-    Sec = sysTime( sysDate(),h,m,s ).Sec;
+    Sec = Time( Date(),h,m,s ).Sec;
 }
 
 //
@@ -182,7 +172,7 @@ sysTime::sysTime( HourTy h, MinuteTy m, SecondTy s )
 // Checking for these situations necessitates a lot of jumping back 
 // and forth by an hour to check for the boundary.
 //
-sysTime::sysTime( const sysDate  & date, HourTy h, MinuteTy m, SecondTy s )
+Time::Time( const Date  & date, HourTy h, MinuteTy m, SecondTy s )
 {
     if( date.IsValid() )
         {
@@ -214,12 +204,12 @@ sysTime::sysTime( const sysDate  & date, HourTy h, MinuteTy m, SecondTy s )
 }
 
 //----------------------------------------------------------------------------
-//                  conversion from sysTime to sysDate
+//                  conversion from Time to Date
 
 //
 // Type conversion to date.
 //
-sysDate::sysDate( const sysTime  & t )
+Date::Date( const Time  & t )
 {
     Julnum = t.IsValid() ? jul1901 + (JulTy)(t.LocalSecs()/SECONDS_IN_DAY) : 0;
 }
@@ -227,16 +217,15 @@ sysDate::sysDate( const sysTime  & t )
 //----------------------------------------------------------------------------
 //                     public member functions
 
-Int16 sysTime::CompareTo( const sysTime  &t ) const
+Int16 Time::CompareTo( const Time  &t ) const
 {
-    ClockTy diff = Sec - t.Sec;
-    return diff==0 ? 0 : diff>0 ? 1 : -1;
+    return Sec == t.Sec ? 0 : Sec>t.Sec ? 1 : -1;
 }
 
 //
 // Hash function:
 //
-Uint16 sysTime::Hash() const
+Uint16 Time::Hash() const
 {
     return (Uint16)Sec;
 }
@@ -244,7 +233,7 @@ Uint16 sysTime::Hash() const
 //
 // The hour in local time:
 //
-HourTy sysTime::Hour() const
+HourTy Time::Hour() const
 {
     return HourTy((LocalSecs() % SECONDS_IN_DAY) / SECONDS_IN_HOUR);
 }
@@ -252,7 +241,7 @@ HourTy sysTime::Hour() const
 //
 // The hour in GMT:
 //
-HourTy sysTime::HourGMT() const 
+HourTy Time::HourGMT() const 
 {
     return HourTy((Sec % SECONDS_IN_DAY) / SECONDS_IN_HOUR);
 } 
@@ -260,7 +249,7 @@ HourTy sysTime::HourGMT() const
 //
 // Return TRUE if DST is active for this time:
 //
-bool sysTime::IsDST() const
+bool Time::IsDST() const
 {
    int hours;
    _get_daylight(&hours);
@@ -268,14 +257,14 @@ bool sysTime::IsDST() const
       return false;
 
   DayTy daycount = (Uint16)(Sec/SECONDS_IN_DAY);
-  YearTy year = sysDate( (DayTy)daycount, (YearTy)0 ).Year();
+  YearTy year = Date( (DayTy)daycount, (YearTy)0 ).Year();
 
   // Check to see if the time falls between the starting & stopping DST times.
   //
   return *this >= BeginDST( year ) && *this < EndDST( year );
 }
 
-sysTime sysTime::Max( const sysTime  & t ) const 
+Time Time::Max( const Time  & t ) const 
 {
     if( *this > t ) 
         return *this;
@@ -283,7 +272,7 @@ sysTime sysTime::Max( const sysTime  & t ) const
         return t;
 }
 
-sysTime sysTime::Min( const sysTime  & t ) const 
+Time Time::Min( const Time  & t ) const 
 {
     if( *this < t ) 
         return *this;
@@ -294,7 +283,7 @@ sysTime sysTime::Min( const sysTime  & t ) const
 //
 // minute, in local time
 //
-MinuteTy sysTime::Minute() const
+MinuteTy Time::Minute() const
 {
     return MinuteTy(((LocalSecs()%SECONDS_IN_DAY)%SECONDS_IN_HOUR)/SECONDS_IN_MIN);
 }
@@ -302,7 +291,7 @@ MinuteTy sysTime::Minute() const
 //
 // minute, in GMT
 //
-MinuteTy sysTime::MinuteGMT() const 
+MinuteTy Time::MinuteGMT() const 
 {
     return MinuteTy(((Sec%SECONDS_IN_DAY)%SECONDS_IN_HOUR)/SECONDS_IN_MIN);
 } 
@@ -310,7 +299,7 @@ MinuteTy sysTime::MinuteGMT() const
 //
 // second, in local time or GMT 
 //
-SecondTy sysTime::Second() const 
+SecondTy Time::Second() const 
 {
     return SecondTy(((Sec%SECONDS_IN_DAY)%SECONDS_IN_HOUR)%SECONDS_IN_MIN);
 }
@@ -318,59 +307,48 @@ SecondTy sysTime::Second() const
 //
 // Static variable intialization:
 //
-bool sysTime::PrintDateFlag = true;
+bool Time::PrintDateFlag = true;
 
-std::_tstring sysTime::AsString() const
+std::_tstring Time::AsString() const
 {
     std::_tostringstream strtemp;
     strtemp << (*this);
     return strtemp.str();
 }
 
-SYSCLASS std::_tostream  &  operator << ( std::_tostream  & s, const sysTime  & t )
+bool Time::PrintDate( bool f )
 {
-
-    // We use an ostrstream to format into buf so that
-    // we don't affect the std::ostream's width setting.
-    //
-    std::_tostringstream out;
-  
-    // First print the date if requested:
-    //
-    if(sysTime::PrintDateFlag) 
-        out << sysDate(t) << _T(" ");
-
-    Uint16 hh = t.Hour();
-    out << (hh <= 12 ? hh : hh-12) << _T(':') 
-        << std::setfill(_T('0')) << std::setw(2) << t.Minute() << _T(':')
-        << std::setw(2) << t.Second() << _T(' ') << std::setfill(_T(' '));
-    out << ( hh<12 ? _T("am") : _T("pm")) ;//<< std::ends;
-
-    // now we write out the formatted buffer, and the std::ostream's
-    // width setting will control the actual width of the field.
-    //
-    s << out.str();
-    return s;
+   std::swap(PrintDateFlag, f);
+   return f;
 }
 
-bool sysTime::PrintDate( bool f )
+bool Time::PrintDate()
 {
-    bool temp = PrintDateFlag;
-    PrintDateFlag = f;
-    return temp;
+   return PrintDateFlag;
 }
 
-#if defined _UNITTEST
-#include <iostream>
-bool sysTime::TestMe(dbgLog& rlog)
+SYSCLASS std::_tostream& WBFL::System::operator<<(std::_tostream& s, const Time& t)
 {
-   TESTME_PROLOGUE("sysTime");
 
-   sysTime now;
-   rlog << _T("The current time is ")<< now.AsString() << endl;
+   // We use an ostrstream to format into buf so that
+   // we don't affect the std::ostream's width setting.
+   //
+   std::_tostringstream out;
 
-   TESTME_EPILOG("sysTime");
+   // First print the date if requested:
+   //
+   if (Time::PrintDate())
+      out << Date(t) << _T(" ");
+
+   Uint16 hh = t.Hour();
+   out << (hh <= 12 ? hh : hh - 12) << _T(':')
+      << std::setfill(_T('0')) << std::setw(2) << t.Minute() << _T(':')
+      << std::setw(2) << t.Second() << _T(' ') << std::setfill(_T(' '));
+   out << (hh < 12 ? _T("am") : _T("pm"));//<< std::ends;
+
+   // now we write out the formatted buffer, and the std::ostream's
+   // width setting will control the actual width of the field.
+   //
+   s << out.str();
+   return s;
 }
-#endif // _UNITTEST
-
-

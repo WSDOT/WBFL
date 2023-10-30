@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RcBgColor.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcBgColor::rptRcBgColor(rptRiStyle::FontColor MyColor) :
 rptReportContent()
 {

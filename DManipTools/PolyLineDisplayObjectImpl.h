@@ -141,12 +141,12 @@ END_CONNECTION_POINT_MAP()
 // IPolyLineDisplayObject
 public:
    STDMETHOD_(void,Commit)() override;
-   STDMETHOD_(CollectionIndexType,get_NumberOfPoints)() override;
+   STDMETHOD_(IndexType,get_NumberOfPoints)() override;
    STDMETHOD_(void,AddPoints)(IPoint2dCollection* points) override;
    STDMETHOD_(void,AddPoint)(IPoint2d* point) override;
-   STDMETHOD_(HRESULT,InsertPoint)(CollectionIndexType idx, IPoint2d* point) override;
-   STDMETHOD_(HRESULT,GetPoint)(CollectionIndexType idx, IPoint2d* *point) override;
-   STDMETHOD_(HRESULT,RemovePoint)(CollectionIndexType idx) override;
+   STDMETHOD_(HRESULT,InsertPoint)(IndexType idx, IPoint2d* point) override;
+   STDMETHOD_(HRESULT,GetPoint)(IndexType idx, IPoint2d* *point) override;
+   STDMETHOD_(HRESULT,RemovePoint)(IndexType idx) override;
    STDMETHOD_(void,ClearPoints)() override;
    STDMETHOD_(void,put_Color)(COLORREF color) override;
    STDMETHOD_(void,get_Color)(COLORREF* color) override;
@@ -161,9 +161,9 @@ public:
    long     m_Width;
    PolyLinePointType m_PtType;
 
-   typedef CAdapt<CComPtr<IPoint2d> > ContainerItem;
-   typedef std::vector<ContainerItem> ContainerType;
-   typedef ContainerType::iterator    ContainerIterator;
+   using ContainerItem = CAdapt<CComPtr<IPoint2d> >;
+   using ContainerType = std::vector<ContainerItem>;
+   using ContainerIterator = ContainerType::iterator;
    ContainerType m_Container;
 
 private:

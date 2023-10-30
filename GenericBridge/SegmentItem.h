@@ -68,11 +68,11 @@ public:
 public:
 	STDMETHOD(get_Segment)(/*[out, retval]*/ ISegment* *pVal) override;
 //	STDMETHOD(putref_Segment)(/*[in]*/ ISegment* pVal) override;
-	STDMETHOD(get_RelPosition)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_RelPosition)(/*[out, retval]*/ IndexType *pVal) override;
 //   STDMETHOD(Clone)(ISegmentItem** pclone) override;
 
 protected:
-   CollectionIndexType     m_RelPosition;
+   IndexType     m_RelPosition;
    CComPtr<ISegment> m_Segment;
 };
 

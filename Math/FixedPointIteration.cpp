@@ -23,168 +23,28 @@
 
 #include <Math\MathLib.h>
 #include <Math\FixedPointIteration.h>
-#include <xutility>
+#include <Math\XFixedPointIteration.h>
 
+using namespace WBFL::Math;
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/****************************************************************************
-CLASS
-   mathXFixedPointIterationFailed
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(Reason reason,Float64 last,LPCTSTR file,Int16 line) :
-sysXBase(file,line)
+Float64 FixedPointIteration::Solve(const std::function<Float64(Float64)>& f, Float64 xo, Float64 tol, Uint32 maxIter) const
 {
-   m_Reason = reason;
-   m_Last = last;
-}
-
-mathXFixedPointIterationFailed::mathXFixedPointIterationFailed(const mathXFixedPointIterationFailed& rOther) :
-sysXBase( rOther )
-{
-   m_Reason = rOther.m_Reason;
-   m_Last = rOther.m_Last;
-}
-
-mathXFixedPointIterationFailed::~mathXFixedPointIterationFailed()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-mathXFixedPointIterationFailed& mathXFixedPointIterationFailed::operator=(const mathXFixedPointIterationFailed& rOther)
-{
-   if ( this != &rOther )
+   Float64 x_guess = xo;
+   for (Uint32 i = 0; i < maxIter; i++)
    {
-      sysXBase::operator=( rOther);
-      m_Reason = rOther.m_Reason;
-      m_Last = rOther.m_Last;
+      Float64 x = f(x_guess);
+      if (IsEqual(x_guess, x, tol))
+         return x_guess;
+
+      x_guess = x; // use computed x as next guess
    }
 
-   return *this;
+   THROW_FIXEDPOINTITERATION(XFixedPointIteration::Reason::MaxIterExceeded, x_guess);
+
+   return x_guess;
 }
 
-//======================== ACCESS     =======================================
-void mathXFixedPointIterationFailed::Throw() const
+Float64 FixedPointIteration::Solve(const Function& eval,Float64 xo,Float64 tol,Uint32 maxIter) const
 {
-   throw *static_cast<const mathXFixedPointIterationFailed*>(this);
+   return Solve([&eval](Float64 x) {return eval.Evaluate(x); }, xo, tol, maxIter);
 }
-
-Float64 mathXFixedPointIterationFailed::GetLast() const
-{
-   return m_Last;
-}
-
-Int32 mathXFixedPointIterationFailed::GetReason() const
-{
-   return m_Reason;
-}
-
-mathXFixedPointIterationFailed::Reason mathXFixedPointIterationFailed::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-/****************************************************************************
-CLASS
-   mathFixedPointIteration
-****************************************************************************/
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-mathFixedPointIteration::mathFixedPointIteration()
-{
-}
-
-
-mathFixedPointIteration::~mathFixedPointIteration()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-Float64 mathFixedPointIteration::Solve(const mathFunction2d& eval,Float64 xo,Float64 tol,long maxIter)
-{
-   Float64 x = xo;
-   for ( long i = 0; i < maxIter; i++ )
-   {
-      Float64 x1 = eval.Evaluate(x);
-      if ( IsEqual(x1,x,tol) )
-         return x1;
-
-      x = x1;
-   }
-
-   mathXFixedPointIterationFailed mx(mathXFixedPointIterationFailed::MaxIterExceeded,x,_T(__FILE__),__LINE__);
-   mx.Throw();
-   return x;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool mathFixedPointIteration::AssertValid() const
-{
-   return true;
-}
-
-void mathFixedPointIteration::Dump(dbgDumpContext& os) const
-{
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool mathFixedPointIteration::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("mathFixedPointIteration");
-   // Unit Tests implemented on package level
-   TESTME_EPILOG("mathFixedPointIteration");
-}
-#endif
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

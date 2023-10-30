@@ -101,7 +101,7 @@ HRESULT CTestFourStage::Test()
    }
 
    // compute location of all pois
-   CollectionIndexType cnt;
+   IndexType cnt;
    poilist->get_Count(&cnt);
    std::vector<Float64> poi_locs;
    poi_locs.reserve(cnt);
@@ -200,7 +200,7 @@ HRESULT CTestFourStage::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 1"), &locs);
       ATLASSERT(SUCCEEDED(hr));
 
-      CollectionIndexType size;
+      IndexType size;
       locs->get_Count(&size);
       TRY_TEST(size==0,true);
    }
@@ -210,9 +210,9 @@ HRESULT CTestFourStage::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 2"), &alocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray,CollectionIndexType> locs(alocs);
+      TIArrayHelper<Float64, IDblArray,IndexType> locs(alocs);
 
-      CollectionIndexType size = locs.Size();
+      IndexType size = locs.Size();
       TRY_TEST(size,4);
 
       TRY_TEST( IsEqual(locs[0], 37.58181, 1.0e-4), true);
@@ -235,8 +235,8 @@ HRESULT CTestFourStage::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 3"), &alocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray,CollectionIndexType> locs(alocs);
-      CollectionIndexType size = locs.Size();
+      TIArrayHelper<Float64, IDblArray,IndexType> locs(alocs);
+      IndexType size = locs.Size();
       TRY_TEST(size,2);
       TRY_TEST( IsEqual(locs[0], 75.10389, 1.0e-4), true);
       TRY_TEST( IsEqual(locs[1], 124.8961, 1.0e-4), true);
@@ -248,8 +248,8 @@ HRESULT CTestFourStage::Test()
       hr =pcontrf->ComputeContraflexureLocations(_bstr_t("Stage 4"), &alocs);
       ATLASSERT(SUCCEEDED(hr));
 
-      TIArrayHelper<Float64, IDblArray,CollectionIndexType> locs(alocs);
-      CollectionIndexType size = locs.Size();
+      TIArrayHelper<Float64, IDblArray,IndexType> locs(alocs);
+      IndexType size = locs.Size();
       TRY_TEST(size,2);
       TRY_TEST( IsEqual(locs[0], 75.10389, 1.0e-4), true);
       TRY_TEST( IsEqual(locs[1], 124.8961, 1.0e-4), true);
@@ -289,11 +289,11 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    Float64 left_overhang;
    ssms->get_Offset(&left_overhang);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
+   for(IndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -307,10 +307,10 @@ void CTestFourStage::GetSSPoiLocs(IIDArray* pPoilist, ILBAMModel* pModel, std::v
    CComPtr<IPOIs> pois;
    pModel->get_POIs(&pois);
 
-   TIArrayHelper<PoiIDType, IIDArray, CollectionIndexType> ppoilist(pPoilist);
+   TIArrayHelper<PoiIDType, IIDArray, IndexType> ppoilist(pPoilist);
 
-   CollectionIndexType cnt = ppoilist.Size();
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   IndexType cnt = ppoilist.Size();
+   for (IndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id = ppoilist[i];
 

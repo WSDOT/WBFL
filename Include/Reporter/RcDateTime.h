@@ -66,10 +66,10 @@ public:
    bool IsPrintTimeEnabled() {return m_bPrintTime;}
 
    /// Returns the date
-   sysDate GetDate() {return m_Date;}
+   WBFL::System::Date GetDate() {return m_Date;}
 
    /// Returns the time
-   sysTime GetTime() {return m_Time;}
+   WBFL::System::Time GetTime() {return m_Time;}
 
 protected:
    /// Copies the content from rOther to this object
@@ -79,8 +79,8 @@ protected:
    void MakeAssignment(const rptRcDateTime& rOther);
 
 private:
-   sysDate m_Date;
-   sysTime m_Time;
+   WBFL::System::Date m_Date;
+   WBFL::System::Time m_Time;
 
    bool   m_bPrintDate;
    bool   m_bPrintTime;

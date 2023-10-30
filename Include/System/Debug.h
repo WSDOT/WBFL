@@ -21,15 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_DEBUG_H_
-#define INCLUDED_SYSTEM_DEBUG_H_
 #pragma once
-
 
 #include <System\Checks.h>
 #include <System\Log.h>
-#include <System\DumpContext.h>
-#include <System\FileDumpContext.h>
-
-
-#endif // INCLUDED_SYSTEM_DEBUG_H_
+#include <System\LogContext.h>
+#include <System\DebugWindowLogContext.h>
+#include <System\FileLogContext.h>
+//#include <System\OutputDebugStringAsStream.h>

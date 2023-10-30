@@ -30,7 +30,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-void DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,matRebar::Type& type,matRebar::Grade& grade)
+void DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Grade& grade)
 {
    HWND hWndCtrl = pDX->PrepareCtrl(nIDC);
 
@@ -68,71 +68,71 @@ void CRebarMaterialComboBox::Initialize(bool bFilterBySpec)
 {
    ResetContent();
 
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A615,  matRebar::Grade40).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A615,  matRebar::Grade60).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A615,  matRebar::Grade75).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A615,  matRebar::Grade80).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A706,  matRebar::Grade60).c_str()  );
-   AddString( lrfdRebarPool::GetMaterialName(matRebar::A706,  matRebar::Grade80).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade40).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade75).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
 
    if ( bFilterBySpec )
    {
-      if ( lrfdVersionMgr::SixthEditionWith2013Interims <= lrfdVersionMgr::GetVersion() )
+      if (WBFL::LRFD::BDSManager::Edition::SixthEditionWith2013Interims <= WBFL::LRFD::BDSManager::GetEdition() )
       {
-         AddString( lrfdRebarPool::GetMaterialName(matRebar::A1035, matRebar::Grade100).c_str() );
+         AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
       }
    }
 }
 
-void CRebarMaterialComboBox::GetMaterial(matRebar::Type* pType,matRebar::Grade* pGrade)
+void CRebarMaterialComboBox::GetMaterial(WBFL::Materials::Rebar::Type* pType,WBFL::Materials::Rebar::Grade* pGrade)
 {
    int curSel = GetCurSel();
       switch(curSel)
       {
-      case 0:  *pType = matRebar::A615;  *pGrade = matRebar::Grade40;  break;
-      case 1:  *pType = matRebar::A615;  *pGrade = matRebar::Grade60;  break;
-      case 2:  *pType = matRebar::A615;  *pGrade = matRebar::Grade75;  break;
-      case 3:  *pType = matRebar::A615;  *pGrade = matRebar::Grade80;  break;
-      case 4:  *pType = matRebar::A706;  *pGrade = matRebar::Grade60;  break;
-      case 5:  *pType = matRebar::A706;  *pGrade = matRebar::Grade80;  break;
-      case 6:  *pType = matRebar::A1035; *pGrade = matRebar::Grade100; break;
+      case 0:  *pType = WBFL::Materials::Rebar::Type::A615;  *pGrade = WBFL::Materials::Rebar::Grade::Grade40;  break;
+      case 1:  *pType = WBFL::Materials::Rebar::Type::A615;  *pGrade = WBFL::Materials::Rebar::Grade::Grade60;  break;
+      case 2:  *pType = WBFL::Materials::Rebar::Type::A615;  *pGrade = WBFL::Materials::Rebar::Grade::Grade75;  break;
+      case 3:  *pType = WBFL::Materials::Rebar::Type::A615;  *pGrade = WBFL::Materials::Rebar::Grade::Grade80;  break;
+      case 4:  *pType = WBFL::Materials::Rebar::Type::A706;  *pGrade = WBFL::Materials::Rebar::Grade::Grade60;  break;
+      case 5:  *pType = WBFL::Materials::Rebar::Type::A706;  *pGrade = WBFL::Materials::Rebar::Grade::Grade80;  break;
+      case 6:  *pType = WBFL::Materials::Rebar::Type::A1035; *pGrade = WBFL::Materials::Rebar::Grade::Grade100; break;
       default:
          ATLASSERT(false); // should never get here
       }
 }
 
-void CRebarMaterialComboBox::SetMaterial(matRebar::Type type,matRebar::Grade grade)
+void CRebarMaterialComboBox::SetMaterial(WBFL::Materials::Rebar::Type type,WBFL::Materials::Rebar::Grade grade)
 {
    int curSel = CB_ERR;
-   if ( type == matRebar::A615 )
+   if ( type == WBFL::Materials::Rebar::Type::A615 )
    {
-      if ( grade == matRebar::Grade40 )
+      if ( grade == WBFL::Materials::Rebar::Grade::Grade40 )
          curSel = 0;
-      else if ( grade == matRebar::Grade60 )
+      else if ( grade == WBFL::Materials::Rebar::Grade::Grade60 )
          curSel = 1;
-      else if ( grade == matRebar::Grade75 )
+      else if ( grade == WBFL::Materials::Rebar::Grade::Grade75 )
          curSel = 2;
-      else if ( grade == matRebar::Grade80 )
+      else if ( grade == WBFL::Materials::Rebar::Grade::Grade80 )
          curSel = 3;
 #if defined _DEBUG
       else
          ATLASSERT(false); // should never get here
 #endif
    }
-   else if ( type == matRebar::A706 )
+   else if ( type == WBFL::Materials::Rebar::Type::A706 )
    {
-      if ( grade == matRebar::Grade60 )
+      if ( grade == WBFL::Materials::Rebar::Grade::Grade60 )
          curSel = 4;
-      else if ( grade == matRebar::Grade80 )
+      else if ( grade == WBFL::Materials::Rebar::Grade::Grade80 )
          curSel = 5;
 #if defined _DEBUG
       else
          ATLASSERT(false); // should never get here
 #endif
    }
-   else if ( type == matRebar::A1035 )
+   else if ( type == WBFL::Materials::Rebar::Type::A1035 )
    {
-      if ( grade == matRebar::Grade100 )
+      if ( grade == WBFL::Materials::Rebar::Grade::Grade100 )
          curSel = 6;
 #if defined _DEBUG
       else

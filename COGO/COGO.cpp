@@ -43,47 +43,49 @@
 
 #include "Angle.h"
 #include "Direction.h"
-#include "PointCollection.h"
-#include "PointFactory.h"
 #include "CogoModel.h"
-#include "LineSegmentFactory.h"
-#include "LineSegmentCollection.h"
 #include "ProfilePoint.h"
-#include "ProfilePointCollection.h"
-#include "VertCurve.h"
-#include "VertCurveCollection.h"
+#include "VerticalCurve.h"
 #include "CompoundCurve.h"
-#include "CompoundCurveCollection.h"
-#include "ProfileElement.h"
+#include "ProfileSegment.h"
 #include "Profile.h"
-#include "PathElement.h"
+#include "PathSegment.h"
 #include "Path.h"
-#include "PathFactory.h"
-#include "PathCollection.h"
 #include "Alignment.h"
-#include "AlignmentCollection.h"
-#include "VertCurveFactory.h"
-#include "ProfilePointFactory.h"
-#include "CompoundCurveFactory.h"
-#include "AlignmentFactory.h"
 #include "AngleDisplayUnitFormatter.h"
 #include "DirectionDisplayUnitFormatter.h"
 #include "Station.h"
-#include "StationEquationCollection.h"
 #include "CogoEngine.h"
 #include "CubicSpline.h"
 #include "Widening.h"
-#include "WideningCollection.h"
 #include "Superelevation.h"
-#include "SuperelevationCollection.h"
-#include "TemplateSegment.h"
+#include "SurfaceTemplateSegment.h"
 #include "SurfaceTemplate.h"
-#include "SurfaceTemplateCollection.h"
 #include "Surface.h"
 #include "SurfacePoint.h"
 #include "SurfaceProfile.h"
 #include "TransitionCurve.h"
 #include "CircularCurve.h"
+
+#include "PierLine.h"
+#include "GirderLine.h"
+
+#include "SinglePierLineFactory.h"
+
+#include "AlignmentOffsetLayoutLineFactory.h"
+#include "SimpleLayoutLineFactory.h"
+#include "UniformSpacingLayoutLineFactory.h"
+
+#include "SingleGirderLineFactory.h"
+#include "SimpleGirderLineFactory.h"
+
+#include "EqualSpacingDiaphragmLineFactory.h"
+#include "SingleDiaphragmLineFactory.h"
+#include "ThroughPointDiaphragmLineFactory.h"
+
+#include "SimpleDeckBoundaryFactory.h"
+
+#include "BridgeGeometry.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,47 +98,50 @@ CComModule _Module;
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_Angle, CAngle)
 OBJECT_ENTRY(CLSID_Direction, CDirection)
-OBJECT_ENTRY(CLSID_PointFactory, CPointFactory)
-OBJECT_ENTRY(CLSID_PointCollection, CPointCollection)
 OBJECT_ENTRY(CLSID_CogoModel, CCogoModel)
-OBJECT_ENTRY(CLSID_LineSegmentFactory, CLineSegmentFactory)
-OBJECT_ENTRY(CLSID_LineSegmentCollection, CLineSegmentCollection)
+OBJECT_ENTRY(CLSID_CogoEngine, CCogoEngine)
+OBJECT_ENTRY(CLSID_PathSegment, CPathSegment)
 OBJECT_ENTRY(CLSID_ProfilePoint, CProfilePoint)
-OBJECT_ENTRY(CLSID_ProfilePointCollection, CProfilePointCollection)
-OBJECT_ENTRY(CLSID_VertCurve, CVertCurve)
-OBJECT_ENTRY(CLSID_VertCurveCollection, CVertCurveCollection)
+OBJECT_ENTRY(CLSID_VerticalCurve, CVerticalCurve)
 OBJECT_ENTRY(CLSID_CompoundCurve, CCompoundCurve)
-OBJECT_ENTRY(CLSID_CompoundCurveCollection, CCompoundCurveCollection)
-OBJECT_ENTRY(CLSID_ProfileElement, CProfileElement)
+OBJECT_ENTRY(CLSID_ProfileSegment, CProfileSegment)
 OBJECT_ENTRY(CLSID_Profile, CProfile)
-OBJECT_ENTRY(CLSID_PathElement, CPathElement)
 OBJECT_ENTRY(CLSID_Path, CPath)
-OBJECT_ENTRY(CLSID_PathFactory, CPathFactory)
-OBJECT_ENTRY(CLSID_PathCollection, CPathCollection)
 OBJECT_ENTRY(CLSID_Alignment, CAlignment)
-OBJECT_ENTRY(CLSID_AlignmentCollection, CAlignmentCollection)
-OBJECT_ENTRY(CLSID_VertCurveFactory, CVertCurveFactory)
-OBJECT_ENTRY(CLSID_ProfilePointFactory, CProfilePointFactory)
-OBJECT_ENTRY(CLSID_CompoundCurveFactory, CCompoundCurveFactory)
-OBJECT_ENTRY(CLSID_AlignmentFactory, CAlignmentFactory)
 OBJECT_ENTRY(CLSID_AngleDisplayUnitFormatter, CAngleDisplayUnitFormatter)
 OBJECT_ENTRY(CLSID_DirectionDisplayUnitFormatter, CDirectionDisplayUnitFormatter)
 OBJECT_ENTRY(CLSID_Station, CStation)
-OBJECT_ENTRY(CLSID_StationEquationCollection, CStationEquationCollection)
 OBJECT_ENTRY(CLSID_CogoEngine, CCogoEngine)
 OBJECT_ENTRY(CLSID_CubicSpline, CCubicSpline)
 OBJECT_ENTRY(CLSID_Widening, CWidening)
-OBJECT_ENTRY(CLSID_WideningCollection, CWideningCollection)
 OBJECT_ENTRY(CLSID_Superelevation,CSuperelevation)
-OBJECT_ENTRY(CLSID_SuperelevationCollection,CSuperelevationCollection)
-OBJECT_ENTRY(CLSID_TemplateSegment, CTemplateSegment)
+OBJECT_ENTRY(CLSID_SurfaceTemplateSegment, CSurfaceTemplateSegment)
 OBJECT_ENTRY(CLSID_SurfaceTemplate, CSurfaceTemplate)
-OBJECT_ENTRY(CLSID_SurfaceTemplateCollection, CSurfaceTemplateCollection)
 OBJECT_ENTRY(CLSID_Surface, CSurface)
 OBJECT_ENTRY(CLSID_SurfacePoint, CSurfacePoint)
 OBJECT_ENTRY(CLSID_SurfaceProfile, CSurfaceProfile)
 OBJECT_ENTRY(CLSID_TransitionCurve, CTransitionCurve)
 OBJECT_ENTRY(CLSID_CircularCurve, CCircularCurve)
+
+OBJECT_ENTRY_NON_CREATEABLE(CPierLine)
+OBJECT_ENTRY_NON_CREATEABLE(CGirderLine)
+
+OBJECT_ENTRY(CLSID_SinglePierLineFactory,CSinglePierLineFactory)
+
+OBJECT_ENTRY(CLSID_AlignmentOffsetLayoutLineFactory,CAlignmentOffsetLayoutLineFactory)
+OBJECT_ENTRY(CLSID_SimpleLayoutLineFactory,CSimpleLayoutLineFactory)
+OBJECT_ENTRY(CLSID_UniformSpacingLayoutLineFactory,CUniformSpacingLayoutLineFactory)
+
+OBJECT_ENTRY(CLSID_SingleGirderLineFactory,CSingleGirderLineFactory)
+OBJECT_ENTRY(CLSID_SimpleGirderLineFactory,CSimpleGirderLineFactory)
+
+OBJECT_ENTRY(CLSID_EqualSpacingDiaphragmLineFactory,CEqualSpacingDiaphragmLineFactory)
+OBJECT_ENTRY(CLSID_SingleDiaphragmLineFactory,CSingleDiaphragmLineFactory)
+OBJECT_ENTRY(CLSID_ThroughPointDiaphragmLineFactory,CThroughPointDiaphragmLineFactory)
+
+OBJECT_ENTRY(CLSID_SimpleDeckBoundaryFactory,CSimpleDeckBoundaryFactory)
+
+OBJECT_ENTRY(CLSID_BridgeGeometry,CBridgeGeometry)
 END_OBJECT_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

@@ -312,10 +312,10 @@ STDMETHODIMP CJoint::get_Members(IIDArray* *ppMemberIDs)
    if (FAILED(hr))
       return hr;
 
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    hr = members->get_Count(&nMembers);
 
-   for (CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
+   for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
       CComPtr<IFem2dMember> member;
       hr = members->get_Item(mbrIdx,&member);

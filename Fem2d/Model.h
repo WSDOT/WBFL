@@ -125,24 +125,24 @@ public:
    virtual void OnPOIRemoved(PoiIDType ID) override;
    virtual void OnPOIsCleared() override;
 
-   HRESULT CModel::FinalConstruct();
+   HRESULT FinalConstruct();
 
 private:
    // data to support change management
    bool m_ModelDirty;                // something affecting the stiffness changed
-   typedef std::set<LoadCaseIDType> DirtyLoadings;
-   typedef DirtyLoadings::iterator  DirtyLoadingsIterator;
+   using DirtyLoadings = std::set<LoadCaseIDType>;
+   using DirtyLoadingsIterator = DirtyLoadings::iterator;
    DirtyLoadings                    m_DirtyLoadings;   // dirty loadings
 
    // data to support IFem2dModel
-   typedef CComObject<CJointCollection> Joints;
-   typedef Joints::iterator             JointIterator;
-   typedef CComObject<CMemberCollection> Members;
-   typedef Members::iterator             MemberIterator;
-   typedef CComObject<CLoadingCollection> Loadings;
-   typedef Loadings::iterator             LoadingIterator;
-   typedef CComObject<CPOICollection>     POIs;
-   typedef POIs::iterator                 POIIterator;
+   using Joints = CComObject<CJointCollection>;
+   using JointIterator = Joints::iterator;
+   using Members = CComObject<CMemberCollection>;
+   using MemberIterator = Members::iterator;
+   using Loadings = CComObject<CLoadingCollection>;
+   using LoadingIterator = Loadings::iterator;
+   using POIs = CComObject<CPOICollection>;
+   using POIIterator = POIs::iterator;
 
    CComPtr<Joints>   m_pJoints;
    CComPtr<Members>  m_pMembers;
@@ -196,21 +196,21 @@ public:
 
 // Data members for Results storage and FEM solution
 private:
-   typedef Result<NUM_DOF,NUM_DOF>             JntResult;
-   typedef ResultArray<JntResult>              JntResultArray;
-   typedef std::map<JointIDType,JntResultArray*>       JntResultContainer;
-   typedef JntResultContainer::iterator        JntResultIterator;
-   typedef JntResultContainer::const_iterator  ConstJntResultIterator;
+   using JntResult = Result<NUM_DOF, NUM_DOF>;
+   using JntResultArray = ResultArray<JntResult>;
+   using JntResultContainer = std::map<JointIDType, JntResultArray*>;
+   using JntResultIterator = JntResultContainer::iterator;
+   using ConstJntResultIterator = JntResultContainer::const_iterator;
 
-   typedef std::map<MemberIDType,CMember::MbrResultArray*>       MbrResultContainer;
-   typedef MbrResultContainer::iterator        MbrResultIterator;
-   typedef MbrResultContainer::const_iterator  ConstMbrResultIterator;
+   using MbrResultContainer = std::map<MemberIDType, CMember::MbrResultArray*>;
+   using MbrResultIterator = MbrResultContainer::iterator;
+   using ConstMbrResultIterator = MbrResultContainer::const_iterator;
 
-   typedef Result<NUM_DOF*2,NUM_DOF>           PoiResult;
-   typedef ResultArray<PoiResult>              PoiResultArray;
-   typedef std::map<PoiIDType,PoiResultArray*>      PoiResultContainer;
-   typedef PoiResultContainer::iterator        PoiResultIterator;
-   typedef PoiResultContainer::const_iterator  ConstPoiResultIterator;
+   using PoiResult = Result<NUM_DOF * 2, NUM_DOF>;
+   using PoiResultArray = ResultArray<PoiResult>;
+   using PoiResultContainer = std::map<PoiIDType, PoiResultArray*>;
+   using PoiResultIterator = PoiResultContainer::iterator;
+   using ConstPoiResultIterator = PoiResultContainer::const_iterator ;
 
    JntResultContainer     m_JntResults;
    MbrResultContainer     m_MbrResults;
@@ -218,7 +218,7 @@ private:
 
    // A simple cache for negative load case POI results - typically these results are asked for
    // sequentially
-#pragma Reminder("The following will cause problems if this class becomes multithreaded")
+//#pragma Reminder("The following will cause problems if this class becomes multithreaded")
    struct SimplePOIResultCache
    {
       SimplePOIResultCache():

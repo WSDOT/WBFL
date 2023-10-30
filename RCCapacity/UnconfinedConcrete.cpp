@@ -27,7 +27,6 @@
 #include "stdafx.h"
 #include "WBFLRCCapacity.h"
 #include "UnconfinedConcrete.h"
-#include <MathEx.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,20 +40,38 @@ static char THIS_FILE[] = __FILE__;
 HRESULT CUnconfinedConcrete::FinalConstruct()
 {
    HRESULT hr = m_UnitServer.CoCreateInstance(CLSID_UnitServer);
-   if ( FAILED(hr) )
+   if (FAILED(hr))
       return hr;
 
-   m_Fc = 4.00; // ksi
-   m_MinStrain = -0.003;
-   m_MaxStrain = 1.0;
-
-   UpdateParameters();
+   SetupUnits();
 
    return S_OK;
 }
 
 void CUnconfinedConcrete::FinalRelease()
 {
+}
+
+void CUnconfinedConcrete::SetupUnits()
+{
+   CComPtr<IUnitTypes> unitTypes;
+   m_UnitServer->get_UnitTypes(&unitTypes);
+
+   CComPtr<IUnitType> unitType;
+   unitTypes->get_Item(CComVariant("Pressure"), &unitType);
+
+   CComPtr<IUnits> units;
+   unitType->get_Units(&units);
+
+   units->get_Item(CComVariant("ksi"), &m_ksiUnit);
+
+   m_UnitServer.QueryInterface(&m_Convert);
+}
+
+void CUnconfinedConcrete::ClearUnits()
+{
+   m_ksiUnit.Release();
+   m_Convert.Release();
    m_UnitServer.Release();
 }
 
@@ -64,7 +81,7 @@ STDMETHODIMP CUnconfinedConcrete::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_IUnconfinedConcrete,
       &IID_IStressStrain,
-      &IID_IStructuredStorage2
+      &IID_ISupportUnitServer
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -77,12 +94,9 @@ STDMETHODIMP CUnconfinedConcrete::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CUnconfinedConcrete::get_fc(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertToBaseUnits(m_Fc,CComBSTR("ksi"),pVal);
-
+   *pVal = m_Model.GetFc();
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal,m_ksiUnit, pVal);
    return S_OK;
 }
 
@@ -91,27 +105,27 @@ STDMETHODIMP CUnconfinedConcrete::put_fc(Float64 newVal)
    if ( newVal < 0 || IsZero(newVal) ) 
       return E_INVALIDARG;
 
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-
-   convert->ConvertFromBaseUnits(newVal,CComBSTR("ksi"),&newVal);
-
-   m_Fc = newVal;
-   UpdateParameters();
+   // convert inbound value to KSI
+   m_Convert->ConvertFromBaseUnits(newVal, m_ksiUnit, &newVal);
+   // convert from KSI to the system units
+   newVal = WBFL::Units::ConvertToSysUnits(newVal, WBFL::Units::Measure::KSI);
+   m_Model.SetFc(newVal);
 
 	return S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::put_Name(BSTR name)
 {
-   m_bstrName = name;
+   USES_CONVERSION;
+   m_Model.SetName(OLE2T(name));
    return S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::get_Name(BSTR *name)
 {
+   USES_CONVERSION;
    CHECK_RETSTRING(name);
-   *name = m_bstrName.Copy();
+   *name = T2BSTR(m_Model.GetName().c_str());
    return S_OK;
 }
 
@@ -119,41 +133,11 @@ STDMETHODIMP CUnconfinedConcrete::ComputeStress(Float64 strain,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = 0;
-
-   if ( 0 < strain )
-      return S_OK;
-
-   Float64 e = strain;
-
-   if (e < m_MinStrain) e = m_MinStrain;
-
-   e *= -1.0;
-
-   // use local variables to make the equations a little cleaner to read
-   // these parameters are updated when f'c is changed
-   Float64 n = m_n;
-   Float64 k = m_k;
-   Float64 Ec = m_Ec;
-   Float64 ec = m_ec;
-
-   Float64 e_ratio = e/ec;
-   if ( e_ratio < 1.0 )
-      k = 1.00;
-
-   if ( k < 1.00 )
-      k = 1.00;
-
-   Float64 f = m_Fc*(n*(e_ratio)/((n-1) + pow(e_ratio,n*k)));
-
-   // The stress is in KSI, convert it to base units because that is what the caller expects
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertToBaseUnits(f,CComBSTR("ksi"),&f);
-
-   *pVal = -f;
-
-   return (strain < m_MinStrain) ? S_FALSE : S_OK;
+   auto [stress, bStrainWithinLimits] = m_Model.ComputeStress(strain);
+   *pVal = stress;
+   *pVal = WBFL::Units::ConvertFromSysUnits(*pVal, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pVal, m_ksiUnit, pVal);
+   return (bStrainWithinLimits ? S_OK : S_FALSE);
 }
 
 STDMETHODIMP CUnconfinedConcrete::StrainLimits(Float64* minStrain,Float64* maxStrain)
@@ -161,45 +145,35 @@ STDMETHODIMP CUnconfinedConcrete::StrainLimits(Float64* minStrain,Float64* maxSt
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   *minStrain = m_MinStrain;
-   *maxStrain = m_MaxStrain;
+   m_Model.GetStrainLimits(minStrain, maxStrain);
+
    return S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::get_StrainAtPeakStress(Float64* strain)
 {
    CHECK_RETVAL(strain);
-
-   Float64 Ec = GetEc();
-   Float64 n = 0.8 + m_Fc/2.5;
-
-   (*strain) = -(m_Fc/Ec)*(n/(n-1));
+   *strain = m_Model.GetStrainAtPeakStress();
    return S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::get_YieldStrain(Float64* pey)
 {
    CHECK_RETVAL(pey);
-   Float64 Ec = GetEc();
-   *pey = m_Fc/Ec;
+   *pey = m_Model.GetYieldStrain();
    return S_OK;
 }
 
 STDMETHODIMP CUnconfinedConcrete::get_ModulusOfElasticity(Float64* pE)
 {
    CHECK_RETVAL(pE);
-   Float64 Ec = GetEc();
-
-   // The stress is in KSI, convert it to base units because that is what the caller expects
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertToBaseUnits(Ec,CComBSTR("ksi"),&Ec);
-
-   *pE = Ec;
+   *pE = m_Model.GetModulusOfElasticity();
+   *pE = WBFL::Units::ConvertFromSysUnits(*pE, WBFL::Units::Measure::KSI);
+   m_Convert->ConvertToBaseUnits(*pE, m_ksiUnit, pE);
    return S_OK;
 }
 
-STDMETHODIMP CUnconfinedConcrete::get_UnitServer(IUnitServer** ppVal )
+STDMETHODIMP CUnconfinedConcrete::get_UnitServer(IUnitServer** ppVal)
 {
    CHECK_RETOBJ(ppVal);
 
@@ -209,76 +183,13 @@ STDMETHODIMP CUnconfinedConcrete::get_UnitServer(IUnitServer** ppVal )
    return S_OK;
 }
 
-STDMETHODIMP CUnconfinedConcrete::putref_UnitServer(IUnitServer* pNewVal )
+STDMETHODIMP CUnconfinedConcrete::putref_UnitServer(IUnitServer* pNewVal)
 {
    CHECK_IN(pNewVal);
 
+   ClearUnits();
    m_UnitServer = pNewVal;
-   return S_OK;
-}
+   SetupUnits();
 
-void CUnconfinedConcrete::UpdateParameters()
-{
-   m_n = 0.80 + m_Fc / 2.500;
-   m_k = 0.67 + m_Fc / 9.000;
-   m_Ec = GetEc();
-   m_ec = m_Fc * m_n / (m_Ec * (m_n - 1));
-}
-
-Float64 CUnconfinedConcrete::GetEc()
-{
-   return (40.000*sqrt(m_Fc*1000) + 1000.000);
-}
-
-///////////////////////////////////////////////////////////////////
-// IStructuredStorage2
-STDMETHODIMP CUnconfinedConcrete::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("UnconfinedConcrete"),1.0);
-
-   pSave->put_Property(CComBSTR("Fc"),CComVariant(m_Fc));
-   pSave->put_Property(CComBSTR("MaxStrain"),CComVariant(m_MaxStrain));
-   pSave->put_Property(CComBSTR("MinStrain"),CComVariant(m_MinStrain));
-
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CUnconfinedConcrete::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("UnconfinedConcrete"));
-
-   if ( FAILED(pLoad->get_Property(CComBSTR("Fc"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   m_Fc = var.dblVal;
-
-   if ( FAILED(pLoad->get_Property(CComBSTR("MaxStrain"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   m_MaxStrain = var.dblVal;
-
-   if ( FAILED(pLoad->get_Property(CComBSTR("MinStrain"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   m_MinStrain = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   return S_OK;
-}
-
-// IPersist
-STDMETHODIMP CUnconfinedConcrete::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
    return S_OK;
 }

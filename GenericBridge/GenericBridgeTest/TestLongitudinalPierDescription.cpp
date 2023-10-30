@@ -115,7 +115,7 @@ void CTestLongitudinalPierDescription::Test()
    //TRY_TEST(lpd->get_Symmetrical(&bSymmetrical),S_OK);
    //TRY_TEST(bSymmetrical,VARIANT_FALSE);
 
-   //CollectionIndexType count;
+   //IndexType count;
    //TRY_TEST(lpd->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(lpd->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);
@@ -261,7 +261,7 @@ void CTestLongitudinalPierDescription::Test()
    //TRY_TEST(lpd->GetSegmentForMemberLocation(-2,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
    ////TRY_TEST(lpd->GetSegmentForMemberLocation(200,&dist,&segItem),GB_E_LOCATION_OUT_OF_RANGE);
    //TRY_TEST(lpd->GetSegmentForMemberLocation(2.5,&dist,&segItem),S_OK);
-   //CollectionIndexType position;
+   //IndexType position;
    //bstrStage.Empty();
    //segItem->get_RelPosition(&position);
    //TRY_TEST(position,0);

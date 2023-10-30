@@ -75,7 +75,6 @@ private:
    CComPtr<IPoint3d> m_End;
    ITendonSegment* m_pPrevSegment; // weak reference
    ITendonSegment* m_pNextSegment; // weak reference
-   CComPtr<IGeomUtil3d> m_GeomUtil;
 
    ITendon* m_pTendon; // weak reference
 

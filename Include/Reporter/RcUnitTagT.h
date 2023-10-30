@@ -29,13 +29,6 @@
 #include <Reporter\RcUnitTag.h>
 #include <Units\PhysicalT.h>
 
-#if defined BUILDREPORTERLIB
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-#endif // BUILDREPORTERLIB
 
 /// Report content for a unit tag.
 ///
@@ -86,28 +79,28 @@ private:
 
 #define DECLARE_RC_UNIT_TAG(u,t) \
    REPORTERTPL rptRcUnitTagT<u>; \
-   typedef rptRcUnitTagT<u> t;
+   using t = rptRcUnitTagT<u>;
 
-DECLARE_RC_UNIT_TAG( unitMass,           rptMassUnitTag           );
-DECLARE_RC_UNIT_TAG( unitMassPerLength,  rptMassPerLengthUnitTag  );
-DECLARE_RC_UNIT_TAG( unitLength,         rptLengthUnitTag         );
-DECLARE_RC_UNIT_TAG( unitTime,           rptTimeUnitTag           );
-DECLARE_RC_UNIT_TAG( unitTemperature,    rptTemperatureUnitTag    );
-DECLARE_RC_UNIT_TAG( unitAngle,          rptAngleUnitTag          );
-DECLARE_RC_UNIT_TAG( unitLength2,        rptLength2UnitTag        );
-DECLARE_RC_UNIT_TAG( unitLength3,        rptLength3UnitTag        );
-DECLARE_RC_UNIT_TAG( unitLength4,        rptLength4UnitTag        );
-DECLARE_RC_UNIT_TAG( unitPressure,       rptPressureUnitTag       );
-DECLARE_RC_UNIT_TAG( unitDensity,        rptDensityUnitTag        );
-DECLARE_RC_UNIT_TAG( unitForce,          rptForceUnitTag          );
-DECLARE_RC_UNIT_TAG( unitForcePerLength, rptForcePerLengthUnitTag );
-DECLARE_RC_UNIT_TAG( unitMomentPerAngle, rptMomentPerAngleUnitTag );
-DECLARE_RC_UNIT_TAG( unitMoment,         rptMomentUnitTag         );
-DECLARE_RC_UNIT_TAG( unitPerLength,      rptPerLengthUnitTag      );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Mass,           rptMassUnitTag           );
+DECLARE_RC_UNIT_TAG( WBFL::Units::MassPerLength,  rptMassPerLengthUnitTag  );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Length,         rptLengthUnitTag         );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Time,           rptTimeUnitTag           );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Temperature,    rptTemperatureUnitTag    );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Angle,          rptAngleUnitTag          );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Length2,        rptLength2UnitTag        );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Length3,        rptLength3UnitTag        );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Length4,        rptLength4UnitTag        );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Pressure,       rptPressureUnitTag       );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Density,        rptDensityUnitTag        );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Force,          rptForceUnitTag          );
+DECLARE_RC_UNIT_TAG( WBFL::Units::ForcePerLength, rptForcePerLengthUnitTag );
+DECLARE_RC_UNIT_TAG( WBFL::Units::MomentPerAngle, rptMomentPerAngleUnitTag );
+DECLARE_RC_UNIT_TAG( WBFL::Units::Moment,         rptMomentUnitTag         );
+DECLARE_RC_UNIT_TAG( WBFL::Units::PerLength,      rptPerLengthUnitTag      );
 
-typedef rptPressureUnitTag rptStressUnitTag;
-typedef rptLength2UnitTag  rptAreaUnitTag;
-typedef rptLength3UnitTag  rptVolumeUnitTag;
-typedef rptLengthUnitTag   rptAreaPerLengthUnitTag;
+using rptStressUnitTag = rptPressureUnitTag;
+using rptAreaUnitTag = rptLength2UnitTag;
+using rptVolumeUnitTag = rptLength3UnitTag;
+using rptAreaPerLengthUnitTag = rptLengthUnitTag;
 
 #endif // INCLUDED_REPORTER_RCUNITTAGT_H_

@@ -31,19 +31,21 @@
 #include "resource.h"       // main symbols
 #include <MathEx.h>
 #include <vector>
+#include <array>
 
-typedef struct ColumnSpacingData
+struct ColumnSpacingData
 {
    ColumnSpacingData() { m_Overhang[0] = 0.0; m_Overhang[1] = 0.0; }
 
    bool operator==(const struct ColumnSpacingData& other) const
    {
-      return (IsEqual(m_Overhang[0],other.m_Overhang[0]) && IsEqual(m_Overhang[1],other.m_Overhang[1]) && m_Spacing == other.m_Spacing);
+      return (IsEqual(m_Overhang[0], other.m_Overhang[0]) && IsEqual(m_Overhang[1], other.m_Overhang[1]) && m_Spacing == other.m_Spacing);
    }
 
    std::vector<Float64> m_Spacing; // one item for each space between columns
-   Float64 m_Overhang[2]; // Left and right cap beam overhang from CL exterior column (0=Left,1=Right)
-} ColumnSpacingData;
+   std::array<Float64,2> m_Overhang; // Left and right cap beam overhang from CL exterior column (0=Left,1=Right)
+};
+using ColumnSpacingData = ColumnSpacingData;
 
 /////////////////////////////////////////////////////////////////////////////
 // CColumnLayout

@@ -70,9 +70,9 @@ public:
 
    // Display List Management
    STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) override;
-   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list) override;
+   STDMETHOD_(void,GetDisplayList)(IndexType idx,iDisplayList** list) override;
    STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) override;
-   STDMETHOD_(CollectionIndexType,GetDisplayListCount)() override;
+   STDMETHOD_(IndexType,GetDisplayListCount)() override;
    STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) override;
    STDMETHOD_(void,ClearDisplayLists)() override;
 
@@ -85,10 +85,10 @@ public:
    STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) override;
    STDMETHOD_(void,ClearDisplayObjects)() override;
    STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) override;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() override;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)() override;
+   STDMETHOD_(IndexType,GetDisplayObjectCount)() override;
+   STDMETHOD_(IndexType,GetDisplayObjectFactoryCount)() override;
    STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) override;
-   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory) override;
+   STDMETHOD_(void,GetDisplayObjectFactory)(IndexType idx, iDisplayObjectFactory** factory) override;
 
    STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) override;
    STDMETHOD_(void,SelectObjects)(CRect r) override;
@@ -168,16 +168,16 @@ public:
 private:
    CDisplayView* m_pView;
 
-   typedef CAdapt< CComPtr<iDisplayObjectFactory> > DisplayObjectFactoriesItem; 
-   typedef std::vector<DisplayObjectFactoriesItem> DisplayObjectFactoriesContainer; 
-   typedef DisplayObjectFactoriesContainer::iterator DisplayObjectFactoriesIterator; 
+   using DisplayObjectFactoriesItem = CAdapt< CComPtr<iDisplayObjectFactory>>;
+   using DisplayObjectFactoriesContainer = std::vector<DisplayObjectFactoriesItem>;
+   using DisplayObjectFactoriesIterator = DisplayObjectFactoriesContainer::iterator;
    DisplayObjectFactoriesContainer m_pDisplayObjectFactories;
 
    CComPtr<iTaskFactory> m_pTaskFactory;
    CComPtr<iTask> m_pCurrTask;
 
-   typedef CAdapt<CComPtr<iDraggable> > DragMember;
-   typedef std::vector<DragMember> DragList;
+   using DragMember = CAdapt<CComPtr<iDraggable> >;
+   using DragList = std::vector<DragMember>;
    DragList m_DragList;
 
    COleDropTarget m_DropTarget; // This view is an OLE drop target
@@ -187,8 +187,8 @@ private:
 
    iDropSite* m_pDropSite; // Object that a drag/drop payload is about to be dropped on
 
-   typedef CAdapt<CComPtr<iDisplayList> > DisplayListItem;
-   typedef std::vector<DisplayListItem> DisplayListContainer;
+   using DisplayListItem = CAdapt<CComPtr<iDisplayList> >;
+   using DisplayListContainer = std::vector<DisplayListItem> ;
    DisplayListContainer m_DisplayLists;
 
    BOOL m_bLBtnMultiSelectEnabled;

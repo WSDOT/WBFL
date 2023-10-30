@@ -85,7 +85,7 @@ public:
 	STDMETHOD(GirderPathOffset)(IGenericBridge* bridge,GirderIDType ssMbrID, SegmentIndexType segIdx, VARIANT varStation, Float64* offset) override;
    STDMETHOD(GirderPathPoint)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx, VARIANT varStation,VARIANT varDirection,VARIANT_BOOL vbProject,IPoint2d** ppPoint) override;
    STDMETHOD(DeckEdgePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ IPoint2d** point) override;
-   STDMETHOD(DeckEdgePoints)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ DirectionType side,/*[in]*/ CollectionIndexType nPoints,/*[out,retval]*/ IPoint2dCollection** points) override;
+   STDMETHOD(DeckEdgePoints)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ DirectionType side,/*[in]*/ IndexType nPoints,/*[out,retval]*/ IPoint2dCollection** points) override;
    STDMETHOD(DeckOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out]*/IStation** ppOffsetStation,/*[out]*/ Float64* pOffset) override;
    STDMETHOD(CurbOffset)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out]*/IStation** ppOffsetStation,/*[out]*/ Float64* pOffset) override;
    STDMETHOD(DeckOverhang)(IGenericBridge* bridge,Float64 station,GirderIDType ssMbrID,IDirection* direction,DirectionType side,Float64* pOverhang) override;

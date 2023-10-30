@@ -25,105 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XShear.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdXShear
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXShear::lrfdXShear(Reason reason,
-                       LPCTSTR file,
-                       Int16 line) :
-sysXBase(file,line),
+XShear::XShear(Reason reason, LPCTSTR file, Uint32 line) :
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-lrfdXShear::lrfdXShear(const lrfdXShear& rOther) :
-sysXBase(rOther)
+void XShear::Throw() const
 {
-   MakeCopy(rOther);
+   throw *static_cast<const XShear*>(this);
 }
 
-lrfdXShear::~lrfdXShear()
+Int32 XShear::GetReason() const noexcept
 {
+   return (Int32)m_Reason;
 }
 
-//======================== OPERATORS  =======================================
-lrfdXShear& lrfdXShear::operator= (const lrfdXShear& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdXShear::Throw() const
-{
-   throw *static_cast<const lrfdXShear*>(this);
-}
-
-Int32 lrfdXShear::GetReason() const
+XShear::Reason XShear::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXShear::Reason lrfdXShear::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXShear::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXShear::Dump(dbgDumpContext& os) const
-{
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXShear::MakeCopy(const lrfdXShear& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXShear::MakeAssignment(const lrfdXShear& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

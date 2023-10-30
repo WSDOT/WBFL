@@ -53,12 +53,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -84,6 +85,10 @@
       <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -98,12 +103,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\EAF.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <OptimizeReferences>false</OptimizeReferences>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -146,6 +153,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -158,13 +168,16 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\EAF.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -180,12 +193,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Graphing\Graphing.vcxproj">
+      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\GraphManagerAgent\GraphManagerAgent.vcxproj">
       <Project>{d6cd1a2c-0027-4ed4-b892-fda3852d47ee}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\GraphManager\GraphManager.vcxproj">
-      <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\Mfctools\Mfctools.vcxproj">
@@ -247,6 +259,7 @@
     <ClCompile Include="EAFHelpWindowThread.cpp" />
     <ClCompile Include="EAFInterfaceCache.cpp" />
     <ClCompile Include="EAFLicensePlateChildFrame.cpp" />
+    <ClCompile Include="EAFMacroTxn.cpp" />
     <ClCompile Include="EAFMainFrame.cpp" />
     <ClCompile Include="EAFMDISnapper.cpp" />
     <ClCompile Include="EAFMenu.cpp" />
@@ -262,6 +275,8 @@
     <ClCompile Include="EAFStatusItem.cpp" />
     <ClCompile Include="EAFTemplateGroup.cpp" />
     <ClCompile Include="EAFToolBar.cpp" />
+    <ClCompile Include="EAFTransaction.cpp" />
+    <ClCompile Include="EAFTxnManager.cpp" />
     <ClCompile Include="EAFUnits.cpp" />
     <ClCompile Include="EAFUtilities.cpp" />
     <ClCompile Include="EAFView.cpp" />
@@ -325,6 +340,7 @@
     <ClInclude Include="..\Include\EAF\EAFDocTemplate.h" />
     <ClInclude Include="..\Include\EAF\EAFDocTemplateRegistrar.h" />
     <ClInclude Include="..\Include\EAF\EAFDocument.h" />
+    <ClInclude Include="..\Include\EAF\EAFMacroTxn.h" />
     <ClInclude Include="..\Include\EAF\EAFPluginDocumentationIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFDocumentPlugin.h" />
     <ClInclude Include="..\Include\EAF\EAFExp.h" />
@@ -356,7 +372,9 @@
     <ClInclude Include="..\Include\EAF\EAFStatusItem.h" />
     <ClInclude Include="..\Include\EAF\EAFTemplateGroup.h" />
     <ClInclude Include="..\Include\EAF\EAFToolBar.h" />
+    <ClInclude Include="..\Include\EAF\EAFTransaction.h" />
     <ClInclude Include="..\Include\EAF\EAFTransactions.h" />
+    <ClInclude Include="..\Include\EAF\EAFTxnManager.h" />
     <ClInclude Include="..\Include\EAF\EAFTypes.h" />
     <ClInclude Include="..\Include\EAF\EAFUIIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFUnits.h" />
@@ -405,9 +423,6 @@
     <Image Include="res\lpframe.bmp" />
     <Image Include="res\SmallIconView.ico" />
     <Image Include="res\Toolbar.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

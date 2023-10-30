@@ -34,7 +34,8 @@
 #endif // _MSC_VER > 1000
 
 
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 
 #ifndef _AFX_NO_OLE_SUPPORT
@@ -66,10 +67,16 @@ extern CComModule _Module;
 
 #include <WBFLTools.h>
 
-#include <UnitMgt\UnitMgt.h>
 #include <afxdlgs.h>
 #include <afxwin.h>
 #include <afxmt.h>
+
+
+// #import is not compatible with the /MP compiler option
+// https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
+// #import directives into the PCH
+#import <mshtml.tlb>
+
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

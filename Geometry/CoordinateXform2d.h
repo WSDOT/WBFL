@@ -29,6 +29,7 @@
 #define __COORDINATEXFORM2D_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/CoordinateXform2d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CCoordinateXform2d
@@ -37,16 +38,11 @@ class ATL_NO_VTABLE CCoordinateXform2d :
 	public CComCoClass<CCoordinateXform2d, &CLSID_CoordinateXform2d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CCoordinateXform2d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public ICoordinateXform2d,
-   public IStructuredStorage2,
-   public IPersist
+   public ICoordinateXform2d
 {
 public:
 	CCoordinateXform2d()
 	{
-      m_Angle = 0.0;
-      m_CosAngle = 1.0;
-      m_SinAngle = 0.0;
 	}
 
    HRESULT FinalConstruct();
@@ -58,42 +54,25 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCoordinateXform2d)
 	COM_INTERFACE_ENTRY(ICoordinateXform2d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   CComPtr<IPoint2d> m_Origin;
-   Float64 m_Angle;
-   Float64 m_SinAngle;
-   Float64 m_CosAngle;
-   STDMETHODIMP OldToNew(IPoint2d* point);
-   STDMETHODIMP NewToOld(IPoint2d* point);
+   WBFL::Geometry::CoordinateXform2d m_Xform;
 
-// ISupportsErrorInfo
+   // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ICoordinateXform2d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(XformEx)(IPoint2d* point, XformType type, IPoint2d** result) override;
    STDMETHOD(Xform)(/*[in,out]*/ IPoint2d** point,/*[in]*/ XformType type) override;
 	STDMETHOD(get_RotationAngle)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_RotationAngle)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_NewOrigin)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_NewOrigin)(/*[in]*/ IPoint2d* newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
+	STDMETHOD(put_NewOrigin)(/*[in]*/ IPoint2d* newVal) override;
 };
 
 #endif //__COORDINATEXFORM2D_H_

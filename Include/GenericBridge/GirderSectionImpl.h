@@ -145,6 +145,26 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IGirderSection implementation
+   STDMETHODIMP get_GirderShape(IShape** ppShape)
+   {
+      return m_Beam->get_Shape(ppShape);
+   }
+
+   STDMETHODIMP get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+   {
+      CHECK_RETVAL(pnVoids);
+      *pnVoids = 0;
+      return S_OK;
+   }
+
+   STDMETHODIMP get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+   {
+      CHECK_RETOBJ(ppShape);
+      ATLASSERT(false);
+      *ppShape = nullptr;
+      return E_INVALIDARG;
+   }
+
    STDMETHODIMP get_WorkPoint(IPoint2d** ppWorkPoint) override
    {
       // work point is at top center
@@ -403,6 +423,11 @@ public:
 
    ////////////////////////////////////////////////////////////////////////
    // IShape implementation
+   STDMETHODIMP FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist) override
+   {
+      return m_Shape->FurthestPoint(line, ppPoint, dist);
+   }
+
    STDMETHODIMP FurthestDistance(ILine2d* line,Float64 *pVal) override
    { 
       return m_Shape->FurthestDistance(line,pVal);
@@ -525,17 +550,17 @@ public:
       return m_CompositeShape->get__NewEnum(pVal);
    }
 
-   STDMETHODIMP get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal) override
+   STDMETHODIMP get_Item(IndexType idx, ICompositeShapeItem* *pVal) override
    {
       return m_CompositeShape->get_Item(idx,pVal);
    }
 
-   STDMETHODIMP ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override
+   STDMETHODIMP ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem) override
    {
       return m_CompositeShape->ReplaceEx(idx,pShapeItem);
    }
 
-   STDMETHODIMP Replace(CollectionIndexType idx,IShape* pShape) override
+   STDMETHODIMP Replace(IndexType idx,IShape* pShape) override
    {
       return m_CompositeShape->Replace(idx,pShape);
    }
@@ -550,7 +575,7 @@ public:
       return m_CompositeShape->AddShapeEx(shapeItem);
    }
 
-	STDMETHODIMP Remove(CollectionIndexType idx) override
+	STDMETHODIMP Remove(IndexType idx) override
    {
       return m_CompositeShape->Remove(idx);
    }
@@ -560,7 +585,7 @@ public:
       return m_CompositeShape->Clear();
    }
 
-   STDMETHODIMP get_Count(CollectionIndexType *pVal) override
+   STDMETHODIMP get_Count(IndexType *pVal) override
    {
       return m_CompositeShape->get_Count(pVal);
    }
@@ -573,11 +598,6 @@ public:
    STDMETHODIMP get_XYPosition(IXYPosition* *pVal) override
    {
       return m_CompositeShape->get_XYPosition(pVal);
-   }
-
-   STDMETHODIMP get_StructuredStorage(IStructuredStorage2* *pStrStg) override
-   {
-      return m_CompositeShape->get_StructuredStorage(pStrStg);
    }
 };
 

@@ -38,13 +38,13 @@ static char THIS_FILE[] = __FILE__;
 // CReportSpecDlg dialog
 
 
-CReportSpecDlg::CReportSpecDlg(const CReportDescription* pRptDesc, std::shared_ptr<CReportSpecification>& pRptSpec,CWnd* pParent /*=nullptr*/)
-	: CDialog(CReportSpecDlg::IDD, pParent), m_pRptDesc(pRptDesc), m_pInitRptSpec(pRptSpec)
+CReportSpecDlg::CReportSpecDlg(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification>& pRptSpec,CWnd* pParent /*=nullptr*/)
+	: CDialog(CReportSpecDlg::IDD, pParent), m_RptDesc(rptDesc), m_pInitRptSpec(pRptSpec)
 {
 	//{{AFX_DATA_INIT(CReportSpecDlg)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
-   m_ReportName = pRptDesc->GetReportName();
+   m_ReportName = rptDesc.GetReportName().c_str();
 }
 
 
@@ -66,7 +66,7 @@ void CReportSpecDlg::DoDataExchange(CDataExchange* pDX)
       {
          if ( m_clbChapterList.GetCheck( ch ) == 1 )
          {
-            CChapterInfo chInfo;
+            ChapterInfo chInfo;
             CString strBuffer;
             m_clbChapterList.GetText( ch, strBuffer);
             chInfo.Key = strBuffer;
@@ -114,11 +114,11 @@ void CReportSpecDlg::UpdateChapterList()
    // Clear out the list box
    m_clbChapterList.ResetContent();
 
-   std::vector<CChapterInfo> vchInfo = m_pRptDesc->GetChapterInfo();
-   std::vector<CChapterInfo>::iterator iter;
+   std::vector<ChapterInfo> vchInfo = m_RptDesc.GetChapterInfo();
+   std::vector<ChapterInfo>::iterator iter;
    for ( iter = vchInfo.begin(); iter != vchInfo.end(); iter++ )
    {
-      CChapterInfo chInfo = *iter;
+      ChapterInfo chInfo = *iter;
       int idx = m_clbChapterList.AddString( chInfo.Name.c_str() );
       if ( idx != LB_ERR )
       {
@@ -141,11 +141,11 @@ void CReportSpecDlg::ClearChapterCheckMarks()
 void CReportSpecDlg::InitChapterListFromSpec()
 {
    ClearChapterCheckMarks();
-   std::vector<CChapterInfo> chInfo = m_pInitRptSpec->GetChapterInfo();
-   std::vector<CChapterInfo>::iterator iter;
+   std::vector<ChapterInfo> chInfo = m_pInitRptSpec->GetChapterInfo();
+   std::vector<ChapterInfo>::iterator iter;
    for ( iter = chInfo.begin(); iter != chInfo.end(); iter++ )
    {
-      CChapterInfo& ch = *iter;
+      ChapterInfo& ch = *iter;
       int cChapters = m_clbChapterList.GetCount();
       for ( int idx = 0; idx < cChapters; idx++ )
       {

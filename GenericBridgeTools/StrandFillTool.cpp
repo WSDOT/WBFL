@@ -73,7 +73,7 @@ STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEnd
    pEndGridFiller->GetMaxStrandFill(&end_fill);
    pHPGridFiller->GetMaxStrandFill(&hp_fill);
 
-   CollectionIndexType num_hp, num_end;
+   IndexType num_hp, num_end;
    hp_fill->get_Count(&num_hp);
    end_fill->get_Count(&num_end);
    if (num_hp != num_end)
@@ -86,7 +86,7 @@ STDMETHODIMP CStrandFillTool::ComputeHarpedStrandMaxFill(IStrandGridFiller* pEnd
    array.CoCreateInstance(CLSID_IndexArray);
    array->Reserve(num_hp);
    *pMaxStrandCount = 0;
-   for ( CollectionIndexType i = 0; i < num_hp; i++ )
+   for ( IndexType i = 0; i < num_hp; i++ )
    {
       StrandIndexType hp,end;
       hp_fill->get_Item(i,&hp);

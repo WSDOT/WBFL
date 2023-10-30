@@ -70,7 +70,7 @@ void CPOIStressPoints::FinalRelease()
    }
 }
 
-STDMETHODIMP CPOIStressPoints::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CPOIStressPoints::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 	*pVal = m_Container.size();
@@ -283,7 +283,7 @@ STDMETHODIMP CPOIStressPoints::get__EnumElements(/*[out, retval]*/ IEnumPOIStres
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumPOIStressPoints, &IID_IEnumPOIStressPoints, IPOIStressPointsItem*, CustomCopyType, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumPOIStressPoints, &IID_IEnumPOIStressPoints, IPOIStressPointsItem*, CustomCopyType, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -309,7 +309,7 @@ STDMETHODIMP CPOIStressPoints::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyType, ContainerType>;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -324,19 +324,19 @@ STDMETHODIMP CPOIStressPoints::get__NewEnum(IUnknown** ppUnk)
 }
 
 // _IStressPointsEvents
-HRESULT CPOIStressPoints::OnStressPointsChanged(CollectionIndexType index)
+HRESULT CPOIStressPoints::OnStressPointsChanged(IndexType index)
 {
    Fire_OnPOIStressPointsChanged(this);
    return S_OK;
 }
 
-HRESULT CPOIStressPoints::OnStressPointsAdded(CollectionIndexType index)
+HRESULT CPOIStressPoints::OnStressPointsAdded(IndexType index)
 {
    Fire_OnPOIStressPointsChanged(this);
    return S_OK;
 }
 
-HRESULT CPOIStressPoints::OnStressPointsRemoved(CollectionIndexType index)
+HRESULT CPOIStressPoints::OnStressPointsRemoved(IndexType index)
 {
    Fire_OnPOIStressPointsChanged(this);
    return S_OK;
@@ -424,7 +424,7 @@ STDMETHODIMP CPOIStressPoints::Save(IStructuredSave2 * psave)
    {
       hr = psave->BeginUnit(CComBSTR("POIStressPoints"), MY_VER);
 
-      CollectionIndexType cnt = m_Container.size();
+      IndexType cnt = m_Container.size();
       hr = psave->put_Property(CComBSTR("Count"),_variant_t(cnt));
 
       IteratorType it( m_Container.begin() );

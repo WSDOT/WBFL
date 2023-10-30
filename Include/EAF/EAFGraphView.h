@@ -37,7 +37,7 @@ class CEAFGraphChildFrame;
 struct EAFCLASS CEAFGraphViewCreationData
 {
    // The graph manager
-   CGraphManager* m_pGraphMgr;  // Use this when for regular Doc/View
+	WBFL::Graphing::GraphManager* m_pGraphMgr;  // Use this when for regular Doc/View
    IGraphManager* m_pIGraphMgr; // Use this when for the Agent/Broker architecture
 
    IndexType m_GraphIndex; // Index of the graph to initialize the view with
@@ -75,7 +75,7 @@ public:
    virtual CRect GetDrawingRect();
 
    CEAFGraphChildFrame* GetFrame();
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder();
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder();
 
 	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 
@@ -104,7 +104,7 @@ protected:
 
    CRect m_PrintRect;
    bool m_bIsPrinting;
-	BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+	BOOL m_bUpdateError;   // true if an error occurred while updating the report contents
 	std::_tstring m_ErrorMsg;
 
 };

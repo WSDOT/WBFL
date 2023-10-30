@@ -21,223 +21,164 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_MEASURE_H_
-#define INCLUDED_UNITS_MEASURE_H_
 #pragma once
 
 #include <Units\PhysicalT.h>
 #include <Units\UnitsExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   unitMeasure
-
-   Encapsulates some specific units of measure.
-
-
-DESCRIPTION
-   Encapsulates the instantiation of the physical unit object.  This is a
-   utility class that contains only public static constant data members.
-
-LOG
-   rab : 10.29.1997 : Created file
-*****************************************************************************/
-
-class UNITSCLASS unitMeasure
+namespace WBFL
 {
-public:
-   // GROUP: DATA MEMBERS
-   static const unitMass Kilogram;
-   static const unitMass Gram;
-   static const unitMass MetricTon;
-   static const unitMass Slug;
-   static const unitMass PoundMass;
-   static const unitMass KSlug;
-   static const unitMass _12Slug;
-   static const unitMass _12KSlug;
+   namespace Units
+   {
+      /// Encapsulates instances of the physical unit object for specific units of measure
+      class UNITSCLASS Measure
+      {
+      public:
+         Measure() = delete;
+         Measure(const Measure&) = delete;
+         Measure& operator=(const Measure&) = delete;
 
-   static const unitMassPerLength KgPerMeter;
-   static const unitMassPerLength LbmPerFeet;
-   static const unitMassPerLength SlugPerFeet;
-   static const unitMassPerLength LbfPerFeet;  // This is a minor hack to make the
-                                               // use of mass in SI mode the same
-                                               // as force in US mode
+         static const Mass Kilogram;
+         static const Mass Gram;
+         static const Mass MetricTon;
+         static const Mass Slug;
+         static const Mass PoundMass;
+         static const Mass KSlug;
+         static const Mass _12Slug;
+         static const Mass _12KSlug;
 
-   static const unitLength Meter;
-   static const unitLength Millimeter;
-   static const unitLength Centimeter;
-   static const unitLength Kilometer;
-   static const unitLength Feet;
-   static const unitLength USSurveyFoot;
-   static const unitLength Inch;
-   static const unitLength Mile;
-   static const unitLength Yard;
-   static const unitLength USSurveyYard;
+         static const MassPerLength KgPerMeter;
+         static const MassPerLength LbmPerFeet;
+         static const MassPerLength SlugPerFeet;
+         static const MassPerLength LbfPerFeet;  // This is a minor hack to make the
+                                                 // use of mass in SI mode the same
+                                                 // as force in US mode
 
-   static const unitLength2 Meter2;
-   static const unitLength2 Millimeter2;
-   static const unitLength2 Centimeter2;
-   static const unitLength2 Kilometer2;
-   static const unitLength2 Feet2;
-   static const unitLength2 Inch2;
-   static const unitLength2 Mile2;
-   static const unitLength2 Yard2;
+         static const Length Meter;
+         static const Length Millimeter;
+         static const Length Centimeter;
+         static const Length Kilometer;
+         static const Length Feet;
+         static const Length USSurveyFoot;
+         static const Length Inch;
+         static const Length Mile;
+         static const Length Yard;
+         static const Length USSurveyYard;
 
-   static const unitLength3 Meter3;
-   static const unitLength3 Millimeter3;
-   static const unitLength3 Centimeter3;
-   static const unitLength3 Kilometer3;
-   static const unitLength3 Feet3;
-   static const unitLength3 Inch3;
-   static const unitLength3 Mile3;
-   static const unitLength3 Yard3;
+         static const Length2 Meter2;
+         static const Length2 Millimeter2;
+         static const Length2 Centimeter2;
+         static const Length2 Kilometer2;
+         static const Length2 Feet2;
+         static const Length2 Inch2;
+         static const Length2 Mile2;
+         static const Length2 Yard2;
 
-   static const unitLength4 Meter4;
-   static const unitLength4 Millimeter4;
-   static const unitLength4 Centimeter4;
-   static const unitLength4 Kilometer4;
-   static const unitLength4 Feet4;
-   static const unitLength4 Inch4;
-   static const unitLength4 Mile4;
-   static const unitLength4 Yard4;
+         static const Length3 Meter3;
+         static const Length3 Millimeter3;
+         static const Length3 Centimeter3;
+         static const Length3 Kilometer3;
+         static const Length3 Feet3;
+         static const Length3 Inch3;
+         static const Length3 Mile3;
+         static const Length3 Yard3;
 
-   static const unitAreaPerLength Meter2PerMeter;
-   static const unitAreaPerLength Millimeter2PerMillimeter;
-   static const unitAreaPerLength Millimeter2PerMeter;
-   static const unitAreaPerLength Feet2PerFoot;
-   static const unitAreaPerLength Inch2PerInch;
-   static const unitAreaPerLength Inch2PerFoot;
+         static const Length4 Meter4;
+         static const Length4 Millimeter4;
+         static const Length4 Centimeter4;
+         static const Length4 Kilometer4;
+         static const Length4 Feet4;
+         static const Length4 Inch4;
+         static const Length4 Mile4;
+         static const Length4 Yard4;
 
-   static const unitPerLength PerMeter;
-   static const unitPerLength PerMillimeter;
-   static const unitPerLength PerInch;
-   static const unitPerLength PerFeet;
+         static const AreaPerLength Meter2PerMeter;
+         static const AreaPerLength Millimeter2PerMillimeter;
+         static const AreaPerLength Millimeter2PerMeter;
+         static const AreaPerLength Feet2PerFoot;
+         static const AreaPerLength Inch2PerInch;
+         static const AreaPerLength Inch2PerFoot;
 
-   static const unitTime Second;
-   static const unitTime Minute;
-   static const unitTime Hour;
-   static const unitTime Day;
+         static const PerLength PerMeter;
+         static const PerLength PerMillimeter;
+         static const PerLength PerInch;
+         static const PerLength PerFeet;
 
-   static const unitTemperature Celcius;
-   static const unitTemperature Fahrenheit;
+         static const Time Second;
+         static const Time Minute;
+         static const Time Hour;
+         static const Time Day;
 
-   static const unitAngle Radian;
-   static const unitAngle Degree;
+         static const Temperature Celsius;
+         static const Temperature Fahrenheit;
 
-   static const unitPressure Pa;
-   static const unitPressure kPa;
-   static const unitPressure MPa;
-   static const unitPressure PSI;
-   static const unitPressure PSF;
-   static const unitPressure KSI;
-   static const unitPressure KSF;
+         static const Angle Radian;
+         static const Angle Degree;
 
-   static const unitUnitWeight NewtonPerMeter3;
-   static const unitUnitWeight PCI;
-   static const unitUnitWeight PCF;
+         static const Pressure Pa;
+         static const Pressure kPa;
+         static const Pressure MPa;
+         static const Pressure PSI;
+         static const Pressure PSF;
+         static const Pressure KSI;
+         static const Pressure KSF;
 
-   static const unitDensity KgPerMeter3;
-   static const unitDensity LbmPerFeet3;
-   static const unitDensity SlugPerFeet3;
-   static const unitDensity LbfPerFeet3;
-   static const unitDensity KipPerFeet3;
+         static const UnitWeight NewtonPerMeter3;
+         static const UnitWeight PCI;
+         static const UnitWeight PCF;
 
-   static const unitForce Newton;
-   static const unitForce Kilonewton;
-   static const unitForce Pound;
-   static const unitForce Kip;
-   static const unitForce Ton;
+         static const Density KgPerMeter3;
+         static const Density LbmPerFeet3;
+         static const Density SlugPerFeet3;
+         static const Density LbfPerFeet3;
+         static const Density KipPerFeet3;
 
-   static const unitForcePerLength NewtonPerMeter;
-   static const unitForcePerLength KilonewtonPerMeter;
-   static const unitForcePerLength NewtonPerMillimeter;
-   static const unitForcePerLength LbfPerFoot;
-   static const unitForcePerLength LbfPerInch;
-   static const unitForcePerLength KipPerFoot;
-   static const unitForcePerLength KipPerInch;
+         static const Force Newton;
+         static const Force Kilonewton;
+         static const Force Pound;
+         static const Force Kip;
+         static const Force Ton;
 
-   static const unitMoment NewtonMeter;
-   static const unitMoment KilonewtonMeter;
-   static const unitMoment NewtonMillimeter;
-   static const unitMoment InchLbf;
-   static const unitMoment KipFeet;
-   static const unitMoment KipInch;
+         static const ForcePerLength NewtonPerMeter;
+         static const ForcePerLength KilonewtonPerMeter;
+         static const ForcePerLength NewtonPerMillimeter;
+         static const ForcePerLength LbfPerFoot;
+         static const ForcePerLength LbfPerInch;
+         static const ForcePerLength KipPerFoot;
+         static const ForcePerLength KipPerInch;
 
-   static const unitMomentPerAngle NewtonMeterPerRadian;
-   static const unitMomentPerAngle KiloNewtonMeterPerRadian;
-   static const unitMomentPerAngle KipInchPerRadian;
-   static const unitMomentPerAngle KipFeetPerRadian;
+         static const Moment NewtonMeter;
+         static const Moment KilonewtonMeter;
+         static const Moment NewtonMillimeter;
+         static const Moment InchLbf;
+         static const Moment KipFeet;
+         static const Moment KipInch;
 
-   static const unitSqrtPressure SqrtPa;
-   static const unitSqrtPressure SqrtMPa;
-   static const unitSqrtPressure SqrtKSI;
+         static const MomentPerAngle NewtonMeterPerRadian;
+         static const MomentPerAngle KiloNewtonMeterPerRadian;
+         static const MomentPerAngle KipInchPerRadian;
+         static const MomentPerAngle KipFeetPerRadian;
 
-   static const unitAcceleration MeterPerSec2;
-   static const unitAcceleration FeetPerSec2;
+         static const SqrtPressure SqrtPa;
+         static const SqrtPressure SqrtMPa;
+         static const SqrtPressure SqrtKSI;
 
-   static const unitForceLength2 KipInch2;
-   static const unitForceLength2 KipFoot2;
-   static const unitForceLength2 LbfInch2;
-   static const unitForceLength2 LbfFoot2;
-   static const unitForceLength2 NewtonMeter2;
-   static const unitForceLength2 NewtonMillimeter2;
-   static const unitForceLength2 KilonewtonMeter2;
+         static const Acceleration MeterPerSec2;
+         static const Acceleration FeetPerSec2;
 
-   static const unitVelocity KilometerPerHour;
-   static const unitVelocity MeterPerSecond;
-   static const unitVelocity MilePerHour;
-   static const unitVelocity FeetPerSecond;
+         static const ForceLength2 KipInch2;
+         static const ForceLength2 KipFoot2;
+         static const ForceLength2 LbfInch2;
+         static const ForceLength2 LbfFoot2;
+         static const ForceLength2 NewtonMeter2;
+         static const ForceLength2 NewtonMillimeter2;
+         static const ForceLength2 KilonewtonMeter2;
 
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   unitMeasure();
-   unitMeasure& operator=(const unitMeasure&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         static const Velocity KilometerPerHour;
+         static const Velocity MeterPerSecond;
+         static const Velocity MilePerHour;
+         static const Velocity FeetPerSecond;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_UNITS_MEASURE_H_
 

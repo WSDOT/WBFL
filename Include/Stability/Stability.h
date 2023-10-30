@@ -49,3 +49,4 @@
 #include <Stability/LiftingTensionStressLimit.h>
 #include <Stability/HaulingTensionStressLimit.h>
 #include <Stability/OneEndSeatedTensionStressLimit.h>
+#include <Stability/ControllingCases.h>

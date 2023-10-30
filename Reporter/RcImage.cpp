@@ -27,12 +27,6 @@
 #include <Reporter\RcVisitor.h>
 #include <sstream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcImage::rptRcImage() :
 rptReportContent(),
 m_FileName( _T("Unspecified") ),
@@ -81,7 +75,7 @@ void rptRcImage::Accept( rptRcVisitor& rVisitor )
    // test to make sure the file exists
    WIN32_FIND_DATA findData;
    HANDLE handle = ::FindFirstFile(m_FileName.c_str(),&findData);
-   ASSERT(handle != INVALID_HANDLE_VALUE);
+   CHECK(handle != INVALID_HANDLE_VALUE);
    if ( handle != INVALID_HANDLE_VALUE )
       ::FindClose(handle);
 #endif

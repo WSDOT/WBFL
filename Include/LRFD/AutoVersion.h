@@ -22,127 +22,46 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_AUTOVERSION_H_
-#define INCLUDED_LRFD_AUTOVERSION_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
+#include <Lrfd/MBEManager.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdAutoVersion
-
-   Automatic object used to reset specification version settings.
-
-
-DESCRIPTION
-   Automatic object used to reset specification version settings.
-
-LOG
-   rab : 12.03.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdAutoVersion
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Automatic object used to reset LRFD specification edition settings.
+      class LRFDCLASS BDSAutoVersion
+      {
+      public:
+         /// @brief Sets edition and units to the current edition and units returned from BDSManager.
+         BDSAutoVersion();
 
-   //------------------------------------------------------------------------
-   // Default constructor.
-   // Sets version and units to the current version and units returned from
-   // lrfdVersionMgr.
-   lrfdAutoVersion();
+         BDSAutoVersion(const BDSAutoVersion&) = delete;
 
-   //------------------------------------------------------------------------
-   lrfdAutoVersion(lrfdVersionMgr::Version v, lrfdVersionMgr::Units u);
+         ~BDSAutoVersion();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdAutoVersion(const lrfdAutoVersion& rOther);
+         BDSAutoVersion& operator=(const BDSAutoVersion&) = delete;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdAutoVersion();
+      private:
+         BDSManager::Edition m_Edition;
+         BDSManager::Units m_Units;
+      };
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdAutoVersion& operator = (const lrfdAutoVersion& rOther);
+      /// @brief Automatic object used to reset LRFR specification edition settings.
+      class LRFDCLASS MBEAutoVersion
+      {
+      public:
+         MBEAutoVersion();
+         MBEAutoVersion(const MBEAutoVersion&) = delete;
+         ~MBEAutoVersion();
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   //------------------------------------------------------------------------
-   // Sets the spec version that will be set when this object is destroyed.
-   void SetVersion(lrfdVersionMgr::Version v);
+         MBEAutoVersion& operator=(const MBEAutoVersion& rOther) = delete;
 
-   //------------------------------------------------------------------------
-   // Sets the spec units that will be set when this object is destroyed.
-   void SetUnits(lrfdVersionMgr::Units u);
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdAutoVersion& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdAutoVersion& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   lrfdVersionMgr::Version m_Version;
-   lrfdVersionMgr::Units   m_Units;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         MBEManager::Edition m_Edition;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_AUTOVERSION_H_

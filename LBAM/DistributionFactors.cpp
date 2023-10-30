@@ -72,7 +72,7 @@ HRESULT CDistributionFactors::FinalConstruct()
 void CDistributionFactors::FinalRelease()
 {
    // free up all of our connectionpoints on destruct
-   CollectionIndexType cnt = 0;
+   IndexType cnt = 0;
    iterator it( begin() );
    iterator itend( end() );
    for (; it != itend; it++)
@@ -160,7 +160,7 @@ STDMETHODIMP CDistributionFactors::GetFactorForLocation(Float64 location, Float6
       location = local_dist;
 
       // can't find segment if there are none
-      CollectionIndexType size;
+      IndexType size;
       hr = this->get_Count(&size);
 
       if (size == 0)
@@ -292,7 +292,7 @@ STDMETHODIMP CDistributionFactors::GetSegmentForLocation(Float64 location, Float
       location = local_dist;
 
       // can't find segment if there are none
-      CollectionIndexType size;
+      IndexType size;
       hr = this->get_Count(&size);
 
       if (size==0)
@@ -402,7 +402,7 @@ HRESULT CDistributionFactors::GetMemberSegments(Float64 Length, VARIANT_BOOL isS
    CComPtr<IFilteredDfSegmentCollection> pholder(pnew_coll); // holder for ref cnt purposes
 
    // three different logic choices here: no segments, symmetrical or unsymmetrical
-   CollectionIndexType size;
+   IndexType size;
    hr = this->get_Count(&size);
    if (FAILED(hr))
       return hr;
@@ -480,7 +480,7 @@ HRESULT CDistributionFactors::GetMemberSegments(Float64 Length, VARIANT_BOOL isS
       // now let's fill in the rest by copying from the left side to the right
       if ( 2 <= cnt )
       {
-         CollectionIndexType lfcnt = cnt-1;
+         IndexType lfcnt = cnt-1;
          do
          {
             CComPtr<IDistributionFactorSegment> plft;

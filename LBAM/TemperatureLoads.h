@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LBAMUtils.h"
 
-typedef CLoadItem<ITemperatureLoadItem, ITemperatureLoad, &IID_ITemperatureLoadItem> CTemperatureLoadItem;
+using CTemperatureLoadItem = CLoadItem<ITemperatureLoadItem, ITemperatureLoad, &IID_ITemperatureLoadItem>;
 class CTemperatureLoads;
-typedef CLoadCollection<ITemperatureLoads, &IID_ITemperatureLoads, CTemperatureLoads, ITemperatureLoad, 
+using TemperatureLoadColl_Impl = CLoadCollection<ITemperatureLoads, &IID_ITemperatureLoads, CTemperatureLoads, ITemperatureLoad,
                         ITemperatureLoadItem, CTemperatureLoadItem, 
-                        IEnumTemperatureLoad, &IID_IEnumTemperatureLoad> TemperatureLoadColl_Impl;
+                        IEnumTemperatureLoad, &IID_IEnumTemperatureLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CTemperatureLoads

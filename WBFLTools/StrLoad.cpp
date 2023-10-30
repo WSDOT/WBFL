@@ -60,7 +60,7 @@ STDMETHODIMP CStrLoad::Open(LPCTSTR name)
    {
       m_StrLoad.BeginLoad( &m_File );
    }
-   catch( sysXStructuredLoad& e )
+   catch(WBFL::System::XStructuredLoad& e )
    {
       return HandleException( e );
    }
@@ -75,7 +75,7 @@ STDMETHODIMP CStrLoad::BeginUnit(LPCTSTR name)
    if ( !m_StrLoad.BeginUnit( name ) )
       return STRLOAD_E_INVALIDFORMAT;
    }
-   catch( sysXStructuredLoad& e )
+   catch(WBFL::System::XStructuredLoad& e )
    {
       return HandleException( e );
    }
@@ -90,7 +90,7 @@ STDMETHODIMP CStrLoad::EndUnit()
    {
       hr = m_StrLoad.EndUnit() ? S_OK : E_FAIL;
    }
-   catch( sysXStructuredLoad& e )
+   catch(WBFL::System::XStructuredLoad& e )
    {
       return HandleException( e );
    }
@@ -208,7 +208,7 @@ STDMETHODIMP CStrLoad::get_Property(LPCTSTR name, VARIANT *pVal)
          _ASSERTE(false);
       }
    }
-   catch( sysXStructuredLoad& e )
+   catch(WBFL::System::XStructuredLoad& e )
    {
       return HandleException( e );
    }
@@ -223,7 +223,7 @@ STDMETHODIMP CStrLoad::Close()
       m_StrLoad.EndLoad();
       m_bOpen = FALSE;
    }
-   catch( sysXStructuredLoad& e )
+   catch(WBFL::System::XStructuredLoad& e )
    {
       return HandleException( e );
    }
@@ -245,63 +245,74 @@ STDMETHODIMP CStrLoad::EndOfStorage()
 }
 
 //////////////////////////////////////////////////////////
-HRESULT CStrLoad::HandleException( sysXStructuredLoad& e )
+HRESULT CStrLoad::HandleException(WBFL::System::XStructuredLoad& e )
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    HRESULT hr;
 
-   switch( e.GetExplicitReason() )
+   switch( e.GetReasonCode() )
    {
-      case sysXStructuredLoad::InvalidFileFormat:
-      case sysXStructuredLoad::EndOfFile:
+      case WBFL::System::XStructuredLoad::InvalidFileFormat:
+      case WBFL::System::XStructuredLoad::EndOfFile:
          hr = STRLOAD_E_INVALIDFORMAT;
          break;
 
-      case sysXStructuredLoad::BadRead:
+      case WBFL::System::XStructuredLoad::BadRead:
          hr = E_UNEXPECTED;
          break;
 
-      case sysXStructuredLoad::BadVersion:
+      case WBFL::System::XStructuredLoad::BadVersion:
          hr = STRLOAD_E_BADVERSION;
          break;
 
-      case sysXStructuredLoad::MemoryError:
+      case WBFL::System::XStructuredLoad::MemoryError:
          hr = E_OUTOFMEMORY;
+         break;
+
+      default:
+         hr = E_UNEXPECTED;
+         ATLASSERT(false); // are there new reasons for this exception?
          break;
    }
 
    return hr;
 }
 
-HRESULT CStrLoad::HandleException2( sysXStructuredLoad& e )
+HRESULT CStrLoad::HandleException2(WBFL::System::XStructuredLoad& e )
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
    HRESULT hr;
    UINT nID;
 
-   switch( e.GetExplicitReason() )
+   switch( e.GetReasonCode() )
    {
-      case sysXStructuredLoad::InvalidFileFormat:
-      case sysXStructuredLoad::EndOfFile:
+      case WBFL::System::XStructuredLoad::InvalidFileFormat:
+      case WBFL::System::XStructuredLoad::EndOfFile:
          hr = STRLOAD_E_INVALIDFORMAT;
          nID = IDS_E_INVALIDFORMAT;
          break;
 
-      case sysXStructuredLoad::BadRead:
+      case WBFL::System::XStructuredLoad::BadRead:
          hr = E_UNEXPECTED;
          nID = IDS_E_BADREAD;
          break;
 
-      case sysXStructuredLoad::BadVersion:
+      case WBFL::System::XStructuredLoad::BadVersion:
          hr = STRLOAD_E_BADVERSION;
          nID = IDS_E_BADVERSION;
          break;
 
-      case sysXStructuredLoad::MemoryError:
+      case WBFL::System::XStructuredLoad::MemoryError:
          hr = E_OUTOFMEMORY;
          nID = IDS_E_OUTOFMEMORY;
+         break;
+
+      default:
+         hr = E_UNEXPECTED;
+         nID = IDS_E_INVALIDFORMAT;
+         ATLASSERT(false); // are there new reasions
          break;
    }
 

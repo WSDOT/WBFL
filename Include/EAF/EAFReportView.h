@@ -36,18 +36,18 @@ class CReportButton;
 // Creation data that is needed by the report view to create the proper report
 struct EAFCLASS CEAFReportViewCreationData
 {
-   CollectionIndexType m_RptIdx; // Index of the report to be created (index into the report manager)
+   IndexType m_RptIdx; // Index of the report to be created (index into the report manager)
 
    // Option 1 - Provide Report Specification
-   std::shared_ptr<CReportSpecification> m_pRptSpecification; // the report specification
-   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
+   std::shared_ptr<WBFL::Reporting::ReportSpecification> m_pRptSpecification; // the report specification
+   std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder> m_pRptSpecificationBuilder; // and the corresponding builder
    BOOL m_bInitializeOnly; // if true, creates the report view, sets the spec and spec builder, but does not generate the report
 
    // Option 2 - Report view creates specification
    BOOL m_bPromptForSpec; // true = prompt user to configure spec through UI, otherwise use default
    
    // The report manager
-   CReportBuilderManager* m_pReportBuilderMgr; // Use this when using regular Doc/View
+   std::shared_ptr<const WBFL::Reporting::ReportBuilderManager> m_pReportBuilderMgr; // Use this when using regular Doc/View
    IReportManager* m_pRptMgr; // Use this when using the Agent/Broker architecture
 
    CEAFReportViewCreationData()
@@ -72,7 +72,7 @@ protected:
 public:
 
    // one of these is nullptr, the other is not
-   CReportBuilderManager* m_pReportBuilderMgr;
+   std::shared_ptr<const WBFL::Reporting::ReportBuilderManager> m_pReportBuilderMgr;
    IReportManager* m_pRptMgr; // for use with Agent/Broker
 
 // Operations
@@ -91,7 +91,7 @@ public:
 
 // Implementation
 public:
-   virtual void UpdateNow(CReportHint* pHint);
+   virtual void UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint);
 
 protected:
 	virtual ~CEAFReportView();
@@ -103,18 +103,18 @@ protected:
 public:
    // Initializes the report view, but doesn't create the report. This methods is called by CreateReport
    // so you generally will not need to call it directly
-   virtual bool InitReport(std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+   virtual bool InitReport(std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder);
 
    // Creates a report. The report specification is created by the user through the UI
-   virtual bool CreateReport(CollectionIndexType rptIdx,BOOL bPromptForSpec=true);
+   virtual bool CreateReport(IndexType rptIdx,BOOL bPromptForSpec=true);
 
    // Creates a report. The report specification was created elsewhere and is supplied here
-   virtual bool CreateReport(CollectionIndexType rptIdx, std::shared_ptr<CReportSpecification>& pSpec, std::shared_ptr<CReportSpecificationBuilder>& pSpecBuilder);
+   virtual bool CreateReport(IndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder);
 
    // listen if our button was clicked
    void NotifyReportButtonWasClicked();
 
-   std::shared_ptr<CReportSpecification> GetReportSpecification();
+   std::shared_ptr<const WBFL::Reporting::ReportSpecification> GetReportSpecification() const;
 
    virtual BOOL CanEditReport();
 
@@ -134,22 +134,22 @@ protected:
 
    virtual void EditReport();
    virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
-   virtual void CreateReportSpecification(CollectionIndexType rptIdx,BOOL bCreateDefaultReport);
-   virtual HRESULT UpdateReportBrowser(CReportHint* pHint);
+   virtual void CreateReportSpecification(IndexType rptIdx,BOOL bCreateDefaultReport);
+   virtual HRESULT UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>&  pHint);
 
    // Translate an MFC OnUpdate hint into a CReportHint object that will be passed into
    // the report build and chapter builders to determine if the report needs to be updated
-   virtual CReportHint* TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint);
+   virtual WBFL::Reporting::ReportHint* TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint);
 
 
 protected:
-   std::shared_ptr<CReportBrowser> m_pReportBrowser;
-   std::shared_ptr<CReportSpecification> m_pReportSpec;
-   std::shared_ptr<CReportSpecificationBuilder> m_pRptSpecBuilder;
+   std::shared_ptr<WBFL::Reporting::ReportBrowser> m_pReportBrowser;
+   std::shared_ptr<WBFL::Reporting::ReportSpecification> m_pReportSpec;
+   std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder> m_pRptSpecBuilder;
 
    BOOL m_bInvalidReport; // true if an update event is received and the contents of the report are not invalid
    BOOL m_bNoBrowser;     // true if the browser window couldn't be created
-   BOOL m_bUpdateError;   // true if an error occured while updating the report contents
+   BOOL m_bUpdateError;   // true if an error occurred while updating the report contents
    BOOL m_bIsNewReport;   // true while calls are coming from OnInitialUpdate
    BOOL m_bUpdateInProgress; // true if the report is being generated/updated
 
@@ -168,6 +168,6 @@ private:
    CReportButton* m_pBtnEdit;
 
    std::vector<std::_tstring> GetReportNames();
-   std::shared_ptr<CReportBuilder> GetReportBuilder(const std::_tstring& strRptName);
-   std::shared_ptr<CReportBrowser> CreateReportBrowser(HWND hwndParent, std::shared_ptr<CReportSpecification>& pRptSpec, std::shared_ptr<CReportSpecificationBuilder>& pRptSpecBuilder);
+   std::shared_ptr<const WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strRptName) const;
+   std::shared_ptr<WBFL::Reporting::ReportBrowser> CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder);
 };

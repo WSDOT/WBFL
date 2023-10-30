@@ -29,7 +29,7 @@
 #define __PLANE3D_H_
 
 #include "resource.h"       // main symbols
-
+#include <GeomModel/Plane3d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CPlane3d
@@ -38,27 +38,16 @@ class ATL_NO_VTABLE CPlane3d :
 	public CComCoClass<CPlane3d, &CLSID_Plane3d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CPlane3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public IPlane3d,
-   public IStructuredStorage2,
-   public IPersist
+   public IPlane3d
 {
 public:
 	CPlane3d()
 	{
-      m_A = 0.00;
-      m_B = 0.00;
-      m_C = 0.00;
-      m_D = 0.00;
-      m_bIsXYPlane = VARIANT_TRUE;
 	}
 
-   void Init(Float64 a,Float64 b,Float64 c,Float64 d,VARIANT_BOOL bXYPlane)
+   void Init(Float64 a, Float64 b, Float64 c, Float64 d)
    {
-      m_A = a;
-      m_B = b;
-      m_C = c;
-      m_D = d;
-      m_bIsXYPlane = bXYPlane;
+      m_Plane.Init(a, b, c, d);
    }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_PLANE3D)
@@ -68,27 +57,19 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CPlane3d)
 	COM_INTERFACE_ENTRY(IPlane3d)
 	COM_INTERFACE_ENTRY2(IUnknown,IPlane3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-	COM_INTERFACE_ENTRY2(IUnknown,IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   Float64 m_A;
-   Float64 m_B;
-   Float64 m_C;
-   Float64 m_D;
-   VARIANT_BOOL m_bIsXYPlane;  // true if plane is parallel to global XY plane
+   WBFL::Geometry::Plane3d m_Plane;
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPlane3d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
-   STDMETHOD(PointOnPlaneNearestOrigin)(/*[out,retval]*/IPoint3d** ppPoint) override;
+   STDMETHOD(PointOnPlaneNearestOrigin)(/*[in]*/IPoint3d* pPoint,/*[out,retval]*/IPoint3d** ppPoint) override;
    STDMETHOD(SortestDistance)(/*[in]*/IPoint3d* point,/*[out,retval]*/Float64* pDistance) override;
    STDMETHOD(LineSegmentIntersect)(/*[in]*/ ILineSegment3d* pLineSegment,/*[out,retval]*/IPoint3d** ppPoint) override;
 	STDMETHOD(GetZ)(/*[in]*/ Float64 x,/*[in]*/ Float64 y, /*[out, retval]*/ Float64 *pVal) override;
@@ -98,15 +79,6 @@ public:
 	STDMETHOD(ThroughLineEx)(/*[in]*/ ILine2d* pLine,/*[in]*/ IPoint3d* pPnt) override;
 	STDMETHOD(ThroughPoints)(/*[in]*/ IPoint3d* p1,/*[in]*/ IPoint3d* p2,/*[in]*/ IPoint3d* p3) override;
    STDMETHOD(Clone)(/*[out,retval]*/IPlane3d** clone) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__PLANE3D_H_

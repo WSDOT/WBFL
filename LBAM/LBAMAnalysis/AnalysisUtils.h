@@ -39,10 +39,10 @@ public:
 class ILoadGroupOrder
 {
 public:
-   virtual CollectionIndexType LoadGroupCount() = 0;
-   virtual CComBSTR LoadGroup(CollectionIndexType index) = 0;
+   virtual IndexType LoadGroupCount() = 0;
+   virtual CComBSTR LoadGroup(IndexType index) = 0;
    virtual void GetLoadGroupInfo(BSTR LoadGroup, LoadGroupIDType* femLgId, bool* isTransient) = 0;
-   virtual void GetLoadGroupInfoByIndex(CollectionIndexType index, LoadCaseIDType* femLcId, bool* isTransient) = 0;
+   virtual void GetLoadGroupInfoByIndex(IndexType index, LoadCaseIDType* femLcId, bool* isTransient) = 0;
    virtual void SetLoadGroupAsActive(BSTR LoadGroup) = 0;
 };
 
@@ -55,7 +55,7 @@ class DblRegion: public std::vector<Float64>
 public:
    void AddLocation(Float64 loc)
    {
-      CollectionIndexType size = this->size();
+      IndexType size = this->size();
       if (size==0)
       {
          push_back(loc);

@@ -22,8 +22,9 @@
 ///////////////////////////////////////////////////////////////////////
 // CEAFRenameReportDlg dialog
 #pragma once
-#include "resource.h"
 
+#include "resource.h"
+#include <set>
 
 class CEAFRenameReportDlg : public CDialog
 {

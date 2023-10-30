@@ -21,41 +21,109 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_CONVERT_H_
-#define INCLUDED_UNITS_CONVERT_H_
 #pragma once
 
-#include <Units\PhysicalT.h>
 #include <Units\UnitsExp.h>
+#include <Units\PhysicalT.h>
+#include <Units\System.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-// INLINE METHODS
-//
-
-template <class T>
-Float64 Convert(Float64 value,const T& from, const T& to)
+namespace WBFL
 {
-   PRECONDITION( from.GetConvFactor() > 0 && to.GetConvFactor() > 0 );
+   namespace Units
+   {
+      /// Converts a value between units of measure
+      template <class T>
+      inline Float64 Convert(Float64 value,const T& from, const T& to)
+      {
+         return to.ConvertTo(from.ConvertFrom(value));
+      }
 
-   Float64 i_value;
 
-   i_value = ( value + from.GetPreTerm() ) * from.GetConvFactor() + from.GetPostTerm();
-   i_value = ( i_value - to.GetPostTerm() )  / to.GetConvFactor()   - to.GetPreTerm();
+      /// Converts a value. This method is not intended to be called by external users but must be exported to support the System Unit conversion functions.
+      void UNITSFUNC convert_from(Float64* pValue, Float64 cf, Float64 dim);
+      /// Converts a value. This method is not intended to be called by external users but must be exported to support the System Unit conversion functions.
+      void UNITSFUNC convert_from(Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim);
+      /// Converts a value. This method is not intended to be called by external users but must be exported to support the System Unit conversion functions.
+      void UNITSFUNC convert_to(Float64* pValue, Float64 cf, Float64 dim);
+      /// Converts a value. This method is not intended to be called by external users but must be exported to support the System Unit conversion functions.
+      void UNITSFUNC convert_to(Float64* pValue, Float64 preTerm, Float64 cf, Float64 postTerm, Float64 dim);
 
-   return i_value;
-}
+      /// Converts a value from system units to a specified unit of measure
+      template <class T>
+      Float64 ConvertFromSysUnits(Float64 value, const T& to)
+      {
+         if (value == Float64_Max || value == Float64_Inf)
+         {
+            return value;
+         }
 
-// EXTERNAL REFERENCES
-//
+         const Mass& um = System::GetMassUnit();
+         convert_from(&value,
+            um.GetConvFactor(),
+            T::MassDim());
 
-#endif // INCLUDED_UNITS_CONVERT_H_
+         const Length& ul = System::GetLengthUnit();
+         convert_from(&value,
+            ul.GetConvFactor(),
+            T::LengthDim());
 
+         const Time& ut = System::GetTimeUnit();
+         convert_from(&value,
+            ut.GetConvFactor(),
+            T::TimeDim());
+
+         const Temperature& uk = System::GetTemperatureUnit();
+         convert_from(&value,
+            uk.GetPreTerm(),
+            uk.GetConvFactor(),
+            uk.GetPostTerm(),
+            T::TemperatureDim());
+
+         const Angle& ua = System::GetAngleUnit();
+         convert_from(&value,
+            ua.GetConvFactor(),
+            T::AngleDim());
+
+         return to.ConvertTo(value);
+      }
+
+      /// Converts a value from a specified unit of measure to system units
+      template <class T>
+      Float64 ConvertToSysUnits(Float64 value, const T& from)
+      {
+         if (value == Float64_Max || value == Float64_Inf)
+         {
+            return value;
+         }
+
+         const Mass& um = System::GetMassUnit();
+         convert_to(&value,
+            um.GetConvFactor(),
+            T::MassDim());
+
+         const Length& ul = System::GetLengthUnit();
+         convert_to(&value,
+            ul.GetConvFactor(),
+            T::LengthDim());
+
+         const Time& ut = System::GetTimeUnit();
+         convert_to(&value,
+            ut.GetConvFactor(),
+            T::TimeDim());
+
+         const Temperature& uk = System::GetTemperatureUnit();
+         convert_to(&value,
+            uk.GetPreTerm(),
+            uk.GetConvFactor(),
+            uk.GetPostTerm(),
+            T::TemperatureDim());
+
+         const Angle& ua = System::GetAngleUnit();
+         convert_to(&value,
+            ua.GetConvFactor(),
+            T::AngleDim());
+
+         return from.ConvertFrom(value);
+      }
+   };
+};

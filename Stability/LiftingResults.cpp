@@ -24,12 +24,6 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/LiftingResults.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Stability;
 
 LiftingSectionResult::LiftingSectionResult()
@@ -49,28 +43,28 @@ LiftingSectionResult::LiftingSectionResult()
    memset((void*)f, 0, sizeof(f));
 
    fMinDirect.fill(0);
-   MinDirectStressImpactDirection.fill(NoImpact);
-   MinDirectStressCorner.fill(TopLeft);
+   MinDirectStressImpactDirection.fill(ImpactDirection::NoImpact);
+   MinDirectStressCorner.fill(Corner::TopLeft);
 
    fMaxDirect.fill(0);
-   MaxDirectStressImpactDirection.fill(NoImpact);
-   MaxDirectStressCorner.fill(TopLeft);
+   MaxDirectStressImpactDirection.fill(ImpactDirection::NoImpact);
+   MaxDirectStressCorner.fill(Corner::TopLeft);
 
    fMin.fill(0);
-   MinStressImpactDirection[Top]    = NoImpact;
-   MinStressWindDirection[Top]      = Left;
-   MinStressCorner[Top]             = TopLeft;
-   MinStressImpactDirection[Bottom] = NoImpact;
-   MinStressWindDirection[Bottom]   = Left;
-   MinStressCorner[Bottom]          = BottomRight;
+   MinStressImpactDirection[+GirderFace::Top]    = ImpactDirection::NoImpact;
+   MinStressWindDirection[+GirderFace::Top]      = WindDirection::Left;
+   MinStressCorner[+GirderFace::Top]             = Corner::TopLeft;
+   MinStressImpactDirection[+GirderFace::Bottom] = ImpactDirection::NoImpact;
+   MinStressWindDirection[+GirderFace::Bottom]   = WindDirection::Left;
+   MinStressCorner[+GirderFace::Bottom]          = Corner::BottomRight;
 
    fMax.fill(0);
-   MaxStressImpactDirection[Top]    = NoImpact;
-   MaxStressWindDirection[Top]      = Left;
-   MaxStressCorner[Top]             = TopLeft;
-   MaxStressImpactDirection[Bottom] = NoImpact;
-   MaxStressWindDirection[Bottom]   = Left;
-   MaxStressCorner[Bottom]          = BottomRight;
+   MaxStressImpactDirection[+GirderFace::Top]    = ImpactDirection::NoImpact;
+   MaxStressWindDirection[+GirderFace::Top]      = WindDirection::Left;
+   MaxStressCorner[+GirderFace::Top]             = Corner::TopLeft;
+   MaxStressImpactDirection[+GirderFace::Bottom] = ImpactDirection::NoImpact;
+   MaxStressWindDirection[+GirderFace::Bottom]   = WindDirection::Left;
+   MaxStressCorner[+GirderFace::Bottom]          = Corner::BottomRight;
 
    memset((void*)Mcr, 0, sizeof(Mcr));
    memset((void*)ThetaCrack, 0, sizeof(ThetaCrack));
@@ -82,35 +76,35 @@ LiftingSectionResult::LiftingSectionResult()
       {
          WindDirection wind = (WindDirection)w;
 
-         MinFScr[impact][wind] = Float64_Max;
-         MinFScrCorner[impact][wind] = TopLeft;
+         MinFScr[+impact][+wind] = Float64_Max;
+         MinFScrCorner[+impact][+wind] = Corner::TopLeft;
 
          for (int c = 0; c < 4; c++)
          {
             Corner corner = (Corner)c;
-            FScr[impact][wind][corner] = Float64_Max;
+            FScr[+impact][+wind][+corner] = Float64_Max;
          }
       }
    }
 
    FScrMin = Float64_Max;
-   FScrMinImpactDirection = NoImpact;
-   FScrMinWindDirection = Left;
-   FScrMinCorner = TopLeft;
+   FScrMinImpactDirection = ImpactDirection::NoImpact;
+   FScrMinWindDirection = WindDirection::Left;
+   FScrMinCorner = Corner::TopLeft;
 
    Float64 OffsetFactor = 0;
    memset((void*)eh, 0, sizeof(eh));
    memset((void*)Mh, 0, sizeof(Mh));
 
-   fMin[Top] = Float64_Max;
-   fMin[Bottom] = Float64_Max;
-   fMax[Top] = -Float64_Max;
-   fMax[Bottom] = -Float64_Max;
+   fMin[+GirderFace::Top] = Float64_Max;
+   fMin[+GirderFace::Bottom] = Float64_Max;
+   fMax[+GirderFace::Top] = -Float64_Max;
+   fMax[+GirderFace::Bottom] = -Float64_Max;
 
-   fMinDirect[Top] = Float64_Max;
-   fMinDirect[Bottom] = Float64_Max;
-   fMaxDirect[Top] = -Float64_Max;
-   fMaxDirect[Bottom] = -Float64_Max;
+   fMinDirect[+GirderFace::Top] = Float64_Max;
+   fMinDirect[+GirderFace::Bottom] = Float64_Max;
+   fMaxDirect[+GirderFace::Top] = -Float64_Max;
+   fMaxDirect[+GirderFace::Bottom] = -Float64_Max;
 }
 
 /////////////////////////////////////
@@ -124,31 +118,31 @@ LiftingResults::LiftingResults()
 
    MaxDirectStress = -Float64_Max;
    MaxDirectStressAnalysisPointIndex = 0;
-   MaxDirectStressImpactDirection    = NoImpact;
-   MaxDirectStressCorner             = TopLeft;
+   MaxDirectStressImpactDirection    = ImpactDirection::NoImpact;
+   MaxDirectStressCorner             = Corner::TopLeft;
 
    MinDirectStress = Float64_Max;
    MinDirectStressAnalysisPointIndex = 0;
-   MinDirectStressImpactDirection    = NoImpact;
-   MinDirectStressCorner             = TopLeft;
+   MinDirectStressImpactDirection    = ImpactDirection::NoImpact;
+   MinDirectStressCorner             = Corner::TopLeft;
 
    MaxStress = -Float64_Max;
    MaxStressAnalysisPointIndex = 0;
-   MaxStressImpactDirection    = NoImpact;
-   MaxStressWindDirection      = Left;
-   MaxStressCorner             = TopLeft;
+   MaxStressImpactDirection    = ImpactDirection::NoImpact;
+   MaxStressWindDirection      = WindDirection::Left;
+   MaxStressCorner             = Corner::TopLeft;
 
    MinStress = Float64_Max;
    MinStressAnalysisPointIndex = 0;
-   MinStressImpactDirection    = NoImpact;
-   MinStressWindDirection      = Left;
-   MinStressCorner             = TopLeft;
+   MinStressImpactDirection    = ImpactDirection::NoImpact;
+   MinStressWindDirection      = WindDirection::Left;
+   MinStressCorner             = Corner::TopLeft;
 
    FScrMin = Float64_Max;
    FScrMinAnalysisPointIndex = 0;
-   FScrMinImpactDirection    = NoImpact;
-   FScrMinWindDirection      = Left;
-   FScrMinCorner = TopLeft;
+   FScrMinImpactDirection    = ImpactDirection::NoImpact;
+   FScrMinWindDirection      = WindDirection::Left;
+   FScrMinCorner             = Corner::TopLeft;
 
    for (int i = 0; i < 3; i++)
    {
@@ -156,23 +150,23 @@ LiftingResults::LiftingResults()
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         ThetaEq[impact][wind] = 0.0;
-         ThetaMax[impact][wind] = 0.0;
-         FScrAnalysisPointIndex[impact][wind] = 0;
-         FScrCorner[impact][wind] = (Corner)0;
+         ThetaEq[+impact][+wind] = 0.0;
+         ThetaMax[+impact][+wind] = 0.0;
+         FScrAnalysisPointIndex[+impact][+wind] = 0;
+         FScrCorner[+impact][+wind] = (Corner)0;
 
-         MinFScr[impact][wind] = Float64_Max;
-         FsFailure[impact][wind] = Float64_Max;
-         AdjFsFailure[impact][wind] = Float64_Max;
+         MinFScr[+impact][+wind] = Float64_Max;
+         FsFailure[+impact][+wind] = Float64_Max;
+         AdjFsFailure[+impact][+wind] = Float64_Max;
 
-         bIsStable[impact][wind] = true;
+         bIsStable[+impact][+wind] = true;
       }
    }
 
    MinFsFailure = Float64_Max;
    MinAdjFsFailure = Float64_Max;
-   FSfImpactDirection = NoImpact;
-   FSfWindDirection   = Left;
+   FSfImpactDirection = ImpactDirection::NoImpact;
+   FSfWindDirection   = WindDirection::Left;
 
-   AssumedTiltDirection = Left;
+   AssumedTiltDirection = GirderSide::Left;
 }

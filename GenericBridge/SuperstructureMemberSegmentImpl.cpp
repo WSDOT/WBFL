@@ -40,10 +40,6 @@ CSuperstructureMemberSegmentImpl::CSuperstructureMemberSegmentImpl()
    m_pNextSegment = nullptr;
    m_pGirderLine = nullptr;
    m_Orientation = 0;
-   m_HaunchDepth[0] = 0;
-   m_HaunchDepth[1] = 0;
-   m_HaunchDepth[2] = 0;
-   m_HaunchMode = hmPrismatic;
 
    m_Fillet = 0;
    m_FilletShape = flsSquared;
@@ -167,7 +163,7 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_LayoutLength(Float64 *pVal)
 
 // Not implemented
 // STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Section(StageIndexType stageIdx, Float64 distAlongSegment, ISection** ppSection)
-// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_PrimaryShape(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+// STDMETHODIMP CSuperstructureMemberSegmentImpl::get_GirderShape(Float64 distAlongSegment, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 //STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Profile(VARIANT_BOOL bIncludeClosure, IShape** ppShape)
 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::put_Orientation(Float64 orientation)
@@ -183,35 +179,29 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Orientation(Float64* orientat
    return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMemberSegmentImpl::GetHaunchDepth(Float64* pStartVal, Float64* pMidVal, Float64* pEndVal)
+STDMETHODIMP CSuperstructureMemberSegmentImpl::GetHaunchDepth(IDblArray** pVal)
 {
-   CHECK_RETVAL(pStartVal);
-   CHECK_RETVAL(pMidVal);
-   CHECK_RETVAL(pEndVal);
-   *pStartVal = m_HaunchDepth[0];
-   *pMidVal = m_HaunchDepth[1];
-   *pEndVal = m_HaunchDepth[2];
-   return S_OK;
+   CHECK_RETOBJ(pVal);
+   CComPtr<IDblArray> vals;
+   vals.CoCreateInstance(CLSID_DblArray);
+   for (auto val : m_vHaunchDepths)
+   {
+      vals->Add(val);
+   }
+
+   return vals.CopyTo(pVal);
 }
 
-STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepth(Float64 startVal, Float64 midVal, Float64 endVal)
+STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepth(IDblArray* haunchVals)
 {
-   m_HaunchDepth[0] = startVal;
-   m_HaunchDepth[1] = midVal;
-   m_HaunchDepth[2] = endVal;
+   m_vHaunchDepths.clear();
 
-   // determine how we are going to compute haunch depth
-   if (startVal == midVal && midVal == endVal)
+   CComPtr<IEnumDblArray> enum_dbls;
+   HRESULT hr = haunchVals->get__EnumElements(&enum_dbls);
+   Float64 dbl;
+   while (enum_dbls->Next(1,&dbl,nullptr) != S_FALSE)
    {
-      m_HaunchMode = hmPrismatic;
-   }
-   else if (IsEqual(midVal, (startVal+endVal)/2.0))
-   {
-      m_HaunchMode = hmLinear;
-   }
-   else
-   {
-      m_HaunchMode = hmParabolic;
+      m_vHaunchDepths.push_back(dbl);
    }
 
    return S_OK;
@@ -220,46 +210,11 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepth(Float64 startVal, 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::ComputeHaunchDepth(Float64 distAlongSegment, Float64* pVal)
 {
    CHECK_RETVAL(pVal);
-   if (m_HaunchMode == hmPrismatic)
-   {
-      *pVal = m_HaunchDepth[0];
-   }
-   else
-   {
-      Float64 startHaunch(m_HaunchDepth[0]), midHaunch(m_HaunchDepth[1]), endHaunch(m_HaunchDepth[2]);
 
       Float64 segment_length;
       get_Length(&segment_length);
 
-      // Shape can be linear or parabolic
-      // Linear portion of haunch based on end values
-      Float64 lin_haunch = ::LinInterp(distAlongSegment, startHaunch, endHaunch, segment_length);
-
-      if (m_HaunchMode == hmLinear)
-      {
-         // Haunch is linear. just return
-         *pVal = lin_haunch;
-      }
-      else
-      {
-         // haunch is parabolic. Compute height of bulge at location
-         // Made an OPTIMIZATION here - this function is called many, many times.
-         // Was using GenerateParabola() in MathUtils.h, but calls were costly. Refer to that derivation
-         // for how we got here.
-         Float64 mid_bulge = midHaunch - (startHaunch + endHaunch) / 2.0;
-         Float64 Vx = (segment_length) / 2.0;   // X ordinate of peak
-                                                // y = Ax^2 + Bx + C
-         Float64 A = -mid_bulge / (Vx*Vx);
-         Float64 B = 2 * mid_bulge / Vx;
-         // Float64 C = 0.0;
-
-         Float64 para_haunch = A*distAlongSegment*distAlongSegment + B*distAlongSegment;
-
-         Float64 haunch = lin_haunch + para_haunch; // haunch is sum of linear part and parabolic sliver
-         *pVal = haunch;
-      }
-   }
-
+   *pVal = ::ComputeHaunchDepthAlongSegment(distAlongSegment, segment_length, m_vHaunchDepths);
    return S_OK;
 }
 

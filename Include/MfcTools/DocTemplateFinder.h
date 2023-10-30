@@ -209,16 +209,6 @@ private:
    void BuildTabList(TabList& list);
    // GROUP: ACCESS
    // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
 };
 
 // INLINE METHODS

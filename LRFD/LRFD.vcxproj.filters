@@ -22,9 +22,6 @@
     <ClCompile Include="ElasticShortening.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LimitStateCalculator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LiveLoadDistributionFactorBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,10 +55,10 @@
     <ClCompile Include="LRFDTimeDependentConcrete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LRFRVersionMgr.cpp">
+    <ClCompile Include="MBEManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LRFRVersionMgrListener.cpp">
+    <ClCompile Include="MBEManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LumpSumLosses.cpp">
@@ -100,16 +97,13 @@
     <ClCompile Include="StrandPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VersionMgr.cpp">
+    <ClCompile Include="BDSManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VersionMgrListener.cpp">
+    <ClCompile Include="BDSManagerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XCodeVersion.cpp">
@@ -134,6 +128,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PCIUHPCCreepCoefficient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UHPCCreepCoefficient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UHPCLosses.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LRFDConcreteBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UHPCShear.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -163,9 +169,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\ElasticShortening.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\LRFD\LimitStateCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\LiveLoadDistributionFactorBase.h">
@@ -213,10 +216,10 @@
     <ClInclude Include="..\Include\LRFD\LrfdTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgr.h">
+    <ClInclude Include="..\Include\LRFD\MBEManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgrListener.h">
+    <ClInclude Include="..\Include\LRFD\MBEManagerListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\LumpSumLosses.h">
@@ -252,16 +255,13 @@
     <ClInclude Include="..\Include\LRFD\StrandPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\UnitTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\LRFD\Utility.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\VersionMgr.h">
+    <ClInclude Include="..\Include\LRFD\BDSManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\LRFD\VersionMgrListener.h">
+    <ClInclude Include="..\Include\LRFD\BDSManagerListener.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\XCodeVersion.h">
@@ -286,6 +286,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\LRFD\PCIUHPCCreepCoefficient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\ILiveLoadDistributionFactor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\UHPCCreepCoefficient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\UHPCLosses.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\LRFD\UHPCShear.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

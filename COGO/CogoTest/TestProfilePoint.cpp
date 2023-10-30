@@ -69,41 +69,12 @@ void CTestProfilePoint::Test()
    TRY_TEST( pProfilePoint->get_Station(nullptr), E_POINTER );
    TRY_TEST( pProfilePoint->get_Elevation(nullptr), E_POINTER );
 
-   // Test Events
-   CComObject<CTestProfilePoint>* pTestProfilePoint;
-   CComObject<CTestProfilePoint>::CreateInstance(&pTestProfilePoint);
-   pTestProfilePoint->AddRef();
-
-   DWORD dwCookie;
-   CComPtr<IUnknown> punk(pTestProfilePoint);
-   TRY_TEST(AtlAdvise(pProfilePoint,punk,IID_IProfilePointEvents,&dwCookie),S_OK);
-
-   pTestProfilePoint->InitEventTest();
-   pProfilePoint->put_Station(CComVariant(5));
-   TRY_TEST(pTestProfilePoint->PassedEventTest(), true );
-
-   pTestProfilePoint->InitEventTest();
-   pProfilePoint->put_Elevation(5);
-   TRY_TEST(pTestProfilePoint->PassedEventTest(), true );
-
-   TRY_TEST(AtlUnadvise(pProfilePoint,IID_IProfilePointEvents,dwCookie),S_OK);
-   pTestProfilePoint->Release();
-
    // Test ISupportErrorInfo
    CComQIPtr<ISupportErrorInfo> eInfo(pProfilePoint);
    TRY_TEST( eInfo != nullptr, true );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IProfilePoint ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    // Test IObjectSafety
    TRY_TEST( TestIObjectSafety(CLSID_ProfilePoint,IID_IProfilePoint,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-   TRY_TEST( TestIObjectSafety(CLSID_ProfilePoint,IID_IStructuredStorage2,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA), true);
-}
-
-STDMETHODIMP CTestProfilePoint::OnProfilePointChanged(IProfilePoint* pp)
-{
-//   ::MessageBox(nullptr,"OnProfilePointChanged","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

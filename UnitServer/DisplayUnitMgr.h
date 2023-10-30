@@ -35,8 +35,8 @@
 #include <string>
 #include "WbflUnitServerCP.h"
 
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > EnumDisplayUnitGroups;
-typedef ICollectionOnSTLImpl<IDisplayUnitMgr,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnitGroups> IDisplayUnitGroupCollection;
+using EnumDisplayUnitGroups = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IDisplayUnitGroupCollection = ICollectionOnSTLImpl<IDisplayUnitMgr,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnitGroups>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayUnitMgr
@@ -100,7 +100,7 @@ public:
 public:
    STDMETHOD(get_Item)(/*[in]*/ BSTR bstrGroup, /*[out, retval]*/ IDisplayUnitGroup** retval) override;
    //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType* retval) override;
    STDMETHOD(Add)(/*[in]*/BSTR bstrGroup,/*[in]*/ BSTR bstrUnitType,/*[out,retval]*/ IDisplayUnitGroup** newGroup) override;
    STDMETHOD(Clear)() override;
    STDMETHOD(Remove)(BSTR bstrGroup) override;

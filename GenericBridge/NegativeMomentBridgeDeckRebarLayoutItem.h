@@ -31,8 +31,8 @@
 #include "WBFLComCollections.h"
 
 class CNegativeMomentBridgeDeckRebarLayoutItem;
-typedef CComVectorCollection<INegativeMomentBridgeDeckRebarLayoutItem,IBridgeDeckRebarPattern,IEnumBridgeDeckRebarPatterns,&IID_IEnumBridgeDeckRebarPatterns,CollectionIndexType> NegMomentDeckRebarPtrnColl;
-typedef CPersistentCollection<CNegativeMomentBridgeDeckRebarLayoutItem,NegMomentDeckRebarPtrnColl,CollectionIndexType> PersistentNegMomentDeckRebarLayoutItem;
+using NegMomentDeckRebarPtrnColl = CComVectorCollection<INegativeMomentBridgeDeckRebarLayoutItem, IBridgeDeckRebarPattern, IEnumBridgeDeckRebarPatterns, &IID_IEnumBridgeDeckRebarPatterns, IndexType>;
+using PersistentNegMomentDeckRebarLayoutItem = CPersistentCollection<CNegativeMomentBridgeDeckRebarLayoutItem,NegMomentDeckRebarPtrnColl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CNegativeMomentBridgeDeckRebarLayoutItem

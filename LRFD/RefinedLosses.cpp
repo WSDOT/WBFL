@@ -25,55 +25,39 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\RefinedLosses.h>
 #include <Lrfd\ElasticShortening.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <Lrfd\XPsLosses.h>
 #include <System\XProgrammingError.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/****************************************************************************
-CLASS
-   lrfdRefinedLosses
-****************************************************************************/
+using namespace WBFL::LRFD;
 
 
 Float64 shrinkage_losses(Float64 h);
 Float64 creep_losses(Float64 fcgp, Float64 dfcdp);
-Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,Float64 cr);
+Float64 relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 es,Float64 sr,Float64 cr);
 
 bool IsSI() 
 {
-   return (lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI);
+   return (BDSManager::GetUnits() == BDSManager::Units::SI);
 }
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdRefinedLosses::lrfdRefinedLosses()
-{
-}
-
-lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where losses are computed
+RefinedLosses::RefinedLosses(Float64 x, // location along girder where losses are computed
                          Float64 Lg,    // girder length
-                         lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                         Losses::SectionPropertiesType sectionProperties,
+                         WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                         WBFL::Materials::PsStrand::Type typePerm, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                         WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                         WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                         WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
                          Float64 fpjPerm, // fpj permanent strands
                          Float64 fpjTemp, // fpj of temporary strands
                          Float64 ApsPerm,  // area of permanent strand
                          Float64 ApsTemp,  // area of TTS 
                          Float64 aps,      // area of one strand
-                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder
-                         const gpPoint2d& epermFinal,
-                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermRelease, // eccentricity of permanent ps strands with respect to CG of girder
+                         const WBFL::Geometry::Point2d& epermFinal,
+                         const WBFL::Geometry::Point2d& etemp, // eccentricity of temporary strands with respect to CG of girder
                          TempStrandUsage usage,
                          Float64 anchorSet,
                          Float64 wobble,
@@ -119,22 +103,17 @@ lrfdRefinedLosses::lrfdRefinedLosses(Float64 x, // location along girder where l
                          Float64 shipping,
                          bool bValidateParameters
                          ) :
-lrfdLosses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
+Losses(x,Lg,sectionProperties,gradePerm,typePerm,coatingPerm,gradeTemp,typeTemp,coatingTemp,fpjPerm,fpjTemp,ApsPerm,ApsTemp,aps,epermRelease,epermFinal,etemp,usage,anchorSet,wobble,friction,angleChange,Fc,Fci,FcSlab,Ec,Eci,Ecd,Mdlg,Madlg,Msidl1,Msidl2, Ag,Ixx,Iyy,Ixy,Ybg,Ac1,Ic1,Ybc1,Ac2,Ic2,Ybc2,An,Ixxn,Iyyn,Ixyn,Ybn,Acn,Icn,Ybcn,rh,ti,false,bValidateParameters)
 {
    m_Shipping = shipping;
 }
 
-lrfdRefinedLosses::~lrfdRefinedLosses()
-{
-}
-
-//======================== OPERATIONS =======================================
-Float64 lrfdRefinedLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
+Float64 RefinedLosses::TemporaryStrand_TimeDependentLossesAtShipping() const
 {
    return PermanentStrand_TimeDependentLossesAtShipping();
 }
 
-Float64 lrfdRefinedLosses::PermanentStrand_TimeDependentLossesAtShipping() const
+Float64 RefinedLosses::PermanentStrand_TimeDependentLossesAtShipping() const
 {
    if ( m_Shipping < 0 )
    {
@@ -146,17 +125,17 @@ Float64 lrfdRefinedLosses::PermanentStrand_TimeDependentLossesAtShipping() const
    }
 }
 
-Float64 lrfdRefinedLosses::TimeDependentLossesBeforeDeck() const
+Float64 RefinedLosses::TimeDependentLossesBeforeDeck() const
 {
    return TimeDependentLosses();
 }
 
-Float64 lrfdRefinedLosses::TimeDependentLossesAfterDeck() const
+Float64 RefinedLosses::TimeDependentLossesAfterDeck() const
 {
    return 0;
 }
 
-Float64 lrfdRefinedLosses::TimeDependentLosses() const
+Float64 RefinedLosses::TimeDependentLosses() const
 {
    if ( m_IsDirty )
    {
@@ -166,7 +145,7 @@ Float64 lrfdRefinedLosses::TimeDependentLosses() const
    return m_dfpSR + m_dfpCR + m_dfpR2;
 }
 
-Float64 lrfdRefinedLosses::ShrinkageLosses() const
+Float64 RefinedLosses::ShrinkageLosses() const
 {
    if ( m_IsDirty )
    {
@@ -176,7 +155,7 @@ Float64 lrfdRefinedLosses::ShrinkageLosses() const
    return m_dfpSR;
 }
 
-Float64 lrfdRefinedLosses::CreepLosses() const
+Float64 RefinedLosses::CreepLosses() const
 {
    if ( m_IsDirty )
    {
@@ -186,7 +165,7 @@ Float64 lrfdRefinedLosses::CreepLosses() const
    return m_dfpCR;
 }
 
-Float64 lrfdRefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
+Float64 RefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
 {
    if ( m_IsDirty )
    {
@@ -196,7 +175,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_RelaxationLossesAtXfer() const
    return m_dfpR0[TEMPORARY_STRAND];
 }
 
-Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
+Float64 RefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
 {
    if ( m_IsDirty )
    {
@@ -206,7 +185,7 @@ Float64 lrfdRefinedLosses::PermanentStrand_RelaxationLossesAtXfer() const
    return m_dfpR0[PERMANENT_STRAND];
 }
 
-Float64 lrfdRefinedLosses::RelaxationLossesAfterXfer() const
+Float64 RefinedLosses::RelaxationLossesAfterXfer() const
 {
    if ( m_IsDirty )
    {
@@ -216,7 +195,7 @@ Float64 lrfdRefinedLosses::RelaxationLossesAfterXfer() const
    return m_dfpR2;
 }
 
-Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
+Float64 RefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
    {
@@ -226,7 +205,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyBeforeXferLosses() const
    return m_dfpR0[TEMPORARY_STRAND];
 }
 
-Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
+Float64 RefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
 {
    if ( m_IsDirty )
    {
@@ -236,7 +215,7 @@ Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyBeforeXferLosses() const
    return m_dfpR0[PERMANENT_STRAND];
 }
 
-Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
+Float64 RefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
    {
@@ -246,7 +225,7 @@ Float64 lrfdRefinedLosses::TemporaryStrand_ImmediatelyAfterXferLosses() const
    return m_dfpES[TEMPORARY_STRAND] + m_dfpR0[TEMPORARY_STRAND];
 }
 
-Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
+Float64 RefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
 {
    if ( m_IsDirty )
    {
@@ -256,11 +235,11 @@ Float64 lrfdRefinedLosses::PermanentStrand_ImmediatelyAfterXferLosses() const
    return m_dfpES[PERMANENT_STRAND] + m_dfpR0[PERMANENT_STRAND];
 }
 
-void lrfdRefinedLosses::ValidateParameters() const
+void RefinedLosses::ValidateParameters() const
 {
 }
 
-void lrfdRefinedLosses::UpdateLongTermLosses() const
+void RefinedLosses::UpdateLongTermLosses() const
 {
    if ( IsZero( m_FpjPerm ) )
    {
@@ -287,7 +266,7 @@ void lrfdRefinedLosses::UpdateLongTermLosses() const
       m_dfpR2 = relaxation_after_transfer( m_TypePerm, m_dfpES[PERMANENT_STRAND] + m_dfpp, m_dfpSR, m_dfpCR );
    }
 
-   if ( m_CoatingPerm != matPsStrand::None )
+   if ( m_CoatingPerm != WBFL::Materials::PsStrand::Coating::None )
    {
       // See PCI Guidelines for the use of epoxy-coated strand
       // PCI Journal July-August 1993. Section 5.3
@@ -295,7 +274,7 @@ void lrfdRefinedLosses::UpdateLongTermLosses() const
    }
 }
 
-void lrfdRefinedLosses::UpdateHaulingLosses() const
+void RefinedLosses::UpdateHaulingLosses() const
 {
    UpdateLongTermLosses();
 }
@@ -306,17 +285,17 @@ Float64 shrinkage_losses(Float64 h)
 
    Float64 losses;
    Float64 A,B; // Coefficients in the loss equation
-   const unitStress* p_unit;
+   const WBFL::Units::Stress* p_unit;
 
    bool is_si = IsSI();
 
    if ( is_si )
    {
-      p_unit = &unitMeasure::MPa;
+      p_unit = &WBFL::Units::Measure::MPa;
    }
    else
    {
-      p_unit = &unitMeasure::KSI;
+      p_unit = &WBFL::Units::Measure::KSI;
    }
 
    A = is_si ? 117. : 17.;
@@ -324,7 +303,7 @@ Float64 shrinkage_losses(Float64 h)
 
    losses = A - B*h;
 
-   losses = ::ConvertToSysUnits(losses, *p_unit );
+   losses = WBFL::Units::ConvertToSysUnits(losses, *p_unit );
    CHECK( losses >= 0. );
 
    return losses;
@@ -337,37 +316,37 @@ Float64 creep_losses(Float64 fcgp, Float64 dfcdp)
    return loss;
 }
 
-Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,Float64 cr)
+Float64 relaxation_after_transfer(WBFL::Materials::PsStrand::Type type,Float64 es,Float64 sr,Float64 cr)
 {
    bool is_si = IsSI();
-   const unitStress* p_unit;
+   const WBFL::Units::Stress* p_unit;
    Float64 A;
 
    if ( is_si )
    {
-      p_unit = &unitMeasure::MPa;
+      p_unit = &WBFL::Units::Measure::MPa;
       A = 138.;
    }
    else
    {
-      p_unit = &unitMeasure::KSI;
+      p_unit = &WBFL::Units::Measure::KSI;
       A = 20.;
    }
 
    // Convert input values from system units to code units
-   es = ::ConvertFromSysUnits(es,*p_unit);
-   sr = ::ConvertFromSysUnits(sr,*p_unit);
-   cr = ::ConvertFromSysUnits(cr,*p_unit);
+   es = WBFL::Units::ConvertFromSysUnits(es,*p_unit);
+   sr = WBFL::Units::ConvertFromSysUnits(sr,*p_unit);
+   cr = WBFL::Units::ConvertFromSysUnits(cr,*p_unit);
 
    Float64 losses;
    losses = A - 0.4*es - 0.2*(sr+cr);
 
-   if ( type == matPsStrand::LowRelaxation )
+   if ( type == WBFL::Materials::PsStrand::Type::LowRelaxation )
    {
       losses *= 0.3;
    }
 
-   losses = ::ConvertToSysUnits(losses,*p_unit);
+   losses = WBFL::Units::ConvertToSysUnits(losses,*p_unit);
 
    if ( losses < 0 )
    {
@@ -377,64 +356,3 @@ Float64 relaxation_after_transfer(matPsStrand::Type type,Float64 es,Float64 sr,F
 
    return losses;
 }
-
-#if defined _UNITTEST
-#include <Units\SysUnitsMgr.h>
-#include <Lrfd\AutoVersion.h>
-bool lrfdRefinedLosses::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("lrfdRefinedLosses");
-//
-//   lrfdAutoVersion av;
-//
-//   Float64 Fpj   = ::ConvertToSysUnits( 0.80*1860, unitMeasure::MPa );
-//   Float64 Ag    = ::ConvertToSysUnits( 486051, unitMeasure::Millimeter2 );
-//   Float64 Ig    = ::ConvertToSysUnits( 126011e6, unitMeasure::Millimeter4 );
-//   Float64 Ybg   = ::ConvertToSysUnits( 608, unitMeasure::Millimeter );
-//   Float64 Ic    = ::ConvertToSysUnits( 283.7e9, unitMeasure::Millimeter4 );
-//   Float64 Ybc   = ::ConvertToSysUnits( 977, unitMeasure::Millimeter );
-//   Float64 e     = ::ConvertToSysUnits( 489, unitMeasure::Millimeter );
-//   Float64 Aps   = ::ConvertToSysUnits( 5133, unitMeasure::Millimeter2 );
-//   Float64 Mdlg  = ::ConvertToSysUnits( 1328, unitMeasure::KilonewtonMeter );
-//   Float64 Madlg = ::ConvertToSysUnits( 2900-1328, unitMeasure::KilonewtonMeter );
-//   Float64 Msidl = ::ConvertToSysUnits( 540+353, unitMeasure::KilonewtonMeter );
-//   Float64 Rh    = 70.;
-//   Float64 Eci   = ::ConvertToSysUnits( 30360, unitMeasure::MPa );
-//   Float64 t     = ::ConvertToSysUnits( 4.0, unitMeasure::Day );
-//
-//   lrfdRefinedLosses loss( matPsStrand::Gr1860,
-//                      matPsStrand::LowRelaxation,
-//                      Fpj, 0, Ag, Ig, Ybg, Ic, Ybc, e, e, e, Aps, 0, Mdlg, Madlg, Msidl, 1.0,
-//                      Rh, Eci, t );
-//
-//   lrfdVersionMgr::RegisterListener( &loss );
-//
-//   lrfdVersionMgr::SetVersion( lrfdVersionMgr::FirstEdition );
-//   Float64 loss1 = loss.ImmediatelyAfterXferLosses();
-//   TRY_TEST (  IsEqual( ::ConvertFromSysUnits(loss1,unitMeasure::MPa),165.7,0.1) );
-//
-//   Float64 loss2 = loss.FinalLosses();
-//   TRY_TEST (  IsEqual(::ConvertFromSysUnits(loss2,unitMeasure::MPa),394.2,0.1) );
-//
-//   loss.SetFpj(1);
-//   bool bDidCatch = false;
-//   try
-//   {
-//      Float64 loss3 = loss.FinalLosses();
-//   }
-//   catch( const lrfdXPsLosses& e )
-//   {
-//      bDidCatch = true;
-//      TRY_TEST( bDidCatch );
-//      TRY_TEST( e.GetReasonCode() == lrfdXPsLosses::fpjOutOfRange );
-//   }
-//   TRY_TEST( bDidCatch );
-//
-//   lrfdVersionMgr::UnregisterListener( &loss );
-
-   TESTME_EPILOG("lrfdRefinedLosses");
-}
-
-#endif // _UNITTEST
-
-

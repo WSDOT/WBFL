@@ -26,35 +26,23 @@
 #include <Lrfd\Shear.h>
 #include <Lrfd\XShear.h>
 #include <Lrfd\XCodeVersion.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 #include <MathEx.h>
 #include <Units\Units.h>
-#include <GeometricPrimitives\GeometricPrimitives.h>
-#include <GeometricPrimitives\LineSegment2d.h>
-#include <GeometricPrimitives\GeomOp2d.h>
-#include <assert.h>
+#include <GeomModel/GeomModel.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/****************************************************************************
-CLASS
-   lrfdShear
-****************************************************************************/
+using namespace WBFL::LRFD;
 
 
 // Helper functions
-void compute_theta_and_beta1(lrfdShearData* pData);
-void compute_theta_and_beta2(lrfdShearData* pData);
-void compute_theta_and_beta3(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta3_tbl1(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta3_tbl2(lrfdShearData* pData,bool bWSDOT);
-void compute_theta_and_beta4(lrfdShearData* pData); // WSDOT method per June 18, 2001 Design Memo (7-2001)
-void compute_theta_and_beta5(lrfdShearData* pData);
-Float64 compute_strain(lrfdShearData* pData,Float64 theta);
+void compute_theta_and_beta1(ShearData* pData);
+void compute_theta_and_beta2(ShearData* pData);
+void compute_theta_and_beta3(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl1(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta3_tbl2(ShearData* pData,bool bWSDOT);
+void compute_theta_and_beta4(ShearData* pData); // WSDOT method per June 18, 2001 Design Memo (7-2001)
+void compute_theta_and_beta5(ShearData* pData);
+Float64 compute_strain(ShearData* pData,Float64 theta);
 Float64 get_theta(Float64 vfc,Float64 ex);
 Float64 get_beta(Float64 vfc,Float64 ex);
 Float64 get_ex(Float64 vfc,Float64 theta);
@@ -85,12 +73,12 @@ static const Int16 gs_ex_count_2003 = sizeof(gs_ex_2003)/sizeof(Float64);
 
 Float64 get_vfc(Int16 row)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_vfc[row];  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_vfc_2000[row]; // 2000-2002
    }
@@ -102,12 +90,12 @@ Float64 get_vfc(Int16 row)
 
 Int16 get_vfc_count()
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_vfc_count;  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_vfc_count_2000; // 2000-2002
    }
@@ -119,12 +107,12 @@ Int16 get_vfc_count()
 
 Float64 get_ex(Int16 col)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_ex[col];  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_ex_2000[col]; // 2000-2002
    }
@@ -136,12 +124,12 @@ Float64 get_ex(Int16 col)
 
 Int16 get_ex_count()
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_ex_count;  // 1994 to 1999
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_ex_count_2000; // 2000-2002
    }
@@ -209,17 +197,17 @@ static const BT gs_Data_2003_interims[gs_vfc_count_2003][gs_ex_count_2003] =
 
 BT get_beta_theta(Int16 row,Int16 col)
 {
-   lrfdVersionMgr::Version version = lrfdVersionMgr::GetVersion();
-   if ( version < lrfdVersionMgr::FirstEditionWith1997Interims )
+   BDSManager::Edition version = BDSManager::GetEdition();
+   if ( version < BDSManager::Edition::FirstEditionWith1997Interims )
    {
       return gs_Data_pre_97_interims[row][col];  // 1994 to 1996
    }
-   else if ( lrfdVersionMgr::FirstEditionWith1997Interims <= version && // 1997 - 1999
-             version < lrfdVersionMgr::SecondEditionWith2000Interims )
+   else if ( BDSManager::Edition::FirstEditionWith1997Interims <= version && // 1997 - 1999
+             version < BDSManager::Edition::SecondEditionWith2000Interims )
    {
       return gs_Data_97_interims[row][col];
    }
-   else if ( lrfdVersionMgr::SecondEditionWith2000Interims <= version && version <= lrfdVersionMgr::SecondEditionWith2002Interims )
+   else if ( BDSManager::Edition::SecondEditionWith2000Interims <= version && version <= BDSManager::Edition::SecondEditionWith2002Interims )
    {
       return gs_Data_2000_interims[row][col]; // 2000-2002
    }
@@ -274,32 +262,23 @@ BT get_beta_theta_mtr(Int16 row,Int16 col)
 
 void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2);
 
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdShear::~lrfdShear()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdShear::ComputeThetaAndBeta(lrfdShearData* pData, lrfdShear::Method method )
+void Shear::ComputeThetaAndBeta(ShearData* pData, Shear::Method method )
 {
    // if 4th or before, method must be tables
-   CHECK( (lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::FourthEdition2007 && method == lrfdShear::Tables) ||
-      lrfdVersionMgr::FourthEdition2007 < lrfdVersionMgr::GetVersion() );
+   PRECONDITION( (BDSManager::GetEdition() <= BDSManager::Edition::FourthEdition2007 && method == Method::Tables) ||
+      BDSManager::Edition::FourthEdition2007 < BDSManager::GetEdition() );
 
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SecondEditionWith1999Interims )
+   if ( BDSManager::GetEdition() <= BDSManager::Edition::SecondEditionWith1999Interims )
    {
       compute_theta_and_beta2( pData );
    }
-   else if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   else if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 )
    {
       compute_theta_and_beta3( pData, false );
    }
    else
    {
-      method == lrfdShear::Tables ? compute_theta_and_beta3(pData,false) : compute_theta_and_beta5( pData );
+      method == Method::Tables ? compute_theta_and_beta3(pData,false) : compute_theta_and_beta5( pData );
    }
 
 
@@ -308,16 +287,15 @@ void lrfdShear::ComputeThetaAndBeta(lrfdShearData* pData, lrfdShear::Method meth
 //   {
 //      compute_theta_and_beta1( pData );
 //   }
-//   catch( lrfdXShear& )
+//   catch( XShear& )
 //   {
 //      compute_theta_and_beta2( pData );
 //   }
 }
 
-void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
+void Shear::ComputeVciVcw(ShearData* pData)
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007   ||
-        lrfdVersionMgr::GetVersion() >= lrfdVersionMgr::EighthEdition2017)
+   if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 || BDSManager::Edition::EighthEdition2017 <= BDSManager::GetEdition())
    {
       // Vci/Vcw wasn't in LRFD before 4th edition, and was removed in the 8th... 
       // set values to zero
@@ -327,7 +305,7 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       pData->Vcw     = 0;
 
       // and throw an exception
-      THROW(lrfdXCodeVersion,BadVersion);
+      WBFL_LRFD_THROW(XCodeVersion,BadVersion);
       return;
    }
 
@@ -348,21 +326,21 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Float64 Vci     = 0;
    Float64 Vcw     = 0;
 
-   const unitForce* p_force_unit;
+   const WBFL::Units::Force* p_force_unit;
 
    Float64 K1, K2, Kfct;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      fc   = ::ConvertFromSysUnits(fc,   unitMeasure::MPa);
-      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::MPa);
-      fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::MPa);
-      dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Millimeter);
-      bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Millimeter);
-      Vp   = ::ConvertFromSysUnits(Vp,   unitMeasure::Kilonewton);
-      Vd   = ::ConvertFromSysUnits(Vd,   unitMeasure::Kilonewton);
-      Vi   = ::ConvertFromSysUnits(Vi,   unitMeasure::Kilonewton);
-      Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::NewtonMillimeter);
-      Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::NewtonMillimeter);
+      fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::MPa);
+      fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::MPa);
+      fpc  = WBFL::Units::ConvertFromSysUnits(fpc,  WBFL::Units::Measure::MPa);
+      dv   = WBFL::Units::ConvertFromSysUnits(dv,   WBFL::Units::Measure::Millimeter);
+      bv   = WBFL::Units::ConvertFromSysUnits(bv,   WBFL::Units::Measure::Millimeter);
+      Vp   = WBFL::Units::ConvertFromSysUnits(Vp,   WBFL::Units::Measure::Kilonewton);
+      Vd   = WBFL::Units::ConvertFromSysUnits(Vd,   WBFL::Units::Measure::Kilonewton);
+      Vi   = WBFL::Units::ConvertFromSysUnits(Vi,   WBFL::Units::Measure::Kilonewton);
+      Mmax = WBFL::Units::ConvertFromSysUnits(Mmax, WBFL::Units::Measure::NewtonMillimeter);
+      Mcre = WBFL::Units::ConvertFromSysUnits(Mcre, WBFL::Units::Measure::NewtonMillimeter);
 
       Kfct = 1.8;
 
@@ -370,59 +348,59 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
       K2 = 0.16;
 
 
-      p_force_unit = &unitMeasure::Kilonewton;
+      p_force_unit = &WBFL::Units::Measure::Kilonewton;
    }
    else
    {
-      fc   = ::ConvertFromSysUnits(fc,   unitMeasure::KSI);
-      fct  = ::ConvertFromSysUnits(fct,  unitMeasure::KSI);
-      fpc  = ::ConvertFromSysUnits(fpc,  unitMeasure::KSI);
-      dv   = ::ConvertFromSysUnits(dv,   unitMeasure::Inch);
-      bv   = ::ConvertFromSysUnits(bv,   unitMeasure::Inch);
-      Vp   = ::ConvertFromSysUnits(Vp,   unitMeasure::Kip);
-      Vd   = ::ConvertFromSysUnits(Vd,   unitMeasure::Kip);
-      Vi   = ::ConvertFromSysUnits(Vi,   unitMeasure::Kip);
-      Mmax = ::ConvertFromSysUnits(Mmax, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
-      Mcre = ::ConvertFromSysUnits(Mcre, unitMeasure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
+      fc   = WBFL::Units::ConvertFromSysUnits(fc,   WBFL::Units::Measure::KSI);
+      fct  = WBFL::Units::ConvertFromSysUnits(fct,  WBFL::Units::Measure::KSI);
+      fpc  = WBFL::Units::ConvertFromSysUnits(fpc,  WBFL::Units::Measure::KSI);
+      dv   = WBFL::Units::ConvertFromSysUnits(dv,   WBFL::Units::Measure::Inch);
+      bv   = WBFL::Units::ConvertFromSysUnits(bv,   WBFL::Units::Measure::Inch);
+      Vp   = WBFL::Units::ConvertFromSysUnits(Vp,   WBFL::Units::Measure::Kip);
+      Vd   = WBFL::Units::ConvertFromSysUnits(Vd,   WBFL::Units::Measure::Kip);
+      Vi   = WBFL::Units::ConvertFromSysUnits(Vi,   WBFL::Units::Measure::Kip);
+      Mmax = WBFL::Units::ConvertFromSysUnits(Mmax, WBFL::Units::Measure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
+      Mcre = WBFL::Units::ConvertFromSysUnits(Mcre, WBFL::Units::Measure::InchLbf); // should be k-in, but we are dividing Mcre/Mmax so this is ok
 
       Kfct = 4.7;
 
       K1 = 0.02;
       K2 = 0.06;
 
-      p_force_unit = &unitMeasure::Kip;
+      p_force_unit = &WBFL::Units::Measure::Kip;
    }
 
    Float64 sqrt_fc;
-   if ( lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::SeventhEditionWith2016Interims <= BDSManager::GetEdition() )
    {
       sqrt_fc = lambda*sqrt(fc);
    }
    else
    {
-      if (pData->ConcreteType == matConcrete::Normal)
+      if (pData->ConcreteType == WBFL::Materials::ConcreteType::Normal)
       {
          sqrt_fc = sqrt(fc);
       }
-      else if ((pData->ConcreteType == matConcrete::AllLightweight || pData->ConcreteType == matConcrete::SandLightweight) && pData->bHasfct)
+      else if ((pData->ConcreteType == WBFL::Materials::ConcreteType::AllLightweight || pData->ConcreteType == WBFL::Materials::ConcreteType::SandLightweight) && pData->bHasfct)
       {
          sqrt_fc = min(Kfct*fct, sqrt(fc));
       }
-      else if (pData->ConcreteType == matConcrete::AllLightweight && !pData->bHasfct)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::AllLightweight && !pData->bHasfct)
       {
          sqrt_fc = 0.75*sqrt(fc);
       }
-      else if (pData->ConcreteType == matConcrete::SandLightweight && !pData->bHasfct)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::SandLightweight && !pData->bHasfct)
       {
          sqrt_fc = 0.85*sqrt(fc);
       }
-      else if (pData->ConcreteType == matConcrete::PCI_UHPC)
+      else if (pData->ConcreteType == WBFL::Materials::ConcreteType::PCI_UHPC || pData->ConcreteType == WBFL::Materials::ConcreteType::UHPC)
       {
-         ATLASSERT(false); // Vci/Vcw doesn't support PCI UHPC
+         CHECK(false); // Vci/Vcw doesn't support PCI UHPC or UHPC
       }
       else
       {
-         ATLASSERT(false); // is there a new concrete type?
+         CHECK(false); // is there a new concrete type?
       }
    }
 
@@ -433,17 +411,17 @@ void lrfdShear::ComputeVciVcw(lrfdShearData* pData)
    Vci = Max(VciCalc,VciMin);
    Vcw = (K2*sqrt_fc + 0.30*fpc)*bv*dv + Vp; // 5.8.3.4.3-2
 
-   pData->VciMin  = ::ConvertToSysUnits(VciMin,  *p_force_unit);
-   pData->VciCalc = ::ConvertToSysUnits(VciCalc, *p_force_unit);
-   pData->Vci     = ::ConvertToSysUnits(Vci,     *p_force_unit);
-   pData->Vcw     = ::ConvertToSysUnits(Vcw,     *p_force_unit);
+   pData->VciMin  = WBFL::Units::ConvertToSysUnits(VciMin,  *p_force_unit);
+   pData->VciCalc = WBFL::Units::ConvertToSysUnits(VciCalc, *p_force_unit);
+   pData->Vci     = WBFL::Units::ConvertToSysUnits(Vci,     *p_force_unit);
+   pData->Vcw     = WBFL::Units::ConvertToSysUnits(Vcw,     *p_force_unit);
 }
 
-Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
+Float64 Shear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Float64 bv, Float64 dv)
 {
    Float64 vu;
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::FourthEdition2007 )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::FourthEdition2007 )
    {
       vu = (Vu - phi*Vp)/(phi*bv*dv);
    }
@@ -455,55 +433,13 @@ Float64  lrfdShear::ComputeShearStress(Float64 Vu, Float64 Vp, Float64 phi, Floa
    return vu;
 }
 
+//////////////////////////////////////////////////////
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdShear::AssertValid() const
+void WsdotShear::ComputeThetaAndBeta(ShearData* pData,bool bEndRegion)
 {
-   return true;
-}
-
-void lrfdShear::Dump(dbgDumpContext& os) const
-{
-   os << "Dump for lrfdShear" << endl;
-}
-#endif // _DEBUG
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdWsdotShear::~lrfdWsdotShear()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdWsdotShear::ComputeThetaAndBeta(lrfdShearData* pData,bool bEndRegion)
-{
-   if ( lrfdVersionMgr::GetVersion() <= lrfdVersionMgr::SecondEditionWith1999Interims )
+   if ( BDSManager::GetEdition() <= BDSManager::Edition::SecondEditionWith1999Interims )
    {
-      lrfdShear::ComputeThetaAndBeta(pData);
+      Shear::ComputeThetaAndBeta(pData);
    }
    else
    {
@@ -511,42 +447,7 @@ void lrfdWsdotShear::ComputeThetaAndBeta(lrfdShearData* pData,bool bEndRegion)
    }
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdWsdotShear::AssertValid() const
-{
-   return true;
-}
-
-void lrfdWsdotShear::Dump(dbgDumpContext& os) const
-{
-   os << "Dump for lrfdWsdotShear" << endl;
-   lrfdShear::Dump(os);
-}
-#endif // _DEBUG
-
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-
-////////////////////////////////////////////////////////////////
-void compute_theta_and_beta1(lrfdShearData* pData)
+void compute_theta_and_beta1(ShearData* pData)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -582,7 +483,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
 
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -644,7 +545,7 @@ void compute_theta_and_beta1(lrfdShearData* pData)
 
    if ( max_iter <= cIter )
    {
-      THROW(lrfdXShear,MaxIterExceeded);
+      WBFL_LRFD_THROW(XShear,MaxIterExceeded);
    }
 
    CHECK( IsEqual( theta, theta_guess, theta_tol ) );
@@ -652,12 +553,12 @@ void compute_theta_and_beta1(lrfdShearData* pData)
    // Compute beta
    Float64 beta = get_beta( vfc,ex );
 
-   pData->Theta = ::ConvertToSysUnits( theta, unitMeasure::Degree );
+   pData->Theta = WBFL::Units::ConvertToSysUnits( theta, WBFL::Units::Measure::Degree );
    pData->Beta  = beta;
    pData->ex    = ex;
 }
 
-void compute_theta_and_beta2(lrfdShearData* pData)
+void compute_theta_and_beta2(ShearData* pData)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -693,7 +594,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -747,14 +648,14 @@ void compute_theta_and_beta2(lrfdShearData* pData)
       ex_table[1] = get_ex(col+1);
       ex_calc[1] = compute_strain(pData,theta_guess[1]);
 
-      gpLineSegment2d l1(gpPoint2d(theta_guess[0],ex_calc[0]),  gpPoint2d(theta_guess[1],ex_calc[1]));
-      gpLineSegment2d l2(gpPoint2d(theta_guess[0],ex_table[0]), gpPoint2d(theta_guess[1],ex_table[1]));
+      WBFL::Geometry::LineSegment2d l1(WBFL::Geometry::Point2d(theta_guess[0],ex_calc[0]),  WBFL::Geometry::Point2d(theta_guess[1],ex_calc[1]));
+      WBFL::Geometry::LineSegment2d l2(WBFL::Geometry::Point2d(theta_guess[0],ex_table[0]), WBFL::Geometry::Point2d(theta_guess[1],ex_table[1]));
 
       //WATCH( _T("L1 = ") << l1.GetStartPoint() << _T(" ") << l1.GetEndPoint() );
       //WATCH( _T("L2 = ") << l2.GetStartPoint() << _T(" ") << l2.GetEndPoint() );
 
-      gpPoint2d p;
-      if ( gpGeomOp2d::Intersect( &p, l1, l2 ) == 1 )
+      WBFL::Geometry::Point2d p;
+      if (WBFL::Geometry::GeometricOperations::Intersect( l1, l2, &p ) == 1 )
       {
          bFoundSolution = true;
          theta = p.X();
@@ -769,7 +670,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 
    if ( !bFoundSolution )
    {
-      THROW(lrfdXShear,MaxIterExceeded);
+      WBFL_LRFD_THROW(XShear,MaxIterExceeded);
    }
 
    if (pData->bLimitNetTensionStrainToPositiveValues && ex < 0)
@@ -781,7 +682,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
    // Compute beta
    Float64 beta = get_beta( vfc, ex );
 
-   pData->Theta = ::ConvertToSysUnits( theta, unitMeasure::Degree );
+   pData->Theta = WBFL::Units::ConvertToSysUnits( theta, WBFL::Units::Measure::Degree );
    pData->Beta  = beta;
    pData->ex    = ex;
 
@@ -800,7 +701,7 @@ void compute_theta_and_beta2(lrfdShearData* pData)
 // Method from LRFD 2nd Edition, 2000 interims and later.
 // All we have to do is find the "box" from table 5.8.3.4.2-1 
 // There is no need to interpolate between rows and columns as in version 2 of this method
-void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3(ShearData* pData, bool bWSDOT)
 {
    Float64 bv  = pData->bv;
    Float64 fc  = pData->fc;
@@ -812,15 +713,15 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
 
    // Determine whether we meet minimum steel requirements - then we can choose equations and tables
    Float64 minSteel;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
@@ -833,9 +734,9 @@ void compute_theta_and_beta3(lrfdShearData* pData, bool bWSDOT)
    }
 }
 
-void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
 {
-   // Compute beta and theta for case where steel meets min steel requirments
+   // Compute beta and theta for case where steel meets min steel requirements
    Float64 Mu  = pData->Mu;
    Float64 Nu  = pData->Nu;
    Float64 Vu  = pData->Vu;
@@ -872,7 +773,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
       WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
    }
 
@@ -903,7 +804,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 //      if ( bWSDOT && bt.Theta < 25 )
 //         bt.Theta = 25;
 
-      Float64 angle = ::Convert(bt.Theta,unitMeasure::Degree,unitMeasure::Radian);
+      Float64 angle = WBFL::Units::Convert(bt.Theta,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
       Float64 cot = 1.0/tan(angle);
 
       if ( eqn == 1 )
@@ -915,7 +816,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -925,7 +826,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -945,7 +846,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -970,7 +871,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -983,7 +884,7 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
 
       if ( col == get_ex_count()-1 )
       {
-         // first time through loop, initiliaze with current values
+         // first time through loop, initialize with current values
          ex_last = ex_calc;
          eq_last = pData->Eqn;
       }
@@ -1024,13 +925,13 @@ void compute_theta_and_beta3_tbl1(lrfdShearData* pData, bool bWSDOT)
    pData->vufc_tbl = get_vfc(row);
    pData->ex_tbl = get_ex(col);
    pData->Beta = bt.Beta;
-   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
+   pData->Fe = -1; // Not applicable
 }
 
-void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
+void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
 {
-   // Compute beta and theta for case min steel requirments are not met
+   // Compute beta and theta for case min steel requirements are not met
    Float64 Mu  = pData->Mu;
    Float64 Nu  = pData->Nu;
    Float64 Vu  = pData->Vu;
@@ -1061,12 +962,12 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 
    // Setup problem
    // 5.8.3.4.2-5
-   Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+   Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
 
    // Bound sxe
    sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
 
-   pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+   pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
 
    // Find out which rows we are spanning
    Int16 row1, row2;
@@ -1090,7 +991,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 //      if ( bWSDOT && bt.Theta < 25 )
 //         bt.Theta = 25;
 
-      Float64 angle = ::Convert(bt.Theta,unitMeasure::Degree,unitMeasure::Radian);
+      Float64 angle = WBFL::Units::Convert(bt.Theta,WBFL::Units::Measure::Degree,WBFL::Units::Measure::Radian);
       Float64 cot = 1.0/tan(angle);
 
       if ( eqn == 1 )
@@ -1102,7 +1003,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1112,7 +1013,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
             }
          }
 
-         if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+         if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
          {
             ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
          }
@@ -1132,7 +1033,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
          }
          else
          {
-            if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+            if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
                ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1157,7 +1058,7 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
             // Eqn 5.8.3.4.2-3
             pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-            if (lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion())
+            if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
                ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
@@ -1208,15 +1109,15 @@ void compute_theta_and_beta3_tbl2(lrfdShearData* pData, bool bWSDOT)
 //      bt.Theta = 25;
 
    pData->BetaTheta_tbl = 2; 
-   pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+   pData->sxe_tbl = WBFL::Units::ConvertToSysUnits(get_sxe_mtr(row), WBFL::Units::Measure::Inch);
    pData->ex_tbl = get_ex_mtr(col);
    pData->Beta = bt.Beta;
-   pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
+   pData->Fe = -1; // Not applicable
 }
 
 
-void compute_theta_and_beta4(lrfdShearData* pData)
+void compute_theta_and_beta4(ShearData* pData)
 {
    // LRFD Shear 2001 Interims, modified by WSDOT Design Memo 7-2001... Dated June 18, 2001
 
@@ -1250,15 +1151,15 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    Float64 minSteel;
    Int16 eqn;
 
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel )
@@ -1281,8 +1182,8 @@ void compute_theta_and_beta4(lrfdShearData* pData)
    // Bound vc
    if ( get_vfc(get_vfc_count()-1) < vfc )
    {
-      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(lrfdXShear,vfcOutOfRange);
-      WARN(true,"v/fc > 0.25 - Setting to 0.25 in lrfdShear");
+      vfc = get_vfc(get_vfc_count()-1);  // used to THROW(XShear,vfcOutOfRange);
+      WARN(true,"v/fc > 0.25 - Setting to 0.25 in WBFL::LRFD::Shear");
    }
 
    if ( vfc < get_vfc(0) )
@@ -1308,7 +1209,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
          ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
 
-      if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::SecondEditionWith2003Interims )
+      if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
       {
          ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
       }
@@ -1346,7 +1247,7 @@ void compute_theta_and_beta4(lrfdShearData* pData)
          // Eqn 5.8.3.4.2-3
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-         ATLASSERT(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
+         CHECK(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
          ex_calc = (Mu / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
    }
@@ -1374,17 +1275,17 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       pData->ex = ex_calc;
       pData->vufc_tbl = get_vfc(row);
       pData->Beta = bt.Beta;
-      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
-      pData->Fe = -1; // Not appicable
+      pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
+      pData->Fe = -1; // Not applicable
    }
    else
    {
-      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+      Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
 
       // Bound sxe
       sxe = ForceIntoRange(5.0, sxe, 80.0); // Note: any spec changes to table range would affect this
 
-      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+      pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
 
       // Find out which rows we are spanning
       Int16 row1, row2;
@@ -1437,15 +1338,15 @@ void compute_theta_and_beta4(lrfdShearData* pData)
       BT bt = get_beta_theta_mtr(row,col);
 
       pData->BetaTheta_tbl = 2; 
-      pData->sxe_tbl = ::ConvertToSysUnits(get_sxe_mtr(row), unitMeasure::Inch);
+      pData->sxe_tbl = WBFL::Units::ConvertToSysUnits(get_sxe_mtr(row), WBFL::Units::Measure::Inch);
       pData->ex_tbl = get_ex_mtr(col);
       pData->Beta = bt.Beta;
-      pData->Theta = ::ConvertToSysUnits(bt.Theta,unitMeasure::Degree);
-      pData->Fe = -1; // Not appicable
+      pData->Theta = WBFL::Units::ConvertToSysUnits(bt.Theta,WBFL::Units::Measure::Degree);
+      pData->Fe = -1; // Not applicable
    }
 }
 
-void compute_theta_and_beta5(lrfdShearData* pData)
+void compute_theta_and_beta5(ShearData* pData)
 {
    // LRFD 2008 - Beta and Theta by equations
 
@@ -1508,15 +1409,15 @@ void compute_theta_and_beta5(lrfdShearData* pData)
 
    // Get Beta/Theta;
    Float64 minSteel;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      minSteel = 0.083*sqrt(::ConvertFromSysUnits(fc,unitMeasure::MPa))*::ConvertFromSysUnits(bv,unitMeasure::Millimeter)/::ConvertFromSysUnits(fy,unitMeasure::MPa);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Millimeter); // (mm^2/mm)
+      minSteel = 0.083*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::MPa))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Millimeter)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::MPa);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Millimeter); // (mm^2/mm)
    }
    else
    {
-      minSteel = 0.0316*sqrt(::ConvertFromSysUnits(fc,unitMeasure::KSI))*::ConvertFromSysUnits(bv,unitMeasure::Inch)/::ConvertFromSysUnits(fy,unitMeasure::KSI);
-      minSteel = ::ConvertToSysUnits(minSteel,unitMeasure::Inch); // (in^2/in)
+      minSteel = 0.0316*sqrt(WBFL::Units::ConvertFromSysUnits(fc,WBFL::Units::Measure::KSI))*WBFL::Units::ConvertFromSysUnits(bv,WBFL::Units::Measure::Inch)/WBFL::Units::ConvertFromSysUnits(fy,WBFL::Units::Measure::KSI);
+      minSteel = WBFL::Units::ConvertToSysUnits(minSteel,WBFL::Units::Measure::Inch); // (in^2/in)
    }
 
    if ( Avs < minSteel && !pData->bIgnoreMiniumStirrupRequirementForBeta)
@@ -1524,10 +1425,10 @@ void compute_theta_and_beta5(lrfdShearData* pData)
       pData->BetaEqn = 2; // Use LRFD Eqn 5.8.3.4.2-2
 
       // 5.8.3.4.2-5
-      Float64 sxe = ::ConvertFromSysUnits(sx,unitMeasure::Inch) * 1.38/(::ConvertFromSysUnits(ag,unitMeasure::Inch)+0.63);
+      Float64 sxe = WBFL::Units::ConvertFromSysUnits(sx,WBFL::Units::Measure::Inch) * 1.38/(WBFL::Units::ConvertFromSysUnits(ag,WBFL::Units::Measure::Inch)+0.63);
       sxe = ForceIntoRange(12.0, sxe, 80.0);
 
-      pData->sxe   =  ::ConvertToSysUnits(sxe,unitMeasure::Inch);
+      pData->sxe   =  WBFL::Units::ConvertToSysUnits(sxe,WBFL::Units::Measure::Inch);
       pData->Beta  = (4.8/(1 + 750*ex_calc)) * (51/(39 + sxe));
    }
    else
@@ -1542,11 +1443,11 @@ void compute_theta_and_beta5(lrfdShearData* pData)
    pData->vu = v;
    pData->vufc = v/fc;
    pData->vufc_tbl = -1; // Not applicable
-   pData->Theta = ::ConvertToSysUnits(29+3500*ex_calc,unitMeasure::Degree);
-   pData->Fe = -1; // Not appicable
+   pData->Theta = WBFL::Units::ConvertToSysUnits(29+3500*ex_calc,WBFL::Units::Measure::Degree);
+   pData->Fe = -1; // Not applicable
 }
 
-Float64 compute_strain(lrfdShearData* pData,Float64 theta)
+Float64 compute_strain(ShearData* pData,Float64 theta)
 {
    // Copy input data (this will make life a little easier)
    Float64 Mu  = pData->Mu;
@@ -1573,7 +1474,7 @@ Float64 compute_strain(lrfdShearData* pData,Float64 theta)
 
    Float64 ex;
 
-   theta = ::Convert(theta, unitMeasure::Degree, unitMeasure::Radian);
+   theta = WBFL::Units::Convert(theta, WBFL::Units::Measure::Degree, WBFL::Units::Measure::Radian);
    if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
    {
       ex = 0;
@@ -1625,7 +1526,7 @@ Float64 get_theta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
+   CHECK( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 theta11;  // Theta on row 1, col 1
    Float64 theta12;  // Theta on row 1, col 2
@@ -1671,7 +1572,7 @@ Float64 get_beta(Float64 vfc,Float64 ex)
    Int16 col1, col2;
    
    get_row_and_col_index(vfc,ex,&row1,&row2,&col1,&col2);
-   ASSERT( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
+   CHECK( 0 <= row1 && 0 <= row2 && 0 <= col1 && 0 <= col2 );
 
    Float64 beta11;  // beta on row 1, col 1
    Float64 beta12;  // beta on row 1, col 2
@@ -1732,7 +1633,7 @@ void get_row_index(Float64 vfc,Int16* pr1,Int16* pr2)
    //
 
    // vfc > 0.25 is not allowed. This condition should
-   // have been trapped long before reacing this point
+   // have been trapped long before reaching this point
    CHECK( IsLE(vfc,get_vfc(get_vfc_count()-1)) );
 
    // Don't pass nullptr pointers
@@ -1802,7 +1703,7 @@ void get_col_index(Int16 row,Float64 theta,Int16* pc1,Int16* pc2)
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
    {
-      THROW(lrfdXShear,StrainOutOfRange);
+      WBFL_LRFD_THROW(XShear,StrainOutOfRange);
    }
 }
 
@@ -1840,7 +1741,7 @@ void get_col_index(Float64 ex,Int16* pc1,Int16* pc2)
    // There are no lrfd provisions describing what to do when ex < -0.002
    if ( *pc1 < 0 || *pc2 < 0 )
    {
-      THROW(lrfdXShear,StrainOutOfRange);
+      WBFL_LRFD_THROW(XShear,StrainOutOfRange);
    }
 }
 
@@ -1888,15 +1789,3 @@ void get_row_index_mtr(Float64 sxe,Int16* pr1,Int16* pr2)
    // We should always get valid row indices
    CHECK( *pr1 != -1 && *pr2 != -1 );
 }
-
-
-#if defined _UNITTEST
-bool lrfdShear::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("lrfdShear");
-   TEST_NOT_IMPLEMENTED("Unit Tests Not Implemented for lrfdShear");
-   TESTME_EPILOG("lrfdShear");
-}
-#endif // _UNITTEST
-
-

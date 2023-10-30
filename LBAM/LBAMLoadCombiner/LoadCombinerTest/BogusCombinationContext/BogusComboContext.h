@@ -203,11 +203,11 @@ private:
             }
          }
       };
-      typedef std::map<CComBSTR, ResultQuad> StageMap;
-      typedef std::map<CComBSTR, StageMap>   ComboMap;
+      using StageMap = std::map<CComBSTR, ResultQuad>;
+      using ComboMap = std::map<CComBSTR, StageMap>;
 
-      typedef StageMap::iterator             StageMapIterator;
-      typedef ComboMap::iterator             ComboMapIterator;
+      using StageMapIterator = StageMap::iterator;
+      using ComboMapIterator = ComboMap::iterator;
 
       ComboMap m_Results;
    };
@@ -231,8 +231,8 @@ private:
    PoiIDType m_PoiId;
 
    // stress point collections by stage
-   typedef std::map<CComBSTR, CComPtr<IStressPoints> > StressPointsMap;
-   typedef StressPointsMap::iterator                 StressPointsIterator;
+   using StressPointsMap = std::map<CComBSTR, CComPtr<IStressPoints>>;
+   using StressPointsIterator = StressPointsMap::iterator;
 
    StressPointsMap  m_StressPoints;
 
@@ -345,16 +345,16 @@ public:
 	STDMETHOD(GetPoiInfo)(BSTR stage, PoiIDType poiID, MemberType * lbamMemberType, MemberIDType * MemberID, Float64 * memberLocation);
 
 // ILoadCases
-	STDMETHOD(get_Item)(CollectionIndexType index, ILoadCase * * pVal);
+	STDMETHOD(get_Item)(IndexType index, ILoadCase * * pVal);
 	STDMETHOD(get__NewEnum)(IUnknown * * retval);
 	STDMETHOD(get__EnumElements)(IEnumLoadCase * * pVal);
 	STDMETHOD(Find)(BSTR Name, ILoadCase * * __MIDL_0043);
 	STDMETHOD(Add)(ILoadCase * __MIDL_0044);
 	STDMETHOD(RemoveByName)(BSTR Name);
-	STDMETHOD(RemoveByIndex)(CollectionIndexType index, BSTR * Name);
+	STDMETHOD(RemoveByIndex)(IndexType index, BSTR * Name);
 	STDMETHOD(Clone)(ILoadCases * * __MIDL_0045);
 	STDMETHOD(Clear)();
-	STDMETHOD(get_Count)(CollectionIndexType* pVal);
+	STDMETHOD(get_Count)(IndexType* pVal);
 
    // IStages
 	STDMETHOD(get_Item)(StageIndexType position, IStage * * pVal);
@@ -368,7 +368,7 @@ public:
 	STDMETHOD(FindIndex)(BSTR Name, StageIndexType * index);
 
    // ILoadCombinations
-	STDMETHOD(get_Item)(CollectionIndexType index, ILoadCombination * * pVal);
+	STDMETHOD(get_Item)(IndexType index, ILoadCombination * * pVal);
 	STDMETHOD(get__EnumElements)(IEnumLoadCombination * * pVal);
 	STDMETHOD(Find)(BSTR Name, ILoadCombination * * __MIDL_0046);
 	STDMETHOD(Add)(ILoadCombination * __MIDL_0047);
@@ -412,8 +412,8 @@ private:
    CComPtr<ILoadCombination> m_LoadCombo2;
    CComPtr<ILoadCombination> m_LoadCombo3;
 
-   typedef std::map<PoiIDType, ComboBenchMark> BenchMarkMap;
-   typedef BenchMarkMap::iterator         BenchMarkIterator;
+   using BenchMarkMap = std::map<PoiIDType, ComboBenchMark>;
+   using BenchMarkIterator = BenchMarkMap::iterator;
 
    BenchMarkMap m_BenchMarks;
 };

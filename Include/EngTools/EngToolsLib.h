@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ENGTOOLS_ENGTOOLSLIB_H_
-#define INCLUDED_ENGTOOLS_ENGTOOLSLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -34,6 +32,5 @@ LIBRARY
 DESCRIPTION
    Support library that provides primitive engineering tools.
 *****************************************************************************/
-#include <Private\WbflPackage.h>
 
-#endif // INCLUDED_ENGTOOLS_ENGTOOLSLIB_H_
+#include <MathEx.h>

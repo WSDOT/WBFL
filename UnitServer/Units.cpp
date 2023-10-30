@@ -88,7 +88,7 @@ STDMETHODIMP CUnits::get__EnumUnits(IEnumUnits** enumUnits)
 {
    CHECK_RETOBJ(enumUnits);
 
-   typedef CComEnumOnSTL<IEnumUnits,&IID_IEnumUnits, IUnit*, _CopyVariantToInterface<IUnit>, std::vector<CComVariant> > Enum;
+   using Enum = CComEnumOnSTL<IEnumUnits,&IID_IEnumUnits, IUnit*, _CopyVariantToInterface<IUnit>, std::vector<CComVariant> >;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -146,7 +146,7 @@ STDMETHODIMP CUnits::Clear()
    return S_OK;
 }
 
-STDMETHODIMP CUnits::get_Count(CollectionIndexType* retval)
+STDMETHODIMP CUnits::get_Count(IndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;

@@ -53,8 +53,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,5,0
- PRODUCTVERSION 7,0,5,0
+ FILEVERSION 8,0,0,4
+ PRODUCTVERSION 8,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,7 +72,7 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "WBFL Fem2d Module\0"
-            VALUE "FileVersion", "7.0.5.0\0"
+            VALUE "FileVersion", "8.0.0.4\0"
             VALUE "InternalName", "Fem2d\0"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -80,7 +80,7 @@ BEGIN
             VALUE "OriginalFilename", "Fem2d.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "7.0.5.0\0"
+            VALUE "ProductVersion", "8.0.0.4\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -174,8 +174,8 @@ BEGIN
     IDS_E_JOINT_DISP_TO_FIXED_DOF_ONLY 
                             "Joint Deflections may be applied to supported DOF's only. Joint Deflection %d at Joint %d attempts to load a free DOF."
     IDS_E_MATRIX_BACK_SUBSTITUTION 
-                            "Error occured during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
-    IDS_E_MATRIX_FACTORING  "Error occured during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+                            "Error occurred during matrix solution while solving for joint %d, dof=%d. It is likely that the structure is unstable."
+    IDS_E_MATRIX_FACTORING  "Error occurred during matrix factoring while solving for joint %d, dof=%d. It is likely that the structure is unstable."
     IDS_E_DIST_LOAD_OFF_GIRDER_END 
                             "Distrubuted load %d in Loading %d is located beyond the end of a member"
     IDS_E_DIST_LOAD_REF_MEMBER_NOT_EXISTS 

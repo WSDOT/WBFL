@@ -138,7 +138,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_Section(StageIndexType s
    return S_OK;
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_PrimaryShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::get_GirderShape(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
    if ( m_Shapes.size() == 0 )
@@ -462,7 +462,7 @@ STDMETHODIMP CPrismaticSuperstructureMemberSegment::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CPrismaticSuperstructureMemberSegment::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

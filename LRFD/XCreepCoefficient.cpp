@@ -23,107 +23,27 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Lrfd\LrfdLib.h>
-
 #include <Lrfd\XCreepCoefficient.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdXCreepCoefficient
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXCreepCoefficient::lrfdXCreepCoefficient(Reason reason,
-                                             LPCTSTR file,
-                                             Int16 line) :
-sysXBase(file,line),
+XCreepCoefficient::XCreepCoefficient(Reason reason, LPCTSTR file, Uint32 line) :
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-lrfdXCreepCoefficient::lrfdXCreepCoefficient(const lrfdXCreepCoefficient& rOther) :
-sysXBase(rOther)
+void XCreepCoefficient::Throw() const
 {
-   MakeCopy(rOther);
+   throw *static_cast<const XCreepCoefficient*>(this);
 }
 
-lrfdXCreepCoefficient::~lrfdXCreepCoefficient()
+Int32 XCreepCoefficient::GetReason() const noexcept
 {
+   return (Int32)m_Reason;
 }
 
-//======================== OPERATORS  =======================================
-lrfdXCreepCoefficient& lrfdXCreepCoefficient::operator= (const lrfdXCreepCoefficient& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdXCreepCoefficient::Throw() const
-{
-   throw *static_cast<const lrfdXCreepCoefficient*>(this);
-}
-
-Int32 lrfdXCreepCoefficient::GetReason() const
+XCreepCoefficient::Reason XCreepCoefficient::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXCreepCoefficient::Reason lrfdXCreepCoefficient::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXCreepCoefficient::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXCreepCoefficient::Dump(dbgDumpContext& os) const
-{
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXCreepCoefficient::MakeCopy(const lrfdXCreepCoefficient& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXCreepCoefficient::MakeAssignment(const lrfdXCreepCoefficient& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

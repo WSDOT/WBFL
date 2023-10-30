@@ -36,8 +36,8 @@
 #endif
 
 class CFixedLengthRebarLayoutItem;
-typedef CComVectorCollection<IFixedLengthRebarLayoutItem,IRebarPattern,IEnumRebarPatterns,&IID_IEnumRebarPatterns,CollectionIndexType> FixedPtrnColl;
-typedef CPersistentCollection<CFixedLengthRebarLayoutItem,FixedPtrnColl,CollectionIndexType> PersistentFixedLengthRebarLayoutItem;
+using FixedPtrnColl = CComVectorCollection<IFixedLengthRebarLayoutItem, IRebarPattern, IEnumRebarPatterns, &IID_IEnumRebarPatterns, IndexType>;
+using PersistentFixedLengthRebarLayoutItem = CPersistentCollection<CFixedLengthRebarLayoutItem,FixedPtrnColl,IndexType>;
 
 
 // CFixedLengthRebarLayoutItem

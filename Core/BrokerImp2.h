@@ -115,20 +115,20 @@ public:
 
 // IManageAgents
 public:
-   STDMETHOD(get_AgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
-   STDMETHOD(get_Agent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
-   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/CollectionIndexType* nAgents) override;
-   STDMETHOD(get_ExtensionAgent)(/*[in]*/CollectionIndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
+   STDMETHOD(get_AgentCount)(/*[out,retval]*/IndexType* nAgents) override;
+   STDMETHOD(get_Agent)(/*[in]*/IndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
+   STDMETHOD(get_ExtensionAgentCount)(/*[out,retval]*/IndexType* nAgents) override;
+   STDMETHOD(get_ExtensionAgent)(/*[in]*/IndexType idx,/*[out,retval]*/IAgent** ppAgent) override;
 
 private:
-   typedef std::set<InterfaceItem> Interfaces;
+   using Interfaces = std::set<InterfaceItem>;
    Interfaces m_Interfaces; // collection of all interface records
    boost::circular_buffer<InterfaceItem> m_MostFrequentlyUsed; // collection of most frequently used interfaces
                                              // this collection will be searched first
 
    std::map<CComBSTR,CComBSTR> m_CLSIDMap;
 
-   typedef std::map<CLSID,CComPtr<IAgentEx>> Agents; // interface pointers are referenced counted
+   using Agents = std::map<CLSID,CComPtr<IAgentEx>>; // interface pointers are referenced counted
    Agents m_Agents;
    Agents m_ExtensionAgents;
 

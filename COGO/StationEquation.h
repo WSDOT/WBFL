@@ -30,7 +30,7 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "StationEquationCollection.h"
+//#include "StationEquationCollection.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CStationEquation
@@ -39,14 +39,14 @@ class ATL_NO_VTABLE CStationEquation :
 	public CComCoClass<CStationEquation, &CLSID_StationEquation>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CStationEquation,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IStationEquation,
-   public IStructuredStorage2,
-   public IPersistImpl<CStationEquation>
+	public IStationEquation
 {
 public:
 	CStationEquation()
 	{
 	}
+
+   void SetEquation(const WBFL::COGO::StationEquation& equation) { m_Equation = equation; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_STATIONEQUATION)
 
@@ -54,17 +54,9 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CStationEquation)
 	COM_INTERFACE_ENTRY(IStationEquation)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-private:
-   Float64 m_Back; // back station
-   Float64 m_Ahead; // ahead station
-   Float64 m_NormalizedStation; // location of this equation assuming there are no equations
-   friend CStationEquationCollection;
 
 // ISupportsErrorInfo
 public:
@@ -76,12 +68,9 @@ public:
    STDMETHOD(get_Back)(Float64* pBack) override;
    STDMETHOD(get_Ahead)(Float64* pAhead) override;
    STDMETHOD(get_NormalizedValue)(Float64* pNormalizedValue) override;
-   STDMETHOD(get_StructuredStorage)(IStructuredStorage2* *pVal) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
+private:
+   WBFL::COGO::StationEquation m_Equation;
 };
 
 #endif //__StationEquation_H_

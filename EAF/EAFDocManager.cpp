@@ -135,7 +135,7 @@ void CEAFDocManager::OnFileNew()
 	}
 
    CEAFDocTemplate* pTemplate = nullptr;
-   CollectionIndexType nTemplates = m_TemplateGroups.GetTemplateCount();
+   IndexType nTemplates = m_TemplateGroups.GetTemplateCount();
    if ( 1 < nTemplates)
    {
       // prompt to select a project template

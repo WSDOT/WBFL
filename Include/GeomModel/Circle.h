@@ -21,236 +21,105 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMMODEL_CIRCLE_H_
-#define INCLUDED_GEOMMODEL_CIRCLE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
+#include <GeomModel/GeomModelExp.h>
+#include <GeomModel/ShapeOnAlternativePolygonImpl.h>
 
-// PROJECT INCLUDES
-//
-#include <GeomModel\GeomModelExp.h>
-#include <GeomModel\ShapeImp.h>
+namespace WBFL
+{
+   namespace Geometry
+   {
+class Polygon;
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-class gmPolygon;
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   gmCircle
-
-   Derived from gmShapeImp,  this class represents a Circle primitive. 
-
-
-DESCRIPTION
-   The Circle is described by its radius.  The hook point for a
-   Circle is at its center.
-
-LOG
-   rdp : 12.22.1997 : Created file
-*****************************************************************************/
-
-class GEOMMODELCLASS gmCircle : public gmShapeImp, public gmIShapeEx
+/// Object representing a Circle
+///
+/// \image html Circle/Circle.jpg
+/// Section properties in centroidal coordinates. 
+/// \f[ A = \pi r^2 \f]
+/// \f[ I_x = I_y =\frac{\pi r^2}{4} \f]
+/// \f[ I_{xy} = 0 \f]
+/// \f[ Perimeter = 2 \pi r \f]
+class GEOMMODELCLASS Circle : public ShapeOnAlternativePolygonImpl
 {
 public:
-   // GROUP: LIFECYCLE
+   /// Default constructor.  Creates a Circle with radius equal 
+   /// to zero,  with its hook point at (0,0).
+   Circle();
 
-   //------------------------------------------------------------------------
-   // Default constructor.  Creates a Circle with radius equal 
-   // to zero,  with its hook point at (0,0).
-   gmCircle();
+   /// Explicit constructor.  Creates a Circle with radius, and
+   /// the hook point positioned at hookPnt.
+   Circle(std::shared_ptr<Point2d>& hookPnt, Float64 radius);
+   Circle(const Point2d& hookPnt, Float64 radius);
 
-   //------------------------------------------------------------------------
-   // gmCircle
-   // Explicit constructor.  Creates a Circle with radius, and
-   // the hook point positioned at hookPnt.
-   gmCircle(const gpPoint2d& hookPnt,Float64 radius);
+   Circle(const Circle&);
+   Circle& operator=(const Circle&);
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~gmCircle();
+   virtual ~Circle();
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+   // Sets the Radius of the Circle.
+   void SetRadius(Float64 radius);
 
-   //------------------------------------------------------------------------
-   // SetHookPoint
-   // Sets the location of the hook point to hookPnt.  Returns the previous 
-   // hook point location.
-   gpPoint2d SetHookPoint(const gpPoint2d& hookPnt);
-
-   //------------------------------------------------------------------------
-   // GetHookPoint
-   // Returns the location of the hook point.
-   gpPoint2d GetHookPoint() const;
-
-   //------------------------------------------------------------------------
-   // SetRadius
-   // Sets the Radius of the Circle.  Returns the previous Radius.
-   Float64 SetRadius(Float64 radius);
-
-   //------------------------------------------------------------------------
-   // GetRadius
-   // Returns the Radius of the Circle.
+   /// Returns the Radius of the Circle.
    Float64 GetRadius() const;
 
-   //------------------------------------------------------------------------
-   // GetProperties
-   // Assigns a gmProperties object to the object pointed to by pProperties. 
-   // The origin of the shape properties object is the centroid of this shape
-   // with a rotation of zero.
-   virtual void GetProperties(gmProperties* pProperties) const override;
+   void SetParameters(const Point2d& center, Float64 radius);
+   void SetParameters(std::shared_ptr<Point2d>& center, Float64 radius);
+   std::pair<std::shared_ptr<const Point2d>, Float64> GetParameters() const;
 
-   //------------------------------------------------------------------------
-   // GetBoundingBox
-   // Returns the smallest rectangle that bounds the entire shape.
-   virtual gpRect2d GetBoundingBox() const override;
+   void ThroughTwoPoints(const Point2d& p1, const Point2d& p2);
+   void ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Point2d& p3);
 
-   //------------------------------------------------------------------------
-   // CreateClone
-   // Creates a clone of this broadcaster.  If bRegisterListeners is true the 
-   // listeners are registered with the clone.  This is a factory method,  
-   // you are responsible for freeing the memory allocated by this method.
-   virtual gmIShape* CreateClone(bool bRegisterListeners = false) const override;
+   /// Translates a shape by a delta amount.
+   virtual void DoOffset(const Size2d& delta) override;
 
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against line.  Clips away the portion of the shape on the
-   // side of the line defined by side.  This is a factory method.  You are 
-   // responsible for freeing the memory allocated by this method.  If the shape
-   // lies entirely on the clipping side of the line 0 is returned. Any listeners
-   // to the original section are not transferred to this new section.
-   virtual gmIShape* CreateClippedShape(const gpLine2d& line, 
-                                       gpLine2d::Side side) const;
+   /// Rotates a shape.  The rotation is centered about point center.  The 
+   /// rotation angle is measured in radians counter clockwise.
+   virtual void DoRotate(const Point2d& center, Float64 angle) override;
 
-   //------------------------------------------------------------------------
-   // CreateClippedShape
-   // Clips this shape against Circle r.  Clips in or out of the Circle
-   // as specified by region.  This is a factory method.  You are responsible 
-   // for freeing memory allocated by this method.  This method returns 0 if, 
-   // the shape lies entirely within the clipping Circle and region is set 
-   // to clip out, or the shape and the Circle do not intersect and region 
-   // is to clip in. Any listeners to the original section are not transferred
-   // to this new section.
-   virtual gmIShape* CreateClippedShape(const gpRect2d& r,
-                                        gmShapeImp::ClipRegion region
-                                        ) const override;
+   ///  Returns the shape properties
+   virtual ShapeProperties GetProperties() const override;
 
-   //------------------------------------------------------------------------
-   // GetArea
-   // Returns area and cg of shape. Typically faster that getting the properties 
-   // and then the area.
-   virtual void GetArea(Float64* pArea, gpPoint2d* pCG) const override;
+   /// Returns the smallest rectangle that bounds the entire shape.
+   virtual Rect2d GetBoundingBox() const override;
 
-   //------------------------------------------------------------------------
-   // ComputeClippedArea
-   // Clips this shape against line and computes area and CG of remaining shape.
-   // Clips away the portion of the shape on the side of the line defined by side. 
-   virtual void ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
-                                   Float64* pArea, gpPoint2d* pCG) const override;
+   virtual bool PointInShape(const Point2d& p) const override;
+   virtual Float64 GetPerimeter() const override;
 
-   //------------------------------------------------------------------------
-   // GetFurthestDistance
-   // Returns the distance to a line that is parallel to line, on specified 
-   // side of line,  that passes through the furthest point on the shape 
-   // from line.
-   virtual Float64 GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const override;
+   bool PointOnCircle(const Point2d& p);
 
-   //------------------------------------------------------------------------
-   // Draw
-   // Draws the shape on the given device context.  Mapping of the coordinates
-   // to the device space should be done using the supplied point mapper.
-   // Draw is for static displays only.  The drawing of this analytical 
-   // model is not intended for interactive, graphical editing.  Interactive 
-   // graphical editing is best left for a package specifically designed for 
-   // this purpose, such as jKit/GO.  In a package like jKit/GO,  a GO object
-   // would most likely delegate its drawing responsibility to the gmShapeImp 
-   // object it represents.
-   // Subject to removal if we can ever figure out the MVC stuff
-   virtual void Draw(HDC hDC, const grlibPointMapper& mapper) const override;
+   /// Creates a clone of this shape.
+   virtual std::unique_ptr<Shape> CreateClone() const override;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const override;
+   /// Clips this shape against line.  Clips away the portion of the shape on the
+   /// side of the line defined by side.  This is a factory method.  You are 
+   /// responsible for freeing the memory allocated by this method.  If the shape
+   /// lies entirely on the clipping side of the line 0 is returned.
+   virtual std::unique_ptr<Shape> CreateClippedShape(const Line2d& line, Line2d::Side side) const;
 
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
-#endif // _DEBUG
+   /// Clips this shape against Circle r.  Clips in or out of the Circle
+   /// as specified by region.  This is a factory method.  You are responsible 
+   /// for freeing memory allocated by this method.  This method returns 0 if, 
+   /// the shape lies entirely within the clipping Circle and region is set 
+   /// to clip out, or the shape and the Circle do not intersect and region 
+   /// is to clip in.
+   virtual std::unique_ptr<Shape> CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const override;
 
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
+   /// Returns the distance to a line that is parallel to line, on specified 
+   /// side of line,  that passes through the furthest point on the shape 
+   /// from line.
+   virtual Float64 GetFurthestDistance(const Line2d& line, Line2d::Side side) const override;
 
+   /// Gets the distance and location of the point on the shape that is furthest from, and on the specified side of, the provided line
+   virtual std::pair<Point2d,Float64> GetFurthestPoint(const Line2d& line, Line2d::Side side) const override;
 
 protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   // Prevent accidental copying and assignment
-   gmCircle(const gmCircle&);
-   gmCircle& operator=(const gmCircle&);
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // DoTranslate
-   // Called by the framework went the shape is to be translated.
-   virtual void DoTranslate(const gpSize2d& delta) override;
-
-   //------------------------------------------------------------------------
-   // DoRotate
-   // Called by the framework went the shape is to be rotated.
-   virtual void DoRotate(const gpPoint2d& center, Float64 angle) override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const gmCircle& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const gmCircle& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   virtual void OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const override;
 
 private:
-   // GROUP: DATA MEMBERS
-
-   Float64   m_Radius;
-   gpPoint2d m_HookPoint;
-
-   // GROUP: LIFECYCLE
-
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-   gmPolygon* CreatePolygon() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+   Float64 m_Radius{ 0.0 };
+   void Copy(const Circle& other);
 };
 
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_GEOMMODEL_CIRCLE_H_
+   }; // Geometry
+}; // WBFL

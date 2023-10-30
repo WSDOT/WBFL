@@ -49,12 +49,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -66,7 +67,6 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/Zm600  %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\..\Include;..\..\Include\$(Platform);..\..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -80,6 +80,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -91,14 +94,14 @@
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>true</EnableUAC>
       <SubSystem>Console</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -122,7 +125,6 @@
       <HeaderFileName />
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/Zm600  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\Include;..\..\Include\$(Platform);..\..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -139,6 +141,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -148,14 +152,17 @@
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -179,39 +186,29 @@
     <ClCompile Include="TestAlignment1.cpp" />
     <ClCompile Include="TestAlignment2.cpp" />
     <ClCompile Include="TestAlignment3.cpp" />
-    <ClCompile Include="TestAlignmentCollection.cpp" />
     <ClCompile Include="TestAngle.cpp" />
     <ClCompile Include="TestAngleDisplayUnitFormatter.cpp" />
+    <ClCompile Include="TestBridgeGeometry.cpp" />
     <ClCompile Include="TestCircularCurve.cpp" />
     <ClCompile Include="TestCogoModel.cpp" />
-    <ClCompile Include="TestCogoModelEvents.cpp" />
     <ClCompile Include="TestCompoundCurve.cpp" />
     <ClCompile Include="TestCompoundCurve2.cpp" />
-    <ClCompile Include="TestCompoundCurveCollection.cpp" />
     <ClCompile Include="TestCubicSpline.cpp" />
     <ClCompile Include="TestDirection.cpp" />
     <ClCompile Include="TestDirectionDisplayUnitFormatter.cpp" />
     <ClCompile Include="TestDivide.cpp" />
     <ClCompile Include="TestIntersect.cpp" />
-    <ClCompile Include="TestLineSegmentCollection.cpp" />
     <ClCompile Include="TestLocate.cpp" />
     <ClCompile Include="TestMeasure.cpp" />
-    <ClCompile Include="TestPathCollection.cpp" />
-    <ClCompile Include="TestPathElementcpp.cpp" />
     <ClCompile Include="TestPoint.cpp" />
-    <ClCompile Include="TestPointCollection.cpp" />
     <ClCompile Include="TestProfile.cpp" />
-    <ClCompile Include="TestProfileElementcpp.cpp" />
     <ClCompile Include="TestProfilePoint.cpp" />
-    <ClCompile Include="TestProfilePointCollection.cpp" />
     <ClCompile Include="TestProject.cpp" />
     <ClCompile Include="TestStation.cpp" />
-    <ClCompile Include="TestStationEquationCollection.cpp" />
     <ClCompile Include="TestSuperelevation.cpp" />
     <ClCompile Include="TestTangent.cpp" />
     <ClCompile Include="TestTransitionCurve.cpp" />
     <ClCompile Include="TestVertCurve.cpp" />
-    <ClCompile Include="TestVertCurveCollection.cpp" />
     <ClCompile Include="TestWidening.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -223,39 +220,27 @@
     <ClInclude Include="TestAlignment3.h" />
     <ClInclude Include="TestAngle.h" />
     <ClInclude Include="TestAngleDisplayUnitFormatter.h" />
+    <ClInclude Include="TestBridgeGeometry.h" />
     <ClInclude Include="TestCircularCurve.h" />
     <ClInclude Include="TestCogoModel.h" />
-    <ClInclude Include="TestCogoModelEvents.h" />
     <ClInclude Include="TestCompoundCurve.h" />
-    <ClInclude Include="TestCompoundCurveCollection.h" />
     <ClInclude Include="TestCubicSpline.h" />
     <ClInclude Include="TestDirection.h" />
     <ClInclude Include="TestDirectionDisplayUnitFormatter.h" />
     <ClInclude Include="TestDivide.h" />
     <ClInclude Include="TestIntersect.h" />
-    <ClInclude Include="TestLineSegmentCollection.h" />
     <ClInclude Include="TestLocate.h" />
     <ClInclude Include="TestMeasure.h" />
-    <ClInclude Include="TestPathCollection.h" />
-    <ClInclude Include="TestPathElement.h" />
     <ClInclude Include="TestPoint.h" />
-    <ClInclude Include="TestPointCollection.h" />
     <ClInclude Include="TestProfile.h" />
-    <ClInclude Include="TestProfileElement.h" />
     <ClInclude Include="TestProfilePoint.h" />
-    <ClInclude Include="TestProfilePointCollection.h" />
     <ClInclude Include="TestProject.h" />
     <ClInclude Include="TestStation.h" />
-    <ClInclude Include="TestStationEquationCollection.h" />
     <ClInclude Include="TestSuperelevation.h" />
     <ClInclude Include="TestTangent.h" />
     <ClInclude Include="TestTransitionCurve.h" />
     <ClInclude Include="TestVertCurve.h" />
-    <ClInclude Include="TestVertCurveCollection.h" />
     <ClInclude Include="TestWidening.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cogo.vcxproj">

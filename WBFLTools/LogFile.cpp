@@ -97,7 +97,7 @@ STDMETHODIMP CLogFile::Open(LPCTSTR name, DWORD* pdwCookie)
    *pdwCookie = (DWORD)m_LogFiles.size();
 
    // Write a little preamble
-   sysTime now;
+   WBFL::System::Time now;
    now.PrintDate(true);
    try
    {
@@ -165,7 +165,7 @@ STDMETHODIMP CLogFile::Close(DWORD dwCookie)
    std::shared_ptr<std::_tofstream>& pofile = m_LogFiles[idx_from_cookie(dwCookie)];
 
    // Write a little postscript
-   sysTime now;
+   WBFL::System::Time now;
    now.PrintDate(true);
    try
    {

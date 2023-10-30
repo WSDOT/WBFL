@@ -30,7 +30,6 @@
 
 #include <list>
 #include <map>
-#import  <msxml6.dll> rename_namespace("MSXML")
 
 
 #include "resource.h"       // main symbols
@@ -85,14 +84,14 @@ private:
       Float64                Version;
       MSXML::IXMLDOMNodePtr spCurrentNode;
    };
-   typedef std::list<ListItem> NodeStack;
-   typedef NodeStack::const_iterator NodeStackConstIterator;
+   using NodeStack = std::list<ListItem>;
+   using NodeStackConstIterator = NodeStack::const_iterator;
    NodeStack   m_NodeStack;
 
    // Set of objects that have already been saved. This is needed so we don't 
    // save the same object twice.
-   typedef std::map<IUnknown*,_bstr_t> ObjectSet;
-   typedef ObjectSet::const_iterator ObjectSetConstIterator;
+   using ObjectSet = std::map<IUnknown*, _bstr_t>;
+   using ObjectSetConstIterator = ObjectSet::const_iterator;
    ObjectSet m_ObjectSet;
 
    // Unique object names

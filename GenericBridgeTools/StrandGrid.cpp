@@ -60,8 +60,6 @@ HRESULT CStrandGrid::FinalConstruct()
    if ( FAILED(hr) )
       return hr;
 
-   geom_util->get_Point2dFactory(&m_Point2dFactory);
-
    hr = m_GridBoundingBox.CoCreateInstance(CLSID_Rect2d);
    if ( FAILED(hr) )
       return hr;
@@ -110,14 +108,14 @@ STDMETHODIMP CStrandGrid::AddGridPoints(/*[in]*/IPoint2dCollection* points)
 {
    CHECK_IN(points);
 
-   CollectionIndexType cur_cnt = m_GridPoints.size();
+   IndexType cur_cnt = m_GridPoints.size();
    
-   CollectionIndexType cnt;
+   IndexType cnt;
    points->get_Count(&cnt);
 
    m_GridPoints.reserve(cur_cnt + cnt);
 
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       CComPtr<IPoint2d> point;
       points->get_Item(i, &point);
@@ -149,11 +147,10 @@ STDMETHODIMP CStrandGrid::get_GridPoint(/*[in]*/ GridIndexType idx,/*[out,retval
    Float64 x = pnt.dPointX;
    Float64 y = pnt.dPointY;
 
-   HRESULT hr = m_Point2dFactory->CreatePoint(point);
-   if ( FAILED(hr) )
-      return hr;
-   
-   (*point)->Move(x, y);
+   CComPtr<IPoint2d> p;
+   p.CoCreateInstance(CLSID_Point2d);
+   p->Move(x, y);
+   p.CopyTo(point);
 
    return S_OK;
 }
@@ -173,10 +170,7 @@ STDMETHODIMP CStrandGrid::get_GridPoints(/*[out,retval]*/IPoint2dCollection** po
       const GridPoint2d& pnt = *iter;
 
       CComPtr<IPoint2d> point;
-      HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-      if ( FAILED(hr) )
-         return hr;
-   
+      point.CoCreateInstance(CLSID_Point2d);
       point->Move(pnt.dPointX , pnt.dPointY );
 
       new_points->Add(point);
@@ -258,7 +252,7 @@ STDMETHODIMP CStrandGrid::putref_StrandFill(/*[in]*/IIndexArray* fill)
    InvalidateFill();
 
    // fill size does not have to match grid size
-   CollectionIndexType nGridPoints;
+   IndexType nGridPoints;
    fill->get_Count(&nGridPoints);
 
    GridIndexType gridPointIdx = 0;
@@ -391,9 +385,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
          if (nStrandsAtGridPoint == 1)
          {
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             // single strands must always be placed at center
             point->Move(xright, y);
@@ -403,17 +395,13 @@ STDMETHODIMP CStrandGrid::GetStrandPositions(/*[out,retval]*/IPoint2dCollection*
          {
             // place two strands at +/-X
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
-            hr = m_Point2dFactory->CreatePoint(&point2);
-            if ( FAILED(hr) )
-               return hr;
+            point2.CoCreateInstance(CLSID_Point2d);
 
             point2->Move(xright, y);
             local_points->Add(point2);
@@ -448,7 +436,7 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
 {
   CComPtr<IIndexArray> maxFill;
   GetMaxStrandFill(&maxFill);
-  CollectionIndexType grcnt;
+  IndexType grcnt;
   maxFill->get_Count(&grcnt);
 
   if (grcnt==0)
@@ -465,7 +453,7 @@ STDMETHODIMP CStrandGrid::GridIndexToStrandIndex(/*[in]*/GridIndexType gridIndex
 
   StrandIndexType idx = 0;
   StrandIndexType fll;
-  for (CollectionIndexType gridx = 0; gridx<=gridIndex; gridx++)
+  for (IndexType gridx = 0; gridx<=gridIndex; gridx++)
   {
      maxFill->get_Item(gridx, &fll);
 
@@ -506,7 +494,7 @@ STDMETHODIMP CStrandGrid::StrandIndexToGridIndexEx(/*[in]*/IIndexArray* fill, /*
    GridIndexType nGridPoints = m_GridPoints.size();
 
    // get number of points in the fill sequence
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    // limit the loop to the min of these
@@ -672,7 +660,7 @@ STDMETHODIMP CStrandGrid::get_FilledGridBoundsEx(/*[in]*/IIndexArray* fill, /*[o
    ValidateGrid(); // only need to validate grid since fill is external
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
@@ -709,7 +697,7 @@ STDMETHODIMP CStrandGrid::GetStrandCountEx(/*[in]*/IIndexArray* fill, /*[out,ret
 
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
@@ -743,7 +731,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
       return hr;
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
@@ -767,9 +755,7 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
          if (nStrandsAtGridPoint == 1)
          {
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             // single strands must always be placed at center
             point->Move(xright, y);
@@ -779,17 +765,13 @@ STDMETHODIMP CStrandGrid::GetStrandPositionsEx(/*[in]*/IIndexArray* fill, /*[out
          {
             // place two strands at +/-X
             CComPtr<IPoint2d> point;
-            HRESULT hr = m_Point2dFactory->CreatePoint(&point);
-            if ( FAILED(hr) )
-               return hr;
+            point.CoCreateInstance(CLSID_Point2d);
          
             point->Move(xleft, y);
             local_points->Add(point);
 
             CComPtr<IPoint2d> point2;
-            hr = m_Point2dFactory->CreatePoint(&point2);
-            if ( FAILED(hr) )
-               return hr;
+            point2.CoCreateInstance(CLSID_Point2d);
 
             point2->Move(xright, y);
             local_points->Add(point2);
@@ -809,7 +791,7 @@ STDMETHODIMP CStrandGrid::get_CGEx(/*[in]*/IIndexArray* fill, /*[out]*/Float64* 
    ValidateGrid(); // only need to validate grid since fill is external
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = min((GridIndexType)nFillPoints, nGridPoints);
@@ -879,7 +861,7 @@ STDMETHODIMP CStrandGrid::get_StrandBoundingBoxEx(/*[in]*/IIndexArray* fill, /*[
        return hr;
 
    GridIndexType nGridPoints = m_GridPoints.size();
-   CollectionIndexType nFillPoints;
+   IndexType nFillPoints;
    fill->get_Count(&nFillPoints);
 
    GridIndexType nPoints = Min((GridIndexType)nFillPoints, nGridPoints);
@@ -1449,7 +1431,7 @@ STDMETHODIMP CStrandGrid::IsExteriorStrandDebondedInRow(/*[in]*/ RowIndexType ro
       return E_INVALIDARG;
 
    // advance the iterator
-   auto& iter = std::cbegin(m_Rows);
+   auto iter = std::cbegin(m_Rows);
    std::advance(iter, rowIndex);
 
    // this is the row we want
@@ -1613,7 +1595,7 @@ STDMETHODIMP CStrandGrid::GetDebondedConfigurationCountByRow(/*[in]*/RowIndexTyp
          record.LdbEnd = LdbEnd;
          record.nStrands = 1;
 
-         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         auto found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [&record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
          if (found == debondConfigs.end())
          {
             debondConfigs.push_back(record);
@@ -1655,7 +1637,7 @@ STDMETHODIMP CStrandGrid::GetDebondConfigurationByRow(/*[in]*/RowIndexType rowId
          record.YSum = Ycoord;
          record.nStrands = 1;
 
-         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         auto found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [&record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
          if (found == debondConfigs.end())
          {
             debondConfigs.push_back(record);
@@ -1695,7 +1677,7 @@ STDMETHODIMP CStrandGrid::ClearDebonding()
    m_LeftSections.clear();
    m_RightSections.clear();
 
-   typedef std::vector<GridPoint2d> GridCollection;
+   using GridCollection = std::vector<GridPoint2d>;
    GridCollectionIterator begin(m_GridPoints.begin());
    GridCollectionIterator iter(begin);
    GridCollectionIterator end(m_GridPoints.end());

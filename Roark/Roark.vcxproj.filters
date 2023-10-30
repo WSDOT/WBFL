@@ -7,7 +7,7 @@
     <ClCompile Include="BeamWithUnequalOverhangsUniformLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Composite.cpp">
+    <ClCompile Include="CompositeBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
@@ -16,16 +16,13 @@
     <ClCompile Include="PPIntermediateCouple.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROARK.CPP">
+    <ClCompile Include="RoarkBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROARK12.CPP">
+    <ClCompile Include="PPIntermediateLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ROARK14.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
+    <ClCompile Include="PPPartialUniformLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,13 +33,10 @@
     <ClInclude Include="..\Include\Roark\BeamWithEqualOverhangsUniformLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Private.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Roark\ROARK.H">
+    <ClInclude Include="..\Include\Roark\RoarkBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Roark\RoarkExp.h">
@@ -51,10 +45,22 @@
     <ClInclude Include="..\Include\Roark\RoarkLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Roark\UnitTest.h">
+    <ClInclude Include="..\Include\Roark\BeamWithUnequalOverhangsUniformLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Roark\BeamWithUnequalOverhangsUniformLoad.h">
+    <ClInclude Include="..\Include\Roark\CompositeBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Roark\PPIntermediateCouple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Roark\PPIntermediateLoad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Roark\Roark.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Roark\PPPartialUniformLoad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

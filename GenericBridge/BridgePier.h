@@ -73,10 +73,10 @@ BEGIN_COM_MAP(CBridgePier)
 END_COM_MAP()
 
 private:
-   IPierLine* m_pPierLine; // weak reference
+   CComPtr<IPierLine> m_pPierLine;
    IGenericBridge* m_pBridge; // weak reference to parent
 
-   CPierImpl m_PierImpl; // provides most of the implemenation of IPier
+   CPierImpl m_PierImpl; // provides most of the implementation of IPier
 
    CComPtr<IStation> m_TestStation; // this object is only used when this BridgePier object is used as a test value
    // for std::lower_bound, or other such searches. 

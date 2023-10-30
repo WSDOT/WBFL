@@ -2,30 +2,6 @@
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1"
           manifestVersion="1.0">
 
-   <file name="WBFLBridgeGeometry.dll" hashalg="SHA1">
-      <comClass clsid="{24D75303-8425-4590-913E-FF2908F65BD1}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="Bridge Class"/>
-      <comClass clsid="{6B593F0D-688B-48B2-BC03-5399D1BDAA1B}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="AlignmentOffsetLayoutLineFactory Class"/>
-      <comClass clsid="{71E25E05-E16B-415C-9812-9A2F1EFD9A4B}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="SimpleLayoutLineFactory Class"/>
-      <comClass clsid="{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}"
-                tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-                description="UniformSpacingLayoutLineFactory Class"/>
-      <comClass clsid="{FF6273A8-1037-4CCE-B494-F43459E65800}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-            description="SingleGirderLineFactory Class"/>
-      <comClass clsid="{055CA73B-DD1F-4BC0-A6E5-C13729C16243}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="SimpleGirderLineFactory Class"/>
-      <comClass clsid="{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="EqualSpaceDiaphragmLineFactory Class"/>
-      <comClass clsid="{17FE1E15-7E72-4F4E-AC48-37E1497D0806}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="SingleDiaphragmLineFactory Class"/>
-      <comClass clsid="{F95676E6-9741-49C0-A3A4-15D9627BDCD8}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="ThroughPointDiaphragmLineFactory Class"/>
-      <comClass clsid="{132789EE-9C31-4D4D-8129-AD733BFA215B}" tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}"
-			 description="SimpleDeckBoundaryFactory Class"/>
-      <typelib tlbid="{3887C38E-D11E-4740-896B-D1DBA8F74BD7}" version="1.0" helpdir="" flags="HASDISKIMAGE"/>
-   </file>
    <file name="WBFLGeometry.dll"
          hashalg="SHA1">
       <comClass clsid="{B0D56FA0-C8D6-11D2-8CDF-C55C1CA84A34}"
@@ -346,16 +322,39 @@
                 description="BeamShapeFactory Class"
                 threadingModel="Apartment"
                 progid="WBFLGeometry.BeamShapeFactory">
-         <progid>WBFLGeometry.BeamShapeFactor.1</progid>
+         <progid>WBFLGeometry.BeamShapeFactory.1</progid>
       </comClass>
 
                <comClass clsid="{1114EB22-FE2E-11D2-8CDF-8AFA61D12734}"
                 tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                 description="GeomOp Class"
                 threadingModel="Apartment"
-                progid="Geometry.GeomOp">
-         <progid>Geometry.GeomOp.1</progid>
+                progid="WBFLGeometry.GeomOp">
+         <progid>WBFLGeometry.GeomOp.1</progid>
       </comClass>
+      
+      <comClass clsid="{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="ElasticProperties Class"></comClass>
+      <comClass clsid="{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="MassProperties Class"></comClass>
+      <comClass clsid="{9A0C379F-0945-41E5-8053-FD77B4FDBF59}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionItem Class"></comClass>
+      <comClass clsid="{9B65E676-01C8-11D5-8BAC-006097C68A9C}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSection Class"></comClass>
+      <comClass clsid="{D7610039-0289-11D5-8BAE-006097C68A9C}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeBeam Class"></comClass>
+      <comClass clsid="{94267249-3C7D-40a3-BB21-DD8916BA4DE0}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionItemEx Class"></comClass>
+      <comClass clsid="{85AB469B-A6A3-4057-848A-1572DAD74DE0}"
+                tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
+                description="CompositeSectionEx Class"></comClass>
+
       <typelib tlbid="{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}"
                version="1.0"
                helpdir=""
@@ -420,105 +419,54 @@
       <comClass clsid="{ABC35194-EDA2-4fa3-AC6B-B58A5F0C2385}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="StationEquation Class"></comClass>
-      <comClass clsid="{000FDA40-7B33-4354-8ADF-9E28D4EEE2D3}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="StationEquationCollection Class"></comClass>
       <comClass clsid="{10F574FD-5735-11D3-898C-006097C68A9C}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Angle Class"></comClass>
       <comClass clsid="{10F574FB-5735-11D3-898C-006097C68A9C}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Direction Class"></comClass>
-      <comClass clsid="{5559C9A6-5C16-11D5-8C31-006097C68A9C}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="PointCollection Class"></comClass>
-      <comClass clsid="{9E0F9B9E-99C9-40A8-9C08-47E6ACD762E9}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="LineSegmentCollection Class"></comClass>
       <comClass clsid="{07E3C485-573F-11D3-8CDF-BAAC148B6002}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CogoModel Class"></comClass>
       <comClass clsid="{849FD333-4FC9-4093-93F6-FBEC311FF45A}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="ProfilePoint Class"></comClass>
-      <comClass clsid="{3B3D6F38-F5B7-4621-B276-5421717846E2}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="ProfilePointCollection Class"></comClass>
       <comClass clsid="{7581BC4E-4E7C-4761-B59E-2D75EA2E1120}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="VertCurve Class"></comClass>
-      <comClass clsid="{D6732CA5-6E4F-45FE-A4FC-B0E8A94667FA}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="VertCurveCollection Class"></comClass>
+                description="VerticalCurve Class"></comClass>
 	   <comClass clsid="{5A7E89C4-C238-4FE2-9300-0848F4F5AC42}"
 				 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
 				 description="CircularCurve Class"></comClass>
 	   <comClass clsid="{61454EB9-8040-4B74-9429-B09D1FF1E0BB}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CompoundCurve Class"></comClass>
-      <comClass clsid="{2C4945D1-9B56-430C-B395-B07209328C59}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="CompoundCurveCollection Class"></comClass>
       <comClass clsid="{69706DA8-D10D-4932-A566-69DE35CAF30F}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CubicSpline Class"></comClass>
       <comClass clsid="{80AC919F-D882-4C24-9E6D-721D90925FEE}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="ProfileElement Class"></comClass>
+                description="ProfileSegment Class"></comClass>
       <comClass clsid="{7FD9C064-1A8C-4853-B1CC-24D9C877406F}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Profile Class"></comClass>
       <comClass clsid="{F9C121FB-B55C-4D1F-99C9-EC0671D299A2}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="CrossSection Class"></comClass>
-      <comClass clsid="{AE736431-9805-49AB-A8A3-658A90E139C1}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="CrossSectionCollection Class"></comClass>
       <comClass clsid="{B21FFF37-F9A2-4DA0-8226-C5C3604E8262}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="PathElement Class"></comClass>
+                description="PathSegment Class"></comClass>
       <comClass clsid="{B46F91AB-53C2-4ECC-8E7F-55AFA0F67C2F}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Alignment Class"></comClass>
-      <comClass clsid="{9B77429D-4A92-4ddd-BAFA-4330EEAF167C}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="AlignmentCollection Class"></comClass>
       <comClass clsid="{4A138368-CF5F-4A12-BC2D-224FC85E8B8D}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Path Class"></comClass>
-      <comClass clsid="{BB37DF4F-8AD0-4778-9036-9A340F425A50}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="PathCollection Class"></comClass>
-      <comClass clsid="{B61E5354-A04C-439D-9661-309897677112}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="VertCurveFactory Class"></comClass>
-      <comClass clsid="{43AB1FB8-3A38-40FE-99A1-8CA49982037D}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="ProfilePointFactory Class"></comClass>
-      <comClass clsid="{FC1BF8D1-D732-4C86-B98C-4B08E3C9E61E}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="CompoundCurveFactory Class"></comClass>
-      <comClass clsid="{0AFA71AC-3F98-4DD0-9BC2-E33D00725C67}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="CrossSectionFactory Class"></comClass>
-      <comClass clsid="{016F7CE4-7013-47DB-88EA-BBF0EA82AA30}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="PathFactory Class"></comClass>
-      <comClass clsid="{302F2E74-E561-4275-8C4E-3451EC5FD757}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="AlignmentFactory Class"></comClass>
       <comClass clsid="{0E8ADC7B-54A5-45FC-AA79-56BBE528FA47}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="AngleDisplayUnitFormatter Class"></comClass>
       <comClass clsid="{50A4E50C-B7A8-4177-AB25-83D4E783B7A3}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="DirectionDisplayUnitFormatter Class"></comClass>
-      <comClass clsid="{F0151EC9-C520-4EC7-9581-35FC1685FAAB}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="PointFactory Class"></comClass>
-      <comClass clsid="{B290D560-4DFC-404C-8CAF-CFBFE211234D}"
-                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-                description="LineSegmentFactory Class"></comClass>
       <comClass clsid="{4C22AA8F-6739-49DD-B6DF-FDCD352FF969}"
                 tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                 description="Station Class"></comClass>
@@ -528,30 +476,18 @@
       <comClass clsid="{9D3C25CB-61D1-466e-AE30-1FD5C460D50B}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="Superelevation Class"></comClass>
-      <comClass clsid="{981C286A-8B4B-4be9-BB9D-E927FFFF680C}"
-          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-          description="SuperelevationCollection Class"></comClass>
       <comClass clsid="{B8A4A5A2-A456-4161-9276-669D92B9FC5C}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="Surface Class"></comClass>
-      <comClass clsid="{A0AE194C-0D1D-4acb-8514-85E4B77DD326}"
-          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-          description="SurfaceCollection Class"></comClass>
       <comClass clsid="{A479017E-BFE5-4e1e-B41D-E7BBF2534F52}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="SurfaceTemplate Class"></comClass>
-      <comClass clsid="{D3148A9A-D53F-45d0-A0B7-A03EE35A36F3}"
-          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-          description="SurfaceTemplateCollection Class"></comClass>
       <comClass clsid="{B853F944-3791-4f03-AC3C-547C71B74743}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-          description="TemplateSegment Class"></comClass>
+          description="SurfaceTemplateSegment Class"></comClass>
       <comClass clsid="{3B817FBD-D099-49a2-8E43-E90F49A8B5B8}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="Widening Class"></comClass>
-      <comClass clsid="{9AD670B4-C5FE-4639-A714-67008906B54D}"
-          tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
-          description="WideningCollection Class"></comClass>
      <comClass clsid="{D83C292A-4677-46ef-BEF2-CF9444A5D8E5}"
                tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                description="SurfacePoint Class"></comClass>
@@ -561,7 +497,29 @@
      <comClass clsid="{7B960DF1-3208-4DAF-94D8-066E4F991353}"
           tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
           description="TransitionCurve Class"></comClass>
-     <typelib tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+      <comClass clsid="{132789EE-9C31-4D4D-8129-AD733BFA215B}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="SimpleDeckBoundaryFactory Class"/>
+      <comClass clsid="{FF0B7F56-329E-4DB3-BF9C-E076555C1EEE}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="EqualSpaceDiaphragmLineFactory Class"/>
+      <comClass clsid="{17FE1E15-7E72-4F4E-AC48-37E1497D0806}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="SingleDiaphragmLineFactory Class"/>
+      <comClass clsid="{F95676E6-9741-49C0-A3A4-15D9627BDCD8}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="ThroughPointDiaphragmLineFactory Class"/>
+      <comClass clsid="{FF6273A8-1037-4CCE-B494-F43459E65800}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+      description="SingleGirderLineFactory Class"/>
+      <comClass clsid="{055CA73B-DD1F-4BC0-A6E5-C13729C16243}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="SimpleGirderLineFactory Class"/>
+      <comClass clsid="{6B593F0D-688B-48B2-BC03-5399D1BDAA1B}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+          description="AlignmentOffsetLayoutLineFactory Class"/>
+      <comClass clsid="{71E25E05-E16B-415C-9812-9A2F1EFD9A4B}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+			 description="SimpleLayoutLineFactory Class"/>
+      <comClass clsid="{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+          description="UniformSpacingLayoutLineFactory Class"/>
+      <comClass clsid="{ED614FA3-5E15-4428-9B56-2C0C060ABB5B}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+          description="SinglePierLineFactory Class"/>
+      <comClass clsid="{24D75303-8425-4590-913E-FF2908F65BD1}" tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
+           description="Bridge Geometry Class"/>
+      <typelib tlbid="{1128D28F-55F7-11D5-8C29-006097C68A9C}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
@@ -592,6 +550,9 @@
       <comClass clsid="{0462D6DF-25DB-4FA0-B8B2-7B855A702A99}"
                 tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
                 description="GraphXyDataProvider Class"></comClass>
+      <comClass clsid="{5A4B1A95-1B49-4599-8B43-37D7039291F5}"
+          tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
+          description="GirderSectionDrawStrategy Class"></comClass>
       <typelib tlbid="{B7B9C36E-FEAF-43BB-8907-C98A0EF3224E}"
                version="1.0"
                helpdir=""
@@ -1597,6 +1558,9 @@
       <comClass clsid="{4F2C8970-5720-437B-B6CA-EA9092311244}"
                 tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
                 description="ShapeGravityWellStrategy Class"></comClass>
+      <comClass clsid="{5E2EAAA6-5171-49E6-B0E8-F65923C9CA45}"
+                tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
+                description="ShapeDrawStrategy2 Class"></comClass>
       <typelib tlbid="{011408A7-F865-11D4-8B9C-006097C68A9C}"
                version="1.0"
                helpdir=""
@@ -1771,34 +1735,6 @@
                 tlbid="{9EC1DB46-A140-11D5-B05C-00105A9AF985}"
                 description="SectionStressResults Class"></comClass>
       <typelib tlbid="{9EC1DB46-A140-11D5-B05C-00105A9AF985}"
-               version="1.0"
-               helpdir=""
-               flags="HASDISKIMAGE"></typelib>
-   </file>
-   <file name="WBFLSections.dll"
-         hashalg="SHA1">
-      <comClass clsid="{FD7B2E32-6DB3-4BF2-8A0A-484B19FD1CE6}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="ElasticProperties Class"></comClass>
-      <comClass clsid="{3925A3FA-34CD-4E06-AEDF-BCD1773E0810}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="MassProperties Class"></comClass>
-      <comClass clsid="{9A0C379F-0945-41E5-8053-FD77B4FDBF59}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionItem Class"></comClass>
-      <comClass clsid="{9B65E676-01C8-11D5-8BAC-006097C68A9C}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSection Class"></comClass>
-      <comClass clsid="{D7610039-0289-11D5-8BAE-006097C68A9C}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeBeam Class"></comClass>
-      <comClass clsid="{94267249-3C7D-40a3-BB21-DD8916BA4DE0}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionItemEx Class"></comClass>
-      <comClass clsid="{85AB469B-A6A3-4057-848A-1572DAD74DE0}"
-                tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
-                description="CompositeSectionEx Class"></comClass>
-      <typelib tlbid="{8CFE60EA-6B58-4D72-B05A-E9F049C9C8CC}"
                version="1.0"
                helpdir=""
                flags="HASDISKIMAGE"></typelib>

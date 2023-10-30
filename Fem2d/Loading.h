@@ -89,16 +89,16 @@ public:
 private:
    LoadCaseIDType m_ID;
 
-   typedef CComObject<CPointLoadCollection>         PointLoads;
-   typedef PointLoads::iterator                     PointLoadIterator;
-   typedef CComObject<CJointLoadCollection>         JointLoads;
-   typedef JointLoads::iterator                     JointLoadIterator;
-   typedef CComObject<CDistributedLoadCollection>   DistributedLoads;
-   typedef DistributedLoads::iterator               DistributedLoadIterator;
-   typedef CComObject<CJointDeflectionCollection> JointDeflections;
-   typedef JointDeflections::iterator             JointDeflectionIterator;
-   typedef CComObject<CMemberStrainCollection>      MemberStrains;
-   typedef MemberStrains::iterator                  MemberStrainIterator;
+   using PointLoads = CComObject<CPointLoadCollection>;
+   using PointLoadIterator = PointLoads::iterator;
+   using JointLoads = CComObject<CJointLoadCollection>;
+   using JointLoadIterator = JointLoads::iterator;
+   using DistributedLoads = CComObject<CDistributedLoadCollection>;
+   using DistributedLoadIterator = DistributedLoads::iterator;
+   using JointDeflections = CComObject<CJointDeflectionCollection>;
+   using JointDeflectionIterator = JointDeflections::iterator;
+   using MemberStrains = CComObject<CMemberStrainCollection>;
+   using MemberStrainIterator = MemberStrains::iterator;
 
    JointLoads*         m_pJointLoads;
    DistributedLoads*   m_pDistributedLoads;

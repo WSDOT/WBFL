@@ -22,13 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Reporter\ReporterLib.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
+#include <System/dllTest.h>
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,

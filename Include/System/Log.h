@@ -21,72 +21,95 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_LOG_H_
-#define INCLUDED_SYSTEM_LOG_H_
 #pragma once
 
-#include <WBFLTypes.h>
+#include <System\SysExp.h>
+#include <System\LogContext.h>
+#include <System\DebugWindowLogContext.h>
 #include <ostream>
 #include <string>
 #include <vector>
-#include <System\DbgBuild.h>
-#include <System\DumpContext.h>
 #include <tchar.h>
 
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-// Test macros
-
+/// @def TESTME_PROLOGUE(className) 
+/// @brief Prologue code for a unit test method
+/// @remark This macro is obsolete
 #define TESTME_PROLOGUE(className) bool bpf=true; \
                                    std::_tostringstream erro; \
-                                   rlog <<endl<< _T("Begin Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<endl;
+                                   rlog <<WBFL::Debug::endl<< _T("Begin Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<WBFL::Debug::endl;
 
-#define TESTME_EPILOG(className)   rlog<<_T("End Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<endl; \
+/// @def TESTME_EPILOG(className)
+/// @brief Epilog code for a unit test method
+/// @remark This macro is obsolete
+#define TESTME_EPILOG(className)   rlog<<_T("End Testing class ")<<_T(className)<<_T(" at ")<<__LINE__<<_T(" in ")<<_T(__FILE__)<<WBFL::Debug::endl; \
                                    return bpf;
 
+/// @def TEST_FAIL
+/// @brief Logs a failed unit test
+/// @remark This macro is obsolete
 #define TEST_FAIL       {bpf = false; \
                          erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
                          erro.clear(); \
                          erro <<_T("*** Failed at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__; \
-                         rlog.AddEntryToLog(erro.str(), dbgLog::Failed); \
+                         rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::Failed); \
                          rlog << erro.str();} 
 
+/// @def TEST_PASS
+/// @brief Logs a successful unit test
+/// @remark This macro is obsolete
 #define TEST_PASS       {erro.flush(); \
                          erro.seekp(std::ios_base::beg); \
                          erro.clear(); \
                          erro <<_T("    Passed at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__; \
-                         rlog.AddEntryToLog(erro.str(), dbgLog::Passed); \
+                         rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::Passed); \
                          rlog << erro.str();}
 
+/// @def TEST_NOT_IMPLEMENTED(msg)
+/// @brief Logs a unit these that is not implemented. This helps to identify code blocks that need to be revisited and completed
+/// @remark This macro is obsolete
 #define TEST_NOT_IMPLEMENTED(msg) {erro.flush(); \
                                    erro.seekp(std::ios_base::beg); \
                                    erro.clear(); \
                                    erro <<_T("         Missing test at ")<<_T(__FILE__)<<_T(" Line ")<<__LINE__<<std::endl; \
                                    erro <<_T("... ") << msg << std::endl; \
-                                   rlog.AddEntryToLog(erro.str(), dbgLog::NotImplemented); \
+                                   rlog.LogTestResult(erro.str(), WBFL::Debug::Log::TestResult::NotImplemented); \
                                    rlog << erro.str();}
 
+/// @def TRY_TESTME(pf)
+/// @brief Logs a unit test
+/// @remark This macro is obsolete
 #define TRY_TESTME(pf)    {if ((pf)) \
                         { \
                            TEST_PASS \
-                           rlog << endl; \
+                           rlog << WBFL::Debug::endl; \
                         } \
                         else \
                         { \
                            TEST_FAIL  \
-                           rlog << endl; \
+                           rlog << WBFL::Debug::endl; \
                         }}
 
-#define TEST_FAIL_EX(msg) TEST_FAIL \
-                          rlog <<_T(" ")<< msg <<endl;
-                            
-#define TEST_PASS_EX(msg) TEST_PASS \
-                          rlog<<_T(" ")<< msg <<endl;
+/// @def TRY_TESTME_CATCH(pf)
+/// @brief Logs a unit test expected to throw an exception
+/// @remark This macro is obsolete
+#define TRY_TESTME_CATCH(pf) {try{if((pf)) TRY_TESTME(false);}catch(...){TRY_TESTME(true);}}
 
+/// @def TEST_FAIL_EX(msg)
+/// @brief Logs a failed unit test with a custom message
+/// @remark This macro is obsolete
+#define TEST_FAIL_EX(msg) TEST_FAIL \
+                          rlog <<_T(" ")<< msg <<WBFL::Debug::endl;
+                            
+/// @def TEST_PASS_EX(msg)
+/// @brief Logs a successful unit test with a custom message
+/// @remark This macro is obsolete
+#define TEST_PASS_EX(msg) TEST_PASS \
+                          rlog<<_T(" ")<< msg <<WBFL::Debug::endl;
+
+/// @def 
+/// @brief Logs a unit test with a custom message
+/// @remark This macro is obsolete
 #define TRY_TESTME_EX(pf,msg) if ((pf)) \
                             { \
                               TEST_PASS_EX(msg) \
@@ -96,149 +119,79 @@
                               TEST_FAIL_EX(msg) \
                             }
 
-/*****************************************************************************
-CLASS 
-   dbgLog
-
-   Message Logging class for unit testing
-
-
-DESCRIPTION
-
-LOG
-   rdp : 05.27.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS dbgLog
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-   enum EntryType {Passed, Failed, NotImplemented};
-
-   //------------------------------------------------------------------------
-   // Default constructor - all information gets dumped to screen
-   dbgLog();
-
-   //------------------------------------------------------------------------
-   // Constructor - specify where information piped to ostream goes to.
-   dbgLog(dbgDumpContext* pDumpCtx);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~dbgLog();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Add an entry to the error log.
-   void AddEntryToLog(std::_tstring& msg, EntryType type);
-
-   //------------------------------------------------------------------------
-   // Get total number of entries in log
-   size_t GetNumEntries() const;
-
-   //------------------------------------------------------------------------
-   // Get number of failed tests in log
-   size_t GetNumErrors() const;
-
-   //------------------------------------------------------------------------
-   // Get number of tests of a given type
-   size_t GetTestCount(EntryType type) const;
-
-   //------------------------------------------------------------------------
-   // Dump Only Entries of a certain type
-   void DumpFilteredLog(EntryType type);
-
-   //------------------------------------------------------------------------
-   // Dump all entries in log
-   void DumpEntireLog();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-   //------------------------------------------------------------------------
-   // 
-   // Inserters for various built-ins
-   dbgLog& operator<<(const std::_tstring& s);
-   dbgLog& operator<<(LPCTSTR s);
-   dbgLog& operator<<(TCHAR c);    
-   dbgLog& operator<<(bool n);
-   dbgLog& operator<<(Int16 n);
-   dbgLog& operator<<(Uint16 n);
-   dbgLog& operator<<(Int32 n);
-   dbgLog& operator<<(Uint32 n);
-   dbgLog& operator<<(Int64 n);
-   dbgLog& operator<<(Uint64 n);
-   dbgLog& operator<<(Float32 n);    
-   dbgLog& operator<<(Float64 n);
-   dbgLog& operator<<(Float80 n);
-   dbgLog& operator<<(void * n);
-   dbgLog& operator<<(dbgLog& (*pf)(dbgLog&));
-   
-   //------------------------------------------------------------------------
-   void SetDumpContext(dbgDumpContext* pDumpCtx);
-
-   //------------------------------------------------------------------------
-   // Access to a dump context for testing Dump functions.
-   dbgDumpContext& GetDumpCtx();
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   //------------------------------------------------------------------------
-   // store the error log as a vector of strings
-   struct LogEntry
+   namespace Debug
    {
-      EntryType   Type;
-      std::_tstring Msg;
+      /// Logs unit tests results to a LogContext
+      /// @remark This class is obsolete
+      class SYSCLASS Log
+      {
+      public:
+         enum class TestResult {Passed, Failed, NotImplemented};
+
+         /// Logs messages to the debugger output window
+         Log();
+
+         /// Logs messages to the provided logging context
+         Log(LogContext& context);
+
+         Log(const Log&) = delete;
+
+         virtual ~Log();
+
+         Log& operator=(const Log&) = delete;
+
+         /// Add an entry to the error log.
+         void LogTestResult(const std::_tstring& msg, TestResult type);
+
+         /// Get total number of entries in log
+         size_t GetNumEntries() const;
+
+         /// Get number of failed tests in log
+         size_t GetNumErrors() const;
+
+         /// Get number of tests of a given type
+         size_t GetTestCount(TestResult type) const;
+
+         /// Dump Only Entries of a certain type
+         void DumpFilteredLog(TestResult type) const;
+
+         /// Dump all entries in log
+         void DumpEntireLog() const;
+
+         Log& operator<<(const std::_tstring& s);
+         Log& operator<<(LPCTSTR s);
+         Log& operator<<(TCHAR c);    
+         Log& operator<<(bool n);
+         Log& operator<<(Int16 n);
+         Log& operator<<(Uint16 n);
+         Log& operator<<(Int32 n);
+         Log& operator<<(Uint32 n);
+         Log& operator<<(Int64 n);
+         Log& operator<<(Uint64 n);
+         Log& operator<<(Float32 n);    
+         Log& operator<<(Float64 n);
+         Log& operator<<(Float80 n);
+         Log& operator<<(void * n);
+         Log& operator<<(Log& (*pf)(Log&));
+   
+         /// Sets the logging context
+         void SetLogContext(LogContext& context);
+
+         // Gets the logging context
+         LogContext& GetLogContext();
+
+      private:
+#pragma warning ( disable : 4251 ) // m_ErrorLog is not accessible to clients
+         std::vector<std::pair<TestResult, std::_tstring>> m_ErrorLog;
+
+         DebugWindowLogContext m_DefaultContext; // Use this if one is not supplied.
+         LogContext* m_pContext{ &m_DefaultContext };
+
+         size_t    m_NumErrors{ 0 };
+      };
+
+      SYSFUNC Log& endl(Log& rl);
    };
-   typedef std::vector<LogEntry> EntryVec;
-   typedef EntryVec::iterator    EntryVecIterator;
-   typedef EntryVec::const_iterator    ConstEntryVecIterator;
-#pragma warning ( disable : 4251 ) // never used by clients
-   EntryVec m_ErrorLog;
-
-   dbgDumpContext m_DefDumpCtx; // Use this if one is not supplied.
-   dbgDumpContext* m_pDumpCtx;
-
-   size_t    m_NumErrors;
-
-   // GROUP: LIFECYCLE
-   //------------------------------------------------------------------------
-   // Copy constructor
-   dbgLog(const dbgLog& rOther);
-   //------------------------------------------------------------------------
-   // Assignment operator
-   dbgLog& operator = (const dbgLog& rOther);
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
 };
-
-// INLINE METHODS
-//
-inline void dbgLog::SetDumpContext(dbgDumpContext* pDumpCtx) { m_pDumpCtx = pDumpCtx; }
-inline dbgDumpContext& dbgLog::GetDumpCtx() {return *m_pDumpCtx;}
-
-// EXTERNAL REFERENCES
-//
-
-//------------------------------------------------------------------------
-// define our own endl function
-inline dbgLog& endl(dbgLog& rl) {rl<<_T("\n"); return rl;}
-
-
-
-
-#endif // INCLUDED_SYSTEM_LOG_H_

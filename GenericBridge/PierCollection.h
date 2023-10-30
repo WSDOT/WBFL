@@ -42,8 +42,8 @@
 // simply forwards events received from its individual Items.
 
 class CPierCollection;
-typedef CComVectorCollection<IPierCollection,IBridgePier,IEnumPiers,&IID_IEnumPiers,PierIndexType> PierColl;
-typedef CPersistentCollection<CPierCollection,PierColl,PierIndexType> PersistentPierCollection;
+using PierColl = CComVectorCollection<IPierCollection, IBridgePier, IEnumPiers, &IID_IEnumPiers, PierIndexType>;
+using PersistentPierCollection = CPersistentCollection<CPierCollection,PierColl,PierIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPierCollection

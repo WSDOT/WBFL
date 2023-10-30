@@ -34,42 +34,15 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestCircularCurve :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ICircularCurveEvents
+class CTestCircularCurve
 {
 public:
    CTestCircularCurve();
 
    static void Test();
 
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestCircularCurve)
-   COM_INTERFACE_ENTRY(ICircularCurveEvents)
-END_COM_MAP()
-
-// ICircularCurveEvents
-public:
-	STDMETHOD(OnCircularCurveChanged)(ICircularCurve* pp);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
-
-   static void Test4(); // Circular curve
-   static void Test6(); 
-   //static void Test7(); // Error conditions
-   //static void Test8a(); // Line Curve intersection
-   //static void Test8b(); // Line Curve intersection
-   //static void Test9a(); // Line Curve intersection
-   //static void Test9b(); // Line Curve intersection
-   //static void Test10a(); // Line Curve intersection
-   //static void Test10b(); // Line Curve intersection
-   //static void Test11a(); // Line Curve intersection
-   //static void Test11b(); // Line Curve intersection
-   static void TestEvents();
+   static void Test1();
 };
 
 #endif // !defined(AFX_TESTCircularCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

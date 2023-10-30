@@ -26,6 +26,7 @@
 #include <Stability/StabilityExp.h>
 #include <Stability/LiftingResults.h>
 #include <Stability/LiftingCriteria.h>
+#include <Stability/ControllingCases.h>
 
 namespace WBFL
 {
@@ -60,33 +61,17 @@ namespace WBFL
          const LiftingCriteria& GetCriteria() const;
 
          /// Analyzes the section results and retrieves the controlling tension stress case
-         /// \param[in] sectionResult Analysis results to be evalauted
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingTensionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingTensionCase GetControllingTensionCase(const LiftingSectionResult& sectionResult) const;
+
 
          /// Analyzes the section results and retrieves the controlling global compression case.
-         /// \param[in] sectionResult Analysis results to be evalauted
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingGlobalCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingGlobalCompressionCase GetControllingGlobalCompressionCase(const LiftingSectionResult& sectionResult) const;
 
          /// Analyzes the section results and retrieves the controlling peak compression case.
-         /// \param[in] sectionResult Analysis results to be evalauted
-         /// \param[out] pImpact Impact direction associated with the controlling case
-         /// \param[out] pWind Wind direction associated with the controlling case
-         /// \param[out] pCorner Corner associated with the controlling case
-         /// \param[out] pfAllow Tension stress limit associated with the controlling case
-         /// \param[out] pbPassed Indicates if the controlling case passes the specification check
-         /// \param[out] pCD Capacity-Demand ratio for the controlling case
-         void GetControllingPeakCompressionCase(const LiftingSectionResult& sectionResult, ImpactDirection* pImpact, WindDirection* pWind, Corner* pCorner, Float64* pfAllow, bool* pbPassed, Float64* pCD) const;
+         /// \param sectionResult Analysis results to be evaluated
+         ControllingPeakCompressionCase GetControllingPeakCompressionCase(const LiftingSectionResult& sectionResult) const;
 
          /// Returns true if the lifting check was successful
          bool Passed() const;
@@ -117,12 +102,12 @@ namespace WBFL
 
 #if defined REBAR_FOR_DIRECT_TENSION
          /// Returns the tension stress limit
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact) const;
 #else
          /// Returns the tension stress limit
-         /// \param[in] sectionResult Analysis results to be evalauted
+         /// \param[in] sectionResult Analysis results to be evaluated
          /// \param[in] impact Impact direction
          /// \param[in] wind Wind direction
          Float64 GetAllowableTension(const LiftingSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const;

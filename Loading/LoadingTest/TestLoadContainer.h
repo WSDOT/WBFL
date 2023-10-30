@@ -32,7 +32,7 @@ class LoadContainerTester
 public:
 static HRESULT TestContainer(TListen* pMe, const CLSID& clsid, const CLSID& containerCLSID )
 {
-   CollectionIndexType cnt;
+   IndexType cnt;
 
    // create some Items and give them names
    CComPtr<T> pss0,pss1,pss2,pss3,pss4,pss5,pss6;

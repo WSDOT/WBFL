@@ -64,14 +64,14 @@ END_CONNECTION_POINT_MAP()
 // ILoadCombinationsAgg
 public:
 // ILoadCombinations
-   STDMETHOD(get_Item)(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCombination* *pVal) override;
+   STDMETHOD(get_Item)(/*[in]*/IndexType index, /*[out,retval]*/ ILoadCombination* *pVal) override;
    STDMETHOD(get__NewEnum)(/*[out,retval]*/ IUnknown** retval) override;  
-   STDMETHOD(get_Count)(/*[out,retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(get_Count)(/*[out,retval]*/ IndexType *pVal) override;
    STDMETHOD(get__EnumElements)(/*[out,retval]*/ IEnumLoadCombination* *pVal) override;
    STDMETHOD(Find)(/*[in]*/BSTR name, /*[out,retval]*/ILoadCombination**) override;
    STDMETHOD(Add)(/*[in]*/ILoadCombination*) override;
    STDMETHOD(RemoveByName)(/*[in]*/BSTR name) override;
-   STDMETHOD(RemoveByIndex)(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name) override;
+   STDMETHOD(RemoveByIndex)(/*[in]*/IndexType index, /*[out,retval]*/BSTR* name) override;
    STDMETHOD(Clone)(/*[out,retval]*/ILoadCombinations**) override;
    STDMETHOD(Clear)() override;
 

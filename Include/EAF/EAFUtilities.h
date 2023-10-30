@@ -39,7 +39,7 @@ interface IBroker;
 EAFFUNC CEAFApp* EAFGetApp();
 
 // Returns a pointer to the broker. Only call this method if you are using a document
-// type that is a desendent of CEAFBrokerDocument
+// type that is a descendent of CEAFBrokerDocument
 EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component
@@ -73,3 +73,6 @@ EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDo
 // Causes the specified documentation map file to be loaded and fills topicMap with the help topic ID mapping 
 // returns TRUE if successful
 EAFFUNC BOOL EAFLoadDocumentationMap(LPCTSTR lpszDocMapFile,std::map<UINT,CString>& topicMap);
+
+// Returns true if more than one instance of the current program is running. This is a bad condition for updating configurations
+EAFFUNC bool EAFAreOtherProgramInstancesRunning();

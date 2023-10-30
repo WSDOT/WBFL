@@ -22,14 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Units\UnitsLib.h>
-#include <Units\UnitTest.h>
-#include <System\dllTest.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -37,11 +29,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
-{
-   return unitUnitTest::TestMe(rlog);
 }

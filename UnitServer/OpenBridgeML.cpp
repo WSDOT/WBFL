@@ -154,7 +154,7 @@ BOOL InitializeWBFLUnitServer(PACKAGE::Units::UnitsDeclarationType* pDeclaration
       CComBSTR bstrTime(   T2BSTR(consistentUnits->time().c_str())        );
       CComBSTR bstrTemp(   T2BSTR(consistentUnits->temperature().c_str()) );
       CComBSTR bstrAngle(  T2BSTR(consistentUnits->angle().c_str())       );
-      hr = pUnitServer->SetBaseUnits(bstrMass,bstrLength,bstrTime,bstrTemp,bstrAngle);
+      hr = pUnitServer->SetSystemUnits(bstrMass,bstrLength,bstrTime,bstrTemp,bstrAngle);
       ATLASSERT(SUCCEEDED(hr)); // if this fires, one of the unit of measure is invalid
    }
 

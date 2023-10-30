@@ -24,11 +24,7 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\RcFlowModifier.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+std::shared_ptr<rptReportContent> rptLineBreakFactory::ms_NewLine = std::make_shared<rptRcFlowModifier>(rptRcFlowModifier::NEW_LINE);
 
 rptRcFlowModifier::rptRcFlowModifier(FlowModifier ModifierType, Uint16 nRepeat) :
 rptReportContent()
@@ -75,9 +71,9 @@ void rptRcFlowModifier::MakeAssignment(const rptRcFlowModifier& rOther)
 }
 
 
-rptLineBreakFactory::operator rptReportContent*()
+rptLineBreakFactory::operator std::shared_ptr<rptReportContent>&()
 {
-   return new rptRcFlowModifier(rptRcFlowModifier::NEW_LINE);
+   return rptLineBreakFactory::ms_NewLine;
 }
 
 rptPageBreakFactory::operator rptReportContent*()

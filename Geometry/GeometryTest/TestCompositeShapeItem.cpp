@@ -73,7 +73,6 @@ void CTestCompositeShapeItem::Test()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_CompositeShapeItem ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompositeShapeItem ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    //////////////////////////////////////////////////////////////
@@ -83,7 +82,5 @@ void CTestCompositeShapeItem::Test()
    DWORD dwDesiredOptions = INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA;
    DWORD dwSupportedOptions, dwEnabledOptions;
    pObjSafety->GetInterfaceSafetyOptions(IID_ICompositeShapeItem,&dwSupportedOptions,&dwEnabledOptions);
-   TRY_TEST( dwSupportedOptions, dwDesiredOptions );
-   pObjSafety->GetInterfaceSafetyOptions(IID_IStructuredStorage2,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
 }

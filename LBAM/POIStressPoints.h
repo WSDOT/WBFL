@@ -84,9 +84,9 @@ END_CONNECTION_POINT_MAP()
 	STDMETHOD(Save)(IStructuredSave2 * Save) override;
 
 // IStressPointsEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/IndexType index) override;
 
 // IPOIStressPoints
 public:
@@ -95,20 +95,20 @@ public:
 	STDMETHOD(Insert)(/*[in]*/BSTR Stage, /*[in]*/IStressPoints* leftSps, /*[in]*/IStressPoints* rightSps) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(get_Item)(/*[in]*/VARIANT idx, /*[out, retval]*/ IPOIStressPointsItem* *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
    STDMETHOD(get__EnumElements)(IEnumPOIStressPoints **ppenum) override;
    STDMETHOD(get__NewEnum)(IUnknown** ppUnk) override;
 
 private:
 
-   typedef CAdapt<CComPtr<IPOIStressPointsItem>>    ItemType;
-   typedef std::pair<CComBSTR, ItemType>            StoredType;
-   typedef std::map< CComBSTR, ItemType>            ContainerType;
-   typedef ContainerType::iterator                  IteratorType;
+   using ItemType = CAdapt<CComPtr<IPOIStressPointsItem>>;
+   using StoredType = std::pair<CComBSTR, ItemType>;
+   using ContainerType = std::map< CComBSTR, ItemType>;
+   using IteratorType = ContainerType::iterator;
 
    // copy functions for enums
-   typedef _CopyInterfacePair<IPOIStressPointsItem, std::pair<CComBSTR const, ItemType> >   CustomCopyType;
-   typedef _CopyVariantFromInterfacePair<std::pair<CComBSTR const, ItemType> > CopyType;
+   using CustomCopyType = _CopyInterfacePair<IPOIStressPointsItem, std::pair<CComBSTR const, ItemType>>;
+   using CopyType = _CopyVariantFromInterfacePair<std::pair<CComBSTR const, ItemType>>;
 
 
    ContainerType m_Container;

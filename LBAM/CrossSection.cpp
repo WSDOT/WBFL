@@ -300,19 +300,19 @@ STDMETHODIMP CSegmentCrossSection::GetStiffness(Float64 *EAForce, Float64 *EIFor
 	return S_OK;
 }
 
-HRESULT CSegmentCrossSection::OnStressPointsChanged(CollectionIndexType index)
+HRESULT CSegmentCrossSection::OnStressPointsChanged(IndexType index)
 {
    Fire_OnSegmentCrossSectionChanged(this, cgtStress);
    return S_OK;
 }
 
-HRESULT CSegmentCrossSection::OnStressPointsAdded(CollectionIndexType index)
+HRESULT CSegmentCrossSection::OnStressPointsAdded(IndexType index)
 {
    Fire_OnSegmentCrossSectionChanged(this, cgtStress);
    return S_OK;
 }
 
-HRESULT CSegmentCrossSection::OnStressPointsRemoved(CollectionIndexType index)
+HRESULT CSegmentCrossSection::OnStressPointsRemoved(IndexType index)
 {
    Fire_OnSegmentCrossSectionChanged(this, cgtStress);
    return S_OK;

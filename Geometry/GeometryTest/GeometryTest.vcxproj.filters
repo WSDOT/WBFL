@@ -85,16 +85,10 @@
     <ClCompile Include="TestPrecastBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPrimitiveFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestRect2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestRectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestShapeCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestShapeProperties.cpp">
@@ -146,6 +140,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestPCIDeckedIBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCompositeBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestCompositeSectionEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestElasticProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMassProperties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -231,16 +237,10 @@
     <ClInclude Include="TestPrecastBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TestPrimitiveFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestRect2d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestRectangle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestShapeCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestShapeProperties.h">
@@ -292,6 +292,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestPCIDeckedIBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCompositeBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCompositeSectionEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestElasticProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestMassProperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

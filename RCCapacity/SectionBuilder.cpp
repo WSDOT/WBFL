@@ -182,7 +182,7 @@ STDMETHODIMP CSectionBuilder::CircularColumn(Float64 D,Float64 cover,long Nb,Flo
    CComPtr<IPoint2dCollection> points;
    geom_util->GenerateCircle(Nb,center,D/2-cover,0.00,&points);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    points->get_Count(&nPoints);
    ATLASSERT(nPoints == Nb);
 

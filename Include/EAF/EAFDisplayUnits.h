@@ -24,7 +24,6 @@
 #pragma once
 #include <EAF\EAFTypes.h>
 #include <WbflTypes.h>
-#include <UnitMgt\IndirectMeasure.h>
 #include <Units\Units.h>
 
 /*****************************************************************************
@@ -43,42 +42,42 @@ interface IEAFDisplayUnits : IUnknown
 {
    virtual void                             SetUnitMode(eafTypes::UnitMode unitMode) = 0;
 	virtual eafTypes::UnitMode               GetUnitMode() = 0;
-	virtual const unitStationFormat&         GetStationFormat() = 0;
-   virtual const unitmgtScalar&             GetScalarFormat() = 0;
-   virtual const unitmgtScalar&             GetPercentageFormat() = 0;
-   virtual const unitmgtLengthData&         GetComponentDimUnit() = 0;
-   virtual const unitmgtLengthData&         GetXSectionDimUnit() = 0;
-   virtual const unitmgtLengthData&         GetSpanLengthUnit() = 0;
-   virtual const unitmgtLengthData&         GetDeflectionUnit() = 0;
-   virtual const unitmgtLengthData&         GetAlignmentLengthUnit() = 0;
-   virtual const unitmgtLength2Data&        GetAreaUnit() = 0;
-   virtual const unitmgtLength4Data&        GetMomentOfInertiaUnit() = 0;
-   virtual const unitmgtLength3Data&        GetSectModulusUnit() = 0;
-   virtual const unitmgtPressureData&       GetStressUnit() = 0;
-   virtual const unitmgtPressureData&       GetModEUnit() = 0;
-   virtual const unitmgtForceData&          GetGeneralForceUnit() = 0;
-   virtual const unitmgtForceData&          GetTonnageUnit() = 0;
-   virtual const unitmgtForceData&          GetShearUnit() = 0;
-   virtual const unitmgtMomentData&         GetMomentUnit() = 0;
-   virtual const unitmgtMomentData&         GetSmallMomentUnit() = 0;
-   virtual const unitmgtAngleData&          GetAngleUnit() = 0;
-   virtual const unitmgtAngleData&          GetRadAngleUnit() = 0;  // Radians always
-   virtual const unitmgtDensityData&        GetDensityUnit() = 0;
-   virtual const unitmgtMassPerLengthData&  GetMassPerLengthUnit() = 0;
-   virtual const unitmgtForcePerLengthData& GetForcePerLengthUnit() = 0;
-   virtual const unitmgtMomentPerAngleData& GetMomentPerAngleUnit() = 0;
-   virtual const unitmgtTimeData&           GetShortTimeUnit() = 0;
-   virtual const unitmgtTimeData&           GetWholeDaysUnit() = 0;
-   virtual const unitmgtTimeData&           GetFractionalDaysUnit() = 0;
-   virtual const unitmgtAreaPerLengthData&  GetAvOverSUnit() = 0;
-   virtual const unitmgtForceLength2Data&   GetStiffnessUnit() = 0;
-   virtual const unitmgtSqrtPressureData&   GetTensionCoefficientUnit() = 0;
-   virtual const unitmgtPerLengthData&      GetPerLengthUnit() = 0;
-   virtual const unitmgtPerLengthData&      GetCurvatureUnit() = 0;
-   virtual const unitmgtPressureData&       GetSidewalkPressureUnit() = 0;
-   virtual const unitmgtPressureData&       GetOverlayWeightUnit() = 0;
-   virtual const unitmgtPressureData&       GetWindPressureUnit() = 0;
-   virtual const unitmgtVelocityData&       GetVelocityUnit() = 0;
+	virtual const WBFL::Units::StationFormat& GetStationFormat() = 0;
+   virtual const WBFL::Units::ScalarData&         GetScalarFormat() = 0;
+   virtual const WBFL::Units::ScalarData&         GetPercentageFormat() = 0;
+   virtual const WBFL::Units::LengthData&         GetComponentDimUnit() = 0;
+   virtual const WBFL::Units::LengthData&         GetXSectionDimUnit() = 0;
+   virtual const WBFL::Units::LengthData&         GetSpanLengthUnit() = 0;
+   virtual const WBFL::Units::LengthData&         GetDeflectionUnit() = 0;
+   virtual const WBFL::Units::LengthData&         GetAlignmentLengthUnit() = 0;
+   virtual const WBFL::Units::Length2Data&        GetAreaUnit() = 0;
+   virtual const WBFL::Units::Length4Data&        GetMomentOfInertiaUnit() = 0;
+   virtual const WBFL::Units::Length3Data&        GetSectModulusUnit() = 0;
+   virtual const WBFL::Units::PressureData&       GetStressUnit() = 0;
+   virtual const WBFL::Units::PressureData&       GetModEUnit() = 0;
+   virtual const WBFL::Units::ForceData&          GetGeneralForceUnit() = 0;
+   virtual const WBFL::Units::ForceData&          GetTonnageUnit() = 0;
+   virtual const WBFL::Units::ForceData&          GetShearUnit() = 0;
+   virtual const WBFL::Units::MomentData&         GetMomentUnit() = 0;
+   virtual const WBFL::Units::MomentData&         GetSmallMomentUnit() = 0;
+   virtual const WBFL::Units::AngleData&          GetAngleUnit() = 0;
+   virtual const WBFL::Units::AngleData&          GetRadAngleUnit() = 0;  // Radians always
+   virtual const WBFL::Units::DensityData&        GetDensityUnit() = 0;
+   virtual const WBFL::Units::MassPerLengthData&  GetMassPerLengthUnit() = 0;
+   virtual const WBFL::Units::ForcePerLengthData& GetForcePerLengthUnit() = 0;
+   virtual const WBFL::Units::MomentPerAngleData& GetMomentPerAngleUnit() = 0;
+   virtual const WBFL::Units::TimeData&           GetShortTimeUnit() = 0;
+   virtual const WBFL::Units::TimeData&           GetWholeDaysUnit() = 0;
+   virtual const WBFL::Units::TimeData&           GetFractionalDaysUnit() = 0;
+   virtual const WBFL::Units::AreaPerLengthData&  GetAvOverSUnit() = 0;
+   virtual const WBFL::Units::ForceLength2Data&   GetStiffnessUnit() = 0;
+   virtual const WBFL::Units::SqrtPressureData&   GetTensionCoefficientUnit() = 0;
+   virtual const WBFL::Units::PerLengthData&      GetPerLengthUnit() = 0;
+   virtual const WBFL::Units::PerLengthData&      GetCurvatureUnit() = 0;
+   virtual const WBFL::Units::PressureData&       GetSidewalkPressureUnit() = 0;
+   virtual const WBFL::Units::PressureData&       GetOverlayWeightUnit() = 0;
+   virtual const WBFL::Units::PressureData&       GetWindPressureUnit() = 0;
+   virtual const WBFL::Units::VelocityData&       GetVelocityUnit() = 0;
 };
 
 /*****************************************************************************
@@ -93,7 +92,7 @@ DESCRIPTION
 // {015A4130-272C-11d2-8EB0-006097DF3C68}
 DEFINE_GUID(IID_IEAFDisplayUnitsEventSink,
 0x015A4130, 0x272C, 0x11d2, 0x8E, 0xB0, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface IEAFDisplayUnitsEventSink : IUnknown
+interface __declspec(uuid("{015A4130-272C-11d2-8EB0-006097DF3C68}")) IEAFDisplayUnitsEventSink : IUnknown
 {
    virtual HRESULT OnUnitsChanging() = 0;
    virtual HRESULT OnUnitsChanged(eafTypes::UnitMode newUnitsMode) = 0;

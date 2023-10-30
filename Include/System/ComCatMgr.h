@@ -21,83 +21,42 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_COMCATMGR_H_
-#define INCLUDED_SYSTEM_COMCATMGR_H_
 #pragma once
 
 #include <System\SysExp.h>
 #include <ComCat.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysComCatMgr
-
-   Wrapper class for the standard COM Component Category Manager
-
-
-DESCRIPTION
-   Wrapper class for the standard COM Component Category Manager
-
-LOG
-   rab : 12.08.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysComCatMgr
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   static HRESULT CreateCategory(OLECHAR* lpszDesc,const CATID& catid);
-   static HRESULT RemoveCategory(const CATID& catid,bool bLeaveIfUsed);
-   static HRESULT RegWithCategory(const CLSID& clsid,const CATID& catid,bool bReg);
+   namespace System
+   {
+      /// Wrapper class for the COM Component Category Manager
+      class SYSCLASS ComCatMgr
+      {
+      public:
+         ComCatMgr() = delete;
+         ComCatMgr(const ComCatMgr&) = delete;
+         ~ComCatMgr() = delete;
+         ComCatMgr& operator=(const ComCatMgr&) = delete;
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         /// Creates a component category
+         static HRESULT CreateCategory(
+            LPCTSTR lpszDesc, ///< Component category description
+            const CATID& catid ///< Category ID
+         );
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         /// Removes a component category
+         static HRESULT RemoveCategory(
+            const CATID& catid,///< Category ID
+            bool bLeaveIfUsed ///< True causes component category to be removed, even if it is in use. False retains the component category if it is in use.
+         );
 
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysComCatMgr();
-
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysComCatMgr(const sysComCatMgr& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysComCatMgr();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         /// Registers or unregisters a class with a component category
+         static HRESULT RegWithCategory(
+            const CLSID& clsid, ///< Class ID to get registered with the category
+            const CATID& catid, ///< The Category ID
+            bool bReg ///< True registers the class, false unregisters
+         );
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_COMCATMGR_H_

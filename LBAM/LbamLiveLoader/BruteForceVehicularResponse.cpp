@@ -68,7 +68,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
 {
    CHRException hr;
 
-   CollectionIndexType ressize;
+   IndexType ressize;
    hr = secRes->get_Count(&ressize);
 
    CComObject<CLiveLoadModelResults>* cresults;
@@ -76,7 +76,7 @@ inline void LLSectionToRes(ILiveLoadModelSectionResults* secRes, OptimizationTyp
    CComPtr<ILiveLoadModelResults> results(cresults);
    hr = results->Reserve(ressize);
 
-   for (CollectionIndexType is = 0; is<ressize; is++)
+   for (IndexType is = 0; is<ressize; is++)
    {
       Float64 left_val, right_val;
       CComPtr<ILiveLoadConfiguration> left_config, right_config;
@@ -117,11 +117,11 @@ Float64 GetMinSpanLength(ISupportLocations* suppLocs)
    hr = suppLocs->get_SupportLocations(&supp_locs);
 
    Float64 min_length = DBL_MAX;
-   CollectionIndexType num_supps;
+   IndexType num_supps;
    hr = supp_locs->get_Count(&num_supps);
    Float64 start_loc;
    hr = supp_locs->get_Item(0, &start_loc);
-   for (CollectionIndexType i=1; i<num_supps; i++)
+   for (IndexType i=1; i<num_supps; i++)
    {
       Float64 end_loc;
       hr = supp_locs->get_Item(i, &end_loc);
@@ -565,7 +565,7 @@ HRESULT CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BSTR sta
       // set up cached values for response locations, vehicle configuration, and local truck
       Compute(stage, type, vehicleIndex, vehConfiguration, doApplyImpact);
 
-      CollectionIndexType nPOI;
+      IndexType nPOI;
       hr = poiIDs->get_Count(&nPOI);
 
       // create results collection
@@ -578,7 +578,7 @@ HRESULT CBruteForceVehicularResponse::ComputeResponse(IIDArray* poiIDs, BSTR sta
       // see if this effect has a sign change at left/right faces
       Float64 flip_factor = m_InflStrategy->SignFlip();
 
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -1145,16 +1145,16 @@ void CBruteForceVehicularResponse::Compute(BSTR stage, LiveLoadModelType type, V
       CComPtr<IDblArray> poilocs;
       hr = poi_utility->GetSuperstructurePois(stage , &poiids, &poilocs);
 
-      CollectionIndexType nPOI;
+      IndexType nPOI;
       hr = poiids->get_Count(&nPOI);
 #ifdef _DEBUG
-      CollectionIndexType tsiz;
+      IndexType tsiz;
       hr = poilocs->get_Count(&tsiz);
       ATLASSERT(nPOI==tsiz);
 #endif
       Float64 last_loc;
       bool first = true;
-      for (CollectionIndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
+      for (IndexType poiIdx = 0; poiIdx < nPOI; poiIdx++)
       {
          PoiIDType poiID;
          hr = poiids->get_Item(poiIdx, &poiID);

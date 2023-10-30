@@ -45,6 +45,7 @@ private:
    static void Test1();
 	static void Test2();
 	static void Test3();
+	static void Test4();
 };
 
 #endif // !defined(AFX_UHPCMomentCapacityTest_H__69A6DB73_8BC5_4D0E_B0E6_50ACD5E81A11__INCLUDED_)

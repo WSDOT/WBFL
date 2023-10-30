@@ -31,8 +31,8 @@
 #include "ComCollections.h"
 
 class CVehicularLoads;
-typedef  CComVectorCollection<ldIVehicularLoads, ldIVehicularLoad, ldIEnumVehicularLoad, &IID_ldIEnumVehicularLoad,VehicleIndexType> VehicularLoadCollImpl;
-typedef CPersistentCollection<CVehicularLoads, VehicularLoadCollImpl, VehicleIndexType> PersistentVehicularLoadCollImpl;
+using VehicularLoadCollImpl = CComVectorCollection<ldIVehicularLoads, ldIVehicularLoad, ldIEnumVehicularLoad, &IID_ldIEnumVehicularLoad, VehicleIndexType>;
+using PersistentVehicularLoadCollImpl = CPersistentCollection<CVehicularLoads, VehicularLoadCollImpl, VehicleIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CVehicularLoads

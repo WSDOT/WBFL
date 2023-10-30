@@ -129,7 +129,7 @@ HRESULT CSegments::get_Length(Float64 *pVal)
 }
 
 
-HRESULT CSegments::get_Count(CollectionIndexType *pVal)
+HRESULT CSegments::get_Count(IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
 
@@ -138,7 +138,7 @@ HRESULT CSegments::get_Count(CollectionIndexType *pVal)
 	return S_OK;
 }
 
-HRESULT CSegments::get_Segment(CollectionIndexType relPosition, ISegment **pSeg)
+HRESULT CSegments::get_Segment(IndexType relPosition, ISegment **pSeg)
 {
    CHECK_RETOBJ(pSeg);
 
@@ -159,12 +159,12 @@ HRESULT CSegments::Add(ISegment * pSeg)
    return Insert(m_Segments.size(), pSeg);
 }
 
-HRESULT CSegments::Insert(CollectionIndexType relPosition, ISegment *pSeg)
+HRESULT CSegments::Insert(IndexType relPosition, ISegment *pSeg)
 {
    HRESULT hr;
    CHECK_IN(pSeg);
 
-   CollectionIndexType count = m_Segments.size();
+   IndexType count = m_Segments.size();
    if (relPosition < 0 || count < relPosition)
       return E_INVALIDARG;
 
@@ -202,13 +202,13 @@ HRESULT CSegments::Insert(CollectionIndexType relPosition, ISegment *pSeg)
 	return S_OK;
 }
 
-HRESULT CSegments::MoveTo(CollectionIndexType fromIndex, CollectionIndexType toIndex)
+HRESULT CSegments::MoveTo(IndexType fromIndex, IndexType toIndex)
 {
    if ( fromIndex == toIndex )
       return S_OK; 
 
    // check bounds
-   CollectionIndexType ub = m_Segments.size()-1;
+   IndexType ub = m_Segments.size()-1;
    if ((fromIndex < 0 || ub < fromIndex) || (toIndex <0 || ub < toIndex))
       return E_INVALIDARG;
 
@@ -239,13 +239,13 @@ HRESULT CSegments::MoveTo(CollectionIndexType fromIndex, CollectionIndexType toI
 
 }
 
-HRESULT CSegments::CopyTo(CollectionIndexType fromIndex, CollectionIndexType toIndex)
+HRESULT CSegments::CopyTo(IndexType fromIndex, IndexType toIndex)
 {
    // Nothing to do if copying to self
    if (fromIndex == toIndex )
       return S_OK;
 
-   CollectionIndexType ub = m_Segments.size()-1;
+   IndexType ub = m_Segments.size()-1;
    if ((fromIndex < 0 || ub < fromIndex) || (toIndex < 0 || (ub+1) < toIndex))
       return E_INVALIDARG;
 
@@ -258,7 +258,7 @@ HRESULT CSegments::CopyTo(CollectionIndexType fromIndex, CollectionIndexType toI
    return Insert(toIndex, segment);
 }
 
-HRESULT CSegments::Remove(CollectionIndexType index)
+HRESULT CSegments::Remove(IndexType index)
 {
    if ( !IsValidIndex(index,m_Segments) )
       return E_INVALIDARG;
@@ -499,7 +499,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       // last segment to fill it
       if (len < length)
       {
-         CollectionIndexType cnt;
+         IndexType cnt;
          hr = pnew_coll->get_Count(&cnt);
 
          CComPtr<ISegment> last_segment;
@@ -555,7 +555,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
          return E_FAIL; // we know our collection so this should never happen
       }
 
-      CollectionIndexType count;
+      IndexType count;
       hr = pifcol->get_Count(&count);
       if (FAILED(hr))
          return hr;
@@ -602,7 +602,7 @@ HRESULT CSegments::GetMemberSegments(Float64 length, VARIANT_BOOL isSymmetrical,
       //   return hr;
 
       // now let's fill in the rest by copying from the left side to the right
-      for (CollectionIndexType lfcnt = count-2; lfcnt >= 0; lfcnt--)
+      for (IndexType lfcnt = count-2; lfcnt >= 0; lfcnt--)
       {
          CComPtr<ISegment> plft;
          hr = pifcol->get_Item(lfcnt, &plft);
@@ -646,9 +646,9 @@ STDMETHODIMP CSegments::Load(IStructuredLoad2 * pload)
    if (FAILED(hr))
       return hr;
 
-   CollectionIndexType segment_count = var.iVal;
+   IndexType segment_count = var.iVal;
    var.Clear();
-   for (CollectionIndexType iseg = 0; iseg < segment_count; iseg++)
+   for (IndexType iseg = 0; iseg < segment_count; iseg++)
    {
       // Create a new segment object
       CComObject<CSegment>* pSegment;
@@ -731,7 +731,7 @@ void CSegments::Clear()
 
 void CSegments::UpdateRelPositions(CSegments::VectorType* pvec)
 {
-   CollectionIndexType i = 0;
+   IndexType i = 0;
    for(VectorIteratorType itv=pvec->begin(); itv!=pvec->end(); itv++)
    {
       // have to cast stored item to get access to put method

@@ -34,29 +34,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestCompoundCurve :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public ICompoundCurveEvents
+class CTestCompoundCurve
 {
 public:
    CTestCompoundCurve();
 
    static void Test();
-
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestCompoundCurve)
-   COM_INTERFACE_ENTRY(ICompoundCurveEvents)
-END_COM_MAP()
-
-// ICompoundCurveEvents
-public:
-	STDMETHOD(OnCompoundCurveChanged)(ICompoundCurve* pp);
-
-private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
 
    static void Test1(); // Unsymmertical Spiral-Curve-Spiral
    static void Test2(); // Spiral-Curve
@@ -73,7 +56,6 @@ private:
    static void Test10b(); // Line Curve intersection
    static void Test11a(); // Line Curve intersection
    static void Test11b(); // Line Curve intersection
-   static void TestEvents();
 };
 
 #endif // !defined(AFX_TESTCompoundCurve_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

@@ -145,7 +145,7 @@ void CTestRectangle::TestIShape()
    TRY_TEST( shape.CoCreateInstance( CLSID_Rect ), S_OK );
 
    CComQIPtr<IRectangle> rect(shape);
-   TRY_TEST( rect != 0, true );
+   TRY_TEST( rect != nullptr, true );
 
    CComPtr<IPoint2d> hookPnt;
    rect->get_HookPoint(&hookPnt);
@@ -272,7 +272,7 @@ void CTestRectangle::TestIShape()
    TRY_TEST( shape->Clone(&clone), S_OK );
 
    CComQIPtr<IRectangle> rect_clone(clone);
-   TRY_TEST( rect_clone != 0, true );
+   TRY_TEST( rect_clone != nullptr, true );
    pnt.Release();
    rect_clone->get_HookPoint(&pnt);
    pnt->get_X(&x);
@@ -290,41 +290,36 @@ void CTestRectangle::TestIShape()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5 );
+   TRY_TEST( cPoints,4 );
    
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,5.0), true );
-   TRY_TEST( IsEqual(y,5.0), true );
+   TRY_TEST( IsEqual(x,15.0), true );
+   TRY_TEST( IsEqual(y, 5.0), true );
 
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.0), true );
+   TRY_TEST( IsEqual(x, 5.0), true );
    TRY_TEST( IsEqual(y, 5.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.0), true );
+   TRY_TEST( IsEqual(x, 5.0), true );
    TRY_TEST( IsEqual(y,35.0), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 5.0), true );
+   TRY_TEST( IsEqual(x,15.0), true );
    TRY_TEST( IsEqual(y,35.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,5.0), true );
-   TRY_TEST( IsEqual(y,5.0), true );
 
    // Rotate the shape and test again
    CComQIPtr<IXYPosition> position(shape);
@@ -334,41 +329,36 @@ void CTestRectangle::TestIShape()
    coll.Release();
    Enum.Release();
 
-   for ( ULONG i = 0; i < fetched; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5 );
+   TRY_TEST( cPoints,4 );
    
    coll->get__Enum(&Enum);
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
    TRY_TEST( IsEqual(x,25.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
+   TRY_TEST( IsEqual(y,25.0), true );
 
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,25.0), true );
-   TRY_TEST( IsEqual(y,25.0), true );
+   TRY_TEST( IsEqual(y,15.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
    TRY_TEST( IsEqual(x,-5.0), true );
-   TRY_TEST( IsEqual(y,25.0), true );
+   TRY_TEST( IsEqual(y,15.0), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
    TRY_TEST( IsEqual(x,-5.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,25.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
+   TRY_TEST( IsEqual(y,25.0), true );
 
    //
    // ClipWithLine
@@ -406,31 +396,36 @@ void CTestRectangle::TestIShape()
 
    coll.Release();
    Enum.Release();
-   for ( ULONG i = 0; i < fetched; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST( clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,3 );
+   TRY_TEST( cPoints,4 );
    
    coll->get__Enum(&Enum);
    Enum->Next(4,&points[0],&fetched);
-   TRY_TEST( fetched, 3 );
+   TRY_TEST( fetched, 4 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,5.0), true );
-   TRY_TEST( IsEqual(y,5.0), true );
+   TRY_TEST( IsEqual(x,15.0), true );
+   TRY_TEST( IsEqual(y, 5.0), true );
 
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.0), true );
+   TRY_TEST( IsEqual(x, 5.0), true );
    TRY_TEST( IsEqual(y, 5.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
    TRY_TEST( IsEqual(x,15.0), true );
    TRY_TEST( IsEqual(y,15.0), true );
+
+   points[3]->get_X(&x);
+   points[3]->get_Y(&y);
+   TRY_TEST(IsEqual(x,15.0), true);
+   TRY_TEST(IsEqual(y, 5.0), true);
 
 
    //
@@ -478,27 +473,24 @@ void CTestRectangle::TestIShape()
    TRY_TEST( cPoints,4 );
    
    coll->get__Enum(&Enum);
-   Enum->Next(4,&points[0],&fetched);
+   Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.0), true );
+   int i = 0;
+   points[i++]->Location(&x, &y);
+   TRY_TEST( IsEqual(x, 5.0), true );
    TRY_TEST( IsEqual(y,15.0), true );
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
+   points[i++]->Location(&x, &y);
+   TRY_TEST( IsEqual(x, 5.0), true );
+   TRY_TEST( IsEqual(y,25.0), true );
+
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,15.0), true );
    TRY_TEST( IsEqual(y,25.0), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 5.0), true );
-   TRY_TEST( IsEqual(y,25.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 5.0), true );
+   points[i++]->Location(&x, &y);
+   TRY_TEST( IsEqual(x,15.0), true );
    TRY_TEST( IsEqual(y,15.0), true );
 }
 
@@ -510,7 +502,7 @@ void CTestRectangle::TestIXYPosition()
    TRY_TEST( position.CoCreateInstance( CLSID_Rect ), S_OK );
 
    CComQIPtr<IRectangle> rect(position);
-   TRY_TEST( rect != 0, true );
+   TRY_TEST( rect != nullptr, true );
 
    CComQIPtr<IShape> shape(position);
 
@@ -729,41 +721,36 @@ void CTestRectangle::TestIXYPosition()
 
    CComPtr<IPoint2dCollection> coll;
    shape->get_PolyPoints(&coll);
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5 );
+   TRY_TEST( cPoints,4 );
    
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
    TRY_TEST( IsEqual(x,-5.0), true );
-   TRY_TEST( IsEqual(y, 5.0), true );
+   TRY_TEST( IsEqual(y,15.0), true );
 
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,-5.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
+   TRY_TEST( IsEqual(y, 5.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
    TRY_TEST( IsEqual(x,-35.0), true );
-   TRY_TEST( IsEqual(y, 15.0), true );
+   TRY_TEST( IsEqual(y,  5.0), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
    TRY_TEST( IsEqual(x,-35.0), true );
-   TRY_TEST( IsEqual(y,  5.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-5.0), true );
-   TRY_TEST( IsEqual(y, 5.0), true );
+   TRY_TEST( IsEqual(y, 15.0), true );
 
    // Test section properties of the rectangle rotated 45 deg.
    hookPnt->Move(0,0);
@@ -788,13 +775,12 @@ void CTestRectangle::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Rect ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IRectangle ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

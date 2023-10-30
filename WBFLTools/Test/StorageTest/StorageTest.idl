@@ -59,8 +59,8 @@ library STORAGETESTLib
 		[propget, helpstring("property Y")] HRESULT Y([out, retval] Float64 *pVal);
 		[propput, helpstring("property Y")] HRESULT Y([in] Float64 newVal);
 		[propget, helpstring("property IsComposite")] HRESULT IsComposite([out, retval] BOOL *pVal);
-		[propget, helpstring("property Count")] HRESULT Count([out, retval] CollectionIndexType *pVal);
-		[propget, helpstring("property Item")] HRESULT Item([in]CollectionIndexType index, [out, retval] IPShape* *pVal);
+		[propget, helpstring("property Count")] HRESULT Count([out, retval] IndexType *pVal);
+		[propget, helpstring("property Item")] HRESULT Item([in]IndexType index, [out, retval] IPShape* *pVal);
 		[helpstring("method Add")] HRESULT Add(IPShape*);
 	};
 	[

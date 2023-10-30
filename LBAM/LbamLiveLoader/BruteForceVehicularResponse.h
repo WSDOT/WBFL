@@ -191,8 +191,8 @@ private:
    LiveLoadApplicabilityType m_LiveLoadApplicability;
 
    // variable axle spacing
-   typedef std::vector<Float64>            AxleSpacingContainer;
-   typedef AxleSpacingContainer::iterator AxleSpacingIterator;
+   using AxleSpacingContainer = std::vector<Float64>;
+   using AxleSpacingIterator = AxleSpacingContainer::iterator;
    AxleSpacingContainer m_AxleSpacings;
 
    // locations of the pois (where we place our axles)
@@ -207,11 +207,11 @@ private:
       {;}
    };
 
-   typedef std::vector<PoiLocation>       PoiLocationContainer;
-   typedef PoiLocationContainer::iterator PoiLocationIterator;
+   using PoiLocationContainer = std::vector<PoiLocation>;
+   using PoiLocationIterator = PoiLocationContainer::iterator;
    PoiLocationContainer m_PoiLocations;
 
-   // a tolerance for truck placment - used only for shear reponse calc to capture jumps in 
+   // a tolerance for truck placement - used only for shear response calc to capture jumps in 
    // shear due to axle loads
    Float64  m_TruckPlacementTolerance;
 

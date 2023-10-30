@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Roark - Simple span beam forumla, patterned after Roark's formulas
+// Roark - Simple span beam formula, patterned after Roark's formulas
 //         for Stress and Strain
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
@@ -23,16 +23,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <Stability/StabilityLib.h>
-#include <System/dllTest.h>
-#include <Stability/UnitTest.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-using namespace WBFL::Stability;
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
@@ -40,10 +30,4 @@ BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,
                            LPVOID    /*plvReserved*/)
 {
     return 1;   // Indicate that the DLL was initialized successfully.
-}
-
-// call unit test routines for all packages belonging to this dll.
-bool WINAPI UnitTest(dbgLog& rlog)
-{
-   return UnitTest::TestMe(rlog);
 }

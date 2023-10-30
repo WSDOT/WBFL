@@ -271,7 +271,7 @@ HRESULT  CPierImpl::get_CurbLineElevation(/*[in]*/DirectionType side,/*[out,retv
 {
    CHECK_RETVAL(pElev);
 
-   mathPwLinearFunction2dUsingPoints fn;
+   WBFL::Math::PiecewiseFunction fn;
    CreateDeckProfileFunction(&fn);
 
    Float64 clo;
@@ -289,7 +289,7 @@ HRESULT  CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* p
 {
    CHECK_RETVAL(pElev);
 
-   mathPwLinearFunction2dUsingPoints fn;
+   WBFL::Math::PiecewiseFunction fn;
    CreateDeckProfileFunction(&fn);
 
    Float64 Xp;
@@ -298,14 +298,14 @@ HRESULT  CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* p
    return S_OK;
 }
 
-void CPierImpl::CreateDeckProfileFunction(mathPwLinearFunction2dUsingPoints* pFN)
+void CPierImpl::CreateDeckProfileFunction(WBFL::Math::PiecewiseFunction* pFN)
 {
    CComPtr<IPoint2dCollection> deckProfile;
    m_pPier->get_DeckProfile(&deckProfile);
 
    CComPtr<IEnumPoint2d> enumPoints;
    deckProfile->get__Enum(&enumPoints);
-   mathPwLinearFunction2dUsingPoints fn;
+   WBFL::Math::PiecewiseFunction fn;
    CComPtr<IPoint2d> pnt;
    while ( enumPoints->Next(1,&pnt,nullptr) != S_FALSE )
    {

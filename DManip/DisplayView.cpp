@@ -582,7 +582,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    // bounding box computation is iterative. Iterate until box size on consecutive iterations
    // is within 2 percent
    Float64 pd_tolerance = 0.002;
-   CollectionIndexType max_iter = 10;
+   IndexType max_iter = 10;
 
    // Tricky: Things get weird if the windows is shrunken to far.
    // we can run into numerical problems with the mapper if the extents become too large. Modify
@@ -593,7 +593,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    Float64 orig_width = 0.0;
    Float64 orig_height = 0.0;
 
-   for (CollectionIndexType it = 0; it<max_iter; it++)
+   for (IndexType it = 0; it<max_iter; it++)
    {
       CComPtr<IRect2d> rect;
       m_pDispMgr->GetBoundingBox(false, &rect);

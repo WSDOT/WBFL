@@ -164,14 +164,14 @@ END_CONNECTION_POINT_MAP()
    STDMETHOD_(void,put_Title)(BSTR newVal) override;
    STDMETHOD_(void,put_Font)(const LOGFONT& Font) override;
    STDMETHOD_(void,get_Font)(LOGFONT* pFont) override;
-   STDMETHOD_(void,get_NumEntries)(CollectionIndexType* count) override;
+   STDMETHOD_(void,get_NumEntries)(IndexType* count) override;
    STDMETHOD_(void,AddEntry)(iLegendEntry* entry) override;
-   STDMETHOD_(HRESULT,InsertEntry)(CollectionIndexType index, iLegendEntry* entry) override;
-   STDMETHOD_(HRESULT,get_Entry)(CollectionIndexType index, iLegendEntry* *entry) override;
-   STDMETHOD_(HRESULT,RemoveEntry)(CollectionIndexType index) override;
+   STDMETHOD_(HRESULT,InsertEntry)(IndexType index, iLegendEntry* entry) override;
+   STDMETHOD_(HRESULT,get_Entry)(IndexType index, iLegendEntry* *entry) override;
+   STDMETHOD_(HRESULT,RemoveEntry)(IndexType index) override;
    STDMETHOD_(void,ClearEntries)() override;
-   STDMETHOD_(void,get_NumRows)(CollectionIndexType* count) override;
-   STDMETHOD_(void,put_NumRows)(CollectionIndexType count) override;
+   STDMETHOD_(void,get_NumRows)(IndexType* count) override;
+   STDMETHOD_(void,put_NumRows)(IndexType count) override;
    STDMETHOD_(void,get_CellSize)(CSize* size) override;
    STDMETHOD_(void,put_CellSize)(CSize size) override;
    STDMETHOD_(void,GetMinCellSize)(CSize* size) override;
@@ -201,9 +201,9 @@ private:
    CSize    m_CellSize;
    BOOL     m_IsDraggable;
 
-   typedef CAdapt<CComPtr<iLegendEntry> > ContainerItem;
-   typedef std::vector<ContainerItem>     Container;
-   typedef Container::iterator            ContainerIterator;
+   using ContainerItem = CAdapt<CComPtr<iLegendEntry> >;
+   using Container = std::vector<ContainerItem>;
+   using ContainerIterator = Container::iterator;
    Container m_Container;
 
    CComPtr<iDragData> m_pDragData;

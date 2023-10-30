@@ -50,7 +50,7 @@ public:
    static std::_tstring GetPageLayoutString(const rptPageLayout& MyLayout);
 
    /// Visit font library. Write library style information to the ostream, and set
-   /// up style name - htlm element name mapping.
+   /// up style name - html element name mapping.
    void VisitFontLibrary(std::_tostream& os);
 
    /// Get html element name for a given style name (e.g., H1,H2...)
@@ -60,7 +60,7 @@ public:
 private:
    bool m_DidVisit;
 
-   typedef std::map<rptStyleName, std::_tstring, std::less<rptStyleName>, std::allocator<std::_tstring> > StyleElementMap;
+   using StyleElementMap = std::map<rptStyleName, std::_tstring, std::less<rptStyleName>>;
    StyleElementMap m_StyleElementMap;
 };
 

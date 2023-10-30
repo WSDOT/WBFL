@@ -56,4 +56,32 @@ interface iShapeDrawStrategy : public iDrawPointStrategy
    STDMETHOD_(bool,HasBoundingShape)() PURE;
 };
 
+
+#include <GeomModel/Shape.h>
+interface iShapeDrawStrategy2 : public iDrawPointStrategy
+{
+   STDMETHOD_(void, SetShape)(const std::shared_ptr<const WBFL::Geometry::Shape>& shape) PURE;
+   STDMETHOD_(const std::shared_ptr<const WBFL::Geometry::Shape>&, GetShape)() PURE;
+   STDMETHOD_(void, SetSolidLineStyle)(LineStyleType lineStyle) PURE;
+   STDMETHOD_(LineStyleType, GetSolidLineStyle)() PURE;
+   STDMETHOD_(void, SetSolidLineColor)(COLORREF crColor) PURE;
+   STDMETHOD_(COLORREF, GetSolidLineColor)() PURE;
+   STDMETHOD_(void, SetSolidFillColor)(COLORREF crColor) PURE;
+   STDMETHOD_(COLORREF, GetSolidFillColor)() PURE;
+   STDMETHOD_(void, SetSolidLineWidth)(UINT nPixels) PURE;
+   STDMETHOD_(UINT, GetSolidLineWidth)() PURE;
+   STDMETHOD_(void, SetVoidLineStyle)(LineStyleType lineStyle) PURE;
+   STDMETHOD_(LineStyleType, GetVoidLineStyle)() PURE;
+   STDMETHOD_(void, SetVoidLineColor)(COLORREF crColor) PURE;
+   STDMETHOD_(COLORREF, GetVoidLineColor)() PURE;
+   STDMETHOD_(void, SetVoidFillColor)(COLORREF crColor) PURE;
+   STDMETHOD_(COLORREF, GetVoidFillColor)() PURE;
+   STDMETHOD_(void, SetVoidLineWidth)(UINT nPixels) PURE;
+   STDMETHOD_(UINT, GetVoidLineWidth)() PURE;
+   STDMETHOD_(void, DoFill)(bool doFill) PURE;
+   STDMETHOD_(bool, DoFill)() PURE;
+   STDMETHOD_(void, HasBoundingShape)(bool bHasBoundingShape) PURE;
+   STDMETHOD_(bool, HasBoundingShape)() PURE;
+};
+
 #endif // INCLUDED_SHAPEDRAWSTRATEGY_H_

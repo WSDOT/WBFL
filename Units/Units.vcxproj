@@ -20,13 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -50,12 +50,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -83,6 +84,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -97,13 +101,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\Units.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -144,6 +149,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -156,14 +163,17 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\Units.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -177,34 +187,37 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AutoSysUnits.cpp" />
+    <ClCompile Include="AutoSystem.cpp" />
+    <ClCompile Include="IndirectMeasure.cpp" />
+    <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Measure.cpp" />
     <ClCompile Include="StationFormat.cpp" />
-    <ClCompile Include="SysUnits.cpp" />
-    <ClCompile Include="SysUnitsMgr.cpp" />
-    <ClCompile Include="SysUnitsMgrListener.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="System.cpp" />
+    <ClCompile Include="UnitValueNumericalFormatTools.cpp" />
     <ClCompile Include="XUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Units\AutoLib.h" />
-    <ClInclude Include="..\Include\Units\AutoSysUnits.h" />
+    <ClInclude Include="..\Include\Units\AutoSystem.h" />
     <ClInclude Include="..\Include\Units\Convert.h" />
+    <ClInclude Include="..\Include\Units\IndirectMeasure.h" />
+    <ClInclude Include="..\Include\Units\Library.h" />
+    <ClInclude Include="..\Include\Units\LibraryT.h" />
     <ClInclude Include="..\Include\Units\Measure.h" />
     <ClInclude Include="..\Include\Units\PhysicalT.h" />
     <ClInclude Include="..\Include\Units\StationFormat.h" />
-    <ClInclude Include="..\Include\Units\SysUnits.h" />
-    <ClInclude Include="..\Include\Units\SysUnitsMgr.h" />
-    <ClInclude Include="..\Include\Units\SysUnitsMgrListener.h" />
+    <ClInclude Include="..\Include\Units\System.h" />
     <ClInclude Include="..\Include\Units\Units.h" />
     <ClInclude Include="..\Include\Units\UnitsExp.h" />
     <ClInclude Include="..\Include\Units\UnitsLib.h" />
-    <ClInclude Include="..\Include\Units\UnitTest.h" />
+    <ClInclude Include="..\Include\Units\UnitValueNumericalFormatTools.h" />
     <ClInclude Include="..\Include\Units\XUnit.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Units.def" />

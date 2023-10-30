@@ -104,7 +104,7 @@ STDMETHODIMP CMomentCurvatureSolution::PeakCapacity(Float64* Mmax,Float64* k)
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_Moment(CollectionIndexType idx,Float64* pM)
+STDMETHODIMP CMomentCurvatureSolution::get_Moment(IndexType idx,Float64* pM)
 {
    CHECK_RETVAL(pM);
    *pM = m_CurvaturePoints[idx].M;
@@ -112,21 +112,21 @@ STDMETHODIMP CMomentCurvatureSolution::get_Moment(CollectionIndexType idx,Float6
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_Curvature(CollectionIndexType idx,Float64* k)
+STDMETHODIMP CMomentCurvatureSolution::get_Curvature(IndexType idx,Float64* k)
 {
    CHECK_RETVAL(k);
    *k = m_CurvaturePoints[idx].k;
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_StrainPlane(CollectionIndexType idx,IPlane3d** strainPlane)
+STDMETHODIMP CMomentCurvatureSolution::get_IncrementalStrainPlane(IndexType idx,IPlane3d** strainPlane)
 {
    CHECK_RETOBJ(strainPlane);
-   m_CurvaturePoints[idx].Solution->get_StrainPlane(strainPlane);
+   m_CurvaturePoints[idx].Solution->get_IncrementalStrainPlane(strainPlane);
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_CapacitySolution(CollectionIndexType idx, IMomentCapacitySolution** solution)
+STDMETHODIMP CMomentCurvatureSolution::get_CapacitySolution(IndexType idx, IMomentCapacitySolution** solution)
 {
    CHECK_RETOBJ(solution);
    (*solution) = m_CurvaturePoints[idx].Solution;
@@ -137,7 +137,7 @@ STDMETHODIMP CMomentCurvatureSolution::get_CapacitySolution(CollectionIndexType 
    return S_OK;
 }
 
-STDMETHODIMP CMomentCurvatureSolution::get_PointCount(CollectionIndexType* nPoints)
+STDMETHODIMP CMomentCurvatureSolution::get_PointCount(IndexType* nPoints)
 {
    CHECK_RETVAL(nPoints);
    *nPoints = m_CurvaturePoints.size();

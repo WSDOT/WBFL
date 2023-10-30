@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLDManip.ShapeDrawStrategy2.1 = s 'ShapeDrawStrategy2 Class'
+	{
+		CLSID = s '{5E2EAAA6-5171-49E6-B0E8-F65923C9CA45}'
+	}
+	WBFLDManip.ShapeDrawStrategy2 = s 'ShapeDrawStrategy2 Class'
+	{
+		CLSID = s '{5E2EAAA6-5171-49E6-B0E8-F65923C9CA45}'
+		CurVer = s 'WBFLDManip.ShapeDrawStrategy2.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {5E2EAAA6-5171-49E6-B0E8-F65923C9CA45} = s 'ShapeDrawStrategy2 Class'
+		{
+			ProgID = s 'WBFLDManip.ShapeDrawStrategy2.1'
+			VersionIndependentProgID = s 'WBFLDManip.ShapeDrawStrategy2'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{011408A7-F865-11d4-8B9C-006097C68A9C}'
+		}
+	}
+}

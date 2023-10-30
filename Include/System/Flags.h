@@ -21,101 +21,73 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_FLAGS_H_
-#define INCLUDED_SYSTEM_FLAGS_H_
 #pragma once
 
 #include <System\SysExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   sysFlags
-
-   Utility class for manipulating bit flags.
-
-
-DESCRIPTION
-   Utility class for manipulating bit flags.
-
-LOG
-   rab : 12.15.1997 : Created file
-*****************************************************************************/
-
-template <class T>
-class sysFlags
+namespace WBFL
 {
-public:
-   //------------------------------------------------------------------------
-   // Sets the bits defined by mask in flag.
-   static void Set(T* flag,T mask);
+   namespace System
+   {
+      /// Utility class for manipulating bit flags.
+      template <class T>
+      class Flags
+      {
+      public:
+         /// Sets the bits defined by mask in flag.
+         static void Set(T* flag, T mask);
 
-   //------------------------------------------------------------------------
-   // Clears the bits defined by mask in flag.
-   static void Clear(T* flag, T mask);
+         /// Clears the bits defined by mask in flag.
+         static void Clear(T* flag, T mask);
 
-   //------------------------------------------------------------------------
-   // Toggles the bits defined by mask in flag.
-   static void Toggle(T* flag, T mask);
+         /// Toggles the bits defined by mask in flag.
+         static void Toggle(T* flag, T mask);
 
-   //------------------------------------------------------------------------
-   // Clears all the bits in flag.
-   static void ClearAll(T* flag);
+         /// Clears all the bits in flag.
+         static void ClearAll(T* flag);
 
-   //------------------------------------------------------------------------
-   // Returns true if the bits defined by mask are set in flag.
-   static bool IsSet(T flag,T mask);
+         /// Returns true if the bits defined by mask are set in flag.
+         static bool IsSet(T flag, T mask);
 
-   //------------------------------------------------------------------------
-   // Returns true if the bits defined by mask are clear in flag.
-   static bool IsClear(T flag,T mask);
+         /// Returns true if the bits defined by mask are clear in flag.
+         static bool IsClear(T flag, T mask);
+      };
+
+
+      template <class T>
+      inline void Flags<T>::Set(T* flag, T mask)
+      {
+         (*flag) |= mask;
+      }
+
+      template <class T>
+      inline void Flags<T>::Clear(T* flag, T mask)
+      {
+         (*flag) &= ~mask;
+      }
+
+      template <class T>
+      inline void Flags<T>::Toggle(T* flag, T mask)
+      {
+         (*flag) ^= mask;
+      }
+
+      template <class T>
+      inline void Flags<T>::ClearAll(T* flag)
+      {
+         *flag = 0;
+      }
+
+      template <class T>
+      inline bool Flags<T>::IsSet(T flag, T mask)
+      {
+         return (flag & mask) ? true : false;
+      }
+
+      template <class T>
+      inline bool Flags<T>::IsClear(T flag, T mask)
+      {
+         return !IsSet(flag, mask);
+      }
+   };
 };
-
-// INLINE METHODS
-//
-template <class T>
-inline void sysFlags<T>::Set(T* flag,T mask)
-{
-   (*flag) |= mask;
-}
-
-template <class T>
-inline void sysFlags<T>::Clear(T* flag, T mask)
-{
-   (*flag) &= ~mask;
-}
-
-template <class T>
-inline void sysFlags<T>::Toggle(T* flag, T mask)
-{
-   (*flag) ^= mask;
-}
-
-template <class T>
-inline void sysFlags<T>::ClearAll(T* flag)
-{
-   *flag = 0;
-}
-
-template <class T>
-inline bool sysFlags<T>::IsSet(T flag,T mask)
-{
-   return (flag & mask) ? true : false;
-}
-
-template <class T>
-inline bool sysFlags<T>::IsClear(T flag,T mask)
-{
-   return !IsSet(flag,mask);
-}
-
-#endif // INCLUDED_SYSTEM_FLAGS_H_

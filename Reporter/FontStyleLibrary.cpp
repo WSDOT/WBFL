@@ -24,12 +24,6 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\FontStyleLibrary.h>        // class implementation
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 /****************************************************************************
 CLASS
    rptFontStyleLibrary
@@ -52,7 +46,7 @@ rptFontStyleLibrary* rptFontStyleLibrary::Instance()
    if ( ms_pInstance == 0 )
    {
       ms_pInstance=new rptFontStyleLibrary();
-	  ms_Killer.SetDoomed( ms_pInstance );
+	  ms_Killer.SetSingleton( ms_pInstance );
    }
    return ms_pInstance;
 }
@@ -87,9 +81,9 @@ void rptFontStyleLibrary::GetStyleNames(std::vector<rptStyleName, std::allocator
    myNames.push_back(_T("Default"));
 
    // get all names in map
-   for (StyleMap::const_iterator i=m_StyleMap.begin(); i!=m_StyleMap.end(); i++)
+   for(const auto& [name,style] : m_StyleMap)
    {
-      myNames.push_back( (*i).first );
+      myNames.push_back( name );
    }
 }
 

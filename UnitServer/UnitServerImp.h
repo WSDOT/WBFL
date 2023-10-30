@@ -95,7 +95,7 @@ public:
 
 // IUnitServer
 public:
-	STDMETHOD(SetBaseUnits)(/*[in]*/ BSTR bstrMass, /*[in]*/ BSTR bstrLength, /*[in]*/ BSTR bstrTime, /*[in]*/ BSTR bstrTemp, /*[in]*/ BSTR bstrAngle) override;
+	STDMETHOD(SetSystemUnits)(/*[in]*/ BSTR bstrMass, /*[in]*/ BSTR bstrLength, /*[in]*/ BSTR bstrTime, /*[in]*/ BSTR bstrTemp, /*[in]*/ BSTR bstrAngle) override;
 	STDMETHOD(get_Mass)(/*[out,retval]*/ BSTR* pMass) override;
 	STDMETHOD(get_Length)(/*[out,retval]*/ BSTR* pLength) override;
 	STDMETHOD(get_Time)(/*[out,retval]*/ BSTR* pTime) override;

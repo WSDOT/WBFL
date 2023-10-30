@@ -40,10 +40,6 @@ static char THIS_FILE[] = __FILE__;
 // CProfilePoint
 HRESULT CProfilePoint::FinalConstruct()
 {
-   CComObject<CStation>* pStation;
-   CComObject<CStation>::CreateInstance(&pStation);
-   m_Station = pStation;
-
    return S_OK;
 }
 
@@ -52,7 +48,6 @@ STDMETHODIMP CProfilePoint::InterfaceSupportsErrorInfo(REFIID riid)
 	static const IID* arr[] = 
 	{
 		&IID_IProfilePoint,
-		&IID_IStructuredStorage2,
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -62,129 +57,55 @@ STDMETHODIMP CProfilePoint::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CProfilePoint::get_Profile(IProfile* *pVal)
-{
-   CHECK_RETOBJ(pVal);
-   if ( m_pProfile )
-   {
-      (*pVal) = m_pProfile;
-      (*pVal)->AddRef();
-   }
-
-   return S_OK;
-}
-
-STDMETHODIMP CProfilePoint::putref_Profile(IProfile* newVal)
-{
-   m_pProfile = newVal;
-   return S_OK;
-}
-
 STDMETHODIMP CProfilePoint::get_Station(IStation* *station)
 {
    CHECK_RETOBJ(station);
-   return m_Station->Clone(station);
+   return cogoUtil::CreateStation(m_ProfilePoint->GetStation(), station);
 }
 
 STDMETHODIMP CProfilePoint::put_Station(VARIANT varStation)
 {
-   CComPtr<IStation> objStation;
-   HRESULT hr = cogoUtil::StationFromVariant(varStation,true,&objStation);
-   if ( FAILED(hr) )
-      return hr;
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
 
-   hr = ValidateStation(objStation);
-   if ( FAILED(hr) )
-      return hr;
-
-   if ( !cogoUtil::IsEqual(m_pProfile,objStation,m_Station) )
-   {
-      m_Station.Release();
-      objStation->Clone(&m_Station);
-      Fire_OnProfilePointChanged(this);
-   }
+   m_ProfilePoint->SetStation(station);
 	return S_OK;
 }
 
 STDMETHODIMP CProfilePoint::get_Elevation(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
-   *pVal = m_Elevation;
+   *pVal = m_ProfilePoint->GetElevation();
 	return S_OK;
 }
 
 STDMETHODIMP CProfilePoint::put_Elevation(Float64 newVal)
 {
-   if ( newVal != m_Elevation )
-   {
-      m_Elevation = newVal;
-      Fire_OnProfilePointChanged(this);
-   }
+   m_ProfilePoint->SetElevation(newVal);
 	return S_OK;
 }
 
-STDMETHODIMP CProfilePoint::get_StructuredStorage(IStructuredStorage2* *pStg)
+STDMETHODIMP CProfilePoint::Location(IStation** pStation, Float64* pElevation)
 {
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
+   CHECK_RETOBJ(pStation);
+   CHECK_RETVAL(pElevation);
+   WBFL::COGO::Station station;
+   std::tie(station,*pElevation) = m_ProfilePoint->GetLocation();
+   return cogoUtil::CreateStation(station, pStation);
 }
 
-STDMETHODIMP CProfilePoint::Clone(IProfilePoint* *clone)
+STDMETHODIMP CProfilePoint::Move(VARIANT varStation, Float64 elevation)
 {
-   CHECK_RETOBJ(clone);
+   auto [hr, station] = cogoUtil::StationFromVariant(varStation);
+   if (FAILED(hr)) return hr;
 
-   CComObject<CProfilePoint>* pClone;
-   CComObject<CProfilePoint>::CreateInstance(&pClone);
-
-   (*clone) = pClone;
-   (*clone)->AddRef();
-
-   (*clone)->put_Elevation(m_Elevation);
-   (*clone)->put_Station(CComVariant(m_Station));
-
+   m_ProfilePoint->Move(station, elevation);
    return S_OK;
 }
 
-// IStructuredStorage2
-STDMETHODIMP CProfilePoint::Save(IStructuredSave2* pSave)
+STDMETHODIMP CProfilePoint::Clone(IProfilePoint** ppClone)
 {
-   pSave->BeginUnit(CComBSTR("ProfilePoint"),1.0);
-   pSave->put_Property(CComBSTR("Station"),CComVariant(m_Station));
-   pSave->put_Property(CComBSTR("Elevation"),CComVariant(m_Elevation));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CProfilePoint::Load(IStructuredLoad2* pLoad)
-{
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("ProfilePoint"));
-
-   pLoad->get_Property(CComBSTR("Station"),&var);
-   CComPtr<IStation> station;
-   _CopyVariantToInterface<IStation>::copy(&station,&var);
-   m_Station = station;
-
-   pLoad->get_Property(CComBSTR("Elevation"),&var);
-   m_Elevation = var.dblVal;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   return S_OK;
-}
-
-HRESULT CProfilePoint::ValidateStation(IStation* station)
-{
-   if ( m_pProfile == nullptr )
-   {
-      // if not associated with a profile, station must be normalized
-      ZoneIndexType staEqnZoneIdx;
-      station->get_StationZoneIndex(&staEqnZoneIdx);
-      if ( staEqnZoneIdx != INVALID_INDEX )
-         return E_INVALIDARG; // station must be normalized
-   }
-
-   return S_OK;
+   CHECK_RETOBJ(ppClone);
+   auto clone = std::make_shared<WBFL::COGO::ProfilePoint>(*m_ProfilePoint);
+   return cogoUtil::CreateProfilePoint(clone, ppClone);
 }

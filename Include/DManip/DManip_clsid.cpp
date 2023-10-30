@@ -245,6 +245,10 @@ DEFINE_GUID(IID_iShapeGravityWellStrategy,
 DEFINE_GUID(IID_iNorthArrow, 
 0x5bf66bda, 0x4ec4, 0x4857, 0x95, 0x34, 0x5, 0x42, 0x57, 0xbe, 0xb1, 0x72);
 
+// {5E2EAAA6-5171-49E6-B0E8-F65923C9CA45}
+DEFINE_GUID(IID_iShapeDrawStrategy2,
+   0x5e2eaaa6, 0x5171, 0x49e6, 0xb0, 0xe8, 0xf6, 0x59, 0x23, 0xc9, 0xca, 0x45);
+
 ////////////////////////////////////////////////////////////////////
 
 //// {A2703706-F85B-11d4-8B9C-006097C68A9C}
@@ -437,6 +441,7 @@ struct __declspec(uuid("{E9C6C54F-77CF-4ee4-9465-4821BBD0CEF3}")) iExtRectangleD
 struct __declspec(uuid("{66542767-5F40-4124-9CCF-7A5456E3328C}")) iViewTitle;
 struct __declspec(uuid("{1CDB522C-E3B4-4664-8E67-BB56605BB377}")) iShapeGravityWellStrategy;
 struct __declspec(uuid("{5BF66BDA-4EC4-4857-9534-054257BEB172}")) iNorthArrow;
+struct __declspec(uuid("{5E2EAAA6-5171-49E6-B0E8-F65923C9CA45}")) iShapeDrawStrategy2;
 
 #ifdef __cplusplus
 }

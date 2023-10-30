@@ -51,7 +51,7 @@ STDMETHODIMP CIndexArray::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CIndexArray::get_Item(CollectionIndexType relPosition, CollectionIndexType *pVal)
+STDMETHODIMP CIndexArray::get_Item(IndexType relPosition, IndexType *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -68,7 +68,7 @@ STDMETHODIMP CIndexArray::get_Item(CollectionIndexType relPosition, CollectionIn
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::put_Item(CollectionIndexType relPosition, CollectionIndexType newVal)
+STDMETHODIMP CIndexArray::put_Item(IndexType relPosition, IndexType newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -85,7 +85,7 @@ STDMETHODIMP CIndexArray::put_Item(CollectionIndexType relPosition, CollectionIn
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::Add(CollectionIndexType item)
+STDMETHODIMP CIndexArray::Add(IndexType item)
 {
    try
    {
@@ -99,7 +99,7 @@ STDMETHODIMP CIndexArray::Add(CollectionIndexType item)
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CIndexArray::Remove(IndexType relPosition)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -120,7 +120,7 @@ STDMETHODIMP CIndexArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::Insert(CollectionIndexType relPosition, CollectionIndexType item)
+STDMETHODIMP CIndexArray::Insert(IndexType relPosition, IndexType item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -141,7 +141,7 @@ STDMETHODIMP CIndexArray::Insert(CollectionIndexType relPosition, CollectionInde
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CIndexArray::Reserve(IndexType count)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -177,9 +177,9 @@ STDMETHODIMP CIndexArray::Clear()
 class _CopyIndex
 {
 public:
-	static HRESULT copy(VARIANT* p1, const CollectionIndexType* p2)
+	static HRESULT copy(VARIANT* p1, const IndexType* p2)
 	{
-      ATLASSERT( sizeof(CollectionIndexType) == sizeof(long) );
+      ATLASSERT( sizeof(IndexType) == sizeof(long) );
 #if defined _WIN64
       p1->vt = VT_UI8;
       p1->ullVal = *p2;
@@ -196,13 +196,13 @@ public:
 class _CopyIndexC
 {
 public:
-	static HRESULT copy(CollectionIndexType* p1, const CollectionIndexType* p2)
+	static HRESULT copy(IndexType* p1, const IndexType* p2)
 	{
 		*p1 = *p2;
 		return S_OK;
 	}
 	static void init(VARIANT* ) {}
-	static void destroy(CollectionIndexType* p) {}
+	static void destroy(IndexType* p) {}
 };
 
 
@@ -214,7 +214,7 @@ STDMETHODIMP CIndexArray::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyIndex, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyIndex, ContainerType >;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -232,7 +232,7 @@ STDMETHODIMP CIndexArray::get__EnumElements(/*[out, retval]*/ IEnumIndexArray* *
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumIndexArray, &IID_IEnumIndexArray, CollectionIndexType, _CopyIndexC, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumIndexArray, &IID_IEnumIndexArray, IndexType, _CopyIndexC, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -250,7 +250,7 @@ STDMETHODIMP CIndexArray::get__EnumElements(/*[out, retval]*/ IEnumIndexArray* *
    return S_OK;
 }
 
-STDMETHODIMP CIndexArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CIndexArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -282,7 +282,7 @@ STDMETHODIMP CIndexArray::Clone(IIndexArray **clone)
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::ReDim(CollectionIndexType size)
+STDMETHODIMP CIndexArray::ReDim(IndexType size)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -296,11 +296,11 @@ STDMETHODIMP CIndexArray::ReDim(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CIndexArray::Find(CollectionIndexType value, CollectionIndexType *fndIndex)
+STDMETHODIMP CIndexArray::Find(IndexType value, IndexType *fndIndex)
 {
    HRESULT hr = E_FAIL;
 
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    for(ContainerIterator it=m_Values.begin(); it!=m_Values.end(); it++)
    {
       if(value == *it)
@@ -315,7 +315,7 @@ STDMETHODIMP CIndexArray::Find(CollectionIndexType value, CollectionIndexType *f
 	return hr;
 }
 
-STDMETHODIMP CIndexArray::Assign(CollectionIndexType numElements, CollectionIndexType value)
+STDMETHODIMP CIndexArray::Assign(IndexType numElements, IndexType value)
 {
    try
    {

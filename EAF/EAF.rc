@@ -190,8 +190,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,5,0
- PRODUCTVERSION 7,0,5,0
+ FILEVERSION 8,0,0,4
+ PRODUCTVERSION 8,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -209,12 +209,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "EAF DLL"
-            VALUE "FileVersion", "7.0.5.0"
+            VALUE "FileVersion", "8.0.0.4"
             VALUE "InternalName", "EAF"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "EAF.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.0.5.0"
+            VALUE "ProductVersion", "8.0.0.4"
         END
     END
     BLOCK "VarFileInfo"
@@ -247,7 +247,7 @@ CAPTION "About"
 FONT 8, "MS Sans Serif", 400, 0, 0x0
 BEGIN
     LTEXT           "Version #",IDC_VERSION,40,10,277,8,SS_NOPREFIX
-    LTEXT           "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved",IDC_COPYRIGHT,40,22,335,8
+    LTEXT           "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved",IDC_COPYRIGHT,40,22,335,8
     DEFPUSHBUTTON   "OK",IDOK,381,214,50,14,WS_GROUP
     ICON            IDR_MAINFRAME,IDC_APPICON,7,7,21,20
     LTEXT           "Installed Components",IDC_STATIC,7,40,68,8
@@ -406,7 +406,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Error - Duplicate Report Name Found During Import"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "A problem occured during import. A report with the name:",IDC_STATIC,10,30,186,8
+    LTEXT           "A problem occurred during import. A report with the name:",IDC_STATIC,10,30,186,8
     LTEXT           "Report Name goes here",IDC_REPORT_NAME_STATIC,57,52,220,8
     LTEXT           "Already exists. All reports must have a unique name. Please enter a new name, Skip import of this report, or Cancel the import process.",IDC_STATIC,7,78,258,32
     DEFPUSHBUTTON   "Rename",ID_RENAME,44,117,50,14
@@ -830,7 +830,7 @@ END
 STRINGTABLE
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
-    IDS_E_CREATEWND         "An error occured while creating the window."
+    IDS_E_CREATEWND         "An error occurred while creating the window."
     IDS_E_LOWRESOURCES      "System resources are running low.  Please quit one or more applications and try again."
     IDS_E_FORMAT            "%1\n\n %2"
     IDS_E_BADINSTALL        "There is an error with the %1 installation.  Please re-install the program."
@@ -840,8 +840,8 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_E_NOBROWSER         "An error occured while trying to display the report.  The most likely cause is Internet Explorer Version 4.0 or later is not installed.  Please re-install your browser."
-    IDS_E_UPDATE            "The following error occured while updating the views.\n\n%1."
+    IDS_E_NOBROWSER         "An error occurred while trying to display the report.  The most likely cause is Internet Explorer Version 4.0 or later is not installed.  Please re-install your browser."
+    IDS_E_UPDATE            "The following error occurred while updating the views.\n\n%1."
 END
 
 STRINGTABLE

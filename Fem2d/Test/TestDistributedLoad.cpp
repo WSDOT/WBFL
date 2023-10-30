@@ -101,12 +101,12 @@ void CTestDistributedLoad::Test()
    TRY_TEST_HR(pDistributedLoad3->get_MemberID(&mbrID));
    TRY_TEST(mbrID, 42);
 
-   Fem2dLoadOrientation or;
-   TRY_TEST_HR(pDistributedLoad3->get_Orientation(&or));
-   TRY_TEST(or, lotMember);
+   Fem2dLoadOrientation orientation;
+   TRY_TEST_HR(pDistributedLoad3->get_Orientation(&orientation));
+   TRY_TEST(orientation, lotMember);
    TRY_TEST_LC(pDistributedLoad3->put_Orientation(lotGlobal));
-   TRY_TEST_HR(pDistributedLoad3->get_Orientation(&or));
-   TRY_TEST(or, lotGlobal);
+   TRY_TEST_HR(pDistributedLoad3->get_Orientation(&orientation));
+   TRY_TEST(orientation, lotGlobal);
 
    Fem2dLoadDirection dir;
    TRY_TEST_HR(pDistributedLoad3->get_Direction(&dir));

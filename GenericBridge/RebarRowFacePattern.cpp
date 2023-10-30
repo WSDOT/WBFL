@@ -109,7 +109,7 @@ STDMETHODIMP CRebarRowFacePattern::get_Hook(/*[in]*/DirectionType side,/*[out,re
    return S_OK;
 }
 
-STDMETHODIMP CRebarRowFacePattern::get_Count(CollectionIndexType* count)
+STDMETHODIMP CRebarRowFacePattern::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_Count;
@@ -122,10 +122,10 @@ STDMETHODIMP CRebarRowFacePattern::put_Count(RowIndexType count)
    return S_OK;
 }
 
-STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,CollectionIndexType barIdx,IPoint2d** location)
+STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,IndexType barIdx,IPoint2d** location)
 {
    CHECK_RETOBJ(location);
-   if ( barIdx < 0 || (CollectionIndexType)m_Count < barIdx )
+   if ( barIdx < 0 || (IndexType)m_Count < barIdx )
       return E_INVALIDARG;
 
 
@@ -146,7 +146,7 @@ STDMETHODIMP CRebarRowFacePattern::get_Location(Float64 distFromStartOfPattern,C
    else
    {
       CComPtr<IShape> shape;
-      m_pSegment->get_PrimaryShape(start + distFromStartOfPattern,sbRight,cstGirder,&shape);
+      m_pSegment->get_GirderShape(start + distFromStartOfPattern,sbRight,cstGirder,&shape);
       CComPtr<IRect2d> box;
       shape->get_BoundingBox(&box);
       Float64 h;

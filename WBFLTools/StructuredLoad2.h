@@ -33,8 +33,6 @@
 #include <list>
 #include <map>
 
-#import  <msxml6.dll> rename_namespace("MSXML")
-
 /////////////////////////////////////////////////////////////////////////////
 // CStructuredLoad2
 class ATL_NO_VTABLE CStructuredLoad2 : 
@@ -86,13 +84,13 @@ private:
       MSXML::IXMLDOMNodePtr spCurrentUnit;
       MSXML::IXMLDOMNodePtr spCurrentChild;
    };
-   typedef std::list<ListItem> NodeStack;
-   typedef NodeStack::const_iterator NodeStackConstIterator;
+   using NodeStack = std::list<ListItem>;
+   using NodeStackConstIterator = NodeStack::const_iterator;
    NodeStack   m_NodeStack; // stack of information about current units.
 
    // Running object table. These are the objects that have been brought to life
-   typedef std::map<_bstr_t, CComPtr<IUnknown> > ObjectTable;
-   typedef ObjectTable::iterator ObjectTableIterator;
+   using ObjectTable = std::map<_bstr_t, CComPtr<IUnknown> >;
+   using ObjectTableIterator = ObjectTable::iterator;
    ObjectTable m_RunningObjectTable;
 
    // private methods

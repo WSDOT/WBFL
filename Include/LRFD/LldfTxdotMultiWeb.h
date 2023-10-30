@@ -22,152 +22,51 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LLDFTXDOTMULTIWEB_H_
-#define INCLUDED_LRFD_LLDFTXDOTMULTIWEB_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\LiveLoadDistributionFactorBase.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdTxdotLldfMultiWeb
-
-   Live load distribution factor calculator for cross section types H and I and J
-   if not sufficiently connected.
-
-
-DESCRIPTION
-   Live load distribution factor calculator for cross section types H and I and J
-   if not sufficiently connected.
-
-LOG
-   rab : 07.15.2005 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdTxdotLldfMultiWeb : public lrfdLiveLoadDistributionFactorBase
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Live load distribution factor calculator for cross section types H and I and J if not sufficiently connected
+      /// in accordance with TxDOT Bridge Design Manual
+      class LRFDCLASS TxdotLldfMultiWeb : public LiveLoadDistributionFactorBase
+      {
+      public:
+         TxdotLldfMultiWeb(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+                               Uint32 Nl, Float64 wLane,
+                               Float64 W, Float64 L, Float64 Kfactor,
+                               Float64 skewAngle1, Float64 skewAngle2);
+         
+         TxdotLldfMultiWeb(const TxdotLldfMultiWeb& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdTxdotLldfMultiWeb(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
-                         Uint32 Nl, Float64 wLane,
-                         Float64 W, Float64 L, Float64 Kfactor,
-                         Float64 skewAngle1, Float64 skewAngle2);
+         virtual ~TxdotLldfMultiWeb() override = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdTxdotLldfMultiWeb(const lrfdTxdotLldfMultiWeb& rOther);
+         TxdotLldfMultiWeb& operator=(const TxdotLldfMultiWeb& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdTxdotLldfMultiWeb() override;
+         Float64 MomentSkewCorrectionFactor() const;
+         Float64 ShearSkewCorrectionFactor() const;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdTxdotLldfMultiWeb& operator = (const lrfdTxdotLldfMultiWeb& rOther);
+      protected:
+         Float64 m_L;
+         Float64 m_W;
+         Float64 m_Kfactor;
+         Float64 m_SkewAngle1;
+         Float64 m_SkewAngle2;
 
-   // GROUP: OPERATIONS
+         virtual bool TestRangeOfApplicability(Location loc) const override;
 
-   //------------------------------------------------------------------------
-   Float64 MomentSkewCorrectionFactor() const;
-
-   //------------------------------------------------------------------------
-   Float64 ShearSkewCorrectionFactor() const;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Float64 m_L;
-   Float64 m_W;
-   Float64 m_Kfactor;
-   Float64 m_SkewAngle1;
-   Float64 m_SkewAngle2;
-
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdTxdotLldfMultiWeb& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdTxdotLldfMultiWeb& rOther);
-
-   //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
+         virtual DFResult GetMomentDF_Int_1_Strength() const override;
+         virtual DFResult GetMomentDF_Int_2_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_1_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const override;
+         virtual DFResult GetShearDF_Int_1_Strength() const override;
+         virtual DFResult GetShearDF_Int_2_Strength() const override;
+         virtual DFResult GetShearDF_Ext_1_Strength() const override;
+         virtual DFResult GetShearDF_Ext_2_Strength() const override;
+      };
+   };
 };
-
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_LLDFTXDOTMULTIWEB_H_

@@ -29,8 +29,8 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFOutputChildFrame.h>
-#include <GraphManager\GraphManager.h>
-#include <GraphManager\GraphBuilder.h>
+#include <Graphing/GraphManager.h>
+#include <Graphing/GraphBuilder.h>
 #include <IGraphManager.h>
 
 #include <EAF\EAFViewControllerFactory.h>
@@ -65,7 +65,7 @@ public:
 // Implementation
 public:
    CEAFGraphView* GetGraphView();
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder();
+   std::unique_ptr<WBFL::Graphing::GraphBuilder>& GetGraphBuilder();
 
 protected:
 	virtual ~CEAFGraphChildFrame();
@@ -89,10 +89,10 @@ protected:
 
    // pointer to the graph manager
    // one of these is nullptr, the other is not
-   CGraphManager* m_pGraphMgr;  // for use with regular MFC Doc/View
+   WBFL::Graphing::GraphManager* m_pGraphMgr;  // for use with regular MFC Doc/View
    IGraphManager* m_pIGraphMgr; // for use with Agent/Broker
 
-   std::shared_ptr<CGraphBuilder> m_pMyGraphBuilder;
+   std::unique_ptr<WBFL::Graphing::GraphBuilder> m_pMyGraphBuilder;
 
 protected:
    // New version of MFC's CWnd::RepositionBars... deals with module state issues
@@ -102,7 +102,7 @@ protected:
 
    // returns a graph builder from the graph manager (not the close stored in m_pMyGraphBuilders)
    // This graph builder does not have access to the actual graph control window.
-   std::shared_ptr<CGraphBuilder> GetGraphBuilder(IndexType index);
+   WBFL::Graphing::GraphBuilder& GetGraphBuilder(IndexType index);
 
    friend CEAFGraphView; 
 };

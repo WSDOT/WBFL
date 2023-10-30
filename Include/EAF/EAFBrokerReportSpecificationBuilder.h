@@ -28,14 +28,14 @@
 #include <WBFLCore.h>
 
 class EAFCLASS CEAFBrokerReportSpecificationBuilder :
-   public CReportSpecificationBuilder
+   public WBFL::Reporting::ReportSpecificationBuilder
 {
 public:
    CEAFBrokerReportSpecificationBuilder(IBroker* pBroker);
    ~CEAFBrokerReportSpecificationBuilder(void);
 
-   virtual std::shared_ptr<CReportSpecification> CreateReportSpec(const CReportDescription& rptDesc, std::shared_ptr<CReportSpecification>& pRptSpec);
-   virtual std::shared_ptr<CReportSpecification> CreateDefaultReportSpec(const CReportDescription& rptDesc);
+   virtual std::shared_ptr<WBFL::Reporting::ReportSpecification> CreateReportSpec(const WBFL::Reporting::ReportDescription& rptDesc, std::shared_ptr<WBFL::Reporting::ReportSpecification> pRptSpec) const override;
+   virtual std::shared_ptr<WBFL::Reporting::ReportSpecification> CreateDefaultReportSpec(const WBFL::Reporting::ReportDescription& rptDesc) const override;
 
 protected:
    CComPtr<IBroker> m_pBroker;

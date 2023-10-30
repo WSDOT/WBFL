@@ -25,11 +25,11 @@
 #pragma once
 
 #include <WBFLGenericBridgeTools\WBFLGenericBridgeToolsExp.h>
-#include <Material\Concrete.h>
+#include <Materials/SimpleConcrete.h>
 #include <WBFLGeometry.h>
-#include <GeometricPrimitives\Primitives3d.h>
+#include <GeomModel/Primitives3d.h>
 #include <WBFLGenericBridge.h>
-
+#include <GeomModel/Shape.h>
 #include <WBFLRCCapacity.h> // for IGeneralSectionSolution
 
 /*****************************************************************************
@@ -49,7 +49,7 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    Float64 fsMax; // maximum bar stress if bLimitBarStress is true
 
    // concrete properties (only used if bAdjustForDevelopmentLength is true)
-   matConcrete::Type concreteType;
+   WBFL::Materials::ConcreteType concreteType;
    Float64 fc;
    bool bHasFct;
    Float64 Fct;
@@ -60,12 +60,12 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    CComPtr<IRebarSection> rebarSection; // longitudinal rebar in the girder (in Section coordinates)
    Float64 Ytg; // Ytop of Girder... added to Y location of rebar to convert it into centroidal coordinates
    
-   // coordindate and stress on top and bottom, left and right of girder section
+   // coordinate and stress on top and bottom, left and right of girder section
    // Z = stress
-   gpPoint3d pntTopLeft;
-   gpPoint3d pntTopRight;
-   gpPoint3d pntBottomLeft;
-   gpPoint3d pntBottomRight;
+   WBFL::Geometry::Point3d pntTopLeft;
+   WBFL::Geometry::Point3d pntTopRight;
+   WBFL::Geometry::Point3d pntBottomLeft;
+   WBFL::Geometry::Point3d pntBottomRight;
 
    // Output
    CComPtr<IShape> tensionArea; // area in tension

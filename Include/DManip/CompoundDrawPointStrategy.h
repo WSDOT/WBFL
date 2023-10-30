@@ -30,9 +30,9 @@
 interface iCompoundDrawPointStrategy : public iDrawPointStrategy
 {
    STDMETHOD_(void,AddStrategy)(iDrawPointStrategy* pStrategy) PURE;
-   STDMETHOD_(void, RemoveStrategy)(CollectionIndexType index) PURE;
-   STDMETHOD_(void, GetStrategy)(CollectionIndexType index,iDrawPointStrategy** ppStrategy) PURE;
-   STDMETHOD_(CollectionIndexType,Count)() PURE;
+   STDMETHOD_(void, RemoveStrategy)(IndexType index) PURE;
+   STDMETHOD_(void, GetStrategy)(IndexType index,iDrawPointStrategy** ppStrategy) PURE;
+   STDMETHOD_(IndexType,Count)() PURE;
 };
 
 #endif // INCLUDED_COMPOUNDDRAWPOINTSTRATEGY_H_

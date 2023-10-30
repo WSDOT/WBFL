@@ -66,7 +66,7 @@ public:
 
 // ICapacityReductionFactor
 public:
-   STDMETHOD(Compute)(/*[in]*/IGeneralSection* section,/*[in]*/CollectionIndexType nConcShapes,/*[in]*/ILine2d* neutralAxis,/*[in]*/Float64 ppr,/*[out]*/Float64* c,/*[out]*/Float64* dt,/*[out]*/Float64* phi) override;
+   STDMETHOD(Compute)(/*[in]*/IGeneralSection* section,/*[in]*/IndexType nConcShapes,/*[in]*/ILine2d* neutralAxis,/*[in]*/Float64 ppr,/*[out]*/Float64* c,/*[out]*/Float64* dt,/*[out]*/Float64* phi) override;
 	STDMETHOD(ComputeEx)(/*[in]*/IUnkArray* pConcShapes,/*[in]*/IUnkArray* pReinfShapes,/*[in]*/ILine2d* neutralAxis,/*[in]*/Float64 ppr,/*[out]*/Float64* c,/*[out]*/Float64* dt,/*[out]*/Float64* phi) override;
 };
 

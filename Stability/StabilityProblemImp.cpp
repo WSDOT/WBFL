@@ -24,14 +24,8 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/StabilityProblemImp.h>
 #include <WBFLGenericBridge.h> // for ISegment
-#include <UnitMgt\UnitMgt.h>
+#include <Units\Units.h>
 #include <algorithm>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Stability;
 
@@ -101,32 +95,32 @@ IndexType Girder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iy
 IndexType Girder::AddSection(Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Ytop, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Ycg2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2)
 {
    SectionProperties props;
-   props.Ag[Start] = Ag;
-   props.Ag[End] = Ag2;
+   props.Ag[+Section::Start] = Ag;
+   props.Ag[+Section::End] = Ag2;
 
-   props.Ixx[Start] = Ixx;
-   props.Ixx[End] = Ixx2;
+   props.Ixx[+Section::Start] = Ixx;
+   props.Ixx[+Section::End] = Ixx2;
 
-   props.Iyy[Start] = Iyy;
-   props.Iyy[End] = Iyy2;
+   props.Iyy[+Section::Start] = Iyy;
+   props.Iyy[+Section::End] = Iyy2;
 
-   props.Ixy[Start] = Ixy;
-   props.Ixy[End] = Ixy2;
+   props.Ixy[+Section::Start] = Ixy;
+   props.Ixy[+Section::End] = Ixy2;
 
-   props.Xleft[Start] = Xleft;
-   props.Xleft[End] = Xcg2;
+   props.Xleft[+Section::Start] = Xleft;
+   props.Xleft[+Section::End] = Xcg2;
 
-   props.Ytop[Start] = Ytop;
-   props.Ytop[End] = Ycg2;
+   props.Ytop[+Section::Start] = Ytop;
+   props.Ytop[+Section::End] = Ycg2;
 
-   props.Hg[Start] = Hg;
-   props.Hg[End] = Hg2;
+   props.Hg[+Section::Start] = Hg;
+   props.Hg[+Section::End] = Hg2;
 
-   props.Wtf[Start] = Wtf;
-   props.Wtf[End] = Wtf2;
+   props.Wtf[+Section::Start] = Wtf;
+   props.Wtf[+Section::End] = Wtf2;
 
-   props.Wbf[Start] = Wbf;
-   props.Wbf[End] = Wbf2;
+   props.Wbf[+Section::Start] = Wbf;
+   props.Wbf[+Section::End] = Wbf2;
 
    props.L = Length;
 
@@ -147,36 +141,36 @@ void Girder::SetSectionProperties(IndexType sectIdx,Float64 Length,Float64 Ag,Fl
 {
    SectionProperties& props = m_vSectionProperties[sectIdx];
    props.L = Length;
-   props.Ag[Start] = Ag;
-   props.Ixx[Start] = Ixx;
-   props.Iyy[Start] = Iyy;
-   props.Ixy[Start] = Ixy;
-   props.Xleft[Start] = Xleft;
-   props.Ytop[Start] = Ytop;
-   props.Hg[Start] = Hg;
-   props.Wtf[Start] = Wtf;
-   props.Wbf[Start] = Wbf;
+   props.Ag[+Section::Start] = Ag;
+   props.Ixx[+Section::Start] = Ixx;
+   props.Iyy[+Section::Start] = Iyy;
+   props.Ixy[+Section::Start] = Ixy;
+   props.Xleft[+Section::Start] = Xleft;
+   props.Ytop[+Section::Start] = Ytop;
+   props.Hg[+Section::Start] = Hg;
+   props.Wtf[+Section::Start] = Wtf;
+   props.Wbf[+Section::Start] = Wbf;
 
-   props.Ag[End] = Ag2;
-   props.Ixx[End] = Ixx2;
-   props.Iyy[End] = Iyy2;
-   props.Ixy[End] = Ixy2;
-   props.Xleft[End] = Xcg2;
-   props.Ytop[End] = Ycg2;
-   props.Hg[End] = Hg2;
-   props.Wtf[End] = Wtf2;
-   props.Wbf[End] = Wbf2;
+   props.Ag[+Section::End] = Ag2;
+   props.Ixx[+Section::End] = Ixx2;
+   props.Iyy[+Section::End] = Iyy2;
+   props.Ixy[+Section::End] = Ixy2;
+   props.Xleft[+Section::End] = Xcg2;
+   props.Ytop[+Section::End] = Ycg2;
+   props.Hg[+Section::End] = Hg2;
+   props.Wtf[+Section::End] = Wtf2;
+   props.Wbf[+Section::End] = Wbf2;
 
    m_bLengthNeedsUpdate = true;
 }
 
 // Assigns stress point values to a section. 
-void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR)
+void Girder::SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR)
 {
    SetStressPoints(sectIdx, pntTL, pntTR, pntBL, pntBR, pntTL, pntTR, pntBL, pntBR);
 }
 
-void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2)
+void Girder::SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR, const Point& pntTL2, const Point& pntTR2, const Point& pntBL2, const Point& pntBR2)
 {
    SectionProperties& props = m_vSectionProperties[sectIdx];
    if (props.m_pStressPoints == nullptr)
@@ -184,15 +178,15 @@ void Girder::SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gp
       // stress points have not yet been assigned
       props.m_pStressPoints = std::make_shared<StressPoints>();
    }
-   props.m_pStressPoints->pntTL[Start] = pntTL;
-   props.m_pStressPoints->pntTR[Start] = pntTR;
-   props.m_pStressPoints->pntBL[Start] = pntBL;
-   props.m_pStressPoints->pntBR[Start] = pntBR;
+   props.m_pStressPoints->pntTL[+Section::Start] = pntTL;
+   props.m_pStressPoints->pntTR[+Section::Start] = pntTR;
+   props.m_pStressPoints->pntBL[+Section::Start] = pntBL;
+   props.m_pStressPoints->pntBR[+Section::Start] = pntBR;
 
-   props.m_pStressPoints->pntTL[End] = pntTL2;
-   props.m_pStressPoints->pntTR[End] = pntTR2;
-   props.m_pStressPoints->pntBL[End] = pntBL2;
-   props.m_pStressPoints->pntBR[End] = pntBR2;
+   props.m_pStressPoints->pntTL[+Section::End] = pntTL2;
+   props.m_pStressPoints->pntTR[+Section::End] = pntTR2;
+   props.m_pStressPoints->pntBL[+Section::End] = pntBL2;
+   props.m_pStressPoints->pntBR[+Section::End] = pntBR2;
 }
 
 void Girder::ClearPointLoads()
@@ -224,33 +218,33 @@ Float64 Girder::GetSectionLength(IndexType sectIdx) const
 void Girder::GetSectionProperties(IndexType sectIdx,Section section,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
    const SectionProperties& props = m_vSectionProperties[sectIdx];
-   *pAg = props.Ag[section];
-   *pIxx = props.Ixx[section];
-   *pIyy = props.Iyy[section];
-   *pIxy = props.Ixy[section];
-   *pXleft = props.Xleft[section];
-   *pYtop = props.Ytop[section];
-   *pHg = props.Hg[section];
-   *pWtop = props.Wtf[section];
-   *pWbot = props.Wbf[section];
+   *pAg = props.Ag[+section];
+   *pIxx = props.Ixx[+section];
+   *pIyy = props.Iyy[+section];
+   *pIxy = props.Ixy[+section];
+   *pXleft = props.Xleft[+section];
+   *pYtop = props.Ytop[+section];
+   *pHg = props.Hg[+section];
+   *pWtop = props.Wtf[+section];
+   *pWbot = props.Wbf[+section];
 }
 
 void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* pIyy,Float64* pIxy,Float64* pXleft,Float64* pYtop,Float64* pHg,Float64* pWtop,Float64* pWbot) const
 {
-   ATLASSERT(m_vSectionProperties.size() != 0);
+   CHECK(m_vSectionProperties.size() != 0);
 
    if ( m_vSectionProperties.size() == 1 )
    {
       const SectionProperties& props = m_vSectionProperties.front();
-      *pAg = ::LinInterp(X,props.Ag[Start],props.Ag[End],props.L);
-      *pIxx = ::LinInterp(X,props.Ixx[Start],props.Ixx[End],props.L);
-      *pIyy = ::LinInterp(X,props.Iyy[Start],props.Iyy[End],props.L);
-      *pIxy = ::LinInterp(X, props.Ixy[Start], props.Ixy[End], props.L);
-      *pXleft = ::LinInterp(X, props.Xleft[Start], props.Xleft[End], props.L);
-      *pYtop = ::LinInterp(X, props.Ytop[Start], props.Ytop[End], props.L);
-      *pHg = ::LinInterp(X,props.Hg[Start],props.Hg[End],props.L);
-      *pWtop = ::LinInterp(X,props.Wtf[Start],props.Wtf[End],props.L);
-      *pWbot = ::LinInterp(X,props.Wbf[Start],props.Wbf[End],props.L);
+      *pAg = ::LinInterp(X,props.Ag[+Section::Start],props.Ag[+Section::End],props.L);
+      *pIxx = ::LinInterp(X,props.Ixx[+Section::Start],props.Ixx[+Section::End],props.L);
+      *pIyy = ::LinInterp(X,props.Iyy[+Section::Start],props.Iyy[+Section::End],props.L);
+      *pIxy = ::LinInterp(X, props.Ixy[+Section::Start], props.Ixy[+Section::End], props.L);
+      *pXleft = ::LinInterp(X, props.Xleft[+Section::Start], props.Xleft[+Section::End], props.L);
+      *pYtop = ::LinInterp(X, props.Ytop[+Section::Start], props.Ytop[+Section::End], props.L);
+      *pHg = ::LinInterp(X,props.Hg[+Section::Start],props.Hg[+Section::End],props.L);
+      *pWtop = ::LinInterp(X,props.Wtf[+Section::Start],props.Wtf[+Section::End],props.L);
+      *pWbot = ::LinInterp(X,props.Wbf[+Section::Start],props.Wbf[+Section::End],props.L);
       return;
    }
 
@@ -260,30 +254,30 @@ void Girder::GetSectionProperties(Float64 X,Float64* pAg,Float64* pIxx,Float64* 
       Float64 Xend = Xstart + properties.L;
       if ( ::InRange(Xstart,X,Xend) )
       {
-         *pAg = ::LinInterp(X-Xstart,properties.Ag[Start],properties.Ag[End],properties.L);
-         *pIxx = ::LinInterp(X-Xstart,properties.Ixx[Start],properties.Ixx[End],properties.L);
-         *pIyy = ::LinInterp(X - Xstart, properties.Iyy[Start], properties.Iyy[End], properties.L);
-         *pIxy = ::LinInterp(X - Xstart, properties.Ixy[Start], properties.Ixy[End], properties.L);
-         *pXleft = ::LinInterp(X - Xstart, properties.Xleft[Start], properties.Xleft[End], properties.L);
-         *pYtop = ::LinInterp(X - Xstart, properties.Ytop[Start], properties.Ytop[End], properties.L);
-         *pHg = ::LinInterp(X-Xstart,properties.Hg[Start],properties.Hg[End],properties.L);
-         *pWtop = ::LinInterp(X-Xstart,properties.Wtf[Start],properties.Wtf[End],properties.L);
-         *pWbot = ::LinInterp(X-Xstart,properties.Wbf[Start],properties.Wbf[End],properties.L);
+         *pAg = ::LinInterp(X-Xstart,properties.Ag[+Section::Start],properties.Ag[+Section::End],properties.L);
+         *pIxx = ::LinInterp(X-Xstart,properties.Ixx[+Section::Start],properties.Ixx[+Section::End],properties.L);
+         *pIyy = ::LinInterp(X - Xstart, properties.Iyy[+Section::Start], properties.Iyy[+Section::End], properties.L);
+         *pIxy = ::LinInterp(X - Xstart, properties.Ixy[+Section::Start], properties.Ixy[+Section::End], properties.L);
+         *pXleft = ::LinInterp(X - Xstart, properties.Xleft[+Section::Start], properties.Xleft[+Section::End], properties.L);
+         *pYtop = ::LinInterp(X - Xstart, properties.Ytop[+Section::Start], properties.Ytop[+Section::End], properties.L);
+         *pHg = ::LinInterp(X-Xstart,properties.Hg[+Section::Start],properties.Hg[+Section::End],properties.L);
+         *pWtop = ::LinInterp(X-Xstart,properties.Wtf[+Section::Start],properties.Wtf[+Section::End],properties.L);
+         *pWbot = ::LinInterp(X-Xstart,properties.Wbf[+Section::Start],properties.Wbf[+Section::End],properties.L);
          return;
       }
       Xstart = Xend;
    }
 
-   ATLASSERT(false); // should never get here.... is X out of range?
+   CHECK(false); // should never get here.... is X out of range?
 }
 
-void Girder::GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    const SectionProperties& props = m_vSectionProperties[sectIdx];
    GetStressPoints(props, section, pTL, pTR, pBL, pBR);
 }
 
-void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    Float64 Xstart = 0;
    for (const auto& props : m_vSectionProperties)
@@ -291,11 +285,11 @@ void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2
       Float64 Xend = Xstart + props.L;
       if (::InRange(Xstart, X, Xend))
       {
-         gpPoint2d tl1, tr1, bl1, br1;
-         GetStressPoints(props, Start, &tl1, &tr1, &bl1, &br1);
+         Point tl1, tr1, bl1, br1;
+         GetStressPoints(props, Section::Start, &tl1, &tr1, &bl1, &br1);
 
-         gpPoint2d tl2, tr2, bl2, br2;
-         GetStressPoints(props, End, &tl2, &tr2, &bl2, &br2);
+         Point tl2, tr2, bl2, br2;
+         GetStressPoints(props, Section::End, &tl2, &tr2, &bl2, &br2);
 
          pTL->X() = ::LinInterp(X - Xstart, tl1.X(), tl2.X(), props.L);
          pTL->Y() = ::LinInterp(X - Xstart, tl1.Y(), tl2.Y(), props.L);
@@ -313,7 +307,7 @@ void Girder::GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2
       }
       Xstart = Xend;
    }
-   ATLASSERT(false); // should never get here... is X out of range?
+   CHECK(false); // should never get here... is X out of range?
 }
 
 void Girder::SetAdditionalLoads(const std::vector<std::pair<Float64,Float64>>& vLoads)
@@ -563,11 +557,11 @@ bool StabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Floa
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       return false;
    }
 
-   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+   CHECK(fpeIdx < m_vFpe[idx].second.size());
 
    auto iter(m_vFpe[idx].second.begin());
    for ( IndexType i = 0; i < fpeIdx; i++)
@@ -577,7 +571,7 @@ bool StabilityProblemImp::SetFpe(LPCTSTR strName,IndexType fpeIdx,Float64 X,Floa
 
    // set values can't be modified because it could change the sort order... however
    // we are only sorting on one element of Fpe and it isn't being changed here
-   // cast away const so we can modify the relavent paramenters of fpe
+   // cast away const so we can modify the relevant parameters of fpe
    WBFL::Stability::Fpe& fpe(const_cast<WBFL::Stability::Fpe&>(*iter));
 
    fpe.fpe = Fpe;
@@ -593,7 +587,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Fl
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       *pX = 0;
       *pFpe = 0;
       *pXps = 0;
@@ -601,7 +595,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,IndexType fpeIdx,Float64* pX,Fl
       return false;
    }
 
-   ATLASSERT(fpeIdx < m_vFpe[idx].second.size());
+   CHECK(fpeIdx < m_vFpe[idx].second.size());
 
    auto iter(m_vFpe[idx].second.begin());
    for (IndexType i = 0; i < fpeIdx; i++)
@@ -673,17 +667,17 @@ bool StabilityProblemImp::IncludeLateralRollAxisOffset() const
    return m_bIncludeRollAxisLateralOffset;
 }
 
-const matConcreteEx& StabilityProblemImp::GetConcrete() const
+const WBFL::Materials::SimpleConcrete& StabilityProblemImp::GetConcrete() const
 {
    return m_Concrete;
 }
 
-matConcreteEx& StabilityProblemImp::GetConcrete()
+WBFL::Materials::SimpleConcrete& StabilityProblemImp::GetConcrete()
 {
    return m_Concrete;
 }
 
-void StabilityProblemImp::SetConcrete(const matConcreteEx& concrete)
+void StabilityProblemImp::SetConcrete(const WBFL::Materials::SimpleConcrete& concrete)
 {
    m_Concrete = concrete;
 }
@@ -736,7 +730,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
    if (idx == INVALID_INDEX)
    {
       // strName is not in the container
-      ATLASSERT(false);
+      CHECK(false);
       *pFpe = 0;
       *pXps = 0;
       *pYps = 0;
@@ -786,7 +780,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
    }
 
    // somewhere in the middle
-   ATLASSERT(2 <= m_vFpe[idx].second.size());
+   CHECK(2 <= m_vFpe[idx].second.size());
    std::set<Fpe>::const_iterator iter1(m_vFpe[idx].second.begin());
    std::set<Fpe>::const_iterator iter2(iter1);
    iter2++;
@@ -819,7 +813,7 @@ bool StabilityProblemImp::GetFpe(LPCTSTR strName,Float64 X,Float64* pFpe,Float64
       }
    }
 
-   ATLASSERT(false); // should never get here
+   CHECK(false); // should never get here
    return false;
 }
 
@@ -860,13 +854,13 @@ void StabilityProblemImp::GetImpact(Float64* pIMup,Float64* pIMdown) const
    *pIMdown = m_ImpactDown;
 }
 
-void StabilityProblemImp::GetWindLoading(WindType* pType,Float64* pLoad) const
+void StabilityProblemImp::GetWindLoading(WindLoadType* pType,Float64* pLoad) const
 {
    *pType = m_WindLoadType;
    *pLoad = m_WindLoad;
 }
 
-void StabilityProblemImp::SetWindLoading(WindType type,Float64 load)
+void StabilityProblemImp::SetWindLoading(WindLoadType type,Float64 load)
 {
    m_WindLoadType = type;
    m_WindLoad = load;
@@ -932,28 +926,28 @@ bool StabilityProblemImp::CompareAnalysisPoints(const StabilityProblemImp& other
    return true;
 }
 
-void Girder::GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const
+void Girder::GetStressPoints(const SectionProperties& props, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const
 {
    if (props.m_pStressPoints)
    {
-      *pTL = props.m_pStressPoints->pntTL[section];
-      *pTR = props.m_pStressPoints->pntTR[section];
-      *pBL = props.m_pStressPoints->pntBL[section];
-      *pBR = props.m_pStressPoints->pntBR[section];
+      *pTL = props.m_pStressPoints->pntTL[+section];
+      *pTR = props.m_pStressPoints->pntTR[+section];
+      *pBL = props.m_pStressPoints->pntBL[+section];
+      *pBR = props.m_pStressPoints->pntBR[+section];
    }
    else
    {
-      pTL->X() = (props.Wbf[section] < props.Wtf[section] ? -props.Xleft[section] : props.Wbf[section] / 2 - props.Xleft[section] - props.Wtf[section] / 2);
-      pTL->Y() = -props.Ytop[section];
+      pTL->X() = (props.Wbf[+section] < props.Wtf[+section] ? -props.Xleft[+section] : props.Wbf[+section] / 2 - props.Xleft[+section] - props.Wtf[+section] / 2);
+      pTL->Y() = -props.Ytop[+section];
 
-      pTR->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wtf[section] - props.Xleft[section] : props.Wtf[section] / 2 - props.Xleft[section] + props.Wbf[section] / 2);
-      pTR->Y() = -props.Ytop[section];
+      pTR->X() = (props.Wbf[+section] < props.Wtf[+section] ? props.Wtf[+section] - props.Xleft[+section] : props.Wtf[+section] / 2 - props.Xleft[+section] + props.Wbf[+section] / 2);
+      pTR->Y() = -props.Ytop[+section];
 
-      pBL->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wtf[section] / 2 - props.Xleft[section] - props.Wbf[section] / 2 : -props.Xleft[section]);
-      pBL->Y() = -(props.Ytop[section] + props.Hg[section]);
+      pBL->X() = (props.Wbf[+section] < props.Wtf[+section] ? props.Wtf[+section] / 2 - props.Xleft[+section] - props.Wbf[+section] / 2 : -props.Xleft[+section]);
+      pBL->Y() = -(props.Ytop[+section] + props.Hg[+section]);
 
-      pBR->X() = (props.Wbf[section] < props.Wtf[section] ? props.Wbf[section] / 2 - props.Xleft[section] + props.Wtf[section] / 2 : props.Wbf[section] - props.Xleft[section]);
-      pBR->Y() = -(props.Ytop[section] + props.Hg[section]);
+      pBR->X() = (props.Wbf[+section] < props.Wtf[+section] ? props.Wbf[+section] / 2 - props.Xleft[+section] + props.Wtf[+section] / 2 : props.Wbf[+section] - props.Xleft[+section]);
+      pBR->Y() = -(props.Ytop[+section] + props.Hg[+section]);
    }
 }
 

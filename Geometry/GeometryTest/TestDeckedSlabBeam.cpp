@@ -277,59 +277,32 @@ void CTestDeckedSlabBeam::TestIShape()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 8 );
+   TRY_TEST( cPoints, 11 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 8> points;
+   std::array<CComPtr<IPoint2d>, 11> points;
    ULONG fetched;
-   Enum->Next(8,&points[0],&fetched);
-   TRY_TEST( fetched, 8 );
-
-   Float64 Wb2 = (A-9*2)/2.0;
+   Enum->Next(11,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
+   int i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, 29.875000, 0.000000);
+   TEST_POINT(points, 29.875000, 12.000000);
+   TEST_POINT(points, 38.875000, 12.000000);
+   TEST_POINT(points, 37.125000, 20.000000);
+   TEST_POINT(points, 0.000000, 20.000000);
+   TEST_POINT(points, -37.125000, 20.000000);
+   TEST_POINT(points, -38.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y, 12.0), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, A/2), true );
-   TRY_TEST( IsEqual(y, 12.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, A/2-1.75), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-(A/2-1.75)), true );
-   TRY_TEST( IsEqual(y,  20.0), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -A/2), true );
-   TRY_TEST( IsEqual(y,  12.0), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -Wb2), true );
-   TRY_TEST( IsEqual(y,  12.0), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -Wb2), true );
-   TRY_TEST( IsEqual(y,   0.0), true );
+   TRY_TEST(i, cPoints);
 
    //
    // Clone
@@ -339,7 +312,7 @@ void CTestDeckedSlabBeam::TestIShape()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IDeckedSlabBeam> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    beamClone->get_A(&val);
    TRY_TEST( IsEqual(val,A), true);
@@ -396,46 +369,31 @@ void CTestDeckedSlabBeam::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 5 );
+   TRY_TEST( cPoints, 6 );
 
    coll->get__Enum(&Enum);
    Enum->Next(9,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y,  0.00), true );
+   i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, 29.875000, 0.000000);
+   TEST_POINT(points, 29.875000, 0.500000);
+   TEST_POINT(points, -29.875000, 0.500000);
+   TEST_POINT(points, -29.875000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y,  0.50), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-Wb2), true );
-   TRY_TEST( IsEqual(y,   0.50), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-Wb2), true );
-   TRY_TEST( IsEqual(y,   0.00), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,Wb2), true );
-   TRY_TEST( IsEqual(y,  0.00), true );
+   TRY_TEST(i, cPoints);
 
    // clip in other direction
    p1->Move( 50, 0.50);
@@ -447,40 +405,33 @@ void CTestDeckedSlabBeam::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 8 );
+   TRY_TEST( cPoints, 9 );
 
    coll->get__Enum(&Enum);
    Enum->Next(9,&points[0],&fetched);
-   TRY_TEST( fetched, 8 );
+   TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y,  0.50), true );
+   i = 0;
+   TEST_POINT(points, 29.875000, 0.500000);
+   TEST_POINT(points, 29.875000, 12.000000);
+   TEST_POINT(points, 38.875000, 12.000000);
+   TEST_POINT(points, 37.125000, 20.000000);
+   TEST_POINT(points, 0.000000, 20.000000);
+   TEST_POINT(points, -37.125000, 20.000000);
+   TEST_POINT(points, -38.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 0.500000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y, 12.00), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, A/2.0), true );
-   TRY_TEST( IsEqual(y, 12.00), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, A/2.0-1.75), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
+   TRY_TEST(i, cPoints);
 
    //
    // ClipIn
@@ -501,8 +452,8 @@ void CTestDeckedSlabBeam::TestIShape()
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -511,7 +462,7 @@ void CTestDeckedSlabBeam::TestIShape()
    ATLTRACE("Trace of Points for DeckedSlabBeam - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
+   for (IndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -527,25 +478,13 @@ void CTestDeckedSlabBeam::TestIShape()
    Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y, 1.5), true );
+   i = 0;
+   TEST_POINT(points, 29.875000, 1.500000);
+   TEST_POINT(points, 29.875000, 11.000000);
+   TEST_POINT(points, -29.875000, 11.000000);
+   TEST_POINT(points, -29.875000, 1.500000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, Wb2), true );
-   TRY_TEST( IsEqual(y, 11.0), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-Wb2), true );
-   TRY_TEST( IsEqual(y, 11.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -Wb2), true );
-   TRY_TEST( IsEqual(y,   1.5), true );
+   TRY_TEST(i, cPoints);
 
    // Remove void
    beam->put_VoidCount(0);
@@ -627,43 +566,32 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,8);
+   TRY_TEST( cPoints,11);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 8> points;
+   std::array<CComPtr<IPoint2d>, 11> points;
    ULONG fetched;
-   Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   Enum->Next(99,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, 100.000000, 100.000000);
+   TEST_POINT(points, 129.875000, 100.000000);
+   TEST_POINT(points, 129.875000, 112.000000);
+   TEST_POINT(points, 138.875000, 112.000000);
+   TEST_POINT(points, 137.125000, 120.000000);
+   TEST_POINT(points, 100.000000, 120.000000);
+   TEST_POINT(points, 62.875000, 120.000000);
+   TEST_POINT(points, 61.125000, 112.000000);
+   TEST_POINT(points, 70.125000, 112.000000);
+   TEST_POINT(points, 70.125000, 100.000000);
+   TEST_POINT(points, 100.000000, 100.000000);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 129.875), true );
-   TRY_TEST( IsEqual(y,100.0), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 129.875), true );
-   TRY_TEST( IsEqual(y, 112.0), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 138.875), true );
-   TRY_TEST( IsEqual(y, 112.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 137.125), true );
-   TRY_TEST( IsEqual(y,120.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 62.875), true );
-   TRY_TEST( IsEqual(y,120.0), true );
+   TRY_TEST(i, cPoints);
 
    props.Release();
    shape->get_ShapeProperties(&props);
@@ -688,41 +616,31 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 5; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,8);
+   TRY_TEST( cPoints,11);
 
    coll->get__Enum(&Enum);
-   Enum->Next(10,&points[0],&fetched);
-   TRY_TEST( fetched, 8 );
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,29.875), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
+   i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, 29.875000, 0.000000);
+   TEST_POINT(points, 29.875000, 12.000000);
+   TEST_POINT(points, 38.875000, 12.000000);
+   TEST_POINT(points, 37.125000, 20.000000);
+   TEST_POINT(points, 0.000000, 20.000000);
+   TEST_POINT(points, -37.125000, 20.000000);
+   TEST_POINT(points, -38.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 12.000000);
+   TEST_POINT(points, -29.875000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 29.875), true );
-   TRY_TEST( IsEqual(y, 12.0), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 38.875), true );
-   TRY_TEST( IsEqual(y, 12.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 37.125), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-37.125), true );
-   TRY_TEST( IsEqual(y, 20.0), true );
+   TRY_TEST(i, cPoints);
 
    props.Release();
    shape->get_ShapeProperties(&props);
@@ -903,54 +821,43 @@ void CTestDeckedSlabBeam::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for (int i = 0; i < 8; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,8);
+   TRY_TEST( cPoints,11);
 
    coll->get__Enum(&Enum);
-   Enum->Next(8,&points[0],&fetched);
-   TRY_TEST( fetched, 8 );
+   Enum->Next(99,&points[0],&fetched);
+   TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-38.875), true );
-   TRY_TEST( IsEqual(y, 68.75), true );
+   i = 0;
+   TEST_POINT(points, -38.875000, 38.875000);
+   TEST_POINT(points, -38.875000, 68.750000);
+   TEST_POINT(points, -50.875000, 68.750000);
+   TEST_POINT(points, -50.875000, 77.750000);
+   TEST_POINT(points, -58.875000, 76.000000);
+   TEST_POINT(points, -58.875000, 38.875000);
+   TEST_POINT(points, -58.875000, 1.750000);
+   TEST_POINT(points, -50.875000, 0.000000);
+   TEST_POINT(points, -50.875000, 9.000000);
+   TEST_POINT(points, -38.875000, 9.000000);
+   TEST_POINT(points, -38.875000, 38.875000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-50.875), true );
-   TRY_TEST( IsEqual(y, 68.75), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-50.875), true );
-   TRY_TEST( IsEqual(y, 77.75), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-58.875), true );
-   TRY_TEST( IsEqual(y, 76.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-58.875), true );
-   TRY_TEST( IsEqual(y,  1.75), true );
+   TRY_TEST(i, cPoints);
 }
 
 void CTestDeckedSlabBeam::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_DeckedSlabBeam ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IDeckedSlabBeam ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

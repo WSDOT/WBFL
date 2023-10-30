@@ -36,6 +36,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+constexpr IDType ALIGNMENT_ID = 0;
+constexpr IDType PROFILE_ID = 0;
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -55,9 +58,6 @@ void CTestGenericBridge::Test()
    // Create a bridge
    CComPtr<IGenericBridge> bridge;
    CreateBridgeModel(&bridge);
-
-   // get the geometry up to date
-   TRY_TEST(bridge->UpdateBridgeModel(GF_ALL),S_OK);
 
    TestPiers(bridge);
    TestSegments(bridge);
@@ -117,7 +117,7 @@ void CTestGenericBridge::TestSegments(IGenericBridge* bridge)
       CComPtr<ISuperstructureMember> ssMbr;
       TRY_TEST(bridge->get_SuperstructureMember(id,&ssMbr),S_OK);
 
-      CollectionIndexType nSegments;
+      IndexType nSegments;
       ssMbr->get_SegmentCount(&nSegments);
       ATLASSERT(nSegments == 1);
 
@@ -149,13 +149,6 @@ void CTestGenericBridge::CreateBridgeModel(IGenericBridge** ppBridge)
    CComPtr<IGenericBridge> bridge;
    TRY_TEST(bridge.CoCreateInstance(CLSID_GenericBridge),S_OK);
 
-   CComPtr<ICogoModel> cogoModel;
-   cogoModel.CoCreateInstance(CLSID_CogoModel);
-
-   CComPtr<IBridgeGeometry> geometry;
-   TRY_TEST(bridge->get_BridgeGeometry(&geometry),S_OK);
-   geometry->putref_CogoModel(cogoModel);
-
    CreateAlignment(bridge);
    CreatePiers(bridge);
    CreateGirders(bridge);
@@ -168,29 +161,27 @@ void CTestGenericBridge::CreateAlignment(IGenericBridge* bridge)
    CComPtr<IBridgeGeometry> geometry;
    TRY_TEST(bridge->get_BridgeGeometry(&geometry),S_OK);
 
-   CComPtr<ICogoModel> cogoModel;
-   geometry->get_CogoModel(&cogoModel);
-
-   CComPtr<IAlignmentCollection> alignments;
-   cogoModel->get_Alignments(&alignments);
-
    CComPtr<IAlignment> alignment;
-   alignments->Add(0,&alignment);
-
-   CComPtr<IPoint2d> p1;
+   alignment.CoCreateInstance(CLSID_Alignment);
+   CComPtr<IPoint2d> p1, p2;
    p1.CoCreateInstance(CLSID_Point2d);
-   p1->Move(0,0);
-
-   CComPtr<IPoint2d> p2;
+   p1->Move(0, 0);
    p2.CoCreateInstance(CLSID_Point2d);
-   p2->Move(100,0);
+   p2->Move(100, 0);
+   CComPtr<IPathSegment> segment;
+   segment.CoCreateInstance(CLSID_PathSegment);
+   segment->ThroughPoints(p1, p2);
+   CComQIPtr<IPathElement> element(segment);
+   alignment->AddPathElement(element);
 
-   alignment->put_RefStation(CComVariant(0.00));
-   alignment->AddEx(p1);
-   alignment->AddEx(p2);
+   geometry->AddAlignment(ALIGNMENT_ID, alignment);
+   geometry->put_BridgeAlignmentID(ALIGNMENT_ID);
 
-   geometry->putref_Alignment(0,alignment);
-   geometry->put_BridgeAlignmentID(0);
+   CComPtr<IProfile> profile;
+   profile.CoCreateInstance(CLSID_Profile);
+   alignment->AddProfile(PROFILE_ID, profile);
+   geometry->put_ProfileID(PROFILE_ID);
+   //geometry->put_SurfaceID(SURFACE_ID);
 }
 
 void CTestGenericBridge::CreatePiers(IGenericBridge* bridge)
@@ -198,11 +189,27 @@ void CTestGenericBridge::CreatePiers(IGenericBridge* bridge)
    CComPtr<IBridgeGeometry> geometry;
    bridge->get_BridgeGeometry(&geometry);
 
-   Float64 pierWidth = 20;
+   Float64 pier_length = 20;
 
-   CComPtr<IPierLine> pierLine1, pierLine2;
-   geometry->CreatePierLine(0,0,CComVariant(0.00),CComBSTR("NORMAL"),pierWidth,pierWidth/2,&pierLine1);
-   geometry->CreatePierLine(1,0,CComVariant(100.00),CComBSTR("NORMAL"),pierWidth,pierWidth/2,&pierLine2);
+   CComPtr<ISinglePierLineFactory> pier_1_factory;
+   pier_1_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_1_factory->put_PierLineID(0);
+   pier_1_factory->put_AlignmentID(ALIGNMENT_ID);
+   pier_1_factory->put_Station(CComVariant(0.0));
+   pier_1_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_1_factory->put_Length(pier_length);
+   pier_1_factory->put_Offset(pier_length / 2);
+   geometry->AddPierLineFactory(pier_1_factory);
+
+   CComPtr<ISinglePierLineFactory> pier_2_factory;
+   pier_2_factory.CoCreateInstance(CLSID_SinglePierLineFactory);
+   pier_2_factory->put_PierLineID(1);
+   pier_2_factory->put_AlignmentID(ALIGNMENT_ID);
+   pier_2_factory->put_Station(CComVariant(100.0));
+   pier_2_factory->put_Direction(CComBSTR("NORMAL"));
+   pier_2_factory->put_Length(pier_length);
+   pier_2_factory->put_Offset(pier_length / 2);
+   geometry->AddPierLineFactory(pier_2_factory);
 }
 
 void CTestGenericBridge::CreateGirders(IGenericBridge* bridge)
@@ -224,29 +231,30 @@ void CTestGenericBridge::CreateGirders(IGenericBridge* bridge)
    CComPtr<IAlignmentOffsetLayoutLineFactory> factory;
    factory.CoCreateInstance(CLSID_AlignmentOffsetLayoutLineFactory);
    factory->put_LayoutLineID(0); // ID of first layout line
-   factory->put_LayoutLineIDInc(1);
+   factory->put_LayoutLineIDIncrement(1);
    factory->put_LayoutLineCount(nGirders);
    factory->put_Offset(offset);
    factory->put_OffsetIncrement(spacing);
-   factory->put_AlignmentID(0);
-   geometry->CreateLayoutLines(factory);
+   factory->put_AlignmentID(ALIGNMENT_ID);
+   geometry->AddLayoutLineFactory(factory);
 
    //
    // Build Girder Lines and Superstructure Members
    //
 
-   CComPtr<ISingleGirderLineFactory> glFactory;
-   glFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
 
    for ( GirderIndexType gdrIdx = 0; gdrIdx < nGirders; gdrIdx++ )
    {
-      LineIDType gdrID = LineIDType(gdrIdx);
+      IDType gdrID = IDType(gdrIdx);
+
+      CComPtr<ISingleGirderLineFactory> glFactory;
+      glFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
       glFactory->put_GirderLineID( gdrID );   // girder line ID
       glFactory->put_LayoutLineID(gdrID);     // layout line used to layout this girder line
       glFactory->put_Type(glChord);           // layout as a chord
       glFactory->put_StartPierID(0); 
       glFactory->put_EndPierID(1);
-      geometry->CreateGirderLines(glFactory);
+      geometry->AddGirderLineFactory(glFactory);
 
       GirderIDType leftSSMbrID = (gdrIdx == 0 ? INVALID_ID : (GirderIDType)(gdrIdx - 1));
       GirderIDType rightSSMbrID = (gdrIdx == nGirders-1 ? INVALID_ID : (GirderIDType)(gdrIdx + 1));

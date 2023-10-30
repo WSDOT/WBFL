@@ -35,8 +35,6 @@
 #endif // _MSC_VER > 1000
 
 
-#include <Private\WBFLPackage.h>
-
 #include <afxdisp.h>
 
 #include <atlbase.h>
@@ -48,5 +46,7 @@ extern CComModule _Module;
 #include <comdef.h>
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+#include <WBFLTest.h>
 
 #endif // !defined(AFX_STDAFX_H__71A9DDCC_55D1_11D5_B005_00105A9AF985__INCLUDED)

@@ -22,14 +22,13 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // BoxBeam.h : Declaration of the CBoxBeam
 
-#ifndef __BOXBEAM_H_
-#define __BOXBEAM_H_
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
+#include <GeomModel/BoxBeam.h>
+#include "IShapeImpl.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CBoxBeam
@@ -39,14 +38,7 @@ class ATL_NO_VTABLE CBoxBeam :
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CBoxBeam,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
 	public IBoxBeam,
-	public IShape,
-	public ICompositeShape,
-   public IXYPosition,
-   public IStructuredStorage2,
-   public IPersist,
-   public IPoint2dEvents,
-   public CProxyDPoint2dEvents< CBoxBeam >,
-   public IConnectionPointContainerImpl<CBoxBeam>
+   public IShapeXYPositionImpl<CBoxBeam, WBFL::Geometry::BoxBeam>
 {
 public:
 	CBoxBeam()
@@ -56,60 +48,24 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
+   void SetShape(const WBFL::Geometry::BoxBeam& shape);
+   virtual WBFL::Geometry::BoxBeam& GetShape() override { return m_Beam; }
+
 DECLARE_REGISTRY_RESOURCEID(IDR_BOXBEAM)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CBoxBeam)
 	COM_INTERFACE_ENTRY(IBoxBeam)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(IShape)
-   COM_INTERFACE_ENTRY(ICompositeShape)
    COM_INTERFACE_ENTRY(IXYPosition)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-   COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CBoxBeam)
-	CONNECTION_POINT_ENTRY(IID_IPoint2dEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
-   CComPtr<IPoint2d> m_pHookPoint; // BottomCenter
-   CComPtr<ICompositeShape> m_pShape; // Implementation shape
-   Float64   m_Rotation;
-   Float64   m_W1;
-   Float64   m_W2;
-   Float64   m_W3;
-   Float64   m_W4;
-   Float64   m_H1;
-   Float64   m_H2;
-   Float64   m_H3;
-   Float64   m_H4;
-   Float64   m_H5;
-   Float64   m_H6;
-   Float64   m_H7;
-   Float64   m_F1;
-   Float64   m_F2;
-   Float64   m_C1;
-
-   VARIANT_BOOL m_bLeftBlockOut, m_bRightBlockOut;
-
-   CollectionIndexType m_VoidCount;
-
-   bool   m_Dirty;
-   unsigned long   m_HookPointCookie;
-
-   // Shape point indices for top and bottom stress points
-   IndexType m_LeftTopPointIdx, m_LeftBottomPointIdx, m_RightTopPointIdx, m_RightBottomPointIdx;
-
-
-   HRESULT GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py);
-   HRESULT UpdateShape();
-   void MakeDirty() {m_Dirty = true;}
+   WBFL::Geometry::BoxBeam m_Beam;
+   CComPtr<IPoint2d> m_HookPoint;
 
 // ISupportErrorInfo
 public:
@@ -145,8 +101,8 @@ public:
    STDMETHOD(put_F2)(/*[in]*/ Float64 newVal) override;
    STDMETHOD(get_C1)(/*[out, retval]*/ Float64 *pVal) override;
    STDMETHOD(put_C1)(/*[in]*/ Float64 newVal) override;
-   STDMETHOD(put_VoidCount)(/*[in]*/CollectionIndexType nv) override;
-   STDMETHOD(get_VoidCount)(/*[out,retval]*/CollectionIndexType* nv) override;
+   STDMETHOD(put_VoidCount)(/*[in]*/IndexType nv) override;
+   STDMETHOD(get_VoidCount)(/*[out,retval]*/IndexType* nv) override;
    STDMETHOD(get_HookPoint)(/*[out,retval]*/ IPoint2d** hookPnt) override;
    STDMETHOD(putref_HookPoint)(/*[in]*/ IPoint2d* hookPnt) override;
    STDMETHOD(get_WebWidth)(/*[out, retval]*/ Float64 *pVal) override;
@@ -154,7 +110,6 @@ public:
    STDMETHOD(get_TopFlangeWidth)(/*[out]*/Float64* pLeft, /*[out]*/Float64* pRight) override;
    STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
    STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-   STDMETHOD(get_StructuredStorage)(/*[out, retval]*/ IStructuredStorage2* *pStg) override;
    STDMETHOD(put_LeftBlockOut)(/*[in]*/VARIANT_BOOL bLeftBlockOut) override;
    STDMETHOD(get_LeftBlockOut)(/*[out,retval]*/VARIANT_BOOL* pbLeftBlockOut) override;
    STDMETHOD(put_RightBlockOut)(/*[in]*/VARIANT_BOOL bRightBlockOut) override;
@@ -162,56 +117,6 @@ public:
    STDMETHOD(get_Width)(/*[out,retval]*/Float64* pVal) override;
    STDMETHOD(get_Height)(/*[out,retval]*/Float64* pVal) override;
    STDMETHOD(GetBoundaryPoints)(IPoint2d** ppLeftTop, IPoint2d** ppLeftBottom, IPoint2d** ppRightTop, IPoint2d** ppRightBottom) override;
-
-// IShape
-	STDMETHOD(FurthestDistance)(/*[in]*/ILine2d* line,/*[out, retval]*/ Float64 *pVal) override;
-	STDMETHOD(get_Perimeter)(/*[out, retval]*/ Float64 *pVal) override;
-   STDMETHOD(get_ShapeProperties)(/*[out,retval]*/ IShapeProperties* *pVal) override;
-	STDMETHOD(get_BoundingBox)(/*[out, retval]*/ IRect2d* *pVal) override;
-	STDMETHOD(get_PolyPoints)(/*[out,retval]*/ IPoint2dCollection** ppPolyPoints) override;
-	STDMETHOD(PointInShape)(/*[in]*/ IPoint2d* pPoint,/*[out,retval]*/ VARIANT_BOOL* pbResult) override;
-	STDMETHOD(Clone)(/*[out,retval]*/ IShape** pClone) override;
-	STDMETHOD(ClipWithLine)(/*[in]*/ ILine2d* pLine,/*[out,retval]*/ IShape** pShape) override;
-	STDMETHOD(ClipIn)(/*[in]*/ IRect2d* pRect,/*[out,retval]*/ IShape** pShape) override;
-
-// ICompositeShape
-public:
-// STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
-//	STDMETHOD(get_XYPosition)(/*[out, retval]*/ IXYPosition* *pVal) override;
-//	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx, /*[out, retval]*/ ICompositeShapeItem* *pVal) override;
-	STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown* *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
-	STDMETHOD(Remove)(/*[in]*/ CollectionIndexType idx) override;
-   STDMETHOD(Clear)() override;
-   STDMETHOD(ReplaceEx)(CollectionIndexType idx,ICompositeShapeItem* pShapeItem) override;
-   STDMETHOD(Replace)(CollectionIndexType idx,IShape* pShape) override;
-	STDMETHOD(AddShapeEx)(/*[in]*/ ICompositeShapeItem* ShapeItem) override;
-   STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
-
-// IXYPosition
-public:
-	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
-	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
-	STDMETHOD(get_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[out,retval]*/ IPoint2d** point) override;
-	STDMETHOD(put_LocatorPoint)(/*[in]*/ LocatorPointType lp, /*[in]*/ IPoint2d* point) override;
-	STDMETHOD(MoveEx)(/*[in]*/ IPoint2d* pFrom,/*[in]*/ IPoint2d* pTo) override;
-	STDMETHOD(RotateEx)(/*[in]*/ IPoint2d* pPoint,/*[in]*/ Float64 angle) override;
-	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPoint2dEvents
-public:
-	STDMETHOD(OnPointChanged)(IPoint2d* point) override;
-
+   STDMETHOD(GetBoxShape)(/*[out]*/IShape** ppShape) override;
+   STDMETHOD(GetVoidShape)(/*[in]*/IndexType idx, /*[out]*/IShape** ppShape) override;
 };
-
-#endif //__BOXBEAM_H_

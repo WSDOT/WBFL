@@ -21,52 +21,31 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <System\SysLib.h>
-
-/****************************************************************************
-CLASS
-   sysNumericFormatTool
-****************************************************************************/
-
-#include <System\NumericFormatTool.h>
-#include <System\EngNotation.h>
-#include <System\SectionValue.h>
+#include <System/SysLib.h>
+#include <System/NumericFormatTool.h>
+#include <System/EngNotation.h>
+#include <System/SectionValue.h>
+#include <System/Debug.h>
 #include <sstream>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::System;
 
 // Helper function prototypes
 Uint16 get_width_demand(Float64 value,Uint16 precision);
-void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision);
+void apply_stream_manipulators( std::_tostream* pOS, NumericFormatTool::Format format,Uint16 width,Uint16 precision);
 
 ////////////////////////// PUBLIC     ///////////////////////////////////////
 
 //======================== LIFECYCLE  =======================================
-sysNumericFormatTool::sysNumericFormatTool(Format format, Uint16 width, Uint16 precision) :
+NumericFormatTool::NumericFormatTool(Format format, Uint16 width, Uint16 precision) :
 m_Format( format ),
 m_Width( width ),
 m_Precision( precision )
 {
 }
 
-sysNumericFormatTool::sysNumericFormatTool(const sysNumericFormatTool& rOther)
-{
-   MakeCopy(rOther);
-}
-
-sysNumericFormatTool::~sysNumericFormatTool()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-std::_tstring sysNumericFormatTool::AsString(Float64 value) const
+std::_tstring NumericFormatTool::AsString(Float64 value) const
 {
    std::_tostringstream os;
 
@@ -74,7 +53,7 @@ std::_tstring sysNumericFormatTool::AsString(Float64 value) const
    {
       if ( IsEqual(fabs(value)/Float64_Max,1.0) )
       {
-         if ( value > 0 )
+         if ( 0 < value)
          {
             return _T("INF");
          }
@@ -93,18 +72,18 @@ std::_tstring sysNumericFormatTool::AsString(Float64 value) const
    
    // Check if the specified width is adequate
    // Only applies to Automatic and Fixed formatting
-   if ( (m_Width > 0) &&
-        (format == Automatic || format == Fixed ) &&
-        (get_width_demand( value, m_Precision ) > m_Width) )
+   if ( (0 < m_Width) &&
+        (format == Format::Automatic || format == Format::Fixed ) &&
+        (m_Width < get_width_demand( value, m_Precision )) )
    {
       // The specified with is insufficient, use scientific notation
       //WARN( true, "Switching to scientific notation : " << value);
-      format = Scientific;
+      format = Format::Scientific;
    }
 
    apply_stream_manipulators( &os, format, m_Width, m_Precision );
 
-   if ( format == Engineering )
+   if ( format == Format::Engineering )
    {
       os << eng_notation(value,m_Width,m_Precision);
    }
@@ -117,7 +96,7 @@ std::_tstring sysNumericFormatTool::AsString(Float64 value) const
    return os.str();
 }
 
-std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
+std::_tstring NumericFormatTool::AsString(const WBFL::System::SectionValue& value) const
 {
    std::_tostringstream os;
    
@@ -136,19 +115,19 @@ std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
    Format format = m_Format;
    
    // Check if the specified with is adequate
-   if ( (m_Width > 0) &&
-        (format != Scientific && format != Engineering ) &&
-        ( (get_width_demand( left_value, m_Precision ) > m_Width) || (get_width_demand(right_value, m_Precision) > m_Width) )
+   if ( (0 < m_Width) &&
+        (format != Format::Scientific && format != Format::Engineering ) &&
+        ( m_Width < (get_width_demand( left_value, m_Precision )) || (m_Width < get_width_demand(right_value, m_Precision)) )
       )
    {
       // The specified with is insufficient, use scientific notation
       //WARN( true, "Switching to scientific notation : " << value);
-      format = Scientific;
+      format = Format::Scientific;
    }
 
    apply_stream_manipulators( &os, format, m_Width, m_Precision );
 
-   if ( format == Engineering )
+   if ( format == Format::Engineering )
    {
       os << eng_notation(left_value,m_Width,m_Precision);
       if ( !IsEqual(left_value, right_value) )
@@ -170,48 +149,10 @@ std::_tstring sysNumericFormatTool::AsString(const sysSectionValue& value) const
    return os.str();
 }
 
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-sysNumericFormatTool& sysNumericFormatTool::operator= (const sysNumericFormatTool& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void sysNumericFormatTool::MakeCopy(const sysNumericFormatTool& rOther)
-{
-   m_Format = rOther.m_Format;
-   m_Width = rOther.m_Width;
-   m_Precision = rOther.m_Precision;
-}
-
-void sysNumericFormatTool::MakeAssignment(const sysNumericFormatTool& rOther)
-{
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
 Uint16 get_width_demand(Float64 value,Uint16 precision)
 {
    Float64 dLeft = log(fabs(value))/log(10.);
-   if ( dLeft > (Uint16_Max - 2 - precision))
+   if ( (Uint16_Max - 2 - precision) < dLeft)
    {
       return Uint16_Max;
    }
@@ -224,11 +165,11 @@ Uint16 get_width_demand(Float64 value,Uint16 precision)
    return demand;
 }
 
-void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Format format,Uint16 width,Uint16 precision)
+void apply_stream_manipulators( std::_tostream* pOS, NumericFormatTool::Format format,Uint16 width,Uint16 precision)
 {
    switch ( format )
    {
-   case sysNumericFormatTool::Engineering:
+   case NumericFormatTool::Format::Engineering:
       // Do nothing.
       // std::ios does not support scientific notation so we
       // will have to roll our own with a custom manipulator
@@ -237,16 +178,16 @@ void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Forma
       //*** DROP THROUGH to Automatic
       //**************************************
 
-   case sysNumericFormatTool::Automatic:
+   case NumericFormatTool::Format::Automatic:
       pOS->setf( !std::ios::scientific, std::ios::floatfield );
       pOS->setf( !std::ios::fixed,      std::ios::floatfield );
       break;
 
-   case sysNumericFormatTool::Fixed:
+   case NumericFormatTool::Format::Fixed:
       pOS->setf( std::ios::fixed,      std::ios::floatfield );
       break;
 
-   case sysNumericFormatTool::Scientific:
+   case NumericFormatTool::Format::Scientific:
       {
       pOS->setf( std::ios::scientific, std::ios::floatfield );
 
@@ -271,7 +212,4 @@ void apply_stream_manipulators( std::_tostream* pOS, sysNumericFormatTool::Forma
    if(0 < precision)
       pOS->precision( precision );
 }
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
 

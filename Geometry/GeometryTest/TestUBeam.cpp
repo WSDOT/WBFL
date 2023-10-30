@@ -243,7 +243,7 @@ void CTestUBeam::TestIUBeam()
 
    TRY_TEST(beam->get_TopFlangeWidth(nullptr),E_POINTER);
    TRY_TEST(beam->get_TopFlangeWidth(&val),S_OK);
-   TRY_TEST(IsEqual(val,15.07106),true);
+   TRY_TEST(IsEqual(val, 15.071067811865476),true);
 
    TRY_TEST(beam->get_WebSpacing(nullptr),E_POINTER);
    TRY_TEST(beam->get_WebSpacing(&val),S_OK);
@@ -402,113 +402,42 @@ void CTestUBeam::TestIShape()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 19 );
+   TRY_TEST( cPoints, 21 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 19> points;
+   std::array<CComPtr<IPoint2d>, 22> points;
    ULONG fetched;
-   Enum->Next(19,&points[0],&fetched);
-   TRY_TEST( fetched, 19 );
+   Enum->Next((ULONG)cPoints,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
    Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, -30.000000, 0.000000);
+   TEST_POINT(points, -37.715000, 54.000000);
+   TEST_POINT(points, -42.715000, 55.500000);
+   TEST_POINT(points, -42.715000, 60.000000);
+   TEST_POINT(points, -27.643919, 60.000000);
+   TEST_POINT(points, -27.643919, 55.500000);
+   TEST_POINT(points, -30.643919, 54.000000);
+   TEST_POINT(points, -24.643364, 12.000000);
+   TEST_POINT(points, -12.643364, 6.000000);
+   TEST_POINT(points, 0.000000, 6.000000);
+   TEST_POINT(points, 12.643364, 6.000000);
+   TEST_POINT(points, 24.643364, 12.000000);
+   TEST_POINT(points, 30.643919, 54.000000);
+   TEST_POINT(points, 27.643919, 55.500000);
+   TEST_POINT(points, 27.643919, 60.000000);
+   TEST_POINT(points, 42.715000, 60.000000);
+   TEST_POINT(points, 42.715000, 55.500000);
+   TEST_POINT(points, 37.715000, 54.000000);
+   TEST_POINT(points, 30.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,0.0), true );
-   TRY_TEST( IsEqual(y,0.0), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-42.715), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-42.715), true );
-   TRY_TEST( IsEqual(y, 60.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919092970400), true );
-   TRY_TEST( IsEqual(y, 60.0000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919), true );
-   TRY_TEST( IsEqual(y, 55.5000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.643919), true );
-   TRY_TEST( IsEqual(y, 54.0000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.64336), true );
-   TRY_TEST( IsEqual(y, 12.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-12.64336), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,12.64336), true );
-   TRY_TEST( IsEqual(y, 6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,24.64336), true );
-   TRY_TEST( IsEqual(y,12.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,30.643919), true );
-   TRY_TEST( IsEqual(y,54.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 60.0000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y, 60.000), true );
-
-   points[16]->get_X(&x);
-   points[16]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[17]->get_X(&x);
-   points[17]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[18]->get_X(&x);
-   points[18]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // Clone
@@ -518,7 +447,7 @@ void CTestUBeam::TestIShape()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IUBeam> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    beamClone->get_W1(&val);
    TRY_TEST( IsEqual(val,60.00), true);
@@ -593,13 +522,13 @@ void CTestUBeam::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 19; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -609,35 +538,15 @@ void CTestUBeam::TestIShape()
    Enum->Next(9,&points[0],&fetched);
    TRY_TEST( fetched, 6 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 0.000), true );
-   TRY_TEST( IsEqual(y, 0.000), true );
+   i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, -30.000000, 0.000000);
+   TEST_POINT(points, -30.071435, 0.500000);
+   TEST_POINT(points, 30.071435, 0.500000);
+   TEST_POINT(points, 30.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -30.071435), true );
-   TRY_TEST( IsEqual(y,   0.5000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  30.071435), true );
-   TRY_TEST( IsEqual(y,   0.5000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 0.000), true );
-   TRY_TEST( IsEqual(y, 0.000), true );
+   TRY_TEST(i, cPoints);
 
    // clip in other direction
    p1->Move( 50, 40.0);
@@ -649,12 +558,12 @@ void CTestUBeam::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    coll.Release();
    Enum.Release();
-   for ( CollectionIndexType i = 0; i < cPoints; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -664,85 +573,25 @@ void CTestUBeam::TestIShape()
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -35.71481), true );
-   TRY_TEST( IsEqual(y,  40.000), true );
+   i = 0;
+   TEST_POINT(points, -35.714815, 40.000000);
+   TEST_POINT(points, -37.715000, 54.000000);
+   TEST_POINT(points, -42.715000, 55.500000);
+   TEST_POINT(points, -42.715000, 60.000000);
+   TEST_POINT(points, -27.643919, 60.000000);
+   TEST_POINT(points, -27.643919, 55.500000);
+   TEST_POINT(points, -30.643919, 54.000000);
+   TEST_POINT(points, -28.643734, 40.000000);
+   TEST_POINT(points, 28.643734, 40.000000);
+   TEST_POINT(points, 30.643919, 54.000000);
+   TEST_POINT(points, 27.643919, 55.500000);
+   TEST_POINT(points, 27.643919, 60.000000);
+   TEST_POINT(points, 42.715000, 60.000000);
+   TEST_POINT(points, 42.715000, 55.500000);
+   TEST_POINT(points, 37.715000, 54.000000);
+   TEST_POINT(points, 35.714815, 40.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -42.715), true );
-   TRY_TEST( IsEqual(y,  55.500), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -42.715), true );
-   TRY_TEST( IsEqual(y,  60.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919), true );
-   TRY_TEST( IsEqual(y, 60.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919), true );
-   TRY_TEST( IsEqual(y, 55.5000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.643919), true );
-   TRY_TEST( IsEqual(y, 54.0000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-28.6437339), true );
-   TRY_TEST( IsEqual(y, 40.0000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 28.6437339), true );
-   TRY_TEST( IsEqual(y, 40.0000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.643919), true );
-   TRY_TEST( IsEqual(y, 54.0000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 55.5000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 60.0000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  42.715), true );
-   TRY_TEST( IsEqual(y,  60.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  42.715), true );
-   TRY_TEST( IsEqual(y,  55.500), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  35.71481), true );
-   TRY_TEST( IsEqual(y,  40.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // ClipIn
@@ -763,8 +612,8 @@ void CTestUBeam::TestIShape()
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 19; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -773,7 +622,7 @@ void CTestUBeam::TestIShape()
    ATLTRACE("Trace of Points for UBeam - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
+   for (IndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -786,28 +635,16 @@ void CTestUBeam::TestIShape()
 
 
    coll->get__Enum(&Enum);
-   Enum->Next(4,&points[0],&fetched);
+   Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.071435), true );
-   TRY_TEST( IsEqual(y, 0.5), true );
+   i = 0;
+   TEST_POINT(points, -30.071435, 0.500000);
+   TEST_POINT(points, -30.085722, 0.600000);
+   TEST_POINT(points, 30.085722, 0.600000);
+   TEST_POINT(points, 30.071435, 0.500000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.085722), true );
-   TRY_TEST( IsEqual(y, 0.6), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.085722), true );
-   TRY_TEST( IsEqual(y, 0.6), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.071435), true );
-   TRY_TEST( IsEqual(y, 0.5), true );
+   TRY_TEST(i, cPoints);
 }
 
 void CTestUBeam::TestIXYPosition()
@@ -859,113 +696,42 @@ void CTestUBeam::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,19);
+   TRY_TEST( cPoints,21);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 19> points;
+   std::array<CComPtr<IPoint2d>, 21> points;
    ULONG fetched;
-   Enum->Next(19,&points[0],&fetched);
-   TRY_TEST( fetched, 19 );
+   Enum->Next(21,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
    Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, 100.000000, 100.000000);
+   TEST_POINT(points, 70.000000, 100.000000);
+   TEST_POINT(points, 62.285000, 154.000000);
+   TEST_POINT(points, 57.285000, 155.500000);
+   TEST_POINT(points, 57.285000, 160.000000);
+   TEST_POINT(points, 72.356081, 160.000000);
+   TEST_POINT(points, 72.356081, 155.500000);
+   TEST_POINT(points, 69.356081, 154.000000);
+   TEST_POINT(points, 75.356636, 112.000000);
+   TEST_POINT(points, 87.356636, 106.000000);
+   TEST_POINT(points, 100.000000, 106.000000);
+   TEST_POINT(points, 112.643364, 106.000000);
+   TEST_POINT(points, 124.643364, 112.000000);
+   TEST_POINT(points, 130.643919, 154.000000);
+   TEST_POINT(points, 127.643919, 155.500000);
+   TEST_POINT(points, 127.643919, 160.000000);
+   TEST_POINT(points, 142.715000, 160.000000);
+   TEST_POINT(points, 142.715000, 155.500000);
+   TEST_POINT(points, 137.715000, 154.000000);
+   TEST_POINT(points, 130.000000, 100.000000);
+   TEST_POINT(points, 100.000000, 100.000000);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,100.0), true );
-   TRY_TEST( IsEqual(y,100.0), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  70.000), true );
-   TRY_TEST( IsEqual(y, 100.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  62.285), true );
-   TRY_TEST( IsEqual(y, 154.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 57.285), true );
-   TRY_TEST( IsEqual(y,155.500), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 57.285), true );
-   TRY_TEST( IsEqual(y, 160.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 72.35608), true );
-   TRY_TEST( IsEqual(y,160.0000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 72.35608), true );
-   TRY_TEST( IsEqual(y,155.5000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  69.35608), true );
-   TRY_TEST( IsEqual(y, 154.0000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 75.356636), true );
-   TRY_TEST( IsEqual(y,112.0000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 87.356636), true );
-   TRY_TEST( IsEqual(y,106.0000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,112.64336), true );
-   TRY_TEST( IsEqual(y,106.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,124.64336), true );
-   TRY_TEST( IsEqual(y,112.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.643919), true );
-   TRY_TEST( IsEqual(y,154.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x,127.643919), true );
-   TRY_TEST( IsEqual(y,155.500), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 127.643919), true );
-   TRY_TEST( IsEqual(y, 160.0000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 142.715), true );
-   TRY_TEST( IsEqual(y, 160.000), true );
-
-   points[16]->get_X(&x);
-   points[16]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 142.715), true );
-   TRY_TEST( IsEqual(y, 155.500), true );
-
-   points[17]->get_X(&x);
-   points[17]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 137.715), true );
-   TRY_TEST( IsEqual(y, 154.000), true );
-
-   points[18]->get_X(&x);
-   points[18]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 130.000), true );
-   TRY_TEST( IsEqual(y, 100.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // OffsetEx
@@ -982,111 +748,41 @@ void CTestUBeam::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 19; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,19);
+   TRY_TEST( cPoints,21);
 
    coll->get__Enum(&Enum);
-   Enum->Next(19,&points[0],&fetched);
-   TRY_TEST( fetched, 19 );
+   Enum->Next(21,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,0.0), true );
-   TRY_TEST( IsEqual(y,0.0), true );
+   i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, -30.000000, 0.000000);
+   TEST_POINT(points, -37.715000, 54.000000);
+   TEST_POINT(points, -42.715000, 55.500000);
+   TEST_POINT(points, -42.715000, 60.000000);
+   TEST_POINT(points, -27.643919, 60.000000);
+   TEST_POINT(points, -27.643919, 55.500000);
+   TEST_POINT(points, -30.643919, 54.000000);
+   TEST_POINT(points, -24.643364, 12.000000);
+   TEST_POINT(points, -12.643364, 6.000000);
+   TEST_POINT(points, 0.000000, 6.000000);
+   TEST_POINT(points, 12.643364, 6.000000);
+   TEST_POINT(points, 24.643364, 12.000000);
+   TEST_POINT(points, 30.643919, 54.000000);
+   TEST_POINT(points, 27.643919, 55.500000);
+   TEST_POINT(points, 27.643919, 60.000000);
+   TEST_POINT(points, 42.715000, 60.000000);
+   TEST_POINT(points, 42.715000, 55.500000);
+   TEST_POINT(points, 37.715000, 54.000000);
+   TEST_POINT(points, 30.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-42.715), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-42.715), true );
-   TRY_TEST( IsEqual(y, 60.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919), true );
-   TRY_TEST( IsEqual(y, 60.0000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-27.643919), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.643919), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.64336), true );
-   TRY_TEST( IsEqual(y, 12.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-12.64336), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,12.64336), true );
-   TRY_TEST( IsEqual(y, 6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,24.64336), true );
-   TRY_TEST( IsEqual(y,12.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,30.643919), true );
-   TRY_TEST( IsEqual(y,54.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y, 60.0000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y, 60.000), true );
-
-   points[16]->get_X(&x);
-   points[16]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y, 55.500), true );
-
-   points[17]->get_X(&x);
-   points[17]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 37.715), true );
-   TRY_TEST( IsEqual(y, 54.000), true );
-
-   points[18]->get_X(&x);
-   points[18]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // LocatorPoint property
@@ -1260,124 +956,53 @@ void CTestUBeam::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for (int i = 0; i < 19; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,19);
+   TRY_TEST( cPoints,21);
 
    coll->get__Enum(&Enum);
-   Enum->Next(19,&points[0],&fetched);
-   TRY_TEST( fetched, 19 );
+   Enum->Next(21,&points[0],&fetched);
+   TRY_TEST( fetched, 21 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,0.0), true );
-   TRY_TEST( IsEqual(y,0.0), true );
+   i = 0;
+   TEST_POINT(points, 0.000000, 0.000000);
+   TEST_POINT(points, 30.000000, -0.000000);
+   TEST_POINT(points, 37.715000, -54.000000);
+   TEST_POINT(points, 42.715000, -55.500000);
+   TEST_POINT(points, 42.715000, -60.000000);
+   TEST_POINT(points, 27.643919, -60.000000);
+   TEST_POINT(points, 27.643919, -55.500000);
+   TEST_POINT(points, 30.643919, -54.000000);
+   TEST_POINT(points, 24.643364, -12.000000);
+   TEST_POINT(points, 12.643364, -6.000000);
+   TEST_POINT(points, -0.000000, -6.000000);
+   TEST_POINT(points, -12.643364, -6.000000);
+   TEST_POINT(points, -24.643364, -12.000000);
+   TEST_POINT(points, -30.643919, -54.000000);
+   TEST_POINT(points, -27.643919, -55.500000);
+   TEST_POINT(points, -27.643919, -60.000000);
+   TEST_POINT(points, -42.715000, -60.000000);
+   TEST_POINT(points, -42.715000, -55.500000);
+   TEST_POINT(points, -37.715000, -54.000000);
+   TEST_POINT(points, -30.000000, 0.000000);
+   TEST_POINT(points, 0.000000, 0.000000);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 37.715), true );
-   TRY_TEST( IsEqual(y,-54.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y,-55.500), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 42.715), true );
-   TRY_TEST( IsEqual(y,-60.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y,-60.0000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 27.643919), true );
-   TRY_TEST( IsEqual(y,-55.500), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 30.643919), true );
-   TRY_TEST( IsEqual(y,-54.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 24.64336), true );
-   TRY_TEST( IsEqual(y,-12.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 12.64336), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-12.64336), true );
-   TRY_TEST( IsEqual(y,-6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.64336), true );
-   TRY_TEST( IsEqual(y,-12.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-30.643919), true );
-   TRY_TEST( IsEqual(y,-54.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -27.643919), true );
-   TRY_TEST( IsEqual(y, -55.500), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -27.643919), true );
-   TRY_TEST( IsEqual(y, -60.0000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -42.715), true );
-   TRY_TEST( IsEqual(y, -60.000), true );
-
-   points[16]->get_X(&x);
-   points[16]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -42.715), true );
-   TRY_TEST( IsEqual(y, -55.500), true );
-
-   points[17]->get_X(&x);
-   points[17]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -37.715), true );
-   TRY_TEST( IsEqual(y, -54.000), true );
-
-   points[18]->get_X(&x);
-   points[18]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -30.000), true );
-   TRY_TEST( IsEqual(y,   0.000), true );
+   TRY_TEST(i, cPoints);
 }
 
 void CTestUBeam::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_UBeam ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IUBeam ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

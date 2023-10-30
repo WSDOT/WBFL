@@ -31,21 +31,6 @@
 
 #include "resource.h"       // main symbols
 
-#include "Collections.h"
-#include <vector>
-#include "COGOCP.h"
-
-typedef std::pair<DWORD,CComVariant> PathType; // cookie,varient(IUnknown for PathElement)
-typedef std::vector<PathType> Paths;
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyFromPair2<PathType,VARIANT>, Paths > PathEnum;
-typedef ICollectionOnSTLImpl<IPath, Paths, VARIANT, CopyFromPair2<PathType,VARIANT>, PathEnum> IPathElementCollection;
-
-struct Element
-{
-   Float64 start;
-   Float64 end;
-   CComPtr<IPathElement> pathElement;
-};
 
 /////////////////////////////////////////////////////////////////////////////
 // CPath
@@ -55,12 +40,8 @@ class ATL_NO_VTABLE CPath :
 	public CComCoClass<CPath, &CLSID_Path>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CPath,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CPath>,
-	public IPathElementCollection,
-   public IStructuredStorage2,
-	public IPathElementEvents,
-	public CProxyDPathEvents< CPath >,
-   public IPersistImpl<CPath>
+	public IPath,
+   public IPathElement // see note on ICompoundCurve interface definition in IDL file
 {
 public:
 	CPath()
@@ -70,145 +51,61 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
+   void SetPath(std::shared_ptr<WBFL::COGO::Path> path);
+   std::shared_ptr<WBFL::COGO::Path> GetPath() { return m_Path; }
+
 DECLARE_REGISTRY_RESOURCEID(IDR_PATH)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CPath)
 	COM_INTERFACE_ENTRY(IPath)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPathElementEvents)
+   COM_INTERFACE_ENTRY(IPathElement)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CPath)
-CONNECTION_POINT_ENTRY(IID_IPathEvents)
-END_CONNECTION_POINT_MAP()
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // IPath
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IPath* *clone) override;
-   STDMETHOD(get__EnumPathElements)(/*[out, retval]*/ IEnumPathElements** pVal) override;  
-   STDMETHOD(get_Length)(/*[out,retval]*/Float64* pLength) override;
    STDMETHOD(IntersectEx)(ILine2d* line,IPoint2d* pNearest,VARIANT_BOOL vbProjectBack,VARIANT_BOOL vbProjectAhead,IPoint2d** point) override;
    STDMETHOD(Intersect)(/*[in]*/ ILine2d* line,/*[in]*/IPoint2d* pNearest,/*[out,retval]*/IPoint2d** point) override;
-	STDMETHOD(Offset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override; 
-   STDMETHOD(ProjectPoint)(/*[in]*/ IPoint2d* point, /*[out]*/ IPoint2d* *newPoint, /*[out]*/ Float64* distFromStart, /*[out]*/ VARIANT_BOOL* pvbOnProjection) override;
-   STDMETHOD(Normal)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override;
-	STDMETHOD(Bearing)(/*[in]*/ Float64 distance,/*[out,retval]*/ IDirection* *dir) override; 
-	STDMETHOD(LocatePoint)(/*[in]*/ Float64 distance, /*[in]*/ OffsetMeasureType offsetMeasure, /*[in]*/ Float64 offset, /*[in]*/ VARIANT varDir,/*[out,retval]*/ IPoint2d* *newPoint) override; 
-   //STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;  
-	STDMETHOD(get_Item)(/*[in]*/ CollectionIndexType idx,/*[out, retval]*/ IPathElement* *pVal) override;
-	STDMETHOD(putref_Item)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement *pVal) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+   STDMETHOD(DistanceAndOffset)(/*[in]*/ IPoint2d* point,/*[out]*/ Float64* distance,/*[out]*/ Float64* offset) override;
+	STDMETHOD(get_Item)(/*[in]*/ IndexType idx,/*[out, retval]*/ IPathElement* *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/ IndexType idx,/*[in]*/ IPathElement *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Add)(/*[in]*/ IPathElement* element) override;
-	STDMETHOD(AddEx)(/*[in]*/ IUnknown* dispElement) override;
-	STDMETHOD(Insert)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IPathElement* element) override;
-	STDMETHOD(InsertEx)(/*[in]*/ CollectionIndexType idx,/*[in]*/ IUnknown* dispElement) override;
-	STDMETHOD(Remove)(/*[in]*/ VARIANT varID) override;
+	STDMETHOD(Insert)(/*[in]*/ IndexType idx,/*[in]*/ IPathElement* element) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(get_PointFactory)(/*[out,retval]*/IPoint2dFactory* *factory) override; 
-	STDMETHOD(putref_PointFactory)(/*[in]*/IPoint2dFactory* factory) override; 
-   STDMETHOD(Move)(/*[in]*/ Float64 dist,/*[in]*/ IDirection* direction) override;
-   STDMETHOD(CreateOffsetPath)(/*[in]*/ Float64 offset,/*[out,retval]*/IPath** path) override;
-	STDMETHOD(CreateConnectedPath)(/*[out,retval]*/IPath** path) override;
-   STDMETHOD(CreateSubPath)(/*[in]*/Float64 start,/*[in]*/Float64 end,/*[out,retval]*/IPath** path) override;
 
-// IStructuredStorage2
+// IPathElement
 public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPathElementEvents
-public:
-	STDMETHOD(OnPathElementChanged)(IPathElement * element)
-	{
-      m_PathElements.clear();
-      Fire_OnPathChanged(this);
-		return S_OK;
-	}
+   STDMETHOD(Clone)(IPathElement** clone) override;
+   STDMETHOD(Move)(Float64 dist, VARIANT varDirection) override;
+   STDMETHOD(Offset)(Float64 dx, Float64 dy) override;
+   STDMETHOD(PointOnCurve)(Float64 distance, IPoint2d** pVal) override;
+   STDMETHOD(GetStartPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(GetEndPoint)(IPoint2d** ppPoint) override;
+   STDMETHOD(GetLength)(Float64* pLength) override;
+   STDMETHOD(GetKeyPoints)(IPoint2dCollection** ppPoints) override;
+   STDMETHOD(LocatePoint)(Float64 distFromStart, OffsetMeasureType offsetType, Float64 offset, VARIANT varDirection, IPoint2d** ppPoint) override;
+   STDMETHOD(GetBearing)(Float64 distFromStart, IDirection** ppDirection) override;
+   STDMETHOD(GetNormal)(Float64 distFromStart, IDirection** ppNormal) override;
+   STDMETHOD(ProjectPoint)(IPoint2d* point, IPoint2d** ppProjPoint, Float64* pDistFromStart, VARIANT_BOOL* pvbOnProjection) override;
+   STDMETHOD(Intersect)(ILine2d* pLine, VARIANT_BOOL vbProjectBack, VARIANT_BOOL vbProjectAhead, IPoint2dCollection** ppPoints) override;
+   STDMETHOD(CreateOffsetPath)(Float64 offset, IPath** ppPath) override;
+   STDMETHOD(CreateSubpath)(Float64 start, Float64 end, IPath** ppPath) override;
 
 private:
-   CComPtr<IPoint2dFactory> m_PointFactory;
+   std::shared_ptr<WBFL::COGO::Path> m_Path;
 
-   CComPtr<IGeomUtil2d> m_GeomUtil;
-   CComPtr<ICogoEngine> m_CogoEngine;
-   CComPtr<ICoordinateXform2d> m_Xform;
-
-   void AdviseElement(IPathElement* element,DWORD* pdwCookie);
-   void UnadviseElement(CollectionIndexType idx);
-   void UnadviseAll();
-
-   std::vector<Element> m_PathElements; // not the same as m_coll. This is a fully connected path of elements
-
-   // Returns a vector of Element objects that captures the start and end location
-   // along the path of a path element as well as the path element itself.
-   // Don't access m_PathElements directly. Use GetPathElements because it
-   // initializes m_PathElements on demand.
-   std::vector<Element>& GetPathElements();
-
-   bool FindElement(IUnknown* pUnk, Element* pElement);
-
-   Float64 m_PathLength;
-
-   // Finds a PathElement object that contains the specified distance from start of the path.
-   // Also determines the distance to teh begining of that Path element
-   void FindElement(Float64 distance,Float64* pBeginDist,IPathElement* *pElement);
-
-   // Returns the starting point of the given Path element
-   void GetStartPoint(IPathElement* pElement,IPoint2d** ppStartPoint);
-
-   // Returns the ending point of the given Path element
-   void GetEndPoint(IPathElement* pElement,IPoint2d** ppEndPoint);
-
-   // Creates a dummy line segment path element using a start and end point
-   void CreateDummyPathElement(IPoint2d* pStart,IPoint2d* pEnd,IPathElement* *pElement);
-
-   // Creates a dummy line segment path element using the given start point, and the start
-   // point of the next path element
-   void CreateDummyPathElement(IPoint2d* pStart,IPathElement* nextElement,IPathElement* *pElement);
-
-   // Projects a point onto an Path element
-   void ProjectPointOnElement(IPoint2d* point,IPathElement* pElement,IPoint2d** pNewPoint,Float64* pDistFromStart,VARIANT_BOOL* pvbOnProjection);
-
-   // Intersects a line with a path element, puts the result point(s) in the point collection
-   void IntersectElement(ILine2d* line,IPathElement* element,bool bProjectBack,bool bProjectAhead,IPoint2dCollection* points);
-
-   void CreateOffsetCircularCurve(Float64 offset, ICircularCurve* hc, IUnknown** result);
-   void CreateOffsetTransitionCurve(Float64 offset, ITransitionCurve* hc, IUnknown** result);
-   void CreateOffsetCompoundCurve(Float64 offset,ICompoundCurve* hc,IUnknown** result);
-   void CreateOffsetCubicSpline(Float64 offset,ICubicSpline* spline,IUnknown** result);
-   void CreateOffsetPoint(CollectionIndexType elementIdx,Float64 offset,IPoint2d** pPoint);
-
-
-   HRESULT CreateSubPathElement(Float64 start, Float64 end, ILineSegment2d* pLS, ILineSegment2d** ppLineSegment);
-   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICircularCurve* pHC, IUnknown** ppResult);
-   HRESULT CreateSubPathElement(Float64 start, Float64 end, ITransitionCurve* pHC, IUnknown** ppResult);
-   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICompoundCurve* pHC, IUnknown** ppResult1, IUnknown** ppResult2, IUnknown** ppResult3);
-   HRESULT CreateSubPathElement(Float64 start, Float64 end, ICubicSpline* pSpine, IUnknown** ppResult);
-   HRESULT CreateSubCurveSpline(Float64 start, Float64 end, CollectionIndexType nPoints, ICompoundCurve* pHC, ICubicSpline** ppSpline);
-   HRESULT CreateSubCurveSpline(Float64 start, Float64 end, CollectionIndexType nPoints, ITransitionCurve* pHC, ICubicSpline** ppSpline);
-   HRESULT SavePathElement(IPath* pPath,IUnknown* pUnk);
-
-   Float64 GetElementLength(IPathElement* pElement);
+   std::vector<CComPtr<IPathElement>> m_PathElements;
 
 #if defined _DEBUG
-   void DumpPathElements();
-   void DumpPathElement(IPoint2d* pPoint);
-   void DumpPathElement(ILineSegment2d* pLS);
-   void DumpPathElement(ICircularCurve* pHC);
-   void DumpPathElement(ITransitionCurve* pHC);
-   void DumpPathElement(ICompoundCurve* pHC);
-   void DumpPathElement(ICubicSpline* pSpine);
+   void Validate() const;
 #endif
 };
 

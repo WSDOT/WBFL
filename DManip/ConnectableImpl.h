@@ -99,7 +99,7 @@ public:
       }
    }
 
-   STDMETHOD_(CollectionIndexType,GetSocketCount)()
+   STDMETHOD_(IndexType,GetSocketCount)()
    {
       return m_Sockets.size();
    }
@@ -157,7 +157,7 @@ public:
    }
 
 protected:
-   typedef std::vector<CComPtr<iSocket> > SocketContainer;
+   using SocketContainer = std::vector<CComPtr<iSocket>>;
    SocketContainer m_Sockets;
 
 private:

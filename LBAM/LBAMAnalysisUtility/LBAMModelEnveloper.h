@@ -93,8 +93,8 @@ public:
 	STDMETHOD(AddModel)(/*[in]*/ILBAMModel* pModel) override;
    STDMETHOD(AddEngine)(/*[in]*/ILBAMAnalysisEngine* pEngine) override;
 
-   CollectionIndexType EngineCount();
-   void GetEngine(CollectionIndexType idx, ILBAMAnalysisEngine* *engine);
+   IndexType EngineCount();
+   void GetEngine(IndexType idx, ILBAMAnalysisEngine* *engine);
 
 protected:
    std::vector< CAdapt< CComPtr<ILBAMAnalysisEngine> > > m_Engines;

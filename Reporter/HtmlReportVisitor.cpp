@@ -27,12 +27,6 @@
 #include <Reporter\HtmlHelper.h>
 #include <Reporter\PageLayout.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptHtmlReportVisitor::~rptHtmlReportVisitor()
 {
 }
@@ -40,7 +34,7 @@ rptHtmlReportVisitor::~rptHtmlReportVisitor()
 void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 {
 
-   sysTime my_time;
+   WBFL::System::Time my_time;
    // dump control information out to the report
    *m_pOstream << _T("<!DOCTYPE HTML PUBLIC \"-//Spyglass//DTD HTML 2.0 Extended//EN\">") << std::endl
                << _T("<html>") << std::endl

@@ -32,11 +32,11 @@
    #error It is for external users only
 #endif
 
+#include <Lrfd\LrfdTypes.h>
 #include <LRFD\AutoVersion.h>
 #include <LRFD\Details.h>
 #include <LRFD\ConcreteUtil.h>
 #include <LRFD\ILiveLoadDistributionFactor.h>
-#include <LRFD\LimitStateCalculator.h>
 #include <LRFD\LiveLoadDistributionFactorBase.h>
 #include <LRFD\LldfTypeAEK.h>
 #include <LRFD\LldfTypeAEKIJ.h>
@@ -49,6 +49,7 @@
 #include <LRFD\RefinedLosses.h>
 #include <LRFD\RefinedLosses2005.h>
 #include <LRFD\PCIUHPCLosses.h>
+#include <LRFD\UHPCLosses.h>
 #include <LRFD\LumpSumLosses.h>
 #include <LRFD\PTRefinedLosses.h>
 #include <LRFD\ApproximateLosses.h>
@@ -60,20 +61,23 @@
 #include <LRFD\RebarPool.h>
 #include <LRFD\Rebar.h>
 #include <LRFD\Shear.h>
+#include <LRFD\UHPCShear.h>
 #include <LRFD\StrandPool.h>
 #include <LRFD\Utility.h>
-#include <LRFD\VersionMgr.h>
-#include <LRFD\VersionMgrListener.h>
-#include <LRFD\LRFRVersionMgr.h>
-#include <LRFD\LRFRVersionMgrListener.h>
+#include <Lrfd/BDSManager.h>
+#include <Lrfd/BDSManagerListener.h>
+#include <Lrfd/MBEManager.h>
+#include <Lrfd/MBEManagerListener.h>
 #include <LRFD\CreepCoefficient.h>
 #include <LRFD\CreepCoefficient2005.h>
 #include <LRFD\PCIUHPCCreepCoefficient.h>
+#include <LRFD\UHPCCreepCoefficient.h>
 #include <LRFD\XCreepCoefficient.h>
 #include <LRFD\XCodeVersion.h>
 #include <LRFD\XPsLosses.h>
 #include <LRFD\XRangeOfApplicability.h>
 #include <LRFD\XShear.h>
+#include <LRFD\LRFDConcreteBase.h>
 #include <LRFD\LRFDConcrete.h>
 #include <LRFD\LRFDTimeDependentConcrete.h>
 

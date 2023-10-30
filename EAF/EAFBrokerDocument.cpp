@@ -379,9 +379,9 @@ BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, 
 
    if ( FAILED(hr) )
    {
-      CollectionIndexType nErrors;
+      IndexType nErrors;
       lErrArray->get_Count(&nErrors);
-      for ( CollectionIndexType errIdx = 0; errIdx < nErrors; errIdx++ )
+      for ( IndexType errIdx = 0; errIdx < nErrors; errIdx++ )
       {
          IndexType agentIdx;
          lErrArray->get_Item(errIdx,&agentIdx);
@@ -494,9 +494,9 @@ BOOL CEAFBrokerDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    }
 
    CComQIPtr<IManageAgents> manageAgents(m_pBroker);
-   CollectionIndexType nAgents;
+   IndexType nAgents;
    manageAgents->get_AgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_Agent(agentIdx,&agent);
@@ -512,7 +512,7 @@ BOOL CEAFBrokerDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
    }
 
    manageAgents->get_ExtensionAgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_ExtensionAgent(agentIdx,&agent);
@@ -587,7 +587,7 @@ BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHAND
 
       if ( m_pReportManager )
       {
-         CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
+         IndexType nReports = m_pReportManager->GetReportBuilderCount();
          BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
          BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
 
@@ -618,7 +618,7 @@ BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHAND
       // Don't use GET_IFACE because the ASSERTs will fire if the interface is missing (which is valid in this case)
       if ( m_pGraphManager )
       {
-         CollectionIndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+         IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
          BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
          if ( bIsGraph )
          {
@@ -706,14 +706,14 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
    }
 }
 
-UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,BOOL bQuickReport) const
+UINT CEAFBrokerDocument::GetReportCommand(IndexType rptIdx,BOOL bQuickReport) const
 {
-   CollectionIndexType baseID = EAF_REPORT_MENU_BASE;
+   IndexType baseID = EAF_REPORT_MENU_BASE;
 
    if ( !bQuickReport )
    {
       GET_IFACE(IReportManager,pReportMgr);
-      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
+      IndexType nReports = pReportMgr->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }
@@ -722,30 +722,30 @@ UINT CEAFBrokerDocument::GetReportCommand(CollectionIndexType rptIdx,BOOL bQuick
    return (UINT)(rptIdx + baseID);
 }
 
-CollectionIndexType CEAFBrokerDocument::GetReportIndex(UINT nID,BOOL bQuickReport) const
+IndexType CEAFBrokerDocument::GetReportIndex(UINT nID,BOOL bQuickReport) const
 {
    if ( nID < EAF_REPORT_MENU_BASE || EAF_REPORT_MENU_BASE+2*EAF_REPORT_MENU_COUNT < nID )
    {
       return INVALID_INDEX;
    }
 
-   CollectionIndexType baseID = EAF_REPORT_MENU_BASE;
+   IndexType baseID = EAF_REPORT_MENU_BASE;
    if ( !bQuickReport )
    {
       GET_IFACE(IReportManager,pReportMgr);
-      CollectionIndexType nReports = pReportMgr->GetReportBuilderCount();
+      IndexType nReports = pReportMgr->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }
 
-   return (CollectionIndexType)(nID - baseID);
+   return (IndexType)(nID - baseID);
 }
 
 void CEAFBrokerDocument::OnReport(UINT nID)
 {
    // User picked a report from a menu.
    // get the report index
-   CollectionIndexType rptIdx = GetReportIndex(nID,FALSE);
+   IndexType rptIdx = GetReportIndex(nID,FALSE);
    CreateReportView(rptIdx,TRUE);
 }
 
@@ -753,11 +753,11 @@ void CEAFBrokerDocument::OnQuickReport(UINT nID)
 {
    // User picked a report from a menu.
    // This is a "quick report" so don't prompt
-   CollectionIndexType rptIdx = GetReportIndex(nID,TRUE);
+   IndexType rptIdx = GetReportIndex(nID,TRUE);
    CreateReportView(rptIdx,FALSE);
 }
 
-void CEAFBrokerDocument::CreateReportView(CollectionIndexType rptIdx,BOOL bPrompt)
+void CEAFBrokerDocument::CreateReportView(IndexType rptIdx,BOOL bPrompt)
 {
    // User must override this method to display the report
    AfxMessageBox(_T("Override CEAFBrokerDocument::CreateReportView to create the specific report view you want"));
@@ -809,33 +809,33 @@ void CEAFBrokerDocument::BuildGraphMenu(CEAFMenu* pMenu)
    }
 }
 
-UINT CEAFBrokerDocument::GetGraphCommand(CollectionIndexType graphIdx) const
+UINT CEAFBrokerDocument::GetGraphCommand(IndexType graphIdx) const
 {
-   CollectionIndexType baseID = EAF_GRAPH_MENU_BASE;
+   IndexType baseID = EAF_GRAPH_MENU_BASE;
    ASSERT(graphIdx + baseID <= EAF_GRAPH_MENU_BASE+EAF_GRAPH_MENU_COUNT);
    return (UINT)(graphIdx + baseID);
 }
 
-CollectionIndexType CEAFBrokerDocument::GetGraphIndex(UINT nID) const
+IndexType CEAFBrokerDocument::GetGraphIndex(UINT nID) const
 {
    if ( nID < EAF_GRAPH_MENU_BASE || EAF_GRAPH_MENU_BASE+EAF_GRAPH_MENU_COUNT < nID )
    {
       return INVALID_INDEX;
    }
 
-   CollectionIndexType baseID = EAF_GRAPH_MENU_BASE;
-   return (CollectionIndexType)(nID - baseID);
+   IndexType baseID = EAF_GRAPH_MENU_BASE;
+   return (IndexType)(nID - baseID);
 }
 
 void CEAFBrokerDocument::OnGraph(UINT nID)
 {
    // User picked a graph from a menu.
    // get the graph index and create the graph view
-   CollectionIndexType graphIdx = GetGraphIndex(nID);
+   IndexType graphIdx = GetGraphIndex(nID);
    CreateGraphView(graphIdx);
 }
 
-void CEAFBrokerDocument::CreateGraphView(CollectionIndexType graphIdx)
+void CEAFBrokerDocument::CreateGraphView(IndexType graphIdx)
 { 
    // does nothing by default
    AfxMessageBox(_T("Override CEAFBrokerDocument::CreateGraphView to create the specific graph view you want"));
@@ -895,9 +895,9 @@ void CEAFBrokerDocument::LoadDocumentationMap()
 
    CComQIPtr<IManageAgents> manageAgents(m_pBroker);
 
-   CollectionIndexType nAgents;
+   IndexType nAgents;
    manageAgents->get_AgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_Agent(agentIdx,&agent);
@@ -911,7 +911,7 @@ void CEAFBrokerDocument::LoadDocumentationMap()
    }
 
    manageAgents->get_ExtensionAgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_ExtensionAgent(agentIdx,&agent);
@@ -943,9 +943,9 @@ eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetN
 
    CComBSTR bstrDocSetName(lpszDocSetName);
 
-   CollectionIndexType nAgents;
+   IndexType nAgents;
    manageAgents->get_AgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_Agent(agentIdx,&agent);
@@ -977,7 +977,7 @@ eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetN
    }
 
    manageAgents->get_ExtensionAgentCount(&nAgents);
-   for ( CollectionIndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
+   for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
       CComPtr<IAgent> agent;
       manageAgents->get_ExtensionAgent(agentIdx,&agent);
@@ -1015,7 +1015,7 @@ BOOL CEAFBrokerDocument::IsReportCommand(UINT nID,BOOL bQuickReport)
 {
    if ( m_pReportManager )
    {
-      CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
+      IndexType nReports = m_pReportManager->GetReportBuilderCount();
       BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
       BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
       if ( bQuickReport )
@@ -1037,7 +1037,7 @@ BOOL CEAFBrokerDocument::IsGraphCommand(UINT nID)
 {
    if ( m_pGraphManager )
    {
-      CollectionIndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
       BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
       return bIsGraph;
    }
@@ -1052,7 +1052,7 @@ BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) c
    BOOL bHandled = FALSE;
    if ( m_pReportManager )
    {
-      CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
+      IndexType nReports = m_pReportManager->GetReportBuilderCount();
       if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
            (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
@@ -1063,7 +1063,7 @@ BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) c
 
    if ( m_pGraphManager )
    {
-      CollectionIndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
       if ( GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1) )
       {
          rMessage.Format(_T("Creates a graph"));
@@ -1084,7 +1084,7 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
    BOOL bHandled = FALSE;
    if ( m_pReportManager )
    {
-      CollectionIndexType nReports = m_pReportManager->GetReportBuilderCount();
+      IndexType nReports = m_pReportManager->GetReportBuilderCount();
       if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
            (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
@@ -1095,7 +1095,7 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
 
    if ( m_pGraphManager )
    {
-      CollectionIndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
       if ( GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1) )
       {
          rMessage.Format(_T("Creates a graph"));
@@ -1196,12 +1196,12 @@ void CEAFBrokerDocument::OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromM
    {
       Uint32 mask = EAF_UIHINT_FAVORITES_MENU;
       Uint32 hintSettings = GetUIHintSettings();
-      if ( sysFlags<Uint32>::IsClear(hintSettings,mask) )
+      if ( WBFL::System::Flags<Uint32>::IsClear(hintSettings,mask) )
       {
          CString strText(_T("This menu item allows you to display only your favorite reports in the Reports menus, or display all available reports. The change will occur the next time you open a Report menu."));
          if ( EAFShowUIHints(strText) )
          {
-            sysFlags<Uint32>::Set(&hintSettings,mask);
+            WBFL::System::Flags<Uint32>::Set(&hintSettings,mask);
             SetUIHintSettings(hintSettings);
          }
       }
@@ -1279,7 +1279,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          if (itfnd == m_BuiltInReportNames.end())
          {
             // Remove report if it's not built in. ptr release should delete it.
-            std::shared_ptr<CReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
+            std::shared_ptr<WBFL::Reporting::ReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
          }
 
          itn++;
@@ -1297,18 +1297,18 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
       if ( itfnd == m_BuiltInReportNames.end() )
       {
          // get parent report
-         std::shared_ptr<CReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
+         std::shared_ptr<WBFL::Reporting::ReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
          if (pParentBuilder)
          {
             // found parent. Now we can create new builder for custom
-            std::shared_ptr<CReportBuilder> newBuilder( std::make_shared<CReportBuilder>(rCustom.m_ReportName.c_str()));
+            std::shared_ptr<WBFL::Reporting::ReportBuilder> newBuilder( std::make_shared<WBFL::Reporting::ReportBuilder>(rCustom.m_ReportName.c_str()));
             newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
 
             // Title page
-            std::shared_ptr<CTitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
+            std::shared_ptr<WBFL::Reporting::TitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
             if (ptp)
             {
-               std::shared_ptr<CTitlePageBuilder> pntp( ptp->Clone() );
+               std::shared_ptr<WBFL::Reporting::TitlePageBuilder> pntp( ptp->Clone() );
                pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
                newBuilder->AddTitlePageBuilder(pntp);
             }
@@ -1321,7 +1321,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             std::vector<std::_tstring>::iterator itChapName = rCustom.m_Chapters.begin();
             while(itChapName != rCustom.m_Chapters.end())
             {
-               std::shared_ptr<CChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
+               std::shared_ptr<WBFL::Reporting::ChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
                if ( pChapterB )
                {
                   newBuilder->AddChapterBuilder( pChapterB );

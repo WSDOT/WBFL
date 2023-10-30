@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLSections.CompositeSectionEx.1 = s 'CompositeSectionEx Class'
+	{
+		CLSID = s '{85AB469B-A6A3-4057-848A-1572DAD74DE0}'
+	}
+	WBFLSections.CompositeSectionEx = s 'CompositeSectionEx Class'
+	{
+		CLSID = s '{85AB469B-A6A3-4057-848A-1572DAD74DE0}'
+		CurVer = s 'WBFLSections.CompositeSectionEx.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {85AB469B-A6A3-4057-848A-1572DAD74DE0} = s 'CompositeSectionEx Class'
+		{
+			ProgID = s 'WBFLSections.CompositeSectionEx.1'
+			VersionIndependentProgID = s 'WBFLSections.CompositeSectionEx'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{55B8EF8A-FADF-11D2-8CDF-9849C70CC734}'
+		}
+	}
+}

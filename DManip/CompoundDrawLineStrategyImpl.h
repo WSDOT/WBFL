@@ -62,12 +62,12 @@ public:
 // iCompoundLineDrawStrategy
 public:
    STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) override;
-   STDMETHOD_(void,RemoveStrategy)(CollectionIndexType index) override;
-   STDMETHOD_(void, GetStrategy)(CollectionIndexType index, iDrawLineStrategy** ppStrategy) override;
-   STDMETHOD_(CollectionIndexType,Count)() override;
+   STDMETHOD_(void,RemoveStrategy)(IndexType index) override;
+   STDMETHOD_(void, GetStrategy)(IndexType index, iDrawLineStrategy** ppStrategy) override;
+   STDMETHOD_(IndexType,Count)() override;
 
 private:
-   typedef std::vector<CComPtr<iDrawLineStrategy> > Strategies;
+   using Strategies = std::vector<CComPtr<iDrawLineStrategy>>;
    Strategies m_Strategies;
 };
 

@@ -27,7 +27,7 @@
 
 #include <vector>
 interface iDisplayObject;
-typedef CAdapt<CComPtr<iDisplayObject> > DisplayObjectItem;
-typedef std::vector<DisplayObjectItem> DisplayObjectContainer;
+using DisplayObjectItem = CComPtr<iDisplayObject>;
+using DisplayObjectContainer = std::vector<DisplayObjectItem>;
 
 #endif // INCLUDED_DISPLAYOBJECTCONTAINER_H_

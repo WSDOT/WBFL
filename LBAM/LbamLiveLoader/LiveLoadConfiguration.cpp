@@ -397,12 +397,12 @@ STDMETHODIMP CLiveLoadConfiguration::Load(IStructuredLoad2 * pload)
          if (FAILED(hr))
             return hr;
 
-         CollectionIndexType cnt = var;
+         IndexType cnt = var;
 
          m_AxleConfig->Clear();
          m_AxleConfig->Reserve(cnt);
 
-         for (CollectionIndexType i = 0; i<cnt; i++)
+         for (IndexType i = 0; i<cnt; i++)
          {
             var.Clear();
             hr = pload->get_Property(_bstr_t("Axle"),&var);

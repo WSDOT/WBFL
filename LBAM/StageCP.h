@@ -33,12 +33,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStageEvents> events(sp);
          if ( events )
@@ -57,76 +57,76 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )
             events->OnStagesChanged(Stage,change);
 		}
 	}
-	VOID Fire_OnStagesAdded(IStage * Stage, CollectionIndexType relPos)
+	VOID Fire_OnStagesAdded(IStage * Stage, IndexType relPos)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )
             events->OnStagesAdded(Stage,relPos);
 		}
 	}
-	VOID Fire_OnStagesBeforeRemove(IStage * Stage, CollectionIndexType relPos)
+	VOID Fire_OnStagesBeforeRemove(IStage * Stage, IndexType relPos)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )
             events->OnStagesBeforeRemove(Stage,relPos);
 		}
 	}
-	VOID Fire_OnStagesMoveTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnStagesMoveTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )
             events->OnStagesMoveTo(from,to);
 		}
 	}
-	VOID Fire_OnStagesCopyTo(CollectionIndexType from, CollectionIndexType to)
+	VOID Fire_OnStagesCopyTo(IndexType from, IndexType to)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )
@@ -137,12 +137,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStagesEvents> events(sp);
          if ( events )

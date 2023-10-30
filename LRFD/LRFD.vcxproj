@@ -20,13 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -50,12 +50,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -84,6 +85,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -97,13 +101,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\Lrfd.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -145,6 +150,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -156,14 +163,17 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\Lrfd.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -184,7 +194,9 @@
     <ClCompile Include="CreepCoefficient.cpp" />
     <ClCompile Include="CreepCoefficient2005.cpp" />
     <ClCompile Include="ElasticShortening.cpp" />
-    <ClCompile Include="LimitStateCalculator.cpp" />
+    <ClCompile Include="UHPCCreepCoefficient.cpp" />
+    <ClCompile Include="UHPCLosses.cpp" />
+    <ClCompile Include="UHPCShear.cpp" />
     <ClCompile Include="LiveLoadDistributionFactorBase.cpp" />
     <ClCompile Include="LldfTxdotMultiWeb.cpp" />
     <ClCompile Include="LldfTxdotSpreadSlab.cpp" />
@@ -196,9 +208,10 @@
     <ClCompile Include="LoadModifier.cpp" />
     <ClCompile Include="Losses.cpp" />
     <ClCompile Include="LRFDConcrete.cpp" />
+    <ClCompile Include="LRFDConcreteBase.cpp" />
     <ClCompile Include="LRFDTimeDependentConcrete.cpp" />
-    <ClCompile Include="LRFRVersionMgr.cpp" />
-    <ClCompile Include="LRFRVersionMgrListener.cpp" />
+    <ClCompile Include="MBEManager.cpp" />
+    <ClCompile Include="MBEManagerListener.cpp" />
     <ClCompile Include="LumpSumLosses.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -216,10 +229,9 @@
     <ClCompile Include="RefinedLossesTxDOT2013.cpp" />
     <ClCompile Include="Shear.cpp" />
     <ClCompile Include="StrandPool.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
     <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="VersionMgr.cpp" />
-    <ClCompile Include="VersionMgrListener.cpp" />
+    <ClCompile Include="BDSManager.cpp" />
+    <ClCompile Include="BDSManagerListener.cpp" />
     <ClCompile Include="XCodeVersion.cpp" />
     <ClCompile Include="XCreepCoefficient.cpp" />
     <ClCompile Include="XPsLosses.cpp" />
@@ -236,7 +248,10 @@
     <ClInclude Include="..\Include\LRFD\CreepCoefficient2005.h" />
     <ClInclude Include="..\Include\LRFD\Details.h" />
     <ClInclude Include="..\Include\LRFD\ElasticShortening.h" />
-    <ClInclude Include="..\Include\LRFD\LimitStateCalculator.h" />
+    <ClInclude Include="..\Include\LRFD\UHPCCreepCoefficient.h" />
+    <ClInclude Include="..\Include\LRFD\UHPCLosses.h" />
+    <ClInclude Include="..\Include\LRFD\UHPCShear.h" />
+    <ClInclude Include="..\Include\LRFD\ILiveLoadDistributionFactor.h" />
     <ClInclude Include="..\Include\LRFD\LiveLoadDistributionFactorBase.h" />
     <ClInclude Include="..\Include\LRFD\LldfTxdotMultiWeb.h" />
     <ClInclude Include="..\Include\LRFD\LldfTxdotSpreadSlab.h" />
@@ -249,12 +264,13 @@
     <ClInclude Include="..\Include\LRFD\Losses.h" />
     <ClInclude Include="..\Include\LRFD\Lrfd.h" />
     <ClInclude Include="..\Include\LRFD\LRFDConcrete.h" />
+    <ClInclude Include="..\Include\LRFD\LRFDConcreteBase.h" />
     <ClInclude Include="..\Include\LRFD\LrfdExp.h" />
     <ClInclude Include="..\Include\LRFD\LrfdLib.h" />
     <ClInclude Include="..\Include\LRFD\LRFDTimeDependentConcrete.h" />
     <ClInclude Include="..\Include\LRFD\LrfdTypes.h" />
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgr.h" />
-    <ClInclude Include="..\Include\LRFD\LRFRVersionMgrListener.h" />
+    <ClInclude Include="..\Include\LRFD\MBEManager.h" />
+    <ClInclude Include="..\Include\LRFD\MBEManagerListener.h" />
     <ClInclude Include="..\Include\LRFD\LumpSumLosses.h" />
     <ClInclude Include="..\Include\LRFD\NoncompositeApproximateLosses2005.h" />
     <ClInclude Include="..\Include\LRFD\PCIUHPCCreepCoefficient.h" />
@@ -268,10 +284,9 @@
     <ClInclude Include="..\Include\LRFD\RefinedLossesTxDOT2013.h" />
     <ClInclude Include="..\Include\LRFD\Shear.h" />
     <ClInclude Include="..\Include\LRFD\StrandPool.h" />
-    <ClInclude Include="..\Include\LRFD\UnitTest.h" />
     <ClInclude Include="..\Include\LRFD\Utility.h" />
-    <ClInclude Include="..\Include\LRFD\VersionMgr.h" />
-    <ClInclude Include="..\Include\LRFD\VersionMgrListener.h" />
+    <ClInclude Include="..\Include\LRFD\BDSManager.h" />
+    <ClInclude Include="..\Include\LRFD\BDSManagerListener.h" />
     <ClInclude Include="..\Include\LRFD\XCodeVersion.h" />
     <ClInclude Include="..\Include\LRFD\XCreepCoefficient.h" />
     <ClInclude Include="..\Include\LRFD\XPsLosses.h" />
@@ -285,15 +300,13 @@
     <ResourceCompile Include="Lrfd.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\COGO\Cogo.vcxproj">
-      <Project>{905d99ea-8bc5-45ab-bd0e-9531bb9d9f95}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\CoordGeom\CoordGeom.vcxproj">
+      <Project>{7ea2e3a4-a83a-412c-831a-057e9ec9e73c}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Material\Material.vcxproj">
+    <ProjectReference Include="..\Materials\Materials.vcxproj">
       <Project>{3904763e-7a13-445f-8544-260047d333cd}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

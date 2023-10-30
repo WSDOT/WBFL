@@ -127,37 +127,15 @@ void CTestCircularSegment::TestICircularSegment()
    center.Release();
    center.CoCreateInstance(CLSID_Point2d);
    center->Move(10,10);
-   TRY_TEST(circseg->putref_Center(nullptr),E_INVALIDARG);
-   TRY_TEST(circseg->putref_Center(center),S_OK);
+   TRY_TEST(circseg->put_Center(nullptr),E_INVALIDARG);
+   TRY_TEST(circseg->put_Center(center),S_OK);
    CComPtr<IPoint2d> centerTest;
    TRY_TEST(circseg->get_Center(&centerTest),S_OK);
-   TRY_TEST(center.IsEqualObject(centerTest),true);
    centerTest->get_X(&x);
    centerTest->get_Y(&y);
    TRY_TEST(IsEqual(x,10.0),true);
    TRY_TEST(IsEqual(y,10.0),true);
    
-   // Center is referencial (test it)
-   center->Move(20,20); 
-   centerTest->get_X(&x);
-   centerTest->get_Y(&y);
-   TRY_TEST(IsEqual(x,20.0),true);
-   TRY_TEST(IsEqual(y,20.0),true);
-   centerTest.Release();
-   TRY_TEST(circseg->get_Center(&centerTest),S_OK);
-   centerTest->get_X(&x);
-   centerTest->get_Y(&y);
-   TRY_TEST(IsEqual(x,20.0),true);
-   TRY_TEST(IsEqual(y,20.0),true);
-
-   centerTest->Move(90,90);
-   center.Release();
-   circseg->get_Center(&center);
-   center->get_X(&x);
-   center->get_Y(&y);
-   TRY_TEST(IsEqual(x,90.0),true);
-   TRY_TEST(IsEqual(y,90.0),true);
-
    // Hook point is referencial
    hook.Release();
    hook.CoCreateInstance(CLSID_Point2d);
@@ -191,7 +169,7 @@ void CTestCircularSegment::TestICircularSegment()
    // center should not move when rotation is set.
    // Move center to 50,50 so that it isnt' at 0,0
    center->Move(50,50);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    mo = 2.0;
    circseg->put_MidOrdinate(mo);
 
@@ -212,21 +190,6 @@ void CTestCircularSegment::TestICircularSegment()
    hook->get_Y(&hy);
    TRY_TEST(IsEqual(hx,50.0),true);
    TRY_TEST(IsEqual(hy,52.0),true);
-
-   // try moving hook point and see if center follows
-   hook->put_X(100);
-   hook->put_Y(100);
-   center->get_X(&cx);
-   center->get_Y(&cy);
-   TRY_TEST(IsEqual(cx,100.0),true);
-   TRY_TEST(IsEqual(cy,98.0),true);
-
-   center->put_X(200);
-   center->put_Y(200);
-   hook->get_X(&hx);
-   hook->get_Y(&hy);
-   TRY_TEST(IsEqual(hx,200.0),true);
-   TRY_TEST(IsEqual(hy,202.0),true);
 
    // Test Interface Pointers
    CComPtr<IShape> shape;
@@ -398,7 +361,7 @@ void CTestCircularSegment::TestIShape()
    CComPtr<IPoint2d> center;
    circseg->get_Center(&center);
    center->Move(50,40);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    TRY_TEST(shape->get_Perimeter(&perimeter),S_OK);
    TRY_TEST(IsEqual(perimeter,M_PI*50+100.),true);
 
@@ -406,7 +369,7 @@ void CTestCircularSegment::TestIShape()
    // Test PointInShape
    circseg->put_Rotation(0.0);
    center->Move(10,10);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    CComPtr<IPoint2d> pnt;
    pnt.CoCreateInstance(CLSID_Point2d);
    pnt->Move(70,10);
@@ -452,7 +415,7 @@ void CTestCircularSegment::TestIShape()
    Float64 dist;
    circseg->put_Rotation(M_PI/4);
    center->Move(10,10);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(50);
 
@@ -582,17 +545,17 @@ void CTestCircularSegment::TestIShape()
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(40);
    center->Move(10,10);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
 
    CComPtr<IPoint2dCollection> points;
    TRY_TEST(shape->get_PolyPoints(nullptr),E_POINTER);
    TRY_TEST(shape->get_PolyPoints(&points),S_OK);
 
-   CollectionIndexType nPoints = sizeof(px)/sizeof(Float64);
-   CollectionIndexType cPoints;
+   IndexType nPoints = sizeof(px)/sizeof(Float64);
+   IndexType cPoints;
    points->get_Count(&cPoints);
    TRY_TEST(cPoints,nPoints); // nPoints polypoints
-   for ( CollectionIndexType i = 0; i < cPoints && i < nPoints; i++ )
+   for ( IndexType i = 0; i < cPoints && i < nPoints; i++ )
    {
       CComPtr<IPoint2d> p;
       points->get_Item(i,&p);
@@ -613,7 +576,7 @@ void CTestCircularSegment::TestIShape()
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(50);
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
 
    CComPtr<IShapeProperties> props;
    TRY_TEST(shape->get_ShapeProperties(nullptr),E_POINTER);
@@ -662,7 +625,7 @@ void CTestCircularSegment::TestIShape()
 
    // rotate 90 deg and check results
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Rotation(PI_OVER_2);
 
    props.Release();
@@ -708,7 +671,11 @@ void CTestCircularSegment::TestIShape()
    // its polygonal representation.
    center->put_X(50);
    center->put_Y(-90);
-   circseg->putref_Center(center);
+   
+   center->put_X(0);
+   center->put_Y(0);
+
+   circseg->put_Center(center);
    circseg->put_Radius(60);
    circseg->put_MidOrdinate(40);
    circseg->put_Rotation( 0.6969696969 );
@@ -717,9 +684,25 @@ void CTestCircularSegment::TestIShape()
 
    points.Release();
    shape->get_PolyPoints(&points);
+   
+   points->get_Count(&cPoints);
+   ATLTRACE("Trace of Points for CircularSegment - count = %d \n", cPoints);
+   ATLTRACE("  pt         X         Y\n");
+   ATLTRACE("---------------------------------\n");
+   for (IndexType ip = 0; ip < cPoints; ip++)
+   {
+      CComPtr<IPoint2d> pnt;
+      points->get_Item(ip, &pnt);
+      Float64 x, y;
+      pnt->get_X(&x);
+      pnt->get_Y(&y);
+      ATLTRACE(" %4d  %10f %10f \n", ip, x, y);
+   }
+   ATLTRACE("---------------------------\n");
+
    CComPtr<IPolyShape> polyShape;
    polyShape.CoCreateInstance(CLSID_PolyShape);
-   polyShape->AddPoints(points);
+   polyShape->SetPoints(points);
    CComPtr<IShapeProperties> props2;
    CComQIPtr<IShape> shape2(polyShape);
    shape2->get_ShapeProperties(&props2);
@@ -760,7 +743,7 @@ void CTestCircularSegment::TestIShape()
    circseg->put_Radius(radius);
    circseg->put_MidOrdinate(radius);
    center->Move(10,10);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
 
    // clipping line well below shape (shape on right of line)
    p1->Move( 100,-70);
@@ -772,7 +755,7 @@ void CTestCircularSegment::TestIShape()
    TRY_TEST(shape->ClipWithLine(line,&clipShape),S_OK);
    props.Release();
    CComQIPtr<ICircularSegment> qiShape(clipShape);
-   TRY_TEST(qiShape != 0, true);
+   TRY_TEST(qiShape != nullptr, true);
    clipShape->get_ShapeProperties(&props);
    props->get_Area(&area);
    TRY_TEST(IsEqual(area,M_PI*radius*radius/2),true);
@@ -786,7 +769,7 @@ void CTestCircularSegment::TestIShape()
 
    // clip shape in such a way that we are left with a quarter circle
    center->Move(100,100);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Rotation(PI_OVER_2);
    radius = 50;
    circseg->put_Radius(radius);
@@ -817,7 +800,7 @@ void CTestCircularSegment::TestIShape()
 
    // clip in such a way the the result is still a circular segment
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(60);
    circseg->put_Rotation(0);
@@ -872,7 +855,7 @@ void CTestCircularSegment::TestIShape()
    // Clip with line going both direction. Sum of clipped shape areas
    // must be equal to the area of the original shape
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(100);
    circseg->put_MidOrdinate(70);
    circseg->put_Rotation(0);
@@ -903,7 +886,7 @@ void CTestCircularSegment::TestIShape()
 
    // same as above, but this time shape is a full circle (interior angle = 360)
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(100);
    circseg->put_Rotation(0);
@@ -955,7 +938,7 @@ void CTestCircularSegment::TestIShape()
    circseg->put_Radius(radius);
    circseg->put_MidOrdinate(radius);
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Rotation(0);
 
    // Use a rectangle that is bigger than the entire shape
@@ -973,7 +956,7 @@ void CTestCircularSegment::TestIShape()
    TRY_TEST(shape->ClipIn(clipRect,&clipShape),S_OK);
    
    CComQIPtr<ICircularSegment> qiShape2(clipShape);
-   TRY_TEST(qiShape2 != 0, true);
+   TRY_TEST(qiShape2 != nullptr, true);
 
    props.Release();
    shape->get_ShapeProperties(&props);
@@ -1026,7 +1009,7 @@ void CTestCircularSegment::TestIXYPosition()
    cx = 10;
    cy = 10;
    center->Move(cx,cy);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(40);
    circseg->put_Rotation(M_PI/4);
@@ -1070,7 +1053,7 @@ void CTestCircularSegment::TestIXYPosition()
 
    // Test OffsetEx
    center->Move(cx,cy);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(40);
    circseg->put_Rotation(M_PI/4);
@@ -1103,7 +1086,7 @@ void CTestCircularSegment::TestIXYPosition()
 
    // Test LocatorPoint
    center->Move(0,0);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    Float64 radius = 50;
    circseg->put_Radius(radius);
    circseg->put_MidOrdinate(40);
@@ -1116,10 +1099,10 @@ void CTestCircularSegment::TestIXYPosition()
    TRY_TEST( position->put_LocatorPoint(lpBottomLeft,nullptr), E_INVALIDARG );
    TRY_TEST( position->get_LocatorPoint(lpBottomLeft,nullptr), E_POINTER );
 
+   CComPtr<ILineSegment2d> chord;
+   circseg->get_Chord(&chord);
    Float64 lc; // long chord
-   Float64 angle;
-   circseg->get_InteriorAngle(&angle);
-   lc = 2*radius*sin(angle/2);
+   chord->get_Length(&lc);
 
    // Top Left
    lpin->Move(0,0);
@@ -1293,7 +1276,7 @@ void CTestCircularSegment::TestIXYPosition()
    // Test Rotate and RotateEx
    TRY_TEST(position->RotateEx(nullptr,0.0),E_INVALIDARG);
    center->Move(10,10);
-   circseg->putref_Center(center);
+   circseg->put_Center(center);
    circseg->put_Radius(50);
    circseg->put_MidOrdinate(40);
    circseg->put_Rotation(0);
@@ -1307,13 +1290,12 @@ void CTestCircularSegment::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_CircularSegment ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICircularSegment ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
@@ -1323,7 +1305,7 @@ void CTestCircularSegment::TestIObjectSafety()
 {
    CComPtr<IObjectSafety> safety;
    TRY_TEST( safety.CoCreateInstance( CLSID_CircularSegment ), S_OK );
-   TRY_TEST( safety != 0, true );
+   TRY_TEST( safety != nullptr, true );
 
    DWORD dwSupported;
    DWORD dwEnabled;
@@ -1331,10 +1313,6 @@ void CTestCircularSegment::TestIObjectSafety()
    TRY_TEST( safety->SetInterfaceSafetyOptions( IID_IUnknown, INTERFACESAFE_FOR_UNTRUSTED_CALLER, INTERFACESAFE_FOR_UNTRUSTED_CALLER), S_OK);
 
    TRY_TEST( safety->GetInterfaceSafetyOptions( IID_ICircularSegment, &dwSupported, &dwEnabled ), S_OK );
-   TRY_TEST( dwSupported, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
-   TRY_TEST( dwEnabled, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
-
-   TRY_TEST( safety->GetInterfaceSafetyOptions( IID_IStructuredStorage2, &dwSupported, &dwEnabled ), S_OK );
    TRY_TEST( dwSupported, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
    TRY_TEST( dwEnabled, INTERFACESAFE_FOR_UNTRUSTED_CALLER );
 
@@ -1360,7 +1338,7 @@ void CTestCircularSegment::OtherTests()
    CComPtr<IPoint2d> center;
    center.CoCreateInstance(CLSID_Point2d);
    center->Move(100,100);
-   sc->putref_Center(center);
+   sc->put_Center(center);
 
    CComQIPtr<IShape> shape(sc);
    CComPtr<IShapeProperties> props;

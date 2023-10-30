@@ -51,7 +51,7 @@ STDMETHODIMP CLongArray::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CLongArray::get_Item(CollectionIndexType relPosition, LONG *pVal)
+STDMETHODIMP CLongArray::get_Item(IndexType relPosition, LONG *pVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -68,7 +68,7 @@ STDMETHODIMP CLongArray::get_Item(CollectionIndexType relPosition, LONG *pVal)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::put_Item(CollectionIndexType relPosition, LONG newVal)
+STDMETHODIMP CLongArray::put_Item(IndexType relPosition, LONG newVal)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -99,7 +99,7 @@ STDMETHODIMP CLongArray::Add(LONG item)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Remove(CollectionIndexType relPosition)
+STDMETHODIMP CLongArray::Remove(IndexType relPosition)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -120,7 +120,7 @@ STDMETHODIMP CLongArray::Remove(CollectionIndexType relPosition)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Insert(CollectionIndexType relPosition, LONG item)
+STDMETHODIMP CLongArray::Insert(IndexType relPosition, LONG item)
 {
    if ( !IsValidIndex(relPosition,m_Values) )
       return E_INVALIDARG;
@@ -141,7 +141,7 @@ STDMETHODIMP CLongArray::Insert(CollectionIndexType relPosition, LONG item)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Reserve(CollectionIndexType count)
+STDMETHODIMP CLongArray::Reserve(IndexType count)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -213,7 +213,7 @@ STDMETHODIMP CLongArray::get__NewEnum(IUnknown** ppUnk)
 	*ppUnk = nullptr;
 	HRESULT hRes = S_OK;
 
-   typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyLong, ContainerType > VecEnumType;
+   using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, _CopyLong, ContainerType >;
 	CComObject<VecEnumType>* p;
 	hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	if (SUCCEEDED(hRes))
@@ -231,7 +231,7 @@ STDMETHODIMP CLongArray::get__EnumElements(/*[out, retval]*/ IEnumLongArray* *pp
 {
    CHECK_RETOBJ(ppenum);
 
-   typedef CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, LONG, _CopyLongC, ContainerType> MyEnumType;
+   using MyEnumType = CComEnumOnSTL<IEnumLongArray, &IID_IEnumLongArray, LONG, _CopyLongC, ContainerType>;
    CComObject<MyEnumType>* pEnum;
    HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
    if ( FAILED(hr) )
@@ -249,7 +249,7 @@ STDMETHODIMP CLongArray::get__EnumElements(/*[out, retval]*/ IEnumLongArray* *pp
    return S_OK;
 }
 
-STDMETHODIMP CLongArray::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CLongArray::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -281,7 +281,7 @@ STDMETHODIMP CLongArray::Clone(ILongArray **clone)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::ReDim(CollectionIndexType size)
+STDMETHODIMP CLongArray::ReDim(IndexType size)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -295,11 +295,11 @@ STDMETHODIMP CLongArray::ReDim(CollectionIndexType size)
 	return S_OK;
 }
 
-STDMETHODIMP CLongArray::Find(LONG value, CollectionIndexType *fndIndex)
+STDMETHODIMP CLongArray::Find(LONG value, IndexType *fndIndex)
 {
    HRESULT hr = E_FAIL;
 
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    for(ContainerIterator it=m_Values.begin(); it!=m_Values.end(); it++)
    {
       if(value == *it)

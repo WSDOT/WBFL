@@ -34,10 +34,10 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 
-static void FactorAndSumStressResults(ISectionStressResults* results, ISectionStressResults* lc_results, CollectionIndexType numPOIs, Float64 Factor)
+static void FactorAndSumStressResults(ISectionStressResults* results, ISectionStressResults* lc_results, IndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (CollectionIndexType ip = 0; ip<numPOIs; ip++)
+   for (IndexType ip = 0; ip<numPOIs; ip++)
    {
       CComPtr<ISectionStressResult> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -48,10 +48,10 @@ static void FactorAndSumStressResults(ISectionStressResults* results, ISectionSt
    }
 }
 
-static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResult3Ds* lc_results, CollectionIndexType numPOIs, Float64 Factor)
+static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResult3Ds* lc_results, IndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (CollectionIndexType ip = 0; ip<numPOIs; ip++)
+   for (IndexType ip = 0; ip<numPOIs; ip++)
    {
       CComPtr<ISectionResult3D> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -62,10 +62,10 @@ static void FactorAndSumSectionResults(ISectionResult3Ds* results, ISectionResul
    }
 }
 
-static void FactorAndSumResults(IResult3Ds* results, IResult3Ds* lc_results, CollectionIndexType numPOIs, Float64 Factor)
+static void FactorAndSumResults(IResult3Ds* results, IResult3Ds* lc_results, IndexType numPOIs, Float64 Factor)
 {
    CHRException hr;
-   for (CollectionIndexType ip = 0; ip<numPOIs; ip++)
+   for (IndexType ip = 0; ip<numPOIs; ip++)
    {
       CComPtr<IResult3D> sumres, newres;
       hr = results->get_Item(ip, &sumres);
@@ -107,7 +107,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs
    {
       *pResults = nullptr;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = POIs->get_Count(&num_pois);
 
       // create our results object and fill it with zeroed results
@@ -120,7 +120,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs
       hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create a zeroed results array
-      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          CComPtr<ISectionResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_ISectionResult3D, (void**)&pres);
@@ -130,14 +130,14 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs
       CMB_HANDLE_CANCEL_PROGRESS();
 
        // get number of load cases
-      CollectionIndexType num_lcs;
+      IndexType num_lcs;
       hr = Config->get_LoadCaseFactorCount(&num_lcs);
 
       ResultsSummationType summ;
       hr = Config->get_SummationType(&summ);
 
       // loop over load case results and apply them to combination
-      for (CollectionIndexType i_lc = 0; i_lc<num_lcs; i_lc++)
+      for (IndexType i_lc = 0; i_lc<num_lcs; i_lc++)
       {
          CComBSTR lcs_name;
          Float64 factor;
@@ -158,9 +158,9 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeForces(IIDArray* POIs
 
       if (ll_factor!=0.0)
       {
-         CollectionIndexType count;
+         IndexType count;
          Config->GetLiveLoadConfigurationCount(&count);
-         for (CollectionIndexType i = 0; i < count; i++ )
+         for (IndexType i = 0; i < count; i++ )
          {
             CComPtr<ILiveLoadConfiguration> ll_config;
             hr = Config->GetLiveLoadConfiguration(i,&ll_config);
@@ -201,7 +201,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray*
    {
       *pResults = nullptr;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = POIs->get_Count(&num_pois);
 
       // create our results object and fill it with zeroed results
@@ -214,7 +214,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray*
       hr = ::CoGetClassObject(CLSID_SectionResult3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create a zeroed results array
-      for (CollectionIndexType ipoi = 0; ipoi<=num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<=num_pois; ipoi++)
       {
          CComPtr<ISectionResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_ISectionResult3D, (void**)&pres);
@@ -224,14 +224,14 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray*
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // get number of load cases
-      CollectionIndexType num_lcs;
+      IndexType num_lcs;
       hr = Config->get_LoadCaseFactorCount(&num_lcs);
 
       ResultsSummationType summ;
       hr = Config->get_SummationType(&summ);
 
       // loop over load case results and apply them to combination
-      for (CollectionIndexType i_lc = 0; i_lc<num_lcs; i_lc++)
+      for (IndexType i_lc = 0; i_lc<num_lcs; i_lc++)
       {
          CComBSTR lcs_name;
          Float64 factor;
@@ -252,9 +252,9 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeDeflections(IIDArray*
 
       if (ll_factor!=0.0)
       {
-         CollectionIndexType count;
+         IndexType count;
          Config->GetLiveLoadConfigurationCount(&count);
-         for ( CollectionIndexType i = 0; i < count; i++ )
+         for ( IndexType i = 0; i < count; i++ )
          {
             CComPtr<ILiveLoadConfiguration> ll_config;
             hr = Config->GetLiveLoadConfiguration(i,&ll_config);
@@ -295,7 +295,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* P
    {
       *pResults = nullptr;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = POIs->get_Count(&num_pois);
 
       // create our results object and fill it with zeroed results
@@ -308,7 +308,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* P
       hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create a zeroed results array
-      for (CollectionIndexType ipoi = 0; ipoi<=num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<=num_pois; ipoi++)
       {
          CComPtr<IResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
@@ -318,14 +318,14 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* P
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // get number of load cases
-      CollectionIndexType num_lcs;
+      IndexType num_lcs;
       hr = Config->get_LoadCaseFactorCount(&num_lcs);
 
       ResultsSummationType summ;
       hr = Config->get_SummationType(&summ);
 
       // loop over load case results and apply them to combination
-      for (CollectionIndexType i_lc = 0; i_lc<num_lcs; i_lc++)
+      for (IndexType i_lc = 0; i_lc<num_lcs; i_lc++)
       {
          CComBSTR lcs_name;
          Float64 factor;
@@ -345,9 +345,9 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeReactions(IIDArray* P
       hr = Config->get_LiveLoadFactor(&ll_factor);
       if (ll_factor!=0.0)
       {
-         CollectionIndexType count;
+         IndexType count;
          Config->GetLiveLoadConfigurationCount(&count);
-         for ( CollectionIndexType i = 0; i < count; i++ )
+         for ( IndexType i = 0; i < count; i++ )
          {
             CComPtr<ILiveLoadConfiguration> ll_config;
             hr = Config->GetLiveLoadConfiguration(i,&ll_config);
@@ -388,7 +388,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(II
    {
       *pResults = nullptr;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = POIs->get_Count(&num_pois);
 
       // create our results object and fill it with zeroed results
@@ -401,7 +401,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(II
       hr = ::CoGetClassObject(CLSID_Result3D,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create a zeroed results array
-      for (CollectionIndexType ipoi = 0; ipoi<=num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<=num_pois; ipoi++)
       {
          CComPtr<IResult3D> pres;
          hr = factory->CreateInstance(nullptr, IID_IResult3D, (void**)&pres);
@@ -411,14 +411,14 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(II
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // get number of load cases
-      CollectionIndexType num_lcs;
+      IndexType num_lcs;
       hr = Config->get_LoadCaseFactorCount(&num_lcs);
 
       ResultsSummationType summ;
       hr = Config->get_SummationType(&summ);
 
       // loop over load case results and apply them to combination
-      for (CollectionIndexType i_lc = 0; i_lc<num_lcs; i_lc++)
+      for (IndexType i_lc = 0; i_lc<num_lcs; i_lc++)
       {
          CComBSTR lcs_name;
          Float64 factor;
@@ -439,9 +439,9 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeSupportDeflections(II
 
       if (ll_factor!=0.0)
       {
-         CollectionIndexType count;
+         IndexType count;
          Config->GetLiveLoadConfigurationCount(&count);
-         for ( CollectionIndexType i = 0; i < count; i++ )
+         for ( IndexType i = 0; i < count; i++ )
          {
             CComPtr<ILiveLoadConfiguration> ll_config;
             hr = Config->GetLiveLoadConfiguration(i,&ll_config);
@@ -483,7 +483,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* PO
    {
       *pResults = nullptr;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = POIs->get_Count(&num_pois);
 
       // create our results object and fill it with zeroed results
@@ -496,7 +496,7 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* PO
       hr = ::CoGetClassObject(CLSID_SectionStressResult,CLSCTX_ALL,nullptr,IID_IClassFactory,(void**)&factory);
 
       // Create results of zeros
-      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          PoiIDType poi_id;
          hr = POIs->get_Item(ipoi, &poi_id);
@@ -509,16 +509,16 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* PO
          m_pCombiner->GetStressPoints(poi_id, Stage, &left_sps, &right_sps);
 
          // left
-         CollectionIndexType cnt;
+         IndexType cnt;
          hr = left_sps->get_Count(&cnt);
-         for (CollectionIndexType i = 0; i<cnt; i++)
+         for (IndexType i = 0; i<cnt; i++)
          {
             hr = pres->AddLeftResult(0.0);
          }
 
          // right
          hr = right_sps->get_Count(&cnt);
-         for (CollectionIndexType i = 0; i<cnt; i++)
+         for (IndexType i = 0; i<cnt; i++)
          {
             hr = pres->AddRightResult(0.0);
          }
@@ -529,14 +529,14 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* PO
       CMB_HANDLE_CANCEL_PROGRESS();
 
       // get number of load cases
-      CollectionIndexType num_lcs;
+      IndexType num_lcs;
       hr = Config->get_LoadCaseFactorCount(&num_lcs);
 
       ResultsSummationType summ;
       hr = Config->get_SummationType(&summ);
 
       // loop over load case results and apply them to combination
-      for (CollectionIndexType i_lc = 0; i_lc<num_lcs; i_lc++)
+      for (IndexType i_lc = 0; i_lc<num_lcs; i_lc++)
       {
          CComBSTR lcs_name;
          Float64 factor;
@@ -557,9 +557,9 @@ STDMETHODIMP CConcurrentLoadCombinationResponseAgg::ComputeStresses(IIDArray* PO
 
       if (ll_factor!=0.0)
       {
-         CollectionIndexType count;
+         IndexType count;
          Config->GetLiveLoadConfigurationCount(&count);
-         for ( CollectionIndexType i = 0; i < count; i++ )
+         for ( IndexType i = 0; i < count; i++ )
          {
             CComPtr<ILiveLoadConfiguration> ll_config;
             hr = Config->GetLiveLoadConfiguration(i,&ll_config);

@@ -135,6 +135,26 @@ STDMETHODIMP CMultiWebSection2::get_Beam(IMultiWeb2** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CMultiWebSection2::get_GirderShape(IShape** ppShape)
+{
+   return m_Beam->get_Shape(ppShape);
+}
+
+STDMETHODIMP CMultiWebSection2::get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+{
+   CHECK_RETVAL(pnVoids);
+   *pnVoids = 0;
+   return S_OK;
+}
+
+STDMETHODIMP CMultiWebSection2::get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   ATLASSERT(false);
+   *ppShape = nullptr;
+   return E_INVALIDARG;
+}
+
 STDMETHODIMP CMultiWebSection2::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
    // work point is at top center
@@ -613,6 +633,11 @@ STDMETHODIMP CMultiWebSection2::GetWebWidthProjectionsForDebonding(IUnkArray** p
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CMultiWebSection2::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   return m_Shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CMultiWebSection2::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    return m_Shape->FurthestDistance(line,pVal);
@@ -738,17 +763,17 @@ STDMETHODIMP CMultiWebSection2::get__NewEnum(IUnknown* *pVal)
    return m_CompositeShape->get__NewEnum(pVal);
 }
 
-STDMETHODIMP CMultiWebSection2::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+STDMETHODIMP CMultiWebSection2::get_Item(IndexType idx, ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);
 }
 
-STDMETHODIMP CMultiWebSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CMultiWebSection2::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
-STDMETHODIMP CMultiWebSection2::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CMultiWebSection2::Replace(IndexType idx,IShape* pShape)
 {
    return m_CompositeShape->Replace(idx,pShape);
 }
@@ -763,7 +788,7 @@ STDMETHODIMP CMultiWebSection2::AddShapeEx(ICompositeShapeItem* shapeItem)
    return m_CompositeShape->AddShapeEx(shapeItem);
 }
 
-STDMETHODIMP CMultiWebSection2::Remove(CollectionIndexType idx)
+STDMETHODIMP CMultiWebSection2::Remove(IndexType idx)
 {
    return m_CompositeShape->Remove(idx);
 }
@@ -773,7 +798,7 @@ STDMETHODIMP CMultiWebSection2::Clear()
    return m_CompositeShape->Clear();
 }
 
-STDMETHODIMP CMultiWebSection2::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CMultiWebSection2::get_Count(IndexType *pVal)
 {
    return m_CompositeShape->get_Count(pVal);
 }
@@ -787,9 +812,4 @@ STDMETHODIMP CMultiWebSection2::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return m_CompositeShape->get_XYPosition(pVal);
-}
-
-STDMETHODIMP CMultiWebSection2::get_StructuredStorage(IStructuredStorage2* *pStrStg)
-{
-   return m_CompositeShape->get_StructuredStorage(pStrStg);
 }

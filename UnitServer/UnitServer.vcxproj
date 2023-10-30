@@ -57,11 +57,12 @@
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
     <EmbedManifest>false</EmbedManifest>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -73,6 +74,7 @@
       <GenDoxygen>false</GenDoxygen>
       <GenIntellisense>true</GenIntellisense>
       <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
     </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />
@@ -121,8 +123,8 @@
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ModuleDefinitionFile>.\UnitServer.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
@@ -130,6 +132,9 @@
       <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3D.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -153,13 +158,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CXX_Tree_Mapping_Rule>
-      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
+      <AdditionalOptions> --hxx-prologue "#include &lt;WBFLUnitServer\UnitServerExp.h&gt;" --hxx-prologue "#include &lt;WBFLUnitServer\AutoLib.h&gt;" --cxx-prologue "#include \"stdafx.h\""</AdditionalOptions>
       <OutDir>.\Schema</OutDir>
       <CharType>1</CharType>
       <GenSerialization>true</GenSerialization>
       <GenDoxygen>false</GenDoxygen>
       <GenIntellisense>true</GenIntellisense>
       <ExportSymbol>UNITSERVERCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
     </CXX_Tree_Mapping_Rule>
     <PreBuildEvent>
       <Command />
@@ -196,6 +202,7 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -208,14 +215,15 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\UnitServer.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3.lib</AdditionalDependencies>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

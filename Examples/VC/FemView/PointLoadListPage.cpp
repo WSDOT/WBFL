@@ -55,18 +55,18 @@ BOOL CPointLoadListPage::OnInitDialog()
 
    int listIdx = 0;
 
-   CollectionIndexType nLoadings;
+   IndexType nLoadings;
    loadings->get_Count(&nLoadings);
-   for ( CollectionIndexType idx = 0; idx < nLoadings; idx++ )
+   for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(idx,&loading);
 
       CComPtr<IFem2dPointLoadCollection> loads;
       loading->get_PointLoads(&loads);
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       loads->get_Count(&nLoads);
-      for ( CollectionIndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
+      for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
          CComPtr<IFem2dPointLoad> load;
          loads->get_Item(ldIdx,&load);

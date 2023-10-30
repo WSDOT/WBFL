@@ -61,10 +61,10 @@
     <ClCompile Include="StrSave.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LogDumpContext.cpp">
+    <ClCompile Include="LogFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LogFile.cpp">
+    <ClCompile Include="LogContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -135,13 +135,13 @@
     <ClInclude Include="StrSave.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\WBFLTools\LogDumpContext.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LogFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\WBFLTools\LogContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

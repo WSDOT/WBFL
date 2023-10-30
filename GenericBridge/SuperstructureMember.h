@@ -71,7 +71,7 @@ private:
    GirderIDType m_LeftSSMbrID, m_RightSSMbrID;
    IGenericBridge* m_pBridge; // weak referece to bridge
 
-   typedef std::pair<EndType,std::pair<CComBSTR,ReleaseType> > MemberReleaseDataType;
+   using MemberReleaseDataType = std::pair<EndType,std::pair<CComBSTR,ReleaseType>>;
 
    std::vector<CComPtr<ISuperstructureMemberSegment>> m_Segments;
 
@@ -105,7 +105,7 @@ public:
    STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
    STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
    STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/IndexType* count) override;
 
 // IStructuredStorage2
 public:

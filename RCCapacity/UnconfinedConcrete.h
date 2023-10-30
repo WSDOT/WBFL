@@ -30,6 +30,7 @@
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
+#include <Materials/UnconfinedConcreteModel.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnconfinedConcrete
@@ -39,13 +40,11 @@ class ATL_NO_VTABLE CUnconfinedConcrete :
 	public ISupportErrorInfo,
 	public IUnconfinedConcrete,
 	public IStressStrain,
-	public ISupportUnitServer,
-   public IStructuredStorage2,
-   public IPersist
+	public ISupportUnitServer
 {
 public:
    CUnconfinedConcrete() :
-      m_bstrName("Concrete")
+      m_Model(_T("Concrete"))
 	{
 	}
 
@@ -59,26 +58,17 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CUnconfinedConcrete)
 	COM_INTERFACE_ENTRY(IUnconfinedConcrete)
 	COM_INTERFACE_ENTRY(IStressStrain)
-   COM_INTERFACE_ENTRY(ISupportUnitServer)
+	COM_INTERFACE_ENTRY(ISupportUnitServer)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
-   Float64 m_Fc; // in KSI units
-   Float64 m_MinStrain;
-   Float64 m_MaxStrain;
-   CComPtr<IUnitServer> m_UnitServer;
-   CComBSTR m_bstrName;
+   WBFL::Materials::UnconfinedConcreteModel m_Model;
+	CComPtr<IUnitServer> m_UnitServer;
+	CComPtr<IUnit> m_ksiUnit;
+	CComPtr<IUnitConvert2> m_Convert;
 
-   // cached values - updated when f'c changes
-   Float64 m_n;
-   Float64 m_k;
-   Float64 m_Ec;
-   Float64 m_ec;
-
-   void UpdateParameters();
-   Float64 GetEc();
+	void SetupUnits();
+	void ClearUnits();
 
 // ISupportsErrorInfo
 public:
@@ -99,19 +89,10 @@ public:
    STDMETHOD(get_ModulusOfElasticity)(/*[out,retval]*/Float64* pE) override;
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 
-// ISupportUnitServer
+	// ISupportUnitServer
 public:
-		STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal ) override;
-		STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal ) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
+	STDMETHOD(get_UnitServer)(/*[out,retval]*/ IUnitServer** ppVal) override;
+	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
 #endif //__UNCONFINEDCONCRETE_H_

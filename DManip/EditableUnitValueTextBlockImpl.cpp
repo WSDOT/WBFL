@@ -69,7 +69,7 @@ HRESULT CEditableUnitValueTextBlockImpl::FinalConstruct()
    str.Format(_T("%f"),m_Value);
    m_EditableTextBlock->SetText(str);
 
-   m_pctlUnitTag = new CStatic;
+   m_pctlUnitTag = std::make_unique<CStatic>();
 
    return S_OK;
 }
@@ -78,9 +78,6 @@ void CEditableUnitValueTextBlockImpl::FinalRelease()
 {
    m_EditableTextBlock->UnregisterEventSink();
    m_EditableTextBlock.Release();
-
-   delete m_pctlUnitTag;
-   m_pctlUnitTag = nullptr;
 
    m_UnitSystem.Release();
 }
@@ -365,7 +362,7 @@ STDMETHODIMP_(bool) CEditableUnitValueTextBlockImpl::OnLButtonDown(UINT nFlags,C
 {
    // Confirm this point is really over the text block
    // Text blocks are often aggregated with other objects. The
-   // LButtonDown event could have occured over the other display object
+   // LButtonDown event could have occurred over the other display object
    // and been forwarded here. The edit task should not begin if
    // the mouse was not pressed over the text.
    CComPtr<iDisplayList> pDL;
@@ -632,10 +629,10 @@ STDMETHODIMP_(Float64) CEditableUnitValueTextBlockImpl::GetEditedValue()
    else
    {
       editedValue = _wtof(m_EditableTextBlock->GetEditedText()); // value in display units (without unit tag)
+      // Convert back to base units
+      m_UnitSystem->ConvertFromDisplayUnits(editedValue, m_bstrDisplayUnitGroup, &editedValue);
    }
 
-   // Convert back to base units
-   m_UnitSystem->ConvertFromDisplayUnits(editedValue,m_bstrDisplayUnitGroup,&editedValue);
 
    return editedValue;
 }

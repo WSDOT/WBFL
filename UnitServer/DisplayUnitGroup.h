@@ -35,8 +35,8 @@
 #include <string>
 #include "WbflUnitServerCP.h"
 
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > EnumDisplayUnits;
-typedef ICollectionOnSTLImpl<IDisplayUnitGroup,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnits> IDisplayUnitCollection;
+using EnumDisplayUnits = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IDisplayUnitCollection = ICollectionOnSTLImpl<IDisplayUnitGroup,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,EnumDisplayUnits>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayUnitGroup
@@ -105,7 +105,7 @@ public:
    STDMETHOD(get_UnitType)(/*[out,retval]*/BSTR* unitType) override;
    STDMETHOD(get_Item)(/*[in]*/ BSTR unitTag, /*[out, retval]*/ IDisplayUnit** retval) override;
 //   STDMETHOD(get__NewEnum)(/*[out, retval]*/ IUnknown** retval) override;
-   STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType* retval) override;
+   STDMETHOD(get_Count)(/*[out, retval]*/ IndexType* retval) override;
    STDMETHOD(Add)(/*[in]*/BSTR unitTag,/*[in]*/UnitSystemType unitSystem,/*[in]*/ IDisplayUnitFormatter* formatter,/*[in,defaultvalue(VARIANT_FALSE)]*/ VARIANT_BOOL bDefault,/*[out,retval]*/ IDisplayUnit** dispUnit) override;
    STDMETHOD(Clear)() override;
    STDMETHOD(Remove)(/*[in]*/BSTR unitTag) override;

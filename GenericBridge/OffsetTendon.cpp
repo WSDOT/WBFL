@@ -103,20 +103,20 @@ STDMETHODIMP COffsetTendon::AddSegment(ITendonSegment* segment)
    return E_FAIL;
 }
 
-STDMETHODIMP COffsetTendon::get_Segment(CollectionIndexType index,ITendonSegment** segment)
+STDMETHODIMP COffsetTendon::get_Segment(IndexType index,ITendonSegment** segment)
 {
    ATLASSERT(false); // offset tendon doesn't use segments
    return E_FAIL;
 }
 
-STDMETHODIMP COffsetTendon::get_Count(CollectionIndexType* count)
+STDMETHODIMP COffsetTendon::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = 0;
    return S_OK;
 }
 
-STDMETHODIMP COffsetTendon::RemoveSegment(CollectionIndexType index)
+STDMETHODIMP COffsetTendon::RemoveSegment(IndexType index)
 {
    ATLASSERT(false); // offset tendon doesn't use segments
    return E_FAIL;

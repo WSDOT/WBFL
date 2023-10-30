@@ -49,9 +49,9 @@
 #include <Units\Units.h>
 
 #define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
-#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
-#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
-#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
+#define LENGTH(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch))
+#define AREA(_x_)   (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch2))
+#define STRESS(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KSI))
 #endif // _DEBUG_LOGGING
 
 #ifdef _DEBUG
@@ -221,9 +221,6 @@ HRESULT CNLSolver::InitConcreteModel(IStressStrain** model,IUnitServer* unitServ
    (*model)->AddRef();
 
    CComQIPtr<IUnconfinedConcrete> ucc(*model);
-
-   CComQIPtr<ISupportUnitServer> sus(ucc);
-   sus->putref_UnitServer(unitServer);
 
    if ( FAILED(ucc->put_fc(fc)) )
    {
@@ -671,13 +668,13 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
    }
 
    // Compute Ft
-   CollectionIndexType nRebarLayers = 0;
+   IndexType nRebarLayers = 0;
    rcbeam->get_RebarLayerCount(&nRebarLayers);
    Float64 TotalAs = 0;
    Ft = 0;
    Mt = 0;
    fs->Clear();
-   for (CollectionIndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
+   for (IndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
    {
       Float64 ds, As, devFactor;
       rcbeam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
@@ -708,10 +705,10 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
 #endif // _DEBUG_
    }
 
-   CollectionIndexType nStrandLayers = 0;
+   IndexType nStrandLayers = 0;
    rcbeam->get_StrandLayerCount(&nStrandLayers);
    fps->Clear();
-   for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
+   for ( IndexType strand = 0; strand < nStrandLayers; strand++ )
    {
       Float64 dps, Aps, devFactor;
       rcbeam->GetStrandLayer(strand,&dps,&Aps,&devFactor);
@@ -1226,9 +1223,9 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* beam,Float64 Yguess,IUnkArray* sli
    // Rebar
    Float64 Es;
    beam->get_Es(&Es);
-   CollectionIndexType nRebarLayers = 0;
+   IndexType nRebarLayers = 0;
    beam->get_RebarLayerCount(&nRebarLayers);
-   for ( CollectionIndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
+   for ( IndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
    {
       Float64 ds, As, devFactor;
       beam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
@@ -1266,9 +1263,9 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* beam,Float64 Yguess,IUnkArray* sli
    // Strand
    Float64 Eps;
    beam->get_Eps(&Eps);
-   CollectionIndexType nStrandLayers;
+   IndexType nStrandLayers;
    beam->get_StrandLayerCount(&nStrandLayers);
-   for ( CollectionIndexType strandLayerIdx = 0; strandLayerIdx < nStrandLayers; strandLayerIdx++ )
+   for ( IndexType strandLayerIdx = 0; strandLayerIdx < nStrandLayers; strandLayerIdx++ )
    {
       Float64 dps, Aps, devFactor;
       beam->GetStrandLayer(strandLayerIdx,&dps,&Aps,&devFactor);

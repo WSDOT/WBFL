@@ -104,11 +104,11 @@ END_COM_MAP()
    STDMETHOD_(IDType,GetID)() override;
 
    STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) override;
-   STDMETHOD_(void,GetDisplayObject)(CollectionIndexType index,iDisplayObject** dispObj) override;
+   STDMETHOD_(void,GetDisplayObject)(IndexType index,iDisplayObject** dispObj) override;
    STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj) override;
    STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) override;
    STDMETHOD_(void,Clear)() override;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() override;
+   STDMETHOD_(IndexType,GetDisplayObjectCount)() override;
 
    STDMETHOD_(void,FindDisplayObjects)(CRect rect,     DisplayObjectContainer* dispObjs) override;
    STDMETHOD_(void,FindDisplayObjects)(CPoint point,   DisplayObjectContainer* dispObjs) override;

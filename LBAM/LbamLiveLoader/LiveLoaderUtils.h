@@ -159,7 +159,7 @@ inline HRESULT LLSectionToStressResults(IIDArray* POIs, BSTR stage, ILiveLoadMod
                                         ILiveLoadModelStressResults**pResults)
 {
    HRESULT hr;
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = forceRes->get_Count(&num_pois);
    if (FAILED(hr))
       return hr;
@@ -184,7 +184,7 @@ inline HRESULT LLSectionToStressResults(IIDArray* POIs, BSTR stage, ILiveLoadMod
       return hr;
 
    // loop over all pois and compute stresses due to optimization at that poi
-   for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+   for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
    {
       // use configuration object from force results to compute stresses
       // get left and right config objects

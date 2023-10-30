@@ -34,8 +34,9 @@
 #include "FilteredDfSegmentCollection.h"
 
 class CDistributionFactors;
-typedef CComSegmentCollection< IDistributionFactors, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment,CollectionIndexType > DistributionFactorCollImpl;
-typedef CPersistentCollection<CDistributionFactors, DistributionFactorCollImpl,CollectionIndexType> PersistentDistributionFactorCollImpl;
+using DistributionFactorCollImpl = CComSegmentCollection< IDistributionFactors, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment, IndexType>;
+using PersistentDistributionFactorCollImpl = CPersistentCollection<CDistributionFactors, DistributionFactorCollImpl,IndexType>;
+
 /////////////////////////////////////////////////////////////////////////////
 // CDistributionFactors
 class ATL_NO_VTABLE CDistributionFactors : 
@@ -109,13 +110,13 @@ public:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterAdd( StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnAfterAdd( StoredType* pVal, IndexType idx)
    {
       Fire_OnDistributionFactorsAdded(pVal->second.m_T, idx);
       return S_OK;
    }
 
-   virtual HRESULT OnBeforeRemove( StoredType* pVal, CollectionIndexType idx)
+   virtual HRESULT OnBeforeRemove( StoredType* pVal, IndexType idx)
    {
       try
       {
@@ -136,17 +137,17 @@ public:
       return S_OK;
    }
 
-   virtual HRESULT OnAfterRemove( CollectionIndexType idx)
+   virtual HRESULT OnAfterRemove( IndexType idx)
    {
       return S_OK; 
    }
 
-   virtual HRESULT OnAfterMoveTo( CollectionIndexType from, CollectionIndexType to)
+   virtual HRESULT OnAfterMoveTo( IndexType from, IndexType to)
    {
       Fire_OnDistributionFactorsMoveTo (from, to);
       return S_OK;
    }
-   virtual HRESULT OnAfterCopyTo( CollectionIndexType from, CollectionIndexType to)
+   virtual HRESULT OnAfterCopyTo( IndexType from, IndexType to)
    {
       Fire_OnDistributionFactorsCopyTo(from, to);
       return S_OK;

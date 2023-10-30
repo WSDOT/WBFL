@@ -158,10 +158,10 @@ private:
    bool m_IsValidated;
 
    // cache of ACTIVE load group names for each defined loadcase
-   typedef CAdapt<CComBSTR> NameHolder;
-   typedef std::vector< CComBSTR > NameVec;
-   typedef std::map< NameHolder, NameVec> LoadCaseList;
-   typedef LoadCaseList::iterator      LoadCaseIterator;
+   using NameHolder = CAdapt<CComBSTR>;
+   using NameVec = std::vector< CComBSTR >;
+   using LoadCaseList = std::map< NameHolder, NameVec>;
+   using LoadCaseIterator = LoadCaseList::iterator;
 
    LoadCaseList  m_LoadCases;
 
@@ -185,13 +185,13 @@ private:
          Float64   m_MinFactor;
          Float64   m_MaxFactor;
       };
-      typedef std::vector<LoadCaseFactors> LoadCaseFactorVec;
-      typedef LoadCaseFactorVec::iterator  LoadCaseFactorIterator;
+      using LoadCaseFactorVec = std::vector<LoadCaseFactors>;
+      using LoadCaseFactorIterator = LoadCaseFactorVec::iterator;
       LoadCaseFactorVec m_LoadCaseFactors;
    };
 
-   typedef std::map< NameHolder, ComboData > LoadCombinationList;
-   typedef LoadCombinationList::iterator     LoadCombinationIterator;
+   using LoadCombinationList = std::map< NameHolder, ComboData>;
+   using LoadCombinationIterator = LoadCombinationList::iterator;
 
    LoadCombinationList m_LoadCombinations;
 

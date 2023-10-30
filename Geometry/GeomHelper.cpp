@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Geometry - Geometric Modeling Library
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright © 1999-2020  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,14 +39,14 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 static Float64 ms_Tolerance = 1.0e-6;
-HRESULT geomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dFactory* pPointFactory, IPoint2dCollection **points)
+HRESULT geomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dCollection **points)
 {
    if ( numPoints < 0 || numPoints == INVALID_INDEX || center == 0 || radius < 0 )
       return E_INVALIDARG;
 
    CHECK_RETOBJ(points);
 
-   CreatePointCollection( points );
+   ::CreatePointCollection( points );
 
    Float64 delta_angle = TWO_PI / numPoints;
    ATLASSERT( radius > 0 );
@@ -63,7 +63,7 @@ HRESULT geomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 
       Float64 x,y;
       x = cx + radius*cos( initAngle + cum_angle );
       y = cy + radius*sin( initAngle + cum_angle );
-      CreatePoint( x,y, pPointFactory, &pPoint );
+      ::CreatePoint( x,y, &pPoint );
       (*points)->Add( pPoint );
       cum_angle += delta_angle;
    }
@@ -151,7 +151,7 @@ HRESULT geomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2d* pPo
    CHECK_IN(pPoint);
    CHECK_RETVAL(pbResult);
 
-   // stole implemenation from unidraw's LineObj class and added tolerance. We might
+   // adopted implementation from unidraw's LineObj class and added tolerance. We might
    // want to consider having a global geometric tolerance for the geom package.
    CComPtr<IPoint2d> pStart;
    CComPtr<IPoint2d> pEnd;
@@ -183,7 +183,7 @@ HRESULT geomUtil::DoesLineSegmentContainPoint(ILineSegment2d* pSeg,IPoint2d* pPo
    return S_OK;
 }
 
-HRESULT geomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoint2dFactory* pPointFactory,IPoint2dCollection** ppPoints)
+HRESULT geomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoint2dCollection** ppPoints)
 {
    CHECK_IN(pSeg);
    CHECK_RETOBJ(ppPoints);
@@ -191,7 +191,7 @@ HRESULT geomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoin
    if ( nSpaces < 1 || nSpaces == INVALID_INDEX )
       return E_INVALIDARG;
 
-   CreatePointCollection( ppPoints );
+   ::CreatePointCollection( ppPoints );
 
    CComPtr<IPoint2d> pStart;
    CComPtr<IPoint2d> pEnd;
@@ -205,7 +205,7 @@ HRESULT geomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoin
    Float64 dy = (y2 - y1)/nSpaces;
 
    CComPtr<IPoint2d> newStart;
-   CreatePoint(pStart,pPointFactory,&newStart);
+   ::CreatePoint(pStart,&newStart);
    (*ppPoints)->Add(newStart);
    
    for ( IndexType i = 0; i < nSpaces - 1; i++ )
@@ -215,19 +215,19 @@ HRESULT geomUtil::DivideLineSegment(ILineSegment2d* pSeg,IndexType nSpaces,IPoin
       y = y1 + (i+1)*dy;
 
       CComPtr<IPoint2d> pPoint;
-      CreatePoint(x,y, pPointFactory,&pPoint);
+      ::CreatePoint(x,y, &pPoint);
 
       (*ppPoints)->Add(pPoint);
    }
 
    CComPtr<IPoint2d> newEnd;
-   CreatePoint(pEnd,pPointFactory,&newEnd);
+   ::CreatePoint(pEnd,&newEnd);
    (*ppPoints)->Add(newEnd);
 
    return S_OK;
 }
 
-HRESULT geomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,IndexType nSpaces, IPoint2dFactory* pPointFactory,IPoint2dCollection** ppPoints)
+HRESULT geomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,IndexType nSpaces, IPoint2dCollection** ppPoints)
 {
    CHECK_IN(pStart);
    CHECK_IN(pCenter);
@@ -237,7 +237,7 @@ HRESULT geomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,In
    if ( nSpaces < 1 || nSpaces == INVALID_INDEX )
       return E_INVALIDARG;
 
-   CreatePointCollection(ppPoints);
+   ::CreatePointCollection(ppPoints);
 
    Float64 sx, sy; // Start Point
    Float64 cx, cy; // Center Point
@@ -264,7 +264,7 @@ HRESULT geomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,In
    delta_angle = sweep_angle / nSpaces;
 
    CComPtr<IPoint2d> newStart;
-   CreatePoint(pStart,pPointFactory,&newStart);
+   ::CreatePoint(pStart,&newStart);
    (*ppPoints)->Add( newStart );
 
    for ( IndexType i = 0; i < nSpaces-1; i++ )
@@ -276,19 +276,19 @@ HRESULT geomUtil::DivideArc(IPoint2d* pStart,IPoint2d* pCenter,IPoint2d* pEnd,In
       Float64 y = cy + dy;
 
       CComPtr<IPoint2d> pPoint;
-      CreatePoint(x,y,pPointFactory,&pPoint);
+      ::CreatePoint(x,y,&pPoint);
 
       (*ppPoints)->Add( pPoint );
    }
 
    CComPtr<IPoint2d> newEnd;
-   CreatePoint(pEnd,pPointFactory,&newEnd);
+   ::CreatePoint(pEnd,&newEnd);
    (*ppPoints)->Add( newEnd );
 
    return S_OK;
 }
 
-HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, IPoint2dFactory* pPointFactory,IPoint2d** ppPoint)
+HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, IPoint2d** ppPoint)
 {
    CHECK_IN(pSeg1);
    CHECK_IN(pSeg2);
@@ -312,7 +312,7 @@ HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, I
       DoesLineSegmentContainPoint(pSeg2,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
-         CreatePoint( pStart, pPointFactory, ppPoint );
+         ::CreatePoint( pStart, ppPoint );
          return S_OK;
       }
       else
@@ -333,7 +333,7 @@ HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, I
       DoesLineSegmentContainPoint(pSeg1,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
-         CreatePoint( pStart, pPointFactory, ppPoint );
+         ::CreatePoint( pStart, ppPoint );
          return S_OK;
       }
       else
@@ -354,7 +354,7 @@ HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, I
       pSeg2->get_StartPoint(&pStart2);
       if ( IsEqualPoint(pStart1,pStart2) )
       {
-         CreatePoint( pStart1, pPointFactory, ppPoint );
+         ::CreatePoint( pStart1, ppPoint );
          return S_OK;
       }
       else
@@ -374,17 +374,17 @@ HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, I
 
    pSeg1->get_StartPoint(&pStart);
    pSeg1->get_EndPoint(&pEnd);
-   CreateLine(pStart,pEnd,nullptr,&pLine1);
+   CreateLine(pStart,pEnd,&pLine1);
 
    pStart.Release();
    pEnd.Release();
 
    pSeg2->get_StartPoint(&pStart);
    pSeg2->get_EndPoint(&pEnd);
-   CreateLine(pStart,pEnd,nullptr,&pLine2);
+   CreateLine(pStart,pEnd,&pLine2);
 
    CComPtr<IPoint2d> pIntersect;
-   LineLineIntersect(pLine1,pLine2,pPointFactory,&pIntersect);
+   LineLineIntersect(pLine1,pLine2,&pIntersect);
    if ( pIntersect )
    {
       // If the line segments intersect, both segments must contain the intersection point
@@ -407,7 +407,7 @@ HRESULT geomUtil::SegSegIntersect(ILineSegment2d* pSeg1,ILineSegment2d* pSeg2, I
    return S_FALSE;
 }
 
-HRESULT geomUtil::LineLineIntersect(ILine2d* l, ILine2d *m, IPoint2dFactory* pPointFactory, IPoint2d **ppPoint)
+HRESULT geomUtil::LineLineIntersect(ILine2d* l, ILine2d *m, IPoint2d **ppPoint)
 {
    CHECK_IN(l);
    CHECK_IN(m);
@@ -442,7 +442,7 @@ HRESULT geomUtil::LineLineIntersect(ILine2d* l, ILine2d *m, IPoint2dFactory* pPo
       GetCoordinates(muv,&x1,&y1);
       GetCoordinates(mv,&x2,&y2);
       
-      CreatePoint(x1-x2,y1-y2,pPointFactory,ppPoint);
+      ::CreatePoint(x1-x2,y1-y2,ppPoint);
 
       return S_OK;
    }
@@ -459,7 +459,7 @@ HRESULT geomUtil::LineLineIntersect(ILine2d* l, ILine2d *m, IPoint2dFactory* pPo
    }
 }
 
-HRESULT geomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment2d* pSeg, IPoint2dFactory* pPointFactory,IPoint2d** ppPoint)
+HRESULT geomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment2d* pSeg,IPoint2d** ppPoint)
 {
    CHECK_IN(pLine);
    CHECK_IN(pSeg);
@@ -477,7 +477,7 @@ HRESULT geomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment2d* pS
       DoesLineContainPoint(pLine,pStart,ms_Tolerance,&bContains);
       if ( bContains == VARIANT_TRUE )
       {
-         CreatePoint(pStart,pPointFactory,ppPoint);
+         ::CreatePoint(pStart,ppPoint);
          return S_OK;
       }
       else
@@ -493,9 +493,9 @@ HRESULT geomUtil::IntersectLineWithLineSegment(ILine2d* pLine,ILineSegment2d* pS
    pSeg->get_StartPoint(&pStart);
    pSeg->get_EndPoint(&pEnd);
    CComPtr<ILine2d> pLine2;
-   CreateLine(pStart,pEnd,nullptr,&pLine2);
+   CreateLine(pStart,pEnd,&pLine2);
    CComPtr<IPoint2d> pIntersect;
-   LineLineIntersect(pLine,pLine2,pPointFactory,&pIntersect);
+   LineLineIntersect(pLine,pLine2,&pIntersect);
    if (pIntersect)
    {
       // Lines intersect, does the line segment contain it?
@@ -520,7 +520,7 @@ HRESULT geomUtil::ShortestDistanceToPoint( ILine2d* pLine, IPoint2d* pPoint, Flo
    // this implementation may not be optimal, but it's the best
    // I can come up with for now.
    CComPtr<IPoint2d> pPOLN;
-   PointOnLineNearest(pLine,pPoint,nullptr,&pPOLN);
+   PointOnLineNearest(pLine,pPoint,&pPOLN);
    Float64 distance;
    Distance(pPoint,pPOLN,&distance);
 
@@ -557,7 +557,7 @@ HRESULT geomUtil::IsLineParallelToLineSegment(ILine2d* pLine,ILineSegment2d* pSe
    CHECK_RETVAL(pbResult);
 
    CComPtr<ILine2d> pLine2;
-   CreateLine(pSeg,nullptr,&pLine2);
+   CreateLine(pSeg,&pLine2);
    return AreLinesParallel(pLine,pLine2,pbResult);
 }
 
@@ -600,15 +600,15 @@ HRESULT geomUtil::AreLineSegmentsParallel(ILineSegment2d* pSeg1,ILineSegment2d* 
    CComPtr<ILine2d> pLine1;
    CComPtr<ILine2d> pLine2;
 
-   CreateLine(pSeg1,nullptr,&pLine1);
-   CreateLine(pSeg2,nullptr,&pLine2);
+   CreateLine(pSeg1,&pLine1);
+   CreateLine(pSeg2,&pLine2);
 
    AreLinesParallel(pLine1,pLine2,pbResult);
 
    return S_OK;
 }
 
-HRESULT geomUtil::CreateParallelLine(ILine2d* pLine,Float64 dist, ILine2dFactory* pLineFactory,ILine2d** ppLine)
+HRESULT geomUtil::CreateParallelLine(ILine2d* pLine,Float64 dist, ILine2d** ppLine)
 {
    CHECK_IN(pLine);
    CHECK_RETOBJ(ppLine);
@@ -619,13 +619,13 @@ HRESULT geomUtil::CreateParallelLine(ILine2d* pLine,Float64 dist, ILine2dFactory
 
    c -= dist;
 
-   CreateLine(pLineFactory,ppLine);
+   ::CreateLine(ppLine);
    (*ppLine)->SetImplicit(c,pNormal);
 
    return S_OK;
 }
 
-HRESULT geomUtil::CreateParallelLineThroughPoint(ILine2d* pLine,IPoint2d* pPoint, ILine2dFactory* pLineFactory,ILine2d** ppLine)
+HRESULT geomUtil::CreateParallelLineThroughPoint(ILine2d* pLine,IPoint2d* pPoint, ILine2d** ppLine)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
@@ -636,13 +636,13 @@ HRESULT geomUtil::CreateParallelLineThroughPoint(ILine2d* pLine,IPoint2d* pPoint
 
    pLine->GetExplicit(&pU,&pDir);
 
-   CreateLine(pLineFactory,ppLine);
+   ::CreateLine(ppLine);
    (*ppLine)->SetExplicit(pPoint,pDir);
 
    return S_OK;
 }
 
-HRESULT geomUtil::PointOnLineNearest(ILine2d* pLine,IPoint2d* pPoint, IPoint2dFactory* pPointFactory, IPoint2d** ppPOLN)
+HRESULT geomUtil::PointOnLineNearest(ILine2d* pLine,IPoint2d* pPoint, IPoint2d** ppPOLN)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
@@ -669,23 +669,23 @@ HRESULT geomUtil::PointOnLineNearest(ILine2d* pLine,IPoint2d* pPoint, IPoint2dFa
    Float64 x,y;
    GetCoordinates(pPoint,&x,&y);
 
-   CreatePoint(x-xn,y-yn,pPointFactory,ppPOLN);
+   ::CreatePoint(x-xn,y-yn,ppPOLN);
 
    return S_OK;
 }
 
-HRESULT geomUtil::CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2dFactory* pLineFactory, ILine2d** ppLine)
+HRESULT geomUtil::CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint, ILine2d** ppLine)
 {
    CHECK_IN(pLine);
    CHECK_IN(pPoint);
    CHECK_RETOBJ(ppLine);
 
    CComPtr<IPoint2d> pPOLN;
-   PointOnLineNearest(pLine,pPoint,nullptr,&pPOLN);
+   PointOnLineNearest(pLine,pPoint,&pPOLN);
 
    if ( !IsEqualPoint(pPoint,pPOLN) )
    {
-      CreateLine(pPoint,pPOLN,pLineFactory,ppLine);
+      CreateLine(pPoint,pPOLN,ppLine);
    }
    else
    {
@@ -696,7 +696,7 @@ HRESULT geomUtil::CreateNormalLineThroughPoint(ILine2d* pLine, IPoint2d* pPoint,
       CComPtr<IVector2d> pN;
       pV->Normal(&pN);
 
-      CreateLine(pLineFactory,ppLine);
+      ::CreateLine(ppLine);
       (*ppLine)->SetExplicit(pPoint,pN);
    }
 
@@ -757,7 +757,7 @@ HRESULT geomUtil::AreLinesColinear( ILine2d* pLine1, ILine2d* pLine2, VARIANT_BO
    return S_OK;
 }
 
-HRESULT geomUtil::CreateParallelLineSegment(ILineSegment2d* pSeg,Float64 offset, ILineSegment2dFactory* pLineSegmentFactory,ILineSegment2d** pNewSeg)
+HRESULT geomUtil::CreateParallelLineSegment(ILineSegment2d* pSeg,Float64 offset, ILineSegment2d** pNewSeg)
 {
    CHECK_IN(pSeg);
    CHECK_RETOBJ(pNewSeg);
@@ -781,14 +781,14 @@ HRESULT geomUtil::CreateParallelLineSegment(ILineSegment2d* pSeg,Float64 offset,
    Float64 ox =  offset*sin(dir);
    Float64 oy = -offset*cos(dir);
 
-   CreateLineSegment(pLineSegmentFactory,pNewSeg);
+   ::CreateLineSegment(pNewSeg);
    CopyLineSegment(*pNewSeg,pSeg);
    (*pNewSeg)->Offset(ox,oy);
 
    return S_OK;
 }
 
-HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFactory* pPointFactory, IPoint2d** p1, IPoint2d** p2, short *nIntersect)
+HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2d** p1, IPoint2d** p2, short *nIntersect)
 {
    CHECK_IN(line);
    CHECK_IN(circle);
@@ -801,7 +801,7 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
    circle->get_Center( &pCenter );
 
    CComPtr<IPoint2d> poln;
-   PointOnLineNearest( line, pCenter, pPointFactory, &poln );
+   PointOnLineNearest( line, pCenter, &poln );
 
    Float64 radius;
    circle->get_Radius( &radius );
@@ -835,7 +835,7 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
    {
       // Line is vertical
       Float64 K = sqrt(pow(radius,2) - pow(xp-xc,2));
-      CreatePoint( xp, yc+K, /*m_pPointFactory2d*/nullptr, p1 );
+      ::CreatePoint( xp, yc+K, p1 );
 
       // Does the vertical line just touch the circle?
       // Is there only one intersection?
@@ -847,7 +847,7 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
       }
 
       // No... there are two intersections
-      CreatePoint( xp, yc-K, pPointFactory, p2 );
+      ::CreatePoint( xp, yc-K, p2 );
 
       *nIntersect = 2;
       return S_OK;
@@ -862,9 +862,9 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
       // point on line nearest origin is just as good as the next point,
       // and it is easy to get.
       CComPtr<IPoint2d> origin;
-      CreatePoint(0,0,nullptr,&origin);
+      ::CreatePoint(0,0,&origin);
       poln.Release();
-      PointOnLineNearest( line, origin, pPointFactory, &poln );
+      PointOnLineNearest( line, origin, &poln );
       Float64 x,y;
       poln->get_X(&x);
       poln->get_Y(&y);
@@ -886,14 +886,14 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
       if ( IsEqual(x1,x2) && IsEqual(y1,y2) )
       {
          *nIntersect = 1;
-         CreatePoint( x1, y1, /*m_pPointFactory2d*/nullptr, p1);
+         ::CreatePoint( x1, y1, p1);
          return S_OK;
       }
       else
       {
          *nIntersect = 2;
-         CreatePoint( x1, y1, /*m_pPointFactory2d*/nullptr, p1);
-         CreatePoint( x2, y2, /*m_pPointFactory2d*/nullptr, p2);
+         ::CreatePoint( x1, y1, p1);
+         ::CreatePoint( x2, y2, p2);
          return S_OK;
       }
    }
@@ -903,7 +903,7 @@ HRESULT geomUtil::LineCircleIntersect(ILine2d *line, ICircle *circle, IPoint2dFa
 
 // Finds the intersection of two circles. A return value of 3 indicates the circles
 // are identical and intersect at all points along the circle
-HRESULT geomUtil::CircleCircleIntersect(ICircle* circle1,ICircle* circle2,IPoint2dFactory* pPointFactory,IPoint2d** p1,IPoint2d** p2,short* nIntersect)
+HRESULT geomUtil::CircleCircleIntersect(ICircle* circle1,ICircle* circle2,IPoint2d** p1,IPoint2d** p2,short* nIntersect)
 {
    CHECK_IN(circle1);
    CHECK_IN(circle2);
@@ -970,13 +970,13 @@ HRESULT geomUtil::CircleCircleIntersect(ICircle* circle1,ICircle* circle2,IPoint
       return S_OK;
    }
 
-   hr = pPointFactory->CreatePoint( p1 );
-   if ( FAILED(hr) )
-      return hr; 
+   CComPtr<IPoint2d> pnt1;
+   pnt1.CoCreateInstance(CLSID_Point2d);
+   pnt1.CopyTo(p1);
 
-   hr = pPointFactory->CreatePoint( p2 );
-   if ( FAILED(hr) )
-      return hr;
+   CComPtr<IPoint2d> pnt2;
+   pnt2.CoCreateInstance(CLSID_Point2d);
+   pnt2.CopyTo(p2);
 
    //
    // Compute intersection points
@@ -1219,4 +1219,80 @@ void geomUtil::XformToOriginal(IPoint2d* pOrigin, Float64 angle, IPoint2d* pPoin
 {
    pPoint->Clone(ppPoint);
    geomUtil::XformToOriginal(pOrigin, angle, *ppPoint);
+}
+
+
+std::shared_ptr<WBFL::Geometry::Point2d> geomUtil::GetInnerPoint(IPoint2d* pPoint)
+{
+   return ::GetInnerPoint(pPoint);
+}
+
+std::shared_ptr<WBFL::Geometry::Point3d> geomUtil::GetInnerPoint(IPoint3d* pPoint)
+{
+   return ::GetInnerPoint(pPoint);
+}
+
+HRESULT geomUtil::CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint)
+{
+   return ::CreatePoint(point, ppPoint);
+}
+
+HRESULT geomUtil::CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint)
+{
+   return ::CreatePoint(point, ppPoint);
+}
+
+WBFL::Geometry::Point2d geomUtil::GetPoint(IPoint2d* pPoint)
+{
+   return ::GetPoint(pPoint);
+}
+
+WBFL::Geometry::Point3d geomUtil::GetPoint(IPoint3d* pPoint)
+{
+   return ::GetPoint(pPoint);
+}
+
+WBFL::Geometry::Line2d geomUtil::GetLine(ILine2d* pLine)
+{
+   return ::GetLine(pLine);
+}
+
+WBFL::Geometry::LineSegment2d geomUtil::GetLineSegment(ILineSegment2d* pLineSegment)
+{
+   return ::GetLineSegment(pLineSegment);
+}
+
+WBFL::Geometry::Circle geomUtil::GetCircle(ICircle* pCircle)
+{
+   return ::GetCircle(pCircle);
+}
+
+WBFL::Geometry::Circle2d geomUtil::GetCircle2d(ICircle* pCircle)
+{
+   return ::GetCircle2d(pCircle);
+}
+
+HRESULT geomUtil::CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppLineSegment)
+{
+   return ::CreateLineSegment(ls, ppLineSegment);
+}
+
+HRESULT geomUtil::CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine)
+{
+   return ::CreateLine(line, ppLine);
+}
+
+HRESULT geomUtil::CreateLine(IPoint2d* pStart, IPoint2d* pEnd, ILine2d** ppLine)
+{
+   return ::CreateLine(pStart, pEnd, ppLine);
+}
+
+HRESULT geomUtil::CreateLine(ILineSegment2d* pSeg, ILine2d** ppLine)
+{
+   return ::CreateLine(pSeg, ppLine);
+}
+
+HRESULT geomUtil::CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints)
+{
+   return ::CreatePointCollection(vPoints, ppPoints);
 }

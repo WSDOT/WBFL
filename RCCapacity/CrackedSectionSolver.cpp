@@ -45,9 +45,9 @@ static char THIS_FILE[] = __FILE__;
 #include <Units\Units.h>
 
 #define VALUE(_x_) (IsZero(_x_)  ? 0 : _x_)
-#define LENGTH(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::Inch))
-#define AREA(_x_)   (::ConvertFromSysUnits(_x_, unitMeasure::Inch2))
-#define STRESS(_x_) (::ConvertFromSysUnits(_x_, unitMeasure::KSI))
+#define LENGTH(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch))
+#define AREA(_x_)   (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::Inch2))
+#define STRESS(_x_) (WBFL::Units::ConvertFromSysUnits(_x_, WBFL::Units::Measure::KSI))
 #endif // _DEBUG_LOGGING
 
 /////////////////////////////////////////////////////////////////////////////
@@ -401,9 +401,9 @@ void CCrackedSectionSolver::DecomposeSection()
    std::vector<SHAPEINFO> shapes;
 
    // Rotate the shapes and determine the overall size of the section (bounding box)
-   CollectionIndexType nShapes;
+   IndexType nShapes;
    m_Section->get_ShapeCount(&nShapes);
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       CComPtr<IShape> original_shape;
       m_Section->get_Shape(shapeIdx,&original_shape);
@@ -476,7 +476,7 @@ void CCrackedSectionSolver::DecomposeSection()
    // Slice each shape
    m_SliceInfo.clear();
    nShapes = shapes.size();
-   for ( CollectionIndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
+   for ( IndexType shapeIdx = 0; shapeIdx < nShapes; shapeIdx++ )
    {
       // get shape and related information
       SHAPEINFO& shape_info = shapes[shapeIdx];

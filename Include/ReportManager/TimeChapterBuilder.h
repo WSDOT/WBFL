@@ -21,26 +21,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TimeChapterBuilder.h
-//
-//////////////////////////////////////////////////////////////////////
-
 #pragma once
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ChapterBuilder.h>
 #include <System\Time.h>
 
-class REPORTMANAGERCLASS CTimeChapterBuilder : public CChapterBuilder
+namespace WBFL
 {
-public:
-	CTimeChapterBuilder();
-	virtual ~CTimeChapterBuilder();
+   namespace Reporting
+   {
+      /// A specialized chapter builder that records and displays the amount of time it takes to create a report
+      /// This chapter builder may be useful for debugging and improving performance
+      /// The chapter should be built using the version of Build that takes the start and end time
+      class REPORTMANAGERCLASS TimeChapterBuilder : public ChapterBuilder
+      {
+      public:
+         TimeChapterBuilder() = default;
+         virtual ~TimeChapterBuilder() = default;
 
-   virtual LPCTSTR GetName() const override;
-   virtual Uint16 GetMaxLevel() const override;
-   virtual bool Select() const override; // return true if this chapter is to be selected by default
-   virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const override;
-   virtual rptChapter* Build(sysTime& start,sysTime& end) const;
-   virtual CChapterBuilder* Clone() const override;
+         virtual LPCTSTR GetName() const override;
+         virtual Uint16 GetMaxLevel() const override;
+         virtual bool Select() const override;
+         /// Builds a dummy chapter without timing information. Use the overloaded Build method
+         virtual rptChapter* Build(const std::shared_ptr<const ReportSpecification>& pRptSpec, Uint16 level) const override;
+
+         /// Use this Build method to report timing
+         virtual rptChapter* Build(
+            WBFL::System::Time& start,  ///< Time when an operation begins
+            WBFL::System::Time& end ///< Time whe an operation ends
+         ) const;
+         virtual std::unique_ptr<ChapterBuilder> Clone() const override;
+      };
+   };
 };

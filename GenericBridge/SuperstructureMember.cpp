@@ -28,6 +28,7 @@
 #include "WBFLGenericBridge.h"
 #include "SuperstructureMember.h"
 #include "Segment.h"
+#include <GenericBridge\Helpers.h>
 #include <ComException.h>
 #include <MathEx.h>
 
@@ -95,12 +96,14 @@ STDMETHODIMP CSuperstructureMember::AddSegment(ISuperstructureMemberSegment* seg
 
    m_Segments.back()->putref_SuperstructureMember(this);
 
-   CollectionIndexType nSegments = m_Segments.size();
+   IndexType nSegments = m_Segments.size();
    if ( 1 < nSegments )
    {
       m_Segments[nSegments-1]->putref_PrevSegment(m_Segments[nSegments-2].p);
       m_Segments[nSegments-2]->putref_NextSegment(m_Segments[nSegments-1].p);
    }
+
+   ClearGirderProfile(this);
 
    return S_OK;
 }
@@ -405,7 +408,7 @@ STDMETHODIMP CSuperstructureMember::RemoveItemData(BSTR name)
    return m_ItemDataMgr.RemoveItemData(name);
 }
 
-STDMETHODIMP CSuperstructureMember::GetItemDataCount(CollectionIndexType* count)
+STDMETHODIMP CSuperstructureMember::GetItemDataCount(IndexType* count)
 {
    return m_ItemDataMgr.GetItemDataCount(count);
 }

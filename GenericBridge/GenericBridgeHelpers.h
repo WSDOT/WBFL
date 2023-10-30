@@ -45,16 +45,16 @@
 #define LOCATION_OFFSET           10
 #define SIDE_OFFSET                1
 
-extern const CogoObjectID g_CLBridgeKey;
+extern const IDType g_CLBridgeKey;
 
-HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
-HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
-HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,CogoObjectID* pVal);
-HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,CogoObjectID* pVal);
-HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,CogoObjectID* pVal);
+HRESULT GB_GetPierGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal);
+HRESULT GB_GetBearingGirderPointId(PierIndexType pierIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal);
+HRESULT GB_GetGirderLineId(SpanIndexType spanIdx,GirderIndexType gdrIdx,IDType* pVal);
+HRESULT GB_GetPierAlignmentPointId(PierIndexType pierIdx,IDType* pVal);
+HRESULT GB_GetPierCLBridgePointId(PierIndexType pierIdx,IDType* pVal);
 HRESULT GB_GetPierEndPoints(IGenericBridge* bridge,PierIndexType pierIdx,IPoint2d* *left,IPoint2d* *right);
-HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,CogoObjectID* pVal);
-HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,CogoObjectID* pVal);
+HRESULT GB_GetTemporarySupportAlignmentPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,IDType* pVal);
+HRESULT GB_GetTemporarySupportGirderPointId(SpanIndexType spanIdx,SupportIndexType tsIdx,GirderIndexType gdrIdx,PositionType posType,IDType* pVal);
 //long GB_GetGirderLineIndex(IGenericBridge* pBridge,ISuperstructureMemberCollection* members);
 
 // function to deal with fractional and absolute values

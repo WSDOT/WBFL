@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -24,130 +24,135 @@
 #pragma once
 
 #include <Lrfd\LrfdExp.h>
-#include <Material\ConcreteBase.h>
-#include <Material\ConcreteEx.h>
+#include <Lrfd\LRFDConcreteBase.h>
+#include <Materials/SimpleConcrete.h>
 
-struct LRFDCLASS lrfdLRFDConcreteShrinkageDetails : public matConcreteBaseShrinkageDetails
+namespace WBFL
 {
-   lrfdLRFDConcreteShrinkageDetails() : matConcreteBaseShrinkageDetails(), kvs(0),khs(0),kf(0),ktd(0) {}
-   Float64 kvs;
-   Float64 khs;
-   Float64 kf;
-   Float64 ktd;
-};
+   namespace LRFD
+   {
+      struct LRFDCLASS LRFDConcreteShrinkageDetails : public WBFL::Materials::ConcreteBaseShrinkageDetails
+      {
+         LRFDConcreteShrinkageDetails() = default;
+         Float64 kvs{ 0 };
+         Float64 khs{ 0 };
+         Float64 kf{ 0 };
+         Float64 ktd{ 0 };
+      };
 
-struct LRFDCLASS lrfdLRFDConcreteCreepDetails : public matConcreteBaseCreepDetails
-{
-   lrfdLRFDConcreteCreepDetails() : matConcreteBaseCreepDetails() ,
-      kf(0), kc(0), kvs(0), khc(0), ktd(0) {}
-   Float64 kf;
-   Float64 kc;
-   Float64 kvs;
-   Float64 khc;
-   Float64 ktd;
-};
+      struct LRFDCLASS LRFDConcreteCreepDetails : public WBFL::Materials::ConcreteBaseCreepDetails
+      {
+         LRFDConcreteCreepDetails() = default;
+         Float64 kf{ 0 };
+         Float64 kc{ 0 };
+         Float64 kvs{ 0 };
+         Float64 khc{ 0 };
+         Float64 ktd{ 0 };
+      };
 
 
-/*****************************************************************************
-CLASS 
-   lrfdLRFDConcrete
+      /// @brief Pseudo Time-dependent concrete model based on AASHTO LRFD. This is a
+      /// step function that uses f'ci and Eci until a specified time and then
+      /// f'c and Ec. This class is an adaptor for matConcreteEx
+      class LRFDCLASS LRFDConcrete : public LRFDConcreteBase
+      {
+      public:
+         LRFDConcrete(LPCTSTR name = _T("Unknown"));
+         LRFDConcrete(const WBFL::Materials::SimpleConcrete& initial, const WBFL::Materials::SimpleConcrete & final,Float64 startTime,Float64 stepTime, LPCTSTR name = _T("Unknown"));
+         LRFDConcrete(const LRFDConcrete&) = default;
+         virtual ~LRFDConcrete() override = default;
 
-   Pseudo Time-dependent concrete model based on AASHTO LRFD. This is a
-   step function that uses f'ci and Eci until a specified time and then
-   f'c and Ec. This class is an adaptor for matConcreteEx
-*****************************************************************************/
+         LRFDConcrete& operator=(const LRFDConcrete&) = default;
 
-class LRFDCLASS lrfdLRFDConcrete : public matConcreteBase
-{
-public:
-   lrfdLRFDConcrete(LPCTSTR name = _T("Unknown"));
-   virtual ~lrfdLRFDConcrete() override;
+         void SetConcreteModels(const WBFL::Materials::SimpleConcrete& initial,const WBFL::Materials::SimpleConcrete & final);
+         const WBFL::Materials::SimpleConcrete& GetInitialConcreteModel() const;
+         const WBFL::Materials::SimpleConcrete& GetFinalConcreteModel() const;
 
-   void SetConcreteModels(const matConcreteEx& initial,const matConcreteEx& final);
-   const matConcreteEx& GetInitialConcreteModel() const;
-   const matConcreteEx& GetFinalConcreteModel() const;
+         void SetStartTime(Float64 t);
+         Float64 GetStartTime() const;
 
-   void SetStartTime(Float64 t);
-   Float64 GetStartTime() const;
+         void SetStepTime(Float64 t);
+         Float64 GetStepTime() const;
 
-   void SetStepTime(Float64 t);
-   Float64 GetStepTime() const;
+         void Use90DayStrength(const WBFL::Materials::SimpleConcrete& concrete90);
+         bool Use90DayStrength() const;
+         const WBFL::Materials::SimpleConcrete& Get90DayConcreteModel() const;
 
-   void Use90DayStrength(const matConcreteEx& concrete90);
-   bool Use90DayStrength() const;
-   const matConcreteEx& Get90DayConcreteModel() const;
+         // PCI UHPC parameters
+         virtual void SetFirstCrackingStrength(Float64 ffc) override;
+         virtual Float64 GetFirstCrackingStrength() const override;
+         virtual void SetPostCrackingTensileStrength(Float64 frr) override;
+         virtual Float64 GetPostCrackingTensileStrength() const override;
+         virtual void SetAutogenousShrinkage(Float64 as) override;
+         virtual Float64 GetAutogenousShrinkage() const override;
 
-   // aggregate correction and bounding factors.
-   // see NCHRP Report 496
-   void SetEcCorrectionFactors(Float64 K1,Float64 K2);
-   void GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetCreepCorrectionFactors(Float64 K1,Float64 K2);
-   void GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const;
-   void SetShrinkageCorrectionFactors(Float64 K1,Float64 K2);
-   void GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const;
+         // UHPC Parameters
+         virtual void SetCompressionResponseReductionFactor(Float64 alpha_u) override;
+         virtual Float64 GetCompressionResponseReductionFactor() const override;
+         virtual void SetCompressiveStrainLimit(Float64 ecu) override;
+         virtual void SetElasticTensileStrainLimit(Float64 etcr) override;
+         virtual Float64 GetElasticTensileStrainLimit() const override;
+         virtual void SetInitialEffectiveCrackingStrength(Float64 ft_cri) override;
+         virtual Float64 GetInitialEffectiveCrackingStrength() const override;
+         virtual void SetDesignEffectiveCrackingStrength(Float64 ft_cr) override;
+         virtual Float64 GetDesignEffectiveCrackingStrength() const override;
+         virtual void SetCrackLocalizationStrength(Float64 ft_loc) override;
+         virtual Float64 GetCrackLocalizationStrength() const override;
+         virtual void SetCrackLocalizationStrain(Float64 et_loc) override;
+         virtual Float64 GetCrackLocalizationStrain() const override;
+         virtual void SetFiberOrientationReductionFactor(Float64 gamma_u) override;
+         virtual Float64 GetFiberOrientationReductionFactor() const override;
 
-   // Concrete density modification factor (LRFD2016 5.2.4.8)
-   void SetLambda(Float64 lambda);
-   Float64 GetLambda() const;
+         // e.cu per GS 1.4.2.4.2 Max(e.cu,e.cp)
+         virtual Float64 GetElasticCompressiveStrainLimit() const override;
+         virtual Float64 GetCompressiveStrainLimit(bool* pbIsExperimental = nullptr) const override;
 
-   // PCI UHPC parameters
-   void SetFirstCrackStrength(Float64 ffc);
-   Float64 GetFirstCrackStrength() const;
-   void SetPostCrackingTensileStrength(Float64 frr);
-   Float64 GetPostCrackingTensileStrength() const;
-   void SetAutogenousShrinkage(Float64 as);
-   Float64 GetAutogenousShrinkage() const;
+         // Returns the compressive strength of the concrete at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetFc(Float64 t) const override;
 
-   // Returns the compressive strength of the concrete at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFc(Float64 t) const override;
+         // Returns the secant modulus of the concrete at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetEc(Float64 t) const override;
 
-   // Returns the secant modulus of the concrete at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetEc(Float64 t) const override;
+         // Returns the modulus of rupture for shear calculations at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetShearFr(Float64 t) const override;
 
-   // Returns the modulus of rupture for shear calculations at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetShearFr(Float64 t) const override;
+         // Returns the modulus of rupture for flexure calculations at time t. If
+         // t occurs before the time at casting, zero is returned.
+         virtual Float64 GetFlexureFr(Float64 t) const override;
 
-   // Returns the modulus of rupture for flexure calculations at time t. If
-   // t occurs before the time at casting, zero is returned.
-   virtual Float64 GetFlexureFr(Float64 t) const override;
+         virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
 
-   virtual Float64 GetFreeShrinkageStrain(Float64 t) const override;
-   virtual std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainDetails(Float64 t) const override;
+         virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
 
-   virtual Float64 GetCreepCoefficient(Float64 t,Float64 tla) const override;
-   virtual std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientDetails(Float64 t,Float64 tla) const override;
+         // Creates a clone of this object
+         virtual std::unique_ptr<WBFL::Materials::ConcreteBase> CreateClone() const override;
 
-   // Creates a clone of this object
-   virtual matConcreteBase* CreateClone() const override;
+         // Concrete density modification factor (LRFD2016 5.2.4.8)
+         virtual void SetLambda(Float64 lambda) override;
+         virtual Float64 GetLambda() const override;
 
-protected:
-   // prevent copying and assignment (use CreateClone instead)
-   lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther);
 
-   void InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const;
-   void InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
-   std::shared_ptr<matConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
-   std::shared_ptr<matConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
+      protected:
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrainBefore2005(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2005(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> GetFreeShrinkageStrain2015(Float64 t) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2005(Float64 t,Float64 tla) const;
+         std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> GetCreepCoefficient2015(Float64 t,Float64 tla) const;
 
-   bool Use90DayConcrete(Float64 t) const;
+         bool Use90DayConcrete(Float64 t) const;
 
-private:
-   matConcreteEx m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
-   bool m_bUse90DayConcrete;
-   Float64 m_StartTime;
-   Float64 m_StepTime;
-   Float64 m_EcK1;
-   Float64 m_EcK2;
-   Float64 m_CreepK1;
-   Float64 m_CreepK2;
-   Float64 m_ShrinkageK1;
-   Float64 m_ShrinkageK2;
-   Float64 m_Lambda;
+      private:
+         WBFL::Materials::SimpleConcrete m_InitialConcrete, m_FinalConcrete, m_90DayConcrete;
+         bool m_bUse90DayConcrete = false;
+         Float64 m_StartTime = 0;
+         Float64 m_StepTime = 28;
+      };
+
+   };
 };

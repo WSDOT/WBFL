@@ -21,158 +21,158 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
-
-#ifndef INCLUDED_SYSTEM_FILESTREAM_H_
-#define INCLUDED_SYSTEM_FILESTREAM_H_
 #pragma once
 
 #include <stdio.h>
 #include <atlbase.h>
 
-class FileStream : public IStream
+namespace WBFL
 {
-public:
-	FileStream() 
-	{ 
-        _ulRefs = 1;
-        _hFile = nullptr;
-        _fRead = true;
-	}
+   namespace System
+   {
+      class FileStream : public IStream
+      {
+      public:
+	      FileStream() 
+	      { 
+              _ulRefs = 1;
+              _hFile = nullptr;
+              _fRead = true;
+	      }
 
-	~FileStream() 
-	{ 
-		::CloseHandle(_hFile);
-	}
+	      ~FileStream() 
+	      { 
+		      ::CloseHandle(_hFile);
+	      }
 
-    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject)
-    {
-        if (riid == IID_IUnknown)
-        {
-            *ppvObject = static_cast<IUnknown*>(this);
-        }
-        else if (riid == IID_IStream)
-        {
-            *ppvObject = static_cast<IStream*>(this);
-        }
-		else
-		{
-			return E_NOINTERFACE;
-		}
-        reinterpret_cast<IUnknown*>(*ppvObject)->AddRef();
-        return S_OK;
-    }
+          HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void ** ppvObject)
+          {
+              if (riid == IID_IUnknown)
+              {
+                  *ppvObject = static_cast<IUnknown*>(this);
+              }
+              else if (riid == IID_IStream)
+              {
+                  *ppvObject = static_cast<IStream*>(this);
+              }
+		      else
+		      {
+			      return E_NOINTERFACE;
+		      }
+              reinterpret_cast<IUnknown*>(*ppvObject)->AddRef();
+              return S_OK;
+          }
 
-    ULONG STDMETHODCALLTYPE AddRef( void)
-    {
-        return InterlockedIncrement(&_ulRefs);
-    }
+          ULONG STDMETHODCALLTYPE AddRef( void)
+          {
+              return InterlockedIncrement(&_ulRefs);
+          }
 
-    ULONG STDMETHODCALLTYPE Release( void)
-    {
-        if (InterlockedDecrement(&_ulRefs) == 0)
-        {
-            delete this;
-            return 0;
-        }
-        return _ulRefs;
-    }
+          ULONG STDMETHODCALLTYPE Release( void)
+          {
+              if (InterlockedDecrement(&_ulRefs) == 0)
+              {
+                  delete this;
+                  return 0;
+              }
+              return _ulRefs;
+          }
 
-    bool open(LPCTSTR name, bool read = true)
-    {
-       _fRead = read;
-        if (_fRead)
-        {
-		    _hFile = ::CreateFile(name,GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
-        }
-        else
-        {
-		    _hFile = ::CreateFile(name,GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
-        }
+          bool open(LPCTSTR name, bool read = true)
+          {
+             _fRead = read;
+              if (_fRead)
+              {
+		          _hFile = ::CreateFile(name,GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
+              }
+              else
+              {
+		          _hFile = ::CreateFile(name,GENERIC_WRITE,FILE_SHARE_READ,nullptr,CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL,nullptr);
+              }
 
-        return (_hFile == INVALID_HANDLE_VALUE) ? false : true;
-    }
+              return (_hFile == INVALID_HANDLE_VALUE) ? false : true;
+          }
 
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Read( 
-        /* [out] */ void __RPC_FAR *pv,
-        /* [in] */ ULONG cb,
-        /* [out] */ ULONG __RPC_FAR *pcbRead) override
-	{	
-        if (! _fRead) return E_FAIL;
+          virtual /* [local] */ HRESULT STDMETHODCALLTYPE Read( 
+              /* [out] */ void __RPC_FAR *pv,
+              /* [in] */ ULONG cb,
+              /* [out] */ ULONG __RPC_FAR *pcbRead) override
+	      {	
+              if (! _fRead) return E_FAIL;
 
-        DWORD len;
-		BOOL rc = ReadFile(
-			_hFile,	// handle of file to read 
-			pv,	// address of buffer that receives data  
-			cb,	// number of bytes to read 
-			&len,	// address of number of bytes read 
-			nullptr 	// address of structure for data 
-		   );
-        if (pcbRead)
-            *pcbRead = len;
-        if (! rc)        // ReadFile returns FALSE if there is an error.
-            return E_FAIL;
+              DWORD len;
+		      BOOL rc = ReadFile(
+			      _hFile,	// handle of file to read 
+			      pv,	// address of buffer that receives data  
+			      cb,	// number of bytes to read 
+			      &len,	// address of number of bytes read 
+			      nullptr 	// address of structure for data 
+		         );
+              if (pcbRead)
+                  *pcbRead = len;
+              if (! rc)        // ReadFile returns FALSE if there is an error.
+                  return E_FAIL;
         
-        return len > 0 ? S_OK : S_FALSE; 
-	}
+              return len > 0 ? S_OK : S_FALSE; 
+	      }
     
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Write( 
-        /* [size_is][in] */ const void __RPC_FAR *pv,
-        /* [in] */ ULONG cb,
-        /* [out] */ ULONG __RPC_FAR *pcbWritten) override
-	{
-        if (_fRead) return E_FAIL;
+          virtual /* [local] */ HRESULT STDMETHODCALLTYPE Write( 
+              /* [size_is][in] */ const void __RPC_FAR *pv,
+              /* [in] */ ULONG cb,
+              /* [out] */ ULONG __RPC_FAR *pcbWritten) override
+	      {
+              if (_fRead) return E_FAIL;
 
-		BOOL rc = WriteFile(
-			_hFile,	// handle of file to write 
-			pv,	// address of buffer that contains data  
-			cb,	// number of bytes to write 
-			pcbWritten,	// address of number of bytes written 
-			nullptr 	// address of structure for overlapped I/O  
-		   );
+		      BOOL rc = WriteFile(
+			      _hFile,	// handle of file to write 
+			      pv,	// address of buffer that contains data  
+			      cb,	// number of bytes to write 
+			      pcbWritten,	// address of number of bytes written 
+			      nullptr 	// address of structure for overlapped I/O  
+		         );
 
-		return (rc) ? S_OK : E_FAIL;
-	}
+		      return (rc) ? S_OK : E_FAIL;
+	      }
 
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE Seek( 
-        /* [in] */ LARGE_INTEGER dlibMove,
-        /* [in] */ DWORD dwOrigin,
-        /* [out] */ ULARGE_INTEGER __RPC_FAR *plibNewPosition)  override { return E_FAIL; }
+          virtual /* [local] */ HRESULT STDMETHODCALLTYPE Seek( 
+              /* [in] */ LARGE_INTEGER dlibMove,
+              /* [in] */ DWORD dwOrigin,
+              /* [out] */ ULARGE_INTEGER __RPC_FAR *plibNewPosition)  override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE SetSize( 
-        /* [in] */ ULARGE_INTEGER libNewSize) override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE SetSize( 
+              /* [in] */ ULARGE_INTEGER libNewSize) override { return E_FAIL; }
     
-    virtual /* [local] */ HRESULT STDMETHODCALLTYPE CopyTo( 
-        /* [unique][in] */ IStream __RPC_FAR *pstm,
-        /* [in] */ ULARGE_INTEGER cb,
-        /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbRead,
-        /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbWritten) override { return E_FAIL; }
+          virtual /* [local] */ HRESULT STDMETHODCALLTYPE CopyTo( 
+              /* [unique][in] */ IStream __RPC_FAR *pstm,
+              /* [in] */ ULARGE_INTEGER cb,
+              /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbRead,
+              /* [out] */ ULARGE_INTEGER __RPC_FAR *pcbWritten) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE Commit( 
-        /* [in] */ DWORD grfCommitFlags) override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE Commit( 
+              /* [in] */ DWORD grfCommitFlags) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE Revert( void)  override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE Revert( void)  override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE LockRegion( 
-        /* [in] */ ULARGE_INTEGER libOffset,
-        /* [in] */ ULARGE_INTEGER cb,
-        /* [in] */ DWORD dwLockType) override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE LockRegion( 
+              /* [in] */ ULARGE_INTEGER libOffset,
+              /* [in] */ ULARGE_INTEGER cb,
+              /* [in] */ DWORD dwLockType) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE UnlockRegion( 
-        /* [in] */ ULARGE_INTEGER libOffset,
-        /* [in] */ ULARGE_INTEGER cb,
-        /* [in] */ DWORD dwLockType) override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE UnlockRegion( 
+              /* [in] */ ULARGE_INTEGER libOffset,
+              /* [in] */ ULARGE_INTEGER cb,
+              /* [in] */ DWORD dwLockType) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE Stat( 
-        /* [out] */ STATSTG __RPC_FAR *pstatstg,
-        /* [in] */ DWORD grfStatFlag) override { return E_FAIL; }
+          virtual HRESULT STDMETHODCALLTYPE Stat( 
+              /* [out] */ STATSTG __RPC_FAR *pstatstg,
+              /* [in] */ DWORD grfStatFlag) override { return E_FAIL; }
     
-    virtual HRESULT STDMETHODCALLTYPE Clone( 
-        /* [out] */ IStream __RPC_FAR *__RPC_FAR *ppstm) override { return E_FAIL; }
-private:
-	HANDLE _hFile;
-    bool _fRead;
-    LONG _ulRefs;
+          virtual HRESULT STDMETHODCALLTYPE Clone( 
+              /* [out] */ IStream __RPC_FAR *__RPC_FAR *ppstm) override { return E_FAIL; }
+      private:
+	      HANDLE _hFile;
+          bool _fRead;
+          LONG _ulRefs;
+      };
+   };
 };
-
-#endif // INCLUDED_SYSTEM_FILESTREAM_H_

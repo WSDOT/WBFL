@@ -21,106 +21,35 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_XUNIT_H_
-#define INCLUDED_UNITS_XUNIT_H_
 #pragma once
 
 #include <Units\UnitsExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   unitXUnit
-
-   Unit system exception.
-
-
-DESCRIPTION
-   Unit system exception.
-
-LOG
-   rab : 11.21.1997 : Created file
-*****************************************************************************/
-
-class UNITSCLASS unitXUnit : public sysXBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum Reason { BadStationFormat };
+   namespace Units
+   {
+      /// Unit system exception.
+      class UNITSCLASS XUnit : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason { BadStationFormat };
 
-   // GROUP: LIFECYCLE
+         XUnit(Reason reason,const std::_tstring& file,Uint32 line);
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   unitXUnit(Reason reason,LPCTSTR file,Int16 line);
+         virtual ~XUnit();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   unitXUnit(const unitXUnit& rOther);
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~unitXUnit();
+      #if defined _DEBUG
+         virtual bool AssertValid() const;
+      #endif // _DEBUG
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   unitXUnit& operator = (const unitXUnit& rOther);
-
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   virtual void Throw() const override;
-   virtual Int32 GetReason() const override;
-   Reason GetReasonCode() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const unitXUnit& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const unitXUnit& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         Reason m_Reason;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_UNITS_XUNIT_H_

@@ -78,12 +78,12 @@ END_CONNECTION_POINT_MAP()
 
 // ILoadCase
 public:
-	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_LoadGroupCount)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clone)(/*[out,retval]*/ILoadCase** clone) override;
-	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/CollectionIndexType index) override;
+	STDMETHOD(RemoveLoadGroupByIndex)(/*[in]*/IndexType index) override;
 	STDMETHOD(RemoveLoadGroup)(/*[in]*/BSTR loadGroupName) override;
-	STDMETHOD(SetLoadGroup)(/*[in]*/CollectionIndexType index, /*[in]*/BSTR newName) override;
-	STDMETHOD(GetLoadGroup)(/*[in]*/CollectionIndexType index, /*[out]*/BSTR* loadGroupName) override;
+	STDMETHOD(SetLoadGroup)(/*[in]*/IndexType index, /*[in]*/BSTR newName) override;
+	STDMETHOD(GetLoadGroup)(/*[in]*/IndexType index, /*[out]*/BSTR* loadGroupName) override;
 	STDMETHOD(AddLoadGroup)(/*[in]*/BSTR loadGroupName) override;
 	STDMETHOD(Clear)() override;
 	STDMETHOD(get_ItemData)(/*[out, retval]*/ VARIANT *pVal) override;
@@ -98,8 +98,8 @@ protected:
    CComBSTR     m_Description;
    CComVariant  m_ItemData;
 
-   typedef std::vector<CComBSTR>        LoadGroupContainer;
-   typedef LoadGroupContainer::iterator LoadGroupIterator;
+   using LoadGroupContainer = std::vector<CComBSTR>;
+	using LoadGroupIterator = LoadGroupContainer::iterator;
 
    LoadGroupContainer m_LoadGroups;
 };

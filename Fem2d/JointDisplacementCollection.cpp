@@ -101,7 +101,7 @@ STDMETHODIMP CJointDeflectionCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/
 	return hr;
 }
 
-STDMETHODIMP CJointDeflectionCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
+STDMETHODIMP CJointDeflectionCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
 {
    HRESULT hr = JointDeflectionCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

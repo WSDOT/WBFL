@@ -393,8 +393,8 @@ private:
                  ILiveLoadConfiguration* leftConfig, ILiveLoadConfiguration* rightConfig);
 
    // variable axle spacing
-   typedef std::vector<Float64>            AxleSpacingContainer;
-   typedef AxleSpacingContainer::iterator AxleSpacingIterator;
+   using AxleSpacingContainer = std::vector<Float64>;
+   using AxleSpacingIterator = AxleSpacingContainer::iterator;
    AxleSpacingContainer m_AxleSpacings;
 
    // locations of the pois (where we place our axles)
@@ -409,11 +409,11 @@ private:
       {;}
    };
 
-   typedef std::vector<PoiLocation>       PoiLocationContainer;
-   typedef PoiLocationContainer::iterator PoiLocationIterator;
+   using PoiLocationContainer = std::vector<PoiLocation>;
+   using PoiLocationIterator = PoiLocationContainer::iterator;
    PoiLocationContainer m_PoiLocations; 
 
-   // a tolerance for truck placment - used only for shear reponse calc to capture jumps in 
+   // a tolerance for truck placement - used only for shear response calc to capture jumps in 
    // shear due to axle loads
    Float64  m_TruckPlacementTolerance;
 
@@ -431,7 +431,7 @@ private:
  
    void IntializeCompare(OptimizationType optimization, iLLCompare** pleftCompare,  iLLCompare** prightCompare);
 
-   typedef std::set<InflResponseRecord> InflResponse;
+   using InflResponse= std::set<InflResponseRecord>;
    InflResponse m_ForceInflResponse;
    InflResponse m_DeflInflResponse;
    InflResponse m_ReactionInflResponse;
@@ -439,8 +439,8 @@ private:
 
    InflResponse* m_pResultsCache;
 
-   typedef std::set<InflResponseRecord>::iterator InflResponseIterator;
-   typedef std::set<InflResponseRecord>::const_iterator ConstInflResponseIterator;
+   using InflResponseIterator = std::set<InflResponseRecord>::iterator;
+   using ConstInflResponseIterator = std::set<InflResponseRecord>::const_iterator;
 
    bool GetInflResponse(PoiIDType poiID,LiveLoadModelType type, VehicleIndexType vehicleIndex, ForceEffectType effect,
                         VehicularLoadConfigurationType vehConfiguration, VARIANT_BOOL doApplyImpact,

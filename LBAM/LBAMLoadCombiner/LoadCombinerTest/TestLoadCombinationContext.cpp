@@ -155,7 +155,7 @@ void TestLoadCombinationContext::Test()
    // ILoadCases
    CComQIPtr<ILoadCases> load_cases(plclc);
    TRY_TEST(!load_cases, false);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(load_cases->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 0);
    CComPtr<ILoadCase> load_case;

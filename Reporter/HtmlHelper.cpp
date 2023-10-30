@@ -29,12 +29,6 @@
 #include <ostream>
 #include <vector>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 
 // a mapping list for fonts for html
 // Note: This list is dependent of the order of the enum FontType in 
@@ -169,12 +163,12 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
    std::vector<rptStyleName> svec;
    plib->GetStyleNames(svec);
 
-   CollectionIndexType numels = svec.size();
+   IndexType numels = svec.size();
 
    std::_tstring ss;
 
    // cycle over all styles add to style-element map and write out style-element mapping
-   for (CollectionIndexType i = 0; i<numels; i++)
+   for (IndexType i = 0; i<numels; i++)
    {
       const rptRiStyle& style = plib->GetNamedStyle( svec[i] );
 

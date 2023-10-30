@@ -114,10 +114,10 @@ BOOL CEAFAboutDlg::OnInitDialog()
    // Fill the list control with plugin names
    CEAFApp* pApp = EAFGetApp();
    CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
-   CollectionIndexType nPlugins = pComponentInfoMgr->GetPluginCount();
+   IndexType nPlugins = pComponentInfoMgr->GetPluginCount();
    
    // for each plugin
-   for ( CollectionIndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+   for ( IndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
    {
       CComPtr<IEAFComponentInfo> plugin;
       pComponentInfoMgr->GetPlugin(pluginIdx,&plugin);

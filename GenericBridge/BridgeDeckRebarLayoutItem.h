@@ -31,8 +31,8 @@
 #include "WBFLComCollections.h"
 
 class CBridgeDeckRebarLayoutItem;
-typedef CComVectorCollection<IBridgeDeckRebarLayoutItem,IBridgeDeckRebarPattern,IEnumBridgeDeckRebarPatterns,&IID_IEnumBridgeDeckRebarPatterns,CollectionIndexType> DeckRebarPtrnColl;
-typedef CPersistentCollection<CBridgeDeckRebarLayoutItem,DeckRebarPtrnColl,CollectionIndexType> PersistentDeckRebarLayoutItem;
+using DeckRebarPtrnColl = CComVectorCollection<IBridgeDeckRebarLayoutItem, IBridgeDeckRebarPattern, IEnumBridgeDeckRebarPatterns, &IID_IEnumBridgeDeckRebarPatterns, IndexType>;
+using PersistentDeckRebarLayoutItem = CPersistentCollection<CBridgeDeckRebarLayoutItem,DeckRebarPtrnColl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CBridgeDeckRebarLayoutItem

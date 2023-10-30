@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,5,0
- PRODUCTVERSION 7,0,5,0
+ FILEVERSION 8,0,0,4
+ PRODUCTVERSION 8,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "WBFL COGO Module"
-            VALUE "FileVersion", "7.0.5.0"
+            VALUE "FileVersion", "8.0.0.4"
             VALUE "InternalName", "COGO"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "COGO.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.0.5.0"
+            VALUE "ProductVersion", "8.0.0.4"
         END
     END
     BLOCK "VarFileInfo"
@@ -96,87 +96,45 @@ IDR_DIRECTION           REGISTRY                "Direction.rgs"
 
 IDR_COGOMODEL           REGISTRY                "CogoModel.rgs"
 
-IDR_LINESEGMENTCOLLECTION REGISTRY                "LineSegmentCollection.rgs"
-
 IDR_PROFILEPOINT        REGISTRY                "ProfilePoint.rgs"
 
-IDR_PROFILEPOINTCOLLECTION REGISTRY                "ProfilePointCollection.rgs"
-
-IDR_VERTCURVE           REGISTRY                "VertCurve.rgs"
-
-IDR_VERTCURVECOLLECTION REGISTRY                "VertCurveCollection.rgs"
+IDR_VERTICALCURVE       REGISTRY                "VerticalCurve.rgs"
 
 IDR_COMPOUNDCURVE       REGISTRY                "CompoundCurve.rgs"
 
-IDR_COMPOUNDCURVECOLLECTION REGISTRY                "CompoundCurveCollection.rgs"
-
-IDR_PROFILEELEMENT      REGISTRY                "ProfileElement.rgs"
+IDR_PROFILESEGMENT      REGISTRY                "ProfileSegment.rgs"
 
 IDR_PROFILE             REGISTRY                "Profile.rgs"
 
 IDR_CROSSSECTION        REGISTRY                "CrossSection.rgs"
 
-IDR_CROSSSECTIONCOLLECTION REGISTRY                "CrossSectionCollection.rgs"
-
-IDR_PATHELEMENT         REGISTRY                "PathElement.rgs"
+IDR_PATHSEGMENT         REGISTRY                "PathSegment.rgs"
 
 IDR_ALIGNMENT           REGISTRY                "Alignment.rgs"
-
-IDR_ALIGNMENTCOLLECTION REGISTRY                "AlignmentCollection.rgs"
-
-IDR_VERTCURVEFACTORY    REGISTRY                "VertCurveFactory.rgs"
-
-IDR_PROFILEPOINTFACTORY REGISTRY                "ProfilePointFactory.rgs"
-
-IDR_COMPOUNDCURVEFACTORY REGISTRY                "CompoundCurveFactory.rgs"
-
-IDR_CROSSSECTIONFACTORY REGISTRY                "CrossSectionFactory.rgs"
-
-IDR_ALIGNMENTFACTORY    REGISTRY                "AlignmentFactory.rgs"
 
 IDR_ANGLEDISPLAYUNITFORMATTER REGISTRY                "AngleDisplayUnitFormatter.rgs"
 
 IDR_DIRECTIONDISPLAYUNITFORMATTER REGISTRY                "DirectionDisplayUnitFormatter.rgs"
 
-IDR_POINTFACTORY        REGISTRY                "PointFactory.rgs"
-
-IDR_LINESEGMENTFACTORY  REGISTRY                "LineSegmentFactory.rgs"
-
 IDR_STATION             REGISTRY                "Station.rgs"
-
-IDR_POINTCOLLECTION     REGISTRY                "PointCollection.rgs"
 
 IDR_COGOENGINE          REGISTRY                "CogoEngine.rgs"
 
 IDR_PATH                REGISTRY                "Path.rgs"
 
-IDR_PATHCOLLECTION      REGISTRY                "PathCollection.rgs"
-
-IDR_PATHFACTORY         REGISTRY                "PathFactory.rgs"
-
 IDR_CUBICSPLINE         REGISTRY                "CubicSpline.rgs"
 
 IDR_STATIONEQUATION     REGISTRY                "StationEquation.rgs"
 
-IDR_STATIONEQUATIONCOLLECTION REGISTRY                "StationEquationCollection.rgs"
-
 IDR_WIDENING            REGISTRY                "Widening.rgs"
-
-IDR_WIDENINGCOLLECTION  REGISTRY                "WideningCollection.rgs"
 
 IDR_SUPERELEVATION      REGISTRY                "Superelevation.rgs"
 
-IDR_SUPERELEVATIONCOLLECTION REGISTRY                "SuperelevationCollection.rgs"
-
-IDR_TEMPLATESEGMENT     REGISTRY                "TemplateSegment.rgs"
+IDR_SURFACETEMPLATESEGMENT REGISTRY                "SurfaceTemplateSegment.rgs"
 
 IDR_SURFACETEMPLATE     REGISTRY                "SurfaceTemplate.rgs"
 
-IDR_SURFACETEMPLATECOLLECTION REGISTRY                "SurfaceTemplateCollection.rgs"
-
 IDR_SURFACE             REGISTRY                "Surface.rgs"
-
-IDR_SURFACECOLLECTION   REGISTRY                "SurfaceCollection.rgs"
 
 IDR_SURFACEPOINT        REGISTRY                "SurfacePoint.rgs"
 
@@ -185,6 +143,36 @@ IDR_SURFACEPROFILE      REGISTRY                "SurfaceProfile.rgs"
 IDR_TRANSITIONCURVE     REGISTRY                "TransitionCurve.rgs"
 
 IDR_CIRCULARCURVE       REGISTRY                "CircularCurve.rgs"
+
+IDR_BRIDGEGEOMETRY      REGISTRY                "BridgeGeometry.rgs"
+
+IDR_PIERLINE            REGISTRY                "PierLine.rgs"
+
+IDR_SINGLEPIERLINEFACTORY REGISTRY                "SinglePierLineFactory.rgs"
+
+IDR_ALIGNMENTOFFSETLAYOUTLINEFACTORY REGISTRY                "AlignmentOffsetLayoutLineFactory.rgs"
+
+IDR_SIMPLELAYOUTLINEFACTORY REGISTRY                "SimpleLayoutLineFactory.rgs"
+
+IDR_UNIFORMSPACINGLAYOUTLINEFACTORY REGISTRY                "UniformSpacingLayoutLineFactory.rgs"
+
+IDR_GIRDERLINE          REGISTRY                "GirderLine.rgs"
+
+IDR_SIMPLEGIRDERLINEFACTORY REGISTRY                "SimpleGirderLineFactory.rgs"
+
+IDR_SINGLEGIRDERLINEFACTORY REGISTRY                "SingleGirderLineFactory.rgs"
+
+IDR_DIAPHRAGMLINE       REGISTRY                "DiaphragmLine.rgs"
+
+IDR_EQUALSPACINGDIAPHRAGMLINEFACTORY REGISTRY                "EqualSpacingDiaphragmLineFactory.rgs"
+
+IDR_SINGLEDIAPHRAGMLINEFACTORY REGISTRY                "SingleDiaphragmLineFactory.rgs"
+
+IDR_THROUGHPOINTDIAPHRAGMLINEFACTORY REGISTRY                "ThroughPointDiaphragmLineFactory.rgs"
+
+IDR_DECKBOUNDARY        REGISTRY                "DeckBoundary.rgs"
+
+IDR_SIMPLEDECKBOUNDARYFACTORY REGISTRY                "SimpleDeckBoundaryFactory.rgs"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -206,7 +194,7 @@ BEGIN
     IDS_E_BADAZIMUTH        "Azimuth must be between -359 59 59.999 and 359 59 59.999"
     IDS_E_BADDIRECTION      "Invalid direction. Directions must be specified in the form N|S dd mm ss.s E|W. The angle (dd mm ss.s) must be 90 degrees or less."
     IDS_E_BADANGLE          "Invalid angle. Minutes and Seconds must be greater than 0 and less than 60."
-    IDS_E_BADANGLESTRING    "Invalid angle string. Angles must be specifed as {+|-}ddd {mm {ss.s} } or ddd {mm {ss.s}} L|R. Examples: -35 12 34.5, 9 23 15 L"
+    IDS_E_BADANGLESTRING    "Invalid angle string. Angles must be specified as {+|-}ddd {mm {ss.s} } or ddd {mm {ss.s}} L|R. Examples: -35 12 34.5, 9 23 15 L"
     IDS_E_ANGLE             "Three non-coincident points must be specified."
     IDS_E_AREA              "An invalid list of point id's was specified. This method is not compatible with JavaScript."
     IDS_E_THREEPNTSREQD     "Three points required to compute area."
@@ -229,14 +217,14 @@ BEGIN
     IDS_E_PATHELEMENTTYPE   "Path element must be a Point, LineSegment, or CompoundCurve object"
     IDS_E_PATHNOTFOUND      "Path %d was not found"
     IDS_E_PATHALREADYDEFINED "Path %d is already defined"
-    IDS_E_BADFORMATTAG      "The unit format tag for Angles and Directions must consists of three parts, seperated by commas."
+    IDS_E_BADFORMATTAG      "The unit format tag for Angles and Directions must consists of three parts, separated by commas."
     IDS_E_COINCIDENTPOINTS  "The center of the circles must be non-coincident"
     IDS_E_BADSTATIONSTRING  "Invalid station string. Stations must be specified in XX+YY.ZZ from for US units and XXX+YYY.ZZZ format for SI units"
     IDS_E_SPIRALSOVERLAP    "The entry and exit spirals overlap. The angle of the central curve is negative"
     IDS_E_POINTEVENTS       "The point class needs to support events"
     IDS_E_CUBICSPLINEPOINTS "A spline must have at least two points"
     IDS_E_POINTINCIRCLE     "The point cannot be on or inside the circle"
-    IDS_E_NOINTERSECTION    "The interection point was not found"
+    IDS_E_NOINTERSECTION    "The intersection point was not found"
 END
 
 STRINGTABLE

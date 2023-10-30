@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.UniformSpacingLayoutLineFactory.1 = s 'UniformSpacingLayoutLineFactory Class'
+	{
+		CLSID = s '{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}'
+	}
+	WBFLCogo.UniformSpacingLayoutLineFactory = s 'UniformSpacingLayoutLineFactory Class'
+	{
+		CLSID = s '{4FA7EC00-ADFB-4F50-A9E6-0A3142090639}'
+		CurVer = s 'WBFLCogo.UniformSpacingLayoutLineFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {4FA7EC00-ADFB-4F50-A9E6-0A3142090639} = s 'UniformSpacingLayoutLineFactory Class'
+		{
+			ProgID = s 'WBFLCogo.UniformSpacingLayoutLineFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.UniformSpacingLayoutLineFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

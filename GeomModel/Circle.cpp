@@ -21,190 +21,223 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <GeomModel\GeomModelLib.h>
-#include <GeomModel\Circle.h>
-#include <GeomModel\CircularSegment.h>
-#include <GeomModel\Polygon.h>
-#include <GeomModel\Properties.h>
-#include <GeomModel\ShapeUtils.h>
-#include <mathEx.h>
-#include <iostream>
-#include <memory>
+#include <GeomModel/GeomModelLib.h>
+#include <GeomModel/Circle.h>
+#include <GeomModel/CircularSegment.h>
+#include <GeomModel/Polygon.h>
+#include <GeomModel/ShapeProperties.h>
+#include <GeomModel/GeomOp2d.h>
+#include <MathEx.h>
+#include <numeric>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/****************************************************************************
-CLASS
-   gmCircle
-****************************************************************************/
-
+using namespace WBFL::Geometry;
 
 // number of vertex points used to describe a polyline version of a circle
-const int NUM_POINTS=32;
-////////////////////////// PUBLIC     ///////////////////////////////////////
+const int NUM_POINTS=36;
 
-//======================== LIFECYCLE  =======================================
-gmCircle::gmCircle()
-{
-   Init();
-}
-
-gmCircle::gmCircle(const gpPoint2d& hookPnt,Float64 radius)
-{
-   PRECONDITION(radius>=0);
-   Init();
-   m_HookPoint = hookPnt;
-   m_Radius    = radius;
-}
-
-
-gmCircle::~gmCircle()
+Circle::Circle() : ShapeOnAlternativePolygonImpl()
 {
 }
 
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-gpPoint2d gmCircle::SetHookPoint(const gpPoint2d& hookPnt)
+Circle::Circle(std::shared_ptr<Point2d>& hookPnt,Float64 radius) :
+   ShapeOnAlternativePolygonImpl(hookPnt),
+   m_Radius(radius)
 {
-   gpPoint2d tmp = m_HookPoint;
-   m_HookPoint = hookPnt;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   PRECONDITION(0 <= radius);
 }
 
-gpPoint2d gmCircle::GetHookPoint() const
+Circle::Circle(const Point2d& hookPnt, Float64 radius) :
+   ShapeOnAlternativePolygonImpl(hookPnt),
+   m_Radius(radius)
 {
-   return m_HookPoint;
+   PRECONDITION(0 <= radius);
 }
 
-Float64 gmCircle::SetRadius(Float64 r)
+Circle::Circle(const Circle& other) :
+   ShapeOnAlternativePolygonImpl(other)
 {
-   PRECONDITION(r>=0);
-   Float64 tmp = m_Radius;
+   Copy(other);
+}
+
+Circle& Circle::operator=(const Circle& other)
+{
+   if (this != &other)
+   {
+      __super::operator=(other);
+      Copy(other);
+   }
+   return *this;
+}
+
+Circle::~Circle()
+{
+}
+
+void Circle::SetRadius(Float64 r)
+{
+   PRECONDITION(0 <= r);
    m_Radius = r;
-   NotifyAllListeners(gmShapeListener::PROPERTIES);
-   return tmp;
+   SetDirtyFlag();
 }
 
-Float64 gmCircle::GetRadius() const
+Float64 Circle::GetRadius() const
 {
    return m_Radius;
 }
 
-void gmCircle::GetProperties(gmProperties* pProperties) const
+void Circle::SetParameters(std::shared_ptr<Point2d>& center, Float64 radius)
 {
-   ASSERTVALID;
+   SetHookPoint(center);
+   m_Radius = radius;
+   SetDirtyFlag();
+}
+
+void Circle::SetParameters(const Point2d& center, Float64 radius)
+{
+   SetHookPoint(center);
+   m_Radius = radius;
+   SetDirtyFlag();
+}
+
+std::pair<std::shared_ptr<const Point2d>, Float64> Circle::GetParameters() const
+{
+   return std::make_pair(GetHookPoint(), m_Radius);
+}
+
+void Circle::ThroughTwoPoints(const Point2d& p1, const Point2d& p2)
+{
+   Float64 diameter = p1.Distance(p2);
+   if (IsZero(diameter)) THROW_GEOMETRY(WBFL_GEOMETRY_E_COINCIDENTPOINTS);
+
+   m_Radius = diameter / 2;
+   SetHookPoint((p1+p2)/2);
+
+   SetDirtyFlag();
+}
+
+void Circle::ThroughThreePoints(const Point2d& p1, const Point2d& p2, const Point2d& p3)
+{
+   // Create lines that go between the points
+   Line2d line1(p1, p2);
+   Line2d line2(p2, p3);
+
+   // Determine if the lines are colinear
+   if (line1.IsColinear(line2)) THROW_GEOMETRY(WBFL_GEOMETRY_E_COLINEARLINES);
+
+   // Create lines that are normal to line1 and line2, passing through the midpoint
+   auto [x1,y1] = p1.GetLocation();
+   auto [x2,y2] = p2.GetLocation();
+   auto [x3,y3] = p3.GetLocation();
+
+   Float64 mx1 = std::midpoint(x1,x2);
+   Float64 my1 = std::midpoint(y1,y2);
+   Float64 mx2 = std::midpoint(x2,x3);
+   Float64 my2 = std::midpoint(y2,y3);
+
+   // Line mid-points
+   Point2d mp1(mx1, my1);
+   Point2d mp2(mx2, my2);
+
+   // Create lines normal to L1 and L2 at their mid-points
+   Line2d normal1 = GeometricOperations::CreateNormalLineThroughPoint(line1, mp1);
+   Line2d normal2 = GeometricOperations::CreateNormalLineThroughPoint(line2, mp2);
+
+   // The intersection of the normal lines is the center of the circle
+   Point2d center;
+   GeometricOperations::Intersect(normal1, normal2, &center);
+
+   Float64 radius = center.Distance(p1);
+
+#if defined _DEBUG
+   Float64 r2 = center.Distance(p2);
+   Float64 r3 = center.Distance(p3);
+   CHECK(IsEqual(radius, r2));
+   CHECK(IsEqual(radius, r3));
+   CHECK(IsEqual(r2, r3));
+#endif
+
+   SetHookPoint(center);
+   m_Radius = radius;
+}
+
+void Circle::DoOffset(const Size2d& delta)
+{
+   GetHookPoint()->Offset(delta);
+   SetDirtyFlag();
+}
+
+void Circle::DoRotate(const Point2d& center, Float64 angle)
+{
+   GetHookPoint()->Rotate(center, angle);
+   SetDirtyFlag();
+}
+
+ShapeProperties Circle::GetProperties() const
+{
    // get non-rotated properties
    Float64 area = M_PI * m_Radius * m_Radius;
    Float64 ixx  = M_PI * pow(m_Radius,4.)/4.;
    Float64 iyy  = ixx;
    Float64 ixy  = 0;
 
-   // deal with signs and hollowness
-   if( (area>0 && !IsSolid()))
-   {
-      area *= -1;
-      ixx  *= -1;
-      iyy  *= -1;
-      ixy  *= -1;
-   }
-   // bounding box in centroidal coords
-   gpRect2d bb = GetBoundingBox();
-   bb.Offset(-m_HookPoint.X(), -m_HookPoint.Y());
-
-   // Perimeter
-   Float64 p = 2.0*M_PI*m_Radius;
-
-   *pProperties =  gmProperties(area , m_HookPoint, ixx, iyy, ixy, 
-                                bb.Top(),bb.Bottom(),bb.Left(),bb.Right(),p);
+   return ShapeProperties(area , *GetHookPoint(), ixx, iyy, ixy, m_Radius,m_Radius,m_Radius,m_Radius);
 }
 
-void gmCircle::GetArea(Float64* pArea, gpPoint2d* pCG) const
-{
-   *pArea = M_PI * m_Radius * m_Radius;
-
-   // deal with signs and hollowness
-   if( (*pArea>0 && !IsSolid()))
-   {
-      *pArea *= -1;
-   }
-
-   *pCG = m_HookPoint;
-}
-
-gpRect2d gmCircle::GetBoundingBox() const
+Rect2d Circle::GetBoundingBox() const
 {
    // use a point to determine box height and width
-   Float64 top   = m_HookPoint.Y() + m_Radius;
-   Float64 right = m_HookPoint.X() + m_Radius;
-   Float64 bottom= m_HookPoint.Y() - m_Radius;
-   Float64 left  = m_HookPoint.X() - m_Radius;
+   auto pCenter = GetHookPoint();
+   Float64 top   = pCenter->Y() + m_Radius;
+   Float64 right = pCenter->X() + m_Radius;
+   Float64 bottom= pCenter->Y() - m_Radius;
+   Float64 left  = pCenter->X() - m_Radius;
 
-   return gpRect2d(left,bottom,right,top);
+   return Rect2d(left,bottom,right,top);
 }
 
-
-gmIShape* gmCircle::CreateClone(bool bRegisterListeners) const
+bool Circle::PointInShape(const Point2d& p) const
 {
-   std::unique_ptr<gmCircle> ph(new gmCircle( *this ));// no memory leaks if DoRegister() throws
-
-   // copy listeners if requested.
-   if (bRegisterListeners)
-      ph->DoRegisterListeners(*this);
-
-   return ph.release();
+   Float64 dist = p.Distance(*GetHookPoint());
+   return ::IsLE(dist,m_Radius) ? true : false;
 }
 
-gmIShape* gmCircle::CreateClippedShape(const gpLine2d& line, 
-                                    gpLine2d::Side side) const
+Float64 Circle::GetPerimeter() const
+{
+   return TWO_PI * m_Radius;
+}
+
+bool Circle::PointOnCircle(const Point2d& p)
+{
+   Float64 dist = p.Distance(*GetHookPoint());
+   return IsEqual(dist, m_Radius);
+}
+
+std::unique_ptr<Shape> Circle::CreateClone() const
+{
+   return std::make_unique<Circle>(*this);
+}
+
+std::unique_ptr<Shape> Circle::CreateClippedShape(const Line2d& line, Line2d::Side side) const
 {
    // since clipping a circle is very expensive
    // first determine if circle really needs to be clipped.
-   Float64 distance = line.DistanceToPoint(m_HookPoint);
+   Float64 distance = -1*line.DistanceToPoint(*GetHookPoint());
+   distance = IsZero(distance) ? 0.0 : distance;
 
-   if (fabs(distance) <=m_Radius)
+   if (fabs(distance) <= m_Radius)
    {
-      // circle touces line, must clip
-      // Resulting shape is a circular segment
-      std::unique_ptr<gmCircularSegment> clip(std::make_unique<gmCircularSegment>());
-      clip->SetCenter(m_HookPoint);
-      clip->SetRadius(m_Radius);
-
-      Float64 c;
-      gpVector2d n;
-      line.GetImplicit(&c,&n);
-
-      Float64 nx,ny;
-      nx = n.X();
-      ny = n.Y();
-      Float64 rotation = atan2(-ny,-nx);
-      if ( side == gpLine2d::Right )
-         rotation += M_PI;
-      clip->SetRotation(rotation);
-
-      clip->SetMidOrdinate(m_Radius + distance);
-
-      return clip.release();
-
-// OLD IMPLEMENTATION
-//      // make shape into a gmpolygon and use its clip
-//      std::auto_ptr<gmPolygon> poly(CreatePolygon());
-//      return poly->CreateClippedShape(line,side);
+      // circle touches line, must clip
+      return GetPolygon()->CreateClippedShape(line, side);
    }
    else
    {
       // now need to find out which side of line circle is on.
-      if (side==gpLine2d::Left) distance = -distance;
+      if (side==Line2d::Side::Right) distance = -distance;
 
-      if (distance>0)
+      if (0 < distance)
       {
          // circle is entirely within clipping region
-         return new gmCircle(*this);
+         return std::make_unique<Circle>(*this);
       }
       else
       {
@@ -214,246 +247,83 @@ gmIShape* gmCircle::CreateClippedShape(const gpLine2d& line,
    }
 }
 
-gmIShape* gmCircle::CreateClippedShape(const gpRect2d& r,
-                                     gmShapeImp::ClipRegion region
-                                     ) const
+std::unique_ptr<Shape> Circle::CreateClippedShape(const Rect2d& r, Shape::ClipRegion region) const
 {
-   // make shape into a gmpolygon and use its clip
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   return poly->CreateClippedShape(r, region);
+   // Clip using top edge
+   Line2d line(r.TopLeft(), r.TopRight());
+
+   std::unique_ptr<Shape> clip_top = CreateClippedShape(line, Line2d::Side::Left);
+   if (clip_top == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+
+   // Clip using Right edge
+   line.ThroughPoints(r.TopRight(), r.BottomRight());
+   std::unique_ptr<Shape> clip_right = clip_top->CreateClippedShape(line, Line2d::Side::Left);
+   if(clip_right == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+
+   // Clip using Bottom edge
+   line.ThroughPoints(r.BottomRight(), r.BottomLeft());
+   std::unique_ptr<Shape> clip_bottom = clip_right->CreateClippedShape(line, Line2d::Side::Left);
+   if (clip_bottom == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+
+   // Clip using Left edge
+   line.ThroughPoints(r.BottomLeft(), r.TopLeft());
+   std::unique_ptr<Shape> clip_left = clip_bottom->CreateClippedShape(line, Line2d::Side::Left);
+   if (clip_left == nullptr) return std::unique_ptr<Shape>(); // entier shape clipped away
+
+   return clip_left;
 }
 
-void gmCircle::ComputeClippedArea(const gpLine2d& line, gpLine2d::Side side,
-                                   Float64* pArea, gpPoint2d* pCG) const
+Float64 Circle::GetFurthestDistance(const Line2d& line, Line2d::Side side) const
 {
-   // since clipping a circle is very expensive
-   // first determine if circle really needs to be clipped.
-   Float64 distance = line.DistanceToPoint(m_HookPoint);
-
-   if (fabs(distance) <=m_Radius)
-   {
-      // circle touces line, must clip
-      // Resulting shape is a circular segment
-      gmCircularSegment clip;
-      clip.SetCenter(m_HookPoint);
-      clip.SetRadius(m_Radius);
-
-      Float64 c;
-      gpVector2d n;
-      line.GetImplicit(&c,&n);
-
-      Float64 nx,ny;
-      nx = n.X();
-      ny = n.Y();
-      Float64 rotation = atan2(-ny,-nx);
-      if ( side == gpLine2d::Right )
-         rotation += M_PI;
-      clip.SetRotation(rotation);
-
-      clip.SetMidOrdinate(m_Radius + distance);
-
-      gmProperties props;
-      clip.GetProperties(&props);
-
-      *pArea = props.Area();
-      *pCG   = props.Centroid();
-   }
-   else
-   {
-      // now need to find out which side of line circle is on.
-      if (side==gpLine2d::Left) distance = -distance;
-
-      if (distance>0)
-      {
-         // circle is entirely within clipping region
-         *pArea = M_PI*m_Radius*m_Radius;
-         if (!IsSolid())
-            *pArea*=-1.;
-
-         *pCG   = m_HookPoint;
-      }
-      else
-         // circle is entirely outside of clipping region
-         *pArea = 0;
-         *pCG   = m_HookPoint;
-   }
+   auto [fp,fd] = GetFurthestPoint(line, side);
+   return fd;
 }
 
-
-Float64 gmCircle::GetFurthestDistance(const gpLine2d& line, gpLine2d::Side side) const
+std::pair<Point2d,Float64> Circle::GetFurthestPoint(const Line2d& line, Line2d::Side side) const
 {
-   // get distance from left side of line to center
-   Float64 dist = line.DistanceToPoint(m_HookPoint);
-   if (side==gpLine2d::Right)
-      dist = -dist;
+   auto [c,n] = line.GetImplicit();
+   Float64 angle = n.GetDirection();
+   if (side == Line2d::Side::Right)
+      angle += M_PI;
 
-   dist += m_Radius;
+   Float64 x = cos(angle) * m_Radius + GetHookPoint()->X();
+   Float64 y = sin(angle) * m_Radius + GetHookPoint()->Y();
+   Point2d furthestPoint(x, y);
+      
+   CHECK(IsEqual(m_Radius, furthestPoint.Distance(*GetHookPoint())));
 
-   return dist;
+   auto furthestDistance = line.DistanceToPoint(furthestPoint);
+   if (side == Line2d::Side::Right)
+      furthestDistance *= -1;
+
+   // check distance from line to center
+   CHECK(IsEqual(furthestDistance, (side == Line2d::Side::Right ? -1 : 1) * line.DistanceToPoint(*GetHookPoint()) + m_Radius));
+
+   // check point is on correct side of line. if furthestDistance < 0, the correct side is the opposite side than the request
+   CHECK(line.GetSide(furthestPoint) == (furthestDistance < 0 ? (side == Line2d::Side::Right ? Line2d::Side::Left : Line2d::Side::Right) : side));
+
+   return std::make_pair(furthestPoint, furthestDistance);
 }
 
-void gmCircle::Draw(HDC hDC, const grlibPointMapper& mapper) const
+void Circle::Copy(const Circle& other)
 {
-   std::unique_ptr<gmPolygon> poly(CreatePolygon());
-   poly->Draw(hDC,mapper);
+   m_Radius = other.m_Radius;
 }
 
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool gmCircle::AssertValid() const
+void Circle::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 {
-   if (m_Radius<0) return false;
-   return gmShapeImp::AssertValid();
-}
-
-void gmCircle::Dump(dbgDumpContext& os) const
-{
-   os << _T("*** Dump for gmCircle ***")<<endl;
-   gmShapeImp::Dump( os );
-   os << _T("  Hook Point      = (")<<m_HookPoint.X()<<_T(", ")<<m_HookPoint.Y()<<_T(")")<<endl;
-   os << _T("  Radius          =  ")<<m_Radius  <<endl;
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-gmCircle::gmCircle(const gmCircle& rOther) :
-gmShapeImp(rOther)
-{
-   MakeCopy(rOther);
-}
-
-gmCircle& gmCircle::operator= (const gmCircle& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void gmCircle::DoTranslate(const gpSize2d& delta)
-{
-   m_HookPoint.Offset(delta);
-}
-
-void gmCircle::DoRotate(const gpPoint2d& center, Float64 angle)
-{
-   m_HookPoint.Rotate(center, angle);
-}
-
-
-void gmCircle::MakeCopy(const gmCircle& rOther)
-{
-   m_Radius    = rOther.m_Radius;
-   m_HookPoint = rOther.m_HookPoint;
-}
-
-void gmCircle::MakeAssignment(const gmCircle& rOther)
-{
-   gmShapeImp::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-gmPolygon* gmCircle::CreatePolygon() const
-{
-   if (m_Radius <= 0) 
-      return nullptr;
-
-   // make an empty polygon with same traits as this.
-   std::unique_ptr<gmPolygon> ph(std::make_unique<gmPolygon>());
-   gmShapeUtils::CopyTraits(*this, ph.get());
-
-   Float64 angle_inc = 2*M_PI/NUM_POINTS;
+   Float64 angle_inc = 2 * M_PI / NUM_POINTS;
 
    // determine radius of circle to make an "Area Perfect" polycircle.
-   Float64 rad = sqrt(M_PI * m_Radius * m_Radius / 
-                      (NUM_POINTS * sin(M_PI/NUM_POINTS) * cos(M_PI/NUM_POINTS)));
+   Float64 rad = sqrt(M_PI * m_Radius * m_Radius /
+      (NUM_POINTS * sin(M_PI / NUM_POINTS) * cos(M_PI / NUM_POINTS)));
 
-   for (Int32 i = 0; i<=NUM_POINTS; i++)
+   auto [cx,cy] = GetHookPoint()->GetLocation();
+   for (Int32 i = 0; i <= NUM_POINTS; i++)
    {
       Float64 a = i * angle_inc;
-      Float64 x = m_HookPoint.X() + rad * cos(a);
-      Float64 y = m_HookPoint.Y() + rad * sin(a);
-      ph->AddPoint(gpPoint2d(x,y));
+      Float64 x = cx + rad * cos(a);
+      Float64 y = cy + rad * sin(a);
+      polygon->AddPoint(x, y);
    }
-
-   return ph.release();
 }
-
-void gmCircle::Init()
-{
-   m_Radius    = 0.;
-   m_HookPoint = gpPoint2d(0,0);
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-#if defined _UNITTEST
-
-bool gmCircle::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("gmCircle");
-
-   gmCircle rt(gpPoint2d(2,2),2);
-   TRY_TESTME( IsEqual(2., rt.GetRadius())) 
-   TRY_TESTME(gpPoint2d(2,2) == rt.GetHookPoint()) 
-   gmProperties aprops;
-   rt.GetProperties(&aprops);
-   TRY_TESTME (IsEqual(aprops.Area(), 12.566, .01)) 
-   TRY_TESTME (IsEqual(aprops.Ixx(),  12.56, .1)) 
-   TRY_TESTME (IsEqual(aprops.Iyy(),  12.56, .1)) 
-   TRY_TESTME (IsEqual(aprops.Ixy(),   0.00, .001)) 
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(0,0,4,4)) 
-
-   rt.SetHookPoint(gpPoint2d(0,0));
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(-2,-2,2,2)) 
-   rt.Move(gmIShape::CenterCenter, gpPoint2d(2,2));
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(0,0,4,4)) 
-
-   Float64 ang = atan(1.);
-   Float64 dis = 2/cos(ang);
-   rt.Rotate(gpPoint2d(0,0),ang);
-   TRY_TESTME (rt.GetBoundingBox() == gpRect2d(-2,dis-2,2,dis+2)) 
-
-   // Resize circle and clip it into a hemi
-   rt.SetRadius(40);
-   rt.SetHookPoint(gpPoint2d(0,40));
-   gpLine2d at45(gpPoint2d(0,40), gpVector2d(gpSize2d(1,1)));
-   std::unique_ptr<gmIShape> phemi(rt.CreateClippedShape(at45, gpLine2d::Right));
-   phemi->GetProperties(&aprops);
-   TRY_TESTME (IsEqual(aprops.Area(), 2513.2,.1)) 
-
-   // clip should return entire circle
-   rt.SetHookPoint(gpPoint2d(60,0));
-   std::unique_ptr<gmIShape> prt(rt.CreateClippedShape(at45, gpLine2d::Left));
-   prt->GetProperties(&aprops);
-   TRY_TESTME (IsEqual(aprops.Area(), 5026.55,.1)) 
-
-#if defined _DEBUG
-   rt.Dump(rlog.GetDumpCtx());
-#endif
-
-   TESTME_EPILOG("gmCircle");
-}
-
-#endif // _UNITTEST
-
-
-

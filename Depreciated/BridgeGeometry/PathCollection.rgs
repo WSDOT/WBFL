@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLCogo.PathCollection.1 = s 'PathCollection Class'
+	{
+		CLSID = s '{BB37DF4F-8AD0-4778-9036-9A340F425A50}'
+	}
+	WBFLCogo.PathCollection = s 'PathCollection Class'
+	{
+		CLSID = s '{BB37DF4F-8AD0-4778-9036-9A340F425A50}'
+		CurVer = s 'WBFLCogo.PathCollection.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BB37DF4F-8AD0-4778-9036-9A340F425A50} = s 'PathCollection Class'
+		{
+			ProgID = s 'WBFLCogo.PathCollection.1'
+			VersionIndependentProgID = s 'WBFLCogo.PathCollection'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{3887C38E-D11E-4740-896B-D1DBA8F74BD7}'
+		}
+	}
+}

@@ -72,7 +72,7 @@ inline void TestSpsAtPoi(IGetStressPoints* pigsp, CComBSTR Stage, PoiIDType poiI
 {
    CComQIPtr<IStressPoints> left_sps, right_sps;
    pigsp->GetStressPointsAtPOI(poiID, Stage, &left_sps, &right_sps);
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST(left_sps->get_Count(&cnt), S_OK);
    TRY_TEST(cnt, 3);
    CComQIPtr<IStressPoint> sp0, sp1, sp2;
@@ -248,12 +248,12 @@ ILBAMModel* TestStressPoints::CreateModel(bool doPois)
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   TCHAR* lgns[]={_T("Point Loads"),_T("Distributed Loads")};
+   CComBSTR lgns[]={_T("Point Loads"),_T("Distributed Loads")};
    for (int i = 0; i<2; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
-      TRY_TEST( pLoadGroup->put_Name( CComBSTR(lgns[i]) ), S_OK );
+      TRY_TEST( pLoadGroup->put_Name( lgns[i] ), S_OK );
       TRY_TEST(pLoadGroups->Add(pLoadGroup), S_OK);
    }
 

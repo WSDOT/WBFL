@@ -33,8 +33,8 @@
 #include "LBAMUtils.h"
 
 class CAxles;
-typedef CComSegmentCollection< IAxles, IAxle, IEnumAxle, &IID_IEnumAxle,AxleIndexType > AxleCollImpl;
-typedef CPersistentCollection<CAxles, AxleCollImpl,AxleIndexType> PersistentAxleCollImpl;
+using AxleCollImpl = CComSegmentCollection< IAxles, IAxle, IEnumAxle, &IID_IEnumAxle, AxleIndexType>;
+using PersistentAxleCollImpl = CPersistentCollection<CAxles, AxleCollImpl,AxleIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAxles

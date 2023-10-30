@@ -22,141 +22,63 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_PSSTRANDS_H_
-#define INCLUDED_LRFD_PSSTRANDS_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
-#include <Material\PsStrand.h>
+#include <Materials/PsStrand.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdPsStrand
-
-   Encapsulates constants and equations associated with prestressing strands.
-
-
-DESCRIPTION
-   Encapsulates constants and equations associated with prestressing strands.
-
-LOG
-   rab : 12.09.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdPsStrand
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-   enum Stage { Jacking, BeforeTransfer, AfterTransfer, AfterAllLosses };
+   namespace LRFD
+   {
+      /// @brief Encapsulates constants and equations associated with prestressing strands.
+      class LRFDCLASS PsStrand
+      {
+      public:
+         enum class Stage { Jacking, BeforeTransfer, AfterTransfer, AfterAllLosses };
 
-   // GROUP: LIFECYCLE
+         PsStrand() = delete;
+         PsStrand(const PsStrand&) = delete;
+         virtual ~PsStrand() = delete;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdPsStrand();
+         PsStrand& operator=(const PsStrand&) = delete;
 
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
+         static Float64 GetUltimateStrength(WBFL::Materials::PsStrand::Grade gr);
+         static Float64 GetYieldStrength(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type);
+         static Float64 GetStressLimit(WBFL::Materials::PsStrand::Grade gr,WBFL::Materials::PsStrand::Type type,Stage stage);
+         static Float64 GetModE();
 
-   //------------------------------------------------------------------------
-   static Float64 GetUltimateStrength(matPsStrand::Grade gr);
-   static Float64 GetYieldStrength(matPsStrand::Grade gr,matPsStrand::Type type);
-   static Float64 GetStressLimit(matPsStrand::Grade gr,matPsStrand::Type type,Stage stage);
-   static Float64 GetModE();
+         //------------------------------------------------------------------------
+         // Calculates the maximum jacking force for the specified prestressing
+         // strands.
+         static Float64 GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer);
+         static Float64 GetPjack(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff);
 
-   //------------------------------------------------------------------------
-   // Calculates the maximum jacking force for the specified prestressing
-   // strands.
-   static Float64 GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer);
-   static Float64 GetPjack(const matPsStrand& strand,StrandIndexType nStrands,Float64 timeToXfer,Float64 coeff);
+         //------------------------------------------------------------------------
+         // Calcuates the maximum jacking stress for the specified prestressing strands.
+         static Float64 GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer);
+         static Float64 GetFpj(const WBFL::Materials::PsStrand& strand,Float64 timeToXfer,Float64 coeff);
 
-   //------------------------------------------------------------------------
-   // Calcuates the maximum jacking stress for the specified prestressing strands.
-   static Float64 GetFpj(const matPsStrand& strand,Float64 timeToXfer);
-   static Float64 GetFpj(const matPsStrand& strand,Float64 timeToXfer,Float64 coeff);
+         //------------------------------------------------------------------------
+         // Computes the prestress transfer length. 5.11.4.1
+         static Float64 GetXferLength(const WBFL::Materials::PsStrand& strand,bool bEpoxyCoated);
 
-   //------------------------------------------------------------------------
-   // Computes the prestress transfer length. 5.11.4.1
-   static Float64 GetXferLength(const matPsStrand& strand,bool bEpoxyCoated);
+         //------------------------------------------------------------------------
+         // Returns the coefficient k used to compute the prestress development length. 5.11.4.2
+         static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded);
 
-   //------------------------------------------------------------------------
-   // Returns the coefficient k used to compute the prestress development length. 5.11.4.2
-   static Float64 GetDevLengthFactor(Float64 mbrDepth,bool bDebonded);
+         //------------------------------------------------------------------------
+         // Computes the prestress development length. 5.11.4.2
+         static Float64 GetDevLength(const WBFL::Materials::PsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
+         static Float64 GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
 
-   //------------------------------------------------------------------------
-   // Computes the prestress development length. 5.11.4.2
-   static Float64 GetDevLength(const matPsStrand& strand, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
-   static Float64 GetDevLength(Float64 db, Float64 fps, Float64 fpe, Float64 mbrDepth, bool bDebonded = false);
+         //------------------------------------------------------------------------
+         // Computes the maximum jacking stress for post-tensioning
+         static Float64 GetFpjPT(const WBFL::Materials::PsStrand& strand);
 
-   //------------------------------------------------------------------------
-   // Computes the maximum jacking stress for post-tensioning
-   static Float64 GetFpjPT(const matPsStrand& strand);
-
-   //------------------------------------------------------------------------
-   // Computes the maximum jacking force for post-tensioning
-   static Float64 GetPjackPT(const matPsStrand& strand,StrandIndexType nStrands);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdPsStrand();
-
-   // Prevent accidental copying and assignment
-   lrfdPsStrand(const lrfdPsStrand&);
-   lrfdPsStrand& operator=(const lrfdPsStrand&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+         //------------------------------------------------------------------------
+         // Computes the maximum jacking force for post-tensioning
+         static Float64 GetPjackPT(const WBFL::Materials::PsStrand& strand,StrandIndexType nStrands);
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_PSSTRANDS_H_

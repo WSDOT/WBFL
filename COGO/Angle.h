@@ -38,15 +38,15 @@ class ATL_NO_VTABLE CAngle :
 	public CComCoClass<CAngle, &CLSID_Angle>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CAngle,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IAngle,
-   public IStructuredStorage2,
-   public IPersistImpl<CAngle>
+	public IAngle
 {
 public:
 	CAngle()
 	{
-      m_Angle = 0;
 	}
+
+	void SetAngle(std::shared_ptr<WBFL::COGO::Angle> angle) { m_Angle = angle; }
+	std::shared_ptr<WBFL::COGO::Angle> GetAngle() { return m_Angle; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_ANGLE)
 
@@ -54,10 +54,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CAngle)
 	COM_INTERFACE_ENTRY(IAngle)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -66,7 +64,6 @@ public:
 
 // IAngle
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ IAngle* *clone) override;
    STDMETHOD(Increment)(/*[in]*/ VARIANT varAngle,/*[out,retval]*/ IAngle* *pVal) override;
    STDMETHOD(IncrementBy)(/*[in]*/ VARIANT varAngle) override;
@@ -80,16 +77,8 @@ public:
 	STDMETHOD(get_Value)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Value)(/*[in]*/ Float64 newVal) override;
 
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-
 private:
-   HRESULT BadAngle();
-   HRESULT BadAngleString();
-
-	Float64 m_Angle; // in radians
+	std::shared_ptr<WBFL::COGO::Angle> m_Angle{ std::make_shared<WBFL::COGO::Angle>() };
 };
 
 #endif //__ANGLE_H_

@@ -65,8 +65,8 @@ void notify_error(CDocument* pDoc,void* pStuff);
 void log_error(CDocument* pDoc,void* pStuff);
 
 // Unit configuration helps
-unitmgtIndirectMeasure init_si_units();
-unitmgtIndirectMeasure init_english_units();
+WBFL::Units::IndirectMeasure init_si_units();
+WBFL::Units::IndirectMeasure init_english_units();
 
 #define ID_REPLACE_FILE (WM_USER+1)
 
@@ -108,10 +108,9 @@ int CEAFApp::Run()
    {
       retval = CWinApp::Run();
    }
-   catch(sysXBase& e)
+   catch(WBFL::System::XBase& e)
    {
-      std::_tstring msg;
-      e.GetErrorMessage(&msg);
+      std::_tstring msg = e.GetErrorMessage();
       AfxMessageBox(msg.c_str(),MB_OK);
       ExitInstance();
    }
@@ -318,12 +317,12 @@ void CEAFApp::RegistryInit()
    // the "default" time of last run will be the install time less one day so that if the
    // "LastRun" setting is not in the registry, this will look like there was a new install
    // prior to this run
-   sysDate install_date = GetInstallDate();
+   WBFL::System::Date install_date = GetInstallDate();
    --install_date;
-   sysTime default_time(install_date);
+   WBFL::System::Time default_time(install_date);
    
-   ClockTy last_run = GetProfileInt(_T("Settings"),_T("LastRun"),default_time.Seconds());
-   m_LastRunDate = sysTime(last_run);
+   WBFL::System::ClockTy last_run = GetProfileInt(_T("Settings"),_T("LastRun"),default_time.Seconds());
+   m_LastRunDate = WBFL::System::Time(last_run);
 
    CString strDocs = GetProfileString(_T("Settings"),_T("Documentation"),_T("Online"));
    m_bUseOnlineDocumentation = (strDocs.CompareNoCase(_T("Online")) == 0 ? TRUE : FALSE);
@@ -333,7 +332,7 @@ void CEAFApp::RegistryExit()
 {
    VERIFY(WriteProfileString( _T("Settings"),_T("LegalNotice"),m_bShowLegalNotice == VARIANT_TRUE ? _T("On") : _T("Off") ));
 
-   sysTime time;
+   WBFL::System::Time time;
    WriteProfileInt(_T("Settings"),_T("LastRun"),time.Seconds());
 
    WriteProfileString(_T("Settings"),_T("Documentation"),m_bUseOnlineDocumentation == TRUE ? _T("Online") : _T("Offline"));
@@ -451,8 +450,8 @@ void CEAFApp::ShowUsageMessage()
    CString strUsage;
    strUsage.Format(_T("%s"),cmdInfo.GetUsageMessage());
    
-   CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
-   for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+   for ( IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFAppPlugin> appPlugin;
       GetAppPluginManager()->GetPlugin(idx,&appPlugin);
@@ -976,11 +975,11 @@ CEAFComponentInfoManager* CEAFApp::GetComponentInfoManager()
 
 void CEAFApp::InitDisplayUnits()
 {
-   unitSysUnitsMgr::SetMassUnit( unitMeasure::Kilogram );
-   unitSysUnitsMgr::SetLengthUnit( unitMeasure::Meter );
-   unitSysUnitsMgr::SetTimeUnit( unitMeasure::Second );
-   unitSysUnitsMgr::SetTemperatureUnit( unitMeasure::Celcius );
-   unitSysUnitsMgr::SetAngleUnit( unitMeasure::Radian );
+   WBFL::Units::System::SetMassUnit( WBFL::Units::Measure::Kilogram );
+   WBFL::Units::System::SetLengthUnit( WBFL::Units::Measure::Meter );
+   WBFL::Units::System::SetTimeUnit( WBFL::Units::Measure::Second );
+   WBFL::Units::System::SetTemperatureUnit( WBFL::Units::Measure::Celsius );
+   WBFL::Units::System::SetAngleUnit( WBFL::Units::Measure::Radian );
 
    m_UnitLibrary.AddEntry(_T("SI"),      init_si_units());
    m_UnitLibrary.AddEntry(_T("English"), init_english_units() );
@@ -993,7 +992,7 @@ void CEAFApp::UpdateDisplayUnits()
    m_pDisplayUnits = &m_UnitLibrary.GetEntry(units);
 }
 
-const unitmgtIndirectMeasure* CEAFApp::GetDisplayUnits() const
+const WBFL::Units::IndirectMeasure* CEAFApp::GetDisplayUnits() const
 {
    return m_pDisplayUnits;
 }
@@ -1024,7 +1023,7 @@ void CEAFApp::RemoveUnitModeListener(iUnitModeListener* pListener)
    m_UnitModeListeners.erase(pListener);
 }
 
-sysDate CEAFApp::GetInstallDate()
+WBFL::System::Date CEAFApp::GetInstallDate()
 {
    HKEY hKey = GetUninstallRegistryKey();
 
@@ -1035,11 +1034,11 @@ sysDate CEAFApp::GetInstallDate()
    int month = _ttoi(strDate.Mid(4,2));
    int day   = _ttoi(strDate.Right(2));
 
-   sysDate date(day,month,year);
+   WBFL::System::Date date(day,month,year);
    return date;
 }
 
-sysDate CEAFApp::GetLastRunDate()
+WBFL::System::Date CEAFApp::GetLastRunDate()
 {
    return m_LastRunDate;
 }
@@ -1184,7 +1183,7 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 
    if (cmdInfo.m_nShellCommand == CCommandLineInfo::RestartByRestartManager)
    {
-      // don't continue processing the commandline if there was a restart
+      // don't continue processing the command line if there was a restart
       return;
    }
 
@@ -1248,8 +1247,8 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          
          if ( !bHandled && !cmdInfo.m_bError )
          {
-            CollectionIndexType nPlugins = GetAppPluginManager()->GetPluginCount();
-            for ( CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+            IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+            for ( IndexType idx = 0; idx < nPlugins; idx++ )
             {
                CComPtr<IEAFAppPlugin> appPlugin;
                GetAppPluginManager()->GetPlugin(idx,&appPlugin);
@@ -1615,7 +1614,7 @@ BOOL CEAFPluginApp::InitInstance()
    }
 
    // The installer should do this, but just in case it doesn't we'll do it here
-   sysComCatMgr::CreateCategory(GetAppPluginCategoryName(),GetAppPluginCategoryID());
+   WBFL::System::ComCatMgr::CreateCategory(GetAppPluginCategoryName(),GetAppPluginCategoryID());
 
    return TRUE;
 }
@@ -1807,105 +1806,105 @@ void log_error(CDocument* pDoc,void* pStuff)
 
 
 
-unitmgtIndirectMeasure init_si_units()
+WBFL::Units::IndirectMeasure init_si_units()
 {
-   unitmgtIndirectMeasure im;
+   WBFL::Units::IndirectMeasure im;
    im.Name = _T("SI");
    
-   im.StationFormat = unitStationFormats::SI;
+   im.StationFormat = WBFL::Units::StationFormats::SI;
 
    im.Scalar.Width = 8;
    im.Scalar.Precision = 3;
-   im.Scalar.Format = sysNumericFormatTool::Fixed;
+   im.Scalar.Format = WBFL::System::NumericFormatTool::Format::Fixed;
 
    im.Percentage.Width = 7;
    im.Percentage.Precision = 2;
-   im.Percentage.Format = sysNumericFormatTool::Fixed;
+   im.Percentage.Format = WBFL::System::NumericFormatTool::Format::Fixed;
 
-   im.ComponentDim.Update(    unitMeasure::Millimeter,                0.001, 8, 0, sysNumericFormatTool::Fixed );
-   im.XSectionDim.Update(     unitMeasure::Meter,                     0.001, 7, 3, sysNumericFormatTool::Fixed );
-   im.SpanLength.Update(      unitMeasure::Meter,                     0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Meter,                     0.001,16, 3, sysNumericFormatTool::Fixed );
-   im.Deflection.Update(    unitMeasure::Millimeter,                0.001, 8, 1, sysNumericFormatTool::Fixed );
-   im.Area.Update(            unitMeasure::Millimeter2,               0.001, 8, 0, sysNumericFormatTool::Fixed );
-   im.MomentOfInertia.Update( unitMeasure::Millimeter4,               0.001, 7, 0, sysNumericFormatTool::Engineering );
-   im.SectModulus.Update(     unitMeasure::Millimeter3,               0.001, 7, 0, sysNumericFormatTool::Engineering );
-   im.AvOverS.Update(         unitMeasure::Millimeter2PerMeter,      1.0e-6, 9, 3, sysNumericFormatTool::Fixed );
-   im.Stress.Update(          unitMeasure::MPa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::MPa,                       0.001,13, 2, sysNumericFormatTool::Fixed );
-   im.GeneralForce.Update(    unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Tonnage.Update(         unitMeasure::Kilonewton,                0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Shear.Update(           unitMeasure::Kilonewton,                0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Moment.Update(          unitMeasure::KilonewtonMeter,           0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SmallMoment.Update(     unitMeasure::NewtonMillimeter,          0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Angle.Update(           unitMeasure::Degree,                    0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,                   1.0e-5, 9, 5, sysNumericFormatTool::Fixed );
-   im.Density.Update(         unitMeasure::KgPerMeter3,               0.001, 6, 0, sysNumericFormatTool::Fixed );
-   im.MassPerLength.Update(   unitMeasure::KgPerMeter,                0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.ForcePerLength.Update(  unitMeasure::KilonewtonPerMeter,        0.001, 8, 2, sysNumericFormatTool::Fixed );
-   im.MomentPerAngle.Update(  unitMeasure::KiloNewtonMeterPerRadian,  0.001, 8, 2, sysNumericFormatTool::Fixed );
-   im.Time.Update(            unitMeasure::Hour,                      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,                       0.001, 9, 0, sysNumericFormatTool::Automatic);
-   im.Time3.Update(           unitMeasure::Day,                       0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.ForceLength2.Update(    unitMeasure::KilonewtonMeter2,          0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SqrtPressure.Update(    unitMeasure::SqrtMPa,                   0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerMeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
-   im.Curvature.Update( unitMeasure::PerMillimeter, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
-   im.SmallStress.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.WindPressure.Update(          unitMeasure::Pa,                       0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.Velocity.Update( unitMeasure::KilometerPerHour, 0.001, 9, 2, sysNumericFormatTool::Fixed);
+   im.ComponentDim.Update(    WBFL::Units::Measure::Millimeter,                0.01,  8, 1, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.XSectionDim.Update(     WBFL::Units::Measure::Meter,                     0.001, 7, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SpanLength.Update(      WBFL::Units::Measure::Meter,                     0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.AlignmentLength.Update( WBFL::Units::Measure::Meter,                     0.001,16, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Deflection.Update(    WBFL::Units::Measure::Millimeter,                  0.01,  8, 1, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Area.Update(            WBFL::Units::Measure::Millimeter2,               0.01,  9, 4, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.MomentOfInertia.Update( WBFL::Units::Measure::Millimeter4,               0.01,  9, 4, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.SectModulus.Update(     WBFL::Units::Measure::Millimeter3,               0.01,  9, 4, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.AvOverS.Update(         WBFL::Units::Measure::Millimeter2PerMeter,       0.01, 12, 4, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.Stress.Update(          WBFL::Units::Measure::MPa,                       0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ModE.Update(            WBFL::Units::Measure::MPa,                       0.001,13, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.GeneralForce.Update(    WBFL::Units::Measure::Kilonewton,                0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Tonnage.Update(         WBFL::Units::Measure::Kilonewton,                0.001, 9, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Shear.Update(           WBFL::Units::Measure::Kilonewton,                0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Moment.Update(          WBFL::Units::Measure::KilonewtonMeter,           0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SmallMoment.Update(     WBFL::Units::Measure::NewtonMillimeter,          0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Angle.Update(           WBFL::Units::Measure::Degree,                    0.001, 7, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.RadAngle.Update(        WBFL::Units::Measure::Radian,                   1.0e-5, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Density.Update(         WBFL::Units::Measure::KgPerMeter3,               0.001, 8, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.MassPerLength.Update(   WBFL::Units::Measure::KgPerMeter,                0.001, 5, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ForcePerLength.Update(  WBFL::Units::Measure::KilonewtonPerMeter,        0.001, 8, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.MomentPerAngle.Update(  WBFL::Units::Measure::KiloNewtonMeterPerRadian,  0.001, 8, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Time.Update(            WBFL::Units::Measure::Hour,                      0.001, 5, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Time2.Update(           WBFL::Units::Measure::Day,                       0.001, 9, 0, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.Time3.Update(           WBFL::Units::Measure::Day,                       0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ForceLength2.Update(    WBFL::Units::Measure::KilonewtonMeter2,          0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SqrtPressure.Update(    WBFL::Units::Measure::SqrtMPa,                   0.001, 9, 4, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.PerLength.Update(       WBFL::Units::Measure::PerMeter,                 1.0e-9,14, 8, WBFL::System::NumericFormatTool::Format::Fixed);
+   im.Curvature.Update(       WBFL::Units::Measure::PerMillimeter,            1.0e-9,14, 8, WBFL::System::NumericFormatTool::Format::Fixed);
+   im.SmallStress.Update(     WBFL::Units::Measure::Pa,                        0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.WindPressure.Update(    WBFL::Units::Measure::Pa,                        0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Velocity.Update(        WBFL::Units::Measure::KilometerPerHour,          0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed);
 
    return im;
 }
 
-unitmgtIndirectMeasure init_english_units()
+WBFL::Units::IndirectMeasure init_english_units()
 {
-   unitmgtIndirectMeasure im;
+   WBFL::Units::IndirectMeasure im;
 
    im.Name = _T("English");
 
-   im.StationFormat = unitStationFormats::US;
+   im.StationFormat = WBFL::Units::StationFormats::US;
 
    im.Scalar.Width = 8;
    im.Scalar.Precision = 3;
-   im.Scalar.Format = sysNumericFormatTool::Fixed;
+   im.Scalar.Format = WBFL::System::NumericFormatTool::Format::Fixed;
 
    im.Percentage.Width = 7;
    im.Percentage.Precision = 2;
-   im.Percentage.Format = sysNumericFormatTool::Fixed;
+   im.Percentage.Format = WBFL::System::NumericFormatTool::Format::Fixed;
 
-   im.ComponentDim.Update(    unitMeasure::Inch,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.XSectionDim.Update(     unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.SpanLength.Update(      unitMeasure::Feet,            0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.AlignmentLength.Update( unitMeasure::Feet,            0.001,16, 3, sysNumericFormatTool::Fixed );
-   im.Deflection.Update(    unitMeasure::Inch,            0.001, 8, 3, sysNumericFormatTool::Fixed );
-   im.Area.Update(            unitMeasure::Inch2,           0.001,10, 3, sysNumericFormatTool::Fixed );
-   im.MomentOfInertia.Update( unitMeasure::Inch4,           0.001,12, 1, sysNumericFormatTool::Fixed );
-   im.SectModulus.Update(     unitMeasure::Inch3,           0.001,12, 1, sysNumericFormatTool::Fixed );
-   im.Stress.Update(          unitMeasure::KSI,            1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
-   im.AvOverS.Update(         unitMeasure::Inch2PerFoot,   1.0e-7, 9, 3, sysNumericFormatTool::Fixed );
-   im.ModE.Update(            unitMeasure::KSI,            1.0e-5,10, 3, sysNumericFormatTool::Fixed );
-   im.GeneralForce.Update(    unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
-   im.Tonnage.Update(         unitMeasure::Ton,             0.001, 9, 0, sysNumericFormatTool::Fixed );
-   im.Shear.Update(           unitMeasure::Kip,            1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
-   im.Moment.Update(          unitMeasure::KipFeet,        1.0e-5, 9, 2, sysNumericFormatTool::Fixed );
-   im.SmallMoment.Update(     unitMeasure::KipInch,        1.0e-5, 9, 0, sysNumericFormatTool::Fixed );
-   im.Angle.Update(           unitMeasure::Degree,          0.001, 7, 2, sysNumericFormatTool::Fixed );
-   im.RadAngle.Update(        unitMeasure::Radian,         1.0e-5, 9, 5, sysNumericFormatTool::Fixed );
-   im.Density.Update(         unitMeasure::KipPerFeet3,     0.001, 6, 3, sysNumericFormatTool::Fixed );
-   im.MassPerLength.Update(   unitMeasure::LbfPerFeet,      0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.ForcePerLength.Update(  unitMeasure::KipPerFoot,     1.0e-5, 9, 3, sysNumericFormatTool::Fixed );
-   im.MomentPerAngle.Update(  unitMeasure::KipInchPerRadian,0.001,10, 2, sysNumericFormatTool::Fixed );
-   im.Time.Update(            unitMeasure::Hour,            0.001, 5, 0, sysNumericFormatTool::Fixed );
-   im.Time2.Update(           unitMeasure::Day,             0.001, 9, 0, sysNumericFormatTool::Automatic);
-   im.Time3.Update(           unitMeasure::Day,             0.001, 9, 3, sysNumericFormatTool::Fixed );
-   im.ForceLength2.Update(    unitMeasure::KipInch2,        0.001, 9, 2, sysNumericFormatTool::Fixed );
-   im.SqrtPressure.Update(    unitMeasure::SqrtKSI,         0.001, 9, 4, sysNumericFormatTool::Fixed );
-   im.PerLength.Update( unitMeasure::PerFeet, 1.0e-5, 9, 4, sysNumericFormatTool::Fixed);
-   im.Curvature.Update( unitMeasure::PerInch, 1.0e-9, 14, 8, sysNumericFormatTool::Fixed);
-   im.SmallStress.Update(          unitMeasure::KSF,              1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
-   im.WindPressure.Update(         unitMeasure::PSF,             1.0e-5, 8, 3, sysNumericFormatTool::Fixed );
-   im.Velocity.Update( unitMeasure::MilePerHour, 1.0e-5, 8, 2, sysNumericFormatTool::Fixed );
+   im.ComponentDim.Update(    WBFL::Units::Measure::Inch,            0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.XSectionDim.Update(     WBFL::Units::Measure::Feet,            0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SpanLength.Update(      WBFL::Units::Measure::Feet,            0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.AlignmentLength.Update( WBFL::Units::Measure::Feet,            0.001,16, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Deflection.Update(      WBFL::Units::Measure::Inch,            0.001, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Area.Update(            WBFL::Units::Measure::Inch2,           0.001,10, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.MomentOfInertia.Update( WBFL::Units::Measure::Inch4,           0.001,12, 1, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SectModulus.Update(     WBFL::Units::Measure::Inch3,           0.001,12, 1, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Stress.Update(          WBFL::Units::Measure::KSI,            1.0e-5, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.AvOverS.Update(         WBFL::Units::Measure::Inch2PerFoot,   1.0e-7, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ModE.Update(            WBFL::Units::Measure::KSI,            1.0e-5,10, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.GeneralForce.Update(    WBFL::Units::Measure::Kip,            1.0e-5, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Tonnage.Update(         WBFL::Units::Measure::Ton,             0.001, 9, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Shear.Update(           WBFL::Units::Measure::Kip,            1.0e-5, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Moment.Update(          WBFL::Units::Measure::KipFeet,        1.0e-5, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SmallMoment.Update(     WBFL::Units::Measure::KipInch,        1.0e-5, 9, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Angle.Update(           WBFL::Units::Measure::Degree,          0.001, 7, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.RadAngle.Update(        WBFL::Units::Measure::Radian,         1.0e-5, 9, 5, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Density.Update(         WBFL::Units::Measure::KipPerFeet3,     0.001, 6, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.MassPerLength.Update(   WBFL::Units::Measure::LbfPerFeet,      0.001, 5, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ForcePerLength.Update(  WBFL::Units::Measure::KipPerFoot,     1.0e-5, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.MomentPerAngle.Update(  WBFL::Units::Measure::KipInchPerRadian,0.001,10, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Time.Update(            WBFL::Units::Measure::Hour,            0.001, 5, 0, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Time2.Update(           WBFL::Units::Measure::Day,             0.001, 9, 0, WBFL::System::NumericFormatTool::Format::Automatic);
+   im.Time3.Update(           WBFL::Units::Measure::Day,             0.001, 9, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.ForceLength2.Update(    WBFL::Units::Measure::KipInch2,        0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.SqrtPressure.Update(    WBFL::Units::Measure::SqrtKSI,         0.001, 9, 4, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.PerLength.Update(       WBFL::Units::Measure::PerFeet,        1.0e-5, 9, 4, WBFL::System::NumericFormatTool::Format::Fixed);
+   im.Curvature.Update(       WBFL::Units::Measure::PerInch,        1.0e-9,14, 8, WBFL::System::NumericFormatTool::Format::Fixed);
+   im.SmallStress.Update(     WBFL::Units::Measure::KSF,            1.0e-5, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.WindPressure.Update(    WBFL::Units::Measure::PSF,            1.0e-5, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Velocity.Update(        WBFL::Units::Measure::MilePerHour,    1.0e-5, 8, 2, WBFL::System::NumericFormatTool::Format::Fixed );
 
    return im;
 }

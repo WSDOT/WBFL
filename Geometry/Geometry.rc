@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+//Microsoft Developer Studio generated resource script.
 //
 #include "resource.h"
 
@@ -13,11 +13,13 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// English (U.S.) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
+#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -25,18 +27,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "#include ""winres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "1 TYPELIB ""WBFLGeometry.tlb""\r\n"
     "\0"
@@ -45,14 +47,15 @@ END
 #endif    // APSTUDIO_INVOKED
 
 
+#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,5,0
- PRODUCTVERSION 7,0,5,0
+ FILEVERSION 7,0,0,0
+ PRODUCTVERSION 7,0,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -67,15 +70,19 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "Comments", "A member of the Alternate Route Project"
-            VALUE "CompanyName", "Washington State Department of Transportation"
-            VALUE "FileDescription", "WBFL Geometry Module"
-            VALUE "FileVersion", "7.0.5.0"
-            VALUE "InternalName", "Geometry"
-            VALUE "LegalCopyright", "Copyright © 1999-2022, Washington State Department of Transportation, All Rights Reserved"
-            VALUE "OriginalFilename", "Geometry.DLL"
-            VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "7.0.5.0"
+            VALUE "Comments", "A member of the Alternate Route Project\0"
+            VALUE "CompanyName", "Washington State Department of Transportation\0"
+            VALUE "FileDescription", "WBFL Geometry Module\0"
+            VALUE "FileVersion", "7.0.0.0\0"
+            VALUE "InternalName", "Geometry\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OLESelfRegister", "\0"
+            VALUE "OriginalFilename", "Geometry.DLL\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "WBFL\0"
+            VALUE "ProductVersion", "7.0.0.0\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -84,109 +91,71 @@ BEGIN
     END
 END
 
+#endif    // !_MAC
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // REGISTRY
 //
 
-IDR_POINT2D             REGISTRY                "Point2d.rgs"
-
-IDR_SIZE2D              REGISTRY                "Size2d.rgs"
-
-IDR_RECT2D              REGISTRY                "Rect2d.rgs"
-
-IDR_VECTOR2D            REGISTRY                "Vector2d.rgs"
-
-IDR_POINT2DCOLLECTION   REGISTRY                "Point2dCollection.rgs"
-
-IDR_LINESEGMENT2D       REGISTRY                "LineSegment2d.rgs"
-
-IDR_LINESEGMENT3D       REGISTRY                "LineSegment3d.rgs"
-
-IDR_LINE2D              REGISTRY                "Line2d.rgs"
-
-IDR_SHAPEPROPERTIES     REGISTRY                "ShapeProperties.rgs"
-
-IDR_POLYSHAPE           REGISTRY                "PolyShape.rgs"
-
-IDR_CIRCLE              REGISTRY                "Circle.rgs"
-
-IDR_RECTANGLE           REGISTRY                "Rectangle.rgs"
-
-IDR_TRIANGLE            REGISTRY                "Triangle.rgs"
-
-IDR_PRECASTBEAM         REGISTRY                "PrecastBeam.rgs"
-
-IDR_PRECASTBEAM2        REGISTRY                "PrecastBeam2.rgs"
-
-IDR_TRAFFICBARRIER      REGISTRY                "TrafficBarrier.rgs"
-
-IDR_POINT3D             REGISTRY                "Point3d.rgs"
-
-IDR_SIZE3D              REGISTRY                "Size3d.rgs"
-
-IDR_VECTOR3D            REGISTRY                "Vector3d.rgs"
-
-IDR_PLANE3D             REGISTRY                "Plane3d.rgs"
-
-IDR_POINT3DCOLLECTION   REGISTRY                "Point3dCollection.rgs"
-
-IDR_GEOMUTIL            REGISTRY                "GeomUtil.rgs"
-
-IDR_COORDINATEXFORM3D   REGISTRY                "CoordinateXform3d.rgs"
-
-IDR_COORDINATEXFORM2D   REGISTRY                "CoordinateXform2d.rgs"
-
-IDR_PRIMITIVEFACTORY    REGISTRY                "PrimitiveFactory.rgs"
-
-IDR_CIRCULARSEGMENT     REGISTRY                "CircularSegment.rgs"
-
-IDR_SHAPECOLLECTION     REGISTRY                "ShapeCollection.rgs"
-
-IDR_PLATEGIRDER         REGISTRY                "PlateGirder.rgs"
-
-IDR_NUBEAM              REGISTRY                "NUBeam.rgs"
-
-IDR_UBEAM               REGISTRY                "UBeam.rgs"
-
-IDR_BULBTEE             REGISTRY                "BulbTee.rgs"
-
-IDR_BULBTEE2            REGISTRY                "BulbTee2.rgs"
-
-IDR_MULTIWEB            REGISTRY                "MultiWeb.rgs"
-
-IDR_UBEAM2              REGISTRY                "UBeam2.rgs"
-
-IDR_COMPOSITESHAPEITEM  REGISTRY                "CompositeShapeItem.rgs"
-
-IDR_COMPOSITESHAPE      REGISTRY                "CompositeShape.rgs"
-
-IDR_VOIDEDSLAB          REGISTRY                "VoidedSlab.rgs"
-
-IDR_VOIDEDSLAB2         REGISTRY                "VoidedSlab2.rgs"
-
-IDR_BOXBEAM             REGISTRY                "BoxBeam.rgs"
-
-IDR_MULTIWEB2           REGISTRY                "MultiWeb2.rgs"
-
-IDR_DECKEDSLABBEAM      REGISTRY                "DeckedSlabBeam.rgs"
-
-IDR_GENERICSHAPE        REGISTRY                "GenericShape.rgs"
-
-IDR_BEAMSHAPEFACTORY    REGISTRY                "BeamShapeFactory.rgs"
-
-IDR_NUDECKEDIBEAM       REGISTRY                "NUDeckedIBeam.rgs"
-
-IDR_PCIDECKEDIBEAM      REGISTRY                "PCIDeckedIBeam.rgs"
-
+IDR_POINT2D             REGISTRY DISCARDABLE    "Point2d.rgs"
+IDR_SIZE2D              REGISTRY DISCARDABLE    "Size2d.rgs"
+IDR_RECT2D              REGISTRY DISCARDABLE    "Rect2d.rgs"
+IDR_VECTOR2D            REGISTRY DISCARDABLE    "Vector2d.rgs"
+IDR_POINT2DCOLLECTION   REGISTRY DISCARDABLE    "Point2dCollection.rgs"
+IDR_LINESEGMENT2D       REGISTRY DISCARDABLE    "LineSegment2d.rgs"
+IDR_LINESEGMENT3D       REGISTRY DISCARDABLE    "LineSegment3d.rgs"
+IDR_LINE2D              REGISTRY DISCARDABLE    "Line2d.rgs"
+IDR_SHAPEPROPERTIES     REGISTRY DISCARDABLE    "ShapeProperties.rgs"
+IDR_POLYSHAPE           REGISTRY DISCARDABLE    "PolyShape.rgs"
+IDR_CIRCLE              REGISTRY DISCARDABLE    "Circle.rgs"
+IDR_RECTANGLE           REGISTRY DISCARDABLE    "Rectangle.rgs"
+IDR_TRIANGLE            REGISTRY DISCARDABLE    "Triangle.rgs"
+IDR_PRECASTBEAM         REGISTRY DISCARDABLE    "PrecastBeam.rgs"
+IDR_PRECASTBEAM2        REGISTRY DISCARDABLE    "PrecastBeam2.rgs"
+IDR_TRAFFICBARRIER      REGISTRY DISCARDABLE    "TrafficBarrier.rgs"
+IDR_POINT3D             REGISTRY DISCARDABLE    "Point3d.rgs"
+IDR_SIZE3D              REGISTRY DISCARDABLE    "Size3d.rgs"
+IDR_VECTOR3D            REGISTRY DISCARDABLE    "Vector3d.rgs"
+IDR_PLANE3D             REGISTRY DISCARDABLE    "Plane3d.rgs"
+IDR_POINT3DCOLLECTION   REGISTRY DISCARDABLE    "Point3dCollection.rgs"
+IDR_GEOMUTIL            REGISTRY DISCARDABLE    "GeomUtil.rgs"
+IDR_COORDINATEXFORM3D   REGISTRY DISCARDABLE    "CoordinateXform3d.rgs"
+IDR_COORDINATEXFORM2D   REGISTRY DISCARDABLE    "CoordinateXform2d.rgs"
+IDR_PRIMITIVEFACTORY    REGISTRY DISCARDABLE    "PrimitiveFactory.rgs"
+IDR_CIRCULARSEGMENT     REGISTRY DISCARDABLE    "CircularSegment.rgs"
+IDR_SHAPECOLLECTION     REGISTRY DISCARDABLE    "ShapeCollection.rgs"
+IDR_PLATEGIRDER         REGISTRY DISCARDABLE    "PlateGirder.rgs"
+IDR_NUBEAM              REGISTRY DISCARDABLE    "NUBeam.rgs"
+IDR_UBEAM               REGISTRY DISCARDABLE    "UBeam.rgs"
+IDR_BULBTEE             REGISTRY DISCARDABLE    "BulbTee.rgs"
+IDR_BULBTEE2            REGISTRY DISCARDABLE    "BulbTee2.rgs"
+IDR_MULTIWEB            REGISTRY DISCARDABLE    "MultiWeb.rgs"
+IDR_UBEAM2              REGISTRY DISCARDABLE    "UBeam2.rgs"
+IDR_COMPOSITESHAPEITEM  REGISTRY DISCARDABLE    "CompositeShapeItem.rgs"
+IDR_COMPOSITESHAPE      REGISTRY DISCARDABLE    "CompositeShape.rgs"
+IDR_VOIDEDSLAB          REGISTRY DISCARDABLE    "VoidedSlab.rgs"
+IDR_VOIDEDSLAB2         REGISTRY DISCARDABLE    "VoidedSlab2.rgs"
+IDR_BOXBEAM             REGISTRY DISCARDABLE    "BoxBeam.rgs"
+IDR_MULTIWEB2           REGISTRY DISCARDABLE    "MultiWeb2.rgs"
+IDR_DECKEDSLABBEAM      REGISTRY DISCARDABLE    "DeckedSlabBeam.rgs"
+IDR_GENERICSHAPE        REGISTRY DISCARDABLE    "GenericShape.rgs"
+IDR_BEAMSHAPEFACTORY    REGISTRY DISCARDABLE    "BeamShapeFactory.rgs"
+IDR_NUDECKEDIBEAM       REGISTRY DISCARDABLE    "NUDeckedIBeam.rgs"
+IDR_PCIDECKEDIBEAM      REGISTRY DISCARDABLE    "PCIDeckedIBeam.rgs"
+IDR_ELASTICPROPERTIES   REGISTRY DISCARDABLE    "ElasticProperties.rgs"
+IDR_MASSPROPERTIES      REGISTRY DISCARDABLE    "MassProperties.rgs"
+IDR_COMPOSITEBEAM       REGISTRY DISCARDABLE    "CompositeBeam.rgs"
+IDR_COMPOSITESECTIONITEMEX REGISTRY DISCARDABLE    "CompositeSectionItemEx.rgs"
+IDR_COMPOSITESECTIONEX    REGISTRY DISCARDABLE    "CompositeSectionEx.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE
+STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_E_NOTNORMALIZED     "Rectangle must be normalized"
     IDS_E_ZEROMAGNITUDE     "Magnitude of vector(s) must be greater than zero"
@@ -204,12 +173,12 @@ BEGIN
     IDS_E_COLINEAR          "Points cannot be colinear"
 END
 
-STRINGTABLE
+STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_PROJNAME            "Geometry"
 END
 
-#endif    // English (United States) resources
+#endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

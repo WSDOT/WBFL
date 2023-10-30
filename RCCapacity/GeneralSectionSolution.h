@@ -47,6 +47,7 @@ public:
 		m_My = 0;
       m_C  = 0;
       m_T  = 0;
+		m_bExceededStrainLimits = VARIANT_FALSE;
 	}
 
    HRESULT FinalConstruct();
@@ -72,6 +73,7 @@ private:
    CComPtr<IPoint2d> m_cgC;
    CComPtr<IPoint2d> m_cgT;
    CComPtr<IUnkArray> m_Slices;
+	VARIANT_BOOL m_bExceededStrainLimits;
 
 // ISupportsErrorInfo
 public:
@@ -79,7 +81,7 @@ public:
 
 // IGeneralSectionSolution
 public:
-   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/ILine2d* neutralAxis,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/IUnkArray* slices) override;
+   STDMETHOD(InitSolution)(/*[in]*/Float64 fz,/*[in]*/Float64 mx,/*[in]*/Float64 my,/*[in]*/ILine2d* neutralAxis,/*[in]*/IPoint2d* cgC,/*[in]*/Float64 C,/*[in]*/IPoint2d* cgT,/*[in]*/Float64 T,/*[in]*/IUnkArray* slices,/*[in]*/VARIANT_BOOL bExceededStrainLimits) override;
 	STDMETHOD(get_Fz)(/*[out,retval]*/Float64* fz) override;
 	STDMETHOD(get_Mx)(/*[out,retval]*/Float64* mx) override;
 	STDMETHOD(get_My)(/*[out,retval]*/Float64* my) override;
@@ -89,9 +91,10 @@ public:
 	STDMETHOD(get_TensionResultant)(/*[out,retval]*/Float64* t) override;
    STDMETHOD(get_CompressionResultantLocation)(/*[out,retval]*/IPoint2d** cgC) override;
 	STDMETHOD(get_TensionResultantLocation)(/*[out,retval]*/IPoint2d** cgT) override;
+	STDMETHOD(get_ExceededStrainLimits)(/*[out,retval]*/VARIANT_BOOL* pbExceededStrainLimits) override;
 
-   STDMETHOD(get_SliceCount)(/*[out,retval]*/CollectionIndexType* nSlices) override;
-	STDMETHOD(get_Slice)(/*[in]*/ CollectionIndexType sliceIdx,/*[out,retval]*/IGeneralSectionSlice** pSlice) override;
+   STDMETHOD(get_SliceCount)(/*[out,retval]*/IndexType* nSlices) override;
+	STDMETHOD(get_Slice)(/*[in]*/ IndexType sliceIdx,/*[out,retval]*/IGeneralSectionSlice** pSlice) override;
 
 	STDMETHOD(FindSlices)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/IUnkArray** ppSlices) override;
 };

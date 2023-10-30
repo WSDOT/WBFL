@@ -65,20 +65,17 @@ void CTestTangent::TestExternal()
    CComQIPtr<ICogoModel> model(tangent);
    TRY_TEST( model != nullptr, true );
 
-   CComPtr<IPointCollection> points;
-   model->get_Points(&points);
-
-   points->Add(1,10,10,nullptr);
-   points->Add(2,40,10,nullptr);
+   model->StorePoint(1,10,10);
+   model->StorePoint(2,40,10);
 
    // Test some error cases
-   TRY_TEST(tangent->External(3,1,-20.0,4,2,5.0,tsCW), COGO_E_RADIUS);
-   TRY_TEST(tangent->External(3,1, 20.0,4,2,-5.0,tsCW),COGO_E_RADIUS);
-   TRY_TEST(tangent->External(3,10, 20.0,4,2,5.0,tsCW),COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->External(3,1,20.0,4,20,5.0,tsCW), COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->External(1,1,20.0,4,2,5.0,tsCW),  COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(tangent->External(3,1,20.0,2,2,5.0,tsCW),  COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(tangent->External(3,1,20.0,4,1,5.0,tsCW),  COGO_E_COINCIDENTPOINTS);
+   TRY_TEST(tangent->External(3,1,-20.0,4,2,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->External(3,1, 20.0,4,2,-5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->External(3,10, 20.0,4,2,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->External(3,1,20.0,4,20,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->External(1,1,20.0,4,2,5.0,tsCW),  S_FALSE);
+   TRY_TEST(tangent->External(3,1,20.0,2,2,5.0,tsCW), S_FALSE);
+   TRY_TEST(tangent->External(3,1,20.0,4,1,5.0,tsCW), S_FALSE);
 
    CComPtr<IPoint2d> A, B;
    Float64 x,y;
@@ -87,14 +84,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(3,1,20.0,4,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(3,&A),S_OK);
+   TRY_TEST(model->GetPointByID(3,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
    TRY_TEST(IsEqual(y,27.3205),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(4,&B),S_OK);
+   TRY_TEST(model->GetPointByID(4,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
@@ -103,14 +100,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(5,1,20.0,6,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(5,&A),S_OK);
+   TRY_TEST(model->GetPointByID(5,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
    TRY_TEST(IsEqual(y,27.3205),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(6,&B),S_OK);
+   TRY_TEST(model->GetPointByID(6,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
@@ -120,14 +117,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(7,2,5.0,8,1,20.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(7,&A),S_OK);
+   TRY_TEST(model->GetPointByID(7,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
    TRY_TEST(IsEqual(y,14.33013),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(8,&B),S_OK);
+   TRY_TEST(model->GetPointByID(8,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
@@ -136,14 +133,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(9,2,5.0,10,1,20.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(9,&A),S_OK);
+   TRY_TEST(model->GetPointByID(9,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,42.5),true);
    TRY_TEST(IsEqual(y, 14.33013),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(10,&B),S_OK);
+   TRY_TEST(model->GetPointByID(10,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,20.0),true);
@@ -152,27 +149,29 @@ void CTestTangent::TestExternal()
    // rotate both circles 180deg around (0,0)
    // (make x = -x)
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->get_X(&x);
    A->put_X(-x);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->get_X(&x);
    B->put_X(-x);
+   model->ReplacePointByIDEx(2, B);
 
    // big circle first
    TRY_TEST(tangent->External(11,1,20.0,12,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(11,&A),S_OK);
+   TRY_TEST(model->GetPointByID(11,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
    TRY_TEST(IsEqual(y,-7.3205),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(12,&B),S_OK);
+   TRY_TEST(model->GetPointByID(12,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
@@ -181,14 +180,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(13,1,20.0,14,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(13,&A),S_OK);
+   TRY_TEST(model->GetPointByID(13,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
    TRY_TEST(IsEqual(y,-7.3205),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(14,&B),S_OK);
+   TRY_TEST(model->GetPointByID(14,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
@@ -198,14 +197,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(15,2,5.0,16,1,20.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(15,&A),S_OK);
+   TRY_TEST(model->GetPointByID(15,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
    TRY_TEST(IsEqual(y,5.66987),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(16,&B),S_OK);
+   TRY_TEST(model->GetPointByID(16,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
@@ -214,14 +213,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(17,2,5.0,18,1,20.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(17,&A),S_OK);
+   TRY_TEST(model->GetPointByID(17,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-42.5),true);
    TRY_TEST(IsEqual(y,5.66987),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(18,&B),S_OK);
+   TRY_TEST(model->GetPointByID(18,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-20.0),true);
@@ -230,27 +229,29 @@ void CTestTangent::TestExternal()
    // rotate both (original) circles 90deg around (0,0)
    // (make Y = x, X = -Y)
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->put_X(-10);
    A->put_Y( 10);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->put_X(-10);
    B->put_Y( 40);
+   model->ReplacePointByIDEx(2, B);
 
    // big circle first
    TRY_TEST(tangent->External(19,1,20.0,20,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(19,&A),S_OK);
+   TRY_TEST(model->GetPointByID(19,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-27.3205),true);
    TRY_TEST(IsEqual(y, 20.0),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(20,&B),S_OK);
+   TRY_TEST(model->GetPointByID(20,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-14.33013),true);
@@ -259,14 +260,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(21,1,20.0,22,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(21,&A),S_OK);
+   TRY_TEST(model->GetPointByID(21,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-27.3205),true);
    TRY_TEST(IsEqual(y,20.0),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(22,&B),S_OK);
+   TRY_TEST(model->GetPointByID(22,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-14.33013),true);
@@ -276,14 +277,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(23,2,5.0,24,1,20.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(23,&A),S_OK);
+   TRY_TEST(model->GetPointByID(23,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-14.33013),true);
    TRY_TEST(IsEqual(y, 42.5),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(23,&B),S_OK);
+   TRY_TEST(model->GetPointByID(23,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-14.33013),true);
@@ -292,14 +293,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(25,2,5.0,26,1,20.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(25,&A),S_OK);
+   TRY_TEST(model->GetPointByID(25,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-14.33013),true);
    TRY_TEST(IsEqual(y, 42.5),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(26,&B),S_OK);
+   TRY_TEST(model->GetPointByID(26,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-27.3205),true);
@@ -318,26 +319,28 @@ void CTestTangent::TestExternal()
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 1
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->put_X(0);
    A->put_Y(0);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->put_X(10);
    B->put_Y(10);
+   model->ReplacePointByIDEx(2, B);
 
    TRY_TEST(tangent->External(27,1,5.0,28,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(27,&A),S_OK);
+   TRY_TEST(model->GetPointByID(27,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-3.5355,0.001),true);
    TRY_TEST(IsEqual(y, 3.5355,0.001),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(28,&B),S_OK);
+   TRY_TEST(model->GetPointByID(28,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46447,0.001),true);
@@ -346,14 +349,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(29,1,5.0,30,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(29,&A),S_OK);
+   TRY_TEST(model->GetPointByID(29,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-3.5355,0.001),true);
    TRY_TEST(IsEqual(y, 3.5355,0.001),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(30,&B),S_OK);
+   TRY_TEST(model->GetPointByID(30,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,6.46447,0.001),true);
@@ -361,25 +364,27 @@ void CTestTangent::TestExternal()
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 2
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->put_X(0);
    A->put_Y(0);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->put_X(-10);
    B->put_Y(10);
+   model->ReplacePointByIDEx(2, B);
    TRY_TEST(tangent->External(31,1,5.0,32,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(31,&A),S_OK);
+   TRY_TEST(model->GetPointByID(31,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-3.5355,0.001),true);
    TRY_TEST(IsEqual(y,-3.5355,0.001),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(32,&B),S_OK);
+   TRY_TEST(model->GetPointByID(32,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-13.5355,0.001),true);
@@ -388,14 +393,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(33,1,5.0,34,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(33,&A),S_OK);
+   TRY_TEST(model->GetPointByID(33,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,-3.5355,0.001),true);
    TRY_TEST(IsEqual(y,-3.5355,0.001),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(34,&B),S_OK);
+   TRY_TEST(model->GetPointByID(34,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-13.5355,0.001),true);
@@ -403,25 +408,27 @@ void CTestTangent::TestExternal()
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 3
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->put_X(0);
    A->put_Y(0);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->put_X(-10);
    B->put_Y(-10);
+   model->ReplacePointByIDEx(2, B);
    TRY_TEST(tangent->External(35,1,5.0,36,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(35,&A),S_OK);
+   TRY_TEST(model->GetPointByID(35,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 3.5355,0.001),true);
    TRY_TEST(IsEqual(y,-3.5355,0.001),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(36,&B),S_OK);
+   TRY_TEST(model->GetPointByID(36,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-6.46447,0.001),true);
@@ -430,14 +437,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(37,1,5.0,38,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(37,&A),S_OK);
+   TRY_TEST(model->GetPointByID(37,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 3.5355,0.001),true);
    TRY_TEST(IsEqual(y,-3.5355,0.001),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(38,&B),S_OK);
+   TRY_TEST(model->GetPointByID(38,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,-6.46447,0.001),true);
@@ -445,25 +452,27 @@ void CTestTangent::TestExternal()
 
    // 2 Equal radius circles, one centered at the origin, one at 45deg in quadrant 4
    A.Release();
-   points->get_Item(1,&A);
+   model->GetPointByID(1,&A);
    A->put_X(0);
    A->put_Y(0);
+   model->ReplacePointByIDEx(1, A);
 
    B.Release();
-   points->get_Item(2,&B);
+   model->GetPointByID(2,&B);
    B->put_X( 10);
    B->put_Y(-10);
+   model->ReplacePointByIDEx(2, B);
    TRY_TEST(tangent->External(39,1,5.0,40,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(39,&A),S_OK);
+   TRY_TEST(model->GetPointByID(39,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 3.5355,0.001),true);
    TRY_TEST(IsEqual(y, 3.5355,0.001),true);
  
    B.Release();
-   TRY_TEST(points->get_Item(40,&B),S_OK);
+   TRY_TEST(model->GetPointByID(40,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,13.5355,0.001),true);
@@ -472,14 +481,14 @@ void CTestTangent::TestExternal()
    TRY_TEST(tangent->External(41,1,5.0,42,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(41,&A),S_OK);
+   TRY_TEST(model->GetPointByID(41,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 3.5355,0.001),true);
    TRY_TEST(IsEqual(y, 3.5355,0.001),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(42,&B),S_OK);
+   TRY_TEST(model->GetPointByID(42,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x, 13.5355,0.001),true);
@@ -494,20 +503,17 @@ void CTestTangent::TestCross()
    CComQIPtr<ICogoModel> model(tangent);
    TRY_TEST( model != nullptr, true );
 
-   CComPtr<IPointCollection> points;
-   model->get_Points(&points);
-
-   points->Add(1,10,10,nullptr);
-   points->Add(2,40,10,nullptr);
+   model->StorePoint(1,10,10);
+   model->StorePoint(2,40,10);
 
    // Test some error cases
-   TRY_TEST(tangent->Cross(3,1,-20.0,4,2,5.0,tsCW), COGO_E_RADIUS);
-   TRY_TEST(tangent->Cross(3,1, 20.0,4,2,-5.0,tsCW),COGO_E_RADIUS);
-   TRY_TEST(tangent->Cross(3,10, 20.0,4,2,5.0,tsCW),COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->Cross(3,1,20.0,4,20,5.0,tsCW), COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->Cross(1,1,20.0,4,2,5.0,tsCW),  COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(tangent->Cross(3,1,20.0,2,2,5.0,tsCW),  COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(tangent->Cross(3,1,20.0,4,1,5.0,tsCW),  COGO_E_COINCIDENTPOINTS);
+   TRY_TEST(tangent->Cross(3,1,-20.0,4,2,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Cross(3,1, 20.0,4,2,-5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Cross(3,10, 20.0,4,2,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Cross(3,1,20.0,4,20,5.0,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Cross(1,1,20.0,4,2,5.0,tsCW), S_FALSE);
+   TRY_TEST(tangent->Cross(3,1,20.0,2,2,5.0,tsCW), S_FALSE);
+   TRY_TEST(tangent->Cross(3,1,20.0,4,1,5.0,tsCW), S_FALSE);
 
    CComPtr<IPoint2d> A, B;
    Float64 x,y;
@@ -516,14 +522,14 @@ void CTestTangent::TestCross()
    TRY_TEST(tangent->Cross(3,1,20.0,4,2,5.0,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(3,&A),S_OK);
+   TRY_TEST(model->GetPointByID(3,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,26.66666),true);
    TRY_TEST(IsEqual(y,-1.05541),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(4,&B),S_OK);
+   TRY_TEST(model->GetPointByID(4,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,44.16667),true);
@@ -532,14 +538,14 @@ void CTestTangent::TestCross()
    TRY_TEST(tangent->Cross(5,1,20.0,6,2,5.0,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(5,&A),S_OK);
+   TRY_TEST(model->GetPointByID(5,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,26.66666),true);
    TRY_TEST(IsEqual(y,21.055415),true);
 
    B.Release();
-   TRY_TEST(points->get_Item(6,&B),S_OK);
+   TRY_TEST(model->GetPointByID(6,&B),S_OK);
    B->get_X(&x);
    B->get_Y(&y);
    TRY_TEST(IsEqual(x,44.16667),true);
@@ -554,23 +560,20 @@ void CTestTangent::TestPoint()
    CComQIPtr<ICogoModel> model(tangent);
    TRY_TEST( model != nullptr, true );
 
-   CComPtr<IPointCollection> points;
-   model->get_Points(&points);
-
    Float64 radius = 20;
 
-   points->Add(1,10,10,nullptr);
-   points->Add(2,10 + radius*sqrt(2.),10,nullptr);
-   points->Add(3,10 + radius,10 + radius,nullptr);
-   points->Add(999,5,5,nullptr);
+   model->StorePoint(1,10,10);
+   model->StorePoint(2,10 + radius*sqrt(2.),10);
+   model->StorePoint(3,10 + radius,10 + radius);
+   model->StorePoint(999,5,5);
 
    // Test some error cases
-   TRY_TEST(tangent->Point(4,1,-20.0,2,tsCW), COGO_E_RADIUS);
-   TRY_TEST(tangent->Point(4,10,20.0,2,tsCW),COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->Point(4,1,20.0,4,tsCW), COGO_E_POINTNOTFOUND);
-   TRY_TEST(tangent->Point(1,1,20.0,2,tsCW),  COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(tangent->Point(4,1,20.0,1,tsCW),  COGO_E_COINCIDENTPOINTS);
-   TRY_TEST(tangent->Point(4,1,20.0,999,tsCW),  COGO_E_POINTINCIRCLE);
+   TRY_TEST(tangent->Point(4,1,-20.0,2,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Point(4,10,20.0,2,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Point(4,1,20.0,4,tsCW), E_INVALIDARG);
+   TRY_TEST(tangent->Point(1,1,20.0,2,tsCW), S_FALSE);
+   TRY_TEST(tangent->Point(4,1,20.0,1,tsCW), S_FALSE);
+   TRY_TEST(tangent->Point(4,1,20.0,999,tsCW), S_FALSE);
 
    CComPtr<IPoint2d> A, B;
    Float64 x,y;
@@ -578,7 +581,7 @@ void CTestTangent::TestPoint()
    TRY_TEST(tangent->Point(4,1,radius,2,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(4,&A),S_OK);
+   TRY_TEST(model->GetPointByID(4,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,24.14214),true);
@@ -587,7 +590,7 @@ void CTestTangent::TestPoint()
    TRY_TEST(tangent->Point(5,1,radius,2,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(5,&A),S_OK);
+   TRY_TEST(model->GetPointByID(5,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x,24.14214),true);
@@ -596,7 +599,7 @@ void CTestTangent::TestPoint()
    TRY_TEST(tangent->Point(6,1,radius,3,tsCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(6,&A),S_OK);
+   TRY_TEST(model->GetPointByID(6,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 30.),true);
@@ -605,7 +608,7 @@ void CTestTangent::TestPoint()
    TRY_TEST(tangent->Point(7,1,radius,3,tsCCW),S_OK);
 
    A.Release();
-   TRY_TEST(points->get_Item(7,&A),S_OK);
+   TRY_TEST(model->GetPointByID(7,&A),S_OK);
    A->get_X(&x);
    A->get_Y(&y);
    TRY_TEST(IsEqual(x, 10.),true);

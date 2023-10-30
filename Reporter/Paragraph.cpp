@@ -31,14 +31,6 @@
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcScalar.h>
 
-
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptParagraph::rptParagraph()
 {
 
@@ -82,6 +74,12 @@ rptParagraph& rptParagraph::operator << (rptReportContent* pContent )
    std::shared_ptr<rptReportContent> pc(pContent);
    pc->SetParent(this);
    m_ContentVec.push_back( pc );
+   return *this;
+}
+
+rptParagraph& rptParagraph::operator << (std::shared_ptr<rptReportContent>& pContent)
+{
+   m_ContentVec.emplace_back(pContent);
    return *this;
 }
 

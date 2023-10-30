@@ -93,7 +93,7 @@ public:
    STDMETHOD(putref_NextSegment)(ISegment* segment) override;
    STDMETHOD(get_NextSegment)(ISegment** segment) override;
 	STDMETHOD(get_Section)(StageIndexType stageIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, ISection** ppSection) override;
-   STDMETHOD(get_PrimaryShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
+   STDMETHOD(get_GirderShape)(Float64 Xs, SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem, IShape** ppShape) override;
    STDMETHOD(GetVolumeAndSurfaceArea)(Float64* pVolume, Float64* pSurfaceArea) override;
    STDMETHOD(get_InternalSurfaceAreaOfVoids)(Float64* pSurfaceArea) override;
    STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
@@ -111,7 +111,7 @@ public:
    STDMETHOD(AddItemData)(/*[in]*/BSTR name,/*[in]*/IUnknown* data) override;
    STDMETHOD(GetItemData)(/*[in]*/BSTR name,/*[out,retval]*/IUnknown** data) override;
    STDMETHOD(RemoveItemData)(/*[in]*/BSTR name) override;
-   STDMETHOD(GetItemDataCount)(/*[out,retval]*/CollectionIndexType* count) override;
+   STDMETHOD(GetItemDataCount)(/*[out,retval]*/IndexType* count) override;
 
 // IStructuredStorage2
 public:

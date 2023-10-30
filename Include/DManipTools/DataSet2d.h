@@ -34,11 +34,11 @@ struct __declspec(uuid("{3E920A2D-BE1E-4e85-B4A5-A1875B387CF7}")) iDataSet2d;
 
 interface iDataSet2d : public IUnknown
 {
-   STDMETHOD_(HRESULT,get_Item)(CollectionIndexType idx, IPoint2d** pVal) PURE;
-   STDMETHOD_(void,get_Count)(CollectionIndexType *pVal) PURE;
+   STDMETHOD_(HRESULT,get_Item)(IndexType idx, IPoint2d** pVal) PURE;
+   STDMETHOD_(void,get_Count)(IndexType *pVal) PURE;
    STDMETHOD_(void,Add)(IPoint2d *pVal) PURE;
-   STDMETHOD_(HRESULT,Insert)(CollectionIndexType index, IPoint2d *pVal) PURE;
-   STDMETHOD_(HRESULT,Remove)(CollectionIndexType index) PURE;
+   STDMETHOD_(HRESULT,Insert)(IndexType index, IPoint2d *pVal) PURE;
+   STDMETHOD_(HRESULT,Remove)(IndexType index) PURE;
    STDMETHOD_(void,Clear)() PURE;
 };
 

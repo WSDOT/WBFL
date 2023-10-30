@@ -88,12 +88,12 @@ private:
    }
 
 public:
-   void    Factor();
-   void SymBandedMatrix::Solve(Float64 *F);
+   void Factor();
+   void Solve(Float64 *F);
 
-   LONG    NumRows() const;
-   LONG    NumColumns() const;
-   LONG    BandWidth() const;
+   LONG NumRows() const;
+   LONG NumColumns() const;
+   LONG BandWidth() const;
 
    // accessor functions
    Float64 operator()(LONG row,LONG col) const

@@ -24,13 +24,7 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/OneEndSeatedTensionStressLimit.h>
 #include <Stability/OneEndSeatedCheckArtifact.h>
-#include <UnitMgt\UnitMgt.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <Units\Units.h>
 
 using namespace WBFL::Stability;
 
@@ -51,7 +45,7 @@ CCOneEndSeatedTensionStressLimit::CCOneEndSeatedTensionStressLimit()
 #if defined REBAR_FOR_DIRECT_TENSION
 Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact) const
 {
-   if (sectionResult.altTensionRequirements[impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact].AsRequired)
+   if (sectionResult.altTensionRequirements[+impact].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[+impact].AsRequired)
    {
       return AllowableTensionWithRebar;
    }
@@ -63,7 +57,7 @@ Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSect
 #else
 Float64 CCOneEndSeatedTensionStressLimit::GetTensionLimit(const OneEndSeatedSectionResult& sectionResult, ImpactDirection impact, WindDirection wind) const
 {
-   if (sectionResult.altTensionRequirements[impact][wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[impact][wind].AsRequired)
+   if (sectionResult.altTensionRequirements[+impact][+wind].bIsAdequateRebar && 0 <= sectionResult.altTensionRequirements[+impact][+wind].AsRequired)
    {
       return AllowableTensionWithRebar;
    }
@@ -109,19 +103,19 @@ Float64 CCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const On
    return fcReqd;
 }
 
-void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptSqrtPressureValue, tension_coeff, pDisplayUnits->SqrtPressure, false);
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
-   bool bLambda = (lrfdVersionMgr::SeventhEditionWith2016Interims <= lrfdVersionMgr::GetVersion() ? true : false);
+   bool bLambda = (WBFL::LRFD::BDSManager::Edition::SeventhEditionWith2016Interims <= WBFL::LRFD::BDSManager::GetEdition() ? true : false);
 
    *pPara << _T("Tension stress limit = ") << tension_coeff.SetValue(TensionCoefficient);
    if (bLambda)
    {
       *pPara << symbol(lambda);
    }
-   *pPara << symbol(ROOT) << RPT_FCI;
+   *pPara << RPT_SQRT_FC;
    if (bMaxTension)
    {
       *pPara << _T(" but not more than ") << stress.SetValue(MaxTension);
@@ -135,7 +129,7 @@ void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, c
       {
          *pPara << symbol(lambda);
       }
-      *pPara << symbol(ROOT) << RPT_FCI;
+      *pPara << RPT_SQRT_FC;
       *pPara << _T(" if bonded reinforcement sufficient to resist the tensile force in the concrete is provided = ") << stress.SetValue(AllowableTensionWithRebar) << rptNewLine;
    }
    else
@@ -144,7 +138,7 @@ void CCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, c
    }
 }
 
-void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -152,7 +146,7 @@ void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneE
    *pPara << RPT_FCI << _T(" required for tensile stress = ");
    if (fcReqd < 0)
    {
-      ATLASSERT(fcReqd == -99999);
+      CHECK(fcReqd == -99999);
       *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
    }
    else
@@ -166,7 +160,7 @@ void CCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneE
       *pPara << RPT_FCI << _T(" required for tensile stress with bonded reinforcement sufficient to resist the tensile force in the concrete = ");
       if (fcReqd < 0)
       {
-         ATLASSERT(fcReqd == -99999);
+         CHECK(fcReqd == -99999);
          *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
       }
       else
@@ -214,13 +208,13 @@ Float64 UHPCOneEndSeatedTensionStressLimit::GetRequiredFcTensionWithRebar(const 
     return GetRequiredFcTension(pArtifact);
 }
 
-void UHPCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportTensionLimit(rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
-   *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
+   *pPara << _T("Tension stress limit = (2/3)(") << RPT_STRESS(_T("fc")) << _T(")") << symbol(ROOT) << overline(ON) << _T("(") << RPT_FCI << _T("/") << RPT_FC << _T(")") << overline(OFF) << _T(" = ") << stress.SetValue(AllowableTension) << rptNewLine;
 }
 
-void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const unitmgtIndirectMeasure* pDisplayUnits) const
+void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const OneEndSeatedCheckArtifact* pArtifact, rptParagraph* pPara, const WBFL::Units::IndirectMeasure* pDisplayUnits) const
 {
    INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDisplayUnits->Stress, true);
 
@@ -228,7 +222,7 @@ void UHPCOneEndSeatedTensionStressLimit::ReportRequiredConcreteStrength(const On
    *pPara << RPT_FCI << _T(" required for tensile stress = ");
    if (fcReqd < 0)
    {
-      ATLASSERT(fcReqd == -99999);
+      CHECK(fcReqd == -99999);
       *pPara << _T("Regardless of the concrete strength, the stress requirements will not be satisfied.") << rptNewLine;
    }
    else

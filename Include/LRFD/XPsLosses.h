@@ -22,132 +22,40 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_XPSLOSSES_H_
-#define INCLUDED_LRFD_XPSLOSSES_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdXPsLosses
-
-   Exception object thrown when the lrfdPsLosses class encounters an exceptional
-   condition.
-
-
-DESCRIPTION
-   Exception object thrown when the lrfdPsLosses class encounters an exceptional
-   condition.
-
-LOG
-   rab : 10.31.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdXPsLosses : public sysXBase
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATION
+   namespace LRFD
+   {
+      /// @brief Exception object thrown when the PsLosses class encounters an exceptional condition.
+      class LRFDCLASS XPsLosses : public WBFL::System::XBase
+      {
+      public:
+         enum class Reason {
+            fpjOutOfRange,   // The jacking stress, fpj does not exceed 0.5fpu. (See 5.9.5.4.4b)
+            fcOutOfRange,    // 28MPa(4KSI) <= f'c <= 70MPa(10KSI)
+            Specification,   // wrong specification version
+            StrandType,      // wrong stand type
+            Unknown
+         };
 
-   //------------------------------------------------------------------------
-   enum Reason { fpjOutOfRange,   // The jacking stress, fpj does not exceed
-                                  // 0.5fpu. (See 5.9.5.4.4b)
-                 fcOutOfRange,    // 28MPa(4KSI) <= f'c <= 70MPa(10KSI)
-                 Specification,   // wrong specification version
-                 StrandType,      // wrong stand type
-                 Unknown };
+         XPsLosses() = delete;
+         XPsLosses(Reason reason, LPCTSTR file, Uint32 line);
+         XPsLosses(const XPsLosses& rOther) = default;
+         virtual ~XPsLosses() = default;
 
-   // GROUP: LIFECYCLE
+         XPsLosses& operator=(const XPsLosses&) = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdXPsLosses(Reason reason,
-                 LPCTSTR file,
-                 Int16 line);
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdXPsLosses(const lrfdXPsLosses& rOther);
-
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdXPsLosses() override;
-
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdXPsLosses& operator = (const lrfdXPsLosses& rOther);
-
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   virtual void Throw() const override;
-
-   //------------------------------------------------------------------------
-   virtual Int32 GetReason() const override;
-
-   //------------------------------------------------------------------------
-   Reason GetReasonCode() const;
-
-   // GROUP: ACCESS
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the class is in a valid state, otherwise returns
-   // false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
-#endif // _DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdXPsLosses& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdXPsLosses& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+      private:
+         Reason m_Reason;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_XPSLOSSES_H_

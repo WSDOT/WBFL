@@ -86,7 +86,7 @@ private:
 public:
    STDMETHOD_(void, AddDisplayObject)(iDisplayObject* pDO) override;
    STDMETHOD_(void, RemoveDisplayObject)(IDType key, AccessType access) override;
-   STDMETHOD_(CollectionIndexType, GetDisplayObjectCount)() override;
+   STDMETHOD_(IndexType, GetDisplayObjectCount)() override;
    STDMETHOD_(void, GetDisplayObject)(IDType key, AccessType access, iDisplayObject* *ppDO) override;
    STDMETHOD_(void, ClearDisplayObjects)() override;
    STDMETHOD_(void, GetDisplayObjects)(iDisplayList** dispList) override;

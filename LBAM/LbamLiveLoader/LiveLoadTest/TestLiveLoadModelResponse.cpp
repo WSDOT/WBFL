@@ -109,10 +109,10 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
    os << " POI     Left Value     Right Value"<<std::endl;
    os << "-----  -------------   -------------"<<std::endl;
 
-   const CollectionIndexType NUMPOIS=10;
+   const IndexType NUMPOIS=10;
    CComPtr<IIDArray> poiIDs;
    poiIDs.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
+   for (IndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
    {
       poiIDs->Add((PoiIDType)poiIdx);
    }
@@ -127,7 +127,7 @@ inline void CompareLLResults(OptimizationType optmization, ForceEffectType force
    singlePOI.CoCreateInstance(CLSID_IDArray);
    singlePOI->ReDim(1);
 
-   for (CollectionIndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
+   for (IndexType poiIdx = 0; poiIdx < NUMPOIS; poiIdx++)
    {
       singlePOI->put_Item(0,(PoiIDType)poiIdx);
 

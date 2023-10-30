@@ -35,7 +35,6 @@ DESCRIPTION
    Support library that provides math services
 *****************************************************************************/
 
-#include <Private\WBFLPackage.h>
 #include <MathEx.h>
 
 

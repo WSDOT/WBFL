@@ -54,8 +54,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 7,0,5,0
- PRODUCTVERSION 7,0,5,0
+ FILEVERSION 8,0,0,4
+ PRODUCTVERSION 8,0,0,4
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -73,7 +73,7 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project\0"
             VALUE "CompanyName", "Washington State Department of Transportation\0"
             VALUE "FileDescription", "WBFL LBAMAnalysis Module\0"
-            VALUE "FileVersion", "7.0.5.0\0"
+            VALUE "FileVersion", "8.0.0.4\0"
             VALUE "InternalName", "LBAMAnalysis\0"
             VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
@@ -81,7 +81,7 @@ BEGIN
             VALUE "OriginalFilename", "LBAMAnalysis.DLL\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "WBFL\0"
-            VALUE "ProductVersion", "7.0.5.0\0"
+            VALUE "ProductVersion", "8.0.0.4\0"
             VALUE "SpecialBuild", "\0"
         END
     END
@@ -260,7 +260,7 @@ BEGIN
     IDS_E_INCOMP_STRESSRESULTS 
                             "Stress results are incompatible. Results must have the same number of stress points in order to be summed."
     IDS_E_INSTABILITY       "The Fem2D engine was unable to solve the model for stage %S. It is likely that this model is unstable."
-    IDS_E_FEM2D             "An error occured during the Fem2D solution for stage %S. This error was not further translated."
+    IDS_E_FEM2D             "An error occurred during the Fem2D solution for stage %S. This error was not further translated."
     IDS_E_POINT_LOAD_ZERO_LENGTH 
                             "Point loads cannot be applied to zero-length supports or temporary supports."
 END

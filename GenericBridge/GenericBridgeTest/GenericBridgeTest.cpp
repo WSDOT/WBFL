@@ -33,7 +33,6 @@
 #include <WBFLGeometry_i.c>
 #include <WBFLCogo_i.c>
 #include <WBFLGenericBridge_i.c>
-#include <WBFLBridgeGeometry_i.c>
 
 #include "TestSegment.h"
 #include "TestSuperstructureMember.h"

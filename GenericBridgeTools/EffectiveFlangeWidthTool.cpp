@@ -314,7 +314,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
    m_BridgeGeometryTool->DeckOverhangBySegment(bridge,ssMbrID,segIdx,Xs,nullptr,qcbRight,&right_overhang);
 
    // Get parameters for each top flange on the girder
-   CollectionIndexType nFlanges;
+   IndexType nFlanges;
    hr = section->get_TopFlangeCount(&nFlanges);
    if ( FAILED(hr) )
       return hr;
@@ -348,7 +348,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
    {
       // multi flange and all interior girders
       Float64 left_spacing, right_spacing, prev_right_spacing;
-      for ( CollectionIndexType flangeIdx = 0; flangeIdx < nFlanges; flangeIdx++ )
+      for ( IndexType flangeIdx = 0; flangeIdx < nFlanges; flangeIdx++ )
       {
          Float64 wFlange;
          section->get_TopFlangeWidth(flangeIdx,&wFlange);
@@ -381,7 +381,7 @@ STDMETHODIMP CEffectiveFlangeWidthTool::EffectiveFlangeWidthBySegmentEx(IGeneric
                if ( FAILED(hr) )
                   return Error(IDS_E_GIRDERSECTION,IID_IEffectiveFlangeWidthTool,GBMT_E_GIRDERSECTION);
 
-               CollectionIndexType prev_nFlanges;
+               IndexType prev_nFlanges;
                prev_section->get_TopFlangeCount(&prev_nFlanges);
 
                Float64 prev_flange_loc;

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Material - Analytical and Product modeling of civil engineering materials
+// Materials - Analytical and Product modeling of civil engineering materials
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -23,61 +23,36 @@
 
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\LRFDConcrete.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
+
+using namespace WBFL::LRFD;
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
-lrfdLRFDConcrete::lrfdLRFDConcrete(LPCTSTR name) :
-matConcreteBase(name),
+LRFDConcrete::LRFDConcrete(LPCTSTR name) :
+   LRFDConcreteBase(name),
 m_StartTime(0),
 m_StepTime(0),
-m_EcK1(1.0),
-m_EcK2(1.0),
-m_CreepK1(1.0),
-m_CreepK2(1.0),
-m_ShrinkageK1(1.0),
-m_ShrinkageK2(1.0),
-m_Lambda(1.0),
 m_bUse90DayConcrete(false)
 {
 }
 
-lrfdLRFDConcrete::lrfdLRFDConcrete(const lrfdLRFDConcrete& rOther) :
-matConcreteBase(rOther),
-m_StartTime(rOther.m_StartTime),
-m_StepTime(rOther.m_StepTime),
-m_EcK1(rOther.m_EcK1),
-m_EcK2(rOther.m_EcK2),
-m_CreepK1(rOther.m_CreepK1),
-m_CreepK2(rOther.m_CreepK2),
-m_ShrinkageK1(rOther.m_ShrinkageK1),
-m_ShrinkageK2(rOther.m_ShrinkageK2),
-m_InitialConcrete(rOther.m_InitialConcrete),
-m_FinalConcrete(rOther.m_FinalConcrete),
-m_Lambda(rOther.m_Lambda),
-m_bUse90DayConcrete(rOther.m_bUse90DayConcrete),
-m_90DayConcrete(rOther.m_90DayConcrete)
+LRFDConcrete::LRFDConcrete(const WBFL::Materials::SimpleConcrete& initial, const WBFL::Materials::SimpleConcrete & final, Float64 startTime, Float64 stepTime, LPCTSTR name) :
+   LRFDConcreteBase(name),
+   m_StartTime(startTime), m_StepTime(stepTime)
 {
+   SetConcreteModels(initial, final);
 }
 
-lrfdLRFDConcrete::~lrfdLRFDConcrete()
-{
-}
-
-void lrfdLRFDConcrete::SetConcreteModels(const matConcreteEx& initial,const matConcreteEx& final)
+void LRFDConcrete::SetConcreteModels(const WBFL::Materials::SimpleConcrete& initial,const WBFL::Materials::SimpleConcrete & final)
 {
    m_InitialConcrete = initial;
    m_FinalConcrete   = final;
    m_90DayConcrete = final;
 
-   ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
 
-   SetType((matConcreteBase::Type)m_FinalConcrete.GetType());
+   SetType(m_FinalConcrete.GetType());
    SetStrengthDensity(m_FinalConcrete.GetDensity());
    SetWeightDensity(m_FinalConcrete.GetDensityForWeight());
    HasAggSplittingStrength(m_FinalConcrete.HasAggSplittingStrength());
@@ -86,138 +61,204 @@ void lrfdLRFDConcrete::SetConcreteModels(const matConcreteEx& initial,const matC
    SetLambda(m_FinalConcrete.GetLambda());
 }
 
-const matConcreteEx& lrfdLRFDConcrete::GetInitialConcreteModel() const
+const WBFL::Materials::SimpleConcrete& LRFDConcrete::GetInitialConcreteModel() const
 {
    return m_InitialConcrete;
 }
 
-const matConcreteEx& lrfdLRFDConcrete::GetFinalConcreteModel() const
+const WBFL::Materials::SimpleConcrete& LRFDConcrete::GetFinalConcreteModel() const
 {
    return m_FinalConcrete;
 }
 
-void lrfdLRFDConcrete::SetEcCorrectionFactors(Float64 K1,Float64 K2)
+void LRFDConcrete::SetLambda(Float64 lambda)
 {
-   m_EcK1 = K1;
-   m_EcK2 = K2;
-}
-
-void lrfdLRFDConcrete::GetEcCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_EcK1;
-   *pK2 = m_EcK2;
-}
-
-void lrfdLRFDConcrete::SetCreepCorrectionFactors(Float64 K1,Float64 K2)
-{
-   m_CreepK1 = K1;
-   m_CreepK2 = K2;
-}
-
-void lrfdLRFDConcrete::GetCreepCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_CreepK1;
-   *pK2 = m_CreepK2;
-}
-
-void lrfdLRFDConcrete::SetShrinkageCorrectionFactors(Float64 K1,Float64 K2)
-{
-   m_ShrinkageK1 = K1;
-   m_ShrinkageK2 = K2;
-}
-
-void lrfdLRFDConcrete::GetShrinkageCorrectionFactors(Float64* pK1,Float64* pK2) const
-{
-   *pK1 = m_ShrinkageK1;
-   *pK2 = m_ShrinkageK2;
-}
-
-void lrfdLRFDConcrete::SetLambda(Float64 lambda)
-{
-   m_Lambda = lambda;
+   __super::SetLambda(lambda);
    m_InitialConcrete.SetLambda(lambda);
    m_FinalConcrete.SetLambda(lambda);
 }
 
-Float64 lrfdLRFDConcrete::GetLambda() const
+Float64 LRFDConcrete::GetLambda() const
 {
-   ATLASSERT(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
-   return m_Lambda;
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(),m_FinalConcrete.GetLambda()));
+   CHECK(IsEqual(m_InitialConcrete.GetLambda(), __super::GetLambda()));
+   return __super::GetLambda();
 }
 
-void lrfdLRFDConcrete::SetFirstCrackStrength(Float64 ffc)
+void LRFDConcrete::SetFirstCrackingStrength(Float64 ffc)
 {
-   m_InitialConcrete.SetFirstCrackStrength(ffc);
-   m_FinalConcrete.SetFirstCrackStrength(ffc);
+   m_InitialConcrete.SetFirstCrackingStrength(ffc);
+   m_FinalConcrete.SetFirstCrackingStrength(ffc);
 }
 
-Float64 lrfdLRFDConcrete::GetFirstCrackStrength() const
+Float64 LRFDConcrete::GetFirstCrackingStrength() const
 {
-   ATLASSERT(IsEqual(m_InitialConcrete.GetFirstCrackStrength(), m_FinalConcrete.GetFirstCrackStrength()));
-   return m_FinalConcrete.GetFirstCrackStrength();
+   CHECK(IsEqual(m_InitialConcrete.GetFirstCrackingStrength(), m_FinalConcrete.GetFirstCrackingStrength()));
+   return m_FinalConcrete.GetFirstCrackingStrength();
 }
 
-void lrfdLRFDConcrete::SetPostCrackingTensileStrength(Float64 frr)
+void LRFDConcrete::SetPostCrackingTensileStrength(Float64 frr)
 {
    m_InitialConcrete.SetPostCrackingTensileStrength(frr);
    m_FinalConcrete.SetPostCrackingTensileStrength(frr);
 }
 
-Float64 lrfdLRFDConcrete::GetPostCrackingTensileStrength() const
+Float64 LRFDConcrete::GetPostCrackingTensileStrength() const
 {
-   ATLASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
    return m_FinalConcrete.GetPostCrackingTensileStrength();
 }
 
-void lrfdLRFDConcrete::SetAutogenousShrinkage(Float64 as)
+void LRFDConcrete::SetAutogenousShrinkage(Float64 as)
 {
    m_InitialConcrete.SetAutogenousShrinkage(as);
    m_FinalConcrete.SetAutogenousShrinkage(as);
 }
 
-Float64 lrfdLRFDConcrete::GetAutogenousShrinkage() const
+Float64 LRFDConcrete::GetAutogenousShrinkage() const
 {
-   ATLASSERT(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
+   CHECK(IsEqual(m_InitialConcrete.GetPostCrackingTensileStrength(), m_FinalConcrete.GetPostCrackingTensileStrength()));
    return m_FinalConcrete.GetAutogenousShrinkage();
 }
 
-void lrfdLRFDConcrete::SetStartTime(Float64 t)
+void LRFDConcrete::SetCompressionResponseReductionFactor(Float64 alpha_u)
+{
+   m_InitialConcrete.SetCompressionResponseReductionFactor(alpha_u);
+   m_FinalConcrete.SetCompressionResponseReductionFactor(alpha_u);
+}
+
+Float64 LRFDConcrete::GetCompressionResponseReductionFactor() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetCompressionResponseReductionFactor(), m_FinalConcrete.GetCompressionResponseReductionFactor()));
+   return m_FinalConcrete.GetCompressionResponseReductionFactor();
+}
+
+void LRFDConcrete::SetCompressiveStrainLimit(Float64 ecu)
+{
+   m_InitialConcrete.SetCompressiveStrainLimit(ecu);
+   m_FinalConcrete.SetCompressiveStrainLimit(ecu);
+}
+
+Float64 LRFDConcrete::GetCompressiveStrainLimit(bool* pbIsExperimental) const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetCompressiveStrainLimit(pbIsExperimental), m_FinalConcrete.GetCompressiveStrainLimit(pbIsExperimental)));
+   return m_FinalConcrete.GetCompressiveStrainLimit(pbIsExperimental);
+}
+
+void LRFDConcrete::SetElasticTensileStrainLimit(Float64 etcr)
+{
+   m_InitialConcrete.SetElasticTensileStrainLimit(etcr);
+   m_FinalConcrete.SetElasticTensileStrainLimit(etcr);
+}
+
+Float64 LRFDConcrete::GetElasticTensileStrainLimit() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetElasticTensileStrainLimit(), m_FinalConcrete.GetElasticTensileStrainLimit()));
+   return m_FinalConcrete.GetElasticTensileStrainLimit();
+}
+
+void LRFDConcrete::SetInitialEffectiveCrackingStrength(Float64 ft_cri)
+{
+   m_InitialConcrete.SetInitialEffectiveCrackingStrength(ft_cri);
+   m_FinalConcrete.SetInitialEffectiveCrackingStrength(ft_cri);
+}
+
+Float64 LRFDConcrete::GetInitialEffectiveCrackingStrength() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetInitialEffectiveCrackingStrength(), m_FinalConcrete.GetInitialEffectiveCrackingStrength()));
+   return m_FinalConcrete.GetInitialEffectiveCrackingStrength();
+}
+
+void LRFDConcrete::SetDesignEffectiveCrackingStrength(Float64 ft_cr)
+{
+   m_InitialConcrete.SetDesignEffectiveCrackingStrength(ft_cr);
+   m_FinalConcrete.SetDesignEffectiveCrackingStrength(ft_cr);
+}
+
+Float64 LRFDConcrete::GetDesignEffectiveCrackingStrength() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetDesignEffectiveCrackingStrength(), m_FinalConcrete.GetDesignEffectiveCrackingStrength()));
+   return m_FinalConcrete.GetDesignEffectiveCrackingStrength();
+}
+
+void LRFDConcrete::SetCrackLocalizationStrength(Float64 ft_loc)
+{
+   m_InitialConcrete.SetCrackLocalizationStrength(ft_loc);
+   m_FinalConcrete.SetCrackLocalizationStrength(ft_loc);
+}
+
+Float64 LRFDConcrete::GetCrackLocalizationStrength() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetCrackLocalizationStrength(), m_FinalConcrete.GetCrackLocalizationStrength()));
+   return m_FinalConcrete.GetCrackLocalizationStrength();
+}
+
+void LRFDConcrete::SetCrackLocalizationStrain(Float64 et_loc)
+{
+   m_InitialConcrete.SetCrackLocalizationStrain(et_loc);
+   m_FinalConcrete.SetCrackLocalizationStrain(et_loc);
+}
+
+Float64 LRFDConcrete::GetCrackLocalizationStrain() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetCrackLocalizationStrain(), m_FinalConcrete.GetCrackLocalizationStrain()));
+   return m_FinalConcrete.GetCrackLocalizationStrain();
+}
+
+void LRFDConcrete::SetFiberOrientationReductionFactor(Float64 gamma_u)
+{
+   m_InitialConcrete.SetFiberOrientationReductionFactor(gamma_u);
+   m_FinalConcrete.SetFiberOrientationReductionFactor(gamma_u);
+}
+
+Float64 LRFDConcrete::GetFiberOrientationReductionFactor() const
+{
+   CHECK(IsEqual(m_InitialConcrete.GetFiberOrientationReductionFactor(), m_FinalConcrete.GetFiberOrientationReductionFactor()));
+   return m_FinalConcrete.GetFiberOrientationReductionFactor();
+}
+
+Float64 LRFDConcrete::GetElasticCompressiveStrainLimit() const
+{
+   return m_FinalConcrete.GetElasticCompressiveStrainLimit();
+}
+
+void LRFDConcrete::SetStartTime(Float64 t)
 {
    m_StartTime = t;
 }
 
-Float64 lrfdLRFDConcrete::GetStartTime() const
+Float64 LRFDConcrete::GetStartTime() const
 {
    return m_StartTime;
 }
 
-void lrfdLRFDConcrete::SetStepTime(Float64 t)
+void LRFDConcrete::SetStepTime(Float64 t)
 {
    m_StepTime = t;
 }
 
-Float64 lrfdLRFDConcrete::GetStepTime() const
+Float64 LRFDConcrete::GetStepTime() const
 {
    return m_StepTime;
 }
 
-void lrfdLRFDConcrete::Use90DayStrength(const matConcreteEx& concrete90)
+void LRFDConcrete::Use90DayStrength(const WBFL::Materials::SimpleConcrete& concrete90)
 {
    m_bUse90DayConcrete = true;
    m_90DayConcrete = concrete90;
 }
 
-bool lrfdLRFDConcrete::Use90DayStrength() const
+bool LRFDConcrete::Use90DayStrength() const
 {
    return m_bUse90DayConcrete;
 }
 
-const matConcreteEx& lrfdLRFDConcrete::Get90DayConcreteModel() const
+const WBFL::Materials::SimpleConcrete& LRFDConcrete::Get90DayConcreteModel() const
 {
    return m_90DayConcrete;
 }
 
-Float64 lrfdLRFDConcrete::GetFc(Float64 t) const
+Float64 LRFDConcrete::GetFc(Float64 t) const
 {
    if ( t < m_StartTime )
    {
@@ -241,7 +282,7 @@ Float64 lrfdLRFDConcrete::GetFc(Float64 t) const
    }
 }
 
-Float64 lrfdLRFDConcrete::GetEc(Float64 t) const
+Float64 LRFDConcrete::GetEc(Float64 t) const
 {
    if ( t < m_StartTime )
    {
@@ -265,15 +306,17 @@ Float64 lrfdLRFDConcrete::GetEc(Float64 t) const
       }
    }
 
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
-      Ec *= m_EcK1*m_EcK2;
+      Float64 k1, k2;
+      GetEcCorrectionFactors(&k1, &k2);
+      Ec *= k1*k2;
    }
 
    return Ec;
 }
 
-Float64 lrfdLRFDConcrete::GetShearFr(Float64 t) const
+Float64 LRFDConcrete::GetShearFr(Float64 t) const
 {
    if ( t < m_StartTime )
    {
@@ -297,7 +340,7 @@ Float64 lrfdLRFDConcrete::GetShearFr(Float64 t) const
    }
 }
 
-Float64 lrfdLRFDConcrete::GetFlexureFr(Float64 t) const
+Float64 LRFDConcrete::GetFlexureFr(Float64 t) const
 {
    if ( t < m_StartTime )
    {
@@ -322,19 +365,18 @@ Float64 lrfdLRFDConcrete::GetFlexureFr(Float64 t) const
 }
 
 
-Float64 lrfdLRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
+Float64 LRFDConcrete::GetFreeShrinkageStrain(Float64 t) const
 {
-   std::shared_ptr<matConcreteBaseShrinkageDetails> pDetails = GetFreeShrinkageStrainDetails(t);
-   return pDetails->esh;
+   return GetFreeShrinkageStrainDetails(t)->esh;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::GetFreeShrinkageStrainDetails(Float64 t) const
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetFreeShrinkageStrainBefore2005(t);
    }
-   else if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetFreeShrinkageStrain2015(t);
    }
@@ -344,19 +386,18 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    }
 }
 
-Float64 lrfdLRFDConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
+Float64 LRFDConcrete::GetCreepCoefficient(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<matConcreteBaseCreepDetails> pDetails = GetCreepCoefficientDetails(t,tla);
-   return pDetails->Ct;
+   return GetCreepCoefficientDetails(t, tla)->Ct;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCreepCoefficientDetails(Float64 t,Float64 tla) const
 {
-   if ( lrfdVersionMgr::GetVersion() < lrfdVersionMgr::ThirdEditionWith2005Interims )
+   if ( BDSManager::GetEdition() < BDSManager::Edition::ThirdEditionWith2005Interims )
    {
       return GetCreepCoefficientBefore2005(t,tla);
    }
-   else if ( lrfdVersionMgr::SeventhEditionWith2015Interims <= lrfdVersionMgr::GetVersion() )
+   else if ( BDSManager::Edition::SeventhEditionWith2015Interims <= BDSManager::GetEdition() )
    {
       return GetCreepCoefficient2015(t,tla);
    }
@@ -366,46 +407,35 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    }
 }
 
-matConcreteBase* lrfdLRFDConcrete::CreateClone() const
+std::unique_ptr<WBFL::Materials::ConcreteBase> LRFDConcrete::CreateClone() const
 {
-   return new lrfdLRFDConcrete(*this);
+   return std::make_unique<LRFDConcrete>(*this);
 }
 
-
-void lrfdLRFDConcrete::InitializeShrinkageDetails(Float64 t,std::shared_ptr<lrfdLRFDConcreteShrinkageDetails>& pDetails) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
 {
-   matConcreteBase::InitializeShrinkageDetails(t,std::dynamic_pointer_cast<matConcreteBaseShrinkageDetails>(pDetails));
-}
-
-void lrfdLRFDConcrete::InitializeCreepDetails(Float64 t,Float64 tla,std::shared_ptr<lrfdLRFDConcreteCreepDetails>& pDetails) const
-{
-   matConcreteBase::InitializeCreepDetails(t,tla,std::dynamic_pointer_cast<matConcreteBaseCreepDetails>(pDetails));
-}
-
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrainBefore2005(Float64 t) const
-{
-   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<LRFDConcreteShrinkageDetails> pDetails(std::make_unique<LRFDConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
-   if ( concrete_age < 0 )
+   if ( concrete_age <= 0 )
    {
       return pDetails;
    }
 
    // duration of time after initial curing (time since curing stopped, this is when shrinkage begins)
    Float64 shrinkage_time = concrete_age - m_CureTime; // same as drying time
-   if ( shrinkage_time < 0 )
+   if ( shrinkage_time <= 0 )
    {
       // if this occurs, t is in the curing period so no shrinkage occurs
       return pDetails;
    }
 
    Float64 ks = 1.0;
-   if ( lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI )
+   if ( BDSManager::GetUnits() == BDSManager::Units::SI )
    {
-      Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Millimeter);
+      Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Millimeter);
       Float64 k1 = shrinkage_time/(26.0*exp(0.36*vs) + shrinkage_time);
       Float64 k2 = shrinkage_time/(45.0 + shrinkage_time);
       Float64 k3 = (1064 - 94*vs)/923;
@@ -413,7 +443,7 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    }
    else
    {
-      Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+      Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
       Float64 k1 = shrinkage_time/(26.0*exp(0.0142*vs) + shrinkage_time);
       Float64 k2 = shrinkage_time/(45.0 + shrinkage_time);
       Float64 k3 = (1064 - 3.7*vs)/923;
@@ -434,8 +464,8 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
       kh = 0;
    }
 
-   Float64 K = (GetCureMethod() == matConcreteBase::Moist ? 35.0 : 55.0);
-   Float64 eshu = (GetCureMethod() == matConcreteBase::Moist ? 0.51e-3 : 0.56e-3);
+   Float64 K = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 35.0 : 55.0);
+   Float64 eshu = (GetCuringType() == WBFL::Materials::CuringType::Moist ? 0.51e-3 : 0.56e-3);
    Float64 esh = -ks*kh*eshu*(shrinkage_time)/(K + shrinkage_time);
 
    pDetails->kvs = ks;
@@ -444,10 +474,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::GetFreeShrinkageStrain2005(Float64 t) const
 {
-   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<LRFDConcreteShrinkageDetails> pDetails(std::make_unique<LRFDConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
@@ -464,17 +494,19 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (shrinkage_time)/(61.0 - 4.0*fc + shrinkage_time);
 
-   Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
+   Float64 k1, k2;
+   GetShrinkageCorrectionFactors(&k1, &k2);
+   Float64 esh = -k1*k2*ks*khs*kf*ktd*0.48E-3;
 
    pDetails->kvs = ks;
    pDetails->khs = khs;
@@ -484,10 +516,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseShrinkageDetails> LRFDConcrete::GetFreeShrinkageStrain2015(Float64 t) const
 {
-   std::shared_ptr<lrfdLRFDConcreteShrinkageDetails> pDetails(std::make_shared<lrfdLRFDConcreteShrinkageDetails>());
-   InitializeShrinkageDetails(t,pDetails);
+   std::unique_ptr<LRFDConcreteShrinkageDetails> pDetails(std::make_unique<LRFDConcreteShrinkageDetails>());
+   InitializeShrinkageDetails(t,pDetails.get());
 
    // age of the concrete at time t (duration of time after casting)
    Float64 concrete_age = GetAge(t);
@@ -504,17 +536,19 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khs = (2.0 - 0.014*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (shrinkage_time)/(12*(100.0 - 4.0*fc)/(fc + 20) + shrinkage_time);
 
-   Float64 esh = -m_ShrinkageK1*m_ShrinkageK2*ks*khs*kf*ktd*0.48E-3;
+   Float64 k1, k2;
+   GetShrinkageCorrectionFactors(&k1, &k2);
+   Float64 esh = -k1*k2*ks*khs*kf*ktd*0.48E-3;
 
    pDetails->kvs = ks;
    pDetails->khs = khs;
@@ -524,10 +558,10 @@ std::shared_ptr<matConcreteBaseShrinkageDetails> lrfdLRFDConcrete::GetFreeShrink
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCreepCoefficientBefore2005(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,pDetails);
+   std::unique_ptr<LRFDConcreteCreepDetails> pDetails(std::make_unique<LRFDConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -537,19 +571,19 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
       return pDetails;
    }
 
-   bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+   bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
    
    // Check volume to surface ratio
    Float64 vs, fc;
    if ( bSI )
    {
-      vs = ::ConvertFromSysUnits( m_VS, unitMeasure::Millimeter );
-      fc = ::ConvertFromSysUnits( m_FinalConcrete.GetFc(), unitMeasure::MPa);
+      vs = WBFL::Units::ConvertFromSysUnits( m_VS, WBFL::Units::Measure::Millimeter );
+      fc = WBFL::Units::ConvertFromSysUnits( m_FinalConcrete.GetFc(), WBFL::Units::Measure::MPa);
    }
    else
    {
-      vs = ::ConvertFromSysUnits( m_VS, unitMeasure::Inch );
-      fc = ::ConvertFromSysUnits( m_FinalConcrete.GetFc(), unitMeasure::KSI);
+      vs = WBFL::Units::ConvertFromSysUnits( m_VS, WBFL::Units::Measure::Inch );
+      fc = WBFL::Units::ConvertFromSysUnits( m_FinalConcrete.GetFc(), WBFL::Units::Measure::KSI);
    }
 
 
@@ -595,10 +629,10 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCreepCoefficient2005(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,pDetails);
+   std::unique_ptr<LRFDConcreteCreepDetails> pDetails(std::make_unique<LRFDConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -608,18 +642,20 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (maturity)/(61.0 - 4.0*fc + maturity);
 
    Float64 ti = age_at_loading;
-   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
+   Float64 k1, k2;
+   GetCreepCorrectionFactors(&k1, &k2);
+   Float64 Y = 1.9*k1*k2*ks*khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->fci = m_InitialConcrete.GetFc();
    pDetails->kvs = ks;
@@ -631,10 +667,10 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    return pDetails;
 }
 
-std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
+std::unique_ptr<WBFL::Materials::ConcreteBaseCreepDetails> LRFDConcrete::GetCreepCoefficient2015(Float64 t,Float64 tla) const
 {
-   std::shared_ptr<lrfdLRFDConcreteCreepDetails> pDetails(std::make_shared<lrfdLRFDConcreteCreepDetails>());
-   InitializeCreepDetails(t,tla,pDetails);
+   std::unique_ptr<LRFDConcreteCreepDetails> pDetails(std::make_unique<LRFDConcreteCreepDetails>());
+   InitializeCreepDetails(t,tla,pDetails.get());
 
    Float64 age = pDetails->age;
    Float64 age_at_loading = pDetails->age_at_loading;
@@ -644,18 +680,20 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
       return pDetails;
    }
 
-   Float64 vs = ::ConvertFromSysUnits(m_VS,unitMeasure::Inch);
+   Float64 vs = WBFL::Units::ConvertFromSysUnits(m_VS,WBFL::Units::Measure::Inch);
    Float64 ks = Max(1.0,1.45 - 0.13*vs);
 
    Float64 khc = (1.56 - 0.008*m_RelativeHumidity);
    
-   Float64 fc = ::ConvertFromSysUnits(m_InitialConcrete.GetFc(),unitMeasure::KSI);
+   Float64 fc = WBFL::Units::ConvertFromSysUnits(m_InitialConcrete.GetFc(),WBFL::Units::Measure::KSI);
    Float64 kf = 5.0/(1.0 + fc);
 
    Float64 ktd = (maturity)/(12*(100.0 - 4.0*fc)/(fc + 20) + maturity);
 
    Float64 ti = age_at_loading;
-   Float64 Y = 1.9*m_CreepK1*m_CreepK2*ks*khc*kf*ktd*pow(ti,-0.118);
+   Float64 k1, k2;
+   GetCreepCorrectionFactors(&k1, &k2);
+   Float64 Y = 1.9*k1*k2*ks*khc*kf*ktd*pow(ti,-0.118);
 
    pDetails->fci = fc;
    pDetails->kvs = ks;
@@ -667,10 +705,10 @@ std::shared_ptr<matConcreteBaseCreepDetails> lrfdLRFDConcrete::GetCreepCoefficie
    return pDetails;
 }
 
-bool lrfdLRFDConcrete::Use90DayConcrete(Float64 t) const
+bool LRFDConcrete::Use90DayConcrete(Float64 t) const
 {
    // if 90 concrete is enabled
    // and we have normal strength concrete (LRFD only gives 115%f'c for normal weight and is silent on LWC), and age is more than 90 days
    Float64 age = GetAge(t);
-   return (m_bUse90DayConcrete && m_Type == matConcreteBase::Normal && 90 < age) ? true : false;
+   return (m_bUse90DayConcrete && m_Type == WBFL::Materials::ConcreteType::Normal && 90 < age) ? true : false;
 }

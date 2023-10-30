@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="1dRange.cpp">
+    <ClCompile Include="Range.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BisectionRootFinder2d.cpp">
+    <ClCompile Include="BisectionRootFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BrentsRootFinder2d.cpp">
+    <ClCompile Include="BrentsRootFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CDRatio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompositeFunction2d.cpp">
+    <ClCompile Include="CompositeFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CoordMapper1d.cpp">
@@ -25,57 +25,63 @@
     <ClCompile Include="FixedPointIteration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Function2d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LinFunc2d.cpp">
+    <ClCompile Include="LinearFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NumericIntegrator2d.cpp">
+    <ClCompile Include="PolynomialFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Polynomial2d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PwLinearFunction2d.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PwLinearFunction2dUsingPoints.cpp">
+    <ClCompile Include="PiecewiseFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuadraticSolver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RootFinder2d.cpp">
+    <ClCompile Include="RootFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitTest.cpp">
+    <ClCompile Include="UnsymmetricBandedMatrix..cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XRootFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XFixedPointIteration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XNumericIntegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\Math\1dRange.h">
+    <ClInclude Include="..\Include\Math\Range.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\AutoLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\BisectionRootFinder2d.h">
+    <ClInclude Include="..\Include\Math\BisectionRootFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\BrentsRootFinder2d.h">
+    <ClInclude Include="..\Include\Math\BrentsRootFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\CDRatio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\CompositeFunction2d.h">
+    <ClInclude Include="..\Include\Math\CompositeFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\CoordMapper1d.h">
@@ -87,10 +93,10 @@
     <ClInclude Include="..\Include\Math\FixedPointIteration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\Function2d.h">
+    <ClInclude Include="..\Include\Math\Function.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\LinFunc2d.h">
+    <ClInclude Include="..\Include\Math\LinearFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\Math.h">
@@ -108,28 +114,37 @@
     <ClInclude Include="..\Include\Math\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\NumericIntegrator2d.h">
+    <ClInclude Include="..\Include\Math\NumericIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\Polynomial2d.h">
+    <ClInclude Include="..\Include\Math\PolynomialFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\PwLinearFunction2d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Math\PwLinearFunction2dUsingPoints.h">
+    <ClInclude Include="..\Include\Math\PiecewiseFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\QuadraticSolver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\RootFinder2d.h">
+    <ClInclude Include="..\Include\Math\RootFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Math\UnitTest.h">
+    <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Math\XRootFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Math\XFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Math\XFixedPointIteration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Math\XNumericIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

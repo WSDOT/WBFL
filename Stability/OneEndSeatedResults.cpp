@@ -24,12 +24,6 @@
 #include <Stability\StabilityLib.h>
 #include <Stability\OneEndSeatedResults.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 using namespace WBFL::Stability;
 
 OneEndSeatedSectionResult::OneEndSeatedSectionResult()
@@ -73,20 +67,20 @@ OneEndSeatedSectionResult::OneEndSeatedSectionResult()
    memset((void*)FScr, 0, sizeof(FScr));
 
    FScrMin = 0;
-   FScrImpactDirection = NoImpact;
-   FScrWindDirection = Left;
-   FScrCorner = BottomLeft;
+   FScrImpactDirection = ImpactDirection::NoImpact;
+   FScrWindDirection = WindDirection::Left;
+   FScrCorner = Corner::BottomLeft;
 
 
-   fMinDirect[Top] = Float64_Max;
-   fMinDirect[Bottom] = Float64_Max;
-   fMaxDirect[Top] = -Float64_Max;
-   fMaxDirect[Bottom] = -Float64_Max;
+   fMinDirect[+GirderFace::Top] = Float64_Max;
+   fMinDirect[+GirderFace::Bottom] = Float64_Max;
+   fMaxDirect[+GirderFace::Top] = -Float64_Max;
+   fMaxDirect[+GirderFace::Bottom] = -Float64_Max;
 
-   fMin[Top] = Float64_Max;
-   fMin[Bottom] = Float64_Max;
-   fMax[Top] = -Float64_Max;
-   fMax[Bottom] = -Float64_Max;
+   fMin[+GirderFace::Top] = Float64_Max;
+   fMin[+GirderFace::Bottom] = Float64_Max;
+   fMax[+GirderFace::Top] = -Float64_Max;
+   fMax[+GirderFace::Bottom] = -Float64_Max;
 
    FScrMin = Float64_Max;
 
@@ -98,39 +92,39 @@ OneEndSeatedResults::OneEndSeatedResults()
 {
    MaxDirectStress = -Float64_Max;
    MaxDirectStressAnalysisPointIndex = 0;
-   MaxDirectStressImpactDirection = NoImpact;
-   MaxDirectStressCorner = TopLeft;
+   MaxDirectStressImpactDirection = ImpactDirection::NoImpact;
+   MaxDirectStressCorner = Corner::TopLeft;
 
    MinDirectStress = Float64_Max;
    MinDirectStressAnalysisPointIndex = 0;
-   MinDirectStressImpactDirection = NoImpact;
-   MinDirectStressCorner = TopLeft;
+   MinDirectStressImpactDirection = ImpactDirection::NoImpact;
+   MinDirectStressCorner = Corner::TopLeft;
 
    MaxStress = -Float64_Max;
    MaxStressAnalysisPointIndex = 0;
-   MaxStressImpactDirection = NoImpact;
-   MaxStressWindDirection = Left;
-   MaxStressCorner = TopLeft;
+   MaxStressImpactDirection = ImpactDirection::NoImpact;
+   MaxStressWindDirection = WindDirection::Left;
+   MaxStressCorner = Corner::TopLeft;
 
    MinStress = Float64_Max;
    MinStressAnalysisPointIndex = 0;
-   MinStressImpactDirection = NoImpact;
-   MinStressWindDirection = Left;
-   MinStressCorner = TopLeft;
+   MinStressImpactDirection = ImpactDirection::NoImpact;
+   MinStressWindDirection = WindDirection::Left;
+   MinStressCorner = Corner::TopLeft;
 
    MinFScr = Float64_Max;
    FScrAnalysisPointIndex = 0;
-   FScrImpactDirection = NoImpact;
-   FScrWindDirection = Left;
-   FScrCorner = TopLeft;
+   FScrImpactDirection = ImpactDirection::NoImpact;
+   FScrWindDirection = WindDirection::Left;
+   FScrCorner = Corner::TopLeft;
 
-   FSfImpactDirection = NoImpact;
-   FSfWindDirection = Left;
+   FSfImpactDirection = ImpactDirection::NoImpact;
+   FSfWindDirection = WindDirection::Left;
    MinFsFailure = Float64_Max;
    MinAdjFsFailure = Float64_Max;
 
-   FSroImpactDirection = NoImpact;
-   FSroWindDirection = Left;
+   FSroImpactDirection = ImpactDirection::NoImpact;
+   FSroWindDirection = WindDirection::Left;
    MinFsRollover = Float64_Max;
 
    for (int i = 0; i < 3; i++)
@@ -139,8 +133,8 @@ OneEndSeatedResults::OneEndSeatedResults()
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         bRotationalStability[impact][wind] = true;
-         bRolloverStability[impact][wind] = true;
+         bRotationalStability[+impact][+wind] = true;
+         bRolloverStability[+impact][+wind] = true;
       }
    }
 
@@ -152,7 +146,7 @@ OneEndSeatedResults::OneEndSeatedResults()
    memset((void*)ThetaRollover, 0, sizeof(ThetaRollover));
    memset((void*)FsRollover,0,sizeof(FsRollover));
 
-   AssumedTiltDirection = Left;
+   AssumedTiltDirection = GirderSide::Left;
 }
 
 bool OneEndSeatedResults::HasRotationalStablity() const
@@ -163,7 +157,7 @@ bool OneEndSeatedResults::HasRotationalStablity() const
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         if (!bRotationalStability[impact][wind])
+         if (!bRotationalStability[+impact][+wind])
          {
             // only one has to be false
             return false;
@@ -181,7 +175,7 @@ bool OneEndSeatedResults::HasRolloverStability() const
       for (int w = 0; w < 2; w++)
       {
          WindDirection wind = (WindDirection)w;
-         if (!bRolloverStability[impact][wind])
+         if (!bRolloverStability[+impact][+wind])
          {
             // only one has to be false
             return false;

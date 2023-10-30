@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AlignmentOffsetLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BridgeGeometryHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeckBoundary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DiaphragmLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EqualSpaceDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GirderLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PierLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PierLineCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDeckBoundaryFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleGirderLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleGirderLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThroughPointDiaphragmLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UniformSpacingLayoutLineFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlignmentOffsetLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BridgeGeometryHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeckBoundary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DiaphragmLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dllmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EqualSpaceDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GirderLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PierLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PierLineCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDeckBoundaryFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleGirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleGirderLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThroughPointDiaphragmLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UniformSpacingLayoutLineFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PathCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="BridgeGeometry.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLBridgeGeometry.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AlignmentOffsetLayoutLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\BridgeGeometry.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="BridgeGeometry.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DeckBoundary.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="DiaphragmLine.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="EqualSpaceDiaphragmLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="GirderLine.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PierLine.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PierLineCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SimpleDeckBoundaryFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SimpleGirderLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SingleDiaphragmLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SingleGirderLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ThroughPointDiaphragmLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="UniformSpacingLayoutLineFactory.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Bridge.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PathCollection.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{154357f7-8f7e-46b8-9353-fdf9c764feec}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{cdddd07c-5424-401e-a06a-00c71d7169e1}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b4649f80-c2d9-4457-8f68-a8984bd5a9ea}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BridgeGeometry.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

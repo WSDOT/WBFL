@@ -32,8 +32,8 @@
 #include "LBAMUtils.h"
 
 class CStages;
-typedef CComSegmentCollection< IStages, IStage, IEnumStage, &IID_IEnumStage,StageIndexType> StageCollImpl;
-typedef CPersistentCollection<CStages, StageCollImpl,StageIndexType> PersistentStageCollImpl;
+using StageCollImpl = CComSegmentCollection< IStages, IStage, IEnumStage, &IID_IEnumStage, StageIndexType>;
+using PersistentStageCollImpl = CPersistentCollection<CStages, StageCollImpl,StageIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStages

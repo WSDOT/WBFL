@@ -58,7 +58,7 @@ void CRCBeam2Test::Test()
 
    Float64 val;
    Float64 val1,val2,val3;
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(beam->AddRebarLayer(-10,10,1.0),E_INVALIDARG);
    TRY_TEST(beam->AddRebarLayer(10,-10,1.0),E_INVALIDARG);
    TRY_TEST(beam->AddRebarLayer(10, 10,-1.0),E_INVALIDARG);

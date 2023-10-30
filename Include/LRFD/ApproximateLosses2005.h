@@ -22,182 +22,126 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_APPROXIMATELOSSES2005_H_
-#define INCLUDED_LRFD_APPROXIMATELOSSES2005_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\PsStrand.h>
-#include <Lrfd\VersionMgrListener.h>
+#include <Lrfd/BDSManagerListener.h>
 #include <Lrfd\Losses.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdApproximateLosses2005
-
-   Utility class for computing prestress losses using the LRFD Approximate Lump
-   Sum Method.
-
-
-DESCRIPTION
-   Utility class for computing prestress losses using the LRFD Approximate Lump
-   Sum Method. Implements the provisions of Article 5.9.5.2.3 and 5.9.5.3.
-
-LOG
-   rab : 03.31.1999 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdApproximateLosses2005 : public lrfdLosses
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Utility class for computing prestress losses using the LRFD Approximate Lump Sum Method
+      /// based on the 2005 interim provisions
+      class LRFDCLASS ApproximateLosses2005 : public Losses
+      {
+      public:
+         ApproximateLosses2005() = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor.
-   // Strand type = LowRelaxation
-   // Ep = 197000 MPa
-   // Eci = 25000 MPa
-   // fpu = 1860 MPa
-   // fpj = 0.80*fpu
-   // fpy = 0.90*fpu
-   // A = 1mm^2
-   // I = 1mm^4
-   // e = 0 mm
-   // Mg = 0 N-m
-   // BeamType = IBeam
-   lrfdApproximateLosses2005();
+         /// @brief Initializes the object with the give values.
+         /// fpy is initialized to 0.85fpu for StressRelieved strands and
+         /// 0.90fpu for LowRelaxation strands.
+         ApproximateLosses2005(Float64 x, // location along girder where losses are computed
+                               Float64 Lg,    // girder length
+                               Losses::SectionPropertiesType sectionProperties,
+                               WBFL::Materials::PsStrand::Grade gradePerm, // strand grade
+                               WBFL::Materials::PsStrand::Type typePerm, // strand type
+                               WBFL::Materials::PsStrand::Coating coatingPerm, // strand coating (none, epoxy)
+                               WBFL::Materials::PsStrand::Grade gradeTemp, // strand grade
+                               WBFL::Materials::PsStrand::Type typeTemp, // strand type
+                               WBFL::Materials::PsStrand::Coating coatingTemp, // strand coating (none, epoxy)
+                               Float64 fpjPerm, // fpj permanent strands
+                               Float64 fpjTemp, // fpj of temporary strands
+                               Float64 ApsPerm,  // area of permanent strand
+                               Float64 ApsTemp,  // area of TTS 
+                               Float64 aps,      // area of one strand
+                               const WBFL::Geometry::Point2d& epermRelease, // eccentricity of permanent ps strands with respect to CG of girder at release
+                               const WBFL::Geometry::Point2d& epermFinal, // eccentricity of permanent ps strands with respect to CG of girder at final
+                               const WBFL::Geometry::Point2d& etemp, // eccentricity of temporary strands with respect to CG of girder
+                               TempStrandUsage usage,
+                               Float64 anchorSet,
+                               Float64 wobble,
+                               Float64 friction,
+                               Float64 angleChange,
 
-   //------------------------------------------------------------------------
-   // Constructor.  Initializes the object with the give values.
-   // fpy is initialized to 0.85fpu for StressRelieved strands and
-   // 0.90fpu for LowRelaxation strands.
-   lrfdApproximateLosses2005(Float64 x, // location along girder where losses are computed
-                         Float64 Lg,    // girder length
-                         lrfdLosses::SectionPropertiesType sectionProperties,
-                         matPsStrand::Grade gradePerm, // strand grade
-                         matPsStrand::Type typePerm, // strand type
-                         matPsStrand::Coating coatingPerm, // strand coating (none, epoxy)
-                         matPsStrand::Grade gradeTemp, // strand grade
-                         matPsStrand::Type typeTemp, // strand type
-                         matPsStrand::Coating coatingTemp, // strand coating (none, epoxy)
-                         Float64 fpjPerm, // fpj permanent strands
-                         Float64 fpjTemp, // fpj of temporary strands
-                         Float64 ApsPerm,  // area of permanent strand
-                         Float64 ApsTemp,  // area of TTS 
-                         Float64 aps,      // area of one strand
-                         const gpPoint2d& epermRelease, // eccentricty of permanent ps strands with respect to CG of girder at release
-                         const gpPoint2d& epermFinal, // eccentricty of permanent ps strands with respect to CG of girder at final
-                         const gpPoint2d& etemp, // eccentricty of temporary strands with respect to CG of girder
-                         TempStrandUsage usage,
-                         Float64 anchorSet,
-                         Float64 wobble,
-                         Float64 friction,
-                         Float64 angleChange,
+                               Float64 Fc,   // 28 day strength of girder concrete
+                               Float64 Fci,  // Release strength
+                               Float64 FcSlab,   
+                               Float64 Ec,   // Modulus of elasticity of girder
+                               Float64 Eci,  // Modulus of elasticity of girder at transfer
+                               Float64 Ecd,  // Modulus of elasticity of deck
 
-                         Float64 Fc,   // 28 day strength of girder concrete
-                         Float64 Fci,  // Release strength
-                         Float64 FcSlab,   
-                         Float64 Ec,   // Modulus of elasticity of girder
-                         Float64 Eci,  // Modulus of elasticity of girder at transfer
-                         Float64 Ecd,  // Modulus of elasticity of deck
+                               Float64 Mdlg,  // Dead load moment of girder only
+                               const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
+                               const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
+                               const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
 
-                         Float64 Mdlg,  // Dead load moment of girder only
-                         const std::vector<std::pair<Float64, Float64>>& Madlg,  // Additional dead load on girder section (first value is moment, second is elastic gain reduction factor)
-                         const std::vector<std::pair<Float64, Float64>>& Msidl1, // Superimposed dead loads, stage 1
-                         const std::vector<std::pair<Float64, Float64>>& Msidl2, // Superimposed dead loads, stage 2
+                               Float64 Ag,    // Area of girder
+                               Float64 Ixx,    // Moment of inertia of girder
+                               Float64 Iyy,
+                               Float64 Ixy,
+                               Float64 Ybg,   // Centroid of girder measured from bottom
+                               Float64 Ac1,    // Area of the composite girder and deck
+                               Float64 Ic1,    // Moment of inertia of composite
+                               Float64 Ybc1,   // Centroid of composite measured from bottom
+                               Float64 Ac2,
+                               Float64 Ic2,
+                               Float64 Ybc2,
 
-                         Float64 Ag,    // Area of girder
-                         Float64 Ixx,    // Moment of inertia of girder
-                         Float64 Iyy,
-                         Float64 Ixy,
-                         Float64 Ybg,   // Centroid of girder measured from bottom
-                         Float64 Ac1,    // Area of the composite girder and deck
-                         Float64 Ic1,    // Moment of inertia of composite
-                         Float64 Ybc1,   // Centroid of composite measured from bottom
-                         Float64 Ac2,
-                         Float64 Ic2,
-                         Float64 Ybc2,
+                               Float64 An,    // Area of girder
+                               Float64 Ixxn,    // Moment of inertia of girder
+                               Float64 Iyyn,
+                               Float64 Ixyn,
+                               Float64 Ybn,   // Centroid of girder measured from bottom
+                               Float64 Acn,    // Area of the composite girder and deck
+                               Float64 Icn,    // Moment of inertia of composite
+                               Float64 Ybcn,   // Centroid of composite measured from bottom
 
-                         Float64 An,    // Area of girder
-                         Float64 Ixxn,    // Moment of inertia of girder
-                         Float64 Iyyn,
-                         Float64 Ixyn,
-                         Float64 Ybn,   // Centroid of girder measured from bottom
-                         Float64 Acn,    // Area of the composite girder and deck
-                         Float64 Icn,    // Moment of inertia of composite
-                         Float64 Ybcn,   // Centroid of composite measured from bottom
+                               Float64 rh,      // relative humidity
+                               Float64 ti,   // Time until prestress transfer
+                               bool bIgnoreInitialRelaxation,
+                               bool bValidateParameters
+                               );
 
-                         Float64 rh,      // relative humidity
-                         Float64 ti,   // Time until prestress transfer
-                         bool bIgnoreInitialRelaxation,
-                         bool bValidateParameters
-                         );
+         ~ApproximateLosses2005() = default;
 
-   ~lrfdApproximateLosses2005();
+         Float64 TemporaryStrand_RelaxationLossesAtXfer() const;
+         Float64 PermanentStrand_RelaxationLossesAtXfer() const;
 
-   //------------------------------------------------------------------------
-   Float64 TemporaryStrand_RelaxationLossesAtXfer() const;
-   Float64 PermanentStrand_RelaxationLossesAtXfer() const;
+         Float64 TemporaryStrand_ImmediatelyBeforeXferLosses() const;
+         Float64 PermanentStrand_ImmediatelyBeforeXferLosses() const;
 
-   //------------------------------------------------------------------------
-   Float64 TemporaryStrand_ImmediatelyBeforeXferLosses() const;
-   Float64 PermanentStrand_ImmediatelyBeforeXferLosses() const;
+         Float64 TemporaryStrand_ImmediatelyAfterXferLosses() const;
+         Float64 PermanentStrand_ImmediatelyAfterXferLosses() const;
 
-   //------------------------------------------------------------------------
-   Float64 TemporaryStrand_ImmediatelyAfterXferLosses() const;
-   Float64 PermanentStrand_ImmediatelyAfterXferLosses() const;
+         /// @brief Time dependent losses at shipping (assumed to occur at 10 days)
+         virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
+         virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
 
-   //------------------------------------------------------------------------
-   // Time dependent losses at shipping (assumed to occur at 10 days)
-   virtual Float64 TemporaryStrand_TimeDependentLossesAtShipping() const override;
-   virtual Float64 PermanentStrand_TimeDependentLossesAtShipping() const override;
+         Float64 TimeDependentLosses() const;
 
-   //------------------------------------------------------------------------
-   Float64 TimeDependentLosses() const;
+         Float64 TimeDependentLossesBeforeDeck() const;
+         Float64 TimeDependentLossesAfterDeck() const;
 
-   Float64 TimeDependentLossesBeforeDeck() const;
-   Float64 TimeDependentLossesAfterDeck() const;
+         virtual Float64 PermanentStrand_Final() const override;
+         virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const override;
+         virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const override;
 
-   virtual Float64 PermanentStrand_Final() const override;
-   virtual Float64 PermanentStrand_BeforeTemporaryStrandRemoval() const override;
-   virtual Float64 PermanentStrand_AfterTemporaryStrandRemoval() const override;
+         Float64 GetHumidityFactor() const;
+         Float64 GetStrengthFactor() const;
 
-   Float64 GetHumidityFactor() const;
-   Float64 GetStrengthFactor() const;
+         Float64 GetFpi() const;
 
-   Float64 GetFpi() const;
+      private:
+         mutable Float64 m_dfpTH; // time dependent losses at shipping/hauling
+         mutable Float64 m_dfpLT;
 
-   // GROUP: ACCESS
-
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-   #if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
-
-protected:
-   mutable Float64 m_dfpTH; // time dependent losses at shipping/hauling
-   mutable Float64 m_dfpLT;
-
-   Float64 RelaxationLossesAtXfer(bool bPerm) const;
-   virtual void ValidateParameters() const override;
-   virtual void UpdateLongTermLosses() const override;
-   virtual void UpdateHaulingLosses() const override;
+         Float64 RelaxationLossesAtXfer(bool bPerm) const;
+         virtual void ValidateParameters() const override;
+         virtual void UpdateLongTermLosses() const override;
+         virtual void UpdateHaulingLosses() const override;
+      };
+   };
 };
-
-#endif // INCLUDED_LRFD_APPROXIMATELOSSES2005_H_

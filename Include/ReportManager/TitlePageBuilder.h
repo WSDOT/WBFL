@@ -21,40 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TitlePageBuilder.h: interface for the CTitlePageBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_TitlePageBuilder_H__A02521C5_E5AB_410C_A5C2_0D76AEDFDCA3__INCLUDED_)
-#define AFX_TitlePageBuilder_H__A02521C5_E5AB_410C_A5C2_0D76AEDFDCA3__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportHint.h>
 #include <Reporter\Chapter.h>
 
-class REPORTMANAGERCLASS CTitlePageBuilder  
+namespace WBFL
 {
-public:
-	CTitlePageBuilder(LPCTSTR title = _T(""));
-	CTitlePageBuilder(const CTitlePageBuilder& other);
-	virtual ~CTitlePageBuilder();
+   namespace Reporting
+   {
+      /// A factory class to create a Title Page chapter for a report
+      class REPORTMANAGERCLASS TitlePageBuilder  
+      {
+      public:
+	      TitlePageBuilder(LPCTSTR title = _T(""));
+	      TitlePageBuilder(const TitlePageBuilder& other) = default;
+	      virtual ~TitlePageBuilder() = default;
 
-   const std::_tstring& GetReportTitle() const;
-   void SetReportTitle(LPCTSTR title);
+         /// Sets the title for the title page
+         void SetReportTitle(LPCTSTR title);
+         
+         /// Returns the title
+         const std::_tstring& GetReportTitle() const;
 
-   virtual rptChapter* Build(std::shared_ptr<CReportSpecification>& pRptSpec) = 0;
-   virtual bool NeedsUpdate(CReportHint* pHint, std::shared_ptr<CReportSpecification>& pRptSpec);
+         /// Builds the Title Page chapter based on the ReportSpecification
+         virtual rptChapter* Build(const std::shared_ptr<const ReportSpecification>& pRptSpec) const = 0;
 
-   // polymorphic copy
-   virtual CTitlePageBuilder* Clone() const = 0;
+         /// Returns true if the title page needs to be re-built based on a reporting hint and reporting specification.
+         /// Default implementation returns false
+         virtual bool NeedsUpdate(const std::shared_ptr<const ReportHint>&, const std::shared_ptr<const ReportSpecification>& pRptSpec) const;
 
-private:
-   std::_tstring m_Title;
+         /// Create a copy of the Title Page object
+         virtual std::unique_ptr<TitlePageBuilder> Clone() const = 0;
+
+      private:
+         std::_tstring m_Title;
+      };
+   };
 };
-
-#endif // !defined(AFX_TitlePageBuilder_H__A02521C5_E5AB_410C_A5C2_0D76AEDFDCA3__INCLUDED_)

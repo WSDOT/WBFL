@@ -22,172 +22,68 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LLDFTYPEAEKIJ_H_
-#define INCLUDED_LRFD_LLDFTYPEAEKIJ_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <Lrfd\LiveLoadDistributionFactorBase.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdLldfTypeAEKIJ
-
-   Live load distribution factor calculator for cross section types A, E, K,
-   I, and J.
-
-
-DESCRIPTION
-   Live load distribution factor calculator for cross section types A, E, K,
-   I, and J.
-
-LOG
-   rab : 11.12.1998 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdLldfTypeAEKIJ : public lrfdLiveLoadDistributionFactorBase
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace LRFD
+   {
+      /// @brief Live load distribution factor calculator for cross section types A, E, K, I, and J.
+      class LRFDCLASS LldfTypeAEKIJ : public LiveLoadDistributionFactorBase
+      {
+      public:
+         LldfTypeAEKIJ(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
+                           Uint32 Nl, Float64 wLane,
+                           Float64 deLeft,Float64 deRight,Float64 L,Float64 ts,Float64 n,
+                           Float64 I, Float64 A, Float64 eg,
+                           Float64 skewAngle1, Float64 skewAngle2,
+                           bool bSkewMoment,
+                           bool bSkewShear);
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdLldfTypeAEKIJ(GirderIndexType gdr,Float64 Savg,const std::vector<Float64>& gdrSpacings,Float64 leftOverhang,Float64 rightOverhang,
-                     Uint32 Nl, Float64 wLane,
-                     Float64 deLeft,Float64 deRight,Float64 L,Float64 ts,Float64 n,
-                     Float64 I, Float64 A, Float64 eg,
-                     Float64 skewAngle1, Float64 skewAngle2,
-                     bool bSkewMoment,
-                     bool bSkewShear);
+         LldfTypeAEKIJ(const LldfTypeAEKIJ&) = default;
+         virtual ~LldfTypeAEKIJ() override = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   lrfdLldfTypeAEKIJ(const lrfdLldfTypeAEKIJ& rOther);
+         LldfTypeAEKIJ& operator=(const LldfTypeAEKIJ&) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~lrfdLldfTypeAEKIJ() override;
+         Float64 MomentSkewCorrectionFactor() const;
+         Float64 ShearSkewCorrectionFactor() const;
+         Float64 GetKg() const;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   lrfdLldfTypeAEKIJ& operator = (const lrfdLldfTypeAEKIJ& rOther);
+         virtual bool TestRangeOfApplicability(Location loc) const override;
+         virtual DFResult GetMomentDF_Int_1_Strength() const override;
+         virtual DFResult GetMomentDF_Int_2_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_1_Strength() const override;
+         virtual DFResult GetMomentDF_Ext_2_Strength() const override;
+         virtual DFResult GetShearDF_Int_1_Strength() const override;
+         virtual DFResult GetShearDF_Int_2_Strength() const override;
+         virtual DFResult GetShearDF_Ext_1_Strength() const override;
+         virtual DFResult GetShearDF_Ext_2_Strength() const override;
 
-   // GROUP: OPERATIONS
+      protected:
+         Float64 m_LeftDe;
+         Float64 m_RightDe;
+         Float64 m_L;
+         Float64 m_ts;
+         Float64 m_n;
+         Float64 m_A;
+         Float64 m_I;
+         Float64 m_eg;
+         Float64 m_SkewAngle1;
+         Float64 m_SkewAngle2;
+         bool m_bIgnoreDe; // not the best OO design, but some of our children would like to ignore the check for this
 
-   //------------------------------------------------------------------------
-   Float64 MomentSkewCorrectionFactor() const;
+         Float64 m_Kg;
 
-   //------------------------------------------------------------------------
-   Float64 ShearSkewCorrectionFactor() const;
-   
-   //------------------------------------------------------------------------
-   Float64 GetKg() const;
-
-
-   //------------------------------------------------------------------------
-   virtual bool TestRangeOfApplicability(Location loc) const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetMomentDF_Ext_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Int_2_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_1_Strength() const override;
-   //------------------------------------------------------------------------
-   virtual DFResult GetShearDF_Ext_2_Strength() const override;
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   Float64 m_LeftDe;
-   Float64 m_RightDe;
-   Float64 m_L;
-   Float64 m_ts;
-   Float64 m_n;
-   Float64 m_A;
-   Float64 m_I;
-   Float64 m_eg;
-   Float64 m_SkewAngle1;
-   Float64 m_SkewAngle2;
-   bool m_bIgnoreDe; // not the best OO design, but some of our children would like to ignore the check for this
-
-   Float64 m_Kg;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const lrfdLldfTypeAEKIJ& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const lrfdLldfTypeAEKIJ& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-   // rules for determining which equation to use
-   bool SpGreaterThan16_Rule(bool bSISpec) const;
-   bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
-   bool InteriorShearEquationRule(bool bSISpec, bool doThrow) const;
-   bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
-   bool DeRule(bool bSISpec, bool doThrow) const;
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const override;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const override;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
+      protected:
+         // rules for determining which equation to use
+         bool SpGreaterThan16_Rule(bool bSISpec) const;
+         bool InteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+         bool InteriorShearEquationRule(bool bSISpec, bool doThrow) const;
+         bool ExteriorMomentEquationRule(bool bSISpec, bool doThrow) const;
+         bool DeRule(bool bSISpec, bool doThrow) const;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_LLDFTYPEAEKIJ_H_

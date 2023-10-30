@@ -55,11 +55,11 @@ namespace WBFL
          Float64 OffsetFactor; ///< cg offset factor
          Float64 CamberOffsetFactor; ///< factor used to multiple with Yr to adjust for camber (this is the Bob Mast "increase by 2% to account for camber") method
          Float64 LateralSweep; ///< lateral sweep due to imperfections (SweepTolerance*Lg + SupportOffset)
-         std::array<Float64, 3> EccLateralSweep; ///< eccentricty of CG due to lateral sweep (OffsetFactor*LateralSweep + SupportPlacementTolerance)*emag[impact]. Array index is ImpactDirection.
+         std::array<Float64, 3> EccLateralSweep; ///< eccentricity of CG due to lateral sweep (OffsetFactor*LateralSweep + SupportPlacementTolerance)*emag[+impact]. Array index is ImpactDirection.
 
          Float64 WindPressure; ///< computed or input wind pressure
          std::array<Float64, 3> Ywind;   ///< distance between roll center and resultant wind force (mid-height of girder). Array index is ImpactDirection.
-         std::array<Float64, 3> EccWind; ///< vertical eccentricty of the girder self-weight load with respect to the roll axis. Array index is ImpactDirection.
+         std::array<Float64, 3> EccWind; ///< vertical eccentricity of the girder self-weight load with respect to the roll axis. Array index is ImpactDirection.
          Float64 Wwind;   ///< total wind force (applied at EccWind)
 
          CalculationMethod ZoMethod; ///< Indicates the method for computing the location of the center of mass

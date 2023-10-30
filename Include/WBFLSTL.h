@@ -24,7 +24,7 @@
 #pragma once
 
 // Factors the value of an element in a collection
-// Use with std::transform to multiplya constant to every element in a collection
+// Use with std::transform to multiply a constant to every element in a collection
 //
 // Multiply every element in a collection by 25, put the results back into the collection
 // std::transform(myCollection.begin(),myCollection.end(),myCollection.begin(),FactorElements<Float64>(25.0));

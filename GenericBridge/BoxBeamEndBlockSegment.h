@@ -33,7 +33,7 @@
 
 // Template takes care of all
 class CBoxBeamVoidSurfaceAreaCalculator;
-typedef TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>, CBoxBeamVoidSurfaceAreaCalculator> CBoxBeamEndBlockSegment;
+using CBoxBeamEndBlockSegment = TEndBlockSegmentImpl<IBoxBeamEndBlockSegment, IBoxBeamSection, IBoxBeam, &CLSID_BoxBeamEndBlockSegment, IDR_BOXBEAMENDBLOCKSEGMENT, VoidedEndBlock<IBoxBeam>, CBoxBeamVoidSurfaceAreaCalculator>;
 
 class CBoxBeamVoidSurfaceAreaCalculator
 {

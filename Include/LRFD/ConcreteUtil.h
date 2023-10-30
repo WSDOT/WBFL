@@ -22,193 +22,113 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_CONCRETEUTIL_H_
-#define INCLUDED_LRFD_CONCRETEUTIL_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Lrfd\LrfdExp.h>
 #include <System\Exception.h>
 #include <System\SectionValue.h>
 
-#include <Material\Concrete.h>
+#include <Materials/SimpleConcrete.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdConcreteUtil
-
-   Utility class for concrete related calculations.
-
-
-DESCRIPTION
-   Utility class for concrete related calculations.
-
-LOG
-   rab : 11.14.1997 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdConcreteUtil
+namespace WBFL
 {
-public:
-   // GROUP: ENUMERATIONS
-
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Destructor
-   ~lrfdConcreteUtil();
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // Returns the minimum density for concrete to be considered normal weight
-   // per LRFD 5.2
-   static Float64 GetNWCDensityLimit();
-
-   //------------------------------------------------------------------------
-   // Returns the maximum density for concrete to be considered light weight
-   // per LRFD 5.2
-   static Float64 GetLWCDensityLimit();
-
-   // Gets the valid range of UHPC concrete strength
-   static void GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax);
-   static void GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr);
-
-   //------------------------------------------------------------------------
-   // Returns the modulus of elasticity of concrete.  The modulus of elasticity
-   // is computed in accordance with equation 5.4.2.4-1.
-   // If density is out of range, a lrfdXModE exception is thrown.
-   static Float64 ModE(matConcrete::Type type,Float64 fc,Float64 density,bool bCheckRange = true);
-
-   //------------------------------------------------------------------------
-   // Computes the concrete strength from the modulus of elasticy based on
-   // LRFD Equation 5.2.4.2-1
-   static Float64 FcFromEc(matConcrete::Type type, Float64 ec,Float64 density);
-
-   //------------------------------------------------------------------------
-   // Returns the modulus of rupture.  The modulus of rupture is computed in
-   // accordnace with Article 5.4.2.6
-   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType);
-   static Float64 ModRupture(Float64 fc, Float64 k);
-
-   //------------------------------------------------------------------------
-   // Returns the beta1 factor.  The beta1 factor is computed in accordance
-   // with Article 5.7.2.2
-   static Float64 Beta1(Float64 fc);
-
-   static void InterfaceShearParameters(bool isRoughened, matConcrete::Type girderConcType, matConcrete::Type deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);
-
-   //------------------------------------------------------------------------
-   // Return nominal horizontal shear resistances per 5.8.4.1
-   // Three resistances are returned for eqn's 1-3.
-   // The governing resistance is determined by taking the min of these three
-   static void InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
-                                          Float64 Acv, Float64 Avf, Float64 Pc,
-                                          Float64 fc, Float64 fy,
-                                          Float64* penqn1, Float64* penqn2, Float64* penqn3);
-
-   //------------------------------------------------------------------------
-   // Get lower limit of average shear strength Vn/Acv where steel is required by
-   // 5.8.4.1-4.
-   static Float64 LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck);
-
-   //------------------------------------------------------------------------
-   // Get upper limit of bv for 5.8.4.1-4.
-   static Float64 UpperLimitForBv();
-   
-   //------------------------------------------------------------------------
-   // Get Min number of legs for a given bv  5.8.4.1-4.
-   static Uint16 MinLegsForBv(Float64 bv);
-
-   //------------------------------------------------------------------------
-   // Calculate minimum Avf using 5.7.4.2 (pre2017: 5.8.4.4)
-   // Use a struct to contain control information
-   struct HsAvfOverSMinType
+   namespace LRFD
    {
-      enum ValidEqnsType {eq41only, eqBoth}; // 
-      ValidEqnsType ValidEqns; // Which equations were valid: 5.7.4.2-1, 5.7.4.2-2, or both
-      Float64 res5_7_4_2_1;
-      Float64 res5_7_4_2_3;
-      Float64 AvfOverSMin; // Min of two values above, or zero if negative
+      /// @brief Utility class for calculations related to concrete
+      class LRFDCLASS ConcreteUtil
+      {
+      public:
+         ConcreteUtil() = delete;
+         ConcreteUtil(const ConcreteUtil&) = delete;
+         ~ConcreteUtil() = delete;
+         ConcreteUtil& operator=(const ConcreteUtil&) = delete;
 
-      HsAvfOverSMinType(): // initialize with default constructor
-      ValidEqns(eq41only), res5_7_4_2_1(0.0), res5_7_4_2_3(0.0), AvfOverSMin(0.0)
-      {;}
+         /// @brief Returns the minimum density for concrete to be considered normal weight per LRFD 5.2
+         static Float64 GetNWCDensityLimit();
+
+         /// @brief Returns the maximum density for concrete to be considered light weight per LRFD 5.2
+         static Float64 GetLWCDensityLimit();
+
+         /// @brief Gets the valid range of PCI-UHPC concrete strength
+         static void GetPCIUHPCStrengthRange(Float64* pFcMin, Float64* pFcMax);
+
+         /// @brief Gets PCI-UHPC concrete minimum properties
+         static void GetPCIUHPCMinProperties(Float64* pfcMin, Float64* pffc, Float64* pfpeak, Float64* pfrr);
+
+         /// @brief Returns the modulus of elasticity of concrete.  The modulus of elasticity
+         /// is computed in accordance with equation 5.4.2.4-1.
+         /// If density is out of range, a XModE exception is thrown.
+         static Float64 ModE(WBFL::Materials::ConcreteType type,Float64 fc,Float64 density,bool bCheckRange = true);
+
+         /// @brief Computes the concrete strength from the modulus of elasticity based on LRFD Equation 5.2.4.2-1
+         static Float64 FcFromEc(WBFL::Materials::ConcreteType type, Float64 ec,Float64 density);
+
+         /// @brief Returns the modulus of rupture. The modulus of rupture is computed in accordance with Article 5.4.2.6
+         static Float64 ModRupture(Float64 fc, WBFL::Materials::ConcreteType concreteType);
+         static Float64 ModRupture(Float64 fc, Float64 k);
+
+         /// @brief Returns the beta1 factor.  The beta1 factor is computed in accordance with Article 5.7.2.2
+         static Float64 Beta1(Float64 fc);
+
+         /// @brief Gets the analysis parameters for horizontal interface shear calculations
+         static void InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);
+
+         /// @brief Return nominal horizontal shear resistances per 5.8.4.1
+         /// Three resistances are returned for eqn's 1-3.
+         /// The governing resistance is determined by taking the min of these three
+         static void InterfaceShearResistances(Float64 c, Float64 u, Float64 K1, Float64 K2,
+                                                Float64 Acv, Float64 Avf, Float64 Pc,
+                                                Float64 fc, Float64 fy,
+                                                Float64* penqn1, Float64* penqn2, Float64* penqn3);
+
+         /// @brief Get lower limit of average shear strength Vn/Acv where steel is required by
+         /// 5.8.4.1-4.
+         static Float64 LowerLimitOfShearStrength(bool isRoughened, bool doAllStirrupsEngageDeck);
+
+         /// @brief Get upper limit of bv for 5.8.4.1-4.
+         static Float64 UpperLimitForBv();
+   
+         /// @brief Get Min number of legs for a given bv  5.8.4.1-4.
+         static Uint16 MinLegsForBv(Float64 bv);
+
+         /// @brief Struct containing return data from AvfOverSMin
+         struct HsAvfOverSMinType
+         {
+            enum class ValidEqnsType {eq41only, eqBoth}; // 
+            ValidEqnsType ValidEqns; // Which equations were valid: 5.7.4.2-1, 5.7.4.2-2, or both
+            Float64 res5_7_4_2_1;
+            Float64 res5_7_4_2_3;
+            Float64 AvfOverSMin; // Min of two values above, or zero if negative
+
+            HsAvfOverSMinType(): // initialize with default constructor
+            ValidEqns(ValidEqnsType::eq41only), res5_7_4_2_1(0.0), res5_7_4_2_3(0.0), AvfOverSMin(0.0)
+            {;}
+         };
+
+         /// @brief Calculate minimum Avf using 5.7.4.2 (pre2017: 5.8.4.4)
+         static HsAvfOverSMinType AvfOverSMin(Float64 bv, Float64 fy,const WBFL::System::SectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
+
+         /// @brief Max bar spacing 5.8.4.1/2
+         static Float64 MaxStirrupSpacingForHoriz(Float64 Hg);
+
+         /// @brief Calculate required Avf for horizontal shear
+         static Float64 AvfRequiredForHoriz(const WBFL::System::SectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
+                                             Float64 c, Float64 u, Float64 K1, Float64 K2,
+                                             Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
+                                             Float64 fc, Float64 fy);
+
+         /// @brief Calculates the concrete density modification factor (lambda)
+         /// per LRFD 5.4.2.8 (added to LRFD in 2016)
+         static Float64 ComputeConcreteDensityModificationFactor(WBFL::Materials::ConcreteType type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
+
+         /// @brief Returns a string for a concrete type
+         static std::_tstring GetTypeName(WBFL::Materials::ConcreteType type,bool bFull);
+
+         /// @brief Converts a string back to a concrete type
+         static WBFL::Materials::ConcreteType GetTypeFromTypeName(LPCTSTR strName);
+
+      private:
+         static Float64 ModRupture(Float64 fc, WBFL::Materials::ConcreteType concreteType,Float64 k);
+      };
    };
-
-   static HsAvfOverSMinType AvfOverSMin(Float64 bv, Float64 fy,const sysSectionValue& Vuh,Float64 phi,Float64 c,Float64 u,Float64 pc);
-
-   //------------------------------------------------------------------------
-   // Max bar spacing 5.8.4.1/2
-   static Float64 MaxStirrupSpacingForHoriz(Float64 Hg);
-
-   //------------------------------------------------------------------------
-   // Calculate required Avf for horizontal shear
-   static Float64 AvfRequiredForHoriz(const sysSectionValue& Vuh, Float64 phi, Float64 AvfOverSMin,
-                                      Float64 c, Float64 u, Float64 K1, Float64 K2,
-                                      Float64 bv, Float64 Acv, Float64 Avf, Float64 Pc, 
-                                      Float64 fc, Float64 fy);
-
-   //------------------------------------------------------------------------
-   // Calculates the concrete density modification factor (lambda)
-   // per LRFD 5.4.2.8 (added to LRFD in 2016)
-   static Float64 ComputeConcreteDensityModificationFactor(matConcrete::Type type,Float64 density,bool bHasFct,Float64 fct,Float64 fc);
-
-   static std::_tstring GetTypeName(matConcrete::Type type,bool bFull);
-   static matConcrete::Type GetTypeFromTypeName(LPCTSTR strName);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-#if defined _UNITTEST
-   static bool TestMe(dbgLog& rlog);
-#endif // _UNITTEST
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-
-   //------------------------------------------------------------------------
-   // Default constructor
-   lrfdConcreteUtil();
-
-   // Prevent accidental copying and assignment
-   lrfdConcreteUtil(const lrfdConcreteUtil&) = delete;
-   lrfdConcreteUtil& operator=(const lrfdConcreteUtil&) = delete;
-
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-   static Float64 ModRupture(Float64 fc, matConcrete::Type concreteType,Float64 k);
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_LRFD_CONCRETEUTIL_H_

@@ -216,13 +216,13 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       return Error(IDS_E_BEAMNOTSYMMETRIC,IID_ILRFDSolver2,RC_E_BEAMNOTSYMMETRIC);
    }
 
-   CollectionIndexType nRebarLayers, nStrandLayers;
+   IndexType nRebarLayers, nStrandLayers;
    rcbeam->get_RebarLayerCount(&nRebarLayers);
    rcbeam->get_StrandLayerCount(&nStrandLayers);
 
    // A quick check to make sure there is actually reinforcement
    Float64 Abar = 0;
-   for (CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
+   for (IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
       Float64 ds, As, devFactor;
       rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
@@ -230,7 +230,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    }
 
    Float64 Astrand = 0;
-   for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
+   for ( IndexType strand = 0; strand < nStrandLayers; strand++ )
    {
       Float64 dps, Aps, devFactor;
       rcbeam->GetStrandLayer(strand,&dps,&Aps,&devFactor);
@@ -323,7 +323,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       Mt = 0; // moments taken about top of section
 
       fs->Clear();
-      for ( CollectionIndexType rebar = 0; rebar < nRebarLayers; rebar++ )
+      for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
       {
          Float64 ds, As, devFactor;
          rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
@@ -345,7 +345,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       }
 
       fps->Clear();
-      for ( CollectionIndexType strand = 0; strand < nStrandLayers; strand++ )
+      for ( IndexType strand = 0; strand < nStrandLayers; strand++ )
       {
          Float64 dps, Aps, devFactor;
          rcbeam->GetStrandLayer(strand,&dps,&Aps,&devFactor);

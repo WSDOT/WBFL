@@ -84,7 +84,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -93,7 +93,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
       std::vector< CAdapt< CComPtr<ILoadCombinationSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          HANDLE_CANCEL_PROGRESS();
 
@@ -115,14 +115,14 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(BSTR loadCombination, II
       }
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadCombinationSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,computeConfig,env_optimization,true,ieng);
       }
@@ -148,7 +148,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -157,7 +157,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       std::vector< CAdapt< CComPtr<ILoadCombinationSectionResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -180,13 +180,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(BSTR loadCombinatio
       // max results are place in the first member of the vector
 
       // intialize our vector of controlling engine id's to engine zero
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngine.clear();
       m_ControllingEngine.resize(poi_cnt);
 
 
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadCombinationSectionResults(result_vec[0].m_T,result_vec[ieng].m_T,computeConfig,optimization,false,ieng);
       }
@@ -213,7 +213,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -222,7 +222,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
       std::vector< CAdapt< CComPtr<ILoadCombinationResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -240,13 +240,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(BSTR loadCombination,
          result_vec.push_back( results );
       }
 
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngineReactions.resize(poi_cnt,0);
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadCombinationResults(result_vec[0].m_T, result_vec[ieng].m_T,computeConfig, optimization,ieng);
       }
@@ -273,7 +273,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
    try
    {
       // loop over all of our engines and get results from each
-      CollectionIndexType eng_cnt = m_pEnveloper->EngineCount();
+      IndexType eng_cnt = m_pEnveloper->EngineCount();
       if (eng_cnt==0)
       {
          THROW_LBAMAU(ENGINE_INIT);
@@ -282,7 +282,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
       std::vector< CAdapt< CComPtr<ILoadCombinationResults> > > result_vec;
       result_vec.reserve(eng_cnt);
 
-      for (CollectionIndexType ieng = 0;  ieng<eng_cnt; ieng++)
+      for (IndexType ieng = 0;  ieng<eng_cnt; ieng++)
       {
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(ieng, &engine);
@@ -300,13 +300,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(BSTR loadCom
          result_vec.push_back( results );
       }
 
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = POIs->get_Count(&poi_cnt);
       m_ControllingEngineReactions.resize(poi_cnt,0);
 
       // now that we have all results from all engines, envelope them
       // max results are place in the first member of the vector
-      for (CollectionIndexType ieng=1; ieng<eng_cnt; ieng++)
+      for (IndexType ieng=1; ieng<eng_cnt; ieng++)
       {
          EnvelopeLoadCombinationResults(result_vec[0].m_T, result_vec[ieng].m_T,computeConfig, optimization,ieng);
       }
@@ -343,7 +343,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
       CComPtr<ILoadCombinationStressResults> results;
       hr = results.CoCreateInstance(CLSID_LoadCombinationStressResults);
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = force_res->get_Count(&num_pois);
       hr = results->Reserve(num_pois);
 
@@ -353,7 +353,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
       hr = single_poi->ReDim(1);
 
       // loop over all pois and compute stresses due to optimization at that poi for the correct model
-      for (CollectionIndexType ipoi = 0; ipoi<num_pois; ipoi++)
+      for (IndexType ipoi = 0; ipoi<num_pois; ipoi++)
       {
          // use configuration object from force results to compute stresses
          // get left and right config objects
@@ -362,8 +362,8 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(BSTR loadCombination, 
          hr = force_res->GetResult(ipoi, &left_force, &left_config, &right_force, &right_config);
 
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
-         CollectionIndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
+         IndexType left_engine_idx  = m_ControllingEngine[ipoi].Left;
+         IndexType right_engine_idx = m_ControllingEngine[ipoi].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
          m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
@@ -431,13 +431,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(IIDArray* pois,
 
       hr = single_poi->ReDim(1);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       pois->get_Count(&nPois);
-      for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
+      for ( IndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
-         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
+         IndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         IndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
          m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
@@ -458,7 +458,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeForces(IIDArray* pois,
 
 #if defined _DEBUG
          // we sent one poi in, expecting to get one result out
-         CollectionIndexType c;
+         IndexType c;
          left_results->get_Count(&c);
          ATLASSERT(c == 1);
 
@@ -513,13 +513,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(IIDArray* pois, BST
 
       hr = single_poi->ReDim(1);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       pois->get_Count(&nPois);
-      for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
+      for ( IndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
-         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
+         IndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         IndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
          m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
@@ -540,7 +540,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeDeflections(IIDArray* pois, BST
 
 #if defined _DEBUG
          // we sent one poi in, expecting to get one result out
-         CollectionIndexType c;
+         IndexType c;
          left_results->get_Count(&c);
          ATLASSERT(c == 1);
 
@@ -598,12 +598,12 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(IIDArray* pois,
 
       hr = single_poi->ReDim(1);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       pois->get_Count(&nPois);
-      for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
+      for ( IndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType engine_idx = m_ControllingEngineReactions[poiIdx];
+         IndexType engine_idx = m_ControllingEngineReactions[poiIdx];
 
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(engine_idx,  &engine);
@@ -621,7 +621,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeReactions(IIDArray* pois,
 
 #if defined _DEBUG
          // we sent one poi in, expecting to get one result out
-         CollectionIndexType c;
+         IndexType c;
          results->get_Count(&c);
          ATLASSERT(c == 1);
 #endif
@@ -660,12 +660,12 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(IIDArray* po
 
       hr = single_poi->ReDim(1);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       pois->get_Count(&nPois);
-      for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
+      for ( IndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType engine_idx = m_ControllingEngineReactions[poiIdx];
+         IndexType engine_idx = m_ControllingEngineReactions[poiIdx];
 
          CComPtr<ILBAMAnalysisEngine> engine;
          m_pEnveloper->GetEngine(engine_idx,  &engine);
@@ -683,7 +683,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeSupportDeflections(IIDArray* po
 
 #if defined _DEBUG
          // we sent one poi in, expecting to get one result out
-         CollectionIndexType c;
+         IndexType c;
          results->get_Count(&c);
          ATLASSERT(c == 1);
 #endif
@@ -722,13 +722,13 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(IIDArray* pois, BSTR s
 
       hr = single_poi->ReDim(1);
 
-      CollectionIndexType nPois;
+      IndexType nPois;
       pois->get_Count(&nPois);
-      for ( CollectionIndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
+      for ( IndexType poiIdx = 0; poiIdx < nPois; poiIdx++ )
       {
          // determine which engine (model) was the optimal, and get the appropriate response interfaces
-         CollectionIndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
-         CollectionIndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
+         IndexType left_engine_idx  = m_ControllingEngine[poiIdx].Left;
+         IndexType right_engine_idx = m_ControllingEngine[poiIdx].Right;
 
          CComPtr<ILBAMAnalysisEngine> left_engine, right_engine;
          m_pEnveloper->GetEngine(left_engine_idx,  &left_engine);
@@ -749,7 +749,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(IIDArray* pois, BSTR s
 
 #if defined _DEBUG
          // we sent one poi in, expecting to get one result out
-         CollectionIndexType c;
+         IndexType c;
          left_results->get_Count(&c);
          ATLASSERT(c == 1);
 
@@ -764,18 +764,18 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(IIDArray* pois, BSTR s
          CComPtr<ISectionStressResult> result;
          hr = result.CoCreateInstance(CLSID_SectionStressResult);
 
-         CollectionIndexType nLeft, nRight;
+         IndexType nLeft, nRight;
          left_result->get_RightCount(&nRight);
          right_result->get_LeftCount(&nLeft);
 
-         for ( CollectionIndexType i = 0; i < nRight; i++ )
+         for ( IndexType i = 0; i < nRight; i++ )
          {
             Float64 f;
             left_result->GetRightResult(i,&f);
             result->AddLeftResult(f);
          }
 
-         for ( CollectionIndexType i = 0; i < nLeft; i++ )
+         for ( IndexType i = 0; i < nLeft; i++ )
          {
             Float64 f;
             right_result->GetLeftResult(i,&f);
@@ -797,7 +797,7 @@ STDMETHODIMP CLoadCombinationResponseAgg::ComputeStresses(IIDArray* pois, BSTR s
 
 // Make sure maximum value is in res1
 void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCombinationSectionResults* res1, ILoadCombinationSectionResults* res2,
-                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, CollectionIndexType engineIdx)
+                                           VARIANT_BOOL computeConfig, OptimizationType optimization, bool doFlip, IndexType engineIdx)
 {
    CHRException hr;
 
@@ -825,10 +825,10 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILoadCombinationResultConfiguration> lconf1, lconf2, rconf1, rconf2;
       Float64 lval1, lval2, rval1, rval2;
@@ -869,7 +869,7 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationSectionResults(ILoadCom
 
 
 void CLoadCombinationResponseAgg::EnvelopeLoadCombinationResults(ILoadCombinationResults* res1, ILoadCombinationResults* res2,
-                                    VARIANT_BOOL computeConfig, OptimizationType optimization,CollectionIndexType engineIdx)
+                                    VARIANT_BOOL computeConfig, OptimizationType optimization,IndexType engineIdx)
 {
    CHRException hr;
 
@@ -886,10 +886,10 @@ void CLoadCombinationResponseAgg::EnvelopeLoadCombinationResults(ILoadCombinatio
    }
 
    // loop over all pois and replace res1 with optmized results from res2 if needed.
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = res1->get_Count(&poi_cnt);
 
-   for (CollectionIndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi = 0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<ILoadCombinationResultConfiguration> conf1, conf2;
       Float64 val1, val2;

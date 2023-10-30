@@ -67,7 +67,7 @@ private:
 
    CComPtr<ICastingRegions> m_CastingRegions;
 
-   IDeckBoundary* m_pDeckBoundary; // weak reference
+   CComPtr<IDeckBoundary> m_pDeckBoundary;
 
 protected:
    virtual void OnBridge() override;

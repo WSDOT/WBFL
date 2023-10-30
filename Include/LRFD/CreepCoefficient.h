@@ -22,112 +22,67 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_CREEPCOEFFICIENT_H_
-#define INCLUDED_LRFD_CREEPCOEFFICIENT_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <LRFD\LrfdExp.h>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   lrfdCreepCoefficient
-
-   Computes the creep coefficient per Article 5.4.2.3.2
-
-
-DESCRIPTION
-   Computes the creep coefficient per Article 5.4.2.3.2
-
-LOG
-   rab : 03.16.1999 : Created file
-*****************************************************************************/
-
-class LRFDCLASS lrfdCreepCoefficient
+namespace WBFL
 {
-public:
-   enum CuringMethod { Normal, Accelerated };
+   namespace LRFD
+   {
+      /// @brief Computes the creep coefficient per Article 5.4.2.3.2
+      class LRFDCLASS CreepCoefficient
+      {
+      public:
+         enum class CuringMethod { Normal, Accelerated };
 
-   lrfdCreepCoefficient();
-   virtual ~lrfdCreepCoefficient();
+         CreepCoefficient() = default;
+         virtual ~CreepCoefficient() = default;
 
-   virtual Float64 GetCreepCoefficient(Float64 t, Float64 ti) const;
+         /// @brief Computes the creep coefficient
+         /// @param t Time under consideration
+         /// @param ti Time when load is applied
+         /// @return Creep coefficient
+         virtual Float64 GetCreepCoefficient(Float64 t, Float64 ti) const;
 
-   // GROUP: ACCESS
+         void SetRelHumidity(Float64 H);
+         Float64 GetRelHumidity() const;
 
-   //------------------------------------------------------------------------
-   void SetRelHumidity(Float64 H);
-   Float64 GetRelHumidity() const;
+         void SetVolume(Float64 V);
+         Float64 GetVolume() const;
 
-   void SetVolume(Float64 V);
-   Float64 GetVolume() const;
+         void SetSurfaceArea(Float64 S);
+         Float64 GetSurfaceArea() const;
 
-   void SetSurfaceArea(Float64 S);
-   Float64 GetSurfaceArea() const;
+         void SetFci(Float64 fci);
+         Float64 GetFci() const;
 
-   void SetFci(Float64 fci);
-   Float64 GetFci() const;
+         virtual Float64 GetAdjustedInitialAge(Float64 ti) const;
 
-   virtual Float64 GetAdjustedInitialAge(Float64 ti) const;
+         void SetCuringMethod(CuringMethod method);
+         CuringMethod GetCuringMethod() const;
 
-   void SetCuringMethod(CuringMethod method);
-   CuringMethod GetCuringMethod() const;
+         void SetCuringMethodTimeAdjustmentFactor(Float64 f);
+         Float64 GetCuringMethodTimeAdjustmentFactor() const;
 
-   void SetCuringMethodTimeAdjustmentFactor(Float64 f);
-   Float64 GetCuringMethodTimeAdjustmentFactor() const;
+         Float64 GetKf() const;
+         virtual Float64 GetKtd(Float64 t) const;
 
-   Float64 GetKf() const;
-   virtual Float64 GetKtd(Float64 t) const;
+      protected:
+         Float64 m_H = 0;
+         Float64 m_Fci = 0;
+         Float64 m_V = 0;
+         Float64 m_S = 1;
+         CuringMethod m_CuringMethod = CuringMethod::Normal;
+         Float64 m_CuringMethodTimeAdjustmentFactor = 7.0*24*60*60; // 7 days, measured in seconds
 
-   // GROUP: INQUIRY
+         mutable Float64 m_kc = 0;
+         mutable Float64 m_kf = 0;
+         mutable bool m_bUpdate = true; // True if a parameter has been changed and an update is required
 
-protected:
-   Float64 m_H;
-   Float64 m_Fci;
-   Float64 m_V;
-   Float64 m_S;
-   CuringMethod m_CuringMethod;
-   Float64 m_CuringMethodTimeAdjustmentFactor;
-
-   mutable Float64 m_kc;
-   mutable Float64 m_kf;
-   mutable bool m_bUpdate; // True if a parameter has been changed and an update is required
-
-   virtual void Update() const;
-   virtual Float64 ComputeKf() const;
-   virtual Float64 ComputeKtd(Float64 t) const;
-
-public:
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
+         virtual void Update() const;
+         virtual Float64 ComputeKf() const;
+         virtual Float64 ComputeKtd(Float64 t) const;
+      };
+   };
 };
-
-#endif // INCLUDED_LRFD_CREEPCOEFFICIENT_H_

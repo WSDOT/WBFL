@@ -69,9 +69,6 @@
 #include "TestMultiWeb2.h"
 #include "TestPlateGirder.h"
 #include "TestTrafficBarrier.h"
-#include "TestShapeCollection.h"
-
-#include "TestPrimitiveFactory.h"
 
 #include "TestCompositeShapeItem.h"
 #include "TestCompositeShape.h"
@@ -86,6 +83,11 @@
 #include "TestNUDeckedIBeam.h"
 #include "TestPCIDeckedIBeam.h"
 
+#include "TestMassProperties.h"
+#include "TestElasticProperties.h"
+#include "TestCompositeBeam.h"
+#include "TestCompositeSectionEx.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -95,7 +97,6 @@ static char THIS_FILE[] = __FILE__;
 int main(int argc, LPTSTR  argv[])
 {
    ::CoInitialize(nullptr);
-
 
    CTestSize2d::Test();
    CTestPoint2d::Test();
@@ -114,7 +115,8 @@ int main(int argc, LPTSTR  argv[])
    CTestCoordinateXform3d::Test();
    CTestGeomUtil::Test();
    CTestShapeProperties::Test();
-   CTestShapeCollection::Test();
+   CTestCompositeShapeItem::Test();
+   CTestCompositeShape::Test();
    CTestPolyShape::Test();
    CTestCircle::Test();
    CTestCircularSegment::Test();
@@ -131,21 +133,18 @@ int main(int argc, LPTSTR  argv[])
    CTestMultiWeb2::Test();
    CTestPlateGirder::Test();
    CTestTrafficBarrier::Test();
-   CTestPrimitiveFactory::Test();
-   CTestCompositeShapeItem::Test();
-   CTestCompositeShape::Test();
    CTestVoidedSlab::Test();
    CTestVoidedSlab2::Test();
-
    CTestBoxBeam::Test();
    CTestDeckedSlabBeam::Test();
-
-   CTestGenericShape::Test();
-
-   CTestBeamShapeFactory::Test();
-
    CTestNUDeckedIBeam::Test();
    CTestPCIDeckedIBeam::Test();
+   CTestBeamShapeFactory::Test();
+   CTestGenericShape::Test();
+   CTestMassProperties::Test();
+   CTestElasticProperties::Test();
+   CTestCompositeBeam::Test();
+   CTestCompositeSectionEx::Test();
 
    ::CoUninitialize();
 

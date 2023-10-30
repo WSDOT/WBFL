@@ -61,7 +61,7 @@ STDMETHODIMP CGeneralSectionSolution::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 // IGeneralSectionSolution
-STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64 my,ILine2d* neutralAxis,IPoint2d* cgc,Float64 c,IPoint2d* cgt,Float64 t,IUnkArray* slices)
+STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64 my,ILine2d* neutralAxis,IPoint2d* cgc,Float64 c,IPoint2d* cgt,Float64 t,IUnkArray* slices,VARIANT_BOOL bExceededStrainLimits)
 {
    m_NeutralAxis = neutralAxis;
    m_Fz = fz;
@@ -72,6 +72,7 @@ STDMETHODIMP CGeneralSectionSolution::InitSolution(Float64 fz,Float64 mx,Float64
    m_cgC = cgc;
    m_cgT = cgt;
    m_Slices = slices;
+   m_bExceededStrainLimits = bExceededStrainLimits;
 
    return S_OK;
 }
@@ -143,14 +144,21 @@ STDMETHODIMP CGeneralSectionSolution::get_TensionResultantLocation(IPoint2d** cg
    return S_OK;
 }
 
-STDMETHODIMP CGeneralSectionSolution::get_SliceCount(CollectionIndexType* nSlices)
+STDMETHODIMP CGeneralSectionSolution::get_ExceededStrainLimits(VARIANT_BOOL* pbExceededStrainLimits)
+{
+   CHECK_RETOBJ(pbExceededStrainLimits);
+   *pbExceededStrainLimits = m_bExceededStrainLimits;
+   return S_OK;
+}
+
+STDMETHODIMP CGeneralSectionSolution::get_SliceCount(IndexType* nSlices)
 {
    return m_Slices->get_Count(nSlices);
 }
 
-STDMETHODIMP CGeneralSectionSolution::get_Slice(CollectionIndexType sliceIdx,IGeneralSectionSlice** pSlice)
+STDMETHODIMP CGeneralSectionSolution::get_Slice(IndexType sliceIdx,IGeneralSectionSlice** pSlice)
 {
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    m_Slices->get_Count(&nSlices);
    if ( sliceIdx < 0 || nSlices <= sliceIdx )
       return E_INVALIDARG;
@@ -167,7 +175,7 @@ STDMETHODIMP CGeneralSectionSolution::FindSlices(IndexType shapeIdx, IUnkArray**
    CComPtr<IUnkArray> slices;
    slices.CoCreateInstance(CLSID_UnkArray);
 
-   CollectionIndexType nSlices;
+   IndexType nSlices;
    m_Slices->get_Count(&nSlices);
    for (IndexType sliceIdx = 0; sliceIdx < nSlices; sliceIdx++)
    {

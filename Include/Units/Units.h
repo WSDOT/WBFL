@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_UNITS_UNITS_H_
-#define INCLUDED_UNITS_UNITS_H_
 #pragma once
 
 // This is a master include file for the Units Package
@@ -31,16 +29,14 @@
    #error It is for external users only
 #endif
 
-#include <Units\AutoSysUnits.h>
-#include <Units\Convert.h>
-#include <Units\Measure.h>
-#include <Units\PhysicalT.h>
-#include <Units\StationFormat.h>
-#include <Units\SysUnits.h>
-#include <Units\SysUnitsMgr.h>
-#include <Units\SysUnitsMgrListener.h>
-#include <Units\XUnit.h>
-
-
-#endif // INCLUDED_UNITS_UNITS_H_
-
+#include <Units/AutoSystem.h>
+#include <Units/Convert.h>
+#include <Units/Measure.h>
+#include <Units/PhysicalT.h>
+#include <Units/StationFormat.h>
+#include <Units/System.h>
+#include <Units/XUnit.h>
+#include <Units/IndirectMeasure.h>
+#include <Units/Library.h>
+#include <Units/LibraryT.h>
+#include <Units/UnitValueNumericalFormatTools.h>

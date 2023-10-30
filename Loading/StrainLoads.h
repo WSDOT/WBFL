@@ -31,11 +31,11 @@
 #include "LoadCollection.h"
 #include "LoadingUtils.h"
 
-typedef CLoadItem<ldIStrainLoadItem, ldIStrainLoad, &IID_ldIStrainLoadItem> CStrainLoadItem;
+using CStrainLoadItem = CLoadItem<ldIStrainLoadItem, ldIStrainLoad, &IID_ldIStrainLoadItem>;
 class CStrainLoads;
-typedef CLoadCollection<ldIStrainLoads, &IID_ldIStrainLoads, CStrainLoads, ldIStrainLoad, 
+using StrainLoadColl_Impl = CLoadCollection<ldIStrainLoads, &IID_ldIStrainLoads, CStrainLoads, ldIStrainLoad,
                         ldIStrainLoadItem, CStrainLoadItem, 
-                        ldIEnumStrainLoad, &IID_ldIEnumStrainLoad> StrainLoadColl_Impl;
+                        ldIEnumStrainLoad, &IID_ldIEnumStrainLoad>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStrainLoads

@@ -20,13 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
@@ -50,12 +50,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildStep>
@@ -83,6 +84,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -96,13 +100,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\EngTools.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -143,6 +148,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -154,14 +161,17 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\EngTools.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -175,20 +185,34 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bearing.cpp" />
+    <ClCompile Include="BearingCalculator.cpp" />
+    <ClCompile Include="BearingLoads.cpp" />
     <ClCompile Include="BiaxialBeamStrain.cpp" />
+    <ClCompile Include="FDMeshGenerator.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="MohrCircle.cpp" />
+    <ClCompile Include="PrandtlMembraneSolution.cpp" />
+    <ClCompile Include="PrandtlMembraneSolver.cpp" />
+    <ClCompile Include="UniformFDMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
+    <ClInclude Include="..\Include\EngTools\Bearing.h" />
+    <ClInclude Include="..\Include\EngTools\BearingCalculator.h" />
+    <ClInclude Include="..\Include\EngTools\BearingLoads.h" />
     <ClInclude Include="..\Include\EngTools\BiaxialBeamStrain.h" />
     <ClInclude Include="..\Include\EngTools\EngTools.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsExp.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsLib.h" />
     <ClInclude Include="..\Include\EngTools\MohrCircle.h" />
+    <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolution.h" />
+    <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolver.h" />
+    <ClInclude Include="..\Include\EngTools\UniformFDMesh.h" />
+    <ClInclude Include="FDMeshGenerator.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="EngTools.def" />
@@ -197,9 +221,11 @@
     <ResourceCompile Include="EngTools.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Math\Math.vcxproj">
+      <Project>{9c7b0108-aa89-413c-9d75-5d700f0aece1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>

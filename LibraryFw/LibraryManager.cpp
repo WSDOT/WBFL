@@ -29,46 +29,22 @@
 #include <System\IStructuredLoad.h>
 #include <System\XStructuredLoad.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::Library;
 
-/****************************************************************************
-CLASS
-   libLibraryManager
-****************************************************************************/
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-libLibraryManager::libLibraryManager() :
-m_Name(_T(""))
-{
-}
-
-libLibraryManager::~libLibraryManager()
-{
-}
-
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-
-void libLibraryManager::SetName(LPCTSTR name) 
+void LibraryManager::SetName(LPCTSTR name) 
 {
    m_Name =name;
 }
 
-std::_tstring libLibraryManager::GetName() const
+std::_tstring LibraryManager::GetName() const
 {
    return m_Name;
 }
 
-CollectionIndexType libLibraryManager::AddLibrary(libILibrary* pLibrary)
+IndexType LibraryManager::AddLibrary(ILibrary* pLibrary)
 {
    PRECONDITION(pLibrary);
-   libILibrary* plib = GetLibrary(pLibrary->GetIdName().c_str());
+   ILibrary* plib = GetLibrary(pLibrary->GetIdName().c_str());
    PRECONDITIONX(!plib,_T("Libraries must have unique id names"));
    pLibrary->SetLibraryManager(this);
 
@@ -76,53 +52,53 @@ CollectionIndexType libLibraryManager::AddLibrary(libILibrary* pLibrary)
    return m_Libraries.size()-1;
 }
 
-CollectionIndexType libLibraryManager::GetLibraryCount() const
+IndexType LibraryManager::GetLibraryCount() const
 {
    return m_Libraries.size();
 }
 
-bool libLibraryManager::IsDepreciated(CollectionIndexType idx) const
+bool LibraryManager::IsDepreciated(IndexType idx) const
 {
-   const libILibrary* pLib = GetLibrary(idx);
+   const ILibrary* pLib = GetLibrary(idx);
    return pLib->IsDepreciated();
 }
 
-sysTime libLibraryManager::GetTimeStamp() const
+const WBFL::System::Time& LibraryManager::GetTimeStamp() const
 {
    return m_LastSavedTime;
 }
 
-std::_tstring libLibraryManager::GetLibraryIdName(CollectionIndexType index) const
+std::_tstring LibraryManager::GetLibraryIdName(IndexType index) const
 {
-   const libILibrary* plib;
+   const ILibrary* plib;
    if (0 <= index && index < m_Libraries.size())
    {
        plib = m_Libraries[index].get();
    }
    else
    {
-      PRECONDITION(0);
+      throw std::invalid_argument("Invalid library index");
    }
 
    return plib->GetIdName();
 }
 
-std::_tstring libLibraryManager::GetLibraryDisplayName(CollectionIndexType index) const
+std::_tstring LibraryManager::GetLibraryDisplayName(IndexType index) const
 {
-   const libILibrary* plib;
+   const ILibrary* plib;
    if (0 <= index && index < m_Libraries.size())
    {
        plib = m_Libraries[index].get();
    }
    else
    {
-      PRECONDITION(0);
+      throw std::invalid_argument("Invalid library index");
    }
 
    return plib->GetDisplayName();
 }
 
-libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index)
+ILibrary* LibraryManager::GetLibrary(IndexType index)
 {
    if (0 <= index && index < m_Libraries.size())
    {
@@ -134,7 +110,7 @@ libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index)
    }
 }
 
-const libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index) const
+const ILibrary* LibraryManager::GetLibrary(IndexType index) const
 {
    if (0 <= index && index < m_Libraries.size())
    {
@@ -146,40 +122,40 @@ const libILibrary* libLibraryManager::GetLibrary(CollectionIndexType index) cons
    }
 }
 
-libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName)
+ILibrary* LibraryManager::GetLibrary(LPCTSTR displayName)
 {
    std::_tstring name(displayName);
-   for(LibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
+   for(auto& library : m_Libraries)
    {
-      if ((*it)->GetDisplayName()==name)
+      if (library->GetDisplayName() == name)
       {
-         return (*it).get();
+         return library.get();
       }
    }
    return nullptr;
 }
 
 
-const libILibrary* libLibraryManager::GetLibrary(LPCTSTR displayName) const
+const ILibrary* LibraryManager::GetLibrary(LPCTSTR displayName) const
 {
    std::_tstring name(displayName);
-   for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
+   for (const auto& library : m_Libraries)
    {
-      if ((*it)->GetDisplayName()==name)
+      if (library->GetDisplayName() == name)
       {
-         return (*it).get();
+         return library.get();
       }
    }
    return nullptr;
 }
 
-CollectionIndexType libLibraryManager::GetIndex(LPCTSTR displayName) const
+IndexType LibraryManager::GetIndex(LPCTSTR displayName) const
 {
-   CollectionIndexType idx = 0;
+   IndexType idx = 0;
    std::_tstring name(displayName);
-   for(ConstLibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
+   for(const auto& library : m_Libraries)
    {
-      if ((*it)->GetDisplayName()==name)
+      if (library->GetDisplayName() == name)
       {
          return idx;
       }
@@ -188,49 +164,39 @@ CollectionIndexType libLibraryManager::GetIndex(LPCTSTR displayName) const
    return INVALID_INDEX;
 }
 
-
-void libLibraryManager::ClearAllEntries()
+void LibraryManager::ClearAllEntries()
 {
-   for(LibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
-   {
-      (*it)->RemoveAll();
-   }
+   std::for_each(m_Libraries.begin(), m_Libraries.end(), [](auto& library) {library->RemoveAll(); });
 }
 
-void libLibraryManager::ClearLibraries()
+void LibraryManager::ClearLibraries()
 {
    ClearAllEntries();
    m_Libraries.clear();
 }
 
 
-void libLibraryManager::EnableEditingForAllEntries(bool enable)
+void LibraryManager::EnableEditingForAllEntries(bool enable)
 {
-   for(LibraryIterator it=m_Libraries.begin(); it!=m_Libraries.end(); it++)
-   {
-      (*it)->EnableEditingForAll(enable);
-   }
+   std::for_each(m_Libraries.begin(), m_Libraries.end(), [&enable](auto& library) {library->EnableEditingForAll(enable); });
 }
 
-std::vector<libEntryUsageRecord> libLibraryManager::GetInUseLibraryEntries() const
+std::vector<EntryUsageRecord> LibraryManager::GetInUseLibraryEntries() const
 {
-   std::vector<libEntryUsageRecord> records;
+   std::vector<EntryUsageRecord> records;
 
-   for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
+   for(const auto& library : m_Libraries)
    {
-      const libILibrary* pLibrary = (*it).get();
-      std::_tstring strLibName = pLibrary->GetDisplayName();
+      std::_tstring strLibName = library->GetDisplayName();
 
-      libKeyListType key_list;
-      pLibrary->KeyList(key_list);
-      libKeyListIterator key_iter;
-      for (key_iter = key_list.begin(); key_iter != key_list.end(); key_iter++ )
+      KeyListType key_list;
+      library->KeyList(key_list);
+      for(auto& key : key_list)
       {
-         std::_tstring key = (*key_iter);
-         const libLibraryEntry* pEntry = pLibrary->GetEntry(key.c_str());
+         const LibraryEntry* pEntry = library->GetEntry(key.c_str());
          if ( 0 < pEntry->GetRefCount() )
          {
-            libEntryUsageRecord record;
+            EntryUsageRecord record;
             record.LibName = strLibName;
             record.EntryName = pEntry->GetName();
             record.bEditable = pEntry->IsEditingEnabled();
@@ -243,24 +209,22 @@ std::vector<libEntryUsageRecord> libLibraryManager::GetInUseLibraryEntries() con
    return records;
 }
 
-bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
+bool LibraryManager::SaveMe(WBFL::System::IStructuredSave* pSave)
 {
    // not much data for a library manager 
    pSave->BeginUnit(_T("LIBRARY_MANAGER"), 2.0);
 
-   sysTime time; // now
+   WBFL::System::Time time; // now
    pSave->Property(_T("TimeStamp"),time.Seconds());
-   for (LibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
+   for(auto& library : m_Libraries)
    {
-      libILibrary* pLibrary = (*it).get();
-
-      if ( !pLibrary->IsDepreciated() )
+      if ( !library->IsDepreciated() )
       {
          // only save the library if it is not depreciated
          pSave->BeginUnit(_T("LIBRARY_MANAGER_ENTRY"),1.0);
-         pSave->Property(_T("LIBRARY_NAME"), (*it)->GetIdName().c_str());
+         pSave->Property(_T("LIBRARY_NAME"), library->GetIdName().c_str());
 
-         (*it)->SaveMe(pSave);
+         library->SaveMe(pSave);
 
          pSave->EndUnit();
       }
@@ -269,7 +233,7 @@ bool libLibraryManager::SaveMe(sysIStructuredSave* pSave)
    return true;
 }
 
-bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
+bool LibraryManager::LoadMe(WBFL::System::IStructuredLoad* pLoad)
 {
    // load library and its entries
    if (pLoad->BeginUnit(_T("LIBRARY_MANAGER")))
@@ -281,19 +245,20 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
          if ( 2.0 <= version )
          {
             // beginning with version 2, a time stamp was added
-            ClockTy time;
+            WBFL::System::ClockTy time;
             pLoad->Property(_T("TimeStamp"),&time);
-            m_LastSavedTime = sysTime((ClockTy)time);
+            m_LastSavedTime = WBFL::System::Time((WBFL::System::ClockTy)time);
          }
          else
          {
-            m_LastSavedTime = sysTime(); // now
+            m_LastSavedTime = WBFL::System::Time(); // now
          }
 
-         for (LibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
+         auto it = m_Libraries.begin();
+         auto end = m_Libraries.end();
+         for (; it != end; it++)
          {
-            libILibrary* pLib = (*it).get();
-
+            ILibrary* pLib = (*it).get();
 
             std::_tstring key;
             if ( pLoad->BeginUnit(_T("LIBRARY_MANAGER_ENTRY")) )
@@ -360,71 +325,3 @@ bool libLibraryManager::LoadMe(sysIStructuredLoad* pLoad)
 
    return true;
 }
-
-//======================== ACCESS     =======================================
-
-//======================== INQUIRY    =======================================
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-#include <typeinfo>
-bool libLibraryManager::AssertValid() const
-{
-   for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
-   {
-      const std::shared_ptr<libILibrary>& libType = *it;
-      libILibrary* pLib = libType.get();
-      const type_info& ti = typeid( pLib );
-      std::string name( ti.name() );
-#if defined _WIN64
-      std::string lib_type( "class libILibrary * __ptr64" );
-#else
-      std::string lib_type( "class libILibrary *" );
-#endif
-      if ( name != lib_type )
-      {
-         WATCH(_T("######## Bad library type"));
-         return false; // bad name
-      }
-   }
-   return true;
-}
-
-void libLibraryManager::Dump(dbgDumpContext& os) const
-{
-   os << _T("Dump for libLibraryManager") << endl;
-   os << _T("  Name = ") << m_Name << endl;
-   os << _T("  Dumping ") <<m_Libraries.size()<<_T(" libraries:")<<endl;
-   for (ConstLibraryIterator it = m_Libraries.begin(); it!=m_Libraries.end(); it++)
-   {
-      (*it)->Dump(os);
-   }
-}
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool libLibraryManager::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("libLibraryManager");
-
-   // tested in main unit test routine for package
-
-   TESTME_EPILOG("LibraryManager");
-}
-#endif // _UNITTEST

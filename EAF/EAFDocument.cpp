@@ -42,7 +42,7 @@
 #include <System\Time.h>
 #include <MFCTools\VersionInfo.h>
 
-#include <System\TxnManager.h>
+#include <EAF\EAFTxnManager.h>
 
 #include <EAF\EAFPluginCommandManager.h>
 
@@ -309,8 +309,8 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
 void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);
@@ -321,8 +321,8 @@ void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 {
    CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   CollectionIndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (CollectionIndexType idx = 0; idx < nPlugins; idx++ )
+   IndexType nPlugins = pPluginMgr->GetPluginCount();
+   for (IndexType idx = 0; idx < nPlugins; idx++ )
    {
       CComPtr<IEAFDocumentPlugin> plugin;
       pPluginMgr->GetPlugin(idx,&plugin);
@@ -519,7 +519,7 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
    strLogFile.Format(_T("%s\\%s.log"),pApp->GetAppLocation(),pApp->m_pszExeName);
 
    std::vector<CString> strings;
-   sysTime now;
+   WBFL::System::Time now;
    now.PrintDate(true);
    CString strTime;
    strTime.Format(_T("Log Opened %s"),now.AsString().c_str());
@@ -563,7 +563,7 @@ void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
    }
    else
    {
-      CString strMsg(_T("An error occured and the log file could not be created.\n\n"));
+      CString strMsg(_T("An error occurred and the log file could not be created.\n\n"));
       std::vector<CString>::iterator iter(strings.begin());
       std::vector<CString>::iterator end(strings.end());
       for ( ; iter != end; iter++ )
@@ -886,7 +886,7 @@ void CEAFDocument::OnErrorDeletingBadSave(LPCTSTR lpszPathName,LPCTSTR lpszBacku
 {
    CString msg;
    msg.Format(_T("%s\n%s%s%s\n%s\n%s%s\n%s%s%s%s"),
-              _T("An error occured while recovering your last successful save."),
+              _T("An error occurred while recovering your last successful save."),
               _T("It is highly likely that the file "), lpszPathName, _T(" is corrupt."),
               _T("To recover from this error,"),
               _T("   1. Delete "), lpszPathName,
@@ -899,7 +899,7 @@ void CEAFDocument::OnErrorRenamingSaveBackup(LPCTSTR lpszPathName,LPCTSTR lpszBa
 {
    CString msg;
    msg.Format(_T("%s\n%s%s%s\n%s\n%s%s%s\n%s%s%s%s"),
-              _T("An error occured while recovering your last successful save."),
+              _T("An error occurred while recovering your last successful save."),
               _T("It is highly likely that the file "), lpszPathName, _T(" no longer exists."),
               _T("To recover from this error,"),
               _T("   1. If "), lpszPathName, _T(" exists, delete it."),
@@ -1005,21 +1005,21 @@ HRESULT CEAFDocument::ConvertTheDocument(LPCTSTR lpszPathName, CString* realFile
 void CEAFDocument::HandleConvertDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while converting %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while converting %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
 void CEAFDocument::HandleOpenDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while opening %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while opening %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
 void CEAFDocument::HandleSaveDocumentError( HRESULT hr, LPCTSTR lpszPathName )
 {
    CString strMsg;
-   strMsg.Format(_T("An error occured while saving %s (%d)"),lpszPathName,hr);
+   strMsg.Format(_T("An error occurred while saving %s (%d)"),lpszPathName,hr);
    AfxMessageBox(strMsg,MB_OK | MB_ICONEXCLAMATION);
 }
 
@@ -1293,8 +1293,8 @@ eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UI
    {
       // check to see of the help topic and documentation set belongs to one of our plug-ins
       CEAFDocPluginManager* pDocPluginMgr = GetDocPluginManager();
-      CollectionIndexType nPlugins = pDocPluginMgr->GetPluginCount();
-      for ( CollectionIndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+      IndexType nPlugins = pDocPluginMgr->GetPluginCount();
+      for ( IndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
       {
          CComPtr<IEAFDocumentPlugin> pDocPlugin;
          HRESULT hr = pDocPluginMgr->GetPlugin(pluginIdx,&pDocPlugin);
@@ -1371,74 +1371,74 @@ void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
    OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGED,0);
 }
 
-void CEAFDocument::Execute(txnTransaction& rTxn)
+void CEAFDocument::Execute(const CEAFTransaction& rTxn)
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Execute(rTxn);
+   CEAFTxnManager::GetInstance().Execute(rTxn);
 }
 
-void CEAFDocument::Execute(txnTransaction* pTxn)
+void CEAFDocument::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Execute(pTxn);
+   CEAFTxnManager::GetInstance().Execute(std::move(pTxn));
 }
 
 void CEAFDocument::Undo()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Undo();
+   CEAFTxnManager::GetInstance().Undo();
 }
 
 void CEAFDocument::Redo()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Redo();
+   CEAFTxnManager::GetInstance().Redo();
 }
 
 void CEAFDocument::Repeat()
 {
    CWaitCursor wait;
-   txnTxnManager::GetInstance()->Repeat();
+   CEAFTxnManager::GetInstance().Repeat();
 }
 
-bool CEAFDocument::CanUndo()
+bool CEAFDocument::CanUndo() const
 {
-   return txnTxnManager::GetInstance()->CanUndo();
+   return CEAFTxnManager::GetInstance().CanUndo();
 }
 
-bool CEAFDocument::CanRedo()
+bool CEAFDocument::CanRedo() const
 {
-   return txnTxnManager::GetInstance()->CanRedo();
+   return CEAFTxnManager::GetInstance().CanRedo();
 }
 
-bool CEAFDocument::CanRepeat()
+bool CEAFDocument::CanRepeat() const
 {
-   return txnTxnManager::GetInstance()->CanRepeat();
+   return CEAFTxnManager::GetInstance().CanRepeat();
 }
 
-std::_tstring CEAFDocument::UndoName()
+std::_tstring CEAFDocument::UndoName() const
 {
-   return txnTxnManager::GetInstance()->UndoName();
+   return CEAFTxnManager::GetInstance().UndoName();
 }
 
-std::_tstring CEAFDocument::RedoName()
+std::_tstring CEAFDocument::RedoName() const
 {
-   return txnTxnManager::GetInstance()->RedoName();
+   return CEAFTxnManager::GetInstance().RedoName();
 }
 
-std::_tstring CEAFDocument::RepeatName()
+std::_tstring CEAFDocument::RepeatName() const
 {
-   return txnTxnManager::GetInstance()->RepeatName();
+   return CEAFTxnManager::GetInstance().RepeatName();
 }
 
-CollectionIndexType CEAFDocument::GetTxnCount()
+IndexType CEAFDocument::GetTxnCount() const
 {
-   return txnTxnManager::GetInstance()->GetTxnCount();
+   return CEAFTxnManager::GetInstance().GetTxnCount();
 }
 
-CollectionIndexType CEAFDocument::GetUndoCount()
+IndexType CEAFDocument::GetUndoCount() const
 {
-   return txnTxnManager::GetInstance()->GetUndoCount();
+   return CEAFTxnManager::GetInstance().GetUndoCount();
 }
 
 void CEAFDocument::OnUndo() 

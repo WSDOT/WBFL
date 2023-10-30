@@ -103,9 +103,9 @@ public:
 	STDMETHOD(put_Depth)(/*[in]*/ Float64 newVal) override;
 
 // IStressPointsEvents
-   STDMETHOD(OnStressPointsChanged)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsAdded)(/*[in]*/CollectionIndexType index) override;
-   STDMETHOD(OnStressPointsRemoved)(/*[in]*/CollectionIndexType index) override;
+   STDMETHOD(OnStressPointsChanged)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsAdded)(/*[in]*/IndexType index) override;
+   STDMETHOD(OnStressPointsRemoved)(/*[in]*/IndexType index) override;
 
    // IStructuredStorage2
 	STDMETHOD(Load)(IStructuredLoad2 * Load) override;

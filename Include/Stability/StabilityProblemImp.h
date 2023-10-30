@@ -26,9 +26,9 @@
 #include <Stability/StabilityExp.h>
 #include <Stability/StabilityTypes.h>
 #include <Stability/StabilityProblem.h>
+#include <Materials/SimpleConcrete.h>
 #include <set>
 #include <array>
-#include <GeometricPrimitives\GeometricPrimitives.h>
 
 namespace WBFL
 {
@@ -70,10 +70,10 @@ namespace WBFL
       /// Defines points on the perimeter of the girder section where stresses are computed and evaluated for a girder section.
       struct STABILITYCLASS StressPoints
       {
-         std::array<gpPoint2d, 2> pntTL; ///< Top left point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntTR; ///< Top right point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntBL; ///< Bottom left point. Array indicies are [Section].
-         std::array<gpPoint2d, 2> pntBR; ///< Bottom right point. Array indicies are [Section].
+         std::array<Point, 2> pntTL; ///< Top left point. Array indices are [Section].
+         std::array<Point, 2> pntTR; ///< Top right point. Array indices are [Section].
+         std::array<Point, 2> pntBL; ///< Bottom left point. Array indices are [Section].
+         std::array<Point, 2> pntBR; ///< Bottom right point. Array indices are [Section].
 
          /// Returns true if the objects are equal
          bool operator==(const StressPoints& other) const
@@ -115,15 +115,15 @@ namespace WBFL
       /// Girders are defined by a sequence of sections with prismatic or linearly varying properties.
       struct STABILITYCLASS SectionProperties
       {
-         std::array<Float64, 2> Ag; ///< Area of girder. Array indicies are [Section].
-         std::array<Float64, 2> Ixx; ///< X-axis moment of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Iyy; ///< Y-axis moment of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Ixy; ///< Product of inertia. Array indicies are [Section].
-         std::array<Float64, 2> Ytop; ///< center of mass (centroid) from top of girder. Array indicies are [Section].
-         std::array<Float64, 2> Xleft; ///< center of mass from roll center. Array indicies are [Section].
-         std::array<Float64, 2> Hg; ///< Height of the girder. Array indicies are [Section].
-         std::array<Float64, 2> Wtf; ///< Top flange width. Array indicies are [Section].
-         std::array<Float64, 2> Wbf; ///< Bottom flange width. Array indicies are [Section].
+         std::array<Float64, 2> Ag; ///< Area of girder. Array indices are [Section].
+         std::array<Float64, 2> Ixx; ///< X-axis moment of inertia. Array indices are [Section].
+         std::array<Float64, 2> Iyy; ///< Y-axis moment of inertia. Array indices are [Section].
+         std::array<Float64, 2> Ixy; ///< Product of inertia. Array indices are [Section].
+         std::array<Float64, 2> Ytop; ///< center of mass (centroid) from top of girder. Array indices are [Section].
+         std::array<Float64, 2> Xleft; ///< center of mass from roll center. Array indices are [Section].
+         std::array<Float64, 2> Hg; ///< Height of the girder. Array indices are [Section].
+         std::array<Float64, 2> Wtf; ///< Top flange width. Array indices are [Section].
+         std::array<Float64, 2> Wbf; ///< Bottom flange width. Array indices are [Section].
          Float64 L; ///< Distance over which these properties apply
 
          std::shared_ptr<StressPoints> m_pStressPoints; ///< Stress points for this girder section
@@ -212,10 +212,10 @@ namespace WBFL
          void SetSectionProperties(IndexType sectIdx, Float64 Length, Float64 Ag, Float64 Ixx, Float64 Iyy, Float64 Ixy, Float64 Xleft, Float64 Yt, Float64 Hg, Float64 Wtf, Float64 Wbf, Float64 Ag2, Float64 Ixx2, Float64 Iyy2, Float64 Ixy2, Float64 Xcg2, Float64 Yt2, Float64 Hg2, Float64 Wtf2, Float64 Wbf2);
 
          /// Assigns stress point values to a section. Stress points are applied to both ends of the section.
-         void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR);
+         void SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR);
 
          /// Assigns stress point values to a section. Stress points are specified for both ends of the section.
-         void SetStressPoints(IndexType sectIdx, const gpPoint2d& pntTL, const gpPoint2d& pntTR, const gpPoint2d& pntBL, const gpPoint2d& pntBR, const gpPoint2d& pntTL2, const gpPoint2d& pntTR2, const gpPoint2d& pntBL2, const gpPoint2d& pntBR2);
+         void SetStressPoints(IndexType sectIdx, const Point& pntTL, const Point& pntTR, const Point& pntBL, const Point& pntBR, const Point& pntTL2, const Point& pntTR2, const Point& pntBL2, const Point& pntBR2);
 
          /// Removes all point loads from the model.
          void ClearPointLoads();
@@ -230,8 +230,8 @@ namespace WBFL
          virtual Float64 GetSectionLength(IndexType sectIdx) const override;
          virtual void GetSectionProperties(IndexType sectIdx, Section section, Float64* pAg, Float64* pIxx, Float64* pIyy, Float64* pIxy, Float64* pXleft, Float64* pYtop, Float64* pHg, Float64* pWtop, Float64* pWbot) const override;
          virtual void GetSectionProperties(Float64 X, Float64* pAg, Float64* pIxx, Float64* pIyy, Float64* pIxy, Float64* pXleft, Float64* pYtop, Float64* pHg, Float64* pWtop, Float64* pWbot) const override;
-         virtual void GetStressPoints(IndexType sectIdx, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
-         virtual void GetStressPoints(Float64 X, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const override;
+         virtual void GetStressPoints(IndexType sectIdx, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const override;
+         virtual void GetStressPoints(Float64 X, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const override;
 
          virtual Float64 GetGirderLength() const override;
 
@@ -250,20 +250,20 @@ namespace WBFL
          virtual Float64 GetPrecamber() const override;
 
       private:
-         ISegment* m_pSegment{ nullptr }; // weak refernce
+         ISegment* m_pSegment{ nullptr }; // weak reference
          std::vector<SectionProperties> m_vSectionProperties;
 
          std::vector<std::pair<Float64, Float64>> m_vPointLoads; // additional point loads (used for items precast with the girder such as internal diaphragms)
                                                                  // first parameter is location from left end of girder, second parameter is the load magnitude. Positive loads are up
 
-         Float64 m_exb{ 0.0 }; // eccentricty of overhang bracket appurtenance loading
+         Float64 m_exb{ 0.0 }; // eccentricity of overhang bracket appurtenance loading
          Float64 m_Wb{ 0.0 }; // magnitude of overhang bracket appurtenance loading
 
          Float64 m_DragCoefficient{ 2.2 }; // default for I-Beams
 
          Float64 m_Precamber{ 0.0 };
 
-         void GetStressPoints(const SectionProperties& props, Section section, gpPoint2d* pTL, gpPoint2d* pTR, gpPoint2d* pBL, gpPoint2d* pBR) const;
+         void GetStressPoints(const SectionProperties& props, Section section, Point* pTL, Point* pTR, Point* pBL, Point* pBR) const;
          void UpdateLength() const;
          mutable bool m_bLengthNeedsUpdate{ true };
          mutable Float64 m_L{ 0.0 };
@@ -283,7 +283,7 @@ namespace WBFL
          bool operator!=(const StabilityProblemImp& other) const; ///< Returns true if the objects are not equal
 
          // Effective prestress for can vary along the girder
-         // Define Fpe at different locations along the girder. Fpe will be linerally interpolated between locations.
+         // Define Fpe at different locations along the girder. Fpe will be linearly interpolated between locations.
          // If Fpe is requested before the first or after the last defined point, the first/last values will be used
          // For constant Fpe, define a Fpe at a single location
 
@@ -355,13 +355,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude);
 
          /// Concrete definition
-         void SetConcrete(const matConcreteEx& concrete);
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete);
 
          /// Concrete definition
-         virtual const matConcreteEx& GetConcrete() const;
+         virtual const WBFL::Materials::SimpleConcrete& GetConcrete() const;
 
          /// Concrete definition
-         virtual matConcreteEx& GetConcrete();
+         virtual WBFL::Materials::SimpleConcrete& GetConcrete();
 
          /// Reinforcing steel yield strength
          void SetRebarYieldStrength(Float64 fy);
@@ -434,15 +434,15 @@ namespace WBFL
          void GetImpact(Float64* pIMup, Float64* pIMdown) const;
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const;
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const;
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load);
+         void SetWindLoading(WindLoadType type, Float64 load);
 
 
-         ///  Sets the appurtenance loading and eccentricty
+         ///  Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(
-            Float64 ex, ///< Eccentricty of the loading. Positive values are in the same direction as girder sweep
+            Float64 ex, ///< Eccentricity of the loading. Positive values are in the same direction as girder sweep
             Float64 W ///< Magnitude of loading uniformly distributed along the length of the girder.
          );
 
@@ -482,7 +482,7 @@ namespace WBFL
          bool m_bIncludeRollAxisLateralOffset{ false };
          Float64 m_LateralCamber{ 0.0 };
 
-         matConcreteEx m_Concrete;
+         WBFL::Materials::SimpleConcrete m_Concrete;
 
          Float64 m_fy{ 0.0 }; // reinforcement yield strength
 
@@ -498,7 +498,7 @@ namespace WBFL
          Float64 m_ImpactUp{ 0.0 };
          Float64 m_ImpactDown{ 0.0 };
 
-         WindType m_WindLoadType{ Speed };
+         WindLoadType m_WindLoadType{ WindLoadType::Speed };
          Float64 m_WindLoad{ 0.0 }; // velocity or pressure, depending on m_WindLoadType
 
          // eccentricity and weight per unit length of appurtenances
@@ -578,11 +578,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
+         
          /// Concrete definition
-         const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
+         
          /// Concrete definition
-         matConcreteEx& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const override { return m_Imp.GetRebarYieldStrength(); }
@@ -648,15 +650,15 @@ namespace WBFL
          virtual void GetImpact(Float64* pIMup, Float64* pIMdown) const  override { m_Imp.GetImpact(pIMup, pIMdown); }
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const  override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const  override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          ///  Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         ///  Sets the appurtenance loading and eccentricty
+         ///  Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W);}
 
          /// Sets the lifting cable angle
@@ -762,11 +764,11 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
          /// Concrete definition
-         const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
          /// Concrete definition
-         matConcreteEx& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }
@@ -843,15 +845,15 @@ namespace WBFL
          virtual HaulingImpact GetImpactUsage() const override;
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         /// Sets the appurtenance loading and eccentricty
+         /// Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W); }
 
          /// Sets the truck rotational stiffness (Ktheta)
@@ -878,10 +880,10 @@ namespace WBFL
          /// Returns the normal crown slope (always a positive value)
          virtual Float64 GetSupportSlope() const override;
 
-         /// Sets the superelevation rate (always a postive value)
+         /// Sets the superelevation rate (always a positive value)
          void SetSuperelevation(Float64 superelevation);
 
-         /// Returns the superelevation rate (always a postive value)
+         /// Returns the superelevation rate (always a positive value)
          virtual Float64 GetSuperelevation() const override;
 
          /// Sets the velocity of the truck. Used for computing centrifugal force.
@@ -915,7 +917,7 @@ namespace WBFL
       private:
          StabilityProblemImp m_Imp;
 
-         HaulingImpact m_ImpactUsage{ Both };
+         HaulingImpact m_ImpactUsage{ HaulingImpact::Both };
 
          Float64 m_Ktheta{ 0.0 }; // Truck rotational stiffness
          Float64 m_Wcc{ 0.0 }; // center-center spacing between truck wheels
@@ -925,7 +927,7 @@ namespace WBFL
 
          Float64 m_Velocity{ 0.0 };
          Float64 m_Radius{ Float64_Max };
-         CFType m_CFType{ Favorable };
+         CFType m_CFType{ CFType::Favorable };
       };
 
       /// Defines the parameters of a girder seated at one end stability analysis problem
@@ -1005,13 +1007,13 @@ namespace WBFL
          void IncludeLateralRollAxisOffset(bool bInclude) { m_Imp.IncludeLateralRollAxisOffset(bInclude); }
 
          /// Concrete definition
-         void SetConcrete(const matConcreteEx& concrete) { m_Imp.SetConcrete(concrete); }
+         void SetConcrete(const WBFL::Materials::SimpleConcrete& concrete) { m_Imp.SetConcrete(concrete); }
 
          /// Concrete definition
-         const matConcreteEx& GetConcrete() const { return m_Imp.GetConcrete(); }
+         const WBFL::Materials::SimpleConcrete& GetConcrete() const { return m_Imp.GetConcrete(); }
 
          /// Concrete definition
-         matConcreteEx& GetConcrete() { return m_Imp.GetConcrete(); }
+         WBFL::Materials::SimpleConcrete& GetConcrete() { return m_Imp.GetConcrete(); }
 
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }
@@ -1084,15 +1086,15 @@ namespace WBFL
          virtual void GetImpact(Float64* pIMup, Float64* pIMdown) const override { m_Imp.GetImpact(pIMup, pIMdown); }
 
          /// Gets the wind loading parameters
-         virtual void GetWindLoading(WindType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
+         virtual void GetWindLoading(WindLoadType* pType, Float64* pLoad) const override { m_Imp.GetWindLoading(pType, pLoad); }
 
          /// Sets the wind loading parameters.
-         void SetWindLoading(WindType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
+         void SetWindLoading(WindLoadType type, Float64 load) { m_Imp.SetWindLoading(type, load); }
 
          /// Gets the parameters for appurtenance loading such as overhang brackets attached to the girder
          virtual void GetAppurtenanceLoading(Float64* pex, Float64* pW) const override { m_Imp.GetAppurtenanceLoading(pex, pW); }
 
-         /// Sets the appurtenance loading and eccentricty
+         /// Sets the appurtenance loading and eccentricity
          void SetAppurtenanceLoading(Float64 ex, Float64 W) { m_Imp.SetAppurtenanceLoading(ex, W); }
 
          /// Sets the truck rotational stiffness (Ktheta)
@@ -1153,7 +1155,7 @@ namespace WBFL
          Float64 m_Wcc{ 0.0 }; // center-center spacing between truck wheels
          Float64 m_Hrc{ 0.0 }; // height of roll axis above roadway
          Float64 m_CrownSlope{ 0.0 }; // normal crown slope
-         GirderSide m_SeatedEnd{ Left };
+         GirderSide m_SeatedEnd{ GirderSide::Left };
          Float64 m_YrollLiftEnd{ 0.0 };
          Float64 m_elift{ 0.0 };
          Float64 m_Kadjust{ 0.50 };

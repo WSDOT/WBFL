@@ -105,9 +105,9 @@ public:
 // ITendon
 public:
    STDMETHOD(AddSegment)(/*[in]*/ ITendonSegment* segment) override;
-	STDMETHOD(get_Segment)(/*[in]*/ CollectionIndexType index,/*[out,retval]*/ITendonSegment** segment) override;
-	STDMETHOD(get_Count)(/*[out,retval]*/CollectionIndexType* count) override;
-	STDMETHOD(RemoveSegment)(/*[in]*/ CollectionIndexType index) override;
+	STDMETHOD(get_Segment)(/*[in]*/ IndexType index,/*[out,retval]*/ITendonSegment** segment) override;
+	STDMETHOD(get_Count)(/*[out,retval]*/IndexType* count) override;
+	STDMETHOD(RemoveSegment)(/*[in]*/ IndexType index) override;
 	STDMETHOD(ClearSegments)() override;
 	STDMETHOD(get_OutsideDiameter)(/*[out,retval]*/Float64* size) override;
 	STDMETHOD(put_OutsideDiameter)(/*[in]*/Float64 size) override;

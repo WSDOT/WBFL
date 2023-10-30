@@ -51,7 +51,7 @@ CEAFGraphBuilderBase::CEAFGraphBuilderBase()
 }
 
 CEAFGraphBuilderBase::CEAFGraphBuilderBase(const CEAFGraphBuilderBase& other) :
-CGraphBuilder(other), CCmdTarget()
+   WBFL::Graphing::GraphBuilder(other), CCmdTarget()
 {
    m_bValidGraph = false;
    m_bUpdateError = false;
@@ -117,7 +117,7 @@ void CEAFGraphBuilderBase::CreateViewController(IEAFViewController** ppViewContr
 
 void CEAFGraphBuilderBase::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 {
-   // some kind of error occured when updating results somewhere in the system.
+   // some kind of error occurred when updating results somewhere in the system.
    if ( lHint == EAF_HINT_UPDATEERROR )
    {
       CString* pmsg = (CString*)pHint;

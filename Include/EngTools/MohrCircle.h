@@ -20,191 +20,86 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_ENGTOOLS_MOHRCIRCLE_H_
-#define INCLUDED_ENGTOOLS_MOHRCIRCLE_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
 #include <EngTools\EngToolsExp.h>
 
-// PROJECT INCLUDES
-//
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   etMohrCircle
-
-   Mohr's circle
-
-
-DESCRIPTION
-   Mohr's Circle.
-
-REFERENCES
-   Advanced Strength and Applied Elasticity
-   A.C. Ugural & S. K. Fenster
-
-LOG
-   rab : 11.16.1997 : Created file
-*****************************************************************************/
-
-class ENGTOOLSCLASS etMohrCircle
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace EngTools
+   {
+      /// Mohr's Circle.
+      ///
+      /// REFERENCES
+      ///   Advanced Strength and Applied Elasticity
+      ///   A.C. Ugural & S. K. Fenster
+      class ENGTOOLSCLASS MohrCircle
+      {
+      public:
+         MohrCircle();
+         MohrCircle(
+            Float64 sii, ///< Normal stress in direction ii
+            Float64 sjj, ///< Normal stress in direction jj
+            Float64 sij  ///< Shear stress
+         );
+         MohrCircle(const MohrCircle& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor. Sets center and radius to 0.
-   etMohrCircle();
+         ~MohrCircle() = default;
 
-   //------------------------------------------------------------------------
-   // Constructs a mohr's circle for a give state of stress/strain.
-   etMohrCircle(Float64 sii,Float64 sjj,Float64 sij);
+         MohrCircle& operator=(const MohrCircle& rOther) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   etMohrCircle(const etMohrCircle& rOther);
+         /// Sets the state of stresses
+         void SetStresses(Float64 sii, Float64 sjj, Float64 sij);
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~etMohrCircle();
+         Float64 GetSii() const { return m_Sii; }
+         Float64 GetSjj() const { return m_Sjj; }
+         Float64 GetSij() const { return m_Sij; }
+         void SetSii(Float64 sii);
+         void SetSjj(Float64 sjj);
+         void SetSij(Float64 sij);
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   etMohrCircle& operator = (const etMohrCircle& rOther);
+         /// Computes the state of stresses at the specified angle.
+         /// angle is measure counterclockwise from the positive i-direction
+         /// If bSysUnits is true, angle is in system units, otherwise it is in radians.
+         void ComputeState(Float64* pSii, Float64* pSjj, Float64* pSij, Float64 angle, bool bSysUnits = true);
 
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Computes the state of strains/stresses/etc. on a plane defined by
-   // angle.  If bSysUnits is true, angle is considered to be in
-   // system units, otherwise it is taken to be in radians. Angle is measured
-   // counterclockwise from the global X direction.
-   void ComputeState(Float64* pSii,Float64* pSjj, Float64* pSij,Float64 angle,bool bSysUnits = true);
 
-   // GROUP: ACCESS
+         /// Returns the maximum principal stress
+         Float64 GetSmax() const;
 
-   //------------------------------------------------------------------------
-   // Get sii
-   Float64 GetSii() {return m_Sii;}
+         /// Returns the minimum principal stress
+         Float64 GetSmin() const;
 
-   //------------------------------------------------------------------------
-   // Get sjj
-   Float64 GetSjj() {return m_Sjj;}
+         /// Returns the maximum shear stress
+         Float64 GetTmax() const;
 
-   //------------------------------------------------------------------------
-   // Get sij
-   Float64 GetSij() {return m_Sij;}
+         /// Returns the direction of the principal stress. 
+         /// If bSysUnits is true, the angle is returned in system units otherwise it is in radians.
+         Float64 GetPrincipalDirection(bool bSysUnits = true) const;
 
-   //------------------------------------------------------------------------
-   // Set sii
-   void SetSii(Float64 sii);
+         /// Returns center point of circle
+         Float64 GetCenter() const;
 
-   //------------------------------------------------------------------------
-   // Set sjj
-   void SetSjj(Float64 sjj);
+         /// Returns radius of circle
+         Float64 GetRadius() const;
 
-   //------------------------------------------------------------------------
-   // Set sij
-   void SetSij(Float64 sij);
-
-   //------------------------------------------------------------------------
-   // Returns the maximum principle value.
-   Float64 GetSmax() const;
-   
-   //------------------------------------------------------------------------
-   // Returns the minimum principle value.
-   Float64 GetSmin() const;
-   
-   //------------------------------------------------------------------------
-   // Returns the maximum "shear" value.
-   Float64 GetTmax() const;
-
-   //------------------------------------------------------------------------
-   // Returns the direction of the principle axis measured counterclockwise
-   // from the global X axis. If bSysUnits is true, it is returned in system
-   // units, otherwise it is returned in radians.
-   Float64 GetPrincDirection(bool bSysUnits = true) const;
-
-   //------------------------------------------------------------------------
-   // Returns the center point of the mohr's circle.
-   Float64 GetCenter() const;
-
-   //------------------------------------------------------------------------
-   // Returns the radius of the mohr's circle.
-   Float64 GetRadius() const;
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
 #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns <b>true</b> if the class is in a valid state, otherwise returns
-   // <b>false</b>.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const;
+         bool AssertValid() const;
 #endif // _DEBUG
 
-#if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Self-diagnostic test function.  Returns <b>true</b> if the test passes,
-   // otherwise return <b>false</b>.
-   static bool TestMe();
-#endif // _UNITTEST
+      private:
+         Float64 m_Sii;  // input variables
+         Float64 m_Sjj;
+         Float64 m_Sij;
 
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const etMohrCircle& rOther);
+         Float64 m_Smin;
+         Float64 m_Smax;
+         // Note: Internal principal angle is stored in clockwise direction.
+         Float64 m_Angle;
+         Float64 m_Radius;
+         Float64 m_Center;
 
-   //------------------------------------------------------------------------
-   virtual void MakeAssignment(const etMohrCircle& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_Sii;  // input variables
-   Float64 m_Sjj;
-   Float64 m_Sij;
-
-   Float64 m_Smin;
-   Float64 m_Smax;
-   // Note: Internal principle angle is stored in clockwise direction.
-   Float64 m_Angle;
-   Float64 m_Radius;
-   Float64 m_Center;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   void Init();
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-};
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_ENGTOOLS_MOHRCIRCLE_H_
+         void Init();
+      };
+   }; // EngTools
+}; // WBFL

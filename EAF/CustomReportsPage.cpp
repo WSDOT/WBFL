@@ -134,15 +134,15 @@ void CCustomReportsPage::OnBnClickedAddnew()
    dlg.m_bIsFavorite = FALSE;
    if (dlg.DoModal() == IDOK)
    {
-      std::pair<CEAFCustomReports::ReportIterator, bool> itb = m_pParentDlg->m_CustomReports.m_Reports.insert(dlg.m_CustomReport);
-      if (itb.second==false)
+      auto [iter,bSucceeded] = m_pParentDlg->m_CustomReports.m_Reports.insert(dlg.m_CustomReport);
+      if (!bSucceeded)
       {
          ATLASSERT(false);
          AfxMessageBox(_T("An unknown error occurred creating custom report"), MB_ICONEXCLAMATION);
       }
 
       // deal with favoritism
-      std::_tstring name = itb.first->m_ReportName;
+      std::_tstring name = iter->m_ReportName;
       m_pParentDlg->DealWithFavorite(name, dlg.m_bIsFavorite==TRUE);
 
       UpdateData(FALSE);
@@ -464,7 +464,7 @@ void CCustomReportsPage::OnBnClickedImport()
          {
             CEAFCustomReport Report;
 
-            hr = Load->BeginUnit(_T("CustomReport")); 
+            hr = Load->BeginUnit(CComBSTR("CustomReport")); 
             if ( FAILED(hr) )
             {
                ::AfxMessageBox(_T("Error reading custom report file. - Format"));
@@ -474,7 +474,7 @@ void CCustomReportsPage::OnBnClickedImport()
             CComVariant varName, varParent;
             varName.vt = VT_BSTR;
             varParent.vt = VT_BSTR;
-            HRESULT hr = Load->get_Property(_T("ReportName"), &varName);
+            HRESULT hr = Load->get_Property(CComBSTR("ReportName"), &varName);
             if ( FAILED(hr) )
             {
                ::AfxMessageBox(_T("Error reading custom report file. - Format"));
@@ -483,7 +483,7 @@ void CCustomReportsPage::OnBnClickedImport()
 
             Report.m_ReportName = varName.bstrVal;
 
-            hr = Load->get_Property(_T("ParentReportName"), &varParent);
+            hr = Load->get_Property(CComBSTR("ParentReportName"), &varParent);
             if ( FAILED(hr) )
             {
                ::AfxMessageBox(_T("Error reading custom report file. - Format"));
@@ -500,7 +500,7 @@ void CCustomReportsPage::OnBnClickedImport()
             {
                CComVariant varChapter;
                varChapter.vt = VT_BSTR;
-               hr = Load->get_Property(_T("ChapterName"),&varChapter);
+               hr = Load->get_Property(CComBSTR("ChapterName"),&varChapter);
                Report.m_Chapters.push_back(varChapter.bstrVal);
             }
 
@@ -546,13 +546,13 @@ void CCustomReportsPage::OnBnClickedImport()
          int numreports = 0;
          if (!doCancel)
          {
-            CEAFCustomReports::ReportConstIterator itrpt = Reports.m_Reports.begin();
+            auto itrpt = Reports.m_Reports.begin();
             while(itrpt != Reports.m_Reports.end())
             {
                const CEAFCustomReport& rReport = *itrpt;
 
                // Make sure parent report exists
-               std::set<std::_tstring>::const_iterator itchap =m_pParentDlg->m_BuiltInReports.find( rReport.m_ParentReportName );
+               auto itchap =m_pParentDlg->m_BuiltInReports.find( rReport.m_ParentReportName );
                if (itchap == m_pParentDlg->m_BuiltInReports.end())
                {
                   CString msg;

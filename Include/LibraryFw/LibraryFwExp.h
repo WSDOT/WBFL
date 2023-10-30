@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LIBRARYFW_LIBRARYFWEXP_H_
-#define INCLUDED_LIBRARYFW_LIBRARYFWEXP_H_
 #pragma once
 
 // Define BUILDLIBRARYFWLIB when building this library
@@ -44,12 +42,5 @@
 #define LIBRARYFWTPL   extern template class LIBRARYFWCLASS
 #endif
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_LIBRARYFW_AUTOLIB_H_
 #include <LibraryFw\AutoLib.h>
-#endif
-
-#endif // INCLUDED_LIBRARYFW_LIBRARYFWEXP_H_
+#include <WbflAll.h>

@@ -35,7 +35,6 @@
 #include <EAF\EAFUIIntegration.h>
 #include <EAF\EAFDisplayUnits.h>
 #include <EAF\EAFStatusCenter.h>
-#include <EAF\EAFTransactions.h>
 #include <EAF\EAFViewController.h>
 #include <IReportManager.h>
 #include <IGraphManager.h>

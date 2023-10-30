@@ -67,7 +67,7 @@ void CTestVoidedSlab2::TestIVoidedSlab()
    // Verify initialization. All dimensions should be zero.
    // Hook point (bottom center) should be zero.
    Float64 val;
-   CollectionIndexType lval;
+   IndexType lval;
    CComPtr<IPoint2d> pntVal;
 
    TRY_TEST( beam->get_Height(nullptr), E_POINTER );
@@ -297,16 +297,16 @@ void CTestVoidedSlab2::TestIShape()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 10 );
+   TRY_TEST( cPoints, 4 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 10> points;
    ULONG fetched;
    Enum->Next(10,&points[0],&fetched);
-   TRY_TEST( fetched, 10 );
+   TRY_TEST( fetched, 4 );
 
    Float64 x,y;
 
@@ -318,45 +318,15 @@ void CTestVoidedSlab2::TestIShape()
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,130.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
+   TRY_TEST( IsEqual(y, 36.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.0), true );
-   TRY_TEST( IsEqual(y, 36.0), true );
+   TRY_TEST( IsEqual(x,-130.0), true );
+   TRY_TEST( IsEqual(y,  36.0), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.0), true );
-   TRY_TEST( IsEqual(y, 36.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.0), true );
-   TRY_TEST( IsEqual(y, 36.0), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.0), true );
-   TRY_TEST( IsEqual(y,  36.0), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.0), true );
-   TRY_TEST( IsEqual(y,  36.0), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.0), true );
-   TRY_TEST( IsEqual(y,  36.0), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.0), true );
-   TRY_TEST( IsEqual(y,   0.0), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
    TRY_TEST( IsEqual(x,-130.0), true );
    TRY_TEST( IsEqual(y,   0.0), true );
 
@@ -368,7 +338,7 @@ void CTestVoidedSlab2::TestIShape()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IVoidedSlab2> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    beamClone->get_Height(&val);
    TRY_TEST( IsEqual(val,36.0), true);
@@ -394,7 +364,7 @@ void CTestVoidedSlab2::TestIShape()
    beamClone->get_InteriorVoidElevation(&val);
    TRY_TEST( IsEqual(val,18.0), true);
 
-   CollectionIndexType lval;
+   IndexType lval;
    beamClone->get_VoidCount(&lval);
    TRY_TEST( lval, 5);
 
@@ -435,49 +405,40 @@ void CTestVoidedSlab2::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 6 );
+   TRY_TEST( cPoints, 5 );
 
    coll->get__Enum(&Enum);
    Enum->Next(9,&points[0],&fetched);
-   TRY_TEST( fetched, 6 );
+   TRY_TEST( fetched, 5 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
+   int i = 0;
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,130.00), true );
    TRY_TEST( IsEqual(y,  0.00), true );
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,130.00), true );
-   TRY_TEST( IsEqual(y,  0.00), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,130.00), true );
    TRY_TEST( IsEqual(y,  0.50), true );
 
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-130.00), true );
-   TRY_TEST( IsEqual(y,   0.50), true );
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, -130.00), true);
+   TRY_TEST(IsEqual(y, 0.50), true);
 
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST(IsEqual(x,-130.00), true);
    TRY_TEST(IsEqual(y, 0.00), true);
 
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST(IsEqual(x, 130.00), true);
    TRY_TEST(IsEqual(y, 0.00), true);
 
@@ -491,12 +452,12 @@ void CTestVoidedSlab2::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -506,23 +467,20 @@ void CTestVoidedSlab2::TestIShape()
    Enum->Next(9,&points[0],&fetched);
    TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
+   i = 0;
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,130.00), true );
    TRY_TEST( IsEqual(y,  0.50), true );
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,130.00), true );
    TRY_TEST( IsEqual(y, 36.00), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-130.00), true );
    TRY_TEST( IsEqual(y,  36.00), true );
 
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-130.00), true );
    TRY_TEST( IsEqual(y,   0.50), true );
 
@@ -545,8 +503,8 @@ void CTestVoidedSlab2::TestIShape()
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 8; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
@@ -555,7 +513,7 @@ void CTestVoidedSlab2::TestIShape()
    ATLTRACE("Trace of Points for VoidedSlab2 - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
+   for (IndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -571,28 +529,24 @@ void CTestVoidedSlab2::TestIShape()
    Enum->Next(5,&points[0],&fetched);
    TRY_TEST( fetched, 5 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
+   i = 0;
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,100.0), true );
    TRY_TEST( IsEqual(y, 16.5), true );
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-100.0), true );
    TRY_TEST( IsEqual(y,  16.5), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-100.0), true );
    TRY_TEST( IsEqual(y,   1.5), true );
 
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x, 100.0), true );
    TRY_TEST( IsEqual(y,   1.5), true );
 
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x, 100.0), true );
    TRY_TEST( IsEqual(y,  16.5), true );
 }
@@ -645,43 +599,34 @@ void CTestVoidedSlab2::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5);
+   TRY_TEST( cPoints,4);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>, 5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
    Float64 x,y;
+   int i = 0;
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, 124.0), true);
+   TRY_TEST(IsEqual(y, 100.0), true);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x, 76.0), true );
    TRY_TEST( IsEqual(y,100.0), true );
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 124.0), true );
-   TRY_TEST( IsEqual(y, 100.0), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 124.0), true );
-   TRY_TEST( IsEqual(y, 118.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x, 76.0), true );
    TRY_TEST( IsEqual(y,118.0), true );
 
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 76.0), true );
-   TRY_TEST( IsEqual(y,100.0), true );
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, 124.0), true);
+   TRY_TEST(IsEqual(y, 118.0), true);
 
    props.Release();
    shape->get_ShapeProperties(&props);
@@ -706,41 +651,33 @@ void CTestVoidedSlab2::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for ( int i = 0; i < 5; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5);
+   TRY_TEST( cPoints,4);
 
    coll->get__Enum(&Enum);
    Enum->Next(6,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
+   i = 0;
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x, 24.0), true );
    TRY_TEST( IsEqual(y,  0.0), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 24.0), true );
-   TRY_TEST( IsEqual(y, 18.0), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y, 18.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-24.0), true );
    TRY_TEST( IsEqual(y,  0.0), true );
+
+   points[i++]->Location(&x, &y);
+   TRY_TEST( IsEqual(x,-24.0), true );
+   TRY_TEST( IsEqual(y, 18.0), true );
+
+   points[i++]->Location(&x, &y);
+   TRY_TEST( IsEqual(x, 24.0), true );
+   TRY_TEST( IsEqual(y, 18.0), true );
 
    props.Release();
    shape->get_ShapeProperties(&props);
@@ -773,14 +710,14 @@ void CTestVoidedSlab2::TestIXYPosition()
 
    // BottomCenter
    hookPnt->Move(0.0,0.0);
-   to->Move(100.000,100.000);
+   to->Move(100.0,100.0);
    from.Release();
    TRY_TEST( position->put_LocatorPoint( lpBottomCenter, to ), S_OK );
    TRY_TEST( position->get_LocatorPoint( lpBottomCenter, &from ), S_OK );
    from->get_X(&x);
    from->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.000), true );
-   TRY_TEST(IsEqual(y,100.000), true );
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,100.0), true );
@@ -794,8 +731,8 @@ void CTestVoidedSlab2::TestIXYPosition()
    TRY_TEST( position->get_LocatorPoint( lpBottomRight, &from ), S_OK );
    from->get_X(&x);
    from->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.000), true );
-   TRY_TEST(IsEqual(y,100.000), true );
+   TRY_TEST(IsEqual(x,100.0), true );
+   TRY_TEST(IsEqual(y,100.0), true );
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x, 76.0), true );
@@ -921,54 +858,45 @@ void CTestVoidedSlab2::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for (int i = 0; i < 5; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5);
+   TRY_TEST( cPoints,4);
 
    coll->get__Enum(&Enum);
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
+   i = 0;
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-24.0), true );
    TRY_TEST( IsEqual(y, 48.0), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-42.0), true );
-   TRY_TEST( IsEqual(y, 48.0), true );
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, -24.0), true);
+   TRY_TEST(IsEqual(y, 0.0), true);
 
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
+   points[i++]->Location(&x, &y);
    TRY_TEST( IsEqual(x,-42.0), true );
    TRY_TEST( IsEqual(y,  0.0), true );
 
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y,  0.0), true );
+   points[i++]->Location(&x, &y);
+   TRY_TEST(IsEqual(x, -42.0), true);
+   TRY_TEST(IsEqual(y, 48.0), true);
 }
 
 void CTestVoidedSlab2::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_VoidedSlab ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IVoidedSlab ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

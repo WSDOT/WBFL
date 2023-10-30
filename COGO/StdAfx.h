@@ -34,7 +34,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #include <atlbase.h>
 //You may derive a class from CComModule and use it if you want to override
@@ -50,6 +51,8 @@ extern CComModule _Module;
 #include <MathEx.h>
 
 #include <WBFLGeometry\GeomHelpers.h>
+
+#include <CoordGeom/CoordGeom.h> // this is the library that we are wrapping with a COM interface
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

@@ -762,7 +762,7 @@ STDMETHODIMP CStrandPointModel::get_StraightStrandDebondInRow(Float64 Xs, RowInd
       return E_INVALIDARG;
    }
 
-   auto& iter = std::cbegin(rows);
+   auto iter = std::cbegin(rows);
    std::advance(iter, rowIdx);
    const auto& vStrands = iter->Strands;
 
@@ -822,7 +822,7 @@ STDMETHODIMP CStrandPointModel::IsExteriorStraightStrandDebondedInRow(Float64 Xs
       return E_INVALIDARG;
    }
 
-   auto& iter = std::cbegin(rows);
+   auto iter = std::cbegin(rows);
    std::advance(iter, rowIdx);
    const auto& vStrands = iter->Strands;
 
@@ -1155,7 +1155,7 @@ std::vector<CStrandPointModel::STRANDDEBONDRECORD> CStrandPointModel::GetStraigh
          record.YSum = Ycoord;
          record.nStrands = 1;
 
-         auto& found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
+         auto found = std::find_if(debondConfigs.begin(), debondConfigs.end(), [&record](const auto& config) {return IsEqual(record.LdbStart, config.LdbStart) && IsEqual(record.LdbEnd, config.LdbEnd);});
          if (found == debondConfigs.end())
          {
             debondConfigs.push_back(record);
@@ -1174,7 +1174,7 @@ std::vector<CStrandPointModel::STRANDDEBONDRECORD> CStrandPointModel::GetStraigh
 
 std::set<CStrandPointModel::RowRecord>& CStrandPointModel::GetStrandRows(StrandType strandType, Float64 Xs)
 {
-   auto& found = m_StrandRows[strandType].find(Xs);
+   auto found = m_StrandRows[strandType].find(Xs);
    if (found == m_StrandRows[strandType].end())
    {
       // strand row not found so create and cache it
@@ -1230,7 +1230,7 @@ Float64 CStrandPointModel::GetSectionHeight(Float64 Xs) const
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs, sbLeft, cstGirder, &shape);
+   m_pSegment->get_GirderShape(Xs, sbLeft, cstGirder, &shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);

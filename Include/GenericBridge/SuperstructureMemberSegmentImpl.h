@@ -50,8 +50,8 @@ public:
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
    STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
-   STDMETHOD(GetHaunchDepth)(Float64* pStartVal,Float64* pMidVal,Float64* pEndVal);
-   STDMETHOD(SetHaunchDepth)(Float64 startVal,Float64 midVal,Float64 endVal);
+   STDMETHOD(GetHaunchDepth)(/*[out,retval]*/IDblArray** haunchVals);
+   STDMETHOD(SetHaunchDepth)(/*[in]*/IDblArray* haunchVals);
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal);
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet);
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet);
@@ -62,15 +62,13 @@ public:
    STDMETHOD(ComputePrecamber)(/*[in]*/Float64 distAlongSegment, /*[out,retval]*/Float64* pPrecamber);
 
 public:
-   IGirderLine* m_pGirderLine; // weak reference to the girder line in the geometry model that provies the geometry for this segment
+   CComPtr<IGirderLine> m_pGirderLine;
    ISuperstructureMember* m_pSSMbr; // weak reference to parent superstructure member
    ISuperstructureMemberSegment* m_pPrevSegment; // weak reference to previous segment
    ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
-   std::array<Float64, 3> m_HaunchDepth;
-   // Can determine how to compute haunch depth at set time
-   enum HaunchMode { hmPrismatic, hmLinear, hmParabolic } m_HaunchMode;
+   std::vector<Float64> m_vHaunchDepths;
    Float64 m_Fillet;
    FilletShape m_FilletShape;
    Float64 m_Precamber;

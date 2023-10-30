@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_MATHEXP_H_
-#define INCLUDED_MATH_MATHEXP_H_
 #pragma once
 
 // Define BUILDMATHLIB when building this library
@@ -44,7 +42,5 @@
 #define MATHTPL   extern template class MATHCLASS
 #endif
 
-#include <WbflAll.h>
 #include <Math\AutoLib.h>
-
-#endif // INCLUDED_MATH_MATHEXP_H_
+#include <WbflAll.h>

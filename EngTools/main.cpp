@@ -21,13 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include <EngTools\EngToolsLib.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <EngTools/EngToolsLib.h>
 
 // Every DLL has an entry point DllEntryPoint
 BOOL WINAPI DllEntryPoint( HINSTANCE /*hinstDll*/,

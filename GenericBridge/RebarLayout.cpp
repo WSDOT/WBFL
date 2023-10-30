@@ -128,14 +128,14 @@ STDMETHODIMP CRebarLayout::CreateRebarSection(Float64 cutLocation,StageIndexType
 
             if ( installationStageIdx <= stageIdx )
             {
-               CollectionIndexType nBars;
+               IndexType nBars;
                rebarPattern->get_Count(&nBars);
 
                HookType htLeft, htRight;
                rebarPattern->get_Hook(qcbLeft,&htLeft);
                rebarPattern->get_Hook(qcbRight,&htRight);
 
-               for ( CollectionIndexType barIdx = 0; barIdx < nBars; barIdx++ )
+               for ( IndexType barIdx = 0; barIdx < nBars; barIdx++ )
                {
                   CComPtr<IPoint2d> point;
                   rebarPattern->get_Location(cutLocation-start,barIdx,&point);

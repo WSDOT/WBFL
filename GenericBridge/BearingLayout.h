@@ -32,7 +32,7 @@
 #include <MathEx.h>
 #include <vector>
 
-typedef struct BearingLineData
+struct BearingLineData
 {
    BearingLineData() { m_BrgLineOffset = 0; m_RefBrgIdx = 0; m_RefBrgOffset = 0; }
 
@@ -47,7 +47,8 @@ typedef struct BearingLineData
    IndexType m_RefBrgIdx; // index of the reference bearing
    Float64 m_RefBrgOffset; // offset of the reference bearing from the alignment
    std::vector<Float64> m_Spacing; // one item for each space between bearings
-} BearingLineData;
+};
+using BearingLineData = BearingLineData;
 
 /////////////////////////////////////////////////////////////////////////////
 // CBearingLayout

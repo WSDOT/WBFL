@@ -50,7 +50,7 @@ STDMETHODIMP CLoadCasesAgg::InterfaceSupportsErrorInfo(REFIID riid)
 }
 
 
-STDMETHODIMP CLoadCasesAgg::get_Item(/*[in]*/CollectionIndexType index, /*[out,retval]*/ ILoadCase* *pVal)
+STDMETHODIMP CLoadCasesAgg::get_Item(/*[in]*/IndexType index, /*[out,retval]*/ ILoadCase* *pVal)
 {
    ATLASSERT(m_LoadCases!=nullptr);
    return m_LoadCases->get_Item( index, pVal);
@@ -62,7 +62,7 @@ STDMETHODIMP CLoadCasesAgg::get__NewEnum(/*[out,retval]*/ IUnknown** retval)
    return m_LoadCases->get__NewEnum(retval);
 }
 
-STDMETHODIMP CLoadCasesAgg::get_Count(/*[out,retval]*/ CollectionIndexType *pVal)
+STDMETHODIMP CLoadCasesAgg::get_Count(/*[out,retval]*/ IndexType *pVal)
 {
    ATLASSERT(m_LoadCases!=nullptr);
    return m_LoadCases->get_Count(pVal);
@@ -92,7 +92,7 @@ STDMETHODIMP CLoadCasesAgg::RemoveByName(/*[in]*/BSTR name)
    return m_LoadCases->RemoveByName(name);
 }
 
-STDMETHODIMP CLoadCasesAgg::RemoveByIndex(/*[in]*/CollectionIndexType index, /*[out,retval]*/BSTR* name)
+STDMETHODIMP CLoadCasesAgg::RemoveByIndex(/*[in]*/IndexType index, /*[out,retval]*/BSTR* name)
 {
    ATLASSERT(m_LoadCases!=nullptr);
    return m_LoadCases->RemoveByIndex(index, name);

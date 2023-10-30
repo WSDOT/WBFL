@@ -208,11 +208,11 @@ protected:
    virtual CInplaceEdit* GetEditObject() override;
 
 private:
-   CComPtr<iEditableTextBlock> m_EditableTextBlock; // Most all of the implementation is delagated here
+   CComPtr<iEditableTextBlock> m_EditableTextBlock; // Most all of the implementation is delegated here
    CComPtr<iDisplayObjectEvents> m_EventSink;
    CComPtr<IDocUnitSystem> m_UnitSystem;
    CComBSTR m_bstrDisplayUnitGroup;
-   CStatic* m_pctlUnitTag;
+   std::unique_ptr<CStatic> m_pctlUnitTag;
    Float64 m_Value; // Always in base units
    bool m_bIsStation; // are we going to edit stations instead of regular floating point numbers?
    CComPtr<IStation> m_Station;

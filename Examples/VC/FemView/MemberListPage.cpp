@@ -50,9 +50,9 @@ BOOL CMemberListPage::OnInitDialog()
    CComPtr<IFem2dMemberCollection> members;
    pParent->m_pFem2d->get_Members(&members);
 
-   CollectionIndexType nMembers;
+   IndexType nMembers;
    members->get_Count(&nMembers);
-   for ( CollectionIndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
+   for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
       CComPtr<IFem2dMember> mbr;
       members->get_Item(mbrIdx,&mbr);

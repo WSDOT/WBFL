@@ -34,8 +34,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-#include <Private\WBFLPackage.h>
+#include <WBFLMFC.h>
+#include <WBFLAll.h>
 
 #include <atlbase.h>
 

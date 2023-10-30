@@ -146,6 +146,26 @@ STDMETHODIMP CUGirderSection::get_Beam(IUBeam** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CUGirderSection::get_GirderShape(IShape** ppShape)
+{
+   return m_Beam->get_Shape(ppShape);
+}
+
+STDMETHODIMP CUGirderSection::get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+{
+   CHECK_RETVAL(pnVoids);
+   *pnVoids = 0;
+   return S_OK;
+}
+
+STDMETHODIMP CUGirderSection::get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+{
+   CHECK_RETOBJ(ppShape);
+   ATLASSERT(false);
+   *ppShape = nullptr;
+   return E_INVALIDARG;
+}
+
 STDMETHODIMP CUGirderSection::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
    // work point is at top center
@@ -570,16 +590,16 @@ STDMETHODIMP CUGirderSection::GetWebSections(IDblArray** ppY, IDblArray** ppW, I
    (*ppW)->Add(2 * t_web);
    if (IsZero(H))
    {
-      (*ppDesc)->Add(_T("Top Girder"));
+      (*ppDesc)->Add(CComBSTR("Top Girder"));
    }
    else
    {
-      (*ppDesc)->Add(_T("Top Flange - Web"));
+      (*ppDesc)->Add(CComBSTR("Top Flange - Web"));
    }
 
    (*ppY)->Add(-D1 + D2 + D3);
    (*ppW)->Add(2 * t_web);
-   (*ppDesc)->Add(CComBSTR(_T("Bottom Flange - Web")));
+   (*ppDesc)->Add(CComBSTR("Bottom Flange - Web"));
 
    return S_OK;
 }
@@ -617,6 +637,11 @@ STDMETHODIMP CUGirderSection::GetWebWidthProjectionsForDebonding(IUnkArray** ppA
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CUGirderSection::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   return m_Shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CUGirderSection::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
    return m_Shape->FurthestDistance(line,pVal);
@@ -745,17 +770,17 @@ STDMETHODIMP CUGirderSection::get__NewEnum(IUnknown* *pVal)
    return m_CompositeShape->get__NewEnum(pVal);
 }
 
-STDMETHODIMP CUGirderSection::get_Item(CollectionIndexType idx, ICompositeShapeItem* *pVal)
+STDMETHODIMP CUGirderSection::get_Item(IndexType idx, ICompositeShapeItem* *pVal)
 {
    return m_CompositeShape->get_Item(idx,pVal);
 }
 
-STDMETHODIMP CUGirderSection::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CUGirderSection::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
    return m_CompositeShape->ReplaceEx(idx,pShapeItem);
 }
 
-STDMETHODIMP CUGirderSection::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CUGirderSection::Replace(IndexType idx,IShape* pShape)
 {
    return m_CompositeShape->Replace(idx,pShape);
 }
@@ -770,7 +795,7 @@ STDMETHODIMP CUGirderSection::AddShapeEx(ICompositeShapeItem* shapeItem)
    return m_CompositeShape->AddShapeEx(shapeItem);
 }
 
-STDMETHODIMP CUGirderSection::Remove(CollectionIndexType idx)
+STDMETHODIMP CUGirderSection::Remove(IndexType idx)
 {
    return m_CompositeShape->Remove(idx);
 }
@@ -780,7 +805,7 @@ STDMETHODIMP CUGirderSection::Clear()
    return m_CompositeShape->Clear();
 }
 
-STDMETHODIMP CUGirderSection::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CUGirderSection::get_Count(IndexType *pVal)
 {
    return m_CompositeShape->get_Count(pVal);
 }
@@ -794,9 +819,4 @@ STDMETHODIMP CUGirderSection::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return m_CompositeShape->get_XYPosition(pVal);
-}
-
-STDMETHODIMP CUGirderSection::get_StructuredStorage(IStructuredStorage2* *pStrStg)
-{
-   return m_CompositeShape->get_StructuredStorage(pStrStg);
 }

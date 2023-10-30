@@ -35,12 +35,6 @@
 #include <COMDEF.H>
 #include <memory>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -58,16 +52,13 @@ CTestStructuredStorage2::~CTestStructuredStorage2()
 void CTestStructuredStorage2::Test()
 {
    // create a saver, open a file and save ourself
-   typedef std::unique_ptr<CTestStructuredStorage2> MePtr;
-
    {
-      MePtr pSaved;
       CComPtr<IStructuredSave2> pss;
       TRY_TEST( pss.CoCreateInstance( CLSID_StructuredSave2 ), S_OK );
-      TRY_TEST( pss->Open( OLESTR("Test.xml")), S_OK );
+      TRY_TEST( pss->Open(CComBSTR("Test.xml")), S_OK );
 
       // make one of us to work with and initialize
-      pSaved = std::make_unique<CTestStructuredStorage2>();
+      auto pSaved = std::make_unique<CTestStructuredStorage2>();
       pSaved->Initialize();
 
       // save ourself
@@ -77,13 +68,12 @@ void CTestStructuredStorage2::Test()
 
    // now let's load and save to another file
    {
-      MePtr pLoaded;
       CComPtr<IStructuredLoad2> psl;
       TRY_TEST( psl.CoCreateInstance( CLSID_StructuredLoad2 ), S_OK );
-      TRY_TEST( psl->Open( OLESTR("Test.xml")), S_OK );
+      TRY_TEST( psl->Open(CComBSTR("Test.xml")), S_OK );
 
       // make one of us to work with and initialize
-      pLoaded = MePtr(new CTestStructuredStorage2());
+      auto pLoaded = std::make_unique<CTestStructuredStorage2>();
 
       // Load ourself
       TRY_TEST( pLoaded->LoadMe(psl), S_OK );
@@ -92,7 +82,7 @@ void CTestStructuredStorage2::Test()
       // now save to a different file so we can compare files
       CComPtr<IStructuredSave2> pss2;
       TRY_TEST( pss2.CoCreateInstance( CLSID_StructuredSave2 ), S_OK );
-      TRY_TEST( pss2->Open( OLESTR("Test2.xml")), S_OK );
+      TRY_TEST( pss2->Open(CComBSTR("Test2.xml")), S_OK );
 
       // save our loaded version
       TRY_TEST( pLoaded->SaveMe(pss2), S_OK );
@@ -128,13 +118,12 @@ void CTestStructuredStorage2::Test()
 
    // now let's load and save to another file
    {
-      MePtr pLoaded;
       CComPtr<IStructuredLoad2> psl;
       TRY_TEST( psl.CoCreateInstance( CLSID_StructuredLoad2 ), S_OK );
-      TRY_TEST( psl->Open( OLESTR("Test.xml")), S_OK );
+      TRY_TEST( psl->Open(CComBSTR("Test.xml")), S_OK );
 
       // make one of us to work with and initialize
-      pLoaded = MePtr(new CTestStructuredStorage2());
+      auto pLoaded = std::make_unique<CTestStructuredStorage2>();
 
       // Load ourself
       TRY_TEST( pLoaded->LoadPartial(psl), S_OK );
@@ -145,14 +134,14 @@ void CTestStructuredStorage2::Test()
 HRESULT CTestStructuredStorage2::SaveMe(IStructuredSave2 *psave)
 {
    // start off by saving properties
-   psave->BeginUnit(OLESTR("CTestStructuredStorage2"), 2.0); //, S_OK);
+   psave->BeginUnit(CComBSTR("CTestStructuredStorage2"), 2.0); //, S_OK);
 
-   TRY_TEST( psave->put_Property(OLESTR("BSTR"), m_BSTR), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("Float64"), m_Float64), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("Float"), m_Float), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("BOOL"), m_BOOL), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("Short"), m_Short), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("Long"), m_Long), S_OK); 
+   TRY_TEST( psave->put_Property(CComBSTR("BSTR"), m_BSTR), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("Float64"), m_Float64), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("Float"), m_Float), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("BOOL"), m_BOOL), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("Short"), m_Short), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("Long"), m_Long), S_OK); 
 
    Float64 ver;
    TRY_TEST( psave->get_Version(&ver), S_OK); 
@@ -161,20 +150,20 @@ HRESULT CTestStructuredStorage2::SaveMe(IStructuredSave2 *psave)
    TRY_TEST(ver, 2.0);
 
 
-   TRY_TEST( psave->BeginUnit(OLESTR("Shapes"), 1.0), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("Count"), CComVariant((long)m_TestShapes.size())), S_OK);
+   TRY_TEST( psave->BeginUnit(CComBSTR("Shapes"), 1.0), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("Count"), CComVariant((long)m_TestShapes.size())), S_OK);
 
    // now save container objects
    for (ShapeIterator i = m_TestShapes.begin(); i!=m_TestShapes.end(); i++)
    {
       CComVariant cp(*i);
-      TRY_TEST( psave->put_Property(OLESTR("Shape"), cp), S_OK);
+      TRY_TEST( psave->put_Property(CComBSTR("Shape"), cp), S_OK);
    }
 
    TRY_TEST( psave->EndUnit(), S_OK); // shapes
 
-   TRY_TEST( psave->put_Property(OLESTR("UShort"), m_UShort), S_OK);
-   TRY_TEST( psave->put_Property(OLESTR("ULong"), m_ULong), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("UShort"), m_UShort), S_OK);
+   TRY_TEST( psave->put_Property(CComBSTR("ULong"), m_ULong), S_OK);
 
    TRY_TEST( psave->EndUnit(), S_OK);
 
@@ -184,29 +173,29 @@ HRESULT CTestStructuredStorage2::SaveMe(IStructuredSave2 *psave)
 HRESULT CTestStructuredStorage2::LoadMe(IStructuredLoad2* pload)
 {
    HRESULT hr = S_OK;
-   TRY_TEST( pload->BeginUnit(OLESTR("CTestStructuredStorage2")), S_OK);
+   TRY_TEST( pload->BeginUnit(CComBSTR("CTestStructuredStorage2")), S_OK);
 
-   TRY_TEST( pload->get_Property(OLESTR("BSTR"), &m_BSTR), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("Float64"), &m_Float64), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("Float"), &m_Float), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("BOOL"), &m_BOOL), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("Short"), &m_Short), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("Long"), &m_Long), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("BSTR"), &m_BSTR), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Float64"), &m_Float64), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Float"), &m_Float), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("BOOL"), &m_BOOL), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Short"), &m_Short), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Long"), &m_Long), S_OK);
 
-   TRY_TEST( pload->BeginUnit(OLESTR("Shapes")), S_OK);
+   TRY_TEST( pload->BeginUnit(CComBSTR("Shapes")), S_OK);
    Float64 ver;
    pload->get_Version(&ver);
    TRY_TEST(ver, 1.0);
 
    _variant_t vcnt;
-   TRY_TEST( pload->get_Property(OLESTR("Count"), &vcnt), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Count"), &vcnt), S_OK);
 
    long cnt = (long)vcnt;
    // now load container objects
    for (long i = 0; i<cnt; i++)
    {
       _variant_t cp;
-      TRY_TEST( pload->get_Property(OLESTR("Shape"), &cp), S_OK);
+      TRY_TEST( pload->get_Property(CComBSTR("Shape"), &cp), S_OK);
 
       IUnknown* piu = cp.punkVal;
       IPShape*  pis = nullptr;
@@ -221,8 +210,8 @@ HRESULT CTestStructuredStorage2::LoadMe(IStructuredLoad2* pload)
    TRY_TEST( pload->EndUnit(&b), S_OK); // shapes
    TRY_TEST(b, VARIANT_TRUE);
 
-   TRY_TEST( pload->get_Property(OLESTR("UShort"), &m_UShort), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("ULong"), &m_ULong), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("UShort"), &m_UShort), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("ULong"), &m_ULong), S_OK);
 
    TRY_TEST( pload->EndUnit(&b), S_OK);
    TRY_TEST(b, VARIANT_TRUE);
@@ -235,13 +224,13 @@ HRESULT CTestStructuredStorage2::LoadPartial(IStructuredLoad2* pload)
    // this routine test the ability of the parser to search for nodes
    // within a unit
    HRESULT hr = S_OK;
-   TRY_TEST( pload->BeginUnit(OLESTR("CTestStructuredStorage2")), S_OK);
+   TRY_TEST( pload->BeginUnit(CComBSTR("CTestStructuredStorage2")), S_OK);
 
-   TRY_TEST( pload->get_Property(OLESTR("BSTR"), &m_BSTR), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("Short"), &m_Short), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("BSTR"), &m_BSTR), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("Short"), &m_Short), S_OK);
 
-   TRY_TEST( pload->get_Property(OLESTR("UShort"), &m_UShort), S_OK);
-   TRY_TEST( pload->get_Property(OLESTR("ULong"), &m_ULong), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("UShort"), &m_UShort), S_OK);
+   TRY_TEST( pload->get_Property(CComBSTR("ULong"), &m_ULong), S_OK);
 
    VARIANT_BOOL b;
    TRY_TEST( pload->EndUnit(&b), S_OK);

@@ -22,14 +22,12 @@
 // P.O. Box 47340, Olympia, WA 98503, USA or e-mail
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
+#pragma once
 
 // LineSegment2d.h : Declaration of the CLineSegment2d
 
-#ifndef __LINESEGMENT2D_H_
-#define __LINESEGMENT2D_H_
-
 #include "resource.h"       // main symbols
-#include "GeometryCP.h"
+#include <GeomModel/LineSegment2d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CLineSegment2d
@@ -38,12 +36,7 @@ class ATL_NO_VTABLE CLineSegment2d :
 	public CComCoClass<CLineSegment2d, &CLSID_LineSegment2d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CLineSegment2d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public ILineSegment2d,
-   public IStructuredStorage2,
-   public IPersist,
-   public CProxyDLineSegment2dEvents< CLineSegment2d >,
-   public IConnectionPointContainerImpl<CLineSegment2d>,
-   public IPoint2dEvents
+   public ILineSegment2d
 {
 public:
 	CLineSegment2d()
@@ -53,42 +46,30 @@ public:
    HRESULT FinalConstruct();
    void FinalRelease();
 
+   void SetLineSegment(const WBFL::Geometry::LineSegment2d& ls);
+
 DECLARE_REGISTRY_RESOURCEID(IDR_LINESEGMENT2D)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CLineSegment2d)
 	COM_INTERFACE_ENTRY(ILineSegment2d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-   COM_INTERFACE_ENTRY(IPoint2dEvents)
 END_COM_MAP()
 
-BEGIN_CONNECTION_POINT_MAP(CLineSegment2d)
-	CONNECTION_POINT_ENTRY(IID_ILineSegment2dEvents)
-END_CONNECTION_POINT_MAP()
-
 private:
-   CComPtr<IPoint2d> m_pStart;
-   CComPtr<IPoint2d> m_pEnd;
-   DWORD m_dwStartCookie;
-   DWORD m_dwEndCookie;
-
-   bool m_bEventsOn;
-   void EventsOff();
-   void EventsOn(bool bFire=true);
+   WBFL::Geometry::LineSegment2d m_LineSegment;
 
 // ISupportsErrorInfo
+public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
 
 // ILineSegment2d
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Clone)(/*[out,retval]*/ILineSegment2d** ppClone) override;
+   STDMETHOD(ContainsPoint)(/*[in]*/IPoint2d* pPoint, /*[in]*/Float64 tolerance, /*[out]*/VARIANT_BOOL* pbResult) override;
+   STDMETHOD(Divide)(/*[in]*/IndexType nSpaces, /*[out]*/IPoint2dCollection** ppPoints) override;
    STDMETHOD(ThroughPoints)(/*[in]*/ IPoint2d* p1, /*[in]*/ IPoint2d* p2) override;
 	STDMETHOD(OffsetEx)(/*[in]*/ ISize2d* pSize) override;
 	STDMETHOD(Offset)(/*[in]*/ Float64 dx,/*[in]*/ Float64 dy) override;
@@ -97,28 +78,7 @@ public:
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx, /*[in]*/ Float64 cy, /*[in]*/ Float64 angle) override;
 	STDMETHOD(get_Length)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(get_EndPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_EndPoint)(/*[in]*/ IPoint2d* newVal) override;
+	STDMETHOD(put_EndPoint)(/*[in]*/ IPoint2d* newVal) override;
 	STDMETHOD(get_StartPoint)(/*[out, retval]*/ IPoint2d* *pVal) override;
-	STDMETHOD(putref_StartPoint)(/*[in]*/ IPoint2d* newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
-public :
-
-// IPoint2dEvents
-	STDMETHOD(OnPointChanged)(IPoint2d * point)
-	{
-      if ( m_bEventsOn )
-         Fire_OnLineSegmentChanged(this);
-
-      return S_OK;
-	}
+	STDMETHOD(put_StartPoint)(/*[in]*/ IPoint2d* newVal) override;
 };
-
-#endif //__LINESEGMENT2D_H_

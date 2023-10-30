@@ -100,7 +100,7 @@ STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberI
 	return hr;
 }
 
-STDMETHODIMP CPointLoadCollection::Remove(CollectionIndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
+STDMETHODIMP CPointLoadCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
 {
    HRESULT hr = PointLoadCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))

@@ -34,31 +34,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class ATL_NO_VTABLE CTestProfile :
-   public CComObjectRootEx<CComSingleThreadModel>,
-   public IProfileEvents
+class CTestProfile
 {
 public:
    CTestProfile();
 
    static void Test();
 
-   void InitEventTest() { m_bTestState = false; }
-   bool PassedEventTest() { return m_bTestState; }
-
-BEGIN_COM_MAP(CTestProfile)
-   COM_INTERFACE_ENTRY(IProfileEvents)
-END_COM_MAP()
-
-
-// IProfileEvents
-public:
-	STDMETHOD(OnProfileChanged)(IProfile* pp);
-
 private:
-   bool m_bTestState;
-   void Pass() { m_bTestState = true; }
-
    static void Test1();
    static void Test2();
    static void Test3();
@@ -71,9 +54,6 @@ private:
    static void Test10();
    static void Test11();
    static void Test12();
-   static void Test13();
-   static void Test14();
-   static void Test15();
 };
 
 #endif // !defined(AFX_TESTProfile_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

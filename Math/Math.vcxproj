@@ -20,14 +20,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>false</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -50,11 +50,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -85,6 +86,8 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -96,14 +99,17 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\Math.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <GenerateMapFile>true</GenerateMapFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -130,7 +136,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDMATHLIB;NDEBUG;_WINDOWS;WIN32;WBFL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDMATHLIB;NDEBUG;_WINDOWS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -142,6 +148,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -155,13 +164,14 @@
       <EnableUAC>true</EnableUAC>
       <ModuleDefinitionFile>.\Math.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -175,54 +185,59 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="1dRange.cpp" />
-    <ClCompile Include="BisectionRootFinder2d.cpp" />
-    <ClCompile Include="BrentsRootFinder2d.cpp" />
+    <ClCompile Include="MathUtils.cpp" />
+    <ClCompile Include="Range.cpp" />
+    <ClCompile Include="BisectionRootFinder.cpp" />
+    <ClCompile Include="BrentsRootFinder.cpp" />
     <ClCompile Include="CDRatio.cpp" />
-    <ClCompile Include="CompositeFunction2d.cpp" />
+    <ClCompile Include="CompositeFunction.cpp" />
     <ClCompile Include="CoordMapper1d.cpp" />
     <ClCompile Include="CubicSolver.cpp" />
     <ClCompile Include="FixedPointIteration.cpp" />
-    <ClCompile Include="Function2d.cpp" />
-    <ClCompile Include="LinFunc2d.cpp" />
+    <ClCompile Include="LinearFunction.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="NumericIntegrator2d.cpp" />
-    <ClCompile Include="Polynomial2d.cpp" />
-    <ClCompile Include="PwLinearFunction2d.cpp" />
-    <ClCompile Include="PwLinearFunction2dUsingPoints.cpp" />
+    <ClCompile Include="PolynomialFunction.cpp" />
+    <ClCompile Include="PiecewiseFunction.cpp" />
     <ClCompile Include="QuadraticSolver.cpp" />
-    <ClCompile Include="RootFinder2d.cpp" />
+    <ClCompile Include="RootFinder.cpp" />
     <ClCompile Include="TrapezoidalRuleIntegrator.cpp" />
-    <ClCompile Include="UnitTest.cpp" />
+    <ClCompile Include="UnsymmetricBandedMatrix..cpp" />
+    <ClCompile Include="XFixedPointIteration.cpp" />
+    <ClCompile Include="XFunction.cpp" />
+    <ClCompile Include="XNumericIntegration.cpp" />
+    <ClCompile Include="XRootFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\MathEx.h" />
-    <ClInclude Include="..\Include\Math\1dRange.h" />
+    <ClInclude Include="..\Include\Math\Range.h" />
     <ClInclude Include="..\Include\Math\AutoLib.h" />
-    <ClInclude Include="..\Include\Math\BisectionRootFinder2d.h" />
-    <ClInclude Include="..\Include\Math\BrentsRootFinder2d.h" />
+    <ClInclude Include="..\Include\Math\BisectionRootFinder.h" />
+    <ClInclude Include="..\Include\Math\BrentsRootFinder.h" />
     <ClInclude Include="..\Include\Math\CDRatio.h" />
-    <ClInclude Include="..\Include\Math\CompositeFunction2d.h" />
+    <ClInclude Include="..\Include\Math\CompositeFunction.h" />
     <ClInclude Include="..\Include\Math\CoordMapper1d.h" />
     <ClInclude Include="..\Include\Math\CubicSolver.h" />
     <ClInclude Include="..\Include\Math\FixedPointIteration.h" />
-    <ClInclude Include="..\Include\Math\Function2d.h" />
-    <ClInclude Include="..\Include\Math\LinFunc2d.h" />
+    <ClInclude Include="..\Include\Math\Function.h" />
+    <ClInclude Include="..\Include\Math\LinearFunction.h" />
     <ClInclude Include="..\Include\Math\Math.h" />
     <ClInclude Include="..\Include\Math\MathExp.h" />
     <ClInclude Include="..\Include\Math\MathLib.h" />
     <ClInclude Include="..\Include\Math\MathUtils.h" />
-    <ClInclude Include="..\Include\Math\NumericIntegrator2d.h" />
-    <ClInclude Include="..\Include\Math\Polynomial2d.h" />
-    <ClInclude Include="..\Include\Math\PwLinearFunction2d.h" />
-    <ClInclude Include="..\Include\Math\PwLinearFunction2dUsingPoints.h" />
+    <ClInclude Include="..\Include\Math\NumericIntegration.h" />
+    <ClInclude Include="..\Include\Math\PolynomialFunction.h" />
+    <ClInclude Include="..\Include\Math\PiecewiseFunction.h" />
     <ClInclude Include="..\Include\Math\QuadraticSolver.h" />
-    <ClInclude Include="..\Include\Math\RootFinder2d.h" />
+    <ClInclude Include="..\Include\Math\RootFinder.h" />
     <ClInclude Include="..\Include\Math\TrapezoidalRuleIntegrator.h" />
-    <ClInclude Include="..\Include\Math\UnitTest.h" />
+    <ClInclude Include="..\Include\Math\UnsymmetricBandedMatrix.h" />
+    <ClInclude Include="..\Include\Math\XFixedPointIteration.h" />
+    <ClInclude Include="..\Include\Math\XFunction.h" />
+    <ClInclude Include="..\Include\Math\XNumericIntegration.h" />
+    <ClInclude Include="..\Include\Math\XRootFinder.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Math.def" />
@@ -231,9 +246,8 @@
     <ResourceCompile Include="Math.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GeometricPrimitives\GeometricPrimitives.vcxproj">
-      <Project>{e82a689c-bc85-44b8-8d89-670e7dc03e79}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
+      <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
     </ProjectReference>
     <ProjectReference Include="..\System\System.vcxproj">
       <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>

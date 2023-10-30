@@ -60,19 +60,19 @@ HRESULT CTestStressPoint::OnStressPointChanged(/*[in]*/IStressPoint* StressPoint
    return S_OK;
 }
 
-HRESULT CTestStressPoint::OnStressPointsChanged(CollectionIndexType idx)
+HRESULT CTestStressPoint::OnStressPointsChanged(IndexType idx)
 {
    m_spCollFired = idx;
    return S_OK;
 }
 
-HRESULT CTestStressPoint::OnStressPointsAdded(CollectionIndexType idx)
+HRESULT CTestStressPoint::OnStressPointsAdded(IndexType idx)
 {
    m_spCollFired = idx;
    return S_OK;
 }
 
-HRESULT CTestStressPoint::OnStressPointsRemoved(CollectionIndexType idx)
+HRESULT CTestStressPoint::OnStressPointsRemoved(IndexType idx)
 {
    m_spCollFired = idx;
    return S_OK;
@@ -116,7 +116,7 @@ void CTestStressPoint::Test()
    CComPtr<IStressPoints> psc;
    hr = psc.CoCreateInstance( CLSID_StressPoints );// , S_OK );
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    TRY_TEST( psc->get_Count(&cnt), S_OK);
    TRY_TEST( cnt, 0 );
 

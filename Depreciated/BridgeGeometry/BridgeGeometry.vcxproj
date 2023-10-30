@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>WBFLBridgeGeometry</ProjectName>
+    <ProjectGuid>{02AB2465-2AA0-45DB-B083-CBF7F55C9722}</ProjectGuid>
+    <RootNamespace>BridgeGeometry</RootNamespace>
+    <Keyword>MFCDLLProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfAtl>Dynamic</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\WBFL.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\WBFL.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\BridgeGeometry.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>X64</TargetEnvironment>
+      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
+      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_USRDLL;BUILDBRIDGEGEOMETRYLIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>.\BridgeGeometry.def</ModuleDefinitionFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="AlignmentOffsetLayoutLineFactory.cpp" />
+    <ClCompile Include="Bridge.cpp" />
+    <ClCompile Include="BridgeGeometry.cpp" />
+    <ClCompile Include="BridgeGeometryHelper.cpp" />
+    <ClCompile Include="DeckBoundary.cpp" />
+    <ClCompile Include="DiaphragmLine.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="EqualSpaceDiaphragmLineFactory.cpp" />
+    <ClCompile Include="GirderLine.cpp" />
+    <ClCompile Include="PathCollection.cpp" />
+    <ClCompile Include="PierLine.cpp" />
+    <ClCompile Include="PierLineCollection.cpp" />
+    <ClCompile Include="SimpleDeckBoundaryFactory.cpp" />
+    <ClCompile Include="SimpleGirderLineFactory.cpp" />
+    <ClCompile Include="SimpleLayoutLineFactory.cpp" />
+    <ClCompile Include="SingleDiaphragmLineFactory.cpp" />
+    <ClCompile Include="SingleGirderLineFactory.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ThroughPointDiaphragmLineFactory.cpp" />
+    <ClCompile Include="UniformSpacingLayoutLineFactory.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AlignmentOffsetLayoutLineFactory.rgs" />
+    <None Include="Bridge.rgs" />
+    <CustomBuild Include="BridgeGeometry.def" />
+    <None Include="BridgeGeometry.rgs" />
+    <None Include="DeckBoundary.rgs" />
+    <None Include="DiaphragmLine.rgs" />
+    <None Include="EqualSpaceDiaphragmLineFactory.rgs" />
+    <None Include="GirderLine.rgs" />
+    <None Include="PathCollection.rgs" />
+    <None Include="PierLine.rgs" />
+    <None Include="PierLineCollection.rgs" />
+    <None Include="res\BridgeGeometry.rc2" />
+    <None Include="SimpleDeckBoundaryFactory.rgs" />
+    <None Include="SimpleGirderLineFactory.rgs" />
+    <None Include="SingleDiaphragmLineFactory.rgs" />
+    <None Include="SingleGirderLineFactory.rgs" />
+    <None Include="ThroughPointDiaphragmLineFactory.rgs" />
+    <None Include="UniformSpacingLayoutLineFactory.rgs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="..\Include\WBFLBridgeGeometry.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AlignmentOffsetLayoutLineFactory.h" />
+    <ClInclude Include="Bridge.h" />
+    <ClInclude Include="BridgeGeometryHelper.h" />
+    <ClInclude Include="DeckBoundary.h" />
+    <ClInclude Include="DiaphragmLine.h" />
+    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="EqualSpaceDiaphragmLineFactory.h" />
+    <ClInclude Include="GirderLine.h" />
+    <ClInclude Include="PathCollection.h" />
+    <ClInclude Include="PierLine.h" />
+    <ClInclude Include="PierLineCollection.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SimpleDeckBoundaryFactory.h" />
+    <ClInclude Include="SimpleGirderLineFactory.h" />
+    <ClInclude Include="SimpleLayoutLineFactory.h" />
+    <ClInclude Include="SingleDiaphragmLineFactory.h" />
+    <ClInclude Include="SingleGirderLineFactory.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ThroughPointDiaphragmLineFactory.h" />
+    <ClInclude Include="UniformSpacingLayoutLineFactory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="BridgeGeometry.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\COGO\Cogo.vcxproj">
+      <Project>{905d99ea-8bc5-45ab-bd0e-9531bb9d9f95}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="BridgeGeometry.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

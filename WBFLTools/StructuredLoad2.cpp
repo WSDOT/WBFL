@@ -78,7 +78,7 @@ HRESULT CStructuredLoad2::Open( BSTR strFile)
          THROW_MSG(msg,STRLOAD_E_FILENOTFOUND,IDH_STRLOAD_E_FILENOTFOUND);
       }
 
-      FileStream* pstrm = new FileStream;
+      WBFL::System::FileStream* pstrm = new WBFL::System::FileStream;
       if (pstrm==0)
       {
          CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, strFile);
@@ -121,7 +121,7 @@ void CStructuredLoad2::BeginLoad(IStream* pis)
       MSXML::IXMLDOMDocumentPtr pDoc(__uuidof(MSXML::DOMDocument60));
       if (!(bool)pDoc)
       {
-         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, OLESTR("XML Parser"));
+         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_CANTOPEN, CComBSTR("XML Parser"));
          THROW_MSG(msg,STRLOAD_E_CANTOPEN,IDH_STRLOAD_E_CANTOPEN);
       }
 
@@ -461,7 +461,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             catch (...)
             {
                // node did not have an ObjRef attribute - can only puke
-               CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Expected Object Reference"));
+               CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("Expected Object Reference"));
                THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
             }
 
@@ -475,7 +475,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
             catch (...)
             {
                // node did not have an ObjRef attribute - can only puke
-               CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Could not find object reference"));
+               CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("Could not find object reference"));
                THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
             }
 
@@ -492,7 +492,7 @@ HRESULT CStructuredLoad2::get_Property( BSTR name,  VARIANT *pVal)
                HRESULT hrl = piu->QueryInterface(IID_IDispatch,(void**)&pid);
                if (FAILED(hrl) || pid==nullptr)
                {
-                  CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Could not cast object to IDispatch"));
+                  CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("Could not cast object to IDispatch"));
                   THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
                }
 
@@ -582,7 +582,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
    {
       ATLASSERT(false); // object table node doesn't exist in xml file
                     // cannot create objects without an object table
-      CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("Need to create an object and no object table exists in input file."));
+      CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("Need to create an object and no object table exists in input file."));
       THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
    }
 
@@ -610,7 +610,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
       catch(...)
       {
          ATLASSERT(false); // object with id doesn't exist in table
-         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("object with id doesn't exist in object table"));
+         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("object with id doesn't exist in object table"));
          THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
       }
 
@@ -627,7 +627,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
       // get the clsid
       _variant_t varclsid;
       varclsid.vt = VT_BSTR;
-      if ( S_OK == this->get_Property(OLESTR("CLSID") , &varclsid))
+      if ( S_OK == this->get_Property(CComBSTR("CLSID") , &varclsid))
       {
          CLSID clsid;
          HRESULT hr = ::CLSIDFromString(_bstr_t(varclsid), &clsid);
@@ -679,7 +679,7 @@ CComPtr<IUnknown> CStructuredLoad2::GetObjectRef( BSTR bsobjref )
       else
       {
          ATLASSERT(false); // CLSID must be next property in an object reference
-         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, OLESTR("CLSID must be next property in an object reference"));
+         CComBSTR msg = CreateErrorMsgStr1(IDS_STRLOAD_E_INVALIDFORMAT, CComBSTR("CLSID must be next property in an object reference"));
          THROW_MSG(msg,STRLOAD_E_INVALIDFORMAT,IDH_STRLOAD_E_INVALIDFORMAT);
       }
    }
@@ -724,7 +724,7 @@ HRESULT HandleException()
 
 HRESULT HandlePropertyException(_com_error& e)
 {
-   // this error likely occured when a variant_t was trying to parse its value
+   // this error likely occurred when a variant_t was trying to parse its value
    // and cast it.
    try
    {

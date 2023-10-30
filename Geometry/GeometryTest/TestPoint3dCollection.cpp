@@ -55,7 +55,7 @@ void CTestPoint3dCollection::Test()
    CComPtr<IPoint3dCollection> pColl;
    TRY_TEST(pColl.CoCreateInstance( CLSID_Point3dCollection ), S_OK);
 
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(pColl->get_Count(nullptr),E_POINTER);
    TRY_TEST(pColl->get_Count(&count),S_OK);
    TRY_TEST(count,0);
@@ -152,54 +152,6 @@ void CTestPoint3dCollection::Test()
    TRY_TEST(count,0);
 
    //
-   // Test Events
-   //
-   pColl->Clear(); // start with an empty container
-
-   CComObject<CTestPoint3dCollection>* pTestEvents;
-   CComObject<CTestPoint3dCollection>::CreateInstance(&pTestEvents);
-   pTestEvents->AddRef();
-
-   CComPtr<IUnknown> punk(pTestEvents);
-   DWORD dwCookie;
-   TRY_TEST(AtlAdvise(pColl,punk,IID_IPoint3dCollectionEvents,&dwCookie),S_OK);
-
-   // Add a point to the collection
-   pTestEvents->InitEventTest(0);
-   pColl->Add(p1);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Move a point... Event should fire
-   pTestEvents->InitEventTest(0);
-   p1->Move(15,15,15);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   pColl->Add(p2);
-   pColl->Add(p3);
-   pColl->Add(p4);
-
-   // Remove a point
-   pTestEvents->InitEventTest(3);
-   pColl->Remove(3);
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   // Add a point that doesn't support event firing
-   // This point should be successfully added.
-   // Review the profile output to verify that the approrate
-   // return paths were followed when this object was encountered
-   CComPtr<IPoint3d> geoPoint;
-   geoPoint.CoCreateInstance(CLSID_Point3d);
-   TRY_TEST(pColl->Add(geoPoint),S_OK);
-
-   // Clear
-   pTestEvents->InitEventTest(-1);
-   pColl->Clear();
-   TRY_TEST(pTestEvents->PassedEventTest(),true);
-
-   TRY_TEST(AtlUnadvise(pColl,IID_IPoint3dCollectionEvents,dwCookie),S_OK);
-   pTestEvents->Release();
-
-   //
    // Test _Enum
    //
    p1->put_X(10);
@@ -233,39 +185,5 @@ void CTestPoint3dCollection::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_Point3dCollection ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IPoint3dCollection ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
-}
-
-STDMETHODIMP CTestPoint3dCollection::OnPointChanged(IPoint3d* point)
-{
-//   MessageBox(nullptr,"PointChanged","Event",MB_OK);
-   Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint3dCollection::OnPointAdded(CollectionIndexType index,IPoint3d* point)
-{
-//   MessageBox(nullptr,"PointAdded","Event",MB_OK);
-   if ( index == m_expectedIndex )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint3dCollection::OnPointRemoved(CollectionIndexType index)
-{
-//   MessageBox(nullptr,"PointRemoved","Event",MB_OK);
-   if ( index == m_expectedIndex )
-      Pass();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTestPoint3dCollection::OnPointsCleared()
-{
-//   MessageBox(nullptr,"PointCleared","Event",MB_OK);
-   Pass();
-   return S_OK;
 }

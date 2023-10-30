@@ -125,7 +125,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Hook(/*[in]*/DirectionType side,/*[out,
    return S_OK;
 }
 
-STDMETHODIMP CCrossBeamRebarPattern::get_Count(CollectionIndexType* count)
+STDMETHODIMP CCrossBeamRebarPattern::get_Count(IndexType* count)
 {
    CHECK_RETVAL(count);
    *count = m_Count;
@@ -138,10 +138,10 @@ STDMETHODIMP CCrossBeamRebarPattern::put_Count(RowIndexType count)
    return S_OK;
 }
 
-STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,CollectionIndexType barIdx,IPoint2d** location)
+STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,IndexType barIdx,IPoint2d** location)
 {
    CHECK_RETOBJ(location);
-   if ( barIdx < 0 || (CollectionIndexType)m_Count < barIdx )
+   if ( barIdx < 0 || (IndexType)m_Count < barIdx )
    {
       return E_INVALIDARG;
    }
@@ -149,7 +149,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_Location(Float64 Xxb,CollectionIndexTyp
    CComPtr<IPoint2dCollection> profile;
    get_Profile(barIdx,&profile);
 
-   mathPwLinearFunction2dUsingPoints fn;
+   WBFL::Math::PiecewiseFunction fn;
    CComPtr<IEnumPoint2d> enumPoints;
    profile->get__Enum(&enumPoints);
    CComPtr<IPoint2d> point;
@@ -362,7 +362,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
    get_Rebar(&rebar);
    CComBSTR bstrSize;
    rebar->get_Name(&bstrSize);
-   matRebar::Size size = lrfdRebarPool::GetBarSize(OLE2CT(bstrSize));
+   WBFL::Materials::Rebar::Size size = WBFL::LRFD::RebarPool::GetBarSize(OLE2CT(bstrSize));
    Float64 db;
    rebar->get_NominalDiameter(&db);
 
@@ -380,11 +380,11 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
-         angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
+         angle -= WBFL::Units::ConvertToSysUnits(15,WBFL::Units::Measure::Degree);
       }
       else if (m_HookType[qcbLeft] == ht90)
       {
-         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
+         angle += WBFL::Units::ConvertToSysUnits(15, WBFL::Units::Measure::Degree);
       }
 
       if ( m_Datum == xbBottom )
@@ -392,7 +392,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
          angle *= -1;
       }
 
-      Float64 hookExtension = lrfdRebar::GetHookExtension(size,db,lrfdRebar::Longitudinal,(lrfdRebar::Hook)m_HookType[qcbLeft]);
+      Float64 hookExtension = WBFL::LRFD::Rebar::GetHookExtension(size,db, WBFL::LRFD::Rebar::Usage::Longitudinal,(WBFL::LRFD::Rebar::Hook)m_HookType[qcbLeft]);
    
       CComPtr<IPoint2d> pnt;
       locate->ByDistDefAngle(pnt2,pnt1,hookExtension,CComVariant(angle),0.0,&pnt);
@@ -416,11 +416,11 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
       {
          // 180 degree hooks will loop back on themselves to reduce
          // the angle a little bit so there is something to display
-         angle -= ::ConvertToSysUnits(15,unitMeasure::Degree);
+         angle -= WBFL::Units::ConvertToSysUnits(15,WBFL::Units::Measure::Degree);
       }
       else if (m_HookType[qcbRight] == ht90)
       {
-         angle += ::ConvertToSysUnits(15, unitMeasure::Degree);
+         angle += WBFL::Units::ConvertToSysUnits(15, WBFL::Units::Measure::Degree);
       }
 
       if ( m_Datum != xbBottom )
@@ -428,7 +428,7 @@ STDMETHODIMP CCrossBeamRebarPattern::get_DisplayProfile(/*[in]*/IndexType barIdx
          angle *= -1;
       }
 
-      Float64 hookExtension = lrfdRebar::GetHookExtension(size,db,lrfdRebar::Longitudinal,(lrfdRebar::Hook)m_HookType[qcbRight]);
+      Float64 hookExtension = WBFL::LRFD::Rebar::GetHookExtension(size,db, WBFL::LRFD::Rebar::Usage::Longitudinal,(WBFL::LRFD::Rebar::Hook)m_HookType[qcbRight]);
 
       CComPtr<IPoint2d> pnt;
       locate->ByDistDefAngle(pnt2,pnt1,hookExtension,CComVariant(angle),0.0,&pnt);

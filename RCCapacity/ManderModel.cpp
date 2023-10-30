@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLRCCapacity.h"
 #include "ManderModel.h"
+#include "CircularManderSection.h"
 #include <MathEx.h>
 
 #ifdef _DEBUG
@@ -40,20 +41,11 @@ static char THIS_FILE[] = __FILE__;
 
 HRESULT CManderModel::FinalConstruct()
 {
-   HRESULT hr = m_UnitServer.CoCreateInstance(CLSID_UnitServer);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_Fco = 4000.; // psi
-   m_eco = 0.002;
-   m_R = 5;
-
    return S_OK;
 }
 
 void CManderModel::FinalRelease()
 {
-   m_UnitServer.Release();
 }
 
 STDMETHODIMP CManderModel::InterfaceSupportsErrorInfo(REFIID riid)
@@ -61,8 +53,7 @@ STDMETHODIMP CManderModel::InterfaceSupportsErrorInfo(REFIID riid)
 	static const IID* arr[] = 
 	{
 		&IID_IManderModel,
-      &IID_IStressStrain,
-      &IID_IStructuredStorage2
+      &IID_IStressStrain
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -76,7 +67,15 @@ STDMETHODIMP CManderModel::InterfaceSupportsErrorInfo(REFIID riid)
 STDMETHODIMP CManderModel::putref_Section(IManderModelSection* section)
 {
    CHECK_IN(section);
-   m_Section = section;
+
+   // get the internal section object and provide it to the model
+   CManderSection* p = dynamic_cast<CManderSection*>(section);
+   ATLASSERT(p);
+   m_Model.SetSection(p->GetSection());
+
+   // keep a copy of the incoming section so it can be returned in get_Section
+   // this is a putref_ so this method must return the same object as  received
+   m_Section = section; 
    return S_OK;
 }
 
@@ -92,40 +91,40 @@ STDMETHODIMP CManderModel::get_Section(IManderModelSection** section)
 
 STDMETHODIMP CManderModel::put_fco(Float64 fco)
 {
-   m_Fco = fco;
+   m_Model.Set_fco(fco);
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_fco(Float64* fco)
 {
    CHECK_RETVAL(fco);
-   *fco = m_Fco;
+   *fco = m_Model.Get_fco();
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::put_eco(Float64 eco)
 {
-   m_eco = eco;
+   m_Model.Set_eco(eco);
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_eco(Float64* eco)
 {
    CHECK_RETVAL(eco);
-   *eco = m_eco;
+   *eco = m_Model.Get_eco();
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::put_R(Float64 r)
 {
-   m_R = r;
+   m_Model.SetR(r);
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_R(Float64* r)
 {
    CHECK_RETVAL(r);
-   *r = m_R;
+   *r = m_Model.GetR();
    return S_OK;
 }
 
@@ -135,7 +134,7 @@ STDMETHODIMP CManderModel::GetConcreteParameters(Float64* pfr, Float64* pfcc, Fl
    CHECK_RETVAL(pfcc);
    CHECK_RETVAL(pecc);
 
-   GetConcreteParameters(*pfr, *pfcc, *pecc);
+   std::tie(*pfr,*pfcc,*pecc) = m_Model.ComputeConcreteProperties();
 
    return S_OK;
 }
@@ -143,14 +142,16 @@ STDMETHODIMP CManderModel::GetConcreteParameters(Float64* pfr, Float64* pfcc, Fl
 // IStressStrain
 STDMETHODIMP CManderModel::put_Name(BSTR name)
 {
-   m_bstrName = name;
+   USES_CONVERSION;
+   m_Model.SetName(OLE2T(name));
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_Name(BSTR *name)
 {
+   USES_CONVERSION;
    CHECK_RETSTRING(name);
-   *name = m_bstrName.Copy();
+   *name = T2BSTR(m_Model.GetName().c_str());
    return S_OK;
 }
 
@@ -158,28 +159,9 @@ STDMETHODIMP CManderModel::ComputeStress(Float64 strain,Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   if (0 < strain)
-   {
-      // for tension strain.... stress is 0.0
-      *pVal = 0;
-      return S_OK;
-   }
-
-   strain *= -1.0; // swap signs so we are working with positive strains
-
-   Float64 Ec = GetEc();
-   Float64 fr,fcc,ecc;
-   GetConcreteParameters(fr,fcc,ecc);
-
-   Float64 Esec = fcc/ecc;
-
-   Float64 r = Ec/(Ec-Esec);
-   Float64 x = strain/ecc;
-   Float64 fc = fcc*x*r/(r-1+pow(x,r));
-
-   *pVal = -fc;
-
-   return S_OK;
+   auto [stress, bStrainWithinLimits]= m_Model.ComputeStress(strain);
+   *pVal = stress;
+   return (bStrainWithinLimits ? S_OK : S_FALSE);
 }
 
 STDMETHODIMP CManderModel::StrainLimits(Float64* minStrain,Float64* maxStrain)
@@ -187,87 +169,28 @@ STDMETHODIMP CManderModel::StrainLimits(Float64* minStrain,Float64* maxStrain)
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   Float64 fr, fcc, ecc;
-   GetConcreteParameters(fr, fcc, ecc);
+   m_Model.GetStrainLimits(minStrain, maxStrain);
 
-   Float64 ps, fyh, esu;
-   m_Section->get_TransvReinforcementRatio(&ps);
-   m_Section->get_TransvYieldStrength(&fyh);
-   m_Section->get_TransvReinforcementRuptureStrain(&esu);
-
-   // see "Seismic Design and Retrofit of Bridges", Priestley,  Pg 272, Eqn 5.14
-   Float64 ecu = 0.004 + 1.4*ps*fyh*esu / fcc; 
-
-   *minStrain = -ecu;
-   *maxStrain = DBL_MAX;
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_StrainAtPeakStress(Float64* strain)
 {
    CHECK_RETVAL(strain);
-   Float64 fr,fcc,ecc;
-   GetConcreteParameters(fr,fcc,ecc);
-   (*strain) = -ecc;
+   *strain = m_Model.GetStrainAtPeakStress();
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_YieldStrain(Float64* pey)
 {
    CHECK_RETVAL(pey);
-   Float64 Ec = GetEc();
-   *pey = -m_Fco/Ec;
+   *pey = m_Model.GetYieldStrain();
    return S_OK;
 }
 
 STDMETHODIMP CManderModel::get_ModulusOfElasticity(Float64* pE)
 {
    CHECK_RETVAL(pE);
-   *pE = GetEc();
+   *pE = m_Model.GetModulusOfElasticity();
    return S_OK;
-}
-
-STDMETHODIMP CManderModel::get_UnitServer(IUnitServer** ppVal )
-{
-   CHECK_RETOBJ(ppVal);
-
-   (*ppVal) = m_UnitServer;
-   (*ppVal)->AddRef();
-
-   return S_OK;
-}
-
-STDMETHODIMP CManderModel::putref_UnitServer(IUnitServer* pNewVal )
-{
-   CHECK_IN(pNewVal);
-
-   m_UnitServer = pNewVal;
-   return S_OK;
-}
-
-Float64 CManderModel::GetEc()
-{
-   Float64 fco;
-
-   CComPtr<IUnitConvert> convert;
-   m_UnitServer->get_UnitConvert(&convert);
-   convert->ConvertFromBaseUnits(m_Fco, CComBSTR("psi"), &fco);
-
-   Float64 Es = 60000.0*sqrt(fco); // psi
-   convert->ConvertToBaseUnits(Es, CComBSTR("psi"), &Es);
-
-   return Es;
-
-}
-
-void CManderModel::GetConcreteParameters(Float64& fr,Float64& fcc,Float64& ecc)
-{
-   Float64 ke, ps, fyh;
-   m_Section->get_ConfinementEffectivenessCoefficient(&ke);
-   m_Section->get_TransvReinforcementRatio(&ps);
-   m_Section->get_TransvYieldStrength(&fyh);
-
-   fr = 0.5*ke*ps*fyh;
-   fcc = m_Fco*(-1.254 + 2.254*sqrt(1+7.94*(fr/ m_Fco)) - 2*(fr/ m_Fco));
-   ecc = m_eco*(1+m_R*(fcc/ m_Fco - 1));
 }

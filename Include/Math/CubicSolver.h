@@ -21,158 +21,68 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_CUBICSOLVER_H_
-#define INCLUDED_MATH_CUBICSOLVER_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <Math\MathExp.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
-/*****************************************************************************
-CLASS 
-   mathCubicSolver
-
-   Utility class to solve quadratic equations.
-
-
-DESCRIPTION
-   Utility class to solve quadratic equations. 
-
-   Finds the roots of equations having the form ax^3 + bx^2 + cx + d = 0
-
-LOG
-   rab : 06.25.2008 : Created file
-*****************************************************************************/
-
-class MATHCLASS mathCubicSolver
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace Math
+   {
+      /// Utility class to solve quadratic equations.
+      /// Finds the roots of equations having the form ax^3 + bx^2 + cx + d = 0
+      class MATHCLASS CubicSolver
+      {
+      public:
+         // GROUP: LIFECYCLE
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   mathCubicSolver(Float64 a,Float64 b,Float64 c,Float64 d);
+         CubicSolver(Float64 a,Float64 b,Float64 c,Float64 d);
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   mathCubicSolver(const mathCubicSolver& rOther);
+         CubicSolver(const CubicSolver&) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~mathCubicSolver();
+         ~CubicSolver() = default;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   mathCubicSolver& operator = (const mathCubicSolver& rOther);
+         CubicSolver& operator=(const CubicSolver&) = default;
 
-   // GROUP: OPERATIONS
+         /// @{
+         /// @brief coefficients of a quadratic equation in the form ax^3 + bx^2 + cx + d = 0
+         void SetCoefficients(Float64 a, Float64 b, Float64 c,Float64 d);
+         void GetCoefficients(Float64* a, Float64* b, Float64* c,Float64* d) const;
+         /// @}
 
-   //------------------------------------------------------------------------
-   // Solves the cubic equation.  Returns number of roots found
-   int Solve(Float64* x1, Float64* x2,Float64* x3) const;
+         /// Sets the coefficient a
+         void SetA(Float64 a);
 
-   // GROUP: ACCESS
+         /// Gets the coefficient a
+         Float64 GetA() const;
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient a
-   void SetA(Float64 a);
+         /// Sets the coefficient b
+         void SetB(Float64 b);
 
-   //------------------------------------------------------------------------
-   // Gets the coefficient a
-   Float64 GetA() const;
+         /// Gets the coefficient b
+         Float64 GetB() const;
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient b
-   void SetB(Float64 b);
+         /// Sets the coefficient c
+         void SetC(Float64 c);
 
-   //------------------------------------------------------------------------
-   // Gets the coefficient b
-   Float64 GetB() const;
+         /// Gets the coefficient c
+         Float64 GetC() const;
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient c
-   void SetC(Float64 c);
+         /// Sets the coefficient d
+         void SetD(Float64 d);
 
-   //------------------------------------------------------------------------
-   // Gets the coefficient c
-   Float64 GetC() const;
+         /// Gets the coefficient d
+         Float64 GetD() const;
 
-   //------------------------------------------------------------------------
-   // Sets the coefficient d
-   void SetD(Float64 d);
+         /// Solves the cubic equation.
+         /// @return The roots
+         std::vector<Float64> Solve() const;
 
-   //------------------------------------------------------------------------
-   // Gets the coefficient d
-   Float64 GetD() const;
-
-
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const mathCubicSolver& rOther);
-
-   //------------------------------------------------------------------------
-   virtual void MakeAssignment(const mathCubicSolver& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Float64 m_A;
-   Float64 m_B;
-   Float64 m_C;
-   Float64 m_D;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
-   #if defined _DEBUG
-   //------------------------------------------------------------------------
-   // Returns true if the object is in a valid state, otherwise returns false.
-   virtual bool AssertValid() const;
-
-   //------------------------------------------------------------------------
-   // Dumps the contents of the object to the given dump context.
-   virtual void Dump(dbgDumpContext& os) const;
-   #endif // _DEBUG
-
-   #if defined _UNITTEST
-   //------------------------------------------------------------------------
-   // Runs a self-diagnostic test.  Returns true if the test passed,
-   // otherwise false.
-   static bool TestMe(dbgLog& rlog);
-   #endif // _UNITTEST
+      private:
+         Float64 m_A{0.0};
+         Float64 m_B{ 0.0 };
+         Float64 m_C{ 0.0 };
+         Float64 m_D{ 0.0 };
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_MATH_CUBICSOLVER_H_

@@ -25,105 +25,25 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\XCodeVersion.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdXCodeVersion
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdXCodeVersion::lrfdXCodeVersion(Reason reason,
-                                   LPCTSTR file,
-                                   Int16 line) :
-sysXBase(file,line),
+XCodeVersion::XCodeVersion(Reason reason, LPCTSTR file, Uint32 line) :
+   WBFL::System::XBase(file,line),
 m_Reason( reason )
 {
 }
 
-lrfdXCodeVersion::lrfdXCodeVersion(const lrfdXCodeVersion& rOther) :
-sysXBase(rOther)
+void XCodeVersion::Throw() const
 {
-   MakeCopy(rOther);
+   throw *static_cast<const XCodeVersion*>(this);
 }
 
-lrfdXCodeVersion::~lrfdXCodeVersion()
+Int32 XCodeVersion::GetReason() const noexcept
 {
+   return (Int32)m_Reason;
 }
 
-//======================== OPERATORS  =======================================
-lrfdXCodeVersion& lrfdXCodeVersion::operator= (const lrfdXCodeVersion& rOther)
-{
-   if( this != &rOther )
-   {
-      MakeAssignment(rOther);
-   }
-
-   return *this;
-}
-
-//======================== OPERATIONS =======================================
-void lrfdXCodeVersion::Throw() const
-{
-   throw *static_cast<const lrfdXCodeVersion*>(this);
-}
-
-Int32 lrfdXCodeVersion::GetReason() const
+XCodeVersion::Reason XCodeVersion::GetReasonCode() const noexcept
 {
    return m_Reason;
 }
-
-lrfdXCodeVersion::Reason lrfdXCodeVersion::GetReasonCode() const
-{
-   return m_Reason;
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdXCodeVersion::AssertValid() const
-{
-   return true;
-}
-
-void lrfdXCodeVersion::Dump(dbgDumpContext& os) const
-{
-}
-#endif // _DEBUG
-
-////////////////////////// PROTECTED  ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-void lrfdXCodeVersion::MakeCopy(const lrfdXCodeVersion& rOther)
-{
-   m_Reason = rOther.m_Reason;
-}
-
-void lrfdXCodeVersion::MakeAssignment(const lrfdXCodeVersion& rOther)
-{
-   sysXBase::MakeAssignment( rOther );
-   MakeCopy( rOther );
-}
-
-//======================== ACCESS     =======================================
-//======================== INQUIRY    =======================================
-
-////////////////////////// PRIVATE    ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-//======================== OPERATORS  =======================================
-//======================== OPERATIONS =======================================
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-

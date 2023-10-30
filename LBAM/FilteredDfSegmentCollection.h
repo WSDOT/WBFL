@@ -30,7 +30,7 @@
 #include "LBAMUtils.h"
 #include <WBFLComCollections.h>
 
-typedef CComVectorCollection<IFilteredDfSegmentCollection, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment,SegmentIndexType> DfVectorImpl;
+using DfVectorImpl = CComVectorCollection<IFilteredDfSegmentCollection, IDistributionFactorSegment, IEnumDistributionFactorSegment, &IID_IEnumDistributionFactorSegment,SegmentIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CFilteredDfSegmentCollection

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SYSEXP_H_
-#define INCLUDED_SYSTEM_SYSEXP_H_
 #pragma once
 
 // Define BUILDSYSLIB when building this library
@@ -44,7 +42,5 @@
 #define SYSTPL   extern template class SYSCLASS
 #endif
 
-#include <WbflAll.h>
 #include <System\AutoLib.h>
-
-#endif // INCLUDED_SYSTEM_SYSEXP_H_
+#include <WbflAll.h>

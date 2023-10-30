@@ -107,7 +107,7 @@ STDMETHODIMP CCastingRegion::ContainsPoint(Float64 Xb,VARIANT_BOOL* pvbContainsP
    return S_OK;
 }
 
-STDMETHODIMP CCastingRegion::Perimeter(CollectionIndexType nMinPointsPerSide,IPoint2dCollection** ppPoints)
+STDMETHODIMP CCastingRegion::Perimeter(IndexType nMinPointsPerSide,IPoint2dCollection** ppPoints)
 {
    CHECK_RETOBJ(ppPoints);
    CComPtr<IGenericBridge> bridge;

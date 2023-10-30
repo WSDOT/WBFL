@@ -253,8 +253,7 @@ public:
    // COM_INTERFACE_ENTRY_CHAIN(CPersistentCollection<Tderived,TColl,Version>)
    // to their interface maps.
    // This chains their primary map to this secondary map
-   typedef CLoadCollection<T, piidT, TDerived, LoadType, IItemType, CItemType,
-           EnumType, piidEnum> _ThisClass;
+   using _ThisClass = CLoadCollection<T, piidT, TDerived, LoadType, IItemType, CItemType, EnumType, piidEnum>;
 
    BEGIN_COM_MAP(_ThisClass)
       COM_INTERFACE_ENTRY(IStructuredStorage2)
@@ -263,10 +262,10 @@ public:
    END_COM_MAP()
 
 private:
-   typedef CComPtr<IItemType>         StoredType;
-   typedef typename std::map<LoadIDType, StoredType> ContainerType;
-   typedef typename ContainerType::iterator    ContainerIteratorType;
-   typedef typename ContainerType::value_type  ContainerValueType;
+   using StoredType = CComPtr<IItemType>;
+   using ContainerType = typename std::map<LoadIDType, StoredType>;
+   using ContainerIteratorType = typename ContainerType::iterator;
+   using ContainerValueType = typename ContainerType::value_type;
 
    ContainerType m_Container; // key value pair
    LoadIDType    m_LastUniqueKey;
@@ -293,7 +292,7 @@ public:
       m_Version = 1.0;
    }
 
-   STDMETHOD(get_Count)(CollectionIndexType *pVal)
+   STDMETHOD(get_Count)(IndexType *pVal)
    {
 	   CHECK_RETVAL(pVal);
 
@@ -302,7 +301,7 @@ public:
 	   return S_OK;
    }
 
-   STDMETHOD(get_Item)(CollectionIndexType index, IItemType **pVal)
+   STDMETHOD(get_Item)(IndexType index, IItemType **pVal)
    {
 	   CHECK_RETOBJ(pVal);
 
@@ -310,7 +309,7 @@ public:
          return E_INVALIDARG;
 
       ContainerIteratorType it( m_Container.begin() );
-      for (CollectionIndexType i = 0; i<index; i++)
+      for (IndexType i = 0; i<index; i++)
          it++;
 
       if (it != m_Container.end())
@@ -370,8 +369,8 @@ public:
    {
       CHECK_RETOBJ(ppenum);
 
-      typedef _CopyMapOfCComVariantsToInterface<IItemType, ContainerType> CopyType;
-      typedef CComEnumOnSTL<EnumType, piidEnum, IItemType*, CopyType, ContainerType> MyEnumType;
+      using CopyType = _CopyMapOfCComVariantsToInterface<IItemType, ContainerType>;
+      using MyEnumType = CComEnumOnSTL<EnumType, piidEnum, IItemType*, CopyType, ContainerType>;
       CComObject<MyEnumType>* pEnum;
       HRESULT hr = CComObject<MyEnumType>::CreateInstance(&pEnum);
       if ( FAILED(hr) )
@@ -395,8 +394,8 @@ public:
 	   *ppUnk = nullptr;
 	   HRESULT hRes = S_OK;
 
-      typedef _CopyMapOfCComVariants<ContainerType> CopyVariantType;
-      typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType > VecEnumType;
+      using CopyVariantType = _CopyMapOfCComVariants<ContainerType>;
+      using VecEnumType = CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT, VARIANT, CopyVariantType, ContainerType>;
 	   CComObject<VecEnumType>* p;
 	   hRes = CComObject<VecEnumType>::CreateInstance(&p);
 	   if (SUCCEEDED(hRes))
@@ -495,13 +494,13 @@ public:
 	   return S_OK;
    }
 
-   STDMETHOD(RemoveByIndex)(CollectionIndexType index)
+   STDMETHOD(RemoveByIndex)(IndexType index)
    {
       if (index<0)
          return E_INVALIDARG;
 
       ContainerIteratorType it( m_Container.begin() );
-      for (CollectionIndexType i = 0; i<index; i++, it++)
+      for (IndexType i = 0; i<index; i++, it++)
       ;
 
       if (it != m_Container.end())
@@ -810,9 +809,9 @@ public:
       if (FAILED(hr))
          return hr;
 
-      CollectionIndexType count = varlong;
+      IndexType count = varlong;
       m_LastUniqueKey = 1;
-      for (CollectionIndexType i = 0; i<count; i++)
+      for (IndexType i = 0; i<count; i++)
       {
 
          // items are not creatable, so we need to create and load manually
@@ -873,7 +872,7 @@ public:
          return hr;
 
       // save out count
-      CollectionIndexType count;
+      IndexType count;
       this->get_Count(&count);
       hr = save->put_Property(_bstr_t("Count"),_variant_t(count));
       if (FAILED(hr))

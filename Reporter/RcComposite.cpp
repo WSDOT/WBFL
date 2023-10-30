@@ -25,12 +25,6 @@
 #include <Reporter\RcComposite.h>
 #include <string.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptRcComposite::rptRcComposite()
 {
 }
@@ -102,6 +96,11 @@ void rptRcComposite::AddContent(const rptReportContent & rContent)
 }
 
 void rptRcComposite::AddContent(rptReportContent * pContent)
+{
+   m_ContentVec.emplace_back(pContent);
+}
+
+void rptRcComposite::AddContent(std::shared_ptr<rptReportContent>& pContent)
 {
    m_ContentVec.emplace_back(pContent);
 }

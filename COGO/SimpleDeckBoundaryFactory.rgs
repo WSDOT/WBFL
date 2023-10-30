@@ -1,0 +1,25 @@
+HKCR
+{
+	WBFLCogo.SimpleDeckBoundaryFactory.1 = s 'SimpleDeckBoundaryFactory Class'
+	{
+		CLSID = s '{132789EE-9C31-4D4D-8129-AD733BFA215B}'
+	}
+	WBFLCogo.SimpleDeckBoundaryFactory = s 'SimpleDeckBoundaryFactory Class'
+	{
+		CLSID = s '{132789EE-9C31-4D4D-8129-AD733BFA215B}'
+		CurVer = s 'WBFLCogo.SimpleDeckBoundaryFactory.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {132789EE-9C31-4D4D-8129-AD733BFA215B} = s 'SimpleDeckBoundaryFactory Class'
+		{
+			ProgID = s 'WBFLCogo.SimpleDeckBoundaryFactory.1'
+			VersionIndependentProgID = s 'WBFLCogo.SimpleDeckBoundaryFactory'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{1128D28F-55F7-11D5-8C29-006097C68A9C}'
+		}
+	}
+}

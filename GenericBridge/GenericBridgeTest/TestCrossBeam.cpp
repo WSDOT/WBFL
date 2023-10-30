@@ -78,7 +78,7 @@ void CTestCrossBeam::Test()
    //TRY_TEST(crossBeam->get_Length(&length),S_OK);
    //TRY_TEST(IsEqual(length,0.0),true);
 
-   //CollectionIndexType count;
+   //IndexType count;
    //TRY_TEST(crossBeam->get_SegmentCount(nullptr),E_POINTER);
    //TRY_TEST(crossBeam->get_SegmentCount(&count),S_OK);
    //TRY_TEST(count,0);

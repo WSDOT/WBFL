@@ -21,16 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ChapterBuilder.h: interface for the CChapterBuilder class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_CHAPTERBUILDER_H__9B2BF99A_0562_4755_8CA3_C657F931390E__INCLUDED_)
-#define AFX_CHAPTERBUILDER_H__9B2BF99A_0562_4755_8CA3_C657F931390E__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <ReportManager\ReportManagerExp.h>
 #include <ReportManager\ReportSpecification.h>
@@ -38,19 +29,38 @@
 
 class rptChapter;
 
-class REPORTMANAGERCLASS CChapterBuilder  
+namespace WBFL
 {
-public:
-	CChapterBuilder();
-	virtual ~CChapterBuilder();
+   namespace Reporting
+   {
+      /// Abstract factory to create rptChapter objects
+      class REPORTMANAGERCLASS ChapterBuilder  
+      {
+      public:
+	      ChapterBuilder() = default;
+	      virtual ~ChapterBuilder() = default;
 
-   virtual LPCTSTR GetKey() const;
-   virtual LPCTSTR GetName() const = 0;
-   virtual Uint16 GetMaxLevel() const = 0;
-   virtual bool Select() const = 0; // return true if this chapter is to be selected by default
-   virtual rptChapter* Build(CReportSpecification* pRptSpec,Uint16 level) const = 0;
-   virtual CChapterBuilder* Clone() const = 0;
-   virtual bool NeedsUpdate(CReportHint* pHint,CReportSpecification* pRptSpec,Uint16 level) const;
+         /// Returns a key used to search for this chapter builder. Calls GetName() by default.
+         virtual LPCTSTR GetKey() const;
+
+         /// Returns the chapter name
+         virtual LPCTSTR GetName() const = 0;
+
+         /// Returns the maximum output level supported by this chapter
+         virtual Uint16 GetMaxLevel() const = 0;
+
+         /// Return true if this chapter is to be selected by default
+         virtual bool Select() const = 0;
+
+         /// Builds the chapter based on the reporting specification and output level
+         virtual rptChapter* Build(const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const = 0;
+
+         /// Creates a clone this chapter builder
+         virtual std::unique_ptr<ChapterBuilder> Clone() const = 0;
+
+         /// Returns true if the chapter needs to be re-built based on a reporting hint, reporting specification, and output level.
+         /// Default implementation returns false
+         virtual bool NeedsUpdate(const std::shared_ptr<const ReportHint>& pHint, const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const;
+      };
+   };
 };
-
-#endif // !defined(AFX_CHAPTERBUILDER_H__9B2BF99A_0562_4755_8CA3_C657F931390E__INCLUDED_)

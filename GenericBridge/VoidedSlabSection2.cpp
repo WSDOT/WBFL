@@ -40,16 +40,7 @@ static char THIS_FILE[] = __FILE__;
 // CVoidedSlabSection2
 HRESULT CVoidedSlabSection2::FinalConstruct()
 {
-   m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
-   m_CompositeShape.QueryInterface(&m_Shape);
-   m_CompositeShape.QueryInterface(&m_Position);
-
    m_Beam.CoCreateInstance(CLSID_VoidedSlab2);
-   CComQIPtr<IShape> shape(m_Beam);
-   m_CompositeShape->AddShape(shape,VARIANT_FALSE);
-
-   m_Rotation = 0;
-
    return S_OK;
 }
 
@@ -92,7 +83,7 @@ void CVoidedSlabSection2::GetWebs(Float64* pIntWeb,Float64* pExtWeb)
    // pExtWeb = width of one exterior web
 
    Float64 Si, Se, Di, De, W, C1;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_InteriorVoidSpacing(&Si);
    m_Beam->get_InteriorVoidDiameter(&Di);
    m_Beam->get_ExteriorVoidSpacing(&Se);
@@ -153,9 +144,6 @@ STDMETHODIMP CVoidedSlabSection2::put_Beam(IVoidedSlab2* beam)
 
    m_Beam.Release();
    clone.QueryInterface(&m_Beam);
-   m_Shape = clone;
-
-   m_CompositeShape->Replace(0,m_Shape);
 
    return S_OK;
 }
@@ -170,6 +158,21 @@ STDMETHODIMP CVoidedSlabSection2::get_Beam(IVoidedSlab2** beam)
 
 ////////////////////////////////////////////////////////////////////////
 // IPrecastGirderSection implementation
+STDMETHODIMP CVoidedSlabSection2::get_GirderShape(IShape** ppShape)
+{
+   return m_Beam->GetSlabShape(ppShape);
+}
+
+STDMETHODIMP CVoidedSlabSection2::get_VoidCount(/*[out, retval]*/IndexType* pnVoids)
+{
+   return m_Beam->get_VoidCount(pnVoids);
+}
+
+STDMETHODIMP CVoidedSlabSection2::get_VoidShape(/*[in]*/IndexType voidIdx, /*[out, retval]*/IShape** ppShape)
+{
+   return m_Beam->GetVoidShape(voidIdx, ppShape);
+}
+
 STDMETHODIMP CVoidedSlabSection2::get_WorkPoint(IPoint2d** ppWorkPoint)
 {
    // work point is at top center
@@ -232,7 +235,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* loca
    CHECK_RETVAL(location);
 
    Float64 S1, S2, D1, D2, W;
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_ExteriorVoidSpacing(&S1);
    m_Beam->get_InteriorVoidSpacing(&S2);
    m_Beam->get_ExteriorVoidDiameter(&D1);
@@ -240,7 +243,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebLocation(WebIndexType idx,Float64* loca
    m_Beam->get_Width(&W);
    m_Beam->get_VoidCount(&N);
 
-   CollectionIndexType nWebs = N + 1;
+   IndexType nWebs = N + 1;
 
    Float64 edge_width, between_ext_int_void_width, between_int_void_width;
    if (3 <= N)
@@ -308,7 +311,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebSpacing(WebIndexType idx,Float64* spaci
       return E_INVALIDARG;
    }
 
-   CollectionIndexType N;
+   IndexType N;
    m_Beam->get_VoidCount(&N);
 
    if ( idx == 0 || idx == 1 || idx == N || idx == N-1 )
@@ -330,7 +333,7 @@ STDMETHODIMP CVoidedSlabSection2::get_WebThickness(WebIndexType idx,Float64* tWe
 
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -359,7 +362,7 @@ STDMETHODIMP CVoidedSlabSection2::get_MinWebThickness(Float64* tWeb)
 {
    CHECK_RETVAL(tWeb);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -538,7 +541,7 @@ STDMETHODIMP CVoidedSlabSection2::get_ShearWidth(Float64* shearwidth)
 {
    CHECK_RETVAL(shearwidth);
 
-   CollectionIndexType nVoids;
+   IndexType nVoids;
    m_Beam->get_VoidCount(&nVoids);
 
    if ( nVoids == 0 )
@@ -802,34 +805,46 @@ STDMETHODIMP CVoidedSlabSection2::GetWebWidthProjectionsForDebonding(IUnkArray**
 
 ////////////////////////////////////////////////////////////////////////
 // IShape implementation
+STDMETHODIMP CVoidedSlabSection2::FurthestPoint(ILine2d* line, IPoint2d** ppPoint, Float64* dist)
+{
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->FurthestPoint(line, ppPoint, dist);
+}
+
 STDMETHODIMP CVoidedSlabSection2::FurthestDistance(ILine2d* line,Float64 *pVal)
 {
-   return m_Shape->FurthestDistance(line,pVal);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->FurthestDistance(line, pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_Perimeter(Float64 *pVal)
 {
-   return m_Shape->get_Perimeter(pVal);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->get_Perimeter(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_ShapeProperties(IShapeProperties* *pVal)
 {
-   return m_Shape->get_ShapeProperties(pVal);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->get_ShapeProperties(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_BoundingBox(IRect2d* *pVal)
 {
-   return m_Shape->get_BoundingBox(pVal);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->get_BoundingBox(pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
 {
-   return m_Shape->get_PolyPoints(ppPolyPoints);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->get_PolyPoints(ppPolyPoints);
 }
 
 STDMETHODIMP CVoidedSlabSection2::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
 {
-   return m_Shape->PointInShape(pPoint,pbResult);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->PointInShape(pPoint, pbResult);
 }
 
 STDMETHODIMP CVoidedSlabSection2::Clone(IShape** pClone)
@@ -841,32 +856,15 @@ STDMETHODIMP CVoidedSlabSection2::Clone(IShape** pClone)
 
    clone->m_Rotation = m_Rotation;
 
-   CComPtr<IVoidedSlabSection2> voided_slab_section = clone;
-   voided_slab_section->put_Beam(m_Beam);
+   CComPtr<IVoidedSlabSection2> section = clone;
 
-   IndexType nShapes;
-   m_CompositeShape->get_Count(&nShapes);
+   CComQIPtr<IShape> beam_shape(m_Beam);
+   CComPtr<IShape> clone_beam;
+   beam_shape->Clone(&clone_beam);
+   CComQIPtr<IVoidedSlab2> new_beam(clone_beam);
+   section->put_Beam(new_beam);
 
-   CComQIPtr<ICompositeShape> compShape(voided_slab_section);
-   for ( IndexType shapeIdx = 1; shapeIdx < nShapes; shapeIdx++ )
-   {
-      CComPtr<ICompositeShapeItem> compShapeItem;
-      m_CompositeShape->get_Item(shapeIdx,&compShapeItem);
-
-      CComPtr<IShape> shapeItem;
-      compShapeItem->get_Shape(&shapeItem);
-
-      VARIANT_BOOL bVoid;
-      compShapeItem->get_Void(&bVoid);
-
-      CComPtr<IShape> shapeItemClone;
-      shapeItem->Clone(&shapeItemClone);
-
-      compShape->AddShape(shapeItemClone,bVoid);
-   }
-
-   CComQIPtr<IShape> shape(voided_slab_section);
-
+   CComQIPtr<IShape> shape(section);
    (*pClone) = shape;
    (*pClone)->AddRef();
 
@@ -875,112 +873,145 @@ STDMETHODIMP CVoidedSlabSection2::Clone(IShape** pClone)
 
 STDMETHODIMP CVoidedSlabSection2::ClipWithLine(ILine2d* pLine,IShape** pShape)
 {
-   return m_Shape->ClipWithLine(pLine,pShape);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->ClipWithLine(pLine, pShape);
 }
 
 STDMETHODIMP CVoidedSlabSection2::ClipIn(IRect2d* pRect,IShape** pShape)
 {
-   return m_Shape->ClipIn(pRect,pShape);
+   CComQIPtr<IShape> shape(m_Beam);
+   return shape->ClipIn(pRect, pShape);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // ICompositeShape
 /////////////////////////////////////////////////////////////////////////////
-STDMETHODIMP CVoidedSlabSection2::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   return m_CompositeShape->get_StructuredStorage(pStg);
-}
-
 STDMETHODIMP CVoidedSlabSection2::get_Shape(IShape* *pVal)
 {
-   return m_CompositeShape->get_Shape(pVal);
+   CHECK_RETOBJ(pVal);
+   return this->QueryInterface(IID_IShape, (void**)pVal);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
-   return m_CompositeShape->get_XYPosition(pVal);
+   return this->QueryInterface(IID_IXYPosition, (void**)pVal);
 }
 
-STDMETHODIMP CVoidedSlabSection2::get_Item(CollectionIndexType idx,ICompositeShapeItem* *pVal)
+STDMETHODIMP CVoidedSlabSection2::get_Item(IndexType idx,ICompositeShapeItem* *pVal)
 {
-   return m_CompositeShape->get_Item(idx,pVal);
+   CComPtr<ICompositeShape> compShape;
+   compShape.CoCreateInstance(CLSID_CompositeShape);
+
+   if (idx == 0)
+   {
+      CComPtr<IShape> shape;
+      m_Beam->GetSlabShape(&shape);
+      compShape->AddShape(shape, VARIANT_FALSE);
+   }
+   else
+   {
+      CComPtr<IShape> shape;
+      m_Beam->GetVoidShape(idx - 1, &shape);
+      compShape->AddShape(shape, VARIANT_TRUE);
+   }
+
+   compShape->get_Item(0, pVal);
+   return S_OK;
 }
 
 STDMETHODIMP CVoidedSlabSection2::get__NewEnum(IUnknown* *pVal)
 {
-   return m_CompositeShape->get__NewEnum(pVal);
+   ATLASSERT(false);
+   return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP CVoidedSlabSection2::get_Count(IndexType *pVal)
 {
-   return m_CompositeShape->get_Count(pVal);
+   CHECK_RETVAL(pVal);
+   IndexType nVoids;
+   m_Beam->get_VoidCount(&nVoids);
+   *pVal = nVoids + 1;
+   return S_OK;
 }
 
-STDMETHODIMP CVoidedSlabSection2::Remove(CollectionIndexType idx)
+STDMETHODIMP CVoidedSlabSection2::Remove(IndexType idx)
 {
-   return m_CompositeShape->Remove(idx);
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
 STDMETHODIMP CVoidedSlabSection2::Clear()
 {
-   return m_CompositeShape->Clear();
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::ReplaceEx(CollectionIndexType idx,ICompositeShapeItem* pShapeItem)
+STDMETHODIMP CVoidedSlabSection2::ReplaceEx(IndexType idx,ICompositeShapeItem* pShapeItem)
 {
-   return m_CompositeShape->ReplaceEx(idx,pShapeItem);
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
-STDMETHODIMP CVoidedSlabSection2::Replace(CollectionIndexType idx,IShape* pShape)
+STDMETHODIMP CVoidedSlabSection2::Replace(IndexType idx,IShape* pShape)
 {
-   return m_CompositeShape->Replace(idx,pShape);
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
 STDMETHODIMP CVoidedSlabSection2::AddShapeEx(ICompositeShapeItem* ShapeItem)
 {
-   return m_CompositeShape->AddShapeEx(ShapeItem);
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
 STDMETHODIMP CVoidedSlabSection2::AddShape(IShape* shape,VARIANT_BOOL bVoid)
 {
-   return m_CompositeShape->AddShape(shape,bVoid);
+   ATLASSERT(false); // can't add a shape
+   return E_INVALIDARG;
 }
 
 // XYPosition
 STDMETHODIMP CVoidedSlabSection2::Offset(Float64 dx,Float64 dy)
 {
-   return m_Position->Offset(dx,dy);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->Offset(dx, dy);
 }
 
 STDMETHODIMP CVoidedSlabSection2::OffsetEx(ISize2d* pSize)
 {
-   return m_Position->OffsetEx(pSize);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->OffsetEx(pSize);
 }
 
 STDMETHODIMP CVoidedSlabSection2::get_LocatorPoint(LocatorPointType lp,IPoint2d** point)
 {
-   return m_Position->get_LocatorPoint(lp,point);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->get_LocatorPoint(lp, point);
 }
 
 STDMETHODIMP CVoidedSlabSection2::put_LocatorPoint(LocatorPointType lp,IPoint2d* point)
 {
-   return m_Position->put_LocatorPoint(lp,point);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->put_LocatorPoint(lp, point);
 }
 
 STDMETHODIMP CVoidedSlabSection2::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
 {
-   return m_Position->MoveEx(pFrom,pTo);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->MoveEx(pFrom, pTo);
 }
 
 STDMETHODIMP CVoidedSlabSection2::RotateEx(IPoint2d* pPoint,Float64 angle)
 {
    m_Rotation += angle;
-   return m_Position->RotateEx(pPoint,angle);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->RotateEx(pPoint, angle);
 }
 
 STDMETHODIMP CVoidedSlabSection2::Rotate(Float64 cx,Float64 cy,Float64 angle)
 {
    m_Rotation += angle;
-   return m_Position->Rotate(cx,cy,angle);
+   CComQIPtr<IXYPosition> position(m_Beam);
+   return position->Rotate(cx, cy, angle);
 }

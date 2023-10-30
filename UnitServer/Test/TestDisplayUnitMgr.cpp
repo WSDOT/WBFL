@@ -181,7 +181,7 @@ void CTestDisplayUnitMgr::Test()
    TRY_TEST(pMe->PassedEventTest(), true);
 
    // Test Count
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(pDisplayUnitMgr->get_Count(nullptr), E_POINTER);
    TRY_TEST(pDisplayUnitMgr->get_Count(&count),S_OK);
    TRY_TEST(count,3);

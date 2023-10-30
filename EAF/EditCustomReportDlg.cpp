@@ -181,11 +181,11 @@ void CEditCustomReportDlg::FillChapterData(bool initial)
       m_ParentReportCombo.GetLBText(sel, rptname);
 
       GET_IFACE2(m_pConfigureReportsDlg->m_pBroker,IReportManager,pReportMgr);
-      std::shared_ptr<CReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
-      CollectionIndexType nc = pBuilder->GetChapterBuilderCount();
-      for (CollectionIndexType ic = 0; ic<nc; ic++)
+      std::shared_ptr<WBFL::Reporting::ReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
+      IndexType nc = pBuilder->GetChapterBuilderCount();
+      for (IndexType ic = 0; ic<nc; ic++)
       {
-         std::shared_ptr<CChapterBuilder> pCb = pBuilder->GetChapterBuilder(ic);
+         std::shared_ptr<WBFL::Reporting::ChapterBuilder> pCb = pBuilder->GetChapterBuilder(ic);
          std::_tstring cbname = pCb->GetName();
 
          // At initial time we are loading data as in report. if not initial, we have no chapters selected

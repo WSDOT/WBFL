@@ -56,9 +56,9 @@ public:
 class EAFCLASS CEAFCustomReports
 {
 public:
-   typedef std::set<CEAFCustomReport> ReportContainer;
-   typedef ReportContainer::iterator ReportIterator;
-   typedef ReportContainer::const_iterator ReportConstIterator;
+   using ReportContainer = std::set<CEAFCustomReport>;
+   using ReportIterator = ReportContainer::iterator;
+   using ReportConstIterator = ReportContainer::const_iterator;
    ReportContainer m_Reports;
 
    void LoadFromRegistry(CWinApp* theApp);

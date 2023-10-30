@@ -42,6 +42,10 @@
 #include "PolyShape.h"
 #include "GeomUtil.h"
 #include "CompositeShape.h"
+#include "CompositeShapeItem.h"
+#include "GenericShape.h"
+#include "Circle.h"
+#include "CircularSegment.h"
 
 #include <MathEx.h>
 
@@ -51,9 +55,111 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+std::shared_ptr<WBFL::Geometry::Point2d> GetInnerPoint(IPoint2d* pPoint)
+{
+   CPoint2d* p = dynamic_cast<CPoint2d*>(pPoint);
+   ATLASSERT(p);
+   return p->GetPoint();
+}
+
+std::shared_ptr<WBFL::Geometry::Point3d> GetInnerPoint(IPoint3d* pPoint)
+{
+   CPoint3d* p = dynamic_cast<CPoint3d*>(pPoint);
+   ATLASSERT(p);
+   return p->GetPoint();
+}
+
+WBFL::Geometry::Point3d GetPoint(IPoint3d* pPoint)
+{
+   Float64 x, y, z;
+   pPoint->Location(&x, &y, &z);
+   return WBFL::Geometry::Point3d(x, y, z);
+}
+
+WBFL::Geometry::Vector3d GetVector(IVector3d* pVector)
+{
+   Float64 dx, dy, dz;
+   pVector->get_X(&dx);
+   pVector->get_Y(&dy);
+   pVector->get_Z(&dz);
+   return WBFL::Geometry::Vector3d(dx, dy, dz);
+}
+
+WBFL::Geometry::Point2d GetPoint(IPoint2d* pPoint)
+{
+   Float64 x, y; pPoint->Location(&x, &y);
+   return WBFL::Geometry::Point2d(x, y);
+}
+
+WBFL::Geometry::Line2d GetLine(ILine2d* pLine)
+{
+   Float64 c;
+   CComPtr<IVector2d> n;
+   pLine->GetImplicit(&c, &n);
+
+   Float64 nx, ny;
+   n->get_X(&nx); n->get_Y(&ny);
+
+   return WBFL::Geometry::Line2d(c, WBFL::Geometry::Vector2d(WBFL::Geometry::Size2d(nx, ny)));
+}
+
+WBFL::Geometry::LineSegment2d GetLineSegment(ILineSegment2d* pLineSegment)
+{
+   CComPtr<IPoint2d> pStart, pEnd;
+   pLineSegment->get_StartPoint(&pStart);
+   pLineSegment->get_EndPoint(&pEnd);
+   return WBFL::Geometry::LineSegment2d(GetPoint(pStart), GetPoint(pEnd));
+}
+
+WBFL::Geometry::Rect2d GetRect(IRect2d* pRect)
+{
+   Float64 left, right, top, bottom;
+   pRect->get_Left(&left);
+   pRect->get_Right(&right);
+   pRect->get_Top(&top);
+   pRect->get_Bottom(&bottom);
+
+   return WBFL::Geometry::Rect2d(left, bottom, right, top);
+}
+
+WBFL::Geometry::Size2d GetSize(ISize2d* pSize)
+{
+   Float64 dx, dy;
+   pSize->Dimensions(&dx, &dy);
+   return WBFL::Geometry::Size2d(dx, dy);
+}
+
+WBFL::Geometry::Vector2d GetVector(IVector2d* pVector)
+{
+   Float64 x, y;
+   pVector->get_X(&x);
+   pVector->get_Y(&y);
+   return WBFL::Geometry::Vector2d(WBFL::Geometry::Size2d(x, y));
+}
+
+WBFL::Geometry::Circle GetCircle(ICircle* pCircle)
+{
+   CComPtr<IPoint2d> center;
+   pCircle->get_Center(&center);
+   Float64 radius;
+   pCircle->get_Radius(&radius);
+
+   return WBFL::Geometry::Circle(GetPoint(center), radius);
+}
+
+WBFL::Geometry::Circle2d GetCircle2d(ICircle* pCircle)
+{
+   CComPtr<IPoint2d> center;
+   pCircle->get_Center(&center);
+   Float64 radius;
+   pCircle->get_Radius(&radius);
+
+   return WBFL::Geometry::Circle2d(GetPoint(center), radius);
+}
+
 HRESULT CopyPoint(IPoint2d* pTo,IPoint2d* pFrom)
 {
-   ATLASSERT(pTo != 0 && pFrom != 0);
+   ATLASSERT(pTo != nullptr && pFrom != nullptr);
 
    Float64 x,y;
    GetCoordinates(pFrom,&x,&y);
@@ -64,7 +170,7 @@ HRESULT CopyPoint(IPoint2d* pTo,IPoint2d* pFrom)
 
 HRESULT CopyLineSegment(ILineSegment2d* pTo,ILineSegment2d* pFrom)
 {
-   ATLASSERT( pTo != 0 && pFrom != 0 );
+   ATLASSERT( pTo != nullptr && pFrom != nullptr );
    CComPtr<IPoint2d> pStartFrom;
    CComPtr<IPoint2d> pEndFrom;
    pFrom->get_StartPoint(&pStartFrom);
@@ -78,24 +184,26 @@ HRESULT CopyLineSegment(ILineSegment2d* pTo,ILineSegment2d* pFrom)
    CopyPoint(pStartTo,pStartFrom);
    CopyPoint(pEndTo,pEndFrom);
 
+   pTo->ThroughPoints(pStartTo, pEndTo);
+
    return S_OK;
 }
 
 HRESULT CopyPoints(IPoint2dCollection* pTo,IPoint2dCollection* pFrom)
 {
-   ATLASSERT( pTo != 0 && pFrom != 0 );
+   ATLASSERT( pTo != nullptr && pFrom != nullptr );
 
    pTo->Clear();
 
-   CollectionIndexType cPoint;
+   IndexType cPoint;
    pFrom->get_Count(&cPoint);
-   for ( CollectionIndexType idx = 0; idx < cPoint; idx++ )
+   for ( IndexType idx = 0; idx < cPoint; idx++ )
    {
       CComPtr<IPoint2d> pPoint;
       pFrom->get_Item(idx,&pPoint);
 
       CComPtr<IPoint2d> pNewPoint;
-      CreatePoint(pPoint,nullptr,&pNewPoint);
+      CreatePoint(pPoint,&pNewPoint);
 
       pTo->Add(pNewPoint);
    }
@@ -105,7 +213,7 @@ HRESULT CopyPoints(IPoint2dCollection* pTo,IPoint2dCollection* pFrom)
 
 HRESULT CreatePointCollection(IPoint2dCollection** ppPoints,IPoint2dCollection* pCopyFrom)
 {
-   ATLASSERT( ppPoints != 0 && (*ppPoints) == 0 );
+   ATLASSERT( ppPoints != nullptr && (*ppPoints) == nullptr );
 
    CComObject<CPoint2dCollection>* pPoints;
    HRESULT hr = CComObject<CPoint2dCollection>::CreateInstance( &pPoints );
@@ -115,16 +223,14 @@ HRESULT CreatePointCollection(IPoint2dCollection** ppPoints,IPoint2dCollection* 
    pPoints->AddRef();
    (*ppPoints) = pPoints;
 
-   pPoints->EnableEvents(false);
    CopyPoints(*ppPoints,pCopyFrom);
-   pPoints->EnableEvents(true);
 
    return S_OK;
 }
 
 HRESULT GetCoordinates(IPoint2d* pPoint,Float64* px,Float64* py)
 {
-   ATLASSERT(pPoint != 0 && px != 0 && py != 0);
+   ATLASSERT(pPoint != nullptr && px != nullptr && py != nullptr);
 
    HRESULT hr = pPoint->Location(px,py);
    if (FAILED(hr))
@@ -135,7 +241,7 @@ HRESULT GetCoordinates(IPoint2d* pPoint,Float64* px,Float64* py)
 
 HRESULT GetCoordinates(IPoint3d* pPoint,Float64* px,Float64* py,Float64* pz)
 {
-   ATLASSERT(pPoint != 0 && px != 0 && py != 0 && pz != 0);
+   ATLASSERT(pPoint != nullptr && px != nullptr && py != nullptr && pz != nullptr);
 
    HRESULT hr = pPoint->Location(px,py,pz);
    if (FAILED(hr))
@@ -146,7 +252,7 @@ HRESULT GetCoordinates(IPoint3d* pPoint,Float64* px,Float64* py,Float64* pz)
 
 HRESULT PutCoordinates(Float64 x,Float64 y,IPoint2d* pPoint)
 {
-   ATLASSERT(pPoint != 0 );
+   ATLASSERT(pPoint != nullptr );
 
    pPoint->Move(x,y);
 
@@ -155,7 +261,7 @@ HRESULT PutCoordinates(Float64 x,Float64 y,IPoint2d* pPoint)
 
 HRESULT PutCoordinates(Float64 x,Float64 y,Float64 z,IPoint3d* pPoint)
 {
-   ATLASSERT(pPoint != 0 );
+   ATLASSERT(pPoint != nullptr );
 
    pPoint->Move(x,y,z);
 
@@ -164,13 +270,13 @@ HRESULT PutCoordinates(Float64 x,Float64 y,Float64 z,IPoint3d* pPoint)
 
 HRESULT GetSize(ISize2d* pSize,Float64* pdx,Float64* pdy)
 {
-   ATLASSERT( pSize != 0 && pdx != 0 && pdy != 0 );
+   ATLASSERT( pSize != nullptr && pdx != nullptr && pdy != nullptr );
    return pSize->Dimensions(pdx, pdy);
 }
 
 HRESULT GetRect(IRect2d* rect,Float64 *left,Float64 *top,Float64 *right,Float64 *bottom)
 {
-   ATLASSERT( rect != 0 && left != 0 && top != 0 && right != 0 && bottom != 0);
+   ATLASSERT( rect != nullptr && left != nullptr && top != nullptr && right != nullptr && bottom != nullptr);
    rect->get_Left(left);
    rect->get_Right(right);
    rect->get_Top(top);
@@ -178,83 +284,98 @@ HRESULT GetRect(IRect2d* rect,Float64 *left,Float64 *top,Float64 *right,Float64 
    return S_OK;
 }
 
-HRESULT CreatePoint(IPoint2d* pPoint,IPoint2dFactory* pFactory,IPoint2d** ppPoint)
+HRESULT CreatePoint(const WBFL::Geometry::Point2d& point, IPoint2d** ppPoint)
 {
-   ATLASSERT( pPoint != 0 && ppPoint != 0 && (*ppPoint) == 0 );
+   return CreatePoint(point.X(), point.Y(), ppPoint);
+}
+
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point2d>& point, IPoint2d** ppPoint)
+{
+   CComObject<CPoint2d>* pPoint;
+   CComObject<CPoint2d>::CreateInstance(&pPoint);
+   pPoint->SetPoint(point);
+   (*ppPoint) = pPoint;
+   (*ppPoint)->AddRef();
+   return S_OK;
+}
+
+HRESULT CreatePoint(IPoint2d* pPoint,IPoint2d** ppPoint)
+{
+   ATLASSERT( pPoint != nullptr && ppPoint != nullptr && (*ppPoint) == nullptr );
 
    Float64 x,y;
    pPoint->Location(&x,&y);
 
-   return CreatePoint(x,y,pFactory,ppPoint);
+   return CreatePoint(x,y,ppPoint);
 }
 
-HRESULT CreatePoint(Float64 x,Float64 y,IPoint2dFactory* pFactory,IPoint2d** ppPoint)
+HRESULT CreatePoint(Float64 x,Float64 y,IPoint2d** ppPoint)
 {
-   ATLASSERT( ppPoint != 0 && (*ppPoint) == 0 );
+   ATLASSERT( ppPoint != nullptr && (*ppPoint) == nullptr );
 
-   if ( pFactory == 0 )
-   {
-      CComObject<CPoint2d>* pPoint;
-      HRESULT hr = CComObject<CPoint2d>::CreateInstance(&pPoint);
-      if ( FAILED(hr) )
-         return hr;
+   CComObject<CPoint2d>* pPoint;
+   HRESULT hr = CComObject<CPoint2d>::CreateInstance(&pPoint);
+   if ( FAILED(hr) )
+      return hr;
 
-      pPoint->AddRef();
-      (*ppPoint) = pPoint;
-   }
-   else
-   {
-      HRESULT hr = pFactory->CreatePoint(ppPoint);
-      if ( FAILED(hr) )
-         return hr;
-   }
+   pPoint->AddRef();
+   (*ppPoint) = pPoint;
 
    (*ppPoint)->Move(x,y);
-
 
    return S_OK;
 }
 
-HRESULT CreatePoint(IPoint3d* pPoint,IPoint3dFactory* pFactory,IPoint3d** ppPoint)
+HRESULT CreatePoint(const WBFL::Geometry::Point3d& point, IPoint3d** ppPoint)
 {
-   ATLASSERT( pPoint != 0 && ppPoint != 0 && (*ppPoint == 0) );
+   return CreatePoint(point.X(), point.Y(), point.Z(), ppPoint);
+}
+
+HRESULT CreatePoint(std::shared_ptr<WBFL::Geometry::Point3d>& point, IPoint3d** ppPoint)
+{
+   CComObject<CPoint3d>* pPoint;
+   CComObject<CPoint3d>::CreateInstance(&pPoint);
+   pPoint->SetPoint(point);
+   (*ppPoint) = pPoint;
+   (*ppPoint)->AddRef();
+   return S_OK;
+}
+
+HRESULT CreatePoint(IPoint3d* pPoint,IPoint3d** ppPoint)
+{
+   ATLASSERT( pPoint != nullptr && ppPoint != nullptr && (*ppPoint == nullptr) );
 
    Float64 x,y,z;
    pPoint->Location(&x,&y,&z);
 
-   return CreatePoint(x,y,z,pFactory,ppPoint);
+   return CreatePoint(x,y,z,ppPoint);
 }
 
-HRESULT CreatePoint(Float64 x,Float64 y,Float64 z,IPoint3dFactory* pFactory,IPoint3d** ppPoint)
+HRESULT CreatePoint(Float64 x,Float64 y,Float64 z,IPoint3d** ppPoint)
 {
-   ATLASSERT( ppPoint != 0 && (*ppPoint == 0) );
+   ATLASSERT( ppPoint != nullptr && (*ppPoint == nullptr) );
 
-   if ( pFactory == 0 )
-   {
-      CComObject<CPoint3d>* pPoint;
-      HRESULT hr = CComObject<CPoint3d>::CreateInstance(&pPoint);
-      if ( FAILED(hr) )
-         return hr;
+   CComObject<CPoint3d>* pPoint;
+   HRESULT hr = CComObject<CPoint3d>::CreateInstance(&pPoint);
+   if ( FAILED(hr) )
+      return hr;
 
-      pPoint->AddRef();
-      (*ppPoint) = pPoint;
-   }
-   else
-   {
-      HRESULT hr = pFactory->CreatePoint(ppPoint);
-      if ( FAILED(hr) )
-         return hr;
-   }
+   pPoint->AddRef();
+   (*ppPoint) = pPoint;
 
    (*ppPoint)->Move(x,y,z);
-
 
    return S_OK;
 }
 
+HRESULT CreateRect(const WBFL::Geometry::Rect2d& rect, IRect2d** ppRect)
+{
+   return CreateRect(rect.Left(), rect.Top(), rect.Right(), rect.Bottom(), ppRect);
+}
+
 HRESULT CreateRect(Float64 left,Float64 top,Float64 right,Float64 bottom,IRect2d** ppRect)
 {
-   ATLASSERT( ppRect != 0 && (*ppRect) == 0 );
+   ATLASSERT( ppRect != nullptr && (*ppRect) == nullptr );
 
    CComObject<CRect2d>* pRect;
    HRESULT hr = CComObject<CRect2d>::CreateInstance(&pRect);
@@ -273,9 +394,14 @@ HRESULT CreateRect(Float64 left,Float64 top,Float64 right,Float64 bottom,IRect2d
    return S_OK;
 }
 
+HRESULT CreateSize(const WBFL::Geometry::Size2d& size, ISize2d** ppSize)
+{
+   return CreateSize(size.Dx(), size.Dy(), ppSize);
+}
+
 HRESULT CreateSize(Float64 dx,Float64 dy,ISize2d** ppSize)
 {
-   ATLASSERT( ppSize != 0 && (*ppSize) == 0 );
+   ATLASSERT( ppSize != nullptr && (*ppSize) == nullptr );
 
    CComObject<CSize2d>* pSize;
    HRESULT hr = CComObject<CSize2d>::CreateInstance(&pSize);
@@ -292,9 +418,14 @@ HRESULT CreateSize(Float64 dx,Float64 dy,ISize2d** ppSize)
    return S_OK;
 }
 
+HRESULT CreateSize(const WBFL::Geometry::Size3d& size, ISize3d** ppSize)
+{
+   return CreateSize(size.Dx(), size.Dy(), size.Dz(), ppSize);
+}
+
 HRESULT CreateSize(Float64 dx,Float64 dy,Float64 dz,ISize3d** ppSize)
 {
-   ATLASSERT( ppSize != 0 && (*ppSize) == 0 );
+   ATLASSERT( ppSize != nullptr && (*ppSize) == nullptr );
 
    CComObject<CSize3d>* pSize;
    HRESULT hr = CComObject<CSize3d>::CreateInstance(&pSize);
@@ -314,16 +445,21 @@ HRESULT CreateSize(Float64 dx,Float64 dy,Float64 dz,ISize3d** ppSize)
 
 HRESULT CreateVector(IPoint2d* pSource,IVector2d** ppTarget)
 {
-   ATLASSERT( pSource != 0 && ppTarget != 0 && (*ppTarget) == 0);
+   ATLASSERT( pSource != nullptr && ppTarget != nullptr && (*ppTarget) == nullptr);
 
    Float64 x,y;
    GetCoordinates(pSource,&x,&y);
    return CreateVector(x,y,ppTarget);
 }
 
+HRESULT CreateVector(const WBFL::Geometry::Vector2d& source, IVector2d** ppVector)
+{
+   return CreateVector(source.X(), source.Y(), ppVector);
+}
+
 HRESULT CreateVector(Float64 x,Float64 y,IVector2d** ppVector)
 {
-   ATLASSERT( ppVector != 0 && (*ppVector) == 0);
+   ATLASSERT( ppVector != nullptr && (*ppVector) == nullptr);
 
    CComObject<CVector2d>* pVector;
    HRESULT hr = CComObject<CVector2d>::CreateInstance(&pVector);
@@ -342,7 +478,7 @@ HRESULT CreateVector(Float64 x,Float64 y,IVector2d** ppVector)
 
 HRESULT GetCoordinates(IVector2d* pSource,Float64* px,Float64 *py)
 {
-   ATLASSERT( pSource != 0 && px != 0 && py != 0 );
+   ATLASSERT( pSource != nullptr && px != nullptr && py != nullptr );
    pSource->get_X(px);
    pSource->get_Y(py);
    return S_OK;
@@ -352,7 +488,7 @@ HRESULT GetCoordinates(IVector2d* pSource,Float64* px,Float64 *py)
 // Vector3d Helpers
 HRESULT CreateVector(IVector3d** ppVector)
 {
-   ATLASSERT( ppVector != 0 && (*ppVector) == 0);
+   ATLASSERT( ppVector != nullptr && (*ppVector) == nullptr);
 
    CComObject<CVector3d>* pVector;
    HRESULT hr = CComObject<CVector3d>::CreateInstance(&pVector);
@@ -366,7 +502,7 @@ HRESULT CreateVector(IVector3d** ppVector)
 
 HRESULT CreateVector(Float64 x,Float64 y,Float64 z,IVector3d** ppVector)
 {
-   ATLASSERT( ppVector != 0 && (*ppVector) == 0);
+   ATLASSERT( ppVector != nullptr && (*ppVector) == nullptr);
 
    HRESULT hr;
    hr = CreateVector(ppVector);
@@ -382,7 +518,7 @@ HRESULT CreateVector(Float64 x,Float64 y,Float64 z,IVector3d** ppVector)
 
 HRESULT CreateVector( IVector3d* pSource, IVector3d** ppTarget )
 {
-   ATLASSERT( pSource != 0 && ppTarget != 0 && (*ppTarget) == 0);
+   ATLASSERT( pSource != nullptr && ppTarget != nullptr && (*ppTarget) == nullptr);
 
    HRESULT hr;
 
@@ -395,7 +531,7 @@ HRESULT CreateVector( IVector3d* pSource, IVector3d** ppTarget )
 
 HRESULT CreateVector( IPoint3d* pSource, IVector3d** ppTarget )
 {
-   ATLASSERT( pSource != 0 && ppTarget != 0 && (*ppTarget) == 0);
+   ATLASSERT( pSource != nullptr && ppTarget != nullptr && (*ppTarget) == nullptr);
 
    HRESULT hr;
 
@@ -406,9 +542,14 @@ HRESULT CreateVector( IPoint3d* pSource, IVector3d** ppTarget )
    return CreateVector(x,y,z,ppTarget);
 }
 
+HRESULT CreateVector(const WBFL::Geometry::Vector3d& source, IVector3d** ppTarget)
+{
+   return CreateVector(source.X(), source.Y(), source.Z(), ppTarget);
+}
+
 HRESULT GetCoordinates(IVector3d* pVector,Float64* px,Float64* py,Float64* pz)
 {
-   ATLASSERT( pVector != 0 && px != 0 && py != 0 && pz != 0 );
+   ATLASSERT( pVector != nullptr && px != nullptr && py != nullptr && pz != nullptr );
 
    pVector->get_X(px);
    pVector->get_Y(py);
@@ -419,7 +560,7 @@ HRESULT GetCoordinates(IVector3d* pVector,Float64* px,Float64* py,Float64* pz)
 
 HRESULT Add(IVector3d* pResult,IVector3d* pA,IVector3d* pB)
 {
-   ATLASSERT( pResult != 0 && pA != 0 && pB != 0 );
+   ATLASSERT( pResult != nullptr && pA != nullptr && pB != nullptr );
 
    Float64 xa,ya,za;
    Float64 xb,yb,zb;
@@ -436,7 +577,7 @@ HRESULT Add(IVector3d* pResult,IVector3d* pA,IVector3d* pB)
 
 HRESULT Subtract(IVector3d* pResult,IVector3d* pA,IVector3d* pB)
 {
-   ATLASSERT( pResult != 0 && pA != 0 && pB != 0 );
+   ATLASSERT( pResult != nullptr && pA != nullptr && pB != nullptr );
 
    Float64 xa,ya,za;
    Float64 xb,yb,zb;
@@ -451,9 +592,33 @@ HRESULT Subtract(IVector3d* pResult,IVector3d* pA,IVector3d* pB)
    return S_OK;
 }
 
+HRESULT CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints)
+{
+   ATLASSERT(ppPoints != nullptr && (*ppPoints) == nullptr);
+
+   CComObject<CPoint2dCollection>* pPoints;
+   HRESULT hr = CComObject<CPoint2dCollection>::CreateInstance(&pPoints);
+   if (FAILED(hr))
+      return hr;
+
+   std::for_each(std::cbegin(vPoints), std::cend(vPoints),
+      [&](const auto& point)
+      {
+         CComPtr<IPoint2d> pPoint;
+         CreatePoint(point, &pPoint);
+         pPoints->Add(pPoint);
+      }
+   );
+
+   pPoints->AddRef();
+   (*ppPoints) = pPoints;
+
+   return S_OK;
+}
+
 HRESULT CreatePointCollection(IPoint2dCollection** ppPoints)
 {
-   ATLASSERT( ppPoints != 0 && (*ppPoints) == 0 );
+   ATLASSERT( ppPoints != nullptr && (*ppPoints) == nullptr );
 
    CComObject<CPoint2dCollection>* pPoints;
    HRESULT hr = CComObject<CPoint2dCollection>::CreateInstance( &pPoints );
@@ -466,25 +631,25 @@ HRESULT CreatePointCollection(IPoint2dCollection** ppPoints)
    return S_OK;
 }
 
-HRESULT CreateLine(ILineSegment2d* pSeg,ILine2dFactory* pFactory,ILine2d** ppLine)
+HRESULT CreateLine(ILineSegment2d* pSeg,ILine2d** ppLine)
 {
-   ATLASSERT( pSeg != 0 && ppLine != 0 && (*ppLine) == 0 );
+   ATLASSERT( pSeg != nullptr && ppLine != nullptr && (*ppLine) == nullptr );
 
    CComPtr<IPoint2d> pStart;
    CComPtr<IPoint2d> pEnd;
    pSeg->get_StartPoint(&pStart);
    pSeg->get_EndPoint(&pEnd);
 
-   return CreateLine(pStart,pEnd,pFactory,ppLine);
+   return CreateLine(pStart,pEnd,ppLine);
 }
 
-HRESULT CreateLine(ILine2d* pLine,ILine2dFactory* pFactory,ILine2d** ppLine)
+HRESULT CreateLine(ILine2d* pLine,ILine2d** ppLine)
 {
    // Bad input
-   ATLASSERT( pLine != 0 );
+   ATLASSERT( pLine != nullptr );
 
    // Create a new default line
-   HRESULT hr = CreateLine(pFactory,ppLine);
+   HRESULT hr = CreateLine(ppLine);
    if ( FAILED(hr) )
       return hr;
 
@@ -499,36 +664,27 @@ HRESULT CreateLine(ILine2d* pLine,ILine2dFactory* pFactory,ILine2d** ppLine)
    return S_OK;
 }
 
-HRESULT CreateLine(ILine2dFactory* pFactory,ILine2d** ppLine)
+HRESULT CreateLine(ILine2d** ppLine)
 {
-   ATLASSERT( ppLine != 0 && (*ppLine) == 0 );
+   ATLASSERT( ppLine != nullptr && (*ppLine) == nullptr );
 
    HRESULT hr = S_OK;
 
-   if ( pFactory == nullptr )
-   {
-      CComObject<CLine2d>* pLine;
-      hr = CComObject<CLine2d>::CreateInstance(&pLine);
-      if ( FAILED(hr) )
-         return hr;
+   CComObject<CLine2d>* pLine;
+   hr = CComObject<CLine2d>::CreateInstance(&pLine);
+   if ( FAILED(hr) )
+      return hr;
 
-      pLine->QueryInterface(ppLine);
-   }
-   else
-   {
-      hr = pFactory->CreateLine(ppLine);
-      if ( FAILED(hr) )
-         return hr;
-   }
+   pLine->QueryInterface(ppLine);
 
    return S_OK;
 }
 
-HRESULT CreateLine(IPoint2d* pStart,IPoint2d* pEnd,ILine2dFactory* pFactory,ILine2d** ppLine)
+HRESULT CreateLine(IPoint2d* pStart,IPoint2d* pEnd,ILine2d** ppLine)
 {
-   ATLASSERT( pStart != 0 && pEnd != 0 && ppLine != 0 && (*ppLine) == 0 );
+   ATLASSERT( pStart != nullptr && pEnd != nullptr && ppLine != nullptr && (*ppLine) == nullptr );
 
-   HRESULT hr = CreateLine(pFactory,ppLine);
+   HRESULT hr = CreateLine(ppLine);
    if ( FAILED(hr) )
       return hr;
 
@@ -537,9 +693,25 @@ HRESULT CreateLine(IPoint2d* pStart,IPoint2d* pEnd,ILine2dFactory* pFactory,ILin
    return S_OK;
 }
 
+HRESULT CreateShapeProperties(const WBFL::Geometry::ShapeProperties& props, IShapeProperties** ppProps)
+{
+   ATLASSERT(ppProps != nullptr && (*ppProps) == nullptr);
+
+   CComObject<CShapeProperties>* pProps;
+   HRESULT hr = CComObject<CShapeProperties>::CreateInstance(&pProps);
+   if (FAILED(hr))
+      return hr;
+
+   pProps->SetProperties(props);
+
+   pProps->QueryInterface(ppProps);
+
+   return S_OK;
+}
+
 HRESULT CreateShapeProperties(IShapeProperties** ppProps)
 {
-   ATLASSERT( ppProps != 0 && (*ppProps) == 0 );
+   ATLASSERT( ppProps != nullptr && (*ppProps) == nullptr );
 
    CComObject<CShapeProperties>* pProps;
    HRESULT hr = CComObject<CShapeProperties>::CreateInstance(&pProps);
@@ -551,21 +723,21 @@ HRESULT CreateShapeProperties(IShapeProperties** ppProps)
    return S_OK;
 }
 
-HRESULT CreatePolyShape(IPolyShape** ppPolyShape)
-{
-   ATLASSERT( ppPolyShape != 0 && (*ppPolyShape) == 0 );
-
-   CComObject<CPolyShape>* pNewShape;
-   HRESULT hr = CComObject<CPolyShape>::CreateInstance( &pNewShape );
-   if ( FAILED(hr) )
-      return hr;
-
-   return pNewShape->QueryInterface( ppPolyShape );
-}
+//HRESULT CreatePolyShape(IPolyShape** ppPolyShape)
+//{
+//   ATLASSERT( ppPolyShape != nullptr && (*ppPolyShape) == nullptr );
+//
+//   CComObject<CPolyShape>* pNewShape;
+//   HRESULT hr = CComObject<CPolyShape>::CreateInstance( &pNewShape );
+//   if ( FAILED(hr) )
+//      return hr;
+//
+//   return pNewShape->QueryInterface( ppPolyShape );
+//}
 
 HRESULT CreateCompositeShape(ICompositeShape** ppCompositeShape)
 {
-   ATLASSERT( ppCompositeShape != 0 && (*ppCompositeShape) == 0 );
+   ATLASSERT( ppCompositeShape != nullptr && (*ppCompositeShape) == nullptr );
 
    CComObject<CCompositeShape>* pNewShape;
    HRESULT hr = CComObject<CCompositeShape>::CreateInstance( &pNewShape );
@@ -575,38 +747,73 @@ HRESULT CreateCompositeShape(ICompositeShape** ppCompositeShape)
    return pNewShape->QueryInterface( ppCompositeShape );
 }
 
-HRESULT CreatePolyShape(IPoint2dCollection* pPoints,IPolyShape** ppPolyShape)
+HRESULT CreateGenericShape(const WBFL::Geometry::Shape* shape, IGenericShape** ppGenericShape)
 {
-   ATLASSERT( pPoints != 0 && ppPolyShape != 0 && (*ppPolyShape) == 0 );
+   ATLASSERT(ppGenericShape != nullptr && (*ppGenericShape) == nullptr);
 
-   HRESULT hr;
-   hr = CreatePolyShape( ppPolyShape );
-   if ( FAILED(hr) )
-      return hr;
+   *ppGenericShape = nullptr;
+   if (shape == nullptr) return E_INVALIDARG;
 
-   CollectionIndexType cPoints;
-   pPoints->get_Count(&cPoints);
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
-   {
-      CComPtr<IPoint2d> pPoint;
-      pPoints->get_Item(i,&pPoint);
-/*
-      CComVariant varPoint;
-      pPoints->get_Item(i,&varPoint);
+   CComObject<CGenericShape>* pGenericShape;
+   HRESULT hr = CComObject<CGenericShape>::CreateInstance(&pGenericShape);
+   if (FAILED(hr)) return hr;
 
-      CComPtr<IPoint2d> pPoint;
-      ATLASSERT( varPoint.vt == VT_DISPATCH );
-      varPoint.pdispVal->QueryInterface( &pPoint );
-*/
-      (*ppPolyShape)->AddPointEx( pPoint );
-   }
+   const auto* generic_shape(dynamic_cast<const WBFL::Geometry::GenericShape*>(shape));
+   pGenericShape->SetShape(*generic_shape);
+   return pGenericShape->QueryInterface(ppGenericShape);
+}
 
-   return S_OK;
+HRESULT CreateCircle(const WBFL::Geometry::Shape* shape, ICircle** ppCircle)
+{
+   ATLASSERT(ppCircle != nullptr && (*ppCircle) == nullptr);
+
+   *ppCircle = nullptr;
+   if (shape == nullptr) return E_INVALIDARG;
+
+   CComObject<CCircle>* pCircle;
+   HRESULT hr = CComObject<CCircle>::CreateInstance(&pCircle);
+   if (FAILED(hr)) return hr;
+
+   const auto* circle(dynamic_cast<const WBFL::Geometry::Circle*>(shape));
+   pCircle->SetShape(*circle);
+   return pCircle->QueryInterface(ppCircle);
+}
+
+HRESULT CreateCircularSegment(const WBFL::Geometry::Shape* shape, ICircularSegment** ppCircularSegment)
+{
+   ATLASSERT(ppCircularSegment != nullptr && (*ppCircularSegment) == nullptr);
+
+   *ppCircularSegment = nullptr;
+   if (shape == nullptr) return E_INVALIDARG;
+
+   CComObject<CCircularSegment>* pCircularSegment;
+   HRESULT hr = CComObject<CCircularSegment>::CreateInstance(&pCircularSegment);
+   if (FAILED(hr)) return hr;
+
+   const auto* circular_segment(dynamic_cast<const WBFL::Geometry::CircularSegment*>(shape));
+   pCircularSegment->SetShape(*circular_segment);
+   return pCircularSegment->QueryInterface(ppCircularSegment);
+}
+
+HRESULT CreatePolyShape(const WBFL::Geometry::Shape* shape, IPolyShape** ppPolyShape)
+{
+   ATLASSERT(ppPolyShape != nullptr && (*ppPolyShape) == nullptr);
+   if (shape == nullptr) return E_INVALIDARG;
+
+   CComObject<CPolyShape>* pNewShape;
+   HRESULT hr = CComObject<CPolyShape>::CreateInstance(&pNewShape);
+   if (FAILED(hr)) return hr;
+
+   WBFL::Geometry::Polygon polygon;
+   polygon.SetPoints(shape->GetPolyPoints());
+   pNewShape->SetPolygon(polygon);
+
+   return pNewShape->QueryInterface(ppPolyShape);
 }
 
 HRESULT CreateGeomUtil(IGeomUtil2d** ppUtil)
 {
-   ATLASSERT( ppUtil != 0 && (*ppUtil) == 0);
+   ATLASSERT( ppUtil != nullptr && (*ppUtil) == nullptr);
 
    CComObject<CGeomUtil>* pUtil;
    HRESULT hr = CComObject<CGeomUtil>::CreateInstance( &pUtil );
@@ -616,17 +823,6 @@ HRESULT CreateGeomUtil(IGeomUtil2d** ppUtil)
    pUtil->QueryInterface( ppUtil );
    return S_OK;
 }
-
-HRESULT CreateGeomUtil(IGeomUtil3d** ppUtil)
-{
-   CComPtr<IGeomUtil2d> pUtil2d;
-   HRESULT hr = CreateGeomUtil(&pUtil2d);
-   if ( FAILED(hr) )
-      return hr;
-
-   return pUtil2d->QueryInterface(ppUtil);
-}
-
 
 VARIANT_BOOL MakeBool(bool boolean)
 {
@@ -651,7 +847,7 @@ Float64 NormalizeAngle(Float64 angle)
 
 bool IsEqualPoint(IPoint2d* p1,IPoint2d* p2)
 {
-   ATLASSERT( p1 != 0 && p2 != 0 );
+   ATLASSERT( p1 != nullptr && p2 != nullptr );
 
    Float64 x1,y1;
    GetCoordinates(p1,&x1,&y1);
@@ -664,7 +860,7 @@ bool IsEqualPoint(IPoint2d* p1,IPoint2d* p2)
 
 bool IsEqualVector(IVector2d* v1,IVector2d* v2)
 {
-   ATLASSERT( v1 != 0 && v2 != 0 );
+   ATLASSERT( v1 != nullptr && v2 != nullptr );
 
    Float64 x1,y1;
    GetCoordinates(v1,&x1,&y1);
@@ -675,27 +871,41 @@ bool IsEqualVector(IVector2d* v1,IVector2d* v2)
    return IsEqual(x1,x2) && IsEqual(y1,y2);
 }
 
-HRESULT CreateLineSegment(ILineSegment2dFactory* pFactory,ILineSegment2d** ppSeg)
+HRESULT CreateLineSegment(const WBFL::Geometry::LineSegment2d& ls, ILineSegment2d** ppSeg)
 {
-   ATLASSERT( ppSeg != 0 && (*ppSeg) == 0 );
+   ATLASSERT(ppSeg != nullptr && (*ppSeg) == nullptr);
+
+   CComObject<CLineSegment2d>* pSeg;
+   HRESULT hr = CComObject<CLineSegment2d>::CreateInstance(&pSeg);
+   if (FAILED(hr))
+      return hr;
+
+   pSeg->SetLineSegment(ls);
+   return pSeg->QueryInterface(ppSeg);
+}
+
+HRESULT CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine)
+{
+   ATLASSERT(ppLine != nullptr && (*ppLine) == nullptr);
+   CComObject<CLine2d>* pLine;
+   HRESULT hr = CComObject<CLine2d>::CreateInstance(&pLine);
+   if (FAILED(hr)) return hr;
+   pLine->SetLine(line);
+   return pLine->QueryInterface(ppLine);
+}
+
+HRESULT CreateLineSegment(ILineSegment2d** ppSeg)
+{
+   ATLASSERT( ppSeg != nullptr && (*ppSeg) == nullptr );
 
    HRESULT hr = S_OK;
 
-   if ( pFactory == nullptr )
-   {
-      CComObject<CLineSegment2d>* pSeg;
-      hr = CComObject<CLineSegment2d>::CreateInstance(&pSeg);
-      if ( FAILED(hr) )
-         return hr;
+   CComObject<CLineSegment2d>* pSeg;
+   hr = CComObject<CLineSegment2d>::CreateInstance(&pSeg);
+   if ( FAILED(hr) )
+      return hr;
 
-      pSeg->QueryInterface(ppSeg);
-   }
-   else
-   {
-      hr = pFactory->CreateLineSegment(ppSeg);
-      if ( FAILED(hr) )
-         return hr;
-   }
+   pSeg->QueryInterface(ppSeg);
 
    return S_OK;
 }
@@ -732,35 +942,52 @@ void ProjectPointAlongLine(Float64 P1_x, Float64 P1_y, Float64 P2_x, Float64 P2_
    }
 }
 
+HRESULT ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape)
+{
+   if (dynamic_cast<const WBFL::Geometry::GenericShape*>(pShape))
+   {
+      CComPtr<IGenericShape> generic_shape;
+      HRESULT hr = ::CreateGenericShape(pShape, &generic_shape);
+      if (FAILED(hr)) return hr;
+      generic_shape->get_Shape(ppShape);
+   }
+   else if (dynamic_cast<const WBFL::Geometry::Circle*>(pShape))
+   {
+      CComPtr<ICircle> circle;
+      HRESULT hr = ::CreateCircle(pShape, &circle);
+      if (FAILED(hr)) return hr;
+      circle->get_Shape(ppShape);
+   }
+   else if (dynamic_cast<const WBFL::Geometry::CircularSegment*>(pShape))
+   {
+      CComPtr<ICircularSegment> circular_segment;
+      HRESULT hr = ::CreateCircularSegment(pShape, &circular_segment);
+      if (FAILED(hr)) return hr;
+      circular_segment->get_Shape(ppShape);
+   }
+   else if (dynamic_cast<const WBFL::Geometry::CompositeShape*>(pShape))
+   {
+      CComPtr<ICompositeShape> composite_shape;
+      CreateCompositeShape(&composite_shape);
 
-//
-// Thes methods are not used. They have not been tested.
-//
+      const WBFL::Geometry::CompositeShape* pCompositeShape = dynamic_cast<const WBFL::Geometry::CompositeShape*>(pShape);
+      IndexType nShapes = pCompositeShape->GetShapeCount();
+      for (IndexType i = 0; i < nShapes; i++)
+      {
+         auto shape = pCompositeShape->GetShape(i);
+         CComPtr<IShape> converted_shape;
+         ConvertShape(shape.get(), &converted_shape);
+         composite_shape->AddShape(converted_shape, pCompositeShape->GetShapeType(i) == WBFL::Geometry::CompositeShape::ShapeType::Void ? VARIANT_TRUE : VARIANT_FALSE);
+      }
 
-//HRESULT CopyPoint(IPoint3d* pTo,IPoint3d* pFrom)
-//{
-//   ATLASSERT( pTo != 0 && pFrom != 0 );
-//
-//   Float64 x,y,z;
-//   GetCoordinates(pFrom,&x,&y,&z);
-//   PutCoordinates(x,y,z,pTo);
-//
-//   return S_OK;
-//}
-//
-//HRESULT CopyVector(IVector3d* pTarget,IVector3d* pSource)
-//{
-//   ATLASSERT( pTarget != 0 && pSource != 0 );
-//   Float64 x,y,z;
-//   GetCoordinates(pSource,&x,&y,&z);
-//   pTarget->put_X(x);
-//   pTarget->put_Y(y);
-//   pTarget->put_Z(z);
-//
-//   return S_OK;
-//}
-//
-//bool MakeBool(VARIANT_BOOL boolean)
-//{
-//   return (boolean == VARIANT_TRUE) ? true : false;
-//}
+      composite_shape->get_Shape(ppShape);
+   }
+   else
+   {
+      CComPtr<IPolyShape> polyShape;
+      HRESULT hr = ::CreatePolyShape(pShape, &polyShape);
+      if (FAILED(hr))  return hr;
+      polyShape->get_Shape(ppShape);
+   }
+   return S_OK;
+}

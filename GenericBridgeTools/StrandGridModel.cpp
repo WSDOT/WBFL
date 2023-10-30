@@ -120,7 +120,7 @@ HRESULT CStrandGridModel::OnInitialize()
    // under top center (0,0) of girder. Apply an adjustment
    // to position the strand grid correctly
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(0.0, sbRight, cstGirder, &shape);
+   m_pSegment->get_GirderShape(0.0, sbRight, cstGirder, &shape);
 
    CComQIPtr<IAsymmetricSection> asymmetric(shape);
    if (asymmetric)
@@ -1232,7 +1232,7 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* s
    }
 
 #if defined _DEBUG
-   CollectionIndexType nStrandStart,nStrandEnd;
+   IndexType nStrandStart,nStrandEnd;
    start->get_Count(&nStrandStart);
    end->get_Count(&nStrandEnd);
    ATLASSERT(nStrandStart == nStrandEnd && nStrandStart == nStrands);
@@ -1357,7 +1357,7 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlopeEx(Float64 Xs, IIndexA
    }
 
 #if defined _DEBUG
-   CollectionIndexType nStrandStart,nStrandEnd;
+   IndexType nStrandStart,nStrandEnd;
    start->get_Count(&nStrandStart);
    end->get_Count(&nStrandEnd);
    ATLASSERT(nStrandStart == nStrandEnd && nStrandStart == nStrands);
@@ -1886,13 +1886,13 @@ HRESULT CStrandGridModel::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFi
 
          // we are in business, start alternate fill of hp grid
          m_OddHpFill->Clear();
-         CollectionIndexType fill_size;
+         IndexType fill_size;
          endFill->get_Count(&fill_size);
          m_OddHpFill->Reserve(fill_size);
 
          // put two strands in the first hp location
 #if defined _DEBUG
-         CollectionIndexType first_row;
+         IndexType first_row;
          endFill->get_Item(0,&first_row);
          ASSERT(first_row == 1); // only one strand at the bottom... but we need it to be 2 for odd fill at top
 #endif
@@ -1900,7 +1900,7 @@ HRESULT CStrandGridModel::ComputeHpFill(IIndexArray* endFill, IIndexArray** hpFi
          StrandIndexType running_cnt = (m_UseDifferentHarpedGirdAtEnds == VARIANT_TRUE ? 2 : 1);
          m_OddHpFill->Add(running_cnt); 
 
-         for (CollectionIndexType is = 1; is < fill_size; is++)
+         for (IndexType is = 1; is < fill_size; is++)
          {
             if (running_cnt < nStrands)
             {
@@ -2026,7 +2026,7 @@ Float64 CStrandGridModel::GetSectionHeight(Float64 Xs)
 {
    Float64 Hg;
    CComPtr<IShape> shape;
-   m_pSegment->get_PrimaryShape(Xs,sbLeft,cstGirder,&shape);
+   m_pSegment->get_GirderShape(Xs,sbLeft,cstGirder,&shape);
    CComPtr<IRect2d> bbox;
    shape->get_BoundingBox(&bbox);
    bbox->get_Height(&Hg);
@@ -2247,18 +2247,18 @@ HRESULT CStrandGridModel::GetStrandPositions(Float64 Xs, Float64 distToStartGrid
 
    Float64 Yadj = GetGirderDepthAdjustment(Xs, distToStartGrid, distBetweenGrids, pStartGridFiller, pEndGridFiller);
 
-   CollectionIndexType nPoints;
+   IndexType nPoints;
    startPoints->get_Count(&nPoints);
 
 #if defined _DEBUG
-   CollectionIndexType np;
+   IndexType np;
    endPoints->get_Count(&np);
    ATLASSERT(np == nPoints);
 #endif
 
    CComPtr<IPoint2dCollection> pnts;
    pnts.CoCreateInstance(CLSID_Point2dCollection);
-   for (CollectionIndexType idx = 0; idx < nPoints; idx++ )
+   for (IndexType idx = 0; idx < nPoints; idx++ )
    {
       CComPtr<IPoint2d> pntStart,  pntEnd;
       startPoints->get_Item(idx,&pntStart);

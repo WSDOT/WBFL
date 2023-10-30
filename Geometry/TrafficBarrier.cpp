@@ -27,8 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGeometry.h"
 #include "TrafficBarrier.h"
-#include "Helper.h"
-#include <MathEx.h>
+#include "Point2d.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,8 +43,7 @@ STDMETHODIMP CTrafficBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 	{
 		&IID_ITrafficBarrier,
 		&IID_IShape,
-		&IID_IXYPosition,
-		&IID_IStructuredStorage2,
+		&IID_IXYPosition
 	};
 	for (int i = 0;i<sizeof(arr)/sizeof(arr[0]);i++)
 	{
@@ -57,185 +55,40 @@ STDMETHODIMP CTrafficBarrier::InterfaceSupportsErrorInfo(REFIID riid)
 
 HRESULT CTrafficBarrier::FinalConstruct()
 {
-   m_X1 = 0.00;
-   m_X2 = 0.00;
-   m_X3 = 0.00;
-   m_X4 = 0.00;
-   m_X5 = 0.00;
-   m_Y1 = 0.00;
-   m_Y2 = 0.00;
-   m_Y3 = 0.00;
-   m_Y4 = 0.00;
-   m_Orientation = tboLeft;
-   m_Rotation = 0.00;
+   CComObject<CPoint2d>* pHookPt;
+   CComObject<CPoint2d>::CreateInstance(&pHookPt);
 
-   HRESULT hr;
-   hr = CreatePolyShape(&m_pShape);
-   if ( FAILED(hr) ) return hr;
+   pHookPt->SetPoint(m_Barrier.GetHookPoint());
 
-   hr = CreatePoint(0,0,nullptr,&m_pHookPoint);
-   if ( FAILED(hr) ) return hr;
-
-   hr = CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
-   if (FAILED(hr)) return hr;
-
-   m_Dirty = true;
+   pHookPt->QueryInterface(&m_HookPoint);
 
    return S_OK;
 }
 
 void CTrafficBarrier::FinalRelease()
 {
-   HRESULT hr = CrUnadvise(m_pHookPoint, this, IID_IPoint2dEvents, m_HookPointCookie);
-   ATLASSERT(SUCCEEDED(hr));
 }
 
-HRESULT CTrafficBarrier::GetLocatorPoint(LocatorPointType lp,Float64* px,Float64* py)
+void CTrafficBarrier::SetShape(const WBFL::Geometry::TrafficBarrier& shape)
 {
-   ATLASSERT(px != nullptr && py != nullptr);
-
-   HRESULT hr;
-   hr = UpdateShape();
-   if (FAILED(hr))
-      return hr;
-
-   CComPtr<IPoint2d> pPoint;
-
-   if (lp == lpHookPoint)
-   {
-      pPoint = m_pHookPoint;
-   }
-   else
-   {
-      CComQIPtr<IShape> pShape(m_pShape);
-      CComPtr<IRect2d> pBox;
-      pShape->get_BoundingBox(&pBox);
-
-      switch (lp)
-      {
-      case lpTopLeft:
-         pBox->get_TopLeft(&pPoint);
-         break;
-
-      case lpTopCenter:
-         pBox->get_TopCenter(&pPoint);
-         break;
-
-      case lpTopRight:
-         pBox->get_TopRight(&pPoint);
-         break;
-
-      case lpCenterLeft:
-         pBox->get_CenterLeft(&pPoint);
-         break;
-
-      case lpCenterCenter:
-         pBox->get_CenterCenter(&pPoint);
-         break;
-
-      case lpCenterRight:
-         pBox->get_CenterRight(&pPoint);
-         break;
-
-      case lpBottomLeft:
-         pBox->get_BottomLeft(&pPoint);
-         break;
-
-      case lpBottomCenter:
-         pBox->get_BottomCenter(&pPoint);
-         break;
-
-      case lpBottomRight:
-         pBox->get_BottomRight(&pPoint);
-         break;
-
-      case lpHookPoint:
-      default:
-         ATLASSERT(false); // Should never get here
-      }
-   }
-
-   GetCoordinates(pPoint, px, py);
-
-   return S_OK;
-}
-
-HRESULT CTrafficBarrier::UpdateShape()
-{
-   if (m_Dirty)
-   {
-
-      m_pShape->Clear();
-
-      Float64 sign = (m_Orientation == tboLeft ? 1.00 : -1.00);
-
-      // Hook Point (make it 0,0 for ease of construction)
-      CComPtr<IPoint2d> p0;
-      Float64 x0,y0;
-      x0 = y0 = 0.00;
-      CreatePoint(x0,y0,nullptr,&p0);
-
-      // Work clockwise around the left oriented shape.
-      CComPtr<IPoint2d> p1;
-      CreatePoint(sign*(x0 + m_X2), y0, nullptr, &p1 );
-
-      CComPtr<IPoint2d> p2;
-      CreatePoint( sign*(x0 + m_X2), y0 + m_Y1, nullptr, &p2 );
-
-      CComPtr<IPoint2d> p3;
-      CreatePoint( sign*(x0 + m_X2 - m_X5), y0 + m_Y1 + m_Y2, nullptr, &p3 );
-
-      CComPtr<IPoint2d> p4;
-      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4), y0 + m_Y3, nullptr, &p4 );
-
-      CComPtr<IPoint2d> p5;
-      CreatePoint( sign*(x0 + m_X2 - m_X5 - m_X4 - m_X3), y0 + m_Y3, nullptr, &p5 );
-
-      CComPtr<IPoint2d> p6;
-      CreatePoint( sign*(x0 - m_X1), y0 - m_Y4, nullptr, &p6 );
-
-      CComPtr<IPoint2d> p7;
-      CreatePoint( x0 , y0 - m_Y4, nullptr, &p7 );
-   
-      m_pShape->AddPointEx(p0);
-      m_pShape->AddPointEx(p1);
-      m_pShape->AddPointEx(p2);
-      m_pShape->AddPointEx(p3);
-      m_pShape->AddPointEx(p4);
-      m_pShape->AddPointEx(p5);
-      m_pShape->AddPointEx(p6);
-      m_pShape->AddPointEx(p7);
-
-      CComQIPtr<IXYPosition> pPosition(m_pShape);
-      pPosition->MoveEx(p0,m_pHookPoint);
-
-      if (!IsZero(m_Rotation))
-      {
-         pPosition->Rotate(0.00,0.00,m_Rotation);
-      }
-
-      m_Dirty = false;
-   }
-
-   return S_OK;
+   m_Barrier = shape;
+   dynamic_cast<CPoint2d*>(m_HookPoint.p)->SetPoint(m_Barrier.GetHookPoint());
 }
 
 STDMETHODIMP CTrafficBarrier::get_X1(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X1;
+   *pVal = m_Barrier.GetX1();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_X1(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_X1 = newVal;
+   m_Barrier.SetX1(newVal);
    return S_OK;
 }
 
@@ -243,18 +96,16 @@ STDMETHODIMP CTrafficBarrier::get_X2(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    
-   *pVal = m_X2;
+   *pVal = m_Barrier.GetX2();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_X2(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_X2 = newVal;
+   m_Barrier.SetX2(newVal);
    return S_OK;
 }
 
@@ -262,18 +113,16 @@ STDMETHODIMP CTrafficBarrier::get_X3(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X3;
+   *pVal = m_Barrier.GetX3();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_X3(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_X3 = newVal;
+   m_Barrier.SetX3(newVal);
    return S_OK;
 }
 
@@ -281,18 +130,16 @@ STDMETHODIMP CTrafficBarrier::get_X4(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X4;
+   *pVal = m_Barrier.GetX4();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_X4(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_X4 = newVal;
+   m_Barrier.SetX4(newVal);
    return S_OK;
 }
 
@@ -300,18 +147,16 @@ STDMETHODIMP CTrafficBarrier::get_X5(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_X5;
+   *pVal = m_Barrier.GetX5();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_X5(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_X5 = newVal;
+   m_Barrier.SetX5(newVal);
    return S_OK;
 }
 
@@ -319,18 +164,16 @@ STDMETHODIMP CTrafficBarrier::get_Y1(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y1;
+   *pVal = m_Barrier.GetY1();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_Y1(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_Y1 = newVal;
+   m_Barrier.SetY1(newVal);
    return S_OK;
 }
 
@@ -338,18 +181,16 @@ STDMETHODIMP CTrafficBarrier::get_Y2(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y2;
+   *pVal = m_Barrier.GetY2();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_Y2(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_Y2 = newVal;
+   m_Barrier.SetY2(newVal);
    return S_OK;
 }
 
@@ -357,18 +198,16 @@ STDMETHODIMP CTrafficBarrier::get_Y3(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y3;
+   *pVal = m_Barrier.GetY3();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_Y3(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_Y3 = newVal;
+   m_Barrier.SetY3(newVal);
    return S_OK;
 }
 
@@ -376,51 +215,44 @@ STDMETHODIMP CTrafficBarrier::get_Y4(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Y4;
+   *pVal = m_Barrier.GetSlabDepth();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_Y4(Float64 newVal)
 {
-   MakeDirty();
-
    if ( newVal < 0 )
       return Error(IDS_E_DIMENSION,IID_ITrafficBarrier,GEOMETRY_E_DIMENSION);
 
-   m_Y4 = newVal;
+   m_Barrier.SetSlabDepth(newVal);
    return S_OK;
 }
 
-STDMETHODIMP CTrafficBarrier::get_HookPoint(IPoint2d **pVal)
-{
-   CHECK_RETOBJ(pVal);
-
-   m_pHookPoint.QueryInterface( pVal );
-
-   return S_OK;
-}
-
-STDMETHODIMP CTrafficBarrier::putref_HookPoint(IPoint2d *hookPnt)
-{
-   CHECK_IN(hookPnt);
-   MakeDirty();
-
-   return CrAssignPointer(m_pHookPoint, hookPnt, this, IID_IPoint2dEvents, &m_HookPointCookie);
-}
-
-STDMETHODIMP CTrafficBarrier::get_Orientation(TrafficBarrierOrientation *pVal)
+STDMETHODIMP CTrafficBarrier::get_Orientation(TrafficBarrierOrientation* pVal)
 {
    CHECK_RETVAL(pVal);
 
-   *pVal = m_Orientation;
+   *pVal = (TrafficBarrierOrientation)m_Barrier.GetOrientation();
    return S_OK;
 }
 
 STDMETHODIMP CTrafficBarrier::put_Orientation(TrafficBarrierOrientation newVal)
 {
-   MakeDirty();
+   m_Barrier.SetOrientation(WBFL::Geometry::TrafficBarrier::Orientation(newVal));
+   return S_OK;
+}
 
-   m_Orientation = newVal;
+STDMETHODIMP CTrafficBarrier::get_HookPoint(IPoint2d ** hookPnt)
+{
+   CHECK_RETOBJ(hookPnt);
+   return m_HookPoint.CopyTo(hookPnt);
+}
+
+STDMETHODIMP CTrafficBarrier::putref_HookPoint(IPoint2d *hookPnt)
+{
+   CHECK_IN(hookPnt);
+   m_HookPoint = hookPnt;
+   m_Barrier.SetHookPoint(GetInnerPoint(m_HookPoint));
    return S_OK;
 }
 
@@ -434,308 +266,4 @@ STDMETHODIMP CTrafficBarrier::get_XYPosition(IXYPosition **pVal)
 {
    CHECK_RETOBJ(pVal);
    return QueryInterface( IID_IXYPosition, (void**)pVal );
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// IShape
-/////////////////////////////////////////////////////////////////////////////
-STDMETHODIMP CTrafficBarrier::get_ShapeProperties(IShapeProperties* *pVal)
-{
-   CHECK_RETOBJ(pVal);
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->get_ShapeProperties(pVal);
-}
-
-STDMETHODIMP CTrafficBarrier::get_BoundingBox(IRect2d* *pVal)
-{
-   CHECK_RETOBJ(pVal);
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->get_BoundingBox(pVal);
-}
-
-STDMETHODIMP CTrafficBarrier::get_PolyPoints(IPoint2dCollection** ppPolyPoints)
-{
-   CHECK_RETOBJ(ppPolyPoints);
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->get_PolyPoints(ppPolyPoints);
-}
-
-STDMETHODIMP CTrafficBarrier::PointInShape(IPoint2d* pPoint,VARIANT_BOOL* pbResult)
-{
-   CHECK_IN(pPoint);
-   CHECK_RETVAL(pbResult);
-
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->PointInShape(pPoint,pbResult);
-}
-
-STDMETHODIMP CTrafficBarrier::Clone(IShape** pClone)
-{
-   CHECK_RETOBJ(pClone);
-
-   CComObject<CTrafficBarrier>* pTheClone;
-   HRESULT hr = CComObject<CTrafficBarrier>::CreateInstance( &pTheClone );
-   if ( FAILED(hr) )
-      return hr;
-
-   CComPtr<ITrafficBarrier> shape(pTheClone); // need at least one reference
-
-   pTheClone->put_X1(m_X1);
-   pTheClone->put_X2(m_X2);
-   pTheClone->put_X3(m_X3);
-   pTheClone->put_X4(m_X4);
-   pTheClone->put_X5(m_X5);
-   pTheClone->put_Y1(m_Y1);
-   pTheClone->put_Y2(m_Y2);
-   pTheClone->put_Y3(m_Y3);
-   pTheClone->put_Y4(m_Y4);
-   pTheClone->put_Orientation(m_Orientation);
-
-   CComPtr<IPoint2d> hookPnt;
-   CreatePoint(m_pHookPoint,nullptr,&hookPnt);
-   pTheClone->putref_HookPoint(hookPnt);
-
-   pTheClone->QueryInterface(pClone);
-
-   return S_OK;
-}
-
-STDMETHODIMP CTrafficBarrier::ClipWithLine(ILine2d* pLine,IShape** pShape)
-{
-   CHECK_IN(pLine);
-   CHECK_RETOBJ(pShape);
-
-   UpdateShape();
-   CComQIPtr<IShape> pIShape(m_pShape);
-   return pIShape->ClipWithLine(pLine,pShape);
-}
-
-STDMETHODIMP CTrafficBarrier::ClipIn(IRect2d* pRect,IShape** pShape)
-{
-   CHECK_IN(pRect);
-   CHECK_RETOBJ(pShape);
-
-   UpdateShape();
-   CComQIPtr<IShape> pIShape(m_pShape);
-   return pIShape->ClipIn(pRect,pShape);
-}
-
-STDMETHODIMP CTrafficBarrier::get_Perimeter(Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->get_Perimeter(pVal);
-}
-
-STDMETHODIMP CTrafficBarrier::FurthestDistance(ILine2d* line,Float64 *pVal)
-{
-   CHECK_IN(line);
-   CHECK_RETVAL(pVal);
-
-   UpdateShape();
-   CComQIPtr<IShape> pShape(m_pShape);
-   return pShape->FurthestDistance(line,pVal);
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// IXYPosition
-/////////////////////////////////////////////////////////////////////////////
-
-STDMETHODIMP CTrafficBarrier::Offset(Float64 dx,Float64 dy)
-{
-   if (m_Dirty)
-   {
-      // this is going to fire an event that sets m_Dirty to true... since it is already true
-      // no need to worry about it
-      m_pHookPoint->Offset(dx, dy);
-   }
-   else
-   {
-      // We are just offsetting... detach from m_pHookPoint events so we don't invalidate
-      // everything about this shape...
-      CrUnadvise(m_pHookPoint, this, IID_IPoint2dEvents, m_HookPointCookie);
-      m_pHookPoint->Offset(dx, dy); // offset the hook point
-      CrAdvise(m_pHookPoint, this, IID_IPoint2dEvents, &m_HookPointCookie);
-
-      CComQIPtr<IXYPosition> pos(m_pShape);
-      pos->Offset(dx, dy); // offset the shape
-   }
-   return S_OK;
-   return S_OK;
-}
-
-STDMETHODIMP CTrafficBarrier::OffsetEx(ISize2d* pSize)
-{
-   CHECK_IN(pSize);
-
-   Float64 dx,dy;
-   pSize->Dimensions(&dx, &dy);
-   return Offset(dx,dy);
-}
-
-STDMETHODIMP CTrafficBarrier::get_LocatorPoint(LocatorPointType lp, IPoint2d** point)
-{
-   CHECK_RETOBJ(point);
-
-   UpdateShape();
-   Float64 lx,ly;
-   GetLocatorPoint(lp,&lx,&ly);
-   return CreatePoint(lx,ly,nullptr,point);
-}
-
-STDMETHODIMP CTrafficBarrier::put_LocatorPoint(LocatorPointType lp, IPoint2d* point)
-{
-   CHECK_IN(point);
-
-   Float64 lx,ly;
-   GetLocatorPoint(lp,&lx,&ly);
-
-   Float64 cx,cy;
-   GetCoordinates(point,&cx,&cy);
-
-   return Offset(cx-lx,cy-ly);
-}
-
-STDMETHODIMP CTrafficBarrier::MoveEx(IPoint2d* pFrom,IPoint2d* pTo)
-{
-   CHECK_IN(pFrom);
-   CHECK_IN(pTo);
-
-   Float64 x1,y1;
-   Float64 x2,y2;
-
-   GetCoordinates(pFrom,&x1,&y1);
-   GetCoordinates(pTo,&x2,&y2);
-
-   Float64 dx = x2 - x1;
-   Float64 dy = y2 - y1;
-
-   return Offset(dx,dy);
-}
-
-STDMETHODIMP CTrafficBarrier::RotateEx(IPoint2d* pPoint,Float64 angle)
-{
-   CHECK_IN(pPoint);
-
-   Float64 x,y;
-   GetCoordinates(pPoint,&x,&y);
-
-   return Rotate(x,y,angle);
-}
-
-STDMETHODIMP CTrafficBarrier::Rotate(Float64 cx,Float64 cy,Float64 angle)
-{
-   m_pHookPoint->Rotate(cx,cy,angle);
-   
-   // Need to keep track of rotation amount when updating polygon
-   m_Rotation += angle;
-
-   return S_OK;
-}
-
-STDMETHODIMP CTrafficBarrier::get_StructuredStorage(IStructuredStorage2* *pStg)
-{
-   CHECK_RETOBJ(pStg);
-   return QueryInterface(IID_IStructuredStorage2,(void**)pStg);
-}
-
-// IPersist
-STDMETHODIMP CTrafficBarrier::GetClassID(CLSID* pClassID)
-{
-   CHECK_IN(pClassID);
-
-   *pClassID = GetObjectCLSID();
-   return S_OK;
-}
-
-// IStructuredStorage2
-STDMETHODIMP CTrafficBarrier::Save(IStructuredSave2* pSave)
-{
-   CHECK_IN(pSave);
-
-   pSave->BeginUnit(CComBSTR("TrafficBarrier"),1.0);
-   pSave->put_Property(CComBSTR("X1"),CComVariant(m_X1));
-   pSave->put_Property(CComBSTR("X2"),CComVariant(m_X2));
-   pSave->put_Property(CComBSTR("X3"),CComVariant(m_X3));
-   pSave->put_Property(CComBSTR("X4"),CComVariant(m_X4));
-   pSave->put_Property(CComBSTR("X5"),CComVariant(m_X5));
-   pSave->put_Property(CComBSTR("Y1"),CComVariant(m_Y1));
-   pSave->put_Property(CComBSTR("Y2"),CComVariant(m_Y2));
-   pSave->put_Property(CComBSTR("Y3"),CComVariant(m_Y3));
-   pSave->put_Property(CComBSTR("Y4"),CComVariant(m_Y4));
-   pSave->put_Property(CComBSTR("Orientation"),CComVariant(m_Orientation));
-   pSave->put_Property(CComBSTR("Rotation"),CComVariant(m_Rotation));
-   pSave->put_Property(CComBSTR("HookPoint"),CComVariant(m_pHookPoint));
-   pSave->EndUnit();
-
-   return S_OK;
-}
-
-STDMETHODIMP CTrafficBarrier::Load(IStructuredLoad2* pLoad)
-{
-   CHECK_IN(pLoad);
-
-   CComVariant var;
-   pLoad->BeginUnit(CComBSTR("TrafficBarrier"));
-   
-   pLoad->get_Property(CComBSTR("X1"),&var);
-   m_X1 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("X2"),&var);
-   m_X2 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("X3"),&var);
-   m_X3 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("X4"),&var);
-   m_X4 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("X5"),&var);
-   m_X5 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y1"),&var);
-   m_Y1 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y2"),&var);
-   m_Y2 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y3"),&var);
-   m_Y3 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Y4"),&var);
-   m_Y4 = var.dblVal;
-   
-   pLoad->get_Property(CComBSTR("Orientation"),&var);
-   m_Orientation = (TrafficBarrierOrientation)var.iVal;
-   
-   pLoad->get_Property(CComBSTR("Rotation"),&var);
-   m_Rotation = var.dblVal;
-
-   pLoad->get_Property(CComBSTR("HookPoint"),&var);
-   if ( FAILED( _CopyVariantToInterface<IPoint2d>::copy(&m_pHookPoint,&var)) )
-      return STRLOAD_E_INVALIDFORMAT;
-
-   VARIANT_BOOL bEnd;
-   pLoad->EndUnit(&bEnd);
-
-   ATLASSERT(bEnd == VARIANT_TRUE);
-
-   UpdateShape();
-
-   return S_OK;
-}
-
-
-STDMETHODIMP CTrafficBarrier::OnPointChanged(IPoint2d* point)
-{
-   // our hook point got changed
-   MakeDirty();
-
-   return S_OK;
 }

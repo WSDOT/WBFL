@@ -30,8 +30,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-CEAFBrokerReportSpecification::CEAFBrokerReportSpecification(LPCTSTR strReportName,IBroker* pBroker) :
-CReportSpecification(strReportName)
+CEAFBrokerReportSpecification::CEAFBrokerReportSpecification(const std::_tstring& strReportName, IBroker* pBroker) :
+   WBFL::Reporting::ReportSpecification(strReportName)
 {
    SetBroker(pBroker);
 }
@@ -45,7 +45,7 @@ void CEAFBrokerReportSpecification::SetBroker(IBroker* pBroker)
    m_pBroker = pBroker;
 }
 
-HRESULT CEAFBrokerReportSpecification::GetBroker(IBroker** ppBroker)
+HRESULT CEAFBrokerReportSpecification::GetBroker(IBroker** ppBroker) const
 {
    ATLASSERT( m_pBroker ); // did you forget to set the broker???
    //return m_Broker.CopyTo(ppBroker);
@@ -54,10 +54,10 @@ HRESULT CEAFBrokerReportSpecification::GetBroker(IBroker** ppBroker)
    return S_OK;
 }
 
-HRESULT CEAFBrokerReportSpecification::Validate() const
+bool CEAFBrokerReportSpecification::IsValid() const
 {
    if ( !m_pBroker )
-      return E_FAIL;
+      return false;
 
-   return CReportSpecification::Validate();
+   return WBFL::Reporting::ReportSpecification::IsValid();
 }

@@ -135,11 +135,11 @@ STDMETHODIMP CSuperstructureMember::IsEndReleased(Side side, MemberReleaseType r
    }
    else if ( releaseType == mrtMz )
    {
-      *pvbIsReleased = sysFlags<long>::IsSet(*pRelease,RELEASE_MZ) ? VARIANT_TRUE : VARIANT_FALSE;
+      *pvbIsReleased = WBFL::System::Flags<long>::IsSet(*pRelease,RELEASE_MZ) ? VARIANT_TRUE : VARIANT_FALSE;
    }
    else if ( releaseType == mrtFx )
    {
-      *pvbIsReleased = sysFlags<long>::IsSet(*pRelease,RELEASE_FX) ? VARIANT_TRUE : VARIANT_FALSE;
+      *pvbIsReleased = WBFL::System::Flags<long>::IsSet(*pRelease,RELEASE_FX) ? VARIANT_TRUE : VARIANT_FALSE;
    }
    else
    {
@@ -159,12 +159,12 @@ STDMETHODIMP CSuperstructureMember::SetEndRelease(Side side, MemberReleaseType n
       *pRelease = RELEASE_NONE;
       dofire = true;
    }
-   else if ( newVal == mrtMz && !sysFlags<long>::IsSet(*pRelease,RELEASE_MZ) )
+   else if ( newVal == mrtMz && !WBFL::System::Flags<long>::IsSet(*pRelease,RELEASE_MZ) )
    {
       *pRelease |= RELEASE_MZ;
       dofire = true;
    }
-   else if ( newVal == mrtFx && !sysFlags<long>::IsSet(*pRelease,RELEASE_FX) )
+   else if ( newVal == mrtFx && !WBFL::System::Flags<long>::IsSet(*pRelease,RELEASE_FX) )
    {
       *pRelease |= RELEASE_FX;
       dofire = true;
@@ -426,8 +426,8 @@ STDMETHODIMP CSuperstructureMember::get__EnumElements(IEnumSegmentItem* *retval)
 {
    CHECK_RETOBJ(retval);
 
-   typedef _CopyInterface<ISegmentItem> mycopy;
-   typedef CComEnumOnSTL<IEnumSegmentItem, &IID_IEnumSegmentItem, ISegmentItem*, mycopy, CSegments> EnumType;
+   using mycopy = _CopyInterface<ISegmentItem>;
+   using EnumType = CComEnumOnSTL<IEnumSegmentItem, &IID_IEnumSegmentItem, ISegmentItem*, mycopy, CSegments>;
 
    CComObject<EnumType>* penum;
    HRESULT hr;

@@ -66,9 +66,9 @@ BOOL CEditMemberDlg::OnInitDialog()
    CComPtr<IFem2dJointCollection> joints;
    m_Model->get_Joints(&joints);
 
-   CollectionIndexType count;
+   IndexType count;
    joints->get_Count(&count);
-   for ( CollectionIndexType i = 0; i < count; i++ )
+   for ( IndexType i = 0; i < count; i++ )
    {
       CComPtr<IFem2dJoint> jnt;
       joints->get_Item(i,&jnt);

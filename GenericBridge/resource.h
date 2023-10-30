@@ -1,5 +1,30 @@
+///////////////////////////////////////////////////////////////////////
+// GenericBridge - Generic Bridge Modeling Framework
+// Copyright © 1999-2023  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as 
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
+// Microsoft Developer Studio generated include file.
 // Used by GenericBridge.rc
 //
 #define IDS_PROJNAME                    100
@@ -25,8 +50,8 @@
 #define IDR_POINTOFINTERESTCOLLECTION   123
 #define IDR_COLUMN                      125
 #define IDR_COLUMNCOLLECTION            126
-#define IDR_COLUMNLAYOUT                127
-#define IDR_LINEARCROSSBEAM             128
+#define IDR_COLUMNLAYOUT               127
+#define IDR_LINEARCROSSBEAM                   128
 #define IDR_TRANSVERSEPIERDESCRIPTION   129
 #define IDR_POINTLOAD                   130
 #define IDR_FSHAPEBARRIER               131
@@ -42,21 +67,21 @@
 #define IDR_BOXBEAMSECTION              142
 #define IDR_MULTIWEBSECTION2            143
 #define IDR_SIDEWALKBARRIER             144
-#define IDR_FLANGEDGIRDERENDBLOCKSEGMENT 145
-#define IDR_TAPEREDGIRDERSEGMENT        146
-#define IDR_VOIDEDSLABENDBLOCKSEGMENT   147
+#define IDR_FLANGEDGIRDERENDBLOCKSEGMENT  145
+#define IDR_TAPEREDGIRDERSEGMENT          146
+#define IDR_VOIDEDSLABENDBLOCKSEGMENT     147
 #define IDR_THICKENEDFLANGEBULBTEESEGMENT 148
-#define IDR_DECKEDSLABBEAMSECTION       149
+#define IDR_DECKEDSLABBEAMSECTION         149
 #define IDR_DECKEDSLABBEAMENDBLOCKSEGMENT 150
-#define IDR_BOXBEAMENDBLOCKSEGMENT      151
+#define IDR_BOXBEAMENDBLOCKSEGMENT        151
 #define IDR_UGIRDERSECTION2ENDBLOCKSEGMENT 152
 #define IDR_FLANGEDSPLICEDGIRDERSEGMENT 153
-#define IDR_USPLICEDGIRDERSEGMENT       154
-#define IDR_NUSPLICEDGIRDERSEGMENT      155
-#define IDR_PARABOLICTENDONSEGMENT      156
-#define IDR_OFFSETTENDON                157
+#define IDR_USPLICEDGIRDERSEGMENT 154
+#define IDR_NUSPLICEDGIRDERSEGMENT 155
+#define IDR_PARABOLICTENDONSEGMENT 156
+#define IDR_OFFSETTENDON 157
 #define IDR_PRISMATICSUPERSTRUCTUREMEMBERSEGMENT 158
-#define IDR_GENERICBARRIER              163
+#define IDR_GENERICBARRIER               163
 #define IDR_REBAR                       164
 #define IDR_REBARSECTIONITEM            165
 #define IDR_REBARSECTION                166
@@ -75,6 +100,7 @@
 #define IDR_CASTING_REGIONS             179
 #define IDR_NUDECKEDBULBTEESECTION      180
 #define IDR_PCIDECKEDBULBTEESECTION     181
+
 #define IDS_STAGENAME                   201
 #define IDS_STAGEDESCRIPTION            203
 #define IDC_SPANS                       204
@@ -169,7 +195,7 @@
 #define IDR_NUGIRDERSECTION             282
 #define IDC_SYMMETRICAL                 283
 #define IDR_UGIRDERSECTION              284
-#define IDR_UGIRDERSECTION2             285
+#define IDR_UGIRDERSECTION2              285
 #define IDR_SUPERSTRUCTUREMEMBERCOLLECTION 286
 #define IDC_TITLE                       287
 #define IDC_LINKAGE                     288

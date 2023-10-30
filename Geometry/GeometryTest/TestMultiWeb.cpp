@@ -246,7 +246,7 @@ void CTestMultiWeb::TestIShape()
    cg->get_X(&cgx);
    cg->get_Y(&cgy);
    TRY_TEST( IsEqual(cgx,0.0), true );
-   TRY_TEST( IsEqual(cgy,-9.17029972752044), true );
+   TRY_TEST( IsEqual(cgy, -9.1702997275204368), true );
    CoordinateSystemType cst;
    props->get_CoordinateSystem(&cst);
    TRY_TEST( cst, csCentroidal );
@@ -304,98 +304,40 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
 
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 16 );
+   TRY_TEST( cPoints, 19 );
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 16> points;
+   std::array<CComPtr<IPoint2d>, 19> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-15.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.625), true );
-   TRY_TEST( IsEqual(y,-6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // Clone
@@ -405,7 +347,7 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST(shape->Clone(&clone), S_OK);
 
    CComQIPtr<IMultiWeb> beamClone(clone);
-   TRY_TEST( beamClone != 0, true );
+   TRY_TEST( beamClone != nullptr, true );
 
    beamClone->get_W1(&val);
    TRY_TEST( IsEqual(val,13.125), true);
@@ -451,8 +393,8 @@ void CTestMultiWeb::TestIShape()
    //
 
    // setup clipping line
-   p1->Move(-100,-5.0);
-   p2->Move( 100,-5.0);
+   p1->Move(-100,-10.0);
+   p2->Move( 100,-10.0);
 
    CComPtr<ILine2d> clipLine;
    clipLine.CoCreateInstance( CLSID_Line2d );
@@ -462,105 +404,43 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( CollectionIndexType i = 0; i < cPoints; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 16 );
+   TRY_TEST( cPoints, 13 );
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
+   i = 0;
+   TEST_POINT(points, -22.68452, -10.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.81548, -10.);
+   TEST_POINT(points, -3.43452, -10.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.43452, -10.);
+   TEST_POINT(points, 15.81548, -10.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.68452, -10.);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-15.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.625), true );
-   TRY_TEST( IsEqual(y,-6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
+   TRY_TEST(i, cPoints);
 
    // clip in other direction
-   p1->Move( 100,-5.0);
-   p2->Move(-100,-5.0);
+   p1->Move( 100,-10.0);
+   p2->Move(-100,-10.0);
 
    clipLine->ThroughPoints(p1,p2);
 
@@ -568,45 +448,42 @@ void CTestMultiWeb::TestIShape()
    TRY_TEST(shape->ClipWithLine(nullptr,&clip), E_INVALIDARG );
    TRY_TEST(shape->ClipWithLine(clipLine,nullptr), E_POINTER );
    TRY_TEST(shape->ClipWithLine(clipLine,&clip), S_OK );
-   TRY_TEST( clip != 0, true );
+   TRY_TEST( clip != nullptr, true );
    
    coll.Release();
    Enum.Release();
-   for ( CollectionIndexType i = 0; i < cPoints; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 5);
+   TRY_TEST( cPoints, 18);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   i = 0;
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -22.68452, -10.);
+   TEST_POINT(points, -15.815476, -10.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -3.43452, -10.);
+   TEST_POINT(points, 3.43452, -10.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 15.815476, -10.);
+   TEST_POINT(points, 22.68452, -10.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // ClipIn
@@ -617,8 +494,8 @@ void CTestMultiWeb::TestIShape()
    clipRect.CoCreateInstance( CLSID_Rect2d );
    clipRect->put_Left(-100);
    clipRect->put_Right(100);
-   clipRect->put_Top(-4);
-   clipRect->put_Bottom(-5);
+   clipRect->put_Top(0);
+   clipRect->put_Bottom(-7);
 
    TRY_TEST( shape->ClipIn(nullptr,&clip), E_INVALIDARG );
    TRY_TEST( shape->ClipIn(clipRect,nullptr), E_POINTER );
@@ -627,17 +504,17 @@ void CTestMultiWeb::TestIShape()
    // Verify clip by checking points
    coll.Release();
    Enum.Release();
-   for ( CollectionIndexType i = 0; i < cPoints; i++)
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
 
    TRY_TEST(clip->get_PolyPoints(&coll), S_OK );
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints, 5 );
+   TRY_TEST( cPoints, 18 );
 
    ATLTRACE("Trace of Points for MultiWeb - count = %d \n", cPoints);
    ATLTRACE("  pt         X         Y\n");
    ATLTRACE("---------------------------------\n");
-   for (CollectionIndexType ip = 0; ip<cPoints; ip++)
+   for (IndexType ip = 0; ip<cPoints; ip++)
    {
       CComPtr<IPoint2d> pnt;
       coll->get_Item(ip, &pnt);
@@ -653,30 +530,28 @@ void CTestMultiWeb::TestIShape()
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -4.000), true );
+   i = 0;
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -22.82738, -7.);
+   TEST_POINT(points, -15.67262, -7.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -3.57738, -7.);
+   TEST_POINT(points, 3.57738, -7.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 15.67262, -7.);
+   TEST_POINT(points, 22.82738, -7.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
 
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -5.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -4.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -4.000), true );
+   TRY_TEST(i, cPoints);
 }
 
 void CTestMultiWeb::TestIXYPosition()
@@ -720,98 +595,40 @@ void CTestMultiWeb::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    TRY_TEST( shape->get_PolyPoints(nullptr), E_POINTER );
    TRY_TEST( shape->get_PolyPoints(&coll), S_OK );
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,16);
+   TRY_TEST( cPoints,19);
 
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
-   std::array<CComPtr<IPoint2d>, 16> points;
+   std::array<CComPtr<IPoint2d>, 19> points;
    ULONG fetched;
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
    Float64 x,y;
+   int i = 0;
+   TEST_POINT(points, 100., 100.);
+   TEST_POINT(points, 64., 100.);
+   TEST_POINT(points, 64., 94.);
+   TEST_POINT(points, 77.125, 94.);
+   TEST_POINT(points, 78.125, 73.);
+   TEST_POINT(points, 83.375, 73.);
+   TEST_POINT(points, 84.375, 94.);
+   TEST_POINT(points, 96.375, 94.);
+   TEST_POINT(points, 97.375, 73.);
+   TEST_POINT(points, 100., 73.);
+   TEST_POINT(points, 102.625, 73.);
+   TEST_POINT(points, 103.625, 94.);
+   TEST_POINT(points, 115.625, 94.);
+   TEST_POINT(points, 116.625, 73.);
+   TEST_POINT(points, 121.875, 73.);
+   TEST_POINT(points, 122.875, 94.);
+   TEST_POINT(points, 136., 94.);
+   TEST_POINT(points, 136., 100.);
+   TEST_POINT(points, 100., 100.);
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000+100), true );
-   TRY_TEST( IsEqual(y,  0.000+100), true );
-
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-22.875+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-21.875+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.625+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-15.625+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -3.625+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -2.625+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  2.625+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  3.625+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.625+100), true );
-   TRY_TEST( IsEqual(y,-6.000+100), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 16.625+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 21.875+100), true );
-   TRY_TEST( IsEqual(y,-27.000+100), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 22.875+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000+100), true );
-   TRY_TEST( IsEqual(y, -6.000+100), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000+100), true );
-   TRY_TEST( IsEqual(y,  0.000+100), true );
+   TRY_TEST(i, cPoints);
 
    //
    // OffsetEx
@@ -828,96 +645,39 @@ void CTestMultiWeb::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for ( CollectionIndexType i = 0; i < cPoints; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,16);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   i = 0;
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, -36., -6.);
+   TEST_POINT(points, -22.875, -6.);
+   TEST_POINT(points, -21.875, -27.);
+   TEST_POINT(points, -16.625, -27.);
+   TEST_POINT(points, -15.625, -6.);
+   TEST_POINT(points, -3.625, -6.);
+   TEST_POINT(points, -2.625, -27.);
+   TEST_POINT(points, 0., -27.);
+   TEST_POINT(points, 2.625, -27.);
+   TEST_POINT(points, 3.625, -6.);
+   TEST_POINT(points, 15.625, -6.);
+   TEST_POINT(points, 16.625, -27.);
+   TEST_POINT(points, 21.875, -27.);
+   TEST_POINT(points, 22.875, -6.);
+   TEST_POINT(points, 36., -6.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 0., 0.);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-15.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  2.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  3.625), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,15.625), true );
-   TRY_TEST( IsEqual(y,-6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 16.625), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 21.875), true );
-   TRY_TEST( IsEqual(y,-27.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 22.875), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y, -6.000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   TRY_TEST(i, cPoints);
 
    //
    // LocatorPoint property
@@ -939,7 +699,7 @@ void CTestMultiWeb::TestIXYPosition()
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
    TRY_TEST(IsEqual(x,136.000), true );
-   TRY_TEST(IsEqual(y,127.000), true );
+   TRY_TEST(IsEqual(y,127.00), true );
 
    // BottomCenter
    hookPnt->Move(0.0,0.0);
@@ -968,7 +728,7 @@ void CTestMultiWeb::TestIXYPosition()
    TRY_TEST(IsEqual(y,100.000), true );
    hookPnt->get_X(&x);
    hookPnt->get_Y(&y);
-   TRY_TEST(IsEqual(x,100.0-36), true );
+   TRY_TEST(IsEqual(x,64.0), true );
    TRY_TEST(IsEqual(y,127.0), true );
 
    // CenterLeft
@@ -1091,110 +851,51 @@ void CTestMultiWeb::TestIXYPosition()
    // Check the points
    coll.Release();
    Enum.Release();
-   for (CollectionIndexType i = 0; i < cPoints; i++ )
-      points[i].Release();
+   std::for_each(std::begin(points), std::end(points), [](auto& point) {point.Release(); });
+
    
    shape->get_PolyPoints(&coll);
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,16);
+   TRY_TEST( cPoints,19);
 
    coll->get__Enum(&Enum);
    Enum->Next((ULONG)cPoints,&points[0],&fetched);
    TRY_TEST( fetched, cPoints );
 
-   points[0]->get_X(&x);
-   points[0]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
+   i = 0;
+   TEST_POINT(points, 0., 0.);
+   TEST_POINT(points, 36., 0.);
+   TEST_POINT(points, 36., 6.);
+   TEST_POINT(points, 22.875, 6.);
+   TEST_POINT(points, 21.875, 27.);
+   TEST_POINT(points, 16.625, 27.);
+   TEST_POINT(points, 15.625, 6.);
+   TEST_POINT(points, 3.625, 6.);
+   TEST_POINT(points, 2.625, 27.);
+   TEST_POINT(points, 0., 27.);
+   TEST_POINT(points, -2.625, 27.);
+   TEST_POINT(points, -3.625, 6.);
+   TEST_POINT(points, -15.625, 6.);
+   TEST_POINT(points, -16.625, 27.);
+   TEST_POINT(points, -21.875, 27.);
+   TEST_POINT(points, -22.875, 6.);
+   TEST_POINT(points, -36., 6.);
+   TEST_POINT(points, -36., 0.);
+   TEST_POINT(points, 0., 0.);
 
-   points[1]->get_X(&x);
-   points[1]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 36.000), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[2]->get_X(&x);
-   points[2]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 22.875), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[3]->get_X(&x);
-   points[3]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 21.875), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 16.625), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[5]->get_X(&x);
-   points[5]->get_Y(&y);
-   TRY_TEST( IsEqual(x, 15.625), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[6]->get_X(&x);
-   points[6]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  3.625), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[7]->get_X(&x);
-   points[7]->get_Y(&y);
-   TRY_TEST( IsEqual(x,  2.625), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[8]->get_X(&x);
-   points[8]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -2.625), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[9]->get_X(&x);
-   points[9]->get_Y(&y);
-   TRY_TEST( IsEqual(x, -3.625), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[10]->get_X(&x);
-   points[10]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-15.625), true );
-   TRY_TEST( IsEqual(y, 6.000), true );
-
-   points[11]->get_X(&x);
-   points[11]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.625), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[12]->get_X(&x);
-   points[12]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-21.875), true );
-   TRY_TEST( IsEqual(y, 27.000), true );
-
-   points[13]->get_X(&x);
-   points[13]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-22.875), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[14]->get_X(&x);
-   points[14]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  6.000), true );
-
-   points[15]->get_X(&x);
-   points[15]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-36.000), true );
-   TRY_TEST( IsEqual(y,  0.000), true );
-
+   TRY_TEST(i, cPoints); 
 }
 
 void CTestMultiWeb::TestISupportErrorInfo()
 {
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_MultiWeb ), S_OK );
-   TRY_TEST( eInfo != 0, true );
+   TRY_TEST( eInfo != nullptr, true );
 
    // Interfaces that should be supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IMultiWeb ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
 
    // Interface that is not supported
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );

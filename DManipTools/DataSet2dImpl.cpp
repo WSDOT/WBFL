@@ -50,7 +50,7 @@ STDMETHODIMP CDataSet2dImpl::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CDataSet2dImpl::get_Item(CollectionIndexType index, IPoint2d** pVal)
+STDMETHODIMP CDataSet2dImpl::get_Item(IndexType index, IPoint2d** pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -63,7 +63,7 @@ STDMETHODIMP CDataSet2dImpl::get_Item(CollectionIndexType index, IPoint2d** pVal
 
 }
 
-STDMETHODIMP_(void) CDataSet2dImpl::get_Count(CollectionIndexType *pVal)
+STDMETHODIMP_(void) CDataSet2dImpl::get_Count(IndexType *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -77,7 +77,7 @@ STDMETHODIMP_(void) CDataSet2dImpl::Add(IPoint2d *pVal)
    m_Container.emplace_back(pVal);
 }
 
-STDMETHODIMP CDataSet2dImpl::Insert(CollectionIndexType index, IPoint2d *pVal)
+STDMETHODIMP CDataSet2dImpl::Insert(IndexType index, IPoint2d *pVal)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 
@@ -97,7 +97,7 @@ STDMETHODIMP CDataSet2dImpl::Insert(CollectionIndexType index, IPoint2d *pVal)
    return S_OK;
 }
 
-STDMETHODIMP CDataSet2dImpl::Remove(CollectionIndexType index)
+STDMETHODIMP CDataSet2dImpl::Remove(IndexType index)
 {
 	AFX_MANAGE_STATE(AfxGetStaticModuleState())
 

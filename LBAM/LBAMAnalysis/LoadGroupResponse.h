@@ -221,10 +221,10 @@ public:
 // ISuperstructureMembersEvents
 public:
    STDMETHOD(OnSuperstructureMembersChanged)(ISuperstructureMember* item, BSTR stage, ChangeType change) override;
-   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, CollectionIndexType index) override;
-   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, CollectionIndexType index) override;
-	STDMETHOD(OnSuperstructureMembersMoveTo)(CollectionIndexType from, CollectionIndexType to) override;
-	STDMETHOD(OnSuperstructureMembersCopyTo)(CollectionIndexType from, CollectionIndexType to) override;
+   STDMETHOD(OnSuperstructureMembersAdded)(ISuperstructureMember* item, IndexType index) override;
+   STDMETHOD(OnSuperstructureMembersBeforeRemove)(ISuperstructureMember* item, IndexType index) override;
+	STDMETHOD(OnSuperstructureMembersMoveTo)(IndexType from, IndexType to) override;
+	STDMETHOD(OnSuperstructureMembersCopyTo)(IndexType from, IndexType to) override;
 	STDMETHOD(OnSuperstructureMembersReverse)() override;
 	STDMETHOD(OnSuperstructureMembersOffset)() override;
 
@@ -327,10 +327,10 @@ public:
       // Provides different ways to iterate through loadgroups
       // Note that fem load case id's are incremented by 10,000 for each loadgroup. This
       // is done to allow room for load cases created for up to 10,000 temporary supports
-      CollectionIndexType LoadGroupCount();
-      CComBSTR LoadGroup(CollectionIndexType index);
+      IndexType LoadGroupCount();
+      CComBSTR LoadGroup(IndexType index);
       void GetLoadGroupInfo(BSTR LoadGroup, LoadGroupIDType* femLgId, bool* isTransient);
-      void GetLoadGroupInfoByIndex(CollectionIndexType index, LoadGroupIDType* femLgId, bool* isTransient);
+      void GetLoadGroupInfoByIndex(IndexType index, LoadGroupIDType* femLgId, bool* isTransient);
 
       // functions to determine whether loads were ever actually applied in a load group
       void SetLoadGroupAsActive(BSTR LoadGroup);
@@ -370,8 +370,8 @@ public:
             m_StageIdx(stageIdx)
             {;}
       };
-      typedef std::vector<TemporarySupportLoadInfo> TemporarySupportLoadInfoColl;
-      typedef TemporarySupportLoadInfoColl::iterator TemporarySupportLoadInfoIterator;
+      using TemporarySupportLoadInfoColl = std::vector<TemporarySupportLoadInfo>;
+      using TemporarySupportLoadInfoIterator = TemporarySupportLoadInfoColl::iterator;
 
       void GetResponseControlInfo(BSTR loadGroup, BSTR stage, ResultsSummationType summType,
                                   TemporarySupportLoadInfoColl& tempSuppportLoadInfo);
@@ -379,8 +379,8 @@ public:
    private:
       // stage stuff
       void UpdateStageOrder(ILBAMModel* pLBAM);
-      typedef std::vector<CComBSTR> StagesType;
-      typedef StagesType::iterator  StagesTypeIterator;
+      using StagesType = std::vector<CComBSTR>;
+      using StagesTypeIterator = StagesType::iterator;
       StagesType m_Stages;
 
    private:
@@ -401,8 +401,8 @@ public:
          bool m_IsLoaded; // true if there were any loads applied to this loadgroup
       };
       // maps load group name to fem load group
-      typedef std::map< CComBSTR, LoadGroupInfo >  LoadGroupsType;
-      typedef LoadGroupsType::iterator      LoadGroupsTypeIterator;
+      using LoadGroupsType = std::map< CComBSTR, LoadGroupInfo>;
+      using LoadGroupsTypeIterator = LoadGroupsType::iterator;
       LoadGroupsType m_LoadGroups;
 
    private:
@@ -420,8 +420,8 @@ public:
             m_RemovalStageIdx(removalStageIdx)
             {;}
        };
-      typedef std::vector<TemporarySupportInfo> TemporarySupportInfoColl;
-      typedef TemporarySupportInfoColl::iterator TemporarySupportInfoCollIterator;
+      using TemporarySupportInfoColl = std::vector<TemporarySupportInfo>;
+      using TemporarySupportInfoCollIterator = TemporarySupportInfoColl::iterator;
 
       TemporarySupportInfoColl m_TemporarySupportInfo;
 
@@ -485,8 +485,8 @@ private:
    void ValidateTemporarySupportForces();
 
    // our list of models
-   typedef std::vector< std::shared_ptr<CAnalysisModel> > Models;
-   typedef Models::iterator ModelsIterator;
+   using Models = std::vector< std::shared_ptr<CAnalysisModel>>;
+   using ModelsIterator = Models::iterator;
    Models m_Models;
 
    // influence - related private stuff
@@ -563,8 +563,8 @@ private:
       {;}
    };
 
-   typedef std::set<DvInfluenceLineKeeper>   DvInfluenceLineCache;
-   typedef DvInfluenceLineCache::iterator    DvInfluenceLineCacheIterator;
+   using DvInfluenceLineCache = std::set<DvInfluenceLineKeeper>;
+   using DvInfluenceLineCacheIterator = DvInfluenceLineCache::iterator;
 
    // Single value model
    struct SvInfluenceLineKeeper: public InfluenceLineKeeper
@@ -580,8 +580,8 @@ private:
       {;}
    };
 
-   typedef std::set<SvInfluenceLineKeeper>   SvInfluenceLineCache;
-   typedef SvInfluenceLineCache::iterator    SvInfluenceLineCacheIterator;
+   using SvInfluenceLineCache = std::set<SvInfluenceLineKeeper>;
+   using SvInfluenceLineCacheIterator = SvInfluenceLineCache::iterator;
 
 
    DvInfluenceLineCache m_CachedForceInfluenceLines;
@@ -621,10 +621,10 @@ private:
       void OnInfluenceCalcUpdated(BSTR stage);
       void OnContraflexureCalcUpdated(BSTR stage);
 
-      typedef std::set<IDType>       IntegerList;
-      typedef IntegerList::iterator  IntegerListIterator;
-      typedef std::set<_bstr_t>      NameList;
-      typedef NameList::iterator     NameListIterator;
+      using IntegerList = std::set<IDType>;
+      using IntegerListIterator = IntegerList::iterator;
+      using NameList = std::set<_bstr_t>;
+      using NameListIterator = NameList::iterator;
 
       // accessor functions which help to determine what to do with changes
       bool IsModelHosed();   
@@ -672,16 +672,16 @@ private:
       bool m_IsOrderingUpdated;
 
       // tracking and caching of influence data 
-      typedef std::set<_bstr_t>           InfluenceStageList;
-      typedef InfluenceStageList::iterator InfluenceStageIterator;
+      using InfluenceStageList = std::set<_bstr_t>;
+      using InfluenceStageIterator = InfluenceStageList::iterator;
       InfluenceStageList m_UpdatedInfluenceLoadStages;
 
-      typedef std::map< _bstr_t, EventType > NameEventList;
-      typedef NameEventList::iterator        NameEventListIterator;
+      using NameEventList = std::map< _bstr_t, EventType >;
+      using NameEventListIterator = NameEventList::iterator;
       NameEventList m_LoadGroupsEvents;
 
-      typedef std::map<IDType, EventType>   IntegerEventList;
-      typedef IntegerEventList::iterator  IntegerEventListIterator;
+      using IntegerEventList = std::map<IDType, EventType>;
+      using IntegerEventListIterator = IntegerEventList::iterator;
       IntegerEventList m_POIsEvents;
    };
 

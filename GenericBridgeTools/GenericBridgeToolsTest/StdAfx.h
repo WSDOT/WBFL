@@ -35,8 +35,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <Private\WbflPackage.h>
-
 // TODO: reference additional headers your program requires here
 #include <ObjBase.h>
 #include <AtlBase.h>
@@ -55,7 +53,6 @@ extern CComModule _Module;
 #include <WBFLTools.h>
 #include <WBFLUnitServer.h>
 #include <WBFLGeometry.h>
-#include <WBFLSections.h>
 #include <WBFLCogo.h>
 #include <WBFLGenericBridge.h>
 #include <WBFLGenericBridgeTools.h>
@@ -63,6 +60,8 @@ extern CComModule _Module;
 #include <MathEx.h>
 
 #include "GenericBridgeToolsTest.h"
+#include <WBFLTest.h>
+#include <WBFLDebug.h>
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.

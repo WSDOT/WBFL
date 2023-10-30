@@ -33,8 +33,8 @@
 #include "LoadingUtils.h"
 
 class CAxles;
-typedef CComSegmentCollection< ldIAxles, ldIAxle, ldIEnumAxle, &IID_ldIEnumAxle,AxleIndexType > AxleCollImpl;
-typedef CPersistentCollection<CAxles, AxleCollImpl,AxleIndexType> PersistentAxleCollImpl;
+using AxleCollImpl = CComSegmentCollection< ldIAxles, ldIAxle, ldIEnumAxle, &IID_ldIEnumAxle, AxleIndexType >;
+using PersistentAxleCollImpl = CPersistentCollection<CAxles, AxleCollImpl,AxleIndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CAxles
@@ -154,7 +154,7 @@ public:
    void FinalRelease()
    {
       // free up all of our connectionpoints on destruct
-      CollectionIndexType cnt = 0;
+      IndexType cnt = 0;
       for (iterator it= begin(); it != end(); it++)
       {
          OnBeforeRemove(*it, cnt++);

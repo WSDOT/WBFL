@@ -37,9 +37,7 @@ class ATL_NO_VTABLE CCompositeShapeItem :
 	public CComCoClass<CCompositeShapeItem, &CLSID_CompositeShapeItem>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CCompositeShapeItem,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public ICompositeShapeItem,
-   public IStructuredStorage2,
-   public IPersistImpl<CCompositeShapeItem>
+	public ICompositeShapeItem
 {
 public:
 	CCompositeShapeItem()
@@ -54,10 +52,8 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 BEGIN_COM_MAP(CCompositeShapeItem)
 	COM_INTERFACE_ENTRY(ICompositeShapeItem)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
 	COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 // ISupportsErrorInfo
@@ -65,16 +61,10 @@ END_COM_MAP()
 
 // ICompositeShapeItem
 public:
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
 	STDMETHOD(get_Void)(/*[out, retval]*/ VARIANT_BOOL *pVal) override;
 	STDMETHOD(put_Void)(/*[in]*/ VARIANT_BOOL newVal) override;
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(putref_Shape)(/*[in]*/ IShape* newVal) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 
 private:
    VARIANT_BOOL m_bVoid;

@@ -30,7 +30,6 @@
 #pragma once
 
 #include "resource.h"       // main symbols
-#include "COGOCP.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CAngleDisplayUnitFormatter
@@ -39,9 +38,7 @@ class ATL_NO_VTABLE CAngleDisplayUnitFormatter :
 	public CComCoClass<CAngleDisplayUnitFormatter, &CLSID_AngleDisplayUnitFormatter>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CAngleDisplayUnitFormatter,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IConnectionPointContainerImpl<CAngleDisplayUnitFormatter>,
-	public IAngleDisplayUnitFormatter,
-	public CProxyDDisplayUnitFormatterEvents< CAngleDisplayUnitFormatter >
+	public IAngleDisplayUnitFormatter
 {
 public:
 	CAngleDisplayUnitFormatter()
@@ -58,15 +55,8 @@ BEGIN_COM_MAP(CAngleDisplayUnitFormatter)
 	COM_INTERFACE_ENTRY(IAngleDisplayUnitFormatter)
    COM_INTERFACE_ENTRY(IDisplayUnitFormatter)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
-	COM_INTERFACE_ENTRY(IConnectionPointContainer)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
    COM_INTERFACE_ENTRY(IObjectSafety)
 END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CAngleDisplayUnitFormatter)
-CONNECTION_POINT_ENTRY(IID_IDisplayUnitFormatterEvents)
-END_CONNECTION_POINT_MAP()
-
 
 // ISupportsErrorInfo
 public:

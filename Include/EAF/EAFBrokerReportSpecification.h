@@ -27,16 +27,16 @@
 #include <WBFLCore.h>
 
 class EAFCLASS CEAFBrokerReportSpecification :
-   public CReportSpecification
+   public WBFL::Reporting::ReportSpecification
 {
 public:
-   CEAFBrokerReportSpecification(LPCTSTR strReportName,IBroker* pBroker);
+   CEAFBrokerReportSpecification(const std::_tstring& strReportName, IBroker* pBroker);
    ~CEAFBrokerReportSpecification(void);
 
    void SetBroker(IBroker* pBroker);
-   HRESULT GetBroker(IBroker** ppBroker);
+   HRESULT GetBroker(IBroker** ppBroker) const;
 
-   virtual HRESULT Validate() const override;
+   virtual bool IsValid() const override;
 
 protected:
    CComPtr<IBroker> m_pBroker;

@@ -154,31 +154,21 @@ bool mfcTemplateTabHelper::AssertValid() const
    return true;
 }
 
-void mfcTemplateTabHelper::Dump(dbgDumpContext& os) const
+void mfcTemplateTabHelper::Dump(WBFL::Debug::LogContext& os) const
 {
-   os << "Dump for mfcTemplateTabHelper" << endl;
-   os << "  m_Name   = "<< m_Name<<endl;
-   os << "  m_Suffix = "<< m_Suffix<<endl;
-   os << " Directory List "<<endl;
+   os << "Dump for mfcTemplateTabHelper" << WBFL::Debug::endl;
+   os << "  m_Name   = "<< m_Name<< WBFL::Debug::endl;
+   os << "  m_Suffix = "<< m_Suffix<< WBFL::Debug::endl;
+   os << " Directory List "<< WBFL::Debug::endl;
    for (std::set<std::_tstring>::const_iterator itd = m_DirectoryList.begin(); itd!=m_DirectoryList.end(); itd++)
    {
-      os << "     "<<*itd<<endl;
+      os << "     "<<*itd<< WBFL::Debug::endl;
    }
-   os << " Tab File List"<<endl;
+   os << " Tab File List"<< WBFL::Debug::endl;
    for(FileListType::const_iterator itf= m_FileList.begin(); itf!=m_FileList.end(); itf++)
    {
-      os << "  File: "<<itf->m_FileName<<endl;
-      os << "    Directory: "<< *(itf->m_pDirectory)<<endl;
+      os << "  File: "<<itf->m_FileName<< WBFL::Debug::endl;
+      os << "    Directory: "<< *(itf->m_pDirectory)<< WBFL::Debug::endl;
    }
 }
 #endif // _DEBUG
-
-#if defined _UNITTEST
-bool mfcTemplateTabHelper::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("mfcTemplateTabHelper");
-
-
-   TESTME_EPILOG("TemplateTabHelper");
-}
-#endif // _UNITTEST

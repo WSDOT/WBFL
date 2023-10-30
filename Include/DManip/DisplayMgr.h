@@ -55,9 +55,9 @@ interface iDisplayMgr : public IUnknown
 
    // Display List Management
    STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) PURE;
-   STDMETHOD_(void,GetDisplayList)(CollectionIndexType idx,iDisplayList** list) PURE;
+   STDMETHOD_(void,GetDisplayList)(IndexType idx,iDisplayList** list) PURE;
    STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) PURE;
-   STDMETHOD_(CollectionIndexType,GetDisplayListCount)() PURE;
+   STDMETHOD_(IndexType,GetDisplayListCount)() PURE;
    STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) PURE;
    STDMETHOD_(void,ClearDisplayLists)() PURE;
 
@@ -70,10 +70,10 @@ interface iDisplayMgr : public IUnknown
    STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) PURE;
    STDMETHOD_(void,ClearDisplayObjects)() PURE;
    STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) PURE;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectCount)() PURE;
-   STDMETHOD_(CollectionIndexType,GetDisplayObjectFactoryCount)() PURE;
+   STDMETHOD_(IndexType,GetDisplayObjectCount)() PURE;
+   STDMETHOD_(IndexType,GetDisplayObjectFactoryCount)() PURE;
    STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) PURE;
-   STDMETHOD_(void,GetDisplayObjectFactory)(CollectionIndexType idx, iDisplayObjectFactory** factory) PURE;
+   STDMETHOD_(void,GetDisplayObjectFactory)(IndexType idx, iDisplayObjectFactory** factory) PURE;
 
    // Selecting and Selections
    STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) PURE;

@@ -21,149 +21,77 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_EXCEPTION_H_
-#define INCLUDED_SYSTEM_EXCEPTION_H_
 #pragma once
 
-#include <string>
 #include <System\SysExp.h>
+#include <string>
+#include <sstream>
 
-
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
 #undef THROW
-#undef THROW_EX
-#if defined _DEBUG
-// debug bug version breaks with an assert before throwing
-#define THROW(ex,code)          {ASSERT(false); throw ex(ex::code, _T(__FILE__), __LINE__ );}
-#define THROW_EX(ex,code,extra) {ASSERT(false); throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
-#else
 #define THROW(ex,code)          {throw ex(ex::code, _T(__FILE__), __LINE__ );}
+
+#undef THROW_EX
 #define THROW_EX(ex,code,extra) {throw ex(ex::code,extra,_T(__FILE__),__LINE__);}
-#endif // _DEBUG
 
-/*****************************************************************************
-CLASS 
-   sysXBase
-
-   Base class for all WBFL exceptions.
-
-
-DESCRIPTION
-   Base class for all WBFL exceptions.
-
-LOG
-   rab : 11.03.1997 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysXBase
+namespace WBFL
 {
-public:
-   // GROUP: LIFECYCLE
+   namespace System
+   {
+      // Implementation note - not deriving from std::exception because it's "what" function requires a constant string
+      // when the exception object is initialized. WBFL exceptions have a message string that is built up from information
+      // provided to the exception including the filename and line number from where the exception originated.
 
-   //------------------------------------------------------------------------
-   // Default constructor.  Supply the file and line number where the 
-   // exception occured.
-   sysXBase(LPCTSTR file, Int32 line);
+      /// Base class for all WBFL exceptions.
+      class SYSCLASS XBase
+      {
+      public:
+         XBase() = default;
+         explicit XBase(const std::_tstring& file, Uint32 line);
+         XBase(const XBase&) = default;
+         virtual ~XBase() = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysXBase(const sysXBase& rOther);
+         XBase& operator=(const XBase&) = default;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysXBase();
+         /// Throws this exception object.  This throw differs from a standard C++
+         /// throw in that the object thrown is a clone based on the dynamic type
+         /// of the object.  The standard C++ throw throws a clone based on an
+         /// object's static type,  thereby slicing the object and losing specific
+         /// error information contained within the subclass.
+         ///
+         /// All classes derived from XBase must implement this method as follows:
+         /// void myClass::Throw() const { throw *static_cast<const myClass*>(this); }
+         virtual void Throw() const = 0;
 
-   // GROUP: OPERATORS
+         /// Returns a reason code for the exception.  Concrete classes derived
+         /// from XBase must provide an implementation for this method that
+         /// returns an enum value as the actual enum type (Recall that enum's
+         /// can be safely converted to integer values, but not the other way
+         /// around).
+         virtual Int32 GetReason() const noexcept = 0;
 
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
+         /// Returns the error message.  The default implementation is to 
+         /// create a message in the following format:
+         ///
+         /// A *exception_type* error, number *reason*, has occurred in *filename* at line *line*.
+         ///
+         /// Where exception_type is the dynamic type of the exception,
+         /// reason is the reason code returned by GetReason(),
+         /// filename is the filename returned by GetFile(),  and
+         /// line is the line number returned by GetLine().
+         virtual std::_tstring GetErrorMessage() const;
 
-   //------------------------------------------------------------------------
-   // Throws this exception object.  This throw differs from a standard C++
-   // throw in that the object thrown is a clone based on the dynamic type
-   // of the object.  The standard C++ throw throws a clone based on an
-   // object's static type,  thereby slicing the object and losing specific
-   // error information contained within the subclass.
-   //
-   // All classes derived from sysXBase must implement this method as follows:
-   // void myClass::Throw() const { throw *static_cast<const myClass*>(this); }
-   virtual void Throw() const = 0;
+         /// Returns the name of the file where the exception was originally thrown.
+         /// This method will not throw an exception.
+         const std::_tstring& GetFile() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Returns a reason code for the exception.  Concrete classes derived
-   // from sysXBase must provide an implementation for this method that
-   // returns an enum value as the actual enum type (Recall that enum's
-   // can be safely converted to integer values, but not the other way
-   // around).
-   virtual Int32 GetReason() const = 0;
+         /// Returns the line number from where the exception was originally thrown.
+         /// This method will not throw an exception.
+         Uint32 GetLine() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Assigns an error message to pMsg.  The default implementation is to 
-   // create a message in the following format:
-   //
-   // A <exception_type> error, number <reason>, has occured in
-   // <filename> at line <line>.
-   //
-   // Where exception_type is the dynamic type of the exception,
-   // reason is the reason code returned by GetReason(),
-   // filename is the filename returned by GetFile(),  and
-   // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::_tstring* pMsg) const;
-
-   //------------------------------------------------------------------------
-   // Returns the name of the file where the exception was originally thrown.
-   // This method will not throw an exception.
-   LPCTSTR GetFile() const throw();
-
-   //------------------------------------------------------------------------
-   // Returns the line number from where the exceptino was originally thrown.
-   // This method will not throw an exception.
-   Int32 GetLine() const throw();
-
-   // GROUP: INQUIRY
-   // GROUP: DEBUG
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   sysXBase& operator = (const sysXBase& rOther);
-
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const sysXBase& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const sysXBase& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   std::_tstring m_File;
-   Int32       m_Line;
-
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
+       private:
+#pragma warning(disable:4251) // this string is private so it isn't accessible outside the class. this warning doesn't mean much
+         std::_tstring m_File{ _T("Unspecified") };
+         Uint32  m_Line{ 0 };
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_EXCEPTION_H_

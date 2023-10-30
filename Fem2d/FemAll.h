@@ -41,7 +41,7 @@
 #define  zero_val( x )     (((-EPS)<=(x)) && ((x)<=(EPS)))
 
 
-inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
+inline CComBSTR CreateErrorMsg1(UINT nid, IndexType someInt)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -51,7 +51,7 @@ inline CComBSTR CreateErrorMsg1(UINT nid, CollectionIndexType someInt)
    return CComBSTR(msg);
 }
 
-inline CComBSTR CreateErrorMsg2(UINT nid, CollectionIndexType someInt1, CollectionIndexType someInt2)
+inline CComBSTR CreateErrorMsg2(UINT nid, IndexType someInt1, IndexType someInt2)
 {
    TCHAR str[256];
    ::LoadString( _Module.GetModuleInstance(), nid, str, 256);
@@ -67,9 +67,9 @@ inline LPCOLESTR GetHelpFile()
    return A2OLE("WBFLFem2d.chm");
 }
 
-inline void CheckLoadOrientation(Fem2dLoadOrientation or)
+inline void CheckLoadOrientation(Fem2dLoadOrientation orientation)
 {
-   if (or!=lotGlobal && or!=lotMember && or!=lotGlobalProjected)
+   if (orientation !=lotGlobal && orientation !=lotMember && orientation !=lotGlobalProjected)
    {
       THROW_IDS(IDS_E_INVALID_LOAD_ORIENTATION,FEM2D_E_INVALID_LOAD_ORIENTATION,IDH_E_INVALID_LOAD_ORIENTATION);
    }

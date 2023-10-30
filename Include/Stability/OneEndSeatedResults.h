@@ -45,48 +45,48 @@ namespace WBFL
          Float64 Mw;  ///< transverse moment due to wind
          Float64 Mcf; ///< transverse moment due to CF
 
-         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indcies are [Corner])
-         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indcies are [Corner])
-         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indcies are [Corner])
-         std::array<Float64, 4> fcf;   ///< corner stresses due to centrifugal towards the left (array indcies are [Corner])
+         std::array<Float64, 4> fps;   ///< corner stresses due to prestressing (array indices are [+corner])
+         std::array<Float64, 4> fg;    ///< corner stresses due to girder weight without impact (array indices are [+corner])
+         std::array<Float64, 4> fw;    ///< corner stresses due to wind towards the left (array indices are [+corner])
+         std::array<Float64, 4> fcf;   ///< corner stresses due to centrifugal towards the left (array indices are [+corner])
 
-         Float64 fDirect[3][4]; ///< stress due to direct loads (girder self weight and ps). Array indicies are [ImpactDirection][Corner]
+         Float64 fDirect[3][4]; ///< stress due to direct loads (girder self weight and ps). Array indices are [ImpactDirection][+corner]
 
-         Float64 fTilt[3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 f[3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indicies are [ImpactDirection][WindDirection][Corner]
+         Float64 fTilt[3][2][4];   ///< stress due to equilibrium rotation of girder caused by girder self weight. Array indices are [ImpactDirection][WindDirection][+corner]
+         Float64 f[3][2][4];       ///< stress at a corner (fDirect + fTilt + fWind + fCF). Array indices are [ImpactDirection][WindDirection][+corner]
 
-         Float64 fMinDirect[2];    ///< min direct stress. Array indicies are [GirderFace]
-         ImpactDirection MinDirectStressImpactDirection[2];    ///< impact direction associated with the minimum girder stress. Array indicies are [GirderFace]
-         Corner MinDirectStressCorner[2];             ///< corner where the minimum girder stress occurs. Array indicies are [GirderFace]
+         Float64 fMinDirect[2];    ///< min direct stress. Array indices are [GirderFace]
+         ImpactDirection MinDirectStressImpactDirection[2];    ///< impact direction associated with the minimum girder stress. Array indices are [GirderFace]
+         Corner MinDirectStressCorner[2];             ///< corner where the minimum girder stress occurs. Array indices are [GirderFace]
 
-         Float64 fMaxDirect[2];    ///< max direction stress. Array indicies are [GirderFace]
-         ImpactDirection MaxDirectStressImpactDirection[2];    ///< impact direction associated with the maximum girder stress. Array indicies are [GirderFace]
-         Corner MaxDirectStressCorner[2];             ///< corner where the maximum girder stress occurs. Array indicies are [GirderFace]
+         Float64 fMaxDirect[2];    ///< max direction stress. Array indices are [GirderFace]
+         ImpactDirection MaxDirectStressImpactDirection[2];    ///< impact direction associated with the maximum girder stress. Array indices are [GirderFace]
+         Corner MaxDirectStressCorner[2];             ///< corner where the maximum girder stress occurs. Array indices are [GirderFace]
 
-         Float64 fMin[2];    ///< min stress. Array indicies are [GirderFace]
-         ImpactDirection MinStressImpactDirection[2];    ///< impact direction associated with the minimum girder stress. Array indicies are [GirderFace]
-         WindDirection MinStressWindDirection[2];      ///< wind direction associated with the minimum girder stress. Array indicies are [GirderFace]
-         Corner MinStressCorner[2];             ///< corner where the minimum girder stress occurs. Array indicies are [GirderFace]
+         Float64 fMin[2];    ///< min stress. Array indices are [GirderFace]
+         ImpactDirection MinStressImpactDirection[2];    ///< impact direction associated with the minimum girder stress. Array indices are [GirderFace]
+         WindDirection MinStressWindDirection[2];      ///< wind direction associated with the minimum girder stress. Array indices are [GirderFace]
+         Corner MinStressCorner[2];             ///< corner where the minimum girder stress occurs. Array indices are [GirderFace]
 
-         Float64 fMax[2];    ///< max stress. Array indicies are [GirderFace]
-         ImpactDirection MaxStressImpactDirection[2];    ///< impact direction associated with the maximum girder stress. Array indicies are [GirderFace]
-         WindDirection MaxStressWindDirection[2];      ///< wind direction associated with the maximum girder stress. Array indicies are [GirderFace]
-         Corner MaxStressCorner[2];             ///< corner where the maximum girder stress occurs. Array indicies are [GirderFace]
+         Float64 fMax[2];    ///< max stress. Array indices are [GirderFace]
+         ImpactDirection MaxStressImpactDirection[2];    ///< impact direction associated with the maximum girder stress. Array indices are [GirderFace]
+         WindDirection MaxStressWindDirection[2];      ///< wind direction associated with the maximum girder stress. Array indices are [GirderFace]
+         Corner MaxStressCorner[2];             ///< corner where the maximum girder stress occurs. Array indices are [GirderFace]
 
-         Float64 Mcr[3][2][4];        ///< cracking moment. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 ThetaCrack[3][2][4]; ///< rotation angle causing cracking. Array indicies are [ImpactDirection][WindDirection][Corner]
-         Float64 FScr[3][2][4]; ///< factor of safety against cracking. Array indicies are [ImpactDirection][WindDirection][Corner]
+         Float64 Mcr[3][2][4];        ///< cracking moment. Array indices are [ImpactDirection][WindDirection][+corner]
+         Float64 ThetaCrack[3][2][4]; ///< rotation angle causing cracking. Array indices are [ImpactDirection][WindDirection][+corner]
+         Float64 FScr[3][2][4]; ///< factor of safety against cracking. Array indices are [ImpactDirection][WindDirection][+corner]
 
-         Float64 FScrMin; ///< controlling FScr. The least of all FScr[ImpactDirection][WindDirection][Corner].
+         Float64 FScrMin; ///< controlling FScr. The least of all FScr[ImpactDirection][WindDirection][+corner].
          ImpactDirection FScrImpactDirection; ///< impact direction for FScrMin.
          WindDirection FScrWindDirection; ///< wind direction for FScrMin.
          Corner FScrCorner; ///< corner for FScrMin.
 
 #if defined REBAR_FOR_DIRECT_TENSION
-         gbtAlternativeTensileStressRequirements altTensionRequirements[3]; ///< details of the auxiliary tension reinforcement requirements. Array indicies are [ImpactDirection] 
+         gbtAlternativeTensileStressRequirements altTensionRequirements[3]; ///< details of the auxiliary tension reinforcement requirements. Array indices are [ImpactDirection] 
 #else
    // use if lateral loads are considered
-         gbtAlternativeTensileStressRequirements altTensionRequirements[3][2]; ///< details of the auxiliary tension reinforcement requirements. Array indicies are [ImpactDirection][WindDirection]
+         gbtAlternativeTensileStressRequirements altTensionRequirements[3][2]; ///< details of the auxiliary tension reinforcement requirements. Array indices are [ImpactDirection][WindDirection]
 #endif
       };
 
@@ -99,7 +99,7 @@ namespace WBFL
 
          GirderSide AssumedTiltDirection; ///< Direction in which girder is assumed to tilt
 
-         bool bRotationalStability[3][2]; ///< if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). Array indicies are [ImpactDirection][WindDirection]
+         bool bRotationalStability[3][2]; ///< if true, the girder is not stable for hauling... it will just roll over (Ktheta is too small so ThetaEq is too big). Array indices are [ImpactDirection][WindDirection]
 
          bool HasRotationalStablity() const; ///< returns true if girder has rotational stability
          bool HasRolloverStability() const; ///< returns true if girder has rollover stability
@@ -109,26 +109,26 @@ namespace WBFL
 
          std::vector<OneEndSeatedSectionResult> vSectionResults; ///< analysis results for each analysis point in the stability problem object.
 
-         Float64 ThetaEq[3][2]; ///< roll angle at equilibrium. Array indicies are [ImpactDirection][WindDirection].
+         Float64 ThetaEq[3][2]; ///< roll angle at equilibrium. Array indices are [ImpactDirection][WindDirection].
 
          Float64 MaxDirectStress;                     ///< maximum stress in plumb girder (most tensile value).
-         IndexType MaxDirectStressAnalysisPointIndex; ///< analysis poiint index associated with the maximum girder stress.
+         IndexType MaxDirectStressAnalysisPointIndex; ///< analysis point index associated with the maximum girder stress.
          ImpactDirection MaxDirectStressImpactDirection;    ///< impact direction associated with the maximum girder stress.
          Corner MaxDirectStressCorner;             ///< corner where the maximum girder stress occurs.
 
          Float64 MinDirectStress;                     ///< minimum stress in plumb girder (most compressive value).
-         IndexType MinDirectStressAnalysisPointIndex; ///< analysis poiint index associated with the minimum girder stress.
+         IndexType MinDirectStressAnalysisPointIndex; ///< analysis point index associated with the minimum girder stress.
          ImpactDirection MinDirectStressImpactDirection;    ///< impact direction associated with the minimum girder stress.
          Corner MinDirectStressCorner;             ///< corner where the minimum girder stress occurs.
 
          Float64 MaxStress; ///< maximum stress (most tensile value).
-         IndexType MaxStressAnalysisPointIndex; ///< analysis poiint index associated with the maximum girder stress.
+         IndexType MaxStressAnalysisPointIndex; ///< analysis point index associated with the maximum girder stress.
          ImpactDirection MaxStressImpactDirection;    ///< impact direction associated with the maximum girder stress.
          WindDirection MaxStressWindDirection;      ///< wind direction associated with the maximum girder stress.
          Corner MaxStressCorner;             ///< corner where the maximum girder stress occurs.
 
          Float64 MinStress;                     ///< minimum stress (most compressive value).
-         IndexType MinStressAnalysisPointIndex; ///< analysis poiint index associated with the minimum girder stress.
+         IndexType MinStressAnalysisPointIndex; ///< analysis point index associated with the minimum girder stress.
          ImpactDirection MinStressImpactDirection;    ///< impact direction associated with the minimum girder stress.
          WindDirection MinStressWindDirection;      ///< wind direction associated with the minimum girder stress.
          Corner MinStressCorner;             ///< corner where the minimum girder stress occurs.
@@ -139,20 +139,20 @@ namespace WBFL
          WindDirection FScrWindDirection;   ///< wind direction associated with the minimum factor of safety against cracking.
          Corner  FScrCorner; ///< corner associated with the minimum factor of safety against cracking.
 
-         Float64 ThetaMax[3][2];    ///< maximum tilt angle of the cracked section. Array indicies are [ImpactDirection][WindDirection].
-         Float64 FsFailure[3][2];   ///< factor of safety against failure. Array indicies are [ImpactDirection][WindDirection].
-         Float64 AdjFsFailure[3][2]; ///< adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr). Array indicies are [ImpactDirection][WindDirection].
+         Float64 ThetaMax[3][2];    ///< maximum tilt angle of the cracked section. Array indices are [ImpactDirection][WindDirection].
+         Float64 FsFailure[3][2];   ///< factor of safety against failure. Array indices are [ImpactDirection][WindDirection].
+         Float64 AdjFsFailure[3][2]; ///< adjusted FS against failure (if FSfailure < FScr then FSfailure = FScr). Array indices are [ImpactDirection][WindDirection].
          ImpactDirection FSfImpactDirection; ///< impact direction associated with the minimum factor of safety against failure.
          WindDirection FSfWindDirection;   ///< wind direction associated with the minimum factor of safety against failure.
          Float64 MinFsFailure; ///< minimum factor of safety against failure.
-         Float64 MinAdjFsFailure; ///< corrosponding adjusted minimum factor of safety against failure.
+         Float64 MinAdjFsFailure; ///< corresponding adjusted minimum factor of safety against failure.
 
-         bool bRolloverStability[3][2]; ///< there is a rollover instability. Array indicies are [ImpactDirection][WindDirection].
-         Float64 ThetaRollover[3][2]; ///< minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW. Array indicies are [ImpactDirection][WindDirection].
-         Float64 FsRollover[3][2];    ///< factor of safety against roll over. Array indicies are [ImpactDirection][WindDirection].
+         bool bRolloverStability[3][2]; ///< there is a rollover instability. Array indices are [ImpactDirection][WindDirection].
+         Float64 ThetaRollover[3][2]; ///< minimum tilt angle that causes roll over (> 0 girder tilts CCW, < 0 girder tilts CW. Array indices are [ImpactDirection][WindDirection].
+         Float64 FsRollover[3][2];    ///< factor of safety against roll over. Array indices are [ImpactDirection][WindDirection].
          ImpactDirection FSroImpactDirection;  ///< impact direction direction associated with the minimum factor of safety against rollover.
          WindDirection FSroWindDirection;    ///< wind direction direction associated with the minimum factor of safety against rollover.
-         Float64 MinFsRollover;          ///< minimum factor of safety agains roll over.
+         Float64 MinFsRollover;          ///< minimum factor of safety against roll over.
       };
    }
 }

@@ -48,7 +48,7 @@ public:
 
 #pragma warning ( disable : 4231 )
 template struct std::_Smanip<sysEngNotationData>;
-typedef std::_Smanip<sysEngNotationData> eng_notation_manip;
+using eng_notation_manip = std::_Smanip<sysEngNotationData>;
 
 eng_notation_manip eng_notation(Float64 value,long nDigits,long sigDigits = 0);
 

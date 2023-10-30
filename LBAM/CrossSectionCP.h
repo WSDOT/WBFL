@@ -34,12 +34,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStressPointEvents> events(sp);
          if ( events )
@@ -53,48 +53,48 @@ class CProxyDStressPointsEvents : public IConnectionPointImpl<T, &IID_IStressPoi
 {
 	//Warning this class may be recreated by the wizard.
 public:
-	VOID Fire_OnStressPointsChanged(CollectionIndexType index)
+	VOID Fire_OnStressPointsChanged(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStressPointsEvents> events(sp);
          if ( events )
             events->OnStressPointsChanged(index);
 		}
 	}
-	VOID Fire_OnStressPointsAdded(CollectionIndexType index)
+	VOID Fire_OnStressPointsAdded(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStressPointsEvents> events(sp);
          if ( events )
             events->OnStressPointsAdded(index);
 		}
 	}
-	VOID Fire_OnStressPointsRemoved(CollectionIndexType index)
+	VOID Fire_OnStressPointsRemoved(IndexType index)
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<IStressPointsEvents> events(sp);
          if ( events )
@@ -112,12 +112,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISegmentEvents> events(sp);
          if ( events )
@@ -139,12 +139,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISegmentCrossSectionEvents> events(sp);
          if ( events )
@@ -166,12 +166,12 @@ public:
 	{
 		T* pT = static_cast<T*>(this);
 		int nConnectionIndex;
-		int nConnections = m_vec.GetSize();
+		int nConnections = __super::m_vec.GetSize();
 		
 		for (nConnectionIndex = 0; nConnectionIndex < nConnections; nConnectionIndex++)
 		{
 			pT->Lock();
-			CComPtr<IUnknown> sp = m_vec.GetAt(nConnectionIndex);
+			CComPtr<IUnknown> sp = __super::m_vec.GetAt(nConnectionIndex);
 			pT->Unlock();
          CComQIPtr<ISegmentItemEvents> events(sp);
          if ( events )

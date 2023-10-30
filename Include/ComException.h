@@ -258,7 +258,7 @@ HRESULT DealWithExceptions(T* psource, const IID& iid)
       CComBSTR msg(re.GetErrorMessage());
       HRESULT hr = re.GetHresult();
       DWORD hid = re.GetHelpID();
-      return AtlReportError(T::GetObjectCLSID(), msg,hid, GetHelpFile(), iid, hr);
+      return AtlReportError(T::GetObjectCLSID(), msg,hid, ::GetHelpFile(), iid, hr);
    }
    catch (_com_error cre)
    {

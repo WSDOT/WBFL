@@ -52,8 +52,7 @@ STDMETHODIMP CCircularManderSection::InterfaceSupportsErrorInfo(REFIID riid)
 	static const IID* arr[] = 
 	{
 		&IID_ICircularManderSection,
-      &IID_IManderModelSection,
-      &IID_IStructuredStorage2
+      &IID_IManderModelSection
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
 	{
@@ -66,151 +65,132 @@ STDMETHODIMP CCircularManderSection::InterfaceSupportsErrorInfo(REFIID riid)
 // IManderModelSection
 STDMETHODIMP CCircularManderSection::put_TransvYieldStrength(Float64 fyh)
 {
-   m_fyh = fyh;
+   m_Section->SetTransvYieldStrength(fyh);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_TransvYieldStrength(Float64* fyh)
 {
    CHECK_RETVAL(fyh);
-   *fyh = m_fyh;
+   *fyh = m_Section->GetTransvYieldStrength();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_TransvReinforcementRuptureStrain(Float64 esu)
 {
-   m_esu = esu;
+   m_Section->SetTransvReinforcementRuptureStrian(esu);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_TransvReinforcementRuptureStrain(Float64* esu)
 {
    CHECK_RETVAL(esu);
-   *esu = m_esu;
+   *esu = m_Section->GetTransvReinforcementRuptureStrain();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_TransvReinforcementRatio(Float64* ps)
 {
    CHECK_RETVAL(ps);
-   Float64 ds = Get_ds();
-   *ps = 4*m_Asp/(ds*m_S);
+   *ps = m_Section->GetTransvReinforcementRatio();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_ConfinementEffectivenessCoefficient(Float64* ke)
 {
    CHECK_RETVAL(ke);
-
-   Float64 s_ = m_S - m_db;
-   Float64 ds = Get_ds();
-   Float64 Ac = M_PI*ds*ds/4;
-   Float64 pcc = m_As/Ac;
-
-   if ( m_TransvReinforcementType == trtSpiral )
-   {
-      *ke = (1-s_/(2*ds))/(1-pcc);
-   }
-   else
-   {
-      *ke = (1-s_/(2*ds))*(1-s_/(2*ds))/(1-pcc);
-   }
+   *ke = m_Section->GetConfinementEffectivenessCoefficient();
    return S_OK;
 }
 
 // ICircularManderSection
 STDMETHODIMP CCircularManderSection::put_TransvReinforcementType(TransvReinforcementType trt)
 {
-   m_TransvReinforcementType = trt;
+   m_Section->SetTransvReinforcemenType((WBFL::Materials::TransvReinforcementType)trt);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_TransvReinforcementType(TransvReinforcementType* trt)
 {
    CHECK_RETVAL(trt);
-   *trt = m_TransvReinforcementType;
+   *trt = (TransvReinforcementType)(m_Section->GetTransvReinforcementType());
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_Asp(Float64 asp)
 {
-   m_Asp = asp;
+   m_Section->SetAsp(asp);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_Asp(Float64* asp)
 {
    CHECK_RETVAL(asp);
-   *asp = m_Asp;
+   *asp = m_Section->GetAsp();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_As(Float64 as)
 {
-   m_As = as;
+   m_Section->SetAs(as);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_As(Float64* as)
 {
    CHECK_RETVAL(as);
-   *as = m_As;
+   *as = m_Section->GetAs();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_db(Float64 db)
 {
-   m_db = db;
+   m_Section->Set_db(db);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_db(Float64* db)
 {
    CHECK_RETVAL(db);
-   *db = m_db;
+   *db = m_Section->Get_db();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_S(Float64 s)
 {
-   m_S = s;
+   m_Section->SetS(s);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_S(Float64* s)
 {
    CHECK_RETVAL(s);
-   *s = m_S;
+   *s = m_Section->GetS();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_Diameter(Float64 d)
 {
-   m_Diameter = d;
+   m_Section->SetDiameter(d);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_Diameter(Float64* d)
 {
    CHECK_RETVAL(d);
-   *d = m_Diameter;
+   *d = m_Section->GetDiameter();
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::put_Cover(Float64 c)
 {
-   m_Cover = c;
+   m_Section->SetCover(c);
    return S_OK;
 }
 
 STDMETHODIMP CCircularManderSection::get_Cover(Float64* c)
 {
    CHECK_RETVAL(c);
-   *c = m_Cover;
+   *c = m_Section->GetCover();
    return S_OK;
-}
-
-Float64 CCircularManderSection::Get_ds()
-{
-   return m_Diameter - 2*m_Cover - m_db;
 }

@@ -64,7 +64,7 @@ void CTestCompositeShape::TestICompositeShape()
    TRY_TEST(compShape.CoCreateInstance(CLSID_CompositeShape),S_OK);
 
    // Test container property initialization
-   CollectionIndexType count;
+   IndexType count;
    TRY_TEST(compShape->get_Count(nullptr),E_POINTER);
    TRY_TEST(compShape->get_Count(&count),S_OK);
    TRY_TEST(count,0);
@@ -123,7 +123,6 @@ void CTestCompositeShape::TestICompositeShape()
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICompositeShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IShape ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IXYPosition ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 
    //////////////////////////////////////////////////////////////
@@ -137,8 +136,6 @@ void CTestCompositeShape::TestICompositeShape()
    pObjSafety->GetInterfaceSafetyOptions(IID_IShape,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
    pObjSafety->GetInterfaceSafetyOptions(IID_IXYPosition,&dwSupportedOptions,&dwEnabledOptions);
-   TRY_TEST( dwSupportedOptions, dwDesiredOptions );
-   pObjSafety->GetInterfaceSafetyOptions(IID_IStructuredStorage2,&dwSupportedOptions,&dwEnabledOptions);
    TRY_TEST( dwSupportedOptions, dwDesiredOptions );
 }
 
@@ -269,8 +266,8 @@ void CTestCompositeShape::TestIShape()
    TRY_TEST(shape->Clone(&clone),S_OK);
 
    CComQIPtr<ICompositeShape> compShapeClone(clone);
-   TRY_TEST(compShapeClone != 0,true);
-   CollectionIndexType count;
+   TRY_TEST(compShapeClone != nullptr,true);
+   IndexType count;
    compShapeClone->get_Count(&count);
    TRY_TEST(count,2);
 
@@ -280,7 +277,7 @@ void CTestCompositeShape::TestIShape()
    CComPtr<IShape> shape1;
    item1->get_Shape(&shape1);
    CComQIPtr<IRectangle> rect1(shape1);
-   TRY_TEST(rect1 != 0,true);
+   TRY_TEST(rect1 != nullptr,true);
    rect1->get_Width(&val);
    TRY_TEST(IsEqual(val,10.0),true);
    rect1->get_Height(&val);
@@ -292,7 +289,7 @@ void CTestCompositeShape::TestIShape()
    CComPtr<IShape> shape2;
    item2->get_Shape(&shape2);
    CComQIPtr<IRectangle> rect2(shape2);
-   TRY_TEST(rect2 != 0,true);
+   TRY_TEST(rect2 != nullptr,true);
    rect2->get_Width(&val);
    TRY_TEST(IsEqual(val,8.0),true);
    rect2->get_Height(&val);
@@ -348,17 +345,12 @@ void CTestCompositeShape::TestIXYPosition()
    compShape->AddShape(innerRectShape,VARIANT_TRUE);
 
    // NOTE:
-   // Earlier testing has demonstrated that the Shape objects in the composite
-   // are ByRef. As such, we can simply check the results of each operation
-   // against the properties of the rect object and the hookPnt object. There
-   // is no need to drill into the composite to get the shape.
+   // Getting HookPoint via get_LocatorPoint returns a copy of the hook point
    CComQIPtr<IXYPosition> position(compShape);
 
    CComPtr<IPoint2d> hookPnt;
    position->get_LocatorPoint(lpHookPoint,&hookPnt);
-
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt->Location(&x, &y);
 
    TRY_TEST( IsEqual(x,5.), true );
    TRY_TEST( IsEqual(y,4.), true );
@@ -373,16 +365,19 @@ void CTestCompositeShape::TestIXYPosition()
    TRY_TEST( position->OffsetEx(nullptr), E_INVALIDARG );
    TRY_TEST( position->OffsetEx(size), S_OK );
 
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
 
    TRY_TEST( IsEqual(x,15.), true );
    TRY_TEST( IsEqual(y,24.), true );
 
    TRY_TEST( position->Offset(10,20), S_OK );
 
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+
 
    TRY_TEST( IsEqual(x,25.), true );
    TRY_TEST( IsEqual(y,44.), true );
@@ -402,8 +397,10 @@ void CTestCompositeShape::TestIXYPosition()
    TRY_TEST( position->MoveEx(from, nullptr), E_INVALIDARG );
    TRY_TEST( position->MoveEx(from,to),    S_OK );
 
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+
 
    TRY_TEST( IsEqual(x,125.), true );
    TRY_TEST( IsEqual(y,144.), true );
@@ -425,8 +422,9 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,95.0), true );
    TRY_TEST( IsEqual(y,85.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
    TRY_TEST( IsEqual(x,100.), true );
    TRY_TEST( IsEqual(y, 89.), true );
 
@@ -439,10 +437,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,100.0), true );
    TRY_TEST( IsEqual(y, 85.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x,38.), true );
-   TRY_TEST( IsEqual(y,89.), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x,100.0), true );
+   TRY_TEST( IsEqual(y, 89.0), true );
 
    // BottomRight
    to->Move(105,85);
@@ -453,9 +452,10 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,105.0), true );
    TRY_TEST( IsEqual(y, 85.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x,100.), true );
    TRY_TEST( IsEqual(y, 89.), true );
 
    // CenterLeft
@@ -467,10 +467,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x, 95.0), true );
    TRY_TEST( IsEqual(y,100.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
    TRY_TEST( IsEqual(x,100.), true );
-   TRY_TEST( IsEqual(y,28.75), true );
+   TRY_TEST( IsEqual(y,100.), true );
 
    // CenterCenter
    to->Move(100,100);
@@ -481,10 +482,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,100.0), true );
    TRY_TEST( IsEqual(y,100.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x, 38.), true );
-   TRY_TEST( IsEqual(y,28.75), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x,100.), true );
+   TRY_TEST( IsEqual(y,100.), true );
 
    // CenterRight
    to->Move(105,100);
@@ -495,10 +497,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,105.0), true );
    TRY_TEST( IsEqual(y,100.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.), true );
-   TRY_TEST( IsEqual(y,28.75), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x,100.), true );
+   TRY_TEST( IsEqual(y,100.), true );
 
    // TopLeft
    to->Move(95,115);
@@ -509,10 +512,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x, 95.0), true );
    TRY_TEST( IsEqual(y,115.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
    TRY_TEST( IsEqual(x,100.), true );
-   TRY_TEST( IsEqual(y,-31.5), true );
+   TRY_TEST( IsEqual(y,111.), true );
 
    // TopCenter
    to->Move(100,115);
@@ -523,10 +527,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,100.0), true );
    TRY_TEST( IsEqual(y,115.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x, 38.), true );
-   TRY_TEST( IsEqual(y,-31.5), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x, 100.), true );
+   TRY_TEST( IsEqual(y, 111.), true );
 
    // TopRight
    to->Move(105,115);
@@ -537,10 +542,11 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,105.0), true );
    TRY_TEST( IsEqual(y,115.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
-   TRY_TEST( IsEqual(x,-24.), true );
-   TRY_TEST( IsEqual(y,-31.5), true );
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
+   TRY_TEST( IsEqual(x,100.), true );
+   TRY_TEST( IsEqual(y,111.), true );
 
    // HookPoint
    to->Move(100,100);
@@ -551,8 +557,9 @@ void CTestCompositeShape::TestIXYPosition()
    from->get_Y(&y);
    TRY_TEST( IsEqual(x,100.0), true );
    TRY_TEST( IsEqual(y,100.0), true );
-   hookPnt->get_X(&x);
-   hookPnt->get_Y(&y);
+   hookPnt.Release();
+   position->get_LocatorPoint(lpHookPoint, &hookPnt);
+   hookPnt->Location(&x, &y);
    TRY_TEST( IsEqual(x,100.), true );
    TRY_TEST( IsEqual(y,100.), true );
 
@@ -560,6 +567,8 @@ void CTestCompositeShape::TestIXYPosition()
    // Rotate and RotateEx
    //
    hookPnt->Move(10,20);
+   position->put_LocatorPoint(lpHookPoint, hookPnt);
+
    CComPtr<IPoint2d> rotPoint;
    rotPoint.CoCreateInstance( CLSID_Point2d );
 
@@ -572,39 +581,34 @@ void CTestCompositeShape::TestIXYPosition()
    CComPtr<IPoint2dCollection> coll;
    CComQIPtr<IShape> shape(outerRectShape);
    shape->get_PolyPoints(&coll);
-   CollectionIndexType cPoints;
+   IndexType cPoints;
    coll->get_Count(&cPoints);
-   TRY_TEST( cPoints,5 );
+   TRY_TEST( cPoints,4 );
    
    CComPtr<IEnumPoint2d> Enum;
    coll->get__Enum(&Enum);
    std::array<CComPtr<IPoint2d>,5> points;
    ULONG fetched;
    Enum->Next(5,&points[0],&fetched);
-   TRY_TEST( fetched, 5 );
+   TRY_TEST( fetched, 4 );
 
    points[0]->get_X(&x);
    points[0]->get_Y(&y);
    TRY_TEST( IsEqual(x,-16.0), true );
-   TRY_TEST( IsEqual(y, 5.0), true );
+   TRY_TEST( IsEqual(y, 15.0), true );
 
    points[1]->get_X(&x);
    points[1]->get_Y(&y);
    TRY_TEST( IsEqual(x,-16.0), true );
-   TRY_TEST( IsEqual(y,15.0), true );
+   TRY_TEST( IsEqual(y, 5.0), true );
 
    points[2]->get_X(&x);
    points[2]->get_Y(&y);
    TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y, 15.0), true );
+   TRY_TEST( IsEqual(y, 5.0), true );
 
    points[3]->get_X(&x);
    points[3]->get_Y(&y);
    TRY_TEST( IsEqual(x,-24.0), true );
-   TRY_TEST( IsEqual(y,  5.0), true );
-
-   points[4]->get_X(&x);
-   points[4]->get_Y(&y);
-   TRY_TEST( IsEqual(x,-16.0), true );
-   TRY_TEST( IsEqual(y, 5.0), true );
+   TRY_TEST( IsEqual(y, 15.0), true );
 }

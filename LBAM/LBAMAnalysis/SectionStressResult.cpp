@@ -50,7 +50,7 @@ STDMETHODIMP CSectionStressResult::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-STDMETHODIMP CSectionStressResult::get_LeftCount(/*[out,retval]*/ CollectionIndexType *pVal)
+STDMETHODIMP CSectionStressResult::get_LeftCount(/*[out,retval]*/ IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_LeftResults.size();
@@ -63,7 +63,7 @@ STDMETHODIMP CSectionStressResult::AddLeftResult(/*[in]*/ Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::SetLeftResult(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal)
+STDMETHODIMP CSectionStressResult::SetLeftResult(/*[in]*/IndexType index, /*[in]*/ Float64 newVal)
 {
    try
    {
@@ -78,7 +78,7 @@ STDMETHODIMP CSectionStressResult::SetLeftResult(/*[in]*/CollectionIndexType ind
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::GetLeftResult(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal)
+STDMETHODIMP CSectionStressResult::GetLeftResult(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    try
@@ -93,7 +93,7 @@ STDMETHODIMP CSectionStressResult::GetLeftResult(/*[in]*/CollectionIndexType ind
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::get_RightCount(/*[out,retval]*/ CollectionIndexType *pVal)
+STDMETHODIMP CSectionStressResult::get_RightCount(/*[out,retval]*/ IndexType *pVal)
 {
    CHECK_RETVAL(pVal);
    *pVal = m_RightResults.size();
@@ -106,7 +106,7 @@ STDMETHODIMP CSectionStressResult::AddRightResult(/*[in]*/ Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::SetRightResult(/*[in]*/CollectionIndexType index, /*[in]*/ Float64 newVal)
+STDMETHODIMP CSectionStressResult::SetRightResult(/*[in]*/IndexType index, /*[in]*/ Float64 newVal)
 {
    try
    {
@@ -121,7 +121,7 @@ STDMETHODIMP CSectionStressResult::SetRightResult(/*[in]*/CollectionIndexType in
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::GetRightResult(/*[in]*/CollectionIndexType index, /*[out,retval]*/ Float64 *pVal)
+STDMETHODIMP CSectionStressResult::GetRightResult(/*[in]*/IndexType index, /*[out,retval]*/ Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
    try
@@ -197,7 +197,7 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
    try
    {
 	   HRESULT hr;
-      CollectionIndexType left_cnt, right_cnt;
+      IndexType left_cnt, right_cnt;
       hr = incRes->get_LeftCount(&left_cnt);
       if (FAILED(hr))
          return hr;
@@ -214,7 +214,7 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
          THROW_LBAMA(INCOMP_STRESSRESULTS);
 
       // perform summations
-      for (CollectionIndexType i = 0; i<left_cnt; i++)
+      for (IndexType i = 0; i<left_cnt; i++)
       {
          Float64& rd = m_LeftResults[i];
 
@@ -226,7 +226,7 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
          rd += (inc*leftFactor);
       }
 
-      for (CollectionIndexType i = 0; i<right_cnt; i++)
+      for (IndexType i = 0; i<right_cnt; i++)
       {
          Float64& rd = m_RightResults[i];
 
@@ -246,10 +246,10 @@ STDMETHODIMP CSectionStressResult::FactorAndSum(ISectionStressResult *incRes, Fl
 	return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::HpSumResults(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals)
+STDMETHODIMP CSectionStressResult::HpSumResults(/*[in]*/IndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/IndexType numRight, /*[in]*/Float64* rightVals)
 {
    // left
-   CollectionIndexType size = m_LeftResults.size();
+   IndexType size = m_LeftResults.size();
    if (numLeft!=size)
       return E_INVALIDARG;
 
@@ -275,7 +275,7 @@ STDMETHODIMP CSectionStressResult::HpSumResults(/*[in]*/CollectionIndexType numL
    return S_OK;
 }
 
-STDMETHODIMP CSectionStressResult::HpSetResults(/*[in]*/CollectionIndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/CollectionIndexType numRight, /*[in]*/Float64* rightVals)
+STDMETHODIMP CSectionStressResult::HpSetResults(/*[in]*/IndexType numLeft, /*[in]*/Float64* leftVals, /*[in]*/IndexType numRight, /*[in]*/Float64* rightVals)
 {
    ATLASSERT(numLeft>=0);
    ATLASSERT(numRight>=0);
@@ -371,12 +371,12 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       return hr;
 
    {
-      CollectionIndexType cnt = m_LeftResults.size();
+      IndexType cnt = m_LeftResults.size();
       hr = psave->put_Property(CComBSTR("LeftCount"),_variant_t(cnt));
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i = 0; i<cnt; i++)
+      for (IndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("LeftVal"),_variant_t(m_LeftResults[i]));
          if (FAILED(hr))
@@ -388,7 +388,7 @@ STDMETHODIMP CSectionStressResult::Save(IStructuredSave2 * psave)
       if (FAILED(hr))
          return hr;
 
-      for (CollectionIndexType i = 0; i<cnt; i++)
+      for (IndexType i = 0; i<cnt; i++)
       {
          hr = psave->put_Property(CComBSTR("RightVal"),_variant_t(m_RightResults[i]));
          if (FAILED(hr))

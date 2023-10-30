@@ -62,8 +62,8 @@ void CTestCoordinateXform2d::Test()
    origin->put_X(5);
    origin->put_Y(5);
 
-   TRY_TEST( pXform->putref_NewOrigin(nullptr), E_INVALIDARG );
-   TRY_TEST( pXform->putref_NewOrigin(origin), S_OK );
+   TRY_TEST( pXform->put_NewOrigin(nullptr), E_INVALIDARG );
+   TRY_TEST( pXform->put_NewOrigin(origin), S_OK );
 
    CComPtr<IPoint2d> o;
    TRY_TEST( pXform->get_NewOrigin(nullptr), E_POINTER );
@@ -82,6 +82,7 @@ void CTestCoordinateXform2d::Test()
 
    origin->put_X(7);
    origin->put_Y(-4);
+   pXform->put_NewOrigin(origin);
    pXform->put_RotationAngle(27*M_PI/180);
 
    CComPtr<IPoint2d> pnt;
@@ -154,6 +155,5 @@ void CTestCoordinateXform2d::TestISupportErrorInfo()
    CComPtr<ISupportErrorInfo> eInfo;
    TRY_TEST( eInfo.CoCreateInstance( CLSID_CoordinateXform2d ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ICoordinateXform2d ), S_OK );
-   TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_IStructuredStorage2 ), S_OK );
    TRY_TEST( eInfo->InterfaceSupportsErrorInfo( IID_ISupportErrorInfo ), S_FALSE );
 }

@@ -139,6 +139,6 @@ private:
    HRESULT GetLowerXBeamShape(Float64 Xxb,IShape** ppShape);
    HRESULT GetUpperXBeamShape(Float64 Xxb,IShape** ppShape);
 
-   void CLinearCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft, Float64* pUXBright);
+   void GetUpperXBeamDeltas(Float64* pUXBleft, Float64* pUXBright);
 };
 

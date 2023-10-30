@@ -29,6 +29,7 @@
 #define __SIZE3D_H_
 
 #include "resource.h"       // main symbols
+#include <GeomModel/Primitives3d.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CSize3d
@@ -37,16 +38,11 @@ class ATL_NO_VTABLE CSize3d :
 	public CComCoClass<CSize3d, &CLSID_Size3d>,
    public ISupportErrorInfo,
    public IObjectSafetyImpl<CSize3d,INTERFACESAFE_FOR_UNTRUSTED_CALLER>,
-   public ISize3d,
-   public IStructuredStorage2,
-   public IPersist
+   public ISize3d
 {
 public:
 	CSize3d()
 	{
-      m_Dx = 0.00;
-      m_Dy = 0.00;
-      m_Dz = 0.00;
 	}
 
 DECLARE_REGISTRY_RESOURCEID(IDR_SIZE3D)
@@ -56,17 +52,12 @@ DECLARE_PROTECT_FINAL_CONSTRUCT()
 BEGIN_COM_MAP(CSize3d)
 	COM_INTERFACE_ENTRY(ISize3d)
 	COM_INTERFACE_ENTRY2(IUnknown,ISize3d)
-	COM_INTERFACE_ENTRY(IStructuredStorage2)
-	COM_INTERFACE_ENTRY2(IUnknown,IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
-   COM_INTERFACE_ENTRY(IPersist)
 END_COM_MAP()
 
 private:
-   Float64 m_Dx;
-   Float64 m_Dy;
-   Float64 m_Dz;
+   WBFL::Geometry::Size3d m_Size;
 
 // ISupportsErrorInfo
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;
@@ -75,7 +66,6 @@ private:
 public:
    STDMETHOD(Clone)(/*[out,retval]*/ISize3d** clone) override;
    STDMETHOD(Dimensions)(/*[out]*/Float64* pDx,/*[out]*/Float64* pDy,/*[out]*/Float64* pDz) override;
-   STDMETHOD(get_StructuredStorage)(/*[out,retval]*/IStructuredStorage2* *pStg) override;
    STDMETHOD(Scale)(/*[in]*/ Float64 factor) override;
 	STDMETHOD(get_Magnitude)(/*[out,retval]*/ Float64* pVal) override;
 	STDMETHOD(get_Dz)(/*[out, retval]*/ Float64 *pVal) override;
@@ -84,15 +74,6 @@ public:
 	STDMETHOD(put_Dy)(/*[in]*/ Float64 newVal) override;
 	STDMETHOD(get_Dx)(/*[out, retval]*/ Float64 *pVal) override;
 	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
-
-// IPersist
-public:
-   STDMETHOD(GetClassID)(CLSID* pClassID) override;
-
-// IStructuredStorage2
-public:
-   STDMETHOD(Save)(IStructuredSave2* pSave) override;
-   STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
 #endif //__SIZE3D_H_

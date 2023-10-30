@@ -40,7 +40,7 @@ public:
    };
 
    rptFormattedLengthUnitValue(Float64 value,               ///< unit value in system units
-                                 const unitLength* pUnitOfMeasure, ///< Unit of measure
+                                 const WBFL::Units::Length* pUnitOfMeasure, ///< Unit of measure
                                  Float64 zeroTolerance,  ///< tolerance for zeroness
                                  bool bShowUnitTag, ///< Indicates if the unit tag is shown
                                  bool bEnglish,               ///< true if this is an english unit (if not, just use base class formatting)
@@ -56,7 +56,7 @@ public:
       m_Rounding = rounding;
    }
 
-   rptFormattedLengthUnitValue(  const unitLength* pUnitOfMeasure, ///< Unit of measure
+   rptFormattedLengthUnitValue(  const WBFL::Units::Length* pUnitOfMeasure, ///< Unit of measure
                                  Float64 zeroTolerance,  ///< tolerance for zeroness
                                  bool bShowUnitTag, ///< Indicates if the unit tag is shown
                                  bool bEnglish,///< true if this is an english unit (if not, just use base class formatting)

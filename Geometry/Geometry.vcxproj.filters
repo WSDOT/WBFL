@@ -82,16 +82,10 @@
     <ClCompile Include="PrecastBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PrimitiveFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Rect2d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Rectangle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShapeCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShapeProperties.cpp">
@@ -148,6 +142,21 @@
     <ClCompile Include="PCIDeckedIBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CompositeBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeSectionEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeSectionItemEx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ElasticProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MassProperties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxBeam.h">
@@ -181,9 +190,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Geometry.hh">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryCP.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeomUtil.h">
@@ -234,9 +240,6 @@
     <ClInclude Include="PrecastBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PrimitiveFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\Primitives.hh">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -247,9 +250,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShapeCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShapeProperties.h">
@@ -310,6 +310,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PCIDeckedIBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IShapeImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeSectionEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeSectionItemEx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ElasticProperties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MassProperties.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -390,9 +408,6 @@
     <None Include="PrecastBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="PrimitiveFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Rect2d.rgs">
       <Filter>Resource Files</Filter>
     </None>
@@ -450,7 +465,19 @@
     <None Include="PCIDeckedIBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="DeckedSlabBeam.rgs">
+    <None Include="CompositeBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompositeSectionEx.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompositeSectionItemEx.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ElasticProperties.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MassProperties.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

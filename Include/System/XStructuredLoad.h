@@ -21,150 +21,49 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_XSTRUCTUREDLOAD_H_
-#define INCLUDED_SYSTEM_XSTRUCTUREDLOAD_H_
 #pragma once
 
-// SYSTEM INCLUDES
-//
-
-// PROJECT INCLUDES
-//
 #include <System\SysExp.h>
 #include <System\Exception.h>
 #include <crtdbg.h>
 
-// LOCAL INCLUDES
-//
-
-// FORWARD DECLARATIONS
-//
-
-// MISCELLANEOUS
-//
-
 #undef THROW_LOAD
-#define THROW_LOAD(code,pload) {sysXStructuredLoad alzxb_(sysXStructuredLoad::code, _T(__FILE__), __LINE__ ); \
-                                /*alzxb_.SetExtendedMessage(pload->GetStateDump().c_str()); */\
+#define THROW_LOAD(code,pload) {WBFL::System::XStructuredLoad alzxb_(WBFL::System::XStructuredLoad::code, _T(__FILE__), __LINE__ ); \
                                 _ASSERT(false); \
-                                alzxb_.Throw();}
+                                 alzxb_.Throw();}
 
-
-/*****************************************************************************
-CLASS 
-   sysXStructuredLoad
-
-   Exception class for classes implementing the IStructuredLoad interface.
-
-
-DESCRIPTION
-   Use this class when throwing out of classes derived from IStructuredLoad
-
-LOG
-   rdp : 07.15.1998 : Created file
-*****************************************************************************/
-
-class SYSCLASS sysXStructuredLoad : public sysXBase
+namespace WBFL
 {
-public:
-   // Reasons for hucking
-   enum Reason {InvalidFileFormat, EndOfFile, BadRead, BadVersion, MemoryError,CantInitializeTheParser, UserDefined};
+   namespace System
+   {
+      /// Exception class for classes implementing the IStructuredLoad interface.
+      /// Use this class when throwing out of classes derived from IStructuredLoad
+      class SYSCLASS XStructuredLoad : public XBase
+      {
+      public:
+         // Reasons for hucking
+         enum Reason {InvalidFileFormat, EndOfFile, BadRead, BadVersion, MemoryError,CantInitializeTheParser, UserDefined, Unspecified};
 
-   // GROUP: LIFECYCLE
+         XStructuredLoad() = default;
+         XStructuredLoad( Reason reason, const std::_tstring& file, Uint32 line);
+         virtual ~XStructuredLoad() = default;
 
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysXStructuredLoad( Reason reason, LPCTSTR file, Int16 line);
+         XStructuredLoad& operator=(const XStructuredLoad&) = default;
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   sysXStructuredLoad(const sysXStructuredLoad& rOther);
+         virtual void Throw() const override;
+         virtual Int32 GetReason() const noexcept override;
+         Reason GetReasonCode() const noexcept;
 
-   //------------------------------------------------------------------------
-   // Destructor
-   virtual ~sysXStructuredLoad();
+         virtual std::_tstring GetErrorMessage() const override;
 
-   // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   sysXStructuredLoad& operator = (const sysXStructuredLoad& rOther);
-
-   // GROUP: OPERATIONS
-   // All classes derived from sysXBase must implement this method as follows:
-   // void myClass::Throw() const { throw *static_cast<myClass*>this; }
-   virtual void Throw() const override;
-
-   //------------------------------------------------------------------------
-   // Returns a reason code for the exception.  Concrete classes derived
-   // from sysXBase must provide an implementation for this method that
-   // returns an enum value as the actual enum type (Recall that enum's
-   // can be safely converted to integer values, but not the other way
-   // around).
-   virtual Int32 GetReason() const override;
-
-   //------------------------------------------------------------------------
-   // Get the reason using an enum our direct clients can understand
-   Reason GetExplicitReason() const;
-
-   //------------------------------------------------------------------------
-   // Set an extended message containing state data of the loader that crashed
-   // this message will be appended to the message from the base class in 
-   // GetErrorMessage
-   void SetExtendedMessage(LPCTSTR msg);
-
-   //------------------------------------------------------------------------
-   // Assigns an error message to pMsg.  The default implementation is to 
-   // create a message in the following format:
-   //
-   // A <exception_type> error, number <reason>, has occured in
-   // <filename> at line <line>.
-   //
-   // Where exception_type is the dynamic type of the exception,
-   // reason is the reason code returned by GetReason(),
-   // filename is the filename returned by GetFile(),  and
-   // line is the line number returned by GetLine().
-   virtual void GetErrorMessage(std::_tstring* pMsg) const override;
+         /// Set an extended message containing state data of the loader that crashed
+         /// This message will be appended to the message from the base class
+         void SetExtendedMessage(LPCTSTR msg);
 
 
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-protected:
-   // GROUP: DATA MEMBERS
-   // GROUP: LIFECYCLE
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   void MakeCopy(const sysXStructuredLoad& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const sysXStructuredLoad& rOther);
-
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-private:
-   // GROUP: DATA MEMBERS
-   Reason m_Reason;
-   std::_tstring m_ExtendedMessage;
-
-   // GROUP: LIFECYCLE
-   //------------------------------------------------------------------------
-   // Default constructor
-   sysXStructuredLoad();
-   // GROUP: OPERATORS
-   // GROUP: OPERATIONS
-   // GROUP: ACCESS
-   // GROUP: INQUIRY
-
-public:
-   // GROUP: DEBUG
+      private:
+         Reason m_Reason{ Unspecified };
+         std::_tstring m_ExtendedMessage;
+      };
+   };
 };
-
-// INLINE METHODS
-//
-
-// EXTERNAL REFERENCES
-//
-
-#endif // INCLUDED_SYSTEM_XSTRUCTUREDLOAD_H_

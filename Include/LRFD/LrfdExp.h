@@ -45,16 +45,8 @@
 #define LRFDTPL   extern template class LRFDCLASS
 #endif
 
-#if !defined INCLUDED_WBFLALL_H_
-#include <WbflAll.h>
-#endif
-
-#if !defined INCLUDED_LRFD_LRFDTYPES_H_
-#include <Lrfd\LrfdTypes.h>
-#endif
-
-#if !defined INCLUDED_LRFD_AUTOLIB_H_
 #include <Lrfd\AutoLib.h>
-#endif
+#include <WbflAll.h>
+
 
 #endif // INCLUDED_LRFD_LRFDEXP_H_

@@ -33,8 +33,8 @@
 #include "LBAMUtils.h"
 
 class CStressResults;
-typedef CComVectorCollection<IStressResults, IStressResult, IEnumStressResult, &IID_IEnumStressResult,CollectionIndexType> SRVectorImpl;
-typedef CPersistentCollection<CStressResults, SRVectorImpl,CollectionIndexType> PersistentSRCollImpl;
+using SRVectorImpl = CComVectorCollection<IStressResults, IStressResult, IEnumStressResult, &IID_IEnumStressResult, IndexType>;
+using PersistentSRCollImpl = CPersistentCollection<CStressResults, SRVectorImpl,IndexType>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CStressResults

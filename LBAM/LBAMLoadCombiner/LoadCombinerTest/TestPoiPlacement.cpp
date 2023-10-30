@@ -78,11 +78,11 @@ HRESULT CTestPoiPlacement::Test()
    // request results for tenth points in spans 0 and 1
    CComPtr<IIDArray> poilist;
    poilist.CoCreateInstance(CLSID_IDArray);
-   for (CollectionIndexType i = 0; i<11; i++)
+   for (IndexType i = 0; i<11; i++)
    {
       poilist->Add(i+101);
    }
-   for (CollectionIndexType i = 0; i<11; i++)
+   for (IndexType i = 0; i<11; i++)
    {
       poilist->Add(i+201);
    }
@@ -138,11 +138,11 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
    Float64 left_overhang;
    ssms->get_Offset(&left_overhang);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    ssms->get_Count(&ssm_cnt);
    loc = -left_overhang;
    ssm_ends.push_back(loc);
-   for(CollectionIndexType issm = 0; issm<ssm_cnt; issm++)
+   for(IndexType issm = 0; issm<ssm_cnt; issm++)
    {
       CComPtr<ISuperstructureMember> ssm;
       ssms->get_Item(issm, &ssm);
@@ -156,9 +156,9 @@ void CTestPoiPlacement::GetSSPoiLocs(IIDArray* ppoilist, ILBAMModel* pModel, std
    CComPtr<IPOIs> pois;
    pModel->get_POIs(&pois);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    ppoilist->get_Count(&cnt);
-   for (CollectionIndexType i = 0; i<cnt; i++)
+   for (IndexType i = 0; i<cnt; i++)
    {
       PoiIDType poi_id;
       ppoilist->get_Item(i,&poi_id);
@@ -449,12 +449,12 @@ ILBAMModel* CTestPoiPlacement::CreateModel()
    CComPtr<ILoadGroups> pLoadGroups;
    TRY_TEST(psm->get_LoadGroups(&pLoadGroups), S_OK);
 
-   TCHAR* lgns[]={_T("Self Weight")};
+   CComBSTR lgns[]={_T("Self Weight")};
    for (long i = 0; i<1; i++)
    {
       CComPtr<ILoadGroup> pLoadGroup;
       TRY_TEST(pLoadGroup.CoCreateInstance( CLSID_LoadGroup ), S_OK );
-      TRY_TEST( pLoadGroup->put_Name( CComBSTR(lgns[i]) ), S_OK );
+      TRY_TEST( pLoadGroup->put_Name( lgns[i] ), S_OK );
       TRY_TEST(pLoadGroups->Add(pLoadGroup), S_OK);
    }
 

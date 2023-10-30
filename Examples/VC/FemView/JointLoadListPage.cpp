@@ -50,18 +50,18 @@ BOOL CJointLoadListPage::OnInitDialog()
    pParent->m_pFem2d->get_Loadings(&loadings);
 
    int listIdx = 0;
-   CollectionIndexType nLoadings;
+   IndexType nLoadings;
    loadings->get_Count(&nLoadings);
-   for ( CollectionIndexType idx = 0; idx < nLoadings; idx++ )
+   for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
       CComPtr<IFem2dLoading> loading;
       loadings->get_Item(idx,&loading);
 
       CComPtr<IFem2dJointLoadCollection> loads;
       loading->get_JointLoads(&loads);
-      CollectionIndexType nLoads;
+      IndexType nLoads;
       loads->get_Count(&nLoads);
-      for ( CollectionIndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
+      for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
          CComPtr<IFem2dJointLoad> load;
          loads->get_Item(ldIdx,&load);

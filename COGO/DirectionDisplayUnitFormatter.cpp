@@ -27,7 +27,8 @@
 #include "stdafx.h"
 #include "WBFLCOGO.h"
 #include "DirectionDisplayUnitFormatter.h"
-#include <WBFLCogo\CogoHelpers.h>
+#include <CoordGeom/Direction.h>
+#include <WBFLCogo/CogoHelpers.h>
 #include <sstream>
 #include <iomanip>
 
@@ -73,16 +74,11 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::FormatSpecifiers( Uint32 width, Uin
    if ( width < 0 || precision < 0 || zeroTol < 0)
       return E_INVALIDARG;
 
-   if ( m_Width != width || m_Precision != precision || m_Notation != notation || m_Justification != justify || !IsEqual(m_ZeroTolerance,zeroTol))
-   {
-      m_Width         = width;
-      m_Precision     = precision;
-      m_Notation      = notation;
-      m_Justification = justify;
-      m_ZeroTolerance = zeroTol;
-
-      Fire_OnFormatChanged();
-   }
+   m_Width         = width;
+   m_Precision     = precision;
+   m_Notation      = notation;
+   m_Justification = justify;
+   m_ZeroTolerance = zeroTol;
 
    return S_OK;
 }
@@ -130,7 +126,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    if ( IsZero(val,m_ZeroTolerance) )
       val = 0.0;
 
-   val = cogoUtil::NormalizeAngle(val);
+   val = WBFL::COGO::COGO::NormalizeAngle(val);
 
    bool bShowTag = (tag == nullptr ? false : true);
    std::_tstring strDegTag, strMinTag, strSecTag;
@@ -138,20 +134,19 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    {
       std::_tstring strTag = OLE2T(tag);
       if ( FAILED(cogoUtil::ParseAngleTags(strTag,&strDegTag,&strMinTag,&strSecTag)) )
-         return Error(IDS_E_BADFORMATTAG,IID_IDirectionDisplayUnitFormatter,COGO_E_BADFORMATTAG);
+         return E_INVALIDARG; // bad format tag
    }
 
    std::_tostringstream s;
 
    if ( m_bBearingFormat )
    {
-      NSDirectionType n;
-      EWDirectionType e;
-      long deg;
-      long min;
-      Float64 sec;
+      WBFL::COGO::Direction direction(val);
+      auto [ns, deg, min, sec, ew] = direction.GetDMS();
 
-      cogoUtil::GetBrgParts( val, &n, &deg, &min, &sec, &e );
+      NSDirectionType n = NSDirectionType(ns);
+      EWDirectionType e = EWDirectionType(ew);
+
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << std::setw(1) << (n == nsNorth ? _T('N') : _T('S') ) << _T(" ") 
         << deg;
@@ -176,11 +171,8 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::Format(Float64 val, BSTR tag, BSTR*
    else
    {
       // azimuth
-      val = cogoUtil::NormalizeAngle(PI_OVER_2 - val);
-      long deg;
-      long min;
-      Float64 sec;
-      cogoUtil::ToDMS(val,&deg,&min,&sec);
+      val = WBFL::COGO::COGO::NormalizeAngle(PI_OVER_2 - val);
+      auto [deg, min, sec] = WBFL::COGO::COGO::ToDMS(val);
 
       sec = IsZero(sec,m_ZeroTolerance) ? 0 : sec;
       s << deg;
@@ -226,12 +218,7 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::get_CondensedFormat(VARIANT_BOOL *p
 
 STDMETHODIMP CDirectionDisplayUnitFormatter::put_CondensedFormat(VARIANT_BOOL newVal)
 {
-   if ( m_bCondensedFormat != newVal )
-   {
-      m_bCondensedFormat = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bCondensedFormat = newVal;
 	return S_OK;
 }
 
@@ -246,11 +233,6 @@ STDMETHODIMP CDirectionDisplayUnitFormatter::get_BearingFormat(VARIANT_BOOL *pVa
 
 STDMETHODIMP CDirectionDisplayUnitFormatter::put_BearingFormat(VARIANT_BOOL newVal)
 {
-   if ( m_bBearingFormat != newVal )
-   {
-      m_bBearingFormat = newVal;
-      Fire_OnFormatChanged();
-   }
-
+   m_bBearingFormat = newVal;
 	return S_OK;
 }

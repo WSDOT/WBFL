@@ -60,7 +60,7 @@ protected:
    virtual std::_tstring AsString(Float64 capacity, Float64 demand, bool passed) const;
 
 private:
-   static sysNumericFormatTool m_FormatTool;
+   static WBFL::System::NumericFormatTool m_FormatTool;
    static rptRcSymbol m_RcSymbolInfinity;
 };
 

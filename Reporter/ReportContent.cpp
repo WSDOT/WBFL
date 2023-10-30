@@ -25,12 +25,6 @@
 #include <Reporter\ReportContent.h>
 #include <Reporter\HyperLinkDefinition.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 rptReportContent::rptReportContent()
 {
    // Report Content is not a hyperlink by default

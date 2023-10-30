@@ -60,22 +60,22 @@ END_COM_MAP()
 
 // IIDArray
 public:
-	STDMETHOD(Find)(/*[in]*/IDType value, /*[out,retval]*/CollectionIndexType* fndIndex) override;
-	STDMETHOD(ReDim)(/*[in]*/CollectionIndexType size) override;
+	STDMETHOD(Find)(/*[in]*/IDType value, /*[out,retval]*/IndexType* fndIndex) override;
+	STDMETHOD(ReDim)(/*[in]*/IndexType size) override;
 	STDMETHOD(Clone)(/*[out,retval]*/IIDArray* *clone) override;
-	STDMETHOD(get_Count)(/*[out, retval]*/ CollectionIndexType *pVal) override;
+	STDMETHOD(get_Count)(/*[out, retval]*/ IndexType *pVal) override;
 	STDMETHOD(Clear)() override;
-	STDMETHOD(Reserve)(/*[in]*/CollectionIndexType count) override;
-	STDMETHOD(Insert)(/*[in]*/CollectionIndexType relPosition, /*[in]*/IDType item) override;
-	STDMETHOD(Remove)(/*[in]*/CollectionIndexType relPosition) override;
+	STDMETHOD(Reserve)(/*[in]*/IndexType count) override;
+	STDMETHOD(Insert)(/*[in]*/IndexType relPosition, /*[in]*/IDType item) override;
+	STDMETHOD(Remove)(/*[in]*/IndexType relPosition) override;
 	STDMETHOD(Add)(/*[in]*/IDType item) override;
-	STDMETHOD(get_Item)(/*[in]*/CollectionIndexType relPosition, /*[out, retval]*/ IDType *pVal) override;
-	STDMETHOD(put_Item)(/*[in]*/CollectionIndexType relPosition, /*[in]*/ IDType newVal) override;
+	STDMETHOD(get_Item)(/*[in]*/IndexType relPosition, /*[out, retval]*/ IDType *pVal) override;
+	STDMETHOD(put_Item)(/*[in]*/IndexType relPosition, /*[in]*/ IDType newVal) override;
 	STDMETHOD(get__NewEnum)(struct IUnknown ** ) override;
 	STDMETHOD(get__EnumElements)(struct IEnumIDArray ** ) override;
 
 protected:
-   typedef std::vector<IDType>       ContainerType;
-   typedef ContainerType::iterator ContainerIterator;
+   using ContainerType = std::vector<IDType>;
+	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };

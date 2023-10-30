@@ -153,7 +153,7 @@ STDMETHODIMP CDisplayUnitMgr2::get_Item(BSTR bstrGroup,IDisplayUnitGroup** retva
    return S_OK;
 }
 
-STDMETHODIMP CDisplayUnitMgr2::get_Count(CollectionIndexType* retval)
+STDMETHODIMP CDisplayUnitMgr2::get_Count(IndexType* retval)
 {
    CHECK_RETVAL(retval);
    long count;
@@ -265,7 +265,7 @@ STDMETHODIMP CDisplayUnitMgr2::get__EnumDisplayUnitGroups(IEnumDisplayUnitGroups
 {
    CHECK_RETOBJ(enumDisplayUnitGroups);
 
-   typedef CComEnumOnSTL<IEnumDisplayUnitGroups,&IID_IEnumDisplayUnitGroups, IDisplayUnitGroup*, _CopyVariantToInterface<IDisplayUnitGroup>, std::vector<CComVariant> > Enum;
+   using Enum = CComEnumOnSTL<IEnumDisplayUnitGroups,&IID_IEnumDisplayUnitGroups, IDisplayUnitGroup*, _CopyVariantToInterface<IDisplayUnitGroup>, std::vector<CComVariant> >;
    CComObject<Enum>* pEnum;
    HRESULT hr = CComObject<Enum>::CreateInstance(&pEnum);
    if ( FAILED(hr) )

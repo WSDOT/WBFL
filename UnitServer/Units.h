@@ -33,8 +33,8 @@
 #include "UnitType.h"
 #include "WbflUnitServerCP.h"
 
-typedef CComEnumOnSTL<IEnumVARIANT,&IID_IEnumVARIANT,VARIANT,_Copy<VARIANT>, std::vector<CComVariant> > UnitEnum;
-typedef ICollectionOnSTLImpl<IUnits,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,UnitEnum> IUnitCollection;
+using UnitEnum = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
+using IUnitCollection = ICollectionOnSTLImpl<IUnits,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,UnitEnum>;
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnits
@@ -112,7 +112,7 @@ END_CONNECTION_POINT_MAP()
 // IUnits
 public:
 	STDMETHOD(Remove)(/*[in]*/VARIANT Index) override;
-	STDMETHOD(get_Count)(CollectionIndexType* retval) override;
+	STDMETHOD(get_Count)(IndexType* retval) override;
 	STDMETHOD(get_Item)(VARIANT Index, IUnit** retval) override;
 //	STDMETHOD(get__NewEnum)(IUnknown** retval) override;
 	STDMETHOD(Add)(/*[in]*/BSTR tag,/*[in]*/Float64 preTerm,/*[in]*/Float64 cf,/*[in]*/Float64 postTerm,/*[in]*/UnitSystemType unitSystem,/*[out,retval]*/IUnit** ppUnit) override;

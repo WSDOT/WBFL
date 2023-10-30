@@ -58,31 +58,28 @@ void CTestProject::Test()
    CComQIPtr<ICogoModel> model(project);
    TRY_TEST( model != nullptr, true );
 
-   CComPtr<IPointCollection> points;
-   model->get_Points(&points);
+   model->StorePoint(1,0,0);
+   model->StorePoint(2,5,5);
+   model->StorePoint(3,6,12);
+   model->StorePoint(4,12,6);
 
-   points->Add(1,0,0,nullptr);
-   points->Add(2,5,5,nullptr);
-   points->Add(3,6,12,nullptr);
-   points->Add(4,12,6,nullptr);
    CComPtr<IPoint2d> p1, p2;
-   points->get_Item(1,&p1);
-   points->get_Item(2,&p2);
+   model->GetPointByID(1,&p1);
+   model->GetPointByID(2,&p2);
 
    CComPtr<IPoint2d> pnt;
    Float64 x,y;
 
    /////////////////////////////////////
    // PointOnLineByPoints
-   TRY_TEST(project->PointOnLineByPoints(5,-3,1,2,0.0),COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnLineByPoints(5,3,-1,2,0.0),COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnLineByPoints(5,3,1,-2,0.0),COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnLineByPoints(1,3,1,2,0.0),COGO_E_POINTALREADYDEFINED);
+   TRY_TEST(project->PointOnLineByPoints(5,-3,1,2,0.0), E_INVALIDARG);
+   TRY_TEST(project->PointOnLineByPoints(5,3,-1,2,0.0), E_INVALIDARG);
+   TRY_TEST(project->PointOnLineByPoints(5,3,1,-2,0.0), E_INVALIDARG);
+   TRY_TEST(project->PointOnLineByPoints(1,3,1,2,0.0), S_FALSE);
 
    TRY_TEST(project->PointOnLineByPoints(5,3,1,2,0.0),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(5,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(5,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -90,8 +87,7 @@ void CTestProject::Test()
 
    TRY_TEST(project->PointOnLineByPoints(6,4,1,2,0.0),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(6,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(6,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -99,8 +95,7 @@ void CTestProject::Test()
 
    TRY_TEST(project->PointOnLineByPoints(7,3,1,2,4.24264068712),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(7,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(7,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,12.0),true);
@@ -108,8 +103,7 @@ void CTestProject::Test()
 
    TRY_TEST(project->PointOnLineByPoints(8,4,1,2,-4.24264068712),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(8,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(8,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,6.0),true);
@@ -117,18 +111,15 @@ void CTestProject::Test()
 
    ////////////////////////////////////////
    // PointOnLineSegment
-   CComPtr<ILineSegmentCollection> lines;
-   model->get_LineSegments(&lines);
-   lines->Add(1,p1,p2,nullptr);
+   model->StorePathSegment(1,1,2);
 
-   TRY_TEST(project->PointOnLineSegment(9,-3,1,0.0), COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnLineSegment(9,3,-1,0.0), COGO_E_LINESEGMENTNOTFOUND);
-   TRY_TEST(project->PointOnLineSegment(1,3,1,0.0),  COGO_E_POINTALREADYDEFINED);
+   TRY_TEST(project->PointOnLineSegment(9,-3,1,0.0), E_INVALIDARG);
+   TRY_TEST(project->PointOnLineSegment(9,3,-1,0.0), E_INVALIDARG);
+   TRY_TEST(project->PointOnLineSegment(1,3,1,0.0), S_FALSE);
 
    TRY_TEST(project->PointOnLineSegment(9,3,1,0.0),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(9,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(9,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,9.0),true);
@@ -136,36 +127,18 @@ void CTestProject::Test()
 
    /////////////////////////////
    // PointOnCurve
-   CComPtr<ICompoundCurveCollection> hcurves;
-   model->get_CompoundCurves(&hcurves);
-   CComPtr<ICompoundCurve> hc;
-   hc.CoCreateInstance(CLSID_CompoundCurve);
-   CComPtr<IPoint2d> pbt, pi, pft;
-   hc->get_PBT(&pbt);
-   hc->get_PI(&pi);
-   hc->get_PFT(&pft);
+   model->ClearPoints();
+   model->StorePoint(1, 0, 1000);
+   model->StorePoint(2, 700, 1000);
+   model->StorePoint(3, 1000, 700);
+   model->StoreCompoundCurve(1, 1, 2, 3, 500, 100, TransitionCurveType::Clothoid, 200, TransitionCurveType::Clothoid);
 
-   pbt->Move(0,1000);
-   pi->Move(700,1000);
-   pft->Move(1000,700);
-   hc->put_Radius(500);
-   hc->put_SpiralLength(spEntry,100);
-   hc->put_SpiralLength(spExit,200);
-
-   hcurves->AddEx(1,hc);
-
-   points->Clear();
-   points->AddEx(1,pbt);
-   points->AddEx(2,pi);
-   points->AddEx(3,pft);
-
-   TRY_TEST(project->PointOnCurve(1,2,1),COGO_E_POINTALREADYDEFINED);
-   TRY_TEST(project->PointOnCurve(5,-1,1),COGO_E_POINTNOTFOUND);
-   TRY_TEST(project->PointOnCurve(5,2,-1),COGO_E_COMPOUNDCURVENOTFOUND);
+   TRY_TEST(project->PointOnCurve(1,2,1),S_FALSE);
+   TRY_TEST(project->PointOnCurve(5,-1,1), E_INVALIDARG);
+   TRY_TEST(project->PointOnCurve(5,2,-1), E_INVALIDARG);
    TRY_TEST(project->PointOnCurve(5,2,1),S_OK);
    pnt.Release();
-   TRY_TEST(points->get_Item(5,&pnt),S_OK);
-   TRY_TEST(CheckPointType(pnt),S_OK);
+   TRY_TEST(model->GetPointByID(5,&pnt),S_OK);
    pnt->get_X(&x);
    pnt->get_Y(&y);
    TRY_TEST(IsEqual(x,683.1287,0.001),true);

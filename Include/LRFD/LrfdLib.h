@@ -22,23 +22,12 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LRFDLIB_H_
-#define INCLUDED_LRFD_LRFDLIB_H_
 #pragma once
 
-/*****************************************************************************
-LIBRARY
-   LRFD
-
-   Support library that provides LRFD code equations and procedures
-
-DESCRIPTION
-   Support library that provides LRFD code equations and procedures
-*****************************************************************************/
-
-#include <Private\WBFLPackage.h>
+#include <Lrfd\LrfdTypes.h>
 #include <MathEx.h>
 #include <memory>
-#include <Units\SysUnits.h>
+#include <Units\Convert.h>
 
-#endif // INCLUDED_LRFD_LRFDLIB_H_
+
+#define WBFL_LRFD_THROW(ex,code)          {throw ex(ex::Reason::code, _T(__FILE__), __LINE__ );}

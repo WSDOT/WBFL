@@ -24,17 +24,9 @@
 #include <Math\MathLib.h>
 #include <Math\CDRatio.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::Math;
 
-/****************************************************************************
-CLASS
-   mathCDRatio
-****************************************************************************/
-Float64 mathCDRatio::CDRatio(Float64 capacity,Float64 demand)
+Float64 CDRatio::Compute(Float64 capacity,Float64 demand)
 {
    if ( IsZero(demand) )
       return DBL_MAX;
@@ -42,17 +34,17 @@ Float64 mathCDRatio::CDRatio(Float64 capacity,Float64 demand)
       return capacity/demand;
 }
 
-bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2)
+bool CDRatio::IsCDRatioLess(CDRatio::Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2)
 {
    // First do some input sanity checking
 #if defined _DEBUG
-   if (sense==cdPositive)
+   if (sense== CDRatio::Sense::Positive)
    {
-      ATLASSERT(capacity1>=0.0 && capacity2>=0.0); // Signs of capacites cannot be different
+      CHECK(capacity1>=0.0 && capacity2>=0.0); // Signs of capacities cannot be different
    }
    else
    {
-      ATLASSERT(capacity1<=0.0 && capacity2<=0.0); // ""
+      CHECK(capacity1<=0.0 && capacity2<=0.0); // ""
    }
 #endif
 
@@ -62,7 +54,7 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
    if (icz1 && icz2)
    {
       // Both capacities are zero. Largest demand wins
-      if (sense == cdPositive)
+      if (sense == Sense::Positive)
       {
          return demand1 <= demand2;
       }
@@ -90,7 +82,7 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
       if (idz1 && idz2)
       {
          // Both demands are zero. smallest capacity wins
-         if (sense==cdPositive)
+         if (sense == Sense::Positive)
          {
             return capacity1 <= capacity2;
          }
@@ -142,26 +134,26 @@ bool mathCDRatio::IsCDRatioLess(cdSense sense, Float64 capacity1, Float64 demand
    }
 }
 
-int mathCDRatio::MinCDRatio(cdSense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4,Float64* pCD)
+std::pair<Float64,int> CDRatio::MinCDRatio(CDRatio::Sense sense, Float64 capacity1, Float64 demand1, Float64 capacity2, Float64 demand2, Float64 capacity3, Float64 demand3, Float64 capacity4, Float64 demand4)
 {
-   bool b1LessThan2 = mathCDRatio::IsCDRatioLess(sense,capacity1,demand1,capacity2,demand2);
-   bool b3LessThan4 = mathCDRatio::IsCDRatioLess(sense,capacity3,demand3,capacity4,demand4);
+   bool b1LessThan2 = CDRatio::IsCDRatioLess(sense,capacity1,demand1,capacity2,demand2);
+   bool b3LessThan4 = CDRatio::IsCDRatioLess(sense,capacity3,demand3,capacity4,demand4);
    // we now have it narrowed down to two cases
 
    int corner;
    Float64 cd;
-   bool bLess = mathCDRatio::IsCDRatioLess(sense,b1LessThan2 ? capacity1 : capacity2, b1LessThan2 ? demand1 : demand2,b3LessThan4 ? capacity3 : capacity4,b3LessThan4 ? demand3 : demand4);
+   bool bLess = CDRatio::IsCDRatioLess(sense,b1LessThan2 ? capacity1 : capacity2, b1LessThan2 ? demand1 : demand2,b3LessThan4 ? capacity3 : capacity4,b3LessThan4 ? demand3 : demand4);
    if ( bLess )
    {
       if ( b1LessThan2 )
       {
          corner = 0; // c/d 1 is smallest
-         cd = CDRatio(capacity1,demand1);
+         cd = Compute(capacity1,demand1);
       }
       else
       {
          corner = 1; // c/d 2 is smallest
-         cd = CDRatio(capacity2,demand2);
+         cd = Compute(capacity2,demand2);
       }
    }
    else
@@ -169,15 +161,14 @@ int mathCDRatio::MinCDRatio(cdSense sense, Float64 capacity1, Float64 demand1, F
       if ( b3LessThan4 )
       {
          corner = 2; // c/d 3 is smallest
-         cd = CDRatio(capacity3,demand3);
+         cd = Compute(capacity3,demand3);
       }
       else
       {
          corner = 3; // c/d 4 is smallest
-         cd = CDRatio(capacity4,demand4);
+         cd = Compute(capacity4,demand4);
       }
    }
 
-   *pCD = cd;
-   return corner;
+   return { cd,corner };
 }

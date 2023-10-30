@@ -25,50 +25,29 @@
 #include <Lrfd\LrfdLib.h>
 #include <Lrfd\CreepCoefficient.h>
 #include <Lrfd\XCreepCoefficient.h>
-#include <Lrfd\VersionMgr.h>
+#include <Lrfd/BDSManager.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::LRFD;
 
-/****************************************************************************
-CLASS
-   lrfdCreepCoefficient
-****************************************************************************/
-
-
-////////////////////////// PUBLIC     ///////////////////////////////////////
-
-//======================== LIFECYCLE  =======================================
-lrfdCreepCoefficient::lrfdCreepCoefficient()
+Float64 CreepCoefficient::ComputeKtd(Float64 t) const
 {
-   m_CuringMethodTimeAdjustmentFactor = ::ConvertToSysUnits(7.0,unitMeasure::Day);
-   m_bUpdate = true;
-}
-
-lrfdCreepCoefficient::~lrfdCreepCoefficient()
-{
-}
-
-Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
-{
-    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+    bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
 
     // Check volume to surface ratio
     Float64 VS = m_V / m_S;
     Float64 VSMax;
     if (bSI)
     {
-        VS = ::ConvertFromSysUnits(VS, unitMeasure::Millimeter);
+        VS = WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Millimeter);
         VSMax = 150.0; // millimeters
     }
     else
     {
-        VS = ::ConvertFromSysUnits(VS, unitMeasure::Inch);
+        VS = WBFL::Units::ConvertFromSysUnits(VS, WBFL::Units::Measure::Inch);
         VSMax = 6.0; // inches
     }
+
+    VS = Min(VS, VSMax);
 
     // Compute Kc
     Float64 a, b, c;
@@ -85,7 +64,7 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
         x2 = -0.54;
     }
 
-    t = ::ConvertFromSysUnits(t, unitMeasure::Day);
+    t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day);
 
     a = t / (26.0 * pow(e, x1 * VS) + t);
     b = t / (45.0 + t);
@@ -95,17 +74,17 @@ Float64 lrfdCreepCoefficient::ComputeKtd(Float64 t) const
     return ktd; // this is really Kc
 }
 
-Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
+Float64 CreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
 {
     if (m_bUpdate)
         Update();
 
     Float64 tiAdjusted = GetAdjustedInitialAge(ti);
-    tiAdjusted = ::ConvertFromSysUnits(tiAdjusted, unitMeasure::Day);
+    tiAdjusted = WBFL::Units::ConvertFromSysUnits(tiAdjusted, WBFL::Units::Measure::Day);
 
     Float64 kc = ComputeKtd(t);
 
-    t = ::ConvertFromSysUnits(t, unitMeasure::Day); // do after calling ComputeKtd because it expects t in system units
+    t = WBFL::Units::ConvertFromSysUnits(t, WBFL::Units::Measure::Day); // do after calling ComputeKtd because it expects t in system units
 
     Float64 Ct;
     if (t < tiAdjusted)
@@ -119,89 +98,89 @@ Float64 lrfdCreepCoefficient::GetCreepCoefficient(Float64 t, Float64 ti) const
 
     return Ct;
 }
-//======================== ACCESS     =======================================
-void lrfdCreepCoefficient::SetRelHumidity(Float64 H)
+
+void CreepCoefficient::SetRelHumidity(Float64 H)
 {
    m_H = H;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetRelHumidity() const
+Float64 CreepCoefficient::GetRelHumidity() const
 {
    return m_H;
 }
 
-void lrfdCreepCoefficient::SetFci(Float64 fci)
+void CreepCoefficient::SetFci(Float64 fci)
 {
    m_Fci = fci;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetFci() const
+Float64 CreepCoefficient::GetFci() const
 {
    return m_Fci;
 }
 
-void lrfdCreepCoefficient::SetVolume(Float64 V)
+void CreepCoefficient::SetVolume(Float64 V)
 {
    m_V = V;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetVolume() const
+Float64 CreepCoefficient::GetVolume() const
 {
    return m_V;
 }
 
-void lrfdCreepCoefficient::SetSurfaceArea(Float64 S)
+void CreepCoefficient::SetSurfaceArea(Float64 S)
 {
    m_S = S;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetSurfaceArea() const
+Float64 CreepCoefficient::GetSurfaceArea() const
 {
    return m_S;
 }
 
-Float64 lrfdCreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
+Float64 CreepCoefficient::GetAdjustedInitialAge(Float64 ti) const
 {
     Float64 tiAdjusted = ti;
-    if (m_CuringMethod == Accelerated && ti < ::ConvertToSysUnits(7.0,unitMeasure::Day))
+    if (m_CuringMethod == CuringMethod::Accelerated && ti < WBFL::Units::ConvertToSysUnits(7.0,WBFL::Units::Measure::Day))
     {
         // NCHRP 496...
         // ti = age of concrete, in days, when load is initially applied
         // for accelerated curing, or the age minus 6 days for moist (normal) curing
-        Float64 one_day = ::ConvertToSysUnits(1.0, unitMeasure::Day);
+        Float64 one_day = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Day);
         tiAdjusted += m_CuringMethodTimeAdjustmentFactor - one_day; // days
     }
 
     return tiAdjusted;
 }
 
-void lrfdCreepCoefficient::SetCuringMethod(lrfdCreepCoefficient::CuringMethod method)
+void CreepCoefficient::SetCuringMethod(CreepCoefficient::CuringMethod method)
 {
    m_CuringMethod = method;
    m_bUpdate = true;
 }
 
-lrfdCreepCoefficient::CuringMethod lrfdCreepCoefficient::GetCuringMethod() const
+CreepCoefficient::CuringMethod CreepCoefficient::GetCuringMethod() const
 {
    return m_CuringMethod;
 }
 
-void lrfdCreepCoefficient::SetCuringMethodTimeAdjustmentFactor(Float64 f)
+void CreepCoefficient::SetCuringMethodTimeAdjustmentFactor(Float64 f)
 {
    m_CuringMethodTimeAdjustmentFactor = f;
    m_bUpdate = true;
 }
 
-Float64 lrfdCreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
+Float64 CreepCoefficient::GetCuringMethodTimeAdjustmentFactor() const
 {
    return m_CuringMethodTimeAdjustmentFactor;
 }
 
-Float64 lrfdCreepCoefficient::GetKf() const
+Float64 CreepCoefficient::GetKf() const
 {
    if ( m_bUpdate )
    {
@@ -211,62 +190,37 @@ Float64 lrfdCreepCoefficient::GetKf() const
    return m_kf;
 }
 
-Float64 lrfdCreepCoefficient::GetKtd(Float64 t) const
+Float64 CreepCoefficient::GetKtd(Float64 t) const
 {
     // this is really Kc
     return ComputeKtd(t);
 }
 
-Float64 lrfdCreepCoefficient::ComputeKf() const
+Float64 CreepCoefficient::ComputeKf() const
 {
-    bool bSI = lrfdVersionMgr::GetUnits() == lrfdVersionMgr::SI;
+    bool bSI = BDSManager::GetUnits() == BDSManager::Units::SI;
     Float64 kf;
     if (bSI)
     {
-        kf = 62.0 / (42.0 + ::ConvertFromSysUnits(m_Fci, unitMeasure::MPa));
+        kf = 62.0 / (42.0 + WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::MPa));
     }
     else
     {
-        kf = 1.0 / (0.67 + (::ConvertFromSysUnits(m_Fci, unitMeasure::KSI) / 9.0));
+        kf = 1.0 / (0.67 + (WBFL::Units::ConvertFromSysUnits(m_Fci, WBFL::Units::Measure::KSI) / 9.0));
     }
 
     return kf;
 }
 
-void lrfdCreepCoefficient::Update() const
+void CreepCoefficient::Update() const
 {
    // need to make sure spec version is ok
-   if ( lrfdVersionMgr::ThirdEditionWith2005Interims <= lrfdVersionMgr::GetVersion() )
+   if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
    {
-      throw lrfdXCreepCoefficient(lrfdXCreepCoefficient::Specification,_T(__FILE__),__LINE__);
+      WBFL_LRFD_THROW(XCreepCoefficient,Specification);
    }
 
    m_kf = ComputeKf();
 
    m_bUpdate = false;
 }
-
-//======================== ACCESS     =======================================
-//======================== INQUERY    =======================================
-
-//======================== DEBUG      =======================================
-#if defined _DEBUG
-bool lrfdCreepCoefficient::AssertValid() const
-{
-   return true;
-}
-
-void lrfdCreepCoefficient::Dump(dbgDumpContext& os) const
-{
-   os << "Dump for lrfdCreepCoefficient" << endl;
-                                                                                                                             }
-#endif // _DEBUG
-
-#if defined _UNITTEST
-bool lrfdCreepCoefficient::TestMe(dbgLog& rlog)
-{
-   TESTME_PROLOGUE("lrfdCreepCoefficient");
-
-   TESTME_EPILOG("lrfdCreepCoefficient");
-}
-#endif // _UNITTEST

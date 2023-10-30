@@ -58,8 +58,8 @@ class ATL_NO_VTABLE CMember :
 {
 public:
    enum {NumJoints=2, TotalDOF=6};
-   typedef Result<NUM_DOF*2,NUM_DOF*2>         MbrResult;
-   typedef ResultArray<MbrResult>   MbrResultArray;
+   using MbrResult = Result<NUM_DOF * 2, NUM_DOF * 2>;
+   using MbrResultArray = ResultArray<MbrResult>;
 
    CMember();
    virtual ~CMember();
@@ -205,8 +205,8 @@ private:
    Vector6 m_Fglobal;
    Matrix m_TransMatrix;
 
-   typedef std::list<MbrLoad*> MbrLoadPointerContainer;
-   typedef MbrLoadPointerContainer::iterator MbrLoadPointerIterator;
+   using MbrLoadPointerContainer = std::list<MbrLoad*>;
+   using MbrLoadPointerIterator = MbrLoadPointerContainer::iterator;
 
    MbrLoadPointerContainer m_Loads;
 
