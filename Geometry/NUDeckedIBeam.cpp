@@ -418,8 +418,6 @@ STDMETHODIMP CNUDeckedIBeam::GetTopFlangePoints(IPoint2d** ppLeftTop, IPoint2d**
     CreatePoint(pntRightTop, ppRightTop);
     CreatePoint(pntRightBottom, ppRightBottom);
 
-    pntTopCentral->Clone(ppTopCL);
-
     return S_OK;
 }
 
