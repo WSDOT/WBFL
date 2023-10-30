@@ -36,7 +36,7 @@ class CManagePluginsDlg : public CDialog
 	DECLARE_DYNAMIC(CManagePluginsDlg)
 
 public:
-	CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = nullptr,LPCTSTR lpszDocSetName=nullptr,UINT nHID=0);   // standard constructor
+	CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWinApp* pApp,CWnd* pParent = nullptr,LPCTSTR lpszDocSetName=nullptr,UINT nHID=0);   // standard constructor
 	virtual ~CManagePluginsDlg();
 
 // Dialog Data
@@ -56,6 +56,8 @@ protected:
    CString m_DocSetName;
    UINT m_nHelpID;
    BOOL InitList();
+
+   CWinApp* m_pApp;
 
 	DECLARE_MESSAGE_MAP()
 public:

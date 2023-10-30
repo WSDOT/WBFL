@@ -42,7 +42,7 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CManagePluginsDlg, CDialog)
 
-CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent,LPCTSTR lpszDocSetName,UINT nHID)
+CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWinApp* pApp,CWnd* pParent,LPCTSTR lpszDocSetName,UINT nHID)
 	: CDialog(CManagePluginsDlg::IDD, pParent),
    m_strSection("Plugins")
 {
@@ -51,6 +51,9 @@ CManagePluginsDlg::CManagePluginsDlg(LPCTSTR lpszTitle,LPCTSTR lpszText,const CA
    m_CATID = catid;
    m_DocSetName = lpszDocSetName;
    m_nHelpID = nHID;
+   m_pApp = pApp;
+   if (m_pApp == nullptr)
+      m_pApp = EAFGetApp();
 }
 
 CManagePluginsDlg::~CManagePluginsDlg()
@@ -141,8 +144,6 @@ BOOL CManagePluginsDlg::InitList()
    CLSID clsid[nPlugins]; 
    ULONG nFetched = 0;
 
-   // Load Importers
-   CEAFApp* pApp = EAFGetApp();
    while ( SUCCEEDED(pIEnumCLSID->Next(nPlugins,clsid,&nFetched)) && 0 < nFetched)
    {
       for ( ULONG i = 0; i < nFetched; i++ )
@@ -157,7 +158,7 @@ BOOL CManagePluginsDlg::InitList()
          
          CString strCLSID(pszCLSID);
 
-         CString strState = pApp->GetProfileString(m_strSection,strCLSID,_T("Enabled"));
+         CString strState = m_pApp->GetProfileString(m_strSection,strCLSID,_T("Enabled"));
          
          bool bInitiallyEnabled = (strState.CompareNoCase(_T("Enabled")) == 0 ? true : false);
          m_PluginList.SetCheck(idx,bInitiallyEnabled);
