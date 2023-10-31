@@ -62,6 +62,7 @@ private:
 
    using StyleElementMap = std::map<rptStyleName, std::_tstring, std::less<rptStyleName>>;
    StyleElementMap m_StyleElementMap;
+   StyleElementMap m_headingStyleElementMap;
 };
 
 #endif // INCLUDED_REPORTER_HTMLHELPER_H_

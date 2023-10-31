@@ -59,14 +59,14 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
         *m_pOstream << _T("h5 {counter-reset: h6}") << std::endl;
         *m_pOstream << _T("h1:before {counter-increment: h1; content: counter(h1) '. '}") << std::endl;
         *m_pOstream << _T("h2:before {counter-increment: h2; content: counter(h1) '.' counter(h2, lower-alpha) '. '}") << std::endl;
-        *m_pOstream << _T("h3:before {counter-increment: h3; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, lower-alpha) '. '}") << std::endl;
-        *m_pOstream << _T("h4:before {counter-increment: h4; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, lower-alpha) '.' counter(h4, lower-alpha) '. '}") << std::endl;
-        *m_pOstream << _T("h5:before {counter-increment: h5; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, lower-alpha) '.' counter(h4, lower-alpha) '.' counter(h5, lower-alpha) '. '}") << std::endl;
-        *m_pOstream << _T("h6:before {counter-increment: h6; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, lower-alpha) '.' counter(h4, lower-alpha) '.' counter(h5, lower-alpha) '.' counter(h6, lower-alpha) '. '}") << std::endl;
+        *m_pOstream << _T("h3:before {counter-increment: h3; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, decimal) '. '}") << std::endl;
+        *m_pOstream << _T("h4:before {counter-increment: h4; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, decimal) '.' counter(h4, upper-alpha) '. '}") << std::endl;
+        *m_pOstream << _T("h5:before {counter-increment: h5; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, decimal) '.' counter(h4, upper-alpha) '.' counter(h5, lower-roman) '. '}") << std::endl;
+        *m_pOstream << _T("h6:before {counter-increment: h6; content: counter(h1) '.' counter(h2, lower-alpha) '.' counter(h3, decimal) '.' counter(h4, upper-alpha) '.' counter(h5, lower-roman) '.' counter(h6, decimal) '. '}") << std::endl;
         *m_pOstream << _T("h1.nocount:before, h2.nocount:before, h3.nocount:before, h4.nocount:before, h5.nocount:before, h6.nocount:before { content: ''; counter-increment: none; }") << std::endl;
         *m_pOstream << _T("</style>") << std::endl;
-    }
 
+    }
 
    // Use html helper to Write out style block
    m_Helper.VisitFontLibrary(*m_pOstream);

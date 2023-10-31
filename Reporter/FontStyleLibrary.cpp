@@ -72,6 +72,11 @@ bool rptFontStyleLibrary::AddNamedStyle(const rptStyleName& styleName, const rpt
    return my_pair.second;
 }
 
+void rptFontStyleLibrary::SetHeadingStyle(IndexType hLevel, const rptRiStyle& rmyStyle)
+{
+    m_headingStyleArray[hLevel-1] = rmyStyle;
+}
+
 void rptFontStyleLibrary::GetStyleNames(std::vector<rptStyleName, std::allocator<rptStyleName> >& myNames) const
 {
    // clear out any existing stuff
@@ -118,11 +123,16 @@ rptRiStyle& rptFontStyleLibrary::GetNamedStyle(const rptStyleName& rmyStyleName)
       return (*my_i).second;
    else
    {
-      // should not have a case where looking for a named style that doesn't exist
-      CHECKX(0,_T("Could not find named style in library"));
-      return m_DefaultStyle;
+        // should not have a case where looking for a named style that doesn't exist
+        CHECKX(0, _T("Could not find named style in library"));
+        return m_DefaultStyle;
    }
 
+}
+
+const rptRiStyle& rptFontStyleLibrary::GetHeadingStyle(IndexType hLevel) const
+{
+    return m_headingStyleArray[hLevel-1];
 }
 
 const rptRiStyle& rptFontStyleLibrary::GetDefaultStyle() const

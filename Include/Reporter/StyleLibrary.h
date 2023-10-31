@@ -86,24 +86,6 @@ public:
    /// Returns the style for Subheadings
    static const std::_tstring& GetSubheadingStyle(); 
 
-   /// Returns the style for Level 1 Headings
-   static const std::_tstring& GetLevel1HeadingStyle();
-
-   /// Returns the style for Level 2 Headings
-   static const std::_tstring& GetLevel2HeadingStyle();
-
-   /// Returns the style for Level 3 Headings
-   static const std::_tstring& GetLevel3HeadingStyle();
-
-   /// Returns the style for Level 4 Headings
-   static const std::_tstring& GetLevel4HeadingStyle();
-
-   /// Returns the style for Level 5 Headings
-   static const std::_tstring& GetLevel5HeadingStyle();
-
-   /// Returns the style for Level 6 Headings
-   static const std::_tstring& GetLevel6HeadingStyle();
-
    /// Returns the style for table column headings
    static const std::_tstring& GetTableColumnHeadingStyle();
 
@@ -140,12 +122,6 @@ private:
    static std::_tstring ms_ChapterTitleStyle;
    static std::_tstring ms_HeadingStyle;
    static std::_tstring ms_SubheadingStyle;
-   static std::_tstring ms_Heading1Style;
-   static std::_tstring ms_Heading2Style;
-   static std::_tstring ms_Heading3Style;
-   static std::_tstring ms_Heading4Style;
-   static std::_tstring ms_Heading5Style;
-   static std::_tstring ms_Heading6Style;
    static std::_tstring ms_TableColumnHeadingStyle;
    static std::_tstring ms_TableDataStyleLeftJustify;
    static std::_tstring ms_TableDataStyleRightJustify;

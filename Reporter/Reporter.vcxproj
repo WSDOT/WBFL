@@ -240,7 +240,6 @@
     <ClCompile Include="ReportVisitor.cpp" />
     <ClCompile Include="RiStyle.cpp" />
     <ClCompile Include="StyleHolder.cpp" />
-    <ClCompile Include="StyleLibrary.cpp" />
     <ClCompile Include="StyleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +300,6 @@
     <ClInclude Include="..\Include\Reporter\ReportVisitor.h" />
     <ClInclude Include="..\Include\Reporter\RiStyle.h" />
     <ClInclude Include="..\Include\Reporter\StyleHolder.h" />
-    <ClInclude Include="..\Include\Reporter\StyleLibrary.h" />
     <ClInclude Include="..\Include\Reporter\StyleManager.h" />
     <ClInclude Include="HtmlUnitTagFormat.h" />
   </ItemGroup>
