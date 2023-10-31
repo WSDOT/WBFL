@@ -31,8 +31,9 @@
 #include <ReportManager\ReportBrowser.h>
 #include <ReportManager\ReportBuilder.h>
 #include <ReportManager\ReportBuilderManager.h>
-#include "WebBrowser.h"
-#include "WBCmdGroup.h" // magical cmd_ids for find
+
+#include "IEReportView.h"
+#include "EdgeReportView.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -65,7 +66,13 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
 
 ReportBrowser::ReportBrowser()
 {
-   m_pWebBrowser = std::make_unique<CWebBrowser>();
+   // This is where the decision is made for using the IE or the Edge browser control backed report view.
+   // Currently the choice is hard coded, but we could make it a parameter passed into the constructor.
+   // This constructor gets called from ReportBuilderManager::CreateReportBrowser
+   
+   // swap the comment marker between these two line to change the browser control backing
+   m_pReportView = std::make_unique<IEReportView>();
+   //m_pReportView = std::make_unique<EdgeReportView>();
 }
 
 ReportBrowser::~ReportBrowser()
@@ -94,7 +101,7 @@ void ReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefre
 
    if (bRefresh)
    {
-      m_pWebBrowser->Refresh();
+      Refresh();
    }
 }
 
@@ -120,7 +127,7 @@ bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuil
 
       CRect rect(0,0,0,0);
       CWnd* pParent = CWnd::FromHandle( hwnd );
-      BOOL bCreated = m_pWebBrowser->Create(TEXT("Browser Control"),
+      BOOL bCreated = m_pReportView->Create(TEXT("Browser Control"),
                                             WS_CHILD | WS_VISIBLE, rect, pParent, IDC_REPORT_WEB_BROWSER);
       if ( !bCreated )
       {
@@ -133,11 +140,11 @@ bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuil
 
    if (bIsNewFile)
    {
-      m_pWebBrowser->Navigate( m_Filename.c_str());
+      Navigate( m_Filename.c_str());
    }
    else
    {
-      m_pWebBrowser->Refresh();
+      Refresh();
    }
 
    return true;
@@ -160,35 +167,22 @@ std::_tstring ReportBrowser::GetReportTitle()
 
 void ReportBrowser::Move(POINT topLeft)
 {
-   m_pWebBrowser->SetWindowPos(nullptr,topLeft.x,topLeft.y,0,0,SWP_NOZORDER | SWP_NOSIZE);
+   m_pReportView->Move(topLeft);
 }
 
 void ReportBrowser::Size(SIZE size)
 {
-   m_pWebBrowser->SetWindowPos(nullptr,0,0,size.cx,size.cy,SWP_NOZORDER | SWP_NOMOVE);
+   m_pReportView->Size(size);
 }
 
 CWnd* ReportBrowser::GetBrowserWnd()
 {
-   return m_pWebBrowser.get();
+   return m_pReportView->GetBrowserWnd();
 }
 
 void ReportBrowser::Print(bool bPrompt)
 {
-   // Build footer string
-   std::_tstring lftFoot = m_pRptSpec->GetLeftFooter();
-   std::_tstring ctrFoot = m_pRptSpec->GetCenterFooter();
-   CString footer;
-   footer.Format(_T("%s&b%s&b&d"), lftFoot.c_str(), ctrFoot.c_str());
-
-   // Build Header string
-   std::_tstring lftHead = m_pRptSpec->GetLeftHeader();
-   std::_tstring ctrHead = m_pRptSpec->GetCenterHeader();
-   CString header;
-   header.Format(_T("%s&b%s&bPage &p of &P"), lftHead.c_str(), ctrHead.c_str());
-
-   // Print from browser
-   m_pWebBrowser->Print(header, footer);
+   m_pReportView->Print(bPrompt);
 }
 
 bool ReportBrowser::Edit(bool bUpdate)
@@ -223,61 +217,37 @@ bool ReportBrowser::Edit(bool bUpdate)
 
 void ReportBrowser::Find()
 {
-   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   IOleCommandTarget* pIOleCmdTarget;
-   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
-   {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_FIND, 0, nullptr,nullptr);
-      pIOleCmdTarget->Release();
-   }
+   m_pReportView->Find();
 }
 
 void ReportBrowser::SelectAll()
 {
-   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   IOleCommandTarget* pIOleCmdTarget;
-   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
-   {
-      pIOleCmdTarget->Exec(nullptr,OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, nullptr,nullptr);
-      pIOleCmdTarget->Release();
-   }
+   m_pReportView->SelectAll();
 }
 
 void ReportBrowser::Copy()
 {
-   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   IOleCommandTarget* pIOleCmdTarget;
-   if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
-   {
-      pIOleCmdTarget->Exec(nullptr, OLECMDID_COPY, OLECMDEXECOPT_DODEFAULT, nullptr, nullptr);
-      pIOleCmdTarget->Release();
-   }
+   m_pReportView->Copy();
 }
 
 void ReportBrowser::ViewSource()
 {
-   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   IOleCommandTarget* pIOleCmdTarget;
-   if ( S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget ) )
-   {
-      pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, nullptr,nullptr);
-      pIOleCmdTarget->Release();
-   }
+   m_pReportView->ViewSource();
 }
 
 void ReportBrowser::Refresh()
 {
-   m_pWebBrowser->Refresh();
+   m_pReportView->Refresh();
 }
 
 void ReportBrowser::Back()
 {
-   m_pWebBrowser->GoBack();
+   m_pReportView->Back();
 }
 
 void ReportBrowser::Forward()
 {
-   m_pWebBrowser->GoForward();
+   m_pReportView->Forward();
 }
 
 void ReportBrowser::NavigateAnchor(long id)
@@ -285,7 +255,12 @@ void ReportBrowser::NavigateAnchor(long id)
    std::_tstring filename = filename_to_URL(m_Filename);
    CString anc;
    anc.Format(_T("%s#_%d"),filename.c_str(),id);
-   m_pWebBrowser->Navigate(anc);
+   Navigate(anc);
+}
+
+void ReportBrowser::Navigate(LPCTSTR uri)
+{
+   m_pReportView->Navigate(uri);
 }
 
 void ReportBrowser::MakeFilename()

@@ -27,9 +27,9 @@
 #include <ReportManager\ReportSpecificationBuilder.h>
 #include <Reporter\Reporter.h>
 
+#include <ReportManager/IReportView.h>
 
 class rptReport;
-class CWebBrowser;
 class TweakIESettings;
 
 namespace WBFL
@@ -117,12 +117,14 @@ namespace WBFL
          CWnd* GetBrowserWnd();
 
       private:
-         std::unique_ptr<CWebBrowser> m_pWebBrowser; // this is an MFC class so it has to be dynamically created
+         std::unique_ptr<IReportView> m_pReportView;
          std::_tstring m_Filename;
          std::shared_ptr<ReportSpecification> m_pRptSpec;
          std::shared_ptr<const ReportSpecificationBuilder> m_pRptSpecBuilder;
          std::shared_ptr<rptReport> m_pReport;
          std::shared_ptr<const ReportBuilderManager> m_pRptMgr;
+
+         void Navigate(LPCTSTR uri);
 
          void MakeFilename();
       };

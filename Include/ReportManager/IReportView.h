@@ -20,48 +20,36 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-// stdafx.h : include file for standard system include files,
-//  or project specific include files that are used frequently, but
-//      are changed infrequently
-//
-
-#if !defined(AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_)
-#define AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <WBFLMFC.h>
-#include <WBFLAll.h>
+#include <ReportManager\ReportManagerExp.h>
 
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxole.h>         // MFC OLE classes
-#include <afxodlgs.h>       // MFC OLE dialog classes
-#include <afxdisp.h>        // MFC Automation classes
-#endif // _AFX_NO_OLE_SUPPORT
+namespace WBFL
+{
+   namespace Reporting
+   {
+      class REPORTMANAGERCLASS IReportView
+      {
+      public:
+         virtual BOOL Create(
+            LPCTSTR lpszWindowName,
+            DWORD dwStyle,
+            const RECT& rect,
+            CWnd* pParentWnd,
+            UINT nID) = 0;
 
-
-#ifndef _AFX_NO_DB_SUPPORT
-#include <afxdb.h>			// MFC ODBC database classes
-#endif // _AFX_NO_DB_SUPPORT
-
-#ifndef _AFX_NO_DAO_SUPPORT
-#include <afxdao.h>			// MFC DAO database classes
-#endif // _AFX_NO_DAO_SUPPORT
-
-#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>			// MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
-#include <atlbase.h>
-
-#include <WBFLTypes.h>
-
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_)
+         virtual void Move(POINT topLeft) = 0;
+         virtual void Size(SIZE size) = 0;
+         virtual void Print(bool bPrompt) = 0;
+         virtual void Find() = 0;
+         virtual void SelectAll() = 0;
+         virtual void Copy() = 0;
+         virtual void Refresh() = 0;
+         virtual void ViewSource() = 0;
+         virtual void Back() = 0;
+         virtual void Forward() = 0;
+         virtual void Navigate(LPCTSTR uri) = 0;
+         virtual CWnd* GetBrowserWnd() = 0;
+      };
+   };
+};

@@ -189,6 +189,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ChapterBuilder.cpp" />
+    <ClCompile Include="EdgeReportView.cpp" />
+    <ClCompile Include="IEReportView.cpp" />
     <ClCompile Include="ReportBrowser.cpp" />
     <ClCompile Include="ReportBuilder.cpp" />
     <ClCompile Include="ReportBuilderManager.cpp" />
@@ -205,6 +207,7 @@
     <ClCompile Include="TimeChapterBuilder.cpp" />
     <ClCompile Include="TitlePageBuilder.cpp" />
     <ClCompile Include="webbrowser.cpp" />
+    <ClCompile Include="WebBrowser2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ReportManager.def" />
@@ -228,6 +231,8 @@
     <ClInclude Include="..\Include\ReportManager\ReportSpecificationBuilder.h" />
     <ClInclude Include="..\Include\ReportManager\TimeChapterBuilder.h" />
     <ClInclude Include="..\Include\ReportManager\TitlePageBuilder.h" />
+    <ClInclude Include="EdgeReportView.h" />
+    <ClInclude Include="IEReportView.h" />
     <ClInclude Include="ReportDlg.h" />
     <ClInclude Include="ReportManager.h" />
     <ClInclude Include="ReportSpecDlg.h" />
@@ -235,6 +240,7 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="WBCmdGroup.h" />
     <ClInclude Include="webbrowser.h" />
+    <ClInclude Include="WebBrowser2.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reporter\Reporter.vcxproj">

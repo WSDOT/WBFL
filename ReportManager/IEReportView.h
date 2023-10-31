@@ -21,47 +21,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// stdafx.h : include file for standard system include files,
-//  or project specific include files that are used frequently, but
-//      are changed infrequently
-//
-
-#if !defined(AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_)
-#define AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <WBFLMFC.h>
-#include <WBFLAll.h>
+#include <ReportManager\IReportView.h>
 
-#ifndef _AFX_NO_OLE_SUPPORT
-#include <afxole.h>         // MFC OLE classes
-#include <afxodlgs.h>       // MFC OLE dialog classes
-#include <afxdisp.h>        // MFC Automation classes
-#endif // _AFX_NO_OLE_SUPPORT
+#include "WebBrowser.h"
 
+class IEReportView : public WBFL::Reporting::IReportView
+{
+public:
+   IEReportView();
 
-#ifndef _AFX_NO_DB_SUPPORT
-#include <afxdb.h>			// MFC ODBC database classes
-#endif // _AFX_NO_DB_SUPPORT
+   virtual BOOL Create(
+      LPCTSTR lpszWindowName,
+      DWORD dwStyle,
+      const RECT& rect,
+      CWnd* pParentWnd,
+      UINT nID) override;
 
-#ifndef _AFX_NO_DAO_SUPPORT
-#include <afxdao.h>			// MFC DAO database classes
-#endif // _AFX_NO_DAO_SUPPORT
+   virtual void Move(POINT topLeft) override;
+   virtual void Size(SIZE size) override;
+   virtual void Print(bool bPrompt) override;
+   virtual void Find() override;
+   virtual void SelectAll() override;
+   virtual void Copy() override;
+   virtual void Refresh() override;
+   virtual void ViewSource() override;
+   virtual void Back() override;
+   virtual void Forward() override;
+   virtual void Navigate(LPCTSTR uri) override;
+   virtual CWnd* GetBrowserWnd() override;
 
-#include <afxdtctl.h>		// MFC support for Internet Explorer 4 Common Controls
-#ifndef _AFX_NO_AFXCMN_SUPPORT
-#include <afxcmn.h>			// MFC support for Windows Common Controls
-#endif // _AFX_NO_AFXCMN_SUPPORT
-
-#include <atlbase.h>
-
-#include <WBFLTypes.h>
-
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_STDAFX_H__888153C2_C463_435C_A6A1_E7B50F1DAA4F__INCLUDED_)
+private:
+   std::unique_ptr<CWebBrowser> m_pWebBrowser; // this is an MFC class so it has to be dynamically created
+};
