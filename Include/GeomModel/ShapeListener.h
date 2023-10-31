@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// RC - Reinforced Concrete Section Capacity Analysis Library
+// GeomModel - Geometric Modeling of shapes and sections
 // Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,8 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REINFORCEDCONCRETE_NAAMANCAPACITYPROBLEM_H_
-#define INCLUDED_REINFORCEDCONCRETE_NAAMANCAPACITYPROBLEM_H_
+#ifndef INCLUDED_GEOMMODEL_SHAPELISTENER_H_
+#define INCLUDED_GEOMMODEL_SHAPELISTENER_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -30,60 +30,81 @@
 
 // PROJECT INCLUDES
 //
-#include <ReinforcedConcrete\ReinfConcExp.h>
-#include <ReinforcedConcrete\WhitneyCapacityProblem.h>
-#include <Math\Function2d.h>
+#include <GeomModel\GeomModelExp.h>
 
 // LOCAL INCLUDES
 //
 
 // FORWARD DECLARATIONS
 //
+class gmIShape;
 
 // MISCELLANEOUS
 //
 
 /*****************************************************************************
 CLASS 
-   rcaNaamanCapacityProblem
+   gmShapeListener
 
-   Derived from CapacityProblem,  this class computes the forces in a
-   concrete section using the Naaman method.
+   Provides a callback interface for shape observers.
 
 
 DESCRIPTION
-   Overrides the DoCaluclateCompressionBlock method to create a compression
-   block offset so that the block's area is equal to Beta1*c times the
-   compression area above the n.a.
+   Provides a callback interface for shape observers.  When a shape changes, 
+   a listener is notified through the callback methods in this interface. 
+   Each callback is implemented with a do-nothing function.  Subclasses need
+   only override those events they are interested in listening to.
+
+   In addition to the interface specified below,  this class implements the
+   standard listener interface.
 
 LOG
-   rdp : 01.22.1998 : Created file
+   rdp : 12.11.1997 : Created file
 *****************************************************************************/
 
-class REINFCONCCLASS rcaNaamanCapacityProblem : public rcaWhitneyCapacityProblem, 
-                                                private mathFunction2d
+class GEOMMODELCLASS gmShapeListener
 {
 public:
+
+
+   //------------------------------------------------------------------------
+   // Hints supported by this listener. Values defined in .cpp file
+   static const int PROPERTIES;   // A shape changed form
+   static const int DISPLAY;      // Color or display mode change
+
    // GROUP: LIFECYCLE
 
    //------------------------------------------------------------------------
    // Default constructor
-   rcaNaamanCapacityProblem();
+   gmShapeListener();
 
-   //------------------------------------------------------------------------
-   // Copy constructor
-   rcaNaamanCapacityProblem(const rcaNaamanCapacityProblem& rOther);
 
    //------------------------------------------------------------------------
    // Destructor
-   virtual ~rcaNaamanCapacityProblem();
+   virtual ~gmShapeListener();
 
    // GROUP: OPERATORS
-   //------------------------------------------------------------------------
-   // Assignment operator
-   rcaNaamanCapacityProblem& operator = (const rcaNaamanCapacityProblem& rOther);
 
    // GROUP: OPERATIONS
+
+   //------------------------------------------------------------------------
+   // OnRegistered
+   // Called by the shape (broadcaster) pointed to by pShape when this 
+   // listener is registered.
+   void OnRegistered(const gmIShape* pShape) const;
+
+   //------------------------------------------------------------------------
+   // OnUnregistered
+   // Called by the shape (broadcaster) pointed to by pShape when this listener 
+   // is registered.
+   void OnUnregistered(const gmIShape* pShape) const;
+
+   //------------------------------------------------------------------------
+   // OnUpdate
+   // Called by the subject gmShapeImp object whenever it changes.  lHint 
+   // contains one or more of the hints given above.
+   virtual void OnUpdate(const gmIShape* pShape, Int32 lHint) = 0;
+
    // GROUP: ACCESS
    // GROUP: INQUIRY
    // GROUP: DEBUG
@@ -91,11 +112,11 @@ public:
    //------------------------------------------------------------------------
    // Returns <b>true</b> if the class is in a valid state, otherwise returns
    // <b>false</b>.
-   virtual bool AssertValid() const override;
+   virtual bool AssertValid() const;
 
    //------------------------------------------------------------------------
    // Dumps the contents of the class to the given stream.
-   virtual void Dump(dbgDumpContext& os) const override;
+   virtual void Dump(dbgDumpContext& os) const;
 #endif // _DEBUG
 
 #if defined _UNITTEST
@@ -105,49 +126,27 @@ public:
    static bool TestMe(dbgLog& rlog);
 #endif // _UNITTEST
 
+
 protected:
    // GROUP: DATA MEMBERS
    // GROUP: LIFECYCLE
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-
-   //------------------------------------------------------------------------
-   // DoCalculateCompressionBlockBoundary
-   // Sets the location of the compression block boundary.  The offset is 
-   // measured normal to the neutral axis line.
-   virtual Float64 DoCalculateCompressionBlockBoundary() override;
-
-   //------------------------------------------------------------------------
-   void MakeCopy(const rcaNaamanCapacityProblem& rOther);
-
-   //------------------------------------------------------------------------
-   void MakeAssignment(const rcaNaamanCapacityProblem& rOther);
-
    // GROUP: ACCESS
    // GROUP: INQUIRY
 
 private:
    // GROUP: DATA MEMBERS
-
-   // status variables for the compression block offset calculation. These are
-   // temporary values for the DoCalculateCompressionBlockBoundary and Evaluate
-   // functions and do not need to be copied.
-   Float64 m_TargetArea;
-   WBFL::Geometry::Line2d m_NaLine;
-
    // GROUP: LIFECYCLE
+   //------------------------------------------------------------------------
+   // Copy constructor
+   gmShapeListener(const gmShapeListener& rOther);
+   //------------------------------------------------------------------------
+   // Assignment operator
+   gmShapeListener& operator = (const gmShapeListener& rOther);
+
    // GROUP: OPERATORS
    // GROUP: OPERATIONS
-   //------------------------------------------------------------------------
-   // Interface routine for function2d class. use this to calculate section
-   // area as a function of compression block offset.
-   Float64 Evaluate(Float64 x) const;
-
-   mathFunction2d* Clone() const;
-
-   void Init();
-   void Clean();
-
    // GROUP: ACCESS
    // GROUP: INQUIRY
 };
@@ -158,4 +157,4 @@ private:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_REINFORCEDCONCRETE_NaamanCAPACITYPROBLEM_H_
+#endif // INCLUDED_GEOMMODEL_SHAPELISTENER_H_

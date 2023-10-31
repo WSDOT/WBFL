@@ -94,10 +94,10 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
    return E_FAIL;
 }
 
-std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent,UINT nHID,LPCTSTR lpszAppName)
+std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent, CWinApp* pApp,UINT nHID,LPCTSTR lpszAppName)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   CManagePluginsDlg dlg(lpszTitle,lpszText,catid,pParent,lpszAppName,nHID);
+   CManagePluginsDlg dlg(lpszTitle,lpszText,catid,pApp,pParent,lpszAppName,nHID);
    dlg.DoModal(); // this DoModal is correct... dialog takes care of its own data
    return dlg.m_PluginStates;
 }

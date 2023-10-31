@@ -42,7 +42,7 @@ CEAFPluginState::CEAFPluginState(LPCTSTR lpszName,const CLSID& clsid,const CStri
 
 bool CEAFPluginState::operator<(const CEAFPluginState& other)
 {
-   return m_Name < other.m_Name;
+   return m_Name.CompareNoCase(other.m_Name) < 0;
 }
 
 LPCTSTR CEAFPluginState::GetName() const

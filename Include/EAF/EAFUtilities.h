@@ -44,7 +44,7 @@ EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component
 // category ID of the type of plugin to be managed.
-EAFFUNC std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = nullptr,UINT helpID=0,LPCTSTR lpszAppName=nullptr);
+EAFFUNC std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent = nullptr, CWinApp* pApp=nullptr,UINT helpID=0,LPCTSTR lpszAppName=nullptr);
 
 // Returns the main frame window
 EAFFUNC CEAFMainFrame* EAFGetMainFrame();
