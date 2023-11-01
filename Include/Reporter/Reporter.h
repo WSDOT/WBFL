@@ -36,6 +36,7 @@
 #include <Reporter\ReportingUtils.h>
 #include <Reporter\Chapter.h>
 #include <Reporter\Paragraph.h>
+#include <Reporter\Heading.h>
 #include <Reporter\RcFlowModifier.h>
 #include <Reporter\RcFontModifier.h>
 #include <Reporter\RcColor.h>
