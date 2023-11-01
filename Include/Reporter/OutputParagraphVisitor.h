@@ -28,6 +28,7 @@
 #include <ostream>
 #include <Reporter\ReporterExp.h>
 #include <Reporter\ParagraphVisitor.h>
+#include <Reporter\Heading.h>
 #include <Reporter\Paragraph.h>
 
 /// A abstract paragraph visitor specialized to render content to an output stream
@@ -47,6 +48,9 @@ public:
    /// Visits a paragraph
    virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
 
+   /// visit a heading
+   virtual void VisitHeading(rptHeading* pHeading) = 0;
+
 protected:
    std::_tostream* m_pOstream;
 
@@ -54,6 +58,7 @@ private:
    rptOutputParagraphVisitor() = delete;
    rptOutputParagraphVisitor(const rptOutputParagraphVisitor&) = delete;
    rptOutputParagraphVisitor& operator=(const rptOutputParagraphVisitor&) = delete;
+
 };
 
 #endif // INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_

@@ -199,7 +199,6 @@ void rptParagraph::Accept( rptParagraphVisitor& MyVisitor )
    MyVisitor.VisitParagraph(this);
 }
 
-
 rptParagraph* rptParagraph::CreateClone() const
 {
    std::unique_ptr<rptParagraph> tmp( std::make_unique<rptParagraph>() );

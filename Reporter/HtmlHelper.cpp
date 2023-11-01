@@ -213,6 +213,61 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
       }
    }
 
+
+
+   // end of style block
+   os << _T(" </STYLE>") << std::endl;
+
+
+
+
+   // write out the beginning of the style block
+   os << std::endl;
+   os << _T(" <STYLE TYPE=\"text/css\">") << std::endl;
+
+
+
+ 
+
+   // cycle over all styles add to style-element map and write out style-element mapping
+   std::_tstring hss;
+ 
+   for (IndexType hLevel = 1; hLevel <= 6; hLevel++)
+   {
+       PRECONDITION(1 <= hLevel && hLevel <= 6);
+
+       const rptRiStyle& style = plib->GetHeadingStyle(hLevel);
+
+       hss = GetStyleString(style);
+
+
+        if (style.GetMediaType() == rptRiStyle::Print)
+        {
+            // style only applies to print
+            osPrint << _T("/* ") << _T(" */") << std::endl;
+            osPrint << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
+
+            osScreen << _T("/* ") << _T(" */") << std::endl;
+            osScreen << _T("   ") << _T("h") << hLevel << _T(" {display: none;}; ") << std::endl;
+        }
+        else if (style.GetMediaType() == rptRiStyle::Screen)
+        {
+            // style only applies to screen
+            osScreen << _T("/* ")  << _T(" */") << std::endl;
+            osScreen << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
+
+            osPrint << _T("/* ") << _T(" */") << std::endl;
+            osPrint << _T("   ") << _T("h") << hLevel << _T(" {display: none}; ") << std::endl;
+        }
+        else
+        {
+            // style applies to both
+            osBoth << _T("/* ") << _T(" */") << std::endl;
+            osBoth << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
+        }
+   }
+   
+
    osPrint << _T("}") << std::endl;
    osScreen << _T("}") << std::endl;
    osBoth << _T("}") << std::endl;
@@ -221,8 +276,9 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
    os << osScreen.str() << std::endl;
    os << osBoth.str() << std::endl;
 
-   // end of style block
-   os << _T(" </STYLE>") << std::endl;
+
+
+
    m_DidVisit = true;
 }
 
@@ -233,7 +289,13 @@ std::_tstring rptHtmlHelper::GetElementName(const rptStyleName& rstyleName) cons
       return (*it).second;
    else
    {
-      CHECKX(0,_T("Failed to find library entry"));
-      return _T("BODY");
+       StyleElementMap::const_iterator itx = m_headingStyleElementMap.find(rstyleName);
+       if (itx != m_headingStyleElementMap.end())
+           return (*itx).second;
+       else
+       {
+           CHECKX(0, _T("Failed to find library entry"));
+           return _T("BODY");
+       }
    }
 }

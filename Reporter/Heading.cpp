@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,33 +21,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#pragma once
+#include <Reporter\ReporterLib.h>
+#include <Reporter\Heading.h>
+#include <Reporter\RcString.h>
+#include <Reporter\RcInt.h>
+#include <Reporter\RcUnsigned.h>
+#include <Reporter\RcDateTime.h>
+#include <Reporter\RcHyperTarget.h>
+#include <Reporter\RcSymbol.h>
+#include <Reporter\RcScalar.h>
 
-#include <Reporter\ReporterExp.h>
 
-
-class REPORTERCLASS rptParagraph;
-class REPORTERCLASS rptHeading;
-
-
-/// Abstract class for visiting a paragraph in a report
-class REPORTERCLASS rptParagraphVisitor
+rptHeading::rptHeading(Uint8 hLevel)
+	:m_headingLevel{ hLevel }
 {
-public:
-   rptParagraphVisitor();
-   virtual ~rptParagraphVisitor();
+	PRECONDITION(1 <= m_headingLevel && m_headingLevel <= 6);
+}
 
-   /// Visit a heading
-   virtual void VisitHeading(rptHeading* pHeading) = 0;
+Uint8 rptHeading::GetHeadingLevel() const
+{
+	return m_headingLevel;
+}
 
-   /// Visit a paragraph
-   virtual void VisitParagraph(rptParagraph* pPara) = 0;
+void rptHeading::Accept(rptParagraphVisitor& MyVisitor)
+{
+	MyVisitor.VisitHeading(this);
+}
 
-private:
-   rptParagraphVisitor(const rptParagraphVisitor&) = delete;
-
-
-
-};
-
-
+bool rptHeading::operator==(const rptHeading& other) const
+{
+	return m_headingLevel == other.m_headingLevel;
+}

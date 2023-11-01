@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_FONTSTYLELIBRARY_H_
-#define INCLUDED_REPORTER_FONTSTYLELIBRARY_H_
+
 #pragma once
 
 #include <map>
@@ -56,6 +55,9 @@ public:
       const rptRiStyle& rmyStyle ///< style definition
    );
 
+   /// Sets thes heading style
+   void SetHeadingStyle(IndexType hLevel, const rptRiStyle& rmyStyle);
+
    /// Fills a vector with the names of all styles in the library
    /// The first name in this list will always be "Default".
    void GetStyleNames( std::vector<rptStyleName, std::allocator<rptStyleName> >& myNames ) const;
@@ -65,6 +67,9 @@ public:
 
    /// Returns a named style definition.
    rptRiStyle& GetNamedStyle(const rptStyleName& myStyle);
+
+   /// Returns the heading style definition
+   const rptRiStyle& GetHeadingStyle(IndexType hLevel) const;
 
    /// Returns the default style definition
    const rptRiStyle& GetDefaultStyle() const;
@@ -83,6 +88,10 @@ private:
    // map of custom styles
    using StyleMap = std::map<rptStyleName, rptRiStyle, std::less<rptStyleName>>;
    StyleMap m_StyleMap;
+
+   // array of html headings
+   using HeadingStyleArray = std::array<rptRiStyle, 6>;
+   HeadingStyleArray m_headingStyleArray;
 
    // a default style
    rptRiStyle m_DefaultStyle;
@@ -105,4 +114,3 @@ private:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_REPORTER_FONTSTYLELIBRARY_H_

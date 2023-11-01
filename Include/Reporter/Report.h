@@ -71,6 +71,12 @@ public:
    /// Returns the number of chapters
    IndexType GetChapterCount() const;
 
+   // Enables Heading Numbers
+   virtual void EnableHeadingNumbers(bool enabled) {m_enableHeadingNumbers = enabled;}
+
+   // Indicates if header numbers are to be used
+   virtual bool HeadingNumbersEnabled() const { return m_enableHeadingNumbers;}
+
    // Accepts a visitor and calls VisitReport(this)
    virtual void Accept( rptReportVisitor& MyVisitor );
 
@@ -96,6 +102,8 @@ private:
    rptReport& operator=(const rptReport& rOther) = delete;
 
    std::_tstring m_ReportName;
+
+   bool m_enableHeadingNumbers{false};
 
    // A vector of chapters that make up the report.
    // This vector is responsible for deleting what the

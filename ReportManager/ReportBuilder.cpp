@@ -223,6 +223,12 @@ std::shared_ptr<rptReport> ReportBuilder::CreateReport(const std::shared_ptr<con
    WBFL::System::Time start;
 
    std::shared_ptr<rptReport> pReport( std::make_shared<rptReport>(pRptSpec->GetReportName()) );
+
+   if (m_headingNumbersEnabled)
+   {
+       pReport->EnableHeadingNumbers(true);
+   }
+
    std::vector<ChapterInfo> vchInfo = pRptSpec->GetChapterInfo();
 
    for( const auto& chInfo : vchInfo)
@@ -254,6 +260,16 @@ std::shared_ptr<rptReport> ReportBuilder::CreateReport(const std::shared_ptr<con
    }
 
    return pReport;
+}
+
+void ReportBuilder::EnableHeadingNumbers(bool enabled)
+{
+    m_headingNumbersEnabled = enabled;
+}
+
+bool ReportBuilder::HeadingNumbersEnabled() const
+{
+    return m_headingNumbersEnabled;
 }
 
 void ReportBuilder::SetMenuBitmap(const CBitmap* pBmp)

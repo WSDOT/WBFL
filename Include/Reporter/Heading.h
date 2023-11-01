@@ -22,32 +22,32 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include <Reporter\Paragraph.h>
 
-#include <Reporter\ReporterExp.h>
+    class REPORTERCLASS rptHeading : public rptParagraph
+    {
 
+    public:
 
-class REPORTERCLASS rptParagraph;
-class REPORTERCLASS rptHeading;
+        /// Creates an unnamed heading with a heading level
+        rptHeading(Uint8 hLevel);
 
+        /// get heading level
+        Uint8 GetHeadingLevel() const;
 
-/// Abstract class for visiting a paragraph in a report
-class REPORTERCLASS rptParagraphVisitor
-{
-public:
-   rptParagraphVisitor();
-   virtual ~rptParagraphVisitor();
-
-   /// Visit a heading
-   virtual void VisitHeading(rptHeading* pHeading) = 0;
-
-   /// Visit a paragraph
-   virtual void VisitParagraph(rptParagraph* pPara) = 0;
-
-private:
-   rptParagraphVisitor(const rptParagraphVisitor&) = delete;
+        /// Accepts a pargraph visitor and calls VisitParagraph(this)
+        void Accept(rptParagraphVisitor& MyVisitor) override;
 
 
+    private:
 
-};
+        Uint8 m_headingLevel;
+
+    public:
+        bool operator==(const rptHeading& other) const;
+    };
+
+
+
 
 

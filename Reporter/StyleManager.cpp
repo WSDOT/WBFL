@@ -103,6 +103,21 @@ void rptStyleManager::InitStyles()
    flag = psl->AddNamedStyle(ms_SubheadingStyle, subheadings);
    //ATLASSERT(flag);
 
+   for (IndexType hLevel = 1; hLevel <= 6; hLevel++)
+   {
+
+       PRECONDITION(1 <= hLevel && hLevel <= 6);
+
+       // HTML Level Headings
+       rptRiStyle heading;
+       heading.SetFontType(rptRiStyle::SWISS);
+       heading.SetFontSize(12 - hLevel);
+       heading.SetIsHeading(true);
+       heading.SetBold(true);
+       psl->SetHeadingStyle(hLevel, heading);
+       //ATLASSERT(flag);
+   }
+
    // Table Column Headings
    rptRiStyle colheadings;
    colheadings.SetFontSize(9);
@@ -314,6 +329,25 @@ LPCTSTR rptStyleManager::GetCopyrightStyle()
 Float64 rptStyleManager::GetMaxTableWidth()
 {
    return ms_MaxTableWidth;
+}
+
+rptHeading* rptStyleManager::CreateHeading(Uint8 hLevel)
+{
+    PRECONDITION(1 <= hLevel && hLevel <= 6);
+
+    rptHeading* pHeading = new rptHeading(hLevel);
+
+    return pHeading;
+}
+
+rptHeading* rptStyleManager::CreateHeading()
+{
+    return CreateHeading(1);
+}
+
+rptHeading* rptStyleManager::CreateSubHeading()
+{
+    return CreateHeading(2);
 }
 
 rptRcTable* rptStyleManager::CreateDefaultTable(ColumnIndexType numColumns, const std::_tstring& strLabel)
