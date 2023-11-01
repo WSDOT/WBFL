@@ -105,6 +105,12 @@ namespace WBFL
          /// Creates a report using the report specification
          virtual std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<const ReportSpecification> pRptSpec) const;
 
+         /// Enable heading numbers
+         void EnableHeadingNumbers(bool enabled);
+
+         /// Checks if heading numbers are enabled
+         bool HeadingNumbersEnabled() const;
+
          /// Sets the bitmap object to be displayed on the Report menu
          void SetMenuBitmap(const CBitmap* pBmp);
 
@@ -121,6 +127,7 @@ namespace WBFL
       private:
          std::_tstring m_Name;
          bool m_bHidden{false};
+         bool m_headingNumbersEnabled{false};
          bool m_bIncludeTimingChapter{false};
          const CBitmap* m_pBitmap{nullptr};
 

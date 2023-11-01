@@ -21,13 +21,14 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_PARAGRAPHVISITOR_H_
-#define INCLUDED_REPORTER_PARAGRAPHVISITOR_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
 
+
 class REPORTERCLASS rptParagraph;
+class REPORTERCLASS rptHeading;
+
 
 /// Abstract class for visiting a paragraph in a report
 class REPORTERCLASS rptParagraphVisitor
@@ -36,12 +37,17 @@ public:
    rptParagraphVisitor();
    virtual ~rptParagraphVisitor();
 
+   /// Visit a heading
+   virtual void VisitHeading(rptHeading* pHeading) = 0;
+
    /// Visit a paragraph
-   virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
+   virtual void VisitParagraph(rptParagraph* pPara) = 0;
 
 private:
    rptParagraphVisitor(const rptParagraphVisitor&) = delete;
-   rptParagraphVisitor& operator=(const rptParagraphVisitor&) = delete;
+
+
+
 };
 
-#endif // INCLUDED_REPORTER_PARAGRAPHVISITOR_H_
+

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Reporter - Report Creation and Representation Library
-// Copyright © 1999-2024  Washington State Department of Transportation
+// Copyright © 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -21,44 +21,33 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_
-#define INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_
 #pragma once
-
-#include <ostream>
-#include <Reporter\ReporterExp.h>
-#include <Reporter\ParagraphVisitor.h>
-#include <Reporter\Heading.h>
 #include <Reporter\Paragraph.h>
 
-/// A abstract paragraph visitor specialized to render content to an output stream
-class REPORTERCLASS rptOutputParagraphVisitor : public rptParagraphVisitor
-{
-public:
-   /// Constructor
-   rptOutputParagraphVisitor(
-      std::_tostream* pMyOstream ///< output stream to receive the paragraph data
-   )
-   {
-      m_pOstream = pMyOstream;
-   }
+    class REPORTERCLASS rptHeading : public rptParagraph
+    {
 
-   virtual ~rptOutputParagraphVisitor();
+    public:
 
-   /// Visits a paragraph
-   virtual void VisitParagraph(rptParagraph* pParagraph) = 0;
+        /// Creates an unnamed heading with a heading level
+        rptHeading(Uint8 hLevel);
 
-   /// visit a heading
-   virtual void VisitHeading(rptHeading* pHeading) = 0;
+        /// get heading level
+        Uint8 GetHeadingLevel() const;
 
-protected:
-   std::_tostream* m_pOstream;
+        /// Accepts a pargraph visitor and calls VisitParagraph(this)
+        void Accept(rptParagraphVisitor& MyVisitor) override;
 
-private:
-   rptOutputParagraphVisitor() = delete;
-   rptOutputParagraphVisitor(const rptOutputParagraphVisitor&) = delete;
-   rptOutputParagraphVisitor& operator=(const rptOutputParagraphVisitor&) = delete;
 
-};
+    private:
 
-#endif // INCLUDED_REPORTER_OUTPUTPARAGRAPHVISITOR_H_
+        Uint8 m_headingLevel;
+
+    public:
+        bool operator==(const rptHeading& other) const;
+    };
+
+
+
+
+

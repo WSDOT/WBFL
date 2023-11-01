@@ -154,16 +154,16 @@
     <ClCompile Include="StyleHolder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StyleLibrary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StyleManger.cpp">
+    <ClCompile Include="StyleManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RcComposite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RcBgColor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Heading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -333,9 +333,6 @@
     <ClInclude Include="..\Include\Reporter\StyleHolder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Reporter\StyleLibrary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\Reporter\StyleManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -343,6 +340,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Reporter\RcBgColor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Reporter\Heading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

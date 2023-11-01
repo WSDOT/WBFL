@@ -27,6 +27,7 @@
 #include <Reporter\HtmlHelper.h>
 #include <Reporter\HtmlRcVisitor.h>
 #include <Reporter\RiStyle.h>
+#include "Reporter\Heading.h"
 
 rptHtmlParagraphVisitor::rptHtmlParagraphVisitor(std::_tostream* pMyOstream, 
                                                  const rptPageLayout*   MypPageLayout,
@@ -48,7 +49,7 @@ rptHtmlParagraphVisitor::~rptHtmlParagraphVisitor()
 {
 }
 
-void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
+void rptHtmlParagraphVisitor::GenerateHtmlHelper(rptParagraph* pPara, const std::_tstring& tag)
 {
    bool lib_style = false;
 
@@ -66,12 +67,12 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
       *m_pOstream<< _T("<A ID=\"_") << anchor << _T("\" TITLE=\"") << sname << _T("\" NAME=\"_") << anchor << _T("\">");
    }
 
-   // Default styles use the <P> style
+   // Default styles use the <tag> style
    if (style == _T("Default"))
-      *m_pOstream << _T("<P>");
+      *m_pOstream << _T("<") << tag << _T(">");
    else
    {
-      *m_pOstream << _T("<P CLASS=") << el_name << _T(">");
+      *m_pOstream << _T("<") << tag << _T(" CLASS = ") << el_name << _T(">");
       lib_style=true;
    }
 
@@ -124,13 +125,30 @@ void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
       *m_pOstream << _T("</LI></UL>")<<std::endl;
    else
 
-   // send paragraph end
+   // send end tag
    if (!lib_style)
-      *m_pOstream << _T("</P>")<<std::endl;
+      *m_pOstream << _T("</") << tag << _T(">") << std::endl;
    else
       // only "Hn" elements include a line break
-      *m_pOstream << _T("</P>")<< std::endl;
-
+      *m_pOstream << _T("</") << tag << _T(">") << std::endl;
 
 
 }
+
+
+void rptHtmlParagraphVisitor::VisitHeading(rptHeading* pHeading)
+{
+    std::_tostringstream os;
+    os << "h" << pHeading->GetHeadingLevel();
+    GenerateHtmlHelper(pHeading, os.str());
+}
+
+
+void rptHtmlParagraphVisitor::VisitParagraph(rptParagraph* pPara)
+{
+    std::_tostringstream os;
+    os << "p";
+    GenerateHtmlHelper(pPara, os.str());
+}
+
+
