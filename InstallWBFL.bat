@@ -14,6 +14,8 @@ xcopy /y/d %ARPDIR%\WBFL\RegFreeCOM\%1\%2\WBFL*.lib %3
 xcopy /y/d %ARPDIR%\WBFL\RegFreeCOM\%1\%2\WBFL*.dll %3
 xcopy /y/d %ARPDIR%\WBFL\RegFreeCOM\%1\%2\MakeDocMap.exe %3
 
+xcopy /y/d %ARPDIR%\WBFL\packages\Microsoft.Web.WebView2.1.0.2088.41\runtimes\win-x64\native\WebView2Loader.dll %3
+
 IF "%1" == "Win32" (
     IF "%2" == "Release" (
    	xcopy /y/d %ARPDIR%\WBFL\Apache\XERCESCPKG-31-X86-VC100\bin\xerces-c_3_1.dll %3 
