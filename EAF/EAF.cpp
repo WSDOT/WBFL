@@ -38,6 +38,8 @@
 #include <EAF\EAFViewController.h>
 #include <IReportManager.h>
 #include <IGraphManager.h>
+#include <WBFLReportManagerAgent_i.c>
+#include <WBFLGraphManagerAgent_i.c>
 
 #include "EAFDocProxyAgent.h"
 

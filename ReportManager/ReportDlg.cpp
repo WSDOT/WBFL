@@ -74,7 +74,7 @@ BOOL CReportDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-   m_pBrowser = m_pRptMgr->CreateReportBrowser(m_Browser.GetSafeHwnd(),m_pRptSpec,m_pRptSpecBuilder);
+   m_pBrowser = m_pRptMgr->CreateReportBrowser(m_Browser.GetSafeHwnd(),0,m_pRptSpec,m_pRptSpecBuilder);
 
    CRect rect;
    m_Browser.GetClientRect(&rect);

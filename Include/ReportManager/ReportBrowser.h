@@ -42,13 +42,20 @@ namespace WBFL
       class REPORTMANAGERCLASS ReportBrowser
       {
       public:
-	      ReportBrowser();
+         enum class Type
+         {
+            IE, // based on IWebBrowser2 control (Internet Explorer)
+            Edge// based on WebView2 (Edge)
+         };
+
+	      ReportBrowser(Type type);
 	      ~ReportBrowser();
 
          /// Initializes the report browser window
          /// \todo The rptReport should be constant, but can't be until the WBFL::Reporter framework is updated
          bool Initialize(
             HWND hwnd, ///< handle to the parent window
+            DWORD dwStyle, ///< additional window styles (WS_CHILD | WS_VISIBLE are provided)
             const std::shared_ptr<const ReportBuilderManager>& pRptMgr, ///< Report builder manager
             const std::shared_ptr<ReportSpecification>& pRptSpec, ///< The report specification
             const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, ///< The Report specification builder
@@ -71,6 +78,9 @@ namespace WBFL
 
          /// Returns the report title
          std::_tstring GetReportTitle();
+
+         /// @brief Resizes the browser window to fit within the parent window
+         void FitToParent();
 
          /// Moves the browser window by locating the top left point
          void Move(POINT topLeft);
@@ -112,9 +122,6 @@ namespace WBFL
 
          /// Navigates to a specific anchor in a report
          void NavigateAnchor(long id);
-
-         /// Returns the browser window
-         CWnd* GetBrowserWnd();
 
       private:
          std::unique_ptr<IReportView> m_pReportView;

@@ -35,9 +35,10 @@ namespace WBFL
             LPCTSTR lpszWindowName,
             DWORD dwStyle,
             const RECT& rect,
-            CWnd* pParentWnd,
+            HWND hwndParent,
             UINT nID) = 0;
 
+         virtual void FitToParent() = 0;
          virtual void Move(POINT topLeft) = 0;
          virtual void Size(SIZE size) = 0;
          virtual void Print(bool bPrompt) = 0;
@@ -49,7 +50,6 @@ namespace WBFL
          virtual void Back() = 0;
          virtual void Forward() = 0;
          virtual void Navigate(LPCTSTR uri) = 0;
-         virtual CWnd* GetBrowserWnd() = 0;
       };
    };
 };

@@ -64,15 +64,14 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
    return filename;
 }
 
-ReportBrowser::ReportBrowser()
+ReportBrowser::ReportBrowser(Type type)
 {
-   // This is where the decision is made for using the IE or the Edge browser control backed report view.
-   // Currently the choice is hard coded, but we could make it a parameter passed into the constructor.
-   // This constructor gets called from ReportBuilderManager::CreateReportBrowser
-   
-   // swap the comment marker between these two line to change the browser control backing
-   m_pReportView = std::make_unique<IEReportView>();
-   //m_pReportView = std::make_unique<EdgeReportView>();
+   if (type == Type::IE)
+      m_pReportView = std::make_unique<IEReportView>();
+   else if (type == Type::Edge)
+      m_pReportView = std::make_unique<EdgeReportView>();
+   else
+      CHECK(false); // is there a new type?
 }
 
 ReportBrowser::~ReportBrowser()
@@ -105,7 +104,7 @@ void ReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefre
    }
 }
 
-bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuilderManager>& pRptMgr, const std::shared_ptr<ReportSpecification>& pRptSpec, const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport)
+bool ReportBrowser::Initialize(HWND hwnd, DWORD dwStyle, const std::shared_ptr<const ReportBuilderManager>& pRptMgr, const std::shared_ptr<ReportSpecification>& pRptSpec, const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder, std::shared_ptr<rptReport>& pReport)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -117,7 +116,7 @@ bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuil
    m_pRptSpecBuilder = pRptSpecBuilder;
 
    // The window associated with hwnd does not exist!
-   ATLASSERT( ::IsWindow(hwnd) );
+   CHECK( ::IsWindow(hwnd) );
 
    // use empty file name as flag that browser has not yet been initialized.
    bool bIsNewFile = m_Filename.empty();
@@ -126,9 +125,8 @@ bool ReportBrowser::Initialize(HWND hwnd, const std::shared_ptr<const ReportBuil
       MakeFilename();
 
       CRect rect(0,0,0,0);
-      CWnd* pParent = CWnd::FromHandle( hwnd );
       BOOL bCreated = m_pReportView->Create(TEXT("Browser Control"),
-                                            WS_CHILD | WS_VISIBLE, rect, pParent, IDC_REPORT_WEB_BROWSER);
+                                            WS_CHILD | WS_VISIBLE | dwStyle, rect, hwnd, IDC_REPORT_WEB_BROWSER);
       if ( !bCreated )
       {
          TRACE( TEXT("Failed to create browser") );
@@ -165,6 +163,11 @@ std::_tstring ReportBrowser::GetReportTitle()
    return m_pRptSpec->GetReportTitle();
 }
 
+void ReportBrowser::FitToParent()
+{
+   m_pReportView->FitToParent();
+}
+
 void ReportBrowser::Move(POINT topLeft)
 {
    m_pReportView->Move(topLeft);
@@ -173,11 +176,6 @@ void ReportBrowser::Move(POINT topLeft)
 void ReportBrowser::Size(SIZE size)
 {
    m_pReportView->Size(size);
-}
-
-CWnd* ReportBrowser::GetBrowserWnd()
-{
-   return m_pReportView->GetBrowserWnd();
 }
 
 void ReportBrowser::Print(bool bPrompt)

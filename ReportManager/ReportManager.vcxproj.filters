@@ -49,9 +49,6 @@
     <ClCompile Include="IEReportView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebBrowser2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\ReportManager\AutoLib.h">
@@ -114,7 +111,7 @@
     <ClInclude Include="IEReportView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebBrowser2.h">
+    <ClInclude Include="..\Include\ReportManager\IReportView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,5 +141,6 @@
     <None Include="res\ReportManager.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

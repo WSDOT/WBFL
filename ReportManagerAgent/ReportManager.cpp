@@ -154,9 +154,14 @@ std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> CReportManagerAgent
    return m_pRptMgr->GetReportSpecificationBuilder(rptDesc);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBrowser> CReportManagerAgent::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+void CReportManagerAgent::SetReportBrowserType(WBFL::Reporting::ReportBrowser::Type browserType)
 {
-   return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+   m_pRptMgr->SetReportBrowserType(browserType);
+}
+
+std::shared_ptr<WBFL::Reporting::ReportBrowser> CReportManagerAgent::CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+{
+   return m_pRptMgr->CreateReportBrowser(hwndParent, dwStyle, pRptSpec, pRptSpecBuilder);
 }
 
 INT_PTR CReportManagerAgent::DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)

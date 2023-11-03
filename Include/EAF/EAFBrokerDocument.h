@@ -53,7 +53,7 @@ class CEAFDocTemplate;
 class EAFCLASS CEAFBrokerDocument : public CEAFDocument
 {
 protected:
-	CEAFBrokerDocument();           // protected constructor used by dynamic creation
+	CEAFBrokerDocument(bool bReporting = true,bool bGraphing = true);           // protected constructor used by dynamic creation
 	DECLARE_DYNAMIC(CEAFBrokerDocument)
 
 // Attributes
@@ -142,12 +142,12 @@ protected:
    CBitmap m_bmpCustomReports;
 
    // returns the CATID for the agents to be used with this document
-   // All agents registred with this category ID will be loaded when
+   // All agents registered with this category ID will be loaded when
    // LoadAgents() is called
    virtual CATID GetAgentCategoryID() = 0;
 
    // returns the CATID for the extension agents to be used with this document
-   // All agents registred with this category ID will be loaded when
+   // All agents registered with this category ID will be loaded when
    // LoadAgents() is called.
    // Return CLSID_NULL if you don't want to support extension agents
    virtual CATID GetExtensionAgentCategoryID();
@@ -236,11 +236,13 @@ protected:
 private:
    // since the broker has no way of returning a registered agent
    // we need to keep a pointer to the doc proxy agent so it
-   // can be initialized for menu and toolbar intergration functionality
+   // can be initialized for menu and toolbar integration functionality
    CEAFDocProxyAgent* m_pDocProxyAgent;
 
-   CComPtr<IReportManager> m_pReportManager;
-   CComPtr<IGraphManager> m_pGraphManager;
+   bool m_bUseReportManager = false;
+   bool m_bUseGraphManager = false;
+   IReportManager* m_pReportManager = nullptr; // weak pointers
+   IGraphManager* m_pGraphManager = nullptr; // weak pointers
 
    UINT m_helpIDCustom;
    UINT m_helpIDFavorite;
