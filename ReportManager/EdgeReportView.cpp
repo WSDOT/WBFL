@@ -24,35 +24,145 @@
 #include "stdafx.h"
 #include "EdgeReportView.h"
 
-// CWebBrowser2 is a dummy class - don't actually call it until it the WebView2 control backing
-// is complete.
+
+using namespace Microsoft::WRL;
+
+
+
 
 EdgeReportView::EdgeReportView()
 {
-   m_pWebBrowser = std::make_unique<CWebBrowser2>();
 }
 
 BOOL EdgeReportView::Create(
    LPCTSTR lpszWindowName,
    DWORD dwStyle,
    const RECT& rect,
-   CWnd* pParentWnd,
+   HWND hwndParent,
    UINT nID)
 {
-   //return m_pWebBrowser->Create(nullptr,lpszWindowName, dwStyle, rect, pParentWnd, nID);
-   return FALSE;
+	m_hwndParent = hwndParent;
+
+	// <-- WebView2 sample code starts here -->
+	// Step 3 - Create a single WebView within the parent window
+	// Locate the browser and set up the environment for WebView
+	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
+		Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+			[&, hwndParent](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
+
+				// Create a CoreWebView2Controller and get the associated CoreWebView2 whose parent is the main window hWnd
+				env->CreateCoreWebView2Controller(hwndParent, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+					[&, hwndParent](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT {
+						if (controller != nullptr) {
+							m_webviewController = controller;
+							m_webviewController->get_CoreWebView2(&m_webview);
+						}
+
+						// Add a few settings for the webview
+						// The demo step is redundant since the values are the default settings
+						wil::com_ptr<ICoreWebView2Settings> settings;
+						m_webview->get_Settings(&settings);
+						settings->put_IsScriptEnabled(TRUE);
+						settings->put_AreDefaultScriptDialogsEnabled(TRUE);
+						settings->put_IsWebMessageEnabled(TRUE);
+
+						// Resize WebView to fit the bounds of the parent window
+						RECT bounds;
+						GetClientRect(hwndParent, &bounds);
+						m_webviewController->put_Bounds(bounds);
+
+						// Schedule an async task to navigate to our file
+						m_webview->Navigate(m_strURI.c_str());
+
+						//// <NavigationEvents>
+						//// Step 4 - Navigation events
+						//// register an ICoreWebView2NavigationStartingEventHandler to cancel any non-https navigation
+						//EventRegistrationToken token;
+						//webview->add_NavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
+						//	[](ICoreWebView2* webview, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
+						//		wil::unique_cotaskmem_string uri;
+						//		args->get_Uri(&uri);
+						//		std::wstring source(uri.get());
+						//		//if (source.substr(0, 5) != L"https") {
+						//		//	args->put_Cancel(true);
+						//		//}
+						//		return S_OK;
+						//	}).Get(), &token);
+						//// </NavigationEvents>
+
+						//// <Scripting>
+						//// Step 5 - Scripting
+						//// Schedule an async task to add initialization script that freezes the Object object
+						//webview->AddScriptToExecuteOnDocumentCreated(L"Object.freeze(Object);", nullptr);
+						//// Schedule an async task to get the document URL
+						//webview->ExecuteScript(L"window.document.URL;", Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
+						//	[](HRESULT errorCode, LPCWSTR resultObjectAsJson) -> HRESULT {
+						//		LPCWSTR URL = resultObjectAsJson;
+						//		//doSomethingWithURL(URL);
+						//		return S_OK;
+						//	}).Get());
+						//// </Scripting>
+
+						//// <CommunicationHostWeb>
+						//// Step 6 - Communication between host and web content
+						//// Set an event handler for the host to return received message back to the web content
+						//webview->add_WebMessageReceived(Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+						//	[](ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
+						//		wil::unique_cotaskmem_string message;
+						//		args->TryGetWebMessageAsString(&message);
+						//		// processMessage(&message);
+						//		webview->PostWebMessageAsString(message.get());
+						//		return S_OK;
+						//	}).Get(), &token);
+
+						//// Schedule an async task to add initialization script that
+						//// 1) Add an listener to print message from the host
+						//// 2) Post document URL to the host
+						//webview->AddScriptToExecuteOnDocumentCreated(
+						//	L"window.chrome.webview.addEventListener(\'message\', event => alert(event.data));" \
+						//	L"window.chrome.webview.postMessage(window.document.URL);",
+						//	nullptr);
+						//// </CommunicationHostWeb>
+
+						return S_OK;
+					}).Get());
+				return S_OK;
+			}).Get());
+
+
+
+	// <-- WebView2 sample code ends here -->
+
+	return TRUE;
+}
+
+void EdgeReportView::FitToParent()
+{
+	if (m_webviewController)
+	{
+		RECT bounds;
+		GetClientRect(m_hwndParent, &bounds);
+		m_webviewController->put_Bounds(bounds);
+	}
 }
 
 void EdgeReportView::Move(POINT topLeft)
 {
-   //m_pWebBrowser->SetWindowPos(nullptr, topLeft.x, topLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
-   //m_pWebBrowser->ResizeToClientArea();
+   //::SetWindowPos(GetBrowserWnd(), nullptr, topLeft.x, topLeft.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 }
 
 void EdgeReportView::Size(SIZE size)
 {
-   //m_pWebBrowser->SetWindowPos(nullptr, 0, 0, size.cx, size.cy, SWP_NOZORDER | SWP_NOMOVE);
-   //m_pWebBrowser->ResizeToClientArea();
+	//::SetWindowPos(GetBrowserWnd(), nullptr, 0, 0, size.cx, size.cy, SWP_NOZORDER | SWP_NOMOVE);
+	if (m_webviewController)
+	{
+		RECT bounds;
+		bounds.left = 0;
+		bounds.top = 0;
+		bounds.right = size.cx;
+		bounds.bottom = size.cy;
+		m_webviewController->put_Bounds(bounds);
+	}
 }
 
 void EdgeReportView::Print(bool bPrompt)
@@ -109,7 +219,7 @@ void EdgeReportView::Copy()
 
 void EdgeReportView::Refresh()
 {
-   //m_pWebBrowser->Reload();
+	if(m_webview) m_webview->Reload();
 }
 
 void EdgeReportView::ViewSource()
@@ -125,21 +235,20 @@ void EdgeReportView::ViewSource()
 
 void EdgeReportView::Back()
 {
-   //m_pWebBrowser->GoBack();
+	if (m_webview) m_webview->GoBack();
 }
 
 void EdgeReportView::Forward()
 {
-   //m_pWebBrowser->GoForward();
+	if (m_webview) m_webview->GoForward();
 }
 
 void EdgeReportView::Navigate(LPCTSTR uri)
 {
-   //m_pWebBrowser->Navigate(uri, []() {});
-}
-
-CWnd* EdgeReportView::GetBrowserWnd()
-{
-   //return m_pWebBrowser.get();
-   return nullptr;
+	// creation of web view 2 occurs asynchronously. 
+	// store the uri
+	// Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler> will call Navigate
+	// with this URI once the control is ready to display something
+	m_strURI = uri;
+	if(m_webview) m_webview->Navigate(uri);
 }

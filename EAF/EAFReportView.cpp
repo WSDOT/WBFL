@@ -329,7 +329,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Re
          // create the report and browser
          {
             CWaitCursor wait;
-            m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), m_pReportSpec, m_pRptSpecBuilder);
+            m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), 0, m_pReportSpec, m_pRptSpecBuilder);
          }
 
          if (m_pReportBrowser && 0 < m_pReportSpec->GetChapterCount() && CanEditReport() && m_pwndEdit == nullptr )
@@ -732,11 +732,13 @@ CWnd* CEAFReportView::CreateEditButton()
    m_pBtnEdit = new CReportButton();
    m_pBtnEdit->Register(this);
 
-   CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
-
    CRect rect(0,0,50,21);
-   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
+   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
    m_pBtnEdit->SetFont(&m_fnEdit);
+
+   // put the edit button on top of the browser window
+   CWnd* pReportBrowser = GetTopWindow(); // GetWindow(GW_CHILD);
+   m_pBtnEdit->SetWindowPos(pReportBrowser, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
    return m_pBtnEdit;
 }
@@ -765,15 +767,15 @@ std::shared_ptr<const WBFL::Reporting::ReportBuilder> CEAFReportView::GetReportB
    }
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, DWORD dwStyle,const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
    {
-      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent, dwStyle, pRptSpec, pRptSpecBuilder);
    }
    else
    {
-      return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+      return m_pRptMgr->CreateReportBrowser(hwndParent,dwStyle,pRptSpec,pRptSpecBuilder);
    }
 }
 

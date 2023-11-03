@@ -36,9 +36,10 @@ public:
       LPCTSTR lpszWindowName,
       DWORD dwStyle,
       const RECT& rect,
-      CWnd* pParentWnd,
+      HWND hwndParent,
       UINT nID) override;
 
+   virtual void FitToParent() override;
    virtual void Move(POINT topLeft) override;
    virtual void Size(SIZE size) override;
    virtual void Print(bool bPrompt) override;
@@ -50,7 +51,6 @@ public:
    virtual void Back() override;
    virtual void Forward() override;
    virtual void Navigate(LPCTSTR uri) override;
-   virtual CWnd* GetBrowserWnd() override;
 
 private:
    std::unique_ptr<CWebBrowser> m_pWebBrowser; // this is an MFC class so it has to be dynamically created

@@ -25,7 +25,12 @@
 
 #include <ReportManager\IReportView.h>
 
-#include "WebBrowser2.h"
+#include <wrl.h>
+#include <wrl/event.h>
+#include <wil/result.h>
+#include <wil/com.h>
+#include "WebView2.h"
+#include "WebView2EnvironmentOptions.h"
 
 class EdgeReportView : public WBFL::Reporting::IReportView
 {
@@ -36,9 +41,10 @@ public:
       LPCTSTR lpszWindowName,
       DWORD dwStyle,
       const RECT& rect,
-      CWnd* pParentWnd,
+      HWND hwndParent,
       UINT nID) override;
 
+   virtual void FitToParent() override;
    virtual void Move(POINT topLeft) override;
    virtual void Size(SIZE size) override;
    virtual void Print(bool bPrompt) override;
@@ -50,8 +56,14 @@ public:
    virtual void Back() override;
    virtual void Forward() override;
    virtual void Navigate(LPCTSTR uri) override;
-   virtual CWnd* GetBrowserWnd() override;
 
 private:
-   std::unique_ptr<CWebBrowser2> m_pWebBrowser; 
+   HWND m_hwndParent; // handle of parent window
+   std::_tstring m_strURI; // caches the URI
+
+   // Pointer to WebViewController
+   wil::com_ptr<ICoreWebView2Controller> m_webviewController;
+
+   // Pointer to WebView window
+   wil::com_ptr<ICoreWebView2> m_webview;
 };

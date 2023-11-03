@@ -137,7 +137,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);F:\EdgeBrowserByAyush\packages\Microsoft.Windows.ImplementationLibrary.1.0.200902.2\include\;F:\EdgeBrowserByAyush\packages\Microsoft.Web.WebView2.1.0.622.22\build\native\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;BUILDREPORTMANAGERLIB;WIN32;_WINDOWS;_USRDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -153,7 +153,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <ConformanceMode>true</ConformanceMode>
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -163,7 +163,7 @@
     <Link>
       <RegisterOutput>false</RegisterOutput>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);F:\EdgeBrowserByAyush\packages\Microsoft.Web.WebView2.1.0.622.22\build\native\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>.\ReportManager.def</ModuleDefinitionFile>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +175,7 @@
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalDependencies>version.lib;WebView2LoaderStatic.lib;WebView2Loader.dll.lib;WebView2Guid.lib</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -207,10 +208,10 @@
     <ClCompile Include="TimeChapterBuilder.cpp" />
     <ClCompile Include="TitlePageBuilder.cpp" />
     <ClCompile Include="webbrowser.cpp" />
-    <ClCompile Include="WebBrowser2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ReportManager.def" />
+    <None Include="packages.config" />
     <None Include="res\ReportManager.rc2" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +223,7 @@
   <ItemGroup>
     <ClInclude Include="..\Include\ReportManager\AutoLib.h" />
     <ClInclude Include="..\Include\ReportManager\ChapterBuilder.h" />
+    <ClInclude Include="..\Include\ReportManager\IReportView.h" />
     <ClInclude Include="..\Include\ReportManager\ReportBrowser.h" />
     <ClInclude Include="..\Include\ReportManager\ReportBuilder.h" />
     <ClInclude Include="..\Include\ReportManager\ReportBuilderManager.h" />
@@ -240,7 +242,6 @@
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="WBCmdGroup.h" />
     <ClInclude Include="webbrowser.h" />
-    <ClInclude Include="WebBrowser2.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reporter\Reporter.vcxproj">
@@ -250,10 +251,17 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.Web.WebView2.1.0.2088.41\build\native\Microsoft.Web.WebView2.targets" Condition="Exists('..\packages\Microsoft.Web.WebView2.1.0.2088.41\build\native\Microsoft.Web.WebView2.targets')" />
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties RESOURCE_FILE="ReportManager.rc" />
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Web.WebView2.1.0.2088.41\build\native\Microsoft.Web.WebView2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Web.WebView2.1.0.2088.41\build\native\Microsoft.Web.WebView2.targets'))" />
+  </Target>
 </Project>

@@ -34,10 +34,20 @@ BOOL IEReportView::Create(
    LPCTSTR lpszWindowName,
    DWORD dwStyle,
    const RECT& rect,
-   CWnd* pParentWnd,
+   HWND hwndParent,
    UINT nID)
 {
-   return m_pWebBrowser->Create(lpszWindowName, dwStyle, rect, pParentWnd, nID);
+   //AFX_MANAGE_STATE(AfxGetAppModuleState());
+   CWnd* pWnd = CWnd::FromHandle(hwndParent);
+   return m_pWebBrowser->Create(lpszWindowName, dwStyle, rect, pWnd, nID);
+}
+
+void IEReportView::FitToParent()
+{
+   CWnd* pParent = m_pWebBrowser->GetParent();
+   CRect rect;
+   pParent->GetClientRect(&rect);
+   m_pWebBrowser->SetWindowPos(pParent, rect.left, rect.top, rect.Width(), rect.Height(), SWP_NOZORDER);
 }
 
 void IEReportView::Move(POINT topLeft)
@@ -131,9 +141,4 @@ void IEReportView::Forward()
 void IEReportView::Navigate(LPCTSTR uri)
 {
    m_pWebBrowser->Navigate(uri);
-}
-
-CWnd* IEReportView::GetBrowserWnd()
-{
-   return m_pWebBrowser.get();
 }

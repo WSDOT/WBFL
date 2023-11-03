@@ -34,6 +34,9 @@
 
 #include "ConfigureReportsDlg.h"
 
+#include "WBFLReportManagerAgent.h"
+#include "WBFLGraphManagerAgent.h"
+
 #include <sstream> // for ostringstream
 
 #ifdef _DEBUG
@@ -48,8 +51,10 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CEAFBrokerDocument, CEAFDocument)
 
-CEAFBrokerDocument::CEAFBrokerDocument()
+CEAFBrokerDocument::CEAFBrokerDocument(bool bReporting,bool bGraphing)
 {
+   m_bUseReportManager = bReporting;
+   m_bUseGraphManager = bGraphing;
    m_pBroker = nullptr;
    m_pDocProxyAgent =  nullptr;
    m_bIsGraphMenuPopulated = false;
@@ -252,8 +257,8 @@ void CEAFBrokerDocument::BrokerShutDown()
 {
    // if we are done with the broker, we must also be done with
    // all of our cached interfaces
-   m_pReportManager.Release();
-   m_pGraphManager.Release();
+   m_pReportManager = nullptr;
+   m_pGraphManager = nullptr;
 
    if ( m_pBroker )
    {
@@ -450,8 +455,13 @@ BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
    HRESULT hr = pBrokerInit->AddAgent( pAgent );
 
    // Since we use the ILogFile and IProgress interfaces, we required the SysAgent
-   CLSID clsid[] = {CLSID_SysAgent};
-   if ( !CEAFBrokerDocument::LoadAgents(pBrokerInit, clsid, sizeof(clsid)/sizeof(CLSID) ) )
+   int n = 1 + m_bUseReportManager + m_bUseGraphManager;
+   std::unique_ptr<CLSID[]> clsid(new CLSID[n]);
+   int i = 0;
+   clsid[i++] = CLSID_SysAgent;
+   if (m_bUseReportManager) clsid[i++] = CLSID_ReportManagerAgent;
+   if (m_bUseGraphManager) clsid[i++] = CLSID_GraphManagerAgent;
+   if ( !CEAFBrokerDocument::LoadAgents(pBrokerInit, clsid.get(), i) )
    {
       return FALSE;
    }
@@ -464,6 +474,19 @@ void CEAFBrokerDocument::InitAgents()
    // and finally, initialize all the agents
    CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
    pBrokerInit->InitAgents();
+
+
+   // OnCmdMsg uses these interfaces tens of thousands of time. Get them once
+   m_pBroker->GetInterface(IID_IReportManager, (IUnknown**)&m_pReportManager);
+   m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
+
+   if (m_pReportManager)
+   {
+      CEAFApp* pApp = EAFGetApp();
+      auto strBrowserType = pApp->GetProfileString(_T("Settings"), _T("ReportBrowser"), _T("Edge"));
+      WBFL::Reporting::ReportBrowser::Type browserType = (strBrowserType.CompareNoCase(_T("IE")) == 0 ? WBFL::Reporting::ReportBrowser::Type::IE : WBFL::Reporting::ReportBrowser::Type::Edge);
+      m_pReportManager->SetReportBrowserType(browserType);
+   }
 }
 
 void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
@@ -474,10 +497,6 @@ void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
 
    if ( bIntegrate )
    {
-      // OnCmdMsg uses these interfaces tens of thousands of time. Get them once
-      m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&m_pReportManager);
-      m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
-
       pBrokerInit->Integrate(TRUE,m_pReportManager == nullptr ? FALSE : TRUE,m_pGraphManager == nullptr ? FALSE : TRUE,TRUE);
    }
    else
