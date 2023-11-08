@@ -10,6 +10,7 @@
 // add headers that you want to pre-compile here
 #include <Reporter/Reporter.h>
 #include <Reporter/Report.h>
-#include <Reporter/HtmlReportVisitor.h>
+#include <Reporter/Chapter.h>
+
 
 #endif //PCH_H

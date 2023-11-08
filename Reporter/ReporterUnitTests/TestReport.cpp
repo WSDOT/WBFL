@@ -13,6 +13,8 @@ namespace ReporterUnitTests
 		TEST_METHOD(InsertChapterTest)
 		{
 
+			//Use a parameterized constructor
+
 			rptReport report(_T("Test Report"), rptStyleManager::GetHeadingStyle(),rptPageLayout());
 			std::_tostringstream os;
 			os << "Chapter 1";
@@ -55,7 +57,7 @@ namespace ReporterUnitTests
 		TEST_METHOD(ChapterIteratorTest)
 		{
 			rptReport report(_T("Test Report"));
-	std::_tostringstream os1;
+			std::_tostringstream os1;
 			os1 << "Chapter 1";
 			auto chapter1 = new rptChapter(os1.str());
 			std::_tostringstream os2;
