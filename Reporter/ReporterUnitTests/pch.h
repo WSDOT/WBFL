@@ -12,8 +12,8 @@
 #include <Reporter/Chapter.h>
 #include <Reporter/Paragraph.h>
 #include <Reporter/Heading.h>
-#include <Reporter/ReportContent.h>
-#include <Reporter/ReportItem.h>
+#include <Reporter/ReportContent.h>  //add subclasses to this test
+#include <Reporter/ReportItem.h> //add as part of report content
 #include <Reporter/StyleManager.h>
 #include <Reporter/FontStyleLibrary.h>
 #include <Reporter/ReportVisitor.h>

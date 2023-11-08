@@ -100,6 +100,7 @@
     <ClCompile Include="TestParagraph.cpp" />
     <ClCompile Include="TestReportContent.cpp" />
     <ClCompile Include="TestReport.cpp" />
+    <ClCompile Include="TestStyleManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

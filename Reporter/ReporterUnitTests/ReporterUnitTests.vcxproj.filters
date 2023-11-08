@@ -33,6 +33,9 @@
     <ClCompile Include="TestReportContent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestStyleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
