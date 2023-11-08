@@ -7,10 +7,26 @@
 #ifndef PCH_H
 #define PCH_H
 
-// add headers that you want to pre-compile here
 #include <Reporter/Reporter.h>
 #include <Reporter/Report.h>
 #include <Reporter/Chapter.h>
-
+#include <Reporter/Paragraph.h>
+#include <Reporter/Heading.h>
+#include <Reporter/ReportContent.h>
+#include <Reporter/ReportItem.h>
+#include <Reporter/StyleManager.h>
+#include <Reporter/FontStyleLibrary.h>
+#include <Reporter/ReportVisitor.h>
+#include <Reporter/OutputReportVisitor.h>
+#include <Reporter/HtmlReportVisitor.h>
+#include <Reporter/ChapterVisitor.h>
+#include <Reporter/OutputChapterVisitor.h>
+#include <Reporter/HtmlChapterVisitor.h>
+#include <Reporter/ParagraphVisitor.h>
+#include <Reporter/OutputParagraphVisitor.h>
+#include <Reporter/HtmlParagraphVisitor.h>
+#include <Reporter/RcVisitor.h>
+#include <Reporter/OutputRcVisitor.h>
+#include <Reporter/HtmlRcVisitor.h>
 
 #endif //PCH_H
