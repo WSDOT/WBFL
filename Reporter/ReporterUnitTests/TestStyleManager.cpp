@@ -99,17 +99,17 @@ namespace ReporterUnitTests
 
 		TEST_METHOD(GetTableCellStyleTest)
 		{
-			Uint32 style = 0; // No Border, Left Justified
-			LPCTSTR expectedStyle = _T("NB-LJ");
+			Uint32 style = CB_NONE | CJ_RIGHT; // No Border, Right Justified
+			LPCTSTR expectedStyle = _T("NB-RJ");
 			Assert::AreEqual(expectedStyle, rptStyleManager::GetTableCellStyle(style));
 		}
 
-		//TEST_METHOD(GetTableStripeRowCellStyleTest)
-		//{
-		//	Uint32 style = 3; // Thin Border, Right Justified
-		//	LPCTSTR expectedStyle = _T("SR-TB-RJ");
-		//	Assert::AreEqual(expectedStyle, rptStyleManager::GetTableStripeRowCellStyle(style));
-		//}
+		TEST_METHOD(GetTableStripeRowCellStyleTest)
+		{
+			Uint32 style = CB_THIN | CJ_LEFT; // Thin Border, Right Justified
+			LPCTSTR expectedStyle = _T("SR-TB-LJ");
+			Assert::AreEqual(expectedStyle, rptStyleManager::GetTableStripeRowCellStyle(style));
+		}
 
 		TEST_METHOD(GetFootnoteStyleTest)
 		{
