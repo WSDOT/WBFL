@@ -98,6 +98,7 @@
     <ClCompile Include="TestChapter.cpp" />
     <ClCompile Include="TestFontStyleLibrary.cpp" />
     <ClCompile Include="TestHeading.cpp" />
+    <ClCompile Include="TestHtmlReportVisitor.cpp" />
     <ClCompile Include="TestParagraph.cpp" />
     <ClCompile Include="TestReportContent.cpp" />
     <ClCompile Include="TestReport.cpp" />

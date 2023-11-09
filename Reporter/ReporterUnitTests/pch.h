@@ -16,8 +16,6 @@
 #include <Reporter/ReportItem.h> //add as part of report content
 #include <Reporter/StyleManager.h>
 #include <Reporter/FontStyleLibrary.h>
-#include <Reporter/ReportVisitor.h>
-#include <Reporter/OutputReportVisitor.h>
 #include <Reporter/HtmlReportVisitor.h>
 #include <Reporter/ChapterVisitor.h>
 #include <Reporter/OutputChapterVisitor.h>
