@@ -89,7 +89,7 @@ MeasurementLocation SingleGirderLineFactory::GetMeasurementLocation(EndType endT
 std::vector<std::shared_ptr<GirderLine>> SingleGirderLineFactory::Create(std::shared_ptr<const BridgeFramingGeometry> bridge) const
 {
    auto girder_line = GirderLine::Create(bridge,m_GirderLineID,m_LayoutLineID,m_GirderLineType,
-      m_PierID[+EndType::Start],m_MeasurementType[+EndType::Start],m_MeasurementLocation[+EndType::End],
+      m_PierID[+EndType::Start],m_MeasurementType[+EndType::Start],m_MeasurementLocation[+EndType::Start],
       m_PierID[+EndType::End], m_MeasurementType[+EndType::End], m_MeasurementLocation[+EndType::End]
       );
 
