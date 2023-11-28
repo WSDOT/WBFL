@@ -137,7 +137,7 @@ std::vector<std::shared_ptr<GirderLine>> SimpleGirderLineFactory::Create(std::sh
       for (; layoutLineID <= m_LayoutLineID[+SideType::Right]; girderLineID += m_GirderLineIDIncrement, layoutLineID += m_LayoutLineIDIncrement)
       {
          auto girder_line = GirderLine::Create(bridge, girderLineID, layoutLineID, m_GirderLineType,
-            m_PierID[+EndType::Start], m_MeasurementType[+EndType::Start], m_MeasurementLocation[+EndType::End],
+            m_PierID[+EndType::Start], m_MeasurementType[+EndType::Start], m_MeasurementLocation[+EndType::Start],
             m_PierID[+EndType::End], m_MeasurementType[+EndType::End], m_MeasurementLocation[+EndType::End]
          );
          girder_lines.emplace_back(girder_line);
@@ -153,7 +153,7 @@ std::vector<std::shared_ptr<GirderLine>> SimpleGirderLineFactory::Create(std::sh
          for (; layoutLineID <= m_LayoutLineID[+SideType::Right]; girderLineID += m_GirderLineIDIncrement, layoutLineID += m_LayoutLineIDIncrement)
          {
             auto girder_line = GirderLine::Create(bridge, girderLineID, layoutLineID, m_GirderLineType,
-               pierID, m_MeasurementType[+EndType::Start], m_MeasurementLocation[+EndType::End],
+               pierID, m_MeasurementType[+EndType::Start], m_MeasurementLocation[+EndType::Start],
                pierID + m_PierIDIncrement, m_MeasurementType[+EndType::End], m_MeasurementLocation[+EndType::End]
             );
             girder_lines.emplace_back(girder_line);
