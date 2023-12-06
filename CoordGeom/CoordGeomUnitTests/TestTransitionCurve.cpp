@@ -89,5 +89,39 @@ namespace CoordGeomUnitTest
          };
          Verify(L, curve.get(), values4);
       }
-	};
+
+      TEST_METHOD(Test2)
+      {
+         // This test is based on a clothoid spiral modeled in https://github.com/buildingSMART/IFC4.x-IF/blob/main/IFC-files/Linear-placement-sleepers/ACCA/ACCA_sleepers-linear-placement-cant-explicit.ifc
+         // The reported CartesianPosition is listed at https://github.com/buildingSMART/IFC4.x-IF/tree/main/IFC-files/Linear-placement-sleepers/ACCA
+         // The Sleeper_01 occurs at 25.0 m from the start of the clothoid.
+         // The tangent direction is reported as RefDirection [9.99987996536315E-1, -4.89967175285863E-3, 0.] [x;y;z vectors]
+         Float64 A = -273.861278752584;
+         Float64 L = 150;
+         Float64 R = A * A / L;
+         auto curve = TransitionCurve::Create(WBFL::Geometry::Point2d(400, 0), 0.0, 0, -R, L, TransitionCurveType::Clothoid);
+
+         {
+            auto point = curve->PointOnCurve(25.0);
+            Assert::AreEqual(424.999956597257, point.X(), 0.001);
+            Assert::AreEqual(-3.47221791639346E-2, point.Y(), 0.001);
+            auto direction = curve->GetBearing(25.0);
+            WBFL::COGO::Direction expected(atan2(-4.89967175285863E-3, 9.99987996536315E-1));
+            Assert::AreEqual(expected.GetValue(), direction.GetValue(), 0.001);
+            Assert::AreEqual(9.99987996536315E-1, cos(direction.GetValue()), 0.001);
+            Assert::AreEqual(-4.89967175285863E-3, sin(direction.GetValue()), 0.001);
+         }
+
+         {
+            auto point = curve->PointOnCurve(26.0);
+            Assert::AreEqual(425.999944499428, point.X(), 0.001);
+            Assert::AreEqual(-3.96218504544269E-2, point.Y(), 0.001);
+            auto direction = curve->GetBearing(26.0);
+            WBFL::COGO::Direction expected(atan2(-4.89967175285863E-3, 9.99987996536315E-1));
+            Assert::AreEqual(expected.GetValue(), direction.GetValue(), 0.001);
+            Assert::AreEqual(9.99987996536315E-1, cos(direction.GetValue()), 0.001);
+            Assert::AreEqual(-4.89967175285863E-3, sin(direction.GetValue()), 0.001);
+         }
+      }
+   };
 }
