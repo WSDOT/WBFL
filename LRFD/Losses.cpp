@@ -740,6 +740,10 @@ Float64 Losses::TemporaryStrand_AfterTemporaryStrandInstallation() const
    {
       loss = TemporaryStrand_AfterTransfer();
    }
+   else
+   {
+      loss = m_dfpF + m_dfpA + m_dfptAvg;
+   }
 
    return loss;
 }
@@ -1349,7 +1353,7 @@ void Losses::UpdatePostTensionLosses() const
 
       if ( m_X <= m_La )
       {
-         m_dfpA = m_dfpAT - m_dfpFT*m_X/m_La;
+         m_dfpA = m_dfpAT - m_dfpFT*m_X/m_Lg;
          m_dfpF = 0;
       }
       else
