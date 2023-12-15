@@ -243,7 +243,13 @@ std::tuple<bool, Float64, IndexType> parse_station(const std::_tstring& station,
    chFirst = pBuffer[0];
    d = _tcstod(pBuffer.get(), &pChar);
 
-   if (d == 0.0 && chFirst != _T('0'))
+   // _tcstod returns 0.0 if the string could not be converted
+   // but 0.0 is a valid conversion for "0+00.00" and "-0.000", and others
+   // if the string is -0.0, d = 0 and first char is '-'
+   // this is valid
+   bool bValidFirstChar = chFirst == _T('0') || chFirst == _T('-');
+
+   if (d == 0.0 && !bValidFirstChar)
    {
       // Could not convert
       return std::make_tuple(false, 0, INVALID_INDEX);
