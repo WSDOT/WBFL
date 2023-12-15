@@ -68,5 +68,18 @@ namespace UnitsUnitTest
          try { usFormat.FromString(L"3+034.54"); }
          catch (XUnit& e) { Assert::IsTrue(e.GetReasonCode() == XUnit::Reason::BadStationFormat); }
       }
+
+      TEST_METHOD(TestEdgeCases)
+      {
+         // We want to work in feet
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Feet);
+
+         auto usFormat = StationFormats::US;
+
+         // Valid US station
+         std::_tstring usStation(L"-0+00.00");
+         Assert::IsTrue(IsEqual(usFormat.FromString(usStation).first, 0.0));
+      }
 	};
 }
