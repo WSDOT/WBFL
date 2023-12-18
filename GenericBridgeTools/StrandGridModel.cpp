@@ -1398,7 +1398,7 @@ STDMETHODIMP CStrandGridModel::ComputeAvgHarpedStrandSlopeEx(Float64 Xs,IIndexAr
 #if defined _DEBUG
    Float64 gdrLength;
    m_pGirder->get_GirderLength(&gdrLength);
-   ATLASSERT(0.0 <= Xs  && Xs <= gdrLength);
+   ATLASSERT(IsLE(0.0,Xs)  && IsLE(Xs,gdrLength));
 #endif
 
    Float64 leftEndHP, leftHP, rightHP, rightEndHP;
