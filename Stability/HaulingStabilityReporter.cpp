@@ -375,12 +375,16 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
                auto controlling_case = pArtifact->GetControllingPeakCompressionCase(slope, sectionResult);
                f = sectionResult.f[+slope][+controlling_case.impact][+controlling_case.wind][+controlling_case.corner];
                strLocation = strCorner[+controlling_case.corner];
+               cd = controlling_case.CD;
+               bPassed = controlling_case.bPassed;
             }
             else
             {
                auto controlling_case = pArtifact->GetControllingGlobalCompressionCase(slope, sectionResult);
                f = sectionResult.fDirect[+slope][+controlling_case.impact][+controlling_case.corner];
                strLocation = strFace[+GetFace(controlling_case.corner)];
+               cd = controlling_case.CD;
+               bPassed = controlling_case.bPassed;
             }
 
             if (i == 1) (*pStressTable)(row, col) << rptNewLine;

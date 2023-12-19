@@ -313,12 +313,16 @@ void LiftingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder, con
             auto controlling_case = pArtifact->GetControllingPeakCompressionCase(sectionResult);
             f = sectionResult.f[+controlling_case.impact][+controlling_case.wind][+controlling_case.corner];
             strLocation = strCorner[+controlling_case.corner];
+            cd = controlling_case.CD;
+            bPassed = controlling_case.bPassed;
          }
          else
          {
             auto controlling_case = pArtifact->GetControllingGlobalCompressionCase(sectionResult);
             f = sectionResult.fDirect[+controlling_case.impact][+controlling_case.corner];
             strLocation = strFace[+GetFace(controlling_case.corner)];
+            cd = controlling_case.CD;
+            bPassed = controlling_case.bPassed;
          }
 
          if (i == 1) (*pStressTable)(row, col) << rptNewLine;
