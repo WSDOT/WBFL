@@ -28,6 +28,8 @@
 #include <GenericBridge\GenericBridgeExp.h>
 #include <array>
 
+interface IHaunchDepthFunction;
+
 class WBFLGENERICBRIDGECLASS CSuperstructureMemberSegmentImpl
 {
 public:
@@ -50,8 +52,7 @@ public:
    STDMETHOD(get_LayoutLength)(/*[out, retval]*/ Float64 *pVal);
    STDMETHOD(put_Orientation)(/*[in]*/Float64 orientation);
    STDMETHOD(get_Orientation)(/*[out,retval]*/Float64* orientation);
-   STDMETHOD(GetHaunchDepth)(/*[out,retval]*/IDblArray** haunchVals);
-   STDMETHOD(SetHaunchDepth)(/*[in]*/IDblArray* haunchVals);
+   STDMETHOD(SetHaunchDepthFunction)(/*[in]*/IHaunchDepthFunction* pFunction);
    STDMETHOD(ComputeHaunchDepth)(Float64 distAlongSegment,Float64* pVal);
    STDMETHOD(put_Fillet)(/*[in]*/Float64 Fillet);
    STDMETHOD(get_Fillet)(/*[out,retval]*/Float64* Fillet);
@@ -68,10 +69,10 @@ public:
    ISuperstructureMemberSegment* m_pNextSegment; // weak reference to next segment
 
    Float64 m_Orientation; // orientation of girder... plumb = 0... rotated CW is +... radians
-   std::vector<Float64> m_vHaunchDepths;
    Float64 m_Fillet;
    FilletShape m_FilletShape;
    Float64 m_Precamber;
+   CComPtr<IHaunchDepthFunction> m_HaunchDepthFunction;
 
    Float64 ComputePrecamber(Float64 Xs, Float64 Ls);
 };

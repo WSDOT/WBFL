@@ -111,6 +111,8 @@
 
 #include "CastingRegion.h"
 #include "CastingRegions.h"
+#include "SimpleHaunchDepthFunction.h"
+#include "CompositeHaunchDepthFunction.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -188,6 +190,8 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_CastingRegions,CCastingRegions)
    OBJECT_ENTRY(CLSID_NUDeckedBulbTeeSection,CNUDeckedBulbTeeSection)
    OBJECT_ENTRY(CLSID_PCIDeckedBulbTeeSection,CPCIDeckedBulbTeeSection)
+   OBJECT_ENTRY(CLSID_SimpleHaunchDepthFunction, CSimpleHaunchDepthFunction)
+   OBJECT_ENTRY(CLSID_CompositeHaunchDepthFunction, CCompositeHaunchDepthFunction)
 END_OBJECT_MAP()
 
 

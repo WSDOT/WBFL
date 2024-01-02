@@ -208,6 +208,12 @@
     <ClCompile Include="CastingRegions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleHaunchDepthFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeHaunchDepthFunction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetStrategy.h">
@@ -433,6 +439,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GenericBridge\SplicedGirderSegmentImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleHaunchDepthFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CompositeHaunchDepthFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -676,6 +688,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="OffsetTendon.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="SimpleHaunchDepthFunction.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="CompositeHaunchDepthFunction.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

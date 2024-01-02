@@ -751,7 +751,7 @@ Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSe
    Float64 haunchDepth;
    if (0 == nVals)
    {
-      // called for non-compsite sections among other cases
+      // called for non-composite sections among other cases
       haunchDepth = 0.0;
    }
    else if (1 == nVals)

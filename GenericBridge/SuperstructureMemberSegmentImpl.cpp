@@ -26,6 +26,7 @@
 #include "stdafx.h"
 #include <GenericBridge\SuperstructureMemberSegmentImpl.h>
 #include <GenericBridge\Helpers.h>
+#include "WBFLGenericBridgeTools.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -179,31 +180,10 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::get_Orientation(Float64* orientat
    return S_OK;
 }
 
-STDMETHODIMP CSuperstructureMemberSegmentImpl::GetHaunchDepth(IDblArray** pVal)
+STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepthFunction(/*[in]*/IHaunchDepthFunction* pFunction)
 {
-   CHECK_RETOBJ(pVal);
-   CComPtr<IDblArray> vals;
-   vals.CoCreateInstance(CLSID_DblArray);
-   for (auto val : m_vHaunchDepths)
-   {
-      vals->Add(val);
-   }
-
-   return vals.CopyTo(pVal);
-}
-
-STDMETHODIMP CSuperstructureMemberSegmentImpl::SetHaunchDepth(IDblArray* haunchVals)
-{
-   m_vHaunchDepths.clear();
-
-   CComPtr<IEnumDblArray> enum_dbls;
-   HRESULT hr = haunchVals->get__EnumElements(&enum_dbls);
-   Float64 dbl;
-   while (enum_dbls->Next(1,&dbl,nullptr) != S_FALSE)
-   {
-      m_vHaunchDepths.push_back(dbl);
-   }
-
+   m_HaunchDepthFunction = pFunction;
+  
    return S_OK;
 }
 
@@ -211,11 +191,16 @@ STDMETHODIMP CSuperstructureMemberSegmentImpl::ComputeHaunchDepth(Float64 distAl
 {
    CHECK_RETVAL(pVal);
 
-      Float64 segment_length;
-      get_Length(&segment_length);
-
-   *pVal = ::ComputeHaunchDepthAlongSegment(distAlongSegment, segment_length, m_vHaunchDepths);
-   return S_OK;
+   if (!m_HaunchDepthFunction)
+   {
+      // Probably a non-composite section
+      *pVal = 0.0;
+      return S_OK;
+   }
+   else
+   {
+      return m_HaunchDepthFunction->GetHaunchDepth(distAlongSegment, pVal);
+   }
 }
 
 STDMETHODIMP CSuperstructureMemberSegmentImpl::put_Fillet(Float64 Fillet)
