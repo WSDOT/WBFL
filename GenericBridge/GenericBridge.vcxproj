@@ -247,6 +247,7 @@
     <ClCompile Include="CastSlab.cpp" />
     <ClCompile Include="Column.cpp" />
     <ClCompile Include="ColumnLayout.cpp" />
+    <ClCompile Include="CompositeHaunchDepthFunction.cpp" />
     <ClCompile Include="CrossBeamRebarPattern.cpp" />
     <ClCompile Include="DeckedSlabBeamEndBlockSegment.cpp" />
     <ClCompile Include="DeckedSlabBeamSection.cpp" />
@@ -294,6 +295,7 @@
     <ClCompile Include="SegmentItem.cpp" />
     <ClCompile Include="Segments.cpp" />
     <ClCompile Include="SidewalkBarrier.cpp" />
+    <ClCompile Include="SimpleHaunchDepthFunction.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PreprocessToFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</PreprocessToFile>
@@ -331,6 +333,7 @@
     <None Include="CogoInfo.rgs" />
     <None Include="Column.rgs" />
     <None Include="ColumnLayout.rgs" />
+    <None Include="CompositeHaunchDepthFunction.rgs" />
     <None Include="Connection.rgs" />
     <None Include="CrossBeamRebarPattern.rgs" />
     <None Include="DeckedSlabBeamEndBlockSegment.rgs" />
@@ -377,6 +380,7 @@
     <None Include="SegmentCrossSection.rgs" />
     <None Include="SegmentItem.rgs" />
     <None Include="SidewalkBarrier.rgs" />
+    <None Include="SimpleHaunchDepthFunction.rgs" />
     <None Include="Span.rgs" />
     <None Include="SpanCollection.rgs" />
     <None Include="StressPoint.rgs" />
@@ -425,6 +429,7 @@
     <ClInclude Include="CastSlab.h" />
     <ClInclude Include="Column.h" />
     <ClInclude Include="ColumnLayout.h" />
+    <ClInclude Include="CompositeHaunchDepthFunction.h" />
     <ClInclude Include="CrossBeamRebarPattern.h" />
     <ClInclude Include="DeckedSlabBeamEndBlockSegment.h" />
     <ClInclude Include="DeckedSlabBeamSection.h" />
@@ -468,6 +473,7 @@
     <ClInclude Include="SegmentItem.h" />
     <ClInclude Include="Segments.h" />
     <ClInclude Include="SidewalkBarrier.h" />
+    <ClInclude Include="SimpleHaunchDepthFunction.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="SuperstructureMember.h" />
     <ClInclude Include="SuperstructureMemberCollection.h" />

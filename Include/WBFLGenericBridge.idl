@@ -106,6 +106,7 @@ library WBFLGenericBridge
    interface IUGirderSection2;
    interface ITendon;
    interface ISegment;
+	interface IHaunchDepthFunction;
    
 // Enumerators
 
@@ -1261,14 +1262,10 @@ library WBFLGenericBridge
 		[propput,helpstring("property Orientation")] HRESULT Orientation([in]Float64 orientation);
 		[propget,helpstring("property Orientation")] HRESULT Orientation([out,retval]Float64* orientation);
 
-      // Depth of haunch using vector of values along entire length of segment. Distribution will be as follows based on vector size:
-		// 1 - Constant value along entire segment.
-		// 2 - Linear distribution between start and end
-		// 3 - Parabolic based on start/mid/end values
-		// 4+ - Evenly-spaced piecewise-linear distribution along entire segment
-		[helpstring("GetHaunchDepth")] HRESULT GetHaunchDepth([out,retval]IDblArray** haunchVals);
-		[helpstring("SetHaunchDepth")] HRESULT SetHaunchDepth([in]IDblArray* haunchVals);
-      [helpstring("method ComputeHaunchDepth")] HRESULT ComputeHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pVal);
+		// Define function that computes haunch depth along this segment
+		[helpstring("SetHaunchDepthFunction")] HRESULT SetHaunchDepthFunction([in]IHaunchDepthFunction* pFunction);
+
+      [helpstring("method ComputeHaunchDepth")] HRESULT ComputeHaunchDepth([in]Float64 distAlongSegment,[out,retval]Float64* pHaunchDepth);
 
       // Fillet between bottom of slab and haunch.
 		[propput,helpstring("property Fillet")] HRESULT Fillet([in]Float64 Fillet);
@@ -2400,6 +2397,66 @@ library WBFLGenericBridge
 		[propget, helpstring("property Beam")] HRESULT Beam([out, retval]IPCIDeckedIBeam** beam);
 	};
 
+
+// Interface to determine haunch depth along a segment. This is passed in by the code creating a segment to define the haunch
+// depth distribution along a segment. Input location is measured from the start of the segment and must be reasonably within segment bounds
+	[
+		object,
+			oleautomation,
+			uuid("BF8E7C4F-58F8-4C5B-A3C6-DA25241633BF"),
+			helpstring("IHaunchDepthFunction Interface"),
+			pointer_default(unique)
+	]
+		interface IHaunchDepthFunction : IUnknown
+	{
+		[helpstring("method GetHaunchDepth")] HRESULT GetHaunchDepth([in]Float64 location, [out, retval]Float64* pHaunchDepth);
+	};
+
+// Simple haunch depth object to compute depth along a segment. This object can be used when the distribution function is
+// continuous along the entire length of a segment as will occur when haunch depths are laid out by segment, or by span if the segment
+// is contained entirely within a span. It will not work if the segment crosses span boundaries - for that you need ICompositeHaunchDepthFunction.
+	[
+		object,
+		oleautomation,
+		uuid("4D541744-6363-42D2-9071-94E37A59A3C5"),
+		helpstring("ISimpleHaunchDepthFunction Interface"),
+		pointer_default(unique)
+	]
+		interface ISimpleHaunchDepthFunction : IHaunchDepthFunction
+	{
+		// Initialize: Call once
+		// startOffset  - Distance from the left end of the attached segment where the distribution begins. Aheadstation is positive. 
+		// layoutLength - Length along which the distribution is made. This may not be the same length of the segment we are attached to,
+		//                but must be greater than or equal to the length of the segment.
+		// haunchVals: Depth(s) of haunch using vector of values along entire length of segment. Distribution will be as follows based on vector size:
+		// 1 - Constant value along entire segment.
+		// 2 - Linear distribution between start and end
+		// 3 - Parabolic based on start/mid/end values
+		// 4+ - Evenly-spaced piecewise-linear distribution along entire segment
+		[helpstring("method Initialize")] HRESULT Initialize([in]Float64 startOffset, [in]Float64 layoutLength, [in]IDblArray* haunchVals);
+	};
+
+// ICompositeHaunchDepthFunction: Haunch depth object to be used when haunch depths are laid out by span and the segment lies across multiple spans.
+	[
+		object,
+		oleautomation,
+		uuid("8C8FFD85-6755-411F-A942-7C0A1E795ECC"),
+		helpstring("ICompositeHaunchDepthFunction Interface"),
+		pointer_default(unique)
+	]
+		interface ICompositeHaunchDepthFunction : IHaunchDepthFunction
+	{
+		// Intialize: Call to define segment length and the first (leftmost) span along the segment. 
+		// startOffset - Distance from the left end of the attached segment to where the first span begins. Aheadstation is positive. 
+		// segmentLength - Length of the segment which the haunch is to be laid out
+		// layoutLength  - Length of the haunch depth distribution. This will probably always be the span length
+		// haunchVals:   - Depth(s) of haunch using vector of values along entire length of segment as described for ISimpleHaunchDepthFunction above.
+		[helpstring("method Initialize")] HRESULT Initialize([in]Float64 startOffset, [in]Float64 layoutLength, [in]IDblArray* haunchVals);
+
+		// AddLayout: Call for additional spans that lie along the segment(left to right). Assumes that spans are adjacent. Do not add spans that are not on the segment.
+		[helpstring("method AddLayout")] HRESULT AddLayout([in]Float64 layoutLength, [in]IDblArray* haunchVals);
+	};
+
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -3073,5 +3130,23 @@ library WBFLGenericBridge
 		interface IPrestressedGirderSection;
 		interface IJointedSection;
 		interface IShape;
+	};
+
+	[
+		uuid("70FB425C-8B2F-4CA6-9955-0528E84EE19A"),
+			helpstring("SimpleHaunchDepthFunction")
+	]
+		coclass SimpleHaunchDepthFunction
+	{
+		[default] interface ISimpleHaunchDepthFunction;
+	};
+
+	[
+		uuid("FA685246-038F-4588-BDB8-8CE0DFB7402B"),
+			helpstring("CompositeHaunchDepthFunction")
+	]
+		coclass CompositeHaunchDepthFunction
+	{
+		[default] interface ICompositeHaunchDepthFunction;
 	};
 };

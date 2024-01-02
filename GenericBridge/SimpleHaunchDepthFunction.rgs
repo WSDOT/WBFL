@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.SimpleHaunchDepthFunction.1 = s 'SimpleHaunchDepthFunction Class'
+	{
+		CLSID = s '{70FB425C-8B2F-4CA6-9955-0528E84EE19A}'
+	}
+	WBFLGenericBridge.SimpleHaunchDepthFunction = s 'SimpleHaunchDepthFunction Class'
+	{
+		CLSID = s '{70FB425C-8B2F-4CA6-9955-0528E84EE19A}'
+		CurVer = s 'WBFLGenericBridge.SimpleHaunchDepthFunction.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {70FB425C-8B2F-4CA6-9955-0528E84EE19A} = s 'SimpleHaunchDepthFunction Class'
+		{
+			ProgID = s 'WBFLGenericBridge.SimpleHaunchDepthFunction.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.SimpleHaunchDepthFunction'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}
