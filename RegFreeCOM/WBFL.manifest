@@ -1411,6 +1411,13 @@
           tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
           description="PCIDeckedBulbTeeSection Class"></comClass>
 
+      <comClass clsid="{70FB425C-8B2F-4CA6-9955-0528E84EE19A}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="SimpleHaunchDepthFunction Class"></comClass>
+      <comClass clsid="{FA685246-038F-4588-BDB8-8CE0DFB7402B}"
+          tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
+          description="CompositeHaunchDepthFunction Class"></comClass>
+
       <typelib tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                version="1.0"
                helpdir=""
