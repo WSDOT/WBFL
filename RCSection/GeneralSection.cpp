@@ -41,10 +41,10 @@ namespace WBFL
 
          void AddShape(
             LPCTSTR name,
-            std::unique_ptr<WBFL::Geometry::Shape>&& shape,
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-            const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+            std::shared_ptr<const WBFL::Geometry::Shape> shape,
+            std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+            std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+            std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
             Float64 Le,
             bool bIsPrimaryShape = false
          );
@@ -52,9 +52,9 @@ namespace WBFL
          void AddShape(
             LPCTSTR name,
             const WBFL::Geometry::Shape& shape,
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-            const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-            const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+            std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+            std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+            std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
             Float64 Le,
             bool bIsPrimaryShape = false
          );
@@ -68,17 +68,17 @@ namespace WBFL
          void SetName(IndexType shapeIdx, const std::_tstring& name);
          const std::_tstring& GetName(IndexType shapeIdx) const;
 
-         void SetShape(IndexType shapeIdx, std::unique_ptr < WBFL::Geometry::Shape>&& shape);
+         void SetShape(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Shape> shape);
          const WBFL::Geometry::Shape& GetShape(IndexType shapeIdx) const;
 
-         void SetForegroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial);
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GetForegroundMaterial(IndexType shapeIdx) const;
+         void SetForegroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial);
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> GetForegroundMaterial(IndexType shapeIdx) const;
 
-         void SetBackgroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial);
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GetBackgroundMaterial(IndexType shapeIdx) const;
+         void SetBackgroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial);
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> GetBackgroundMaterial(IndexType shapeIdx) const;
 
-         void SetInitialStrain(IndexType shapeIdx, const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain);
-         const std::shared_ptr<const WBFL::Geometry::Plane3d>& GetInitialStrain(IndexType shapeIdx) const;
+         void SetInitialStrain(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain);
+         std::shared_ptr<const WBFL::Geometry::Plane3d> GetInitialStrain(IndexType shapeIdx) const;
 
          void SetElongationLength(IndexType shapeIdx, Float64 Le);
          Float64 GetElongationLength(IndexType shapeIdx) const;
@@ -87,7 +87,7 @@ namespace WBFL
          struct SectionItem
          {
             std::_tstring m_Name;
-            std::unique_ptr<WBFL::Geometry::Shape> m_Shape;
+            std::shared_ptr<const WBFL::Geometry::Shape> m_Shape;
             std::shared_ptr<const WBFL::Materials::StressStrainModel> m_FgMaterial;
             std::shared_ptr<const WBFL::Materials::StressStrainModel> m_BgMaterial;
             std::shared_ptr<const WBFL::Geometry::Plane3d> m_InitialStrain;
@@ -95,10 +95,10 @@ namespace WBFL
 
             SectionItem(
                LPCTSTR name, 
-               std::unique_ptr<WBFL::Geometry::Shape>&& shape, 
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fg,
-               const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bg, 
-               const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain, Float64 le) : 
+               std::shared_ptr<const WBFL::Geometry::Shape> shape, 
+               std::shared_ptr<const WBFL::Materials::StressStrainModel> fg,
+               std::shared_ptr<const WBFL::Materials::StressStrainModel> bg, 
+               std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain, Float64 le) : 
                m_Name(name), m_Shape(std::move(shape)), m_FgMaterial(fg), m_BgMaterial(bg), m_InitialStrain(initialStrain),m_Le(le)
             {}
          };
@@ -109,10 +109,10 @@ namespace WBFL
 
       void GeneralSectionImpl::AddShape(
          LPCTSTR name,
-         std::unique_ptr<WBFL::Geometry::Shape>&& shape,
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-         const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+         std::shared_ptr<const WBFL::Geometry::Shape> shape,
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+         std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
          Float64 Le,
          bool bIsPrimaryShape
       )
@@ -128,9 +128,9 @@ namespace WBFL
       void GeneralSectionImpl::AddShape(
          LPCTSTR name,
          const WBFL::Geometry::Shape& shape,
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-         const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-         const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+         std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+         std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
          Float64 Le,
          bool bIsPrimaryShape
       )
@@ -172,7 +172,7 @@ namespace WBFL
          return m_vItems[shapeIdx].m_Name;
       }
 
-      void GeneralSectionImpl::SetShape(IndexType shapeIdx, std::unique_ptr<WBFL::Geometry::Shape>&& shape)
+      void GeneralSectionImpl::SetShape(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Shape> shape)
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          m_vItems[shapeIdx].m_Shape = std::move(shape);
@@ -184,37 +184,37 @@ namespace WBFL
          return *m_vItems[shapeIdx].m_Shape;
       }
 
-      void GeneralSectionImpl::SetForegroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial)
+      void GeneralSectionImpl::SetForegroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial)
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          m_vItems[shapeIdx].m_FgMaterial = fgMaterial;
       }
 
-      const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GeneralSectionImpl::GetForegroundMaterial(IndexType shapeIdx) const
+      std::shared_ptr<const WBFL::Materials::StressStrainModel> GeneralSectionImpl::GetForegroundMaterial(IndexType shapeIdx) const
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          return m_vItems[shapeIdx].m_FgMaterial;
       }
 
-      void GeneralSectionImpl::SetBackgroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial)
+      void GeneralSectionImpl::SetBackgroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial)
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          m_vItems[shapeIdx].m_BgMaterial = bgMaterial;
       }
 
-      const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GeneralSectionImpl::GetBackgroundMaterial(IndexType shapeIdx) const
+      std::shared_ptr<const WBFL::Materials::StressStrainModel> GeneralSectionImpl::GetBackgroundMaterial(IndexType shapeIdx) const
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          return m_vItems[shapeIdx].m_BgMaterial;
       }
 
-      void GeneralSectionImpl::SetInitialStrain(IndexType shapeIdx, const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain)
+      void GeneralSectionImpl::SetInitialStrain(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain)
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          m_vItems[shapeIdx].m_InitialStrain = initialStrain;
       }
 
-      const std::shared_ptr<const WBFL::Geometry::Plane3d>& GeneralSectionImpl::GetInitialStrain(IndexType shapeIdx) const
+      std::shared_ptr<const WBFL::Geometry::Plane3d> GeneralSectionImpl::GetInitialStrain(IndexType shapeIdx) const
       {
          PRECONDITION(shapeIdx < m_vItems.size());
          return m_vItems[shapeIdx].m_InitialStrain;
@@ -244,28 +244,28 @@ GeneralSection::~GeneralSection() = default;
 
 void GeneralSection::AddShape(
    LPCTSTR name,
-   std::unique_ptr<WBFL::Geometry::Shape>&& shape,
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-   const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+   std::shared_ptr<const WBFL::Geometry::Shape> shape,
+   std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+   std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+   std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
    Float64 Le,
    bool bIsPrimaryShape
 )
 {
-   m_pImpl->AddShape(name, std::move(shape), fgMaterial, bgMaterial, initialStrain, Le, bIsPrimaryShape);
+   m_pImpl->AddShape(name, shape, fgMaterial, bgMaterial, initialStrain, Le, bIsPrimaryShape);
 }
 
 void GeneralSection::AddShape(
    LPCTSTR name,
    const WBFL::Geometry::Shape& shape,
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial,
-   const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial,
-   const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain,
+   std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial,
+   std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial,
+   std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain,
    Float64 Le,
    bool bIsPrimaryShape
 )
 {
-   m_pImpl->AddShape(name, std::move(shape), fgMaterial, bgMaterial, initialStrain, Le, bIsPrimaryShape);
+   m_pImpl->AddShape(name, shape, fgMaterial, bgMaterial, initialStrain, Le, bIsPrimaryShape);
 }
 
 IndexType GeneralSection::GetShapeCount() const
@@ -298,9 +298,9 @@ const std::_tstring& GeneralSection::GetName(IndexType shapeIdx) const
    return m_pImpl->GetName(shapeIdx);
 }
 
-void GeneralSection::SetShape(IndexType shapeIdx, std::unique_ptr<WBFL::Geometry::Shape>&& shape)
+void GeneralSection::SetShape(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Shape> shape)
 {
-   m_pImpl->SetShape(shapeIdx, std::move(shape));
+   m_pImpl->SetShape(shapeIdx, shape);
 }
 
 const WBFL::Geometry::Shape& GeneralSection::GetShape(IndexType shapeIdx) const
@@ -308,32 +308,32 @@ const WBFL::Geometry::Shape& GeneralSection::GetShape(IndexType shapeIdx) const
    return m_pImpl->GetShape(shapeIdx);
 }
 
-void GeneralSection::SetForegroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& fgMaterial)
+void GeneralSection::SetForegroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> fgMaterial)
 {
    m_pImpl->SetForegroundMaterial(shapeIdx, fgMaterial);
 }
 
-const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GeneralSection::GetForegroundMaterial(IndexType shapeIdx) const
+std::shared_ptr<const WBFL::Materials::StressStrainModel> GeneralSection::GetForegroundMaterial(IndexType shapeIdx) const
 {
    return m_pImpl->GetForegroundMaterial(shapeIdx);
 }
 
-void GeneralSection::SetBackgroundMaterial(IndexType shapeIdx, const std::shared_ptr<const WBFL::Materials::StressStrainModel>& bgMaterial)
+void GeneralSection::SetBackgroundMaterial(IndexType shapeIdx, std::shared_ptr<const WBFL::Materials::StressStrainModel> bgMaterial)
 {
    m_pImpl->SetBackgroundMaterial(shapeIdx, bgMaterial);
 }
 
-const std::shared_ptr<const WBFL::Materials::StressStrainModel>& GeneralSection::GetBackgroundMaterial(IndexType shapeIdx) const
+std::shared_ptr<const WBFL::Materials::StressStrainModel> GeneralSection::GetBackgroundMaterial(IndexType shapeIdx) const
 {
    return m_pImpl->GetBackgroundMaterial(shapeIdx);
 }
 
-void GeneralSection::SetInitialStrain(IndexType shapeIdx, const std::shared_ptr<const WBFL::Geometry::Plane3d>& initialStrain)
+void GeneralSection::SetInitialStrain(IndexType shapeIdx, std::shared_ptr<const WBFL::Geometry::Plane3d> initialStrain)
 {
    m_pImpl->SetInitialStrain(shapeIdx, initialStrain);
 }
 
-const std::shared_ptr<const WBFL::Geometry::Plane3d>& GeneralSection::GetInitialStrain(IndexType shapeIdx) const
+std::shared_ptr<const WBFL::Geometry::Plane3d> GeneralSection::GetInitialStrain(IndexType shapeIdx) const
 {
    return m_pImpl->GetInitialStrain(shapeIdx);
 }

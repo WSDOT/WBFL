@@ -105,7 +105,9 @@ STDMETHODIMP CStrainHardenedRebarModel::StrainLimits(Float64* minStrain,Float64*
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   m_Model.GetStrainLimits(minStrain, maxStrain);
+   auto [min,max] = m_Model.GetStrainLimits();
+   *minStrain = min;
+   *maxStrain = max;
 
    return S_OK;
 }

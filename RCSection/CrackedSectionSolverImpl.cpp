@@ -414,9 +414,7 @@ void CrackedSectionSolverImpl::AnalyzeSlice(Float64 Yguess, SLICEINFO& slice, Fl
       if (!fgMaterial)
          return;
 
-      Float64 minStrain, maxStrain;
-      fgMaterial->GetStrainLimits(&minStrain, &maxStrain);
-
+      auto [minStrain, maxStrain] = fgMaterial->GetStrainLimits();
       auto [stress, bStrainWithinLimits] = fgMaterial->ComputeStress(maxStrain);
       if (IsZero(stress))
       {

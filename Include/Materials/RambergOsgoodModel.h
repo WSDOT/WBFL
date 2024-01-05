@@ -62,7 +62,7 @@ namespace WBFL
          virtual std::pair<Float64, bool> ComputeStress(Float64 strain) const override;
 
          /// Returns the range of strain values applicable to the model
-         virtual void GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const override;
+         virtual std::pair<Float64,Float64> GetStrainLimits() const override;
 
          /// Returns the strain that corresponds to the peak stress
          virtual Float64 GetStrainAtPeakStress() const override;

@@ -49,6 +49,7 @@
 #include <GeomModel/FlangedBeam.h>
 #include <GeomModel/UBeam.h>
 #include <GeomModel/UBeam2.h>
+#include <GeomModel/FIBeam.h>
 #include <GeomModel/NUBeam.h>
 #include <GeomModel/MassProperties.h>
 #include <GeomModel/Polygon.h>

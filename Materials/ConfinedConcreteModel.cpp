@@ -136,18 +136,14 @@ std::pair<Float64, bool> ConfinedConcreteModel::ComputeStress(Float64 strain) co
    Float64 stress = WBFL::Units::ConvertToSysUnits(fc, WBFL::Units::Measure::PSI);
    stress *= -1.0;
 
-   Float64 minStrain, maxStrain;
-   GetStrainLimits(&minStrain, &maxStrain);
+   auto [minStrain, maxStrain] = GetStrainLimits();
 
    std::pair<Float64, bool> result(stress, strain < minStrain ? false : true);
    return result;
 }
 
-void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> ConfinedConcreteModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
    auto [fr, fcc, ecc] = ComputeConcreteProperties();
 
    fr = WBFL::Units::ConvertFromSysUnits(fr, WBFL::Units::Measure::PSI);
@@ -162,8 +158,7 @@ void ConfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxSt
    // see "Seismic Design and Retrofit of Bridges", Priestley,  Pg 272, Eqn 5.14
    Float64 ecu = 0.004 + 1.4 * ps * fyh * esu / fcc;
 
-   *pMinStrain = -ecu;
-   *pMaxStrain = DBL_MAX;
+   return { -ecu, Float64_Max };
 }
 
 Float64 ConfinedConcreteModel::GetStrainAtPeakStress() const

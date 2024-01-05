@@ -95,7 +95,7 @@ namespace WBFL
          IndexType GetSliceCount() const;
 
          /// Returns a slice
-         const GeneralSectionSlice& GetSlice(IndexType sliceIdx) const;
+         const GeneralSectionSlice* GetSlice(IndexType sliceIdx) const;
 
          /// Returns a collection of GeneralSectionSlice objects for a specific shape in the GeneralSection model
          std::vector<const GeneralSectionSlice*> FindSlices(IndexType shapeIdx) const;

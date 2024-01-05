@@ -189,13 +189,9 @@ std::pair<Float64, bool> PSPowerFormulaModel::ComputeStress(Float64 strain) cons
    return std::make_pair(stress,::IsLT(m_MaxStrain, sign * strain) ? false : true);
 }
 
-void PSPowerFormulaModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> PSPowerFormulaModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
-   *pMinStrain = m_MinStrain;
-   *pMaxStrain = m_MaxStrain;
+   return { m_MinStrain,m_MaxStrain };
 }
 
 Float64 PSPowerFormulaModel::GetStrainAtPeakStress() const

@@ -105,10 +105,10 @@ public:
    virtual std::unique_ptr<Shape> CreateClone() const override;
 
    /// Adds a clone of shape to the composite
-   void AddShape(const Shape& shape,ShapeType shapeType = ShapeType::Solid);
+   std::shared_ptr<Shape> AddShape(const Shape& shape, ShapeType shapeType = ShapeType::Solid);
 
    /// Adds a shape to the composite
-   void AddShape(std::unique_ptr<Shape>&& shape, ShapeType shapeType = ShapeType::Solid);
+   void AddShape(std::shared_ptr<Shape> shape, ShapeType shapeType = ShapeType::Solid);
 
    /// Removes a shape from the composite
    void RemoveShape(IndexType idx);
@@ -117,10 +117,10 @@ public:
    void Clear();
 
    /// Returns a shape
-   std::shared_ptr<Shape>& GetShape(IndexType idx);
+   std::shared_ptr<Shape> GetShape(IndexType idx);
 
    /// Returns a shape
-   const std::shared_ptr<Shape>& GetShape(IndexType idx) const;
+   std::shared_ptr<const Shape> GetShape(IndexType idx) const;
 
    /// Returns the type of shape
    ShapeType GetShapeType(IndexType idx) const;

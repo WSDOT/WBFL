@@ -115,6 +115,7 @@
     <ClCompile Include="TestMomentCurvatureSolution.cpp" />
     <ClCompile Include="TestMomentCurvatureSolver.cpp" />
     <ClCompile Include="TestMomentInteractionCurveSolver.cpp" />
+    <ClCompile Include="TestRCSolver.cpp" />
     <ClCompile Include="TestSectionBuilder.cpp" />
     <ClCompile Include="TestVariableStressBlockFactor.cpp" />
     <ClCompile Include="TestXRCSection.cpp" />

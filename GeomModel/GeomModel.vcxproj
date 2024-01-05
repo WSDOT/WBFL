@@ -197,6 +197,7 @@
     <ClCompile Include="CoordinateXform3d.cpp" />
     <ClCompile Include="DeckedSlabBeam.cpp" />
     <ClCompile Include="ElasticProperties.cpp" />
+    <ClCompile Include="FIBeam.cpp" />
     <ClCompile Include="GenericShape.cpp" />
     <ClCompile Include="GeomOp2d.cpp" />
     <ClCompile Include="Helpers.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="..\Include\GeomModel\CoordinateXform3d.h" />
     <ClInclude Include="..\Include\GeomModel\DeckedSlabBeam.h" />
     <ClInclude Include="..\Include\GeomModel\ElasticProperties.h" />
+    <ClInclude Include="..\Include\GeomModel\FIBeam.h" />
     <ClInclude Include="..\Include\GeomModel\GenericShape.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModel.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModelExp.h" />

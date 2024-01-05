@@ -105,12 +105,9 @@ std::pair<Float64, bool> UnconfinedConcreteModel::ComputeStress(Float64 strain) 
    return result;
 }
 
-void UnconfinedConcreteModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> UnconfinedConcreteModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-   *pMinStrain = m_MinStrain;
-   *pMaxStrain = m_MaxStrain;
+   return { m_MinStrain,m_MaxStrain };
 }
 
 Float64 UnconfinedConcreteModel::GetStrainAtPeakStress() const

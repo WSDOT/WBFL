@@ -42,8 +42,7 @@ namespace MaterialsUnitTest
 			Assert::IsTrue(std::make_pair(-7.5826048703208722, true) == model.ComputeStress(-0.005));
 			Assert::IsTrue(std::make_pair(-6.7722581146571965, true) == model.ComputeStress(-0.010));
 			Assert::IsTrue(std::make_pair(-7.6791908056432732, true) == model.ComputeStress(-0.015));
-			Float64 minStrain, maxStrain;
-			model.GetStrainLimits(&minStrain, &maxStrain);
+			auto [minStrain, maxStrain] = model.GetStrainLimits();
 			Assert::AreEqual(-0.010576339136233816, minStrain);
 			Assert::AreEqual(Float64_Max, maxStrain);
 			Assert::AreEqual(-0.0077631582065371459, model.GetStrainAtPeakStress());

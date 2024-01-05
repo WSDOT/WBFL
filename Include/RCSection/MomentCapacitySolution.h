@@ -110,7 +110,7 @@ namespace WBFL
          Float64 GetCurvature() const;
 
          /// GeneralSectionSolution object corresponding to the resulting strain plane
-         const std::unique_ptr<GeneralSectionSolution>& GetGeneralSectionSolution() const;
+         const GeneralSectionSolution* GetGeneralSectionSolution() const;
 
       private:
          std::unique_ptr<MomentCapacitySolutionImpl> m_pImpl;

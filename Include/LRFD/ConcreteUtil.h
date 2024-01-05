@@ -67,8 +67,20 @@ namespace WBFL
          static Float64 ModRupture(Float64 fc, WBFL::Materials::ConcreteType concreteType);
          static Float64 ModRupture(Float64 fc, Float64 k);
 
-         /// @brief Returns the beta1 factor.  The beta1 factor is computed in accordance with Article 5.7.2.2
+         /// @brief Returns the alpha1 factor. The alpha1 factor is computed in accordance with Article 5.6.2.2
+         static Float64 Alpha1(Float64 fc);
+
+         /// @brief Returns the beta1 factor.  The beta1 factor is computed in accordance with Article 5.6.2.2
          static Float64 Beta1(Float64 fc);
+
+         /// @brief Returns resistance factor for flexure in accordance with Article 5.5.4.2-1
+         /// @param et Strain in the extreme tension steel
+         /// @param ecl Compression controlled strain limit
+         /// @param etl Tension controlled strain limit
+         /// @param phiC Compression controlled resistance factor
+         /// @param phiT Tension controlled resistance factor
+         /// @return 
+         static Float64 GetFlexureCapacityResistanceFactor(Float64 et, Float64 ecl, Float64 etl,Float64 phiC,Float64 phiT);
 
          /// @brief Gets the analysis parameters for horizontal interface shear calculations
          static void InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2);

@@ -16,8 +16,7 @@ namespace MaterialsUnitTest
 			Assert::AreEqual(1861584469.1559000, model.GetFpu());
 			Assert::AreEqual(196500582855.34500, model.GetEps());
 			Assert::IsTrue(StrandType::LowRelaxation == model.GetStrandType());
-			Float64 minStrain, maxStrain;
-			model.GetStrainLimits(&minStrain,&maxStrain);
+			auto [minStrain, maxStrain] = model.GetStrainLimits();
 			Assert::AreEqual(-10.0, minStrain);
 			Assert::AreEqual(0.035, maxStrain);
 			Assert::AreEqual(0.9 * 270.0/28500.0, model.GetYieldStrain());

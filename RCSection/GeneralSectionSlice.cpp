@@ -250,9 +250,9 @@ IndexType GeneralSectionSlice::GetShapeIndex() const
    return m_pImpl->GetShapeIndex();
 }
 
-const WBFL::Geometry::Shape& GeneralSectionSlice::GetShape() const
+const std::shared_ptr<const WBFL::Geometry::Shape>& GeneralSectionSlice::GetShape() const
 {
-   return *m_pImpl->GetShape();
+   return m_pImpl->GetShape();
 }
 
 Float64 GeneralSectionSlice::GetArea() const

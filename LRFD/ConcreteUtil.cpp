@@ -316,6 +316,20 @@ Float64 ConcreteUtil::ModRupture(Float64 fc, WBFL::Materials::ConcreteType concT
    return fr;
 }
 
+Float64 ConcreteUtil::Alpha1(Float64 fc)
+{
+   if (BDSManager::GetEdition() <= BDSManager::Edition::SeventhEdition2014)
+      return 0.85; // alpha1 was introduced in 7th Edition, 2015 interims, before that it was 0.85
+
+   auto fc1 = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::KSI);
+   auto fc2 = WBFL::Units::ConvertToSysUnits(15.0, WBFL::Units::Measure::KSI);
+   auto alpha1 = 0.85;
+   auto alpha2 = 0.75;
+
+   Float64 alpha = ::LinInterp(fc - fc1, alpha1, alpha2, fc2 - fc1);
+   return ::ForceIntoRange(Min(alpha1, alpha2), alpha, Max(alpha1, alpha2));
+}
+
 Float64 ConcreteUtil::Beta1(Float64 fc)
 {
    const WBFL::Units::Stress* p_fc_unit;
@@ -350,6 +364,13 @@ Float64 ConcreteUtil::Beta1(Float64 fc)
    }
 
    return beta1;
+}
+
+Float64 ConcreteUtil::GetFlexureCapacityResistanceFactor(Float64 et, Float64 ecl, Float64 etl, Float64 phiC,Float64 phiT)
+{
+   Float64 phi = phiC + (phiT - phiC)* (et - ecl) / (etl - ecl);
+   phi = ::ForceIntoRange(phiC, phi, phiT);
+   return phi;
 }
 
 void ConcreteUtil::InterfaceShearParameters(bool isRoughened, WBFL::Materials::ConcreteType girderConcType, WBFL::Materials::ConcreteType deckConcType, Float64* pC, Float64* pU, Float64* pK1, Float64* pK2)

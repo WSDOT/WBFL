@@ -115,6 +115,7 @@
     <ClCompile Include="TestCoordinateXform3d.cpp" />
     <ClCompile Include="TestDeckedSlabBeam.cpp" />
     <ClCompile Include="TestElasticProperties.cpp" />
+    <ClCompile Include="TestFIBeam.cpp" />
     <ClCompile Include="TestGenericShape.cpp" />
     <ClCompile Include="TestGeomOp2d.cpp" />
     <ClCompile Include="TestLine2d.cpp" />

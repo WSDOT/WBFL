@@ -949,7 +949,7 @@ void CShapeDrawStrategyImpl2::DrawShape(iDisplayObject* pDO, CDC* pDC, const std
             pDC->SelectStockObject(NULL_BRUSH);
       }
 
-      std::shared_ptr<const WBFL::Geometry::CompositeShape> composite = std::dynamic_pointer_cast<WBFL::Geometry::CompositeShape>(shape);
+      std::shared_ptr<const WBFL::Geometry::CompositeShape> composite = std::dynamic_pointer_cast<const WBFL::Geometry::CompositeShape>(shape);
       if (composite)
       {
          DrawShape(pDO, pDC, composite, solidPen, solidBrush, voidPen, voidBrush);

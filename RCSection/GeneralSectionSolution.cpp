@@ -64,7 +64,7 @@ namespace WBFL
          const WBFL::Geometry::Point2d& GetTensionResultantLocation() const;
          Float64 GetMomentArm() const;
          IndexType GetSliceCount() const;
-         const GeneralSectionSlice& GetSlice(IndexType sliceIdx) const;
+         const GeneralSectionSlice* GetSlice(IndexType sliceIdx) const;
          std::vector<const GeneralSectionSlice*> FindSlices(IndexType shapeIdx) const;
          bool ExceededStrainLimits() const;
 
@@ -168,10 +168,10 @@ namespace WBFL
          return m_vSlices.size();
       }
 
-      const GeneralSectionSlice& GeneralSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
+      const GeneralSectionSlice* GeneralSectionSolutionImpl::GetSlice(IndexType sliceIdx) const
       {
          PRECONDITION(sliceIdx < m_vSlices.size());
-         return *m_vSlices[sliceIdx];
+         return m_vSlices[sliceIdx].get();
       }
 
       std::vector<const GeneralSectionSlice*> GeneralSectionSolutionImpl::FindSlices(IndexType shapeIdx) const
@@ -213,8 +213,8 @@ GeneralSectionSolution& GeneralSectionSolution::operator=(const GeneralSectionSo
    auto nSlices = other.GetSliceCount();
    for (auto idx = 0; idx < nSlices; idx++)
    {
-      const auto& other_slice = other.GetSlice(idx);
-      auto slice(std::make_unique<GeneralSectionSlice>(other_slice));
+      const auto* other_slice = other.GetSlice(idx);
+      auto slice(std::make_unique<GeneralSectionSlice>(*other_slice));
       vSlices.emplace_back(std::move(slice));
    }
 
@@ -305,7 +305,7 @@ IndexType GeneralSectionSolution::GetSliceCount() const
    return m_pImpl->GetSliceCount();
 }
 
-const GeneralSectionSlice& GeneralSectionSolution::GetSlice(IndexType sliceIdx) const
+const GeneralSectionSlice* GeneralSectionSolution::GetSlice(IndexType sliceIdx) const
 {
    return m_pImpl->GetSlice(sliceIdx);
 }

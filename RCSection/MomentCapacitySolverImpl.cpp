@@ -158,8 +158,7 @@ void MomentCapacitySolverImpl::UpdateLimits() const
          continue; // shape is a void
       }
 
-      Float64 min_strain, max_strain;
-      material->GetStrainLimits(&min_strain, &max_strain);
+      auto [min_strain, max_strain] = material->GetStrainLimits();
       compStrain = Max(min_strain, compStrain);
       CHECK(compStrain <= 0);
 

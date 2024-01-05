@@ -210,6 +210,7 @@
     <ClCompile Include="MomentCurvatureSolverImpl.cpp" />
     <ClCompile Include="MomentInteractionCurveSolver.cpp" />
     <ClCompile Include="MomentInteractionCurveSolverImpl.cpp" />
+    <ClCompile Include="RCSolver.cpp" />
     <ClCompile Include="SectionBuilder.cpp" />
     <ClCompile Include="VariableStressBlockFactor.cpp" />
     <ClCompile Include="XRCSection.cpp" />
@@ -232,9 +233,12 @@
     <ClInclude Include="..\Include\RCSection\MomentCurvatureSolution.h" />
     <ClInclude Include="..\Include\RCSection\MomentCurvatureSolver.h" />
     <ClInclude Include="..\Include\RCSection\MomentInteractionCurveSolver.h" />
+    <ClInclude Include="..\Include\RCSection\RCBeam.h" />
     <ClInclude Include="..\Include\RCSection\RCSection.h" />
     <ClInclude Include="..\Include\RCSection\RCSectionExp.h" />
     <ClInclude Include="..\Include\RCSection\RCSectionLib.h" />
+    <ClInclude Include="..\Include\RCSection\RCSolution.h" />
+    <ClInclude Include="..\Include\RCSection\RCSolver.h" />
     <ClInclude Include="..\Include\RCSection\SectionBuilder.h" />
     <ClInclude Include="..\Include\RCSection\StressBlockFactor.h" />
     <ClInclude Include="..\Include\RCSection\VariableStressBlockFactor.h" />
