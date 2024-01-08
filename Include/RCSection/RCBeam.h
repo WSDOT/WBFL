@@ -35,9 +35,9 @@ namespace WBFL
          RCBeam() = default;
          RCBeam(Float64 fcBeam,
             Float64 fcSlab,
-            Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax, Float64 dps, Float64 dpsMax, Float64 fpe)
+            Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax, Float64 dps, Float64 dpsMax)
          {
-            Init(fcBeam, fcSlab, fpy, fpu, fy, Aps, As, hf, b, bw, ds, dsMax, dps, dpsMax, fpe);
+            Init(fcBeam, fcSlab, fpy, fpu, fy, Aps, As, hf, b, bw, ds, dsMax, dps, dpsMax);
          }
 
          RCBeam(const RCBeam& other) = default;
@@ -47,7 +47,7 @@ namespace WBFL
 
          void Init(Float64 fcBeam,
             Float64 fcSlab,
-            Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax,Float64 dps, Float64 dpsMax,Float64 fpe)
+            Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax,Float64 dps, Float64 dpsMax)
          {
             m_fcBeam = fcBeam;
             m_fcSlab = fcSlab;
@@ -63,11 +63,7 @@ namespace WBFL
             m_dsMax = dsMax;
             m_dps = dps;
             m_dpsMax = dpsMax;
-            m_fpe = fpe;
          }
-
-         Float64 GetFpe() const { return m_fpe; }
-         void SetFpe(Float64 fpe) { m_fpe = fpe; }
 
          Float64 GetDps() const { return m_dps; }
          void SetDps(Float64 dps) { m_dps = dps; }
@@ -126,7 +122,6 @@ namespace WBFL
          Float64 m_dsMax = 0.0;
          Float64 m_dps = 0.0;
          Float64 m_dpsMax = 0.0;
-         Float64 m_fpe = 0.0;
       };
    };
 };

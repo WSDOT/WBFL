@@ -120,6 +120,7 @@
 #define RPT_MN italic(ON) << Sub2(_T("M"),_T("n")) << italic(OFF)
 #define RPT_PHI_MN italic(ON) << symbol(phi) << Sub2(_T("M"),_T("n")) << italic(OFF)
 #define RPT_MU italic(ON) << Sub2(_T("M"),_T("u")) << italic(OFF)
+#define RPT_MR italic(ON) << Sub2(_T("M"),_T("r")) << italic(OFF)
 #define RPT_XLEFT_GIRDER Sub2(_T("X"),_T("lg"))
 #define RPT_XRIGHT_GIRDER Sub2(_T("X"),_T("rg"))
 #define RPT_YTOP_GIRDER Sub2(_T("Y"),_T("tg"))
