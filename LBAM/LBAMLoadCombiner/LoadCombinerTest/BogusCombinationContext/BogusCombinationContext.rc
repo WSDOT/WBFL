@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "BogusCombinationContext Module"
             VALUE "FileVersion", "8.0.0.5"
             VALUE "InternalName", "BogusCombinationContext"
-            VALUE "LegalCopyright", "Copyright © 1999-2023, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "BogusCombinationContext.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "8.0.0.5"
