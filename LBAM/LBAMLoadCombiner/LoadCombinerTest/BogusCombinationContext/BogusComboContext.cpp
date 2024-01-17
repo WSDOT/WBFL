@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BogusCombinationContext - Test driver for LBAM load combinations
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright © 1999-2024  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -280,7 +280,7 @@ HRESULT CBogusComboContext::FinalConstruct()
       Float64 lg2_2_1c =  2021.0;
       Float64 lg2_2_2i = -2022.0;
       Float64 lg2_2_2c =    -1.0;
-      Float64 lg2_2_3i = -2023.0;
+      Float64 lg2_2_3i = -2024.0;
       Float64 lg2_2_3c = -2024.0;
       p1bm.SetLoadGroupValue(CComBSTR("Lg2_2"), CComBSTR("Stage 1"), rsIncremental, lg2_2_1i);
       p1bm.SetLoadGroupValue(CComBSTR("Lg2_2"), CComBSTR("Stage 1"), rsCumulative, lg2_2_1c);
