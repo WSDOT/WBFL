@@ -28,5 +28,5 @@
 #include <sdkddkver.h>
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 801 // version 8.0.1
+#define _WBFL_VERSION 802 // version 8.0.2
 #endif 
