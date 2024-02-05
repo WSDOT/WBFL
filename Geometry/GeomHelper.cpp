@@ -1296,3 +1296,18 @@ HRESULT geomUtil::CreatePointCollection(const std::vector<WBFL::Geometry::Point2
 {
    return ::CreatePointCollection(vPoints, ppPoints);
 }
+
+std::vector<WBFL::Geometry::Point2d> geomUtil::CreatePointCollection(IPoint2dCollection* pPoints)
+{
+   return ::CreatePointCollection(pPoints);
+}
+
+HRESULT geomUtil::ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape)
+{
+   return ::ConvertShape(pShape, ppShape);
+}
+
+std::shared_ptr<WBFL::Geometry::Shape> geomUtil::ConvertShape(IShape* pShape)
+{
+   return ::ConvertShape(pShape);
+}

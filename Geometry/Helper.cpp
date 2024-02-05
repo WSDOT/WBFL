@@ -228,6 +228,23 @@ HRESULT CreatePointCollection(IPoint2dCollection** ppPoints,IPoint2dCollection* 
    return S_OK;
 }
 
+std::vector<WBFL::Geometry::Point2d> CreatePointCollection(IPoint2dCollection* pPoints)
+{
+   std::vector<WBFL::Geometry::Point2d> vPoints;
+   IndexType nPoints;
+   pPoints->get_Count(&nPoints);
+   for (IndexType i = 0; i < nPoints; i++)
+   {
+      CComPtr<IPoint2d> p;
+      pPoints->get_Item(i, &p);
+      Float64 x, y;
+      p->Location(&x, &y);
+      vPoints.push_back({ x,y });
+   }
+   return vPoints;
+}
+
+
 HRESULT GetCoordinates(IPoint2d* pPoint,Float64* px,Float64* py)
 {
    ATLASSERT(pPoint != nullptr && px != nullptr && py != nullptr);
@@ -990,4 +1007,53 @@ HRESULT ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape)
       polyShape->get_Shape(ppShape);
    }
    return S_OK;
+}
+
+std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape)
+{
+   std::shared_ptr<WBFL::Geometry::Shape> shape;
+   if (dynamic_cast<CCompositeShape*>(pShape))
+   {
+      std::shared_ptr<WBFL::Geometry::CompositeShape> composite_shape = std::make_shared<WBFL::Geometry::CompositeShape>();
+      CComQIPtr<ICompositeShape> comp(pShape);
+      IndexType nShapes;
+      comp->get_Count(&nShapes);
+      for (IndexType i = 0; i < nShapes; i++)
+      {
+         CComPtr<ICompositeShapeItem> item;
+         comp->get_Item(i, &item);
+         VARIANT_BOOL bVoid;
+         item->get_Void(&bVoid);
+         CComPtr<IShape> s;
+         item->get_Shape(&s);
+
+         auto converted_shape = ConvertShape(s);
+         composite_shape->AddShape(converted_shape, bVoid == VARIANT_TRUE ? WBFL::Geometry::CompositeShape::ShapeType::Void : WBFL::Geometry::CompositeShape::ShapeType::Solid);
+      }
+
+      shape = composite_shape;
+   }
+   else
+   {
+      CComPtr<IPoint2dCollection> points;
+      pShape->get_PolyPoints(&points);
+
+      auto polygon = std::make_shared<WBFL::Geometry::Polygon>();
+      polygon->AddPoints(CreatePointCollection(points));
+      shape = polygon;
+   }
+
+   return shape;
+
+
+   //if (dynamic_cast<CCircle*>(pShape))
+   //{
+   //   auto s = dynamic_cast<CCircle*>(pShape)->GetShape().CreateClone().release();
+   //   shape = std::shared_ptr<WBFL::Geometry::Shape>(s);
+   //}
+   //else if (dynamic_cast<CCircularSegment*>(pShape))
+   //{
+   //   auto s = dynamic_cast<CCircularSegment*>(pShape)->GetShape().CreateClone().release();
+   //   shape = std::shared_ptr<WBFL::Geometry::Shape>(s);
+   //}
 }
