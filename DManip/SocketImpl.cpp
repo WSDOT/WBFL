@@ -21,131 +21,97 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// SocketImpl.cpp: implementation of the CSocketImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/SocketImpl.h>
+#include <DManip/CoordinateMap.h>
+#include <Colors.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "SocketImpl.h"
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+DWORD Socket::ms_dwCookies = 1;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-DWORD CSocketImpl::ms_dwCookies = 1;
-
-CSocketImpl::CSocketImpl():
-m_pConnectable(0)
+Socket::Socket(IDType id, const WBFL::Geometry::Point2d& pos) :
+   m_ID(id), m_Position(pos)
 {
 }
 
-CSocketImpl::~CSocketImpl()
-{
-}
-
-HRESULT CSocketImpl::FinalConstruct()
-{
-   m_ID = -1;
-   return m_Position.CoCreateInstance(CLSID_Point2d);
-}
-
-STDMETHODIMP_(void) CSocketImpl::SetID(IDType id)
+void Socket::SetID(IDType id)
 {
    m_ID = id;
 }
 
-STDMETHODIMP_(IDType) CSocketImpl::GetID()
+IDType Socket::GetID() const
 {
    return m_ID;
 }
 
-STDMETHODIMP_(void) CSocketImpl::SetPosition(IPoint2d* pos)
+void Socket::SetPosition(const WBFL::Geometry::Point2d& pos)
 {
-   m_Position->MoveEx(pos);
-
-   for (auto& item : m_Plugs)
-   {
-      item.second->Notify(this);
-   }
+   m_Position.Move(pos);
+   Notify();
 }
 
-STDMETHODIMP_(void) CSocketImpl::GetPosition(IPoint2d* *pos)
+const WBFL::Geometry::Point2d& Socket::GetPosition() const
 {
-   CComPtr<IPoint2d> position;
-   position.CoCreateInstance(CLSID_Point2d);
-
-   position->MoveEx(m_Position);
-
-   (*pos) = position;
-   (*pos)->AddRef();
+   return m_Position;
 }
 
-STDMETHODIMP_(void) CSocketImpl::Move(ISize2d* offset)
+void Socket::Move(const WBFL::Geometry::Size2d& offset)
 {
-   m_Position->OffsetEx(offset);
-
-   for (auto& item : m_Plugs)
-   {
-      item.second->Notify(this);
-   }
+   m_Position.Offset(offset);
+   Notify();
 }
 
-STDMETHODIMP_(void) CSocketImpl::Connect(iPlug* plug,DWORD* pdwCookie)
+DWORD Socket::Connect(std::weak_ptr<iPlug> plug)
 {
-   *pdwCookie = ms_dwCookies++;
-   plug->SetSocket(this);
-   m_Plugs.insert(PlugContainer::value_type(*pdwCookie,plug));
+   DWORD dwCookie = ms_dwCookies++;
+   plug.lock()->SetSocket(shared_from_this());
+   m_Plugs.insert(PlugContainer::value_type(dwCookie,plug));
+   return dwCookie;
 }
 
-STDMETHODIMP_(void) CSocketImpl::Disconnect(DWORD dwCookie)
+void Socket::Disconnect(DWORD dwCookie)
 {
    PlugContainer::iterator found;
    found = m_Plugs.find(dwCookie);
 
    if ( found != m_Plugs.end() )
    {
-      iPlug* pPlug = (*found).second;
-      pPlug->SetSocket(nullptr);
+      auto pPlug = (*found).second;
+      pPlug.lock()->SetSocket(std::shared_ptr<iSocket>());
       m_Plugs.erase(found);
    }
 }
 
-STDMETHODIMP_(void) CSocketImpl::Disconnect(iPlug* plug)
+void Socket::Disconnect(std::shared_ptr<iPlug> plug)
 {
    auto iter = m_Plugs.begin();
    const auto& end = m_Plugs.end();
    for ( ; iter != end; iter++)
    {
-      iPlug* pPlug = (*iter).second;
-      if (pPlug == plug)
+      auto pPlug = (*iter).second;
+      if (pPlug.lock() == plug)
       {
-         pPlug->SetSocket(nullptr);
+         pPlug.lock()->SetSocket(std::shared_ptr<iSocket>());
          m_Plugs.erase(iter);
          return;
       }
    }
 }
 
-STDMETHODIMP_(void) CSocketImpl::DisconnectAll()
+void Socket::DisconnectAll()
 {
    for (auto& item : m_Plugs)
    {
-      item.second->SetSocket(nullptr);
+      item.second.lock()->SetSocket(std::shared_ptr<iSocket>());
    }
 
    m_Plugs.clear();
 }
 
-STDMETHODIMP_(void) CSocketImpl::Draw(CDC* pDC,iCoordinateMap* pMap)
+void Socket::Draw(CDC* pDC,std::shared_ptr<const iCoordinateMap> pMap)
 {
-   CPen red(PS_SOLID,1,RGB(255,0,0));
+   CPen red(PS_SOLID,1,RED);
 
    CPoint pos;
    pMap->WPtoLP(m_Position,&pos.x,&pos.y);
@@ -157,16 +123,23 @@ STDMETHODIMP_(void) CSocketImpl::Draw(CDC* pDC,iCoordinateMap* pMap)
    pDC->SelectObject(oldPen);
 }
 
-STDMETHODIMP_(void) CSocketImpl::SetConnectable(iConnectable* pConnectable)
+void Socket::SetConnectable(std::weak_ptr<iConnectable> pConnectable)
 {
    m_pConnectable = pConnectable;
 }
 
-STDMETHODIMP_(void) CSocketImpl::GetConnectable(iConnectable** connectable)
+std::shared_ptr<iConnectable> Socket::GetConnectable()
 {
-   *connectable = m_pConnectable;
-   if (m_pConnectable != nullptr)
-   {
-      (*connectable)->AddRef();
-   }
+   return m_pConnectable.lock();
+}
+
+void Socket::Notify()
+{
+   auto me = shared_from_this();
+   std::for_each(m_Plugs.begin(), m_Plugs.end(), [me](auto& plug_record) 
+      {
+         if (auto plug = plug_record.second.lock())
+            plug->Notify(me); 
+      }
+   );
 }

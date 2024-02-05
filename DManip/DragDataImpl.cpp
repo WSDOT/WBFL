@@ -21,47 +21,23 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DragDataImpl.cpp: implementation of the CDragDataImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/DragDataImpl.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "DragDataImpl.h"
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDragDataSourceImpl::CDragDataSourceImpl()
+DragDataSource::~DragDataSource()
 {
-}
-
-CDragDataSourceImpl::~CDragDataSourceImpl()
-{
-   std::map<UINT,DataSource*>::iterator iter(m_Sources.begin());
-   std::map<UINT,DataSource*>::iterator end(m_Sources.end());
-   for ( ; iter != end; iter++ )
-   {
-      DataSource* pSource = (*iter).second;
-      delete pSource;
-   }
+   std::for_each(m_Sources.begin(), m_Sources.end(), [](auto& p) {delete p.second; });
    m_Sources.clear();
 }
 
-STDMETHODIMP_(void) CDragDataSourceImpl::SetDataObject(COleDataObject* pDataObj)
+void DragDataSource::SetDataObject(COleDataObject* pDataObj)
 {
    m_pDataObj = pDataObj;
 }
 
-STDMETHODIMP_(void) CDragDataSourceImpl::PrepareFormat(UINT cfFormat)
+void DragDataSource::PrepareFormat(UINT cfFormat)
 {
    if ( !m_pDataObj->IsDataAvailable(cfFormat) )
       return;
@@ -78,7 +54,7 @@ STDMETHODIMP_(void) CDragDataSourceImpl::PrepareFormat(UINT cfFormat)
    m_Sources.insert(std::make_pair(cfFormat,pSource));
 }
 
-STDMETHODIMP_(UINT) CDragDataSourceImpl::Read(UINT cfFormat,void* pBuf,UINT nMax)
+UINT DragDataSource::Read(UINT cfFormat,void* pBuf,UINT nMax)
 {
    std::map<UINT,DataSource*>::iterator found = m_Sources.find(cfFormat);
    if ( found == m_Sources.end() )
@@ -90,23 +66,13 @@ STDMETHODIMP_(UINT) CDragDataSourceImpl::Read(UINT cfFormat,void* pBuf,UINT nMax
 
 /////////////////////////////////////////////////////////
 
-CDragDataSinkImpl::CDragDataSinkImpl()
+DragDataSink::~DragDataSink()
 {
-}
-
-CDragDataSinkImpl::~CDragDataSinkImpl()
-{
-   std::map<UINT,DataSink*>::iterator iter(m_Sinks.begin());
-   std::map<UINT,DataSink*>::iterator end(m_Sinks.end());
-   for ( ; iter != end; iter++ )
-   {
-      DataSink* pSink = (*iter).second;
-      delete pSink;
-   }
+   std::for_each(m_Sinks.begin(), m_Sinks.end(), [](auto& p) {delete p.second; });
    m_Sinks.clear();
 }
 
-STDMETHODIMP_(void) CDragDataSinkImpl::CreateFormat(UINT cfFormat)
+void DragDataSink::CreateFormat(UINT cfFormat)
 {
    std::map<UINT,DataSink*>::iterator found = m_Sinks.find(cfFormat);
    if ( found != m_Sinks.end() )
@@ -116,11 +82,14 @@ STDMETHODIMP_(void) CDragDataSinkImpl::CreateFormat(UINT cfFormat)
    m_Sinks.insert(std::make_pair(cfFormat,pSink));
 }
 
-STDMETHODIMP_(BOOL) CDragDataSinkImpl::Write(UINT cfFormat,void* pBuf,UINT nMax)
+bool DragDataSink::Write(UINT cfFormat,void* pBuf,UINT nMax)
 {
    std::map<UINT,DataSink*>::iterator found = m_Sinks.find(cfFormat);
-   if ( found == m_Sinks.end() )
-      return FALSE; // Sink not found
+   if (found == m_Sinks.end())
+   {
+      CHECK(false);
+      return false; // Sink not found
+   }
 
    DataSink* pSink = (*found).second;
    try
@@ -129,15 +98,16 @@ STDMETHODIMP_(BOOL) CDragDataSinkImpl::Write(UINT cfFormat,void* pBuf,UINT nMax)
    }
    catch(...)
    {
-      return FALSE;
+      CHECK(false); // something went wrong
+      return false;
    }
 
-   return TRUE;
+   return true;
 }
 
-void CDragDataSinkImpl::CacheGlobalData(COleDataSource* pODS)
+void DragDataSink::CacheGlobalData(COleDataSource* pODS)
 {
-   for(auto [cf,pSink] : m_Sinks)
+   for(auto& [cf,pSink] : m_Sinks)
    {
       pSink->m_pArchive->Close();
       HGLOBAL hGlobal = pSink->m_pSharedFile->Detach();
@@ -145,8 +115,9 @@ void CDragDataSinkImpl::CacheGlobalData(COleDataSource* pODS)
    }
 }
 
+//////////////////////////////////
 
-CDragDataSourceImpl::DataSource::DataSource(HGLOBAL hMem)
+DragDataSource::DataSource::DataSource(HGLOBAL hMem)
 {
    m_hGlobal = hMem;
    m_pMemFile = new CMemFile((BYTE*)::GlobalLock(m_hGlobal),
@@ -154,7 +125,7 @@ CDragDataSourceImpl::DataSource::DataSource(HGLOBAL hMem)
    m_pArchive = new CArchive(m_pMemFile,CArchive::load);
 }
 
-CDragDataSourceImpl::DataSource::~DataSource()
+DragDataSource::DataSource::~DataSource()
 {
    ::GlobalUnlock(m_hGlobal);
    delete m_pArchive;
@@ -162,13 +133,13 @@ CDragDataSourceImpl::DataSource::~DataSource()
 }
 
 
-CDragDataSinkImpl::DataSink::DataSink()
+DragDataSink::DataSink::DataSink()
 {
    m_pSharedFile = new CSharedFile(GMEM_MOVEABLE|GMEM_DDESHARE|GMEM_ZEROINIT);
    m_pArchive = new CArchive(m_pSharedFile,CArchive::store);
 }
 
-CDragDataSinkImpl::DataSink::~DataSink()
+DragDataSink::DataSink::~DataSink()
 {
    delete m_pArchive;
    delete m_pSharedFile;

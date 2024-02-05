@@ -21,97 +21,125 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECT_H_
-#define INCLUDED_DISPLAYOBJECT_H_
 #pragma once
 
-interface iCoordinateMap;
-interface iDisplayList;
-interface iDisplayObjectEvents;
-interface iDropSite;
-interface iGravityWellStrategy;
-interface IRect2d;
+#include <DManip/DManipExp.h>
+#include <DManip/DManipTypes.h>
+#include <GeomModel/Primitives.h>
 
-typedef enum SelectionType
+namespace WBFL
 {
-   stNone  = 1, // cannot be selected
-   stNotUI = 2, // cannot be selected via the user interface (but can be selected through code)
-   stAll   = 3  // can be selected by any means
-} SelectionType;
+   namespace DManip
+   {
+      class iCoordinateMap;
+      class iDisplayList;
+      class iDisplayObjectEvents;
+      class iDropSite;
+      class iGravityWellStrategy;
 
-interface iDisplayObject : public IUnknown
-{
-   STDMETHOD_(void,SetID)(IDType id) PURE;
-   STDMETHOD_(IDType,GetID)() PURE;
-
-   STDMETHOD_(void,SetItemData)(void* pVoid,bool bDelete) PURE;
-   STDMETHOD_(void,GetItemData)(void** ppVoid) PURE;
-
-   STDMETHOD_(void,SetDisplayList)(iDisplayList * pDL) PURE;
-   STDMETHOD_(void,GetDisplayList)(iDisplayList** list) PURE;
-
-   STDMETHOD_(void,Visible)(BOOL bVisible) PURE;
-   STDMETHOD_(BOOL,IsVisible)() PURE;
-
-   // Drawing
-   STDMETHOD_(void,Draw)(CDC* pDC) PURE;
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) PURE;
-#if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWell)(CDC* pDC) PURE;
+      /// @brief Interface defining a display object
+      /// @param pDL 
+      class DMANIPCLASS iDisplayObject
+      {
+      public:
+#if defined _DEBUG
+         iDisplayObject();
+         virtual ~iDisplayObject();
 #endif
+         /// @brief The display object identifier.
+         virtual void SetID(IDType id) = 0;
+         virtual IDType GetID() const = 0;
 
-   // Size and Hit Testing
-   STDMETHOD_(void,SetGravityWellStrategy)(iGravityWellStrategy* pStrategy) PURE;
-   STDMETHOD_(void,GetGravityWellStrategy)(iGravityWellStrategy** pStrategy) PURE;
-   STDMETHOD_(BOOL,HitTest)(CPoint point) PURE;
-   STDMETHOD_(CRect,GetBoundingBox)() PURE;
-   STDMETHOD_(void,GetBoundingBox)(IRect2d** rect) PURE;
-   STDMETHOD_(BOOL,TouchesRect)(CRect r) PURE;
+         /// @brief Sets data on the object.
+         /// @param pVoid A void pointer to the item data
+         /// @param bDelete if true, the display object will delete the data
+         virtual void SetItemData(void* pVoid,bool bDelete) = 0;
+         virtual void GetItemData(void** ppVoid) = 0;
 
-   // Selection
-   STDMETHOD_(void,Select)(BOOL bSelect) PURE;
-   STDMETHOD_(BOOL,IsSelected)() PURE;
-   STDMETHOD_(void,SetSelectionType)(SelectionType st) PURE;
-   STDMETHOD_(SelectionType,GetSelectionType)() PURE;
-   STDMETHOD_(void, RetainSelection)(BOOL bRetain) PURE;
-   STDMETHOD_(BOOL, RetainSelection)() PURE;
+         /// @brief Associates the display list in which the display object is contained
+         virtual void SetDisplayList(std::weak_ptr<iDisplayList> pDL) = 0;
+         virtual std::shared_ptr<iDisplayList> GetDisplayList() = 0;
+         virtual std::shared_ptr<const iDisplayList> GetDisplayList() const = 0;
 
-   // Tool Tips
-//   virtual BOOL ToolTipHitTest(CPoint point) = 0;
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszToolTipText) PURE;
-   STDMETHOD_(CString,GetToolTipText)() PURE;
-   STDMETHOD_(void,SetMaxTipWidth)(INT maxWidth) PURE;
-   STDMETHOD_(INT,GetMaxTipWidth)() PURE;
-   STDMETHOD_(void,SetTipDisplayTime)(INT iTime) PURE;
-   STDMETHOD_(INT,GetTipDisplayTime)() PURE;
+         /// @brief Indicates if a display object is visible. Only visible display objects drawn.
+         virtual void Visible(bool bVisible) = 0;
+         virtual bool IsVisible() const = 0;
 
-   // Interface Events
-   // Called by the framework when UI events occur that are directed
-   // towards this display object.
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags,short zDelta,CPoint point) PURE;
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) PURE;
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) PURE;
+         // Drawing
+         /// @brief Called by the framework when a display objects needs to draw itself
+         virtual void Draw(CDC* pDC) = 0;
+         /// @brief Called by the framework when a display objects needs to draw itself in a highlighted state
+         virtual void Highlight(CDC* pDC, bool bHighlight) = 0;
+      #if defined(_DEBUG)
+         virtual void DrawGravityWell(CDC* pDC) = 0;
+      #endif
 
-   // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayObjectEvents* pEventSink) PURE;
-   STDMETHOD_(void,UnregisterEventSink)() PURE;
-   STDMETHOD_(void,GetEventSink)(iDisplayObjectEvents** pEventSink) PURE;
+         // Size and Hit Testing
+         /// @brief Associates a gravity well with the display object for customized hit testing
+         virtual void SetGravityWellStrategy(std::shared_ptr<iGravityWellStrategy> pStrategy) = 0;
+         virtual std::shared_ptr<iGravityWellStrategy> GetGravityWellStrategy() = 0;
 
-   // Drag Drop
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) PURE;
-   STDMETHOD_(void,UnregisterDropSite)() PURE;
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) PURE;
+         /// @brief Returns true if a logical point is within the display object
+         virtual bool HitTest(const POINT& point) const = 0;
 
-   // Composite linkage
-   STDMETHOD_(void, SetParent)(iDisplayObject* pParent) PURE;
-   STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) PURE;
+         /// @brief Returns true if the display object touches a logical space rectangle
+         virtual bool TouchesRect(const RECT& r) const = 0;
+
+         /// @brief Returns the bounding box in logical coordinates
+         /// @return 
+         virtual RECT GetLogicalBoundingBox() const = 0;
+
+         /// @brief Returns the bounding box in model space coordinates
+         virtual WBFL::Geometry::Rect2d GetBoundingBox() const = 0;
+
+         // Selection
+         /// @brief Selects or unselects the display object
+         virtual void Select(bool bSelect) = 0;
+         virtual bool IsSelected() const = 0;
+
+         /// @brief Sets the selection type
+         virtual void SetSelectionType(SelectionType st) = 0;
+         virtual SelectionType GetSelectionType() const = 0;
+
+         /// @brief Indicates if a display object should retain its selection state if it is clicked on
+         virtual void RetainSelection(bool bRetain) = 0;
+         virtual bool RetainSelection() const = 0;
+
+         // Tool Tips
+         virtual void SetToolTipText(LPCTSTR lpszToolTipText) = 0;
+         virtual std::_tstring GetToolTipText() const = 0;
+         virtual void SetMaxTipWidth(INT maxWidth) = 0;
+         virtual INT GetMaxTipWidth() const = 0;
+         virtual void SetTipDisplayTime(INT iTime) = 0;
+         virtual INT GetTipDisplayTime() const = 0;
+
+         // Interface Events
+         // Called by the framework when UI events occur that are directed
+         // towards this display object.
+         virtual bool OnLButtonDown(UINT nFlags,const POINT& point) = 0;
+         virtual bool OnLButtonUp(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnLButtonDblClk(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDown(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonUp(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDblClk(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseMove(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseWheel(UINT nFlags,short zDelta, const POINT& point) = 0;
+         virtual bool OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) = 0;
+         virtual bool OnContextMenu(CWnd* pWnd, const POINT& point) = 0;
+
+         // Event Sink
+         virtual void RegisterEventSink(std::shared_ptr<iDisplayObjectEvents> pEventSink) = 0;
+         virtual void UnregisterEventSink() = 0;
+         virtual std::shared_ptr<iDisplayObjectEvents> GetEventSink() = 0;
+
+         // Drag Drop
+         virtual void RegisterDropSite(std::shared_ptr<iDropSite> pDropSite) = 0;
+         virtual void UnregisterDropSite() = 0;
+         virtual std::shared_ptr<iDropSite> GetDropSite() = 0;
+
+         /// @brief Associates a parent display object, if this display object is in a parent-child composition
+         virtual void SetParent(std::weak_ptr<iDisplayObject> pParent) = 0;
+         virtual std::shared_ptr<iDisplayObject> GetParent() = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DISPLAYOBJECT_H_

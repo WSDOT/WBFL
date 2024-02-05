@@ -21,36 +21,61 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SIMPLEDRAWLINESTRATEGY_H_
-#define INCLUDED_SIMPLEDRAWLINESTRATEGY_H_
 #pragma once
 
-#include <DManip\DrawLineStrategy.h>
-#include <DManip\LineStyles.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawLineStrategy.h>
+#include <DManip/DManipTypes.h>
+#include <Colors.h>
 
-typedef enum LineEndType
+namespace WBFL
 {
-   leNone   = 0,
-   leCircle = 1,
-   leDot    = 2
-} LineEndType;
+   namespace DManip
+   {
+      /// @brief Line drawing strategy that draws a basic line
+      class DMANIPCLASS SimpleDrawLineStrategy : public iDrawLineStrategy
+      {
+      private:
+         SimpleDrawLineStrategy() = default;
 
-interface iSimpleDrawLineStrategy : public iDrawLineStrategy
-{
-   STDMETHOD_(void,SetWidth)(UINT nWidth) PURE;
-   STDMETHOD_(UINT,GetWidth)() PURE;
-   STDMETHOD_(void,SetColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetColor)() PURE;
-   STDMETHOD_(void,SetBeginType)(LineEndType type) PURE;
-   STDMETHOD_(LineEndType,GetBeginType)() PURE;
-   STDMETHOD_(int,GetBeginSize)() PURE;
-   STDMETHOD_(void,SetBeginSize)(int size) PURE;
-   STDMETHOD_(void,SetEndType)(LineEndType type) PURE;
-   STDMETHOD_(LineEndType,GetEndType)() PURE;
-   STDMETHOD_(int,GetEndSize)() PURE;
-   STDMETHOD_(void,SetEndSize)(int size) PURE;
-   STDMETHOD_(void,SetLineStyle)(LineStyleType style) PURE;
-   STDMETHOD_(LineStyleType,GetLineStyle)() PURE;
+      public:
+         static std::shared_ptr<SimpleDrawLineStrategy> Create() { return std::shared_ptr<SimpleDrawLineStrategy>(new SimpleDrawLineStrategy()); }
+	      virtual ~SimpleDrawLineStrategy() = default;
+
+         void SetWidth(UINT nPixels);
+         UINT GetWidth() const;
+         void SetColor(COLORREF crColor);
+         COLORREF GetColor() const;
+         void SetBeginType(PointType type);
+         PointType GetBeginType() const;
+         UINT GetBeginSize() const;
+         void SetBeginSize(UINT size);
+         void SetEndType(PointType type);
+         PointType GetEndType() const;
+         UINT GetEndSize() const;
+         void SetEndSize(UINT size);
+         void SetLineStyle(LineStyleType style);
+         LineStyleType GetLineStyle() const;
+
+      // iLineDrawStrategy
+         virtual void Draw(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC,bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iLineDisplayObject> pDO) const override;
+
+      private:
+         UINT m_nWidth = 1;
+         COLORREF m_crColor = BLACK;
+
+         PointType m_BeginType = PointType::None;
+         UINT m_BeginSize = 0;
+         PointType m_EndType = PointType::None;
+         UINT m_EndSize = 0;
+         LineStyleType m_Style = LineStyleType::Solid;
+
+         WBFL::Geometry::Point2d GetStartPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         WBFL::Geometry::Point2d GetEndPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         void GetPointsInWorldSpace(std::shared_ptr<const iLineDisplayObject> pDO,Float64* sx,Float64* sy,Float64* ex,Float64* ey) const;
+      };
+   };
 };
-
-#endif // INCLUDED_SIMPLEDRAWLINESTRATEGY_H_

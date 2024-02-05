@@ -45,7 +45,7 @@
 #endif
 
 #if !defined INCLUDED_DMANIP_AUTOLIB_H_
-#include <DManip\AutoLib.h>
+#include <DManip/AutoLib.h>
 #endif // INCLUDED_DMANIP_AUTOLIB_H_
 
 #endif // INCLUDED_DMANIPEXP_H_

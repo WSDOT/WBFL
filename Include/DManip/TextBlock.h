@@ -21,71 +21,58 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TEXTBLOCK_H_
-#define INCLUDED_TEXTBLOCK_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-#include <DManip\DisplayObject.h>
+#include <DManip/DisplayObjectDefaultImpl.h>
 
-// This can be generalized to draw texted based on a
-// drawing strategy. That way the MFC specific
-// stuff can be removed from the interface
-interface iTextBlock : public iDisplayObject
+namespace WBFL
 {
-   STDMETHOD_(void,SetPosition)(IPoint2d* pos) PURE;
-   STDMETHOD_(void,GetPosition)(IPoint2d** pos) PURE;
+   namespace DManip
+   {
+      /// @brief Draws text at a location in model space
+      class DMANIPCLASS iTextBlock : public DisplayObjectDefaultImpl
+      {
+      public:
+         using DisplayObjectDefaultImpl::DisplayObjectDefaultImpl;
 
-   // Use CDC::SetTextAlign constants
-   STDMETHOD_(void,SetTextAlign)(UINT nFlags) PURE;
-   STDMETHOD_(UINT,GetTextAlign)() PURE;
+         /// @brief Model space position
+         /// @param pos 
+         virtual void SetPosition(const WBFL::Geometry::Point2d& pos) = 0;
+         virtual const WBFL::Geometry::Point2d& GetPosition() const = 0;
 
-   STDMETHOD_(void,SetAngle)(LONG angle) PURE;
-   STDMETHOD_(LONG,GetAngle)() PURE;
+         /// @brief Use CDC::SetTextAlign constants
+         virtual void SetTextAlign(UINT nFlags) = 0;
+         virtual UINT GetTextAlign() const = 0;
 
-   STDMETHOD_(void, SetPointSize)(LONG pointSize) PURE;
-   STDMETHOD_(LONG, GetPointSize)() PURE;
+         /// @brief Rotation angle of the text, measured in 10th of a degree from horizontal
+         virtual void SetAngle(LONG angle) = 0;
+         virtual LONG GetAngle() const = 0;
 
-   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
-   STDMETHOD_(CString,GetText)() PURE;
+         /// @brief Point size of the font, in 10ths of a point
+         /// @param pointSize 
+         virtual void SetPointSize(LONG pointSize) = 0;
+         virtual LONG GetPointSize() const = 0;
 
-   // set font. Note that font height is in 10th of points.
-   STDMETHOD_(void,SetFont)(const LOGFONT& Font) PURE;
-   STDMETHOD_(void,GetFont)(LOGFONT* pFont) PURE;
+         /// @brief The text
+         /// @param lpszText 
+         virtual void SetText(LPCTSTR lpszText) = 0;
+         virtual CString GetText() const = 0;
 
-   STDMETHOD_(void,SetTextColor)(COLORREF color) PURE;
-   STDMETHOD_(COLORREF,GetTextColor)() PURE;
+         /// @brief Font information.
+         virtual void SetFont(const LOGFONT& Font) = 0;
+         virtual LOGFONT GetFont() const = 0;
 
-   STDMETHOD_(void,SetBkColor)(COLORREF color) PURE;
-   STDMETHOD_(COLORREF,GetBkColor)() PURE;
+         virtual void SetTextColor(COLORREF color) = 0;
+         virtual COLORREF GetTextColor() const = 0;
 
-   STDMETHOD_(void,SetBkMode)(int bkMode) PURE;
-   STDMETHOD_(int,GetBkMode)() PURE;
+         virtual void SetBkColor(COLORREF color) = 0;
+         virtual COLORREF GetBkColor() const = 0;
+
+         /// @brief Background mode - Use CDC::SetBkMode
+         /// @param bkMode 
+         virtual void SetBkMode(int bkMode) = 0;
+         virtual int GetBkMode() const = 0;
+      };
+   };
 };
-
-// Draws text as a title on a view. The title is centered 
-// on the top of the display view
-interface iViewTitle : public iDisplayObject
-{
-   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
-   STDMETHOD_(CString,GetText)() PURE;
-
-   // set font. Note that font height is in 10th of points.
-   STDMETHOD_(void,SetFont)(const LOGFONT& Font) PURE;
-   STDMETHOD_(void,GetFont)(LOGFONT* pFont) PURE;
-};
-
-// Draw text at a location anchored in the view using view coordinates
-interface iAnchoredTextBlock : public iDisplayObject
-{
-   STDMETHOD_(void, SetLocation)(const POINT& point) PURE;
-   STDMETHOD_(POINT, GetLocation)() const PURE;
-
-   STDMETHOD_(void, SetText)(LPCTSTR lpszText) PURE;
-   STDMETHOD_(CString, GetText)() PURE;
-
-   // set font. Note that font height is in 10th of points.
-   STDMETHOD_(void, SetFont)(const LOGFONT& Font) PURE;
-   STDMETHOD_(void, GetFont)(LOGFONT* pFont) PURE;
-};
-
-#endif // INCLUDED_TEXTBLOCK_H_

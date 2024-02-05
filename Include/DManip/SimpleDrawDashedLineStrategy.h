@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright © 1999-2024  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,16 +23,49 @@
 
 #pragma once
 
-#include <DManip\DrawLineStrategy.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawLineStrategy.h>
+#include <Colors.h>
 
-interface iSimpleDrawDashedLineStrategy : public iDrawLineStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,SetWidth)(UINT nWidth) PURE;
-   STDMETHOD_(UINT,GetWidth)() PURE;
-   STDMETHOD_(void,SetColor1)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetColor1)() PURE;
-   STDMETHOD_(void,SetColor2)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetColor2)() PURE;
-   STDMETHOD_(void,SetDashLength)(DWORD dwDash) PURE;
-   STDMETHOD_(DWORD,GetDashLength)() PURE;
+   namespace DManip
+   {
+      /// @brief A line drawing strategy that draws a line dashed with two colors
+      class DMANIPCLASS SimpleDrawDashedLineStrategy : public iDrawLineStrategy
+      {
+      private:
+         SimpleDrawDashedLineStrategy() = default;
+
+      public:
+         static std::shared_ptr<SimpleDrawDashedLineStrategy> Create() { return std::shared_ptr<SimpleDrawDashedLineStrategy>(new SimpleDrawDashedLineStrategy()); }
+	      virtual ~SimpleDrawDashedLineStrategy() = default;
+
+         void SetWidth(UINT nWidth);
+         UINT GetWidth() const;
+         void SetColor1(COLORREF crColor);
+         COLORREF GetColor1() const;
+         void SetColor2(COLORREF crColor);
+         COLORREF GetColor2() const;
+         void SetDashLength(DWORD dwDash);
+         DWORD GetDashLength() const;
+
+      // iLineDrawStrategy
+      public:
+         virtual void Draw(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iLineDisplayObject> pDO) const override;
+
+      private:
+         UINT m_nWidth = 1;
+         COLORREF m_crColor1 = BLACK;
+         COLORREF m_crColor2 = WHITE;
+         DWORD m_dwDash = 0;
+
+         WBFL::Geometry::Point2d GetStartPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         WBFL::Geometry::Point2d GetEndPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         void GetPointsInWorldSpace(std::shared_ptr<const iLineDisplayObject> pDO,Float64* sx,Float64* sy,Float64* ex,Float64* ey) const;
+      };
+   };
 };

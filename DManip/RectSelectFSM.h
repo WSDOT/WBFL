@@ -21,94 +21,89 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// RectSelectFSM.h: interface for the CRectSelectFSMState class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_LBTNRECTSELECTFSMSTATE_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_LBTNRECTSELECTFSMSTATE_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <DManip\RectSelectTask.h>
+#include "RectSelectTask.h"
 
-class CRectSelectFSM;
-
-//----------------------------------------------
-// CRectSelectFSMState: The base state class
-//
-class CRectSelectFSMState  
+namespace WBFL
 {
-public:
-	CRectSelectFSMState();
-	virtual ~CRectSelectFSMState();
+   namespace DManip
+   {
+      class RectSelectFSM;
 
-	virtual LPCTSTR StateName() const = 0;
-	virtual void Do(CRectSelectFSM& fsm);
-	virtual void MouseDown(CRectSelectFSM& fsm);
-	virtual void MouseUp(CRectSelectFSM& fsm);
-	virtual void MouseMove(CRectSelectFSM& fsm);
-	virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm);
+      //----------------------------------------------
+      // RectSelectFSMState: The base state class
+      //
+      class RectSelectFSMState  
+      {
+      public:
+	      RectSelectFSMState();
+	      virtual ~RectSelectFSMState();
+
+	      virtual LPCTSTR StateName() const = 0;
+	      virtual void Do(RectSelectFSM& fsm);
+	      virtual void MouseDown(RectSelectFSM& fsm);
+	      virtual void MouseUp(RectSelectFSM& fsm);
+	      virtual void MouseMove(RectSelectFSM& fsm);
+	      virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,RectSelectFSM& fsm);
+      };
+
+      //----------------------------------------------
+      // State: Done
+      //
+      class RectSelectFSMDoneState : public RectSelectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("Done"); }
+      };
+
+      //----------------------------------------------
+      // State: WaitingForSecondPoint
+      //
+      class RectSelectFSMWaitingForSecondPointState : public RectSelectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
+         virtual void MouseMove(RectSelectFSM& fsm) override;
+         virtual void MouseUp(RectSelectFSM& fsm) override;
+         virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,RectSelectFSM& fsm) override;
+      };
+
+      //----------------------------------------------
+      // State: Start
+      //
+      class RectSelectFSMStartState : public RectSelectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const  override { return _T("Start"); }
+         virtual void Do(RectSelectFSM& fsm) override;
+      };
+
+      class RectSelectFSM : public iRectSelectTask
+      {
+      public:
+         static RectSelectFSMStartState Start;
+         static RectSelectFSMWaitingForSecondPointState WaitingForSecondPoint;
+         static RectSelectFSMDoneState Done;
+
+         RectSelectFSM();
+
+         // Event Functions
+         void Do() {m_pState->Do(*this);}
+         void MouseDown()   {m_pState->MouseDown(*this); }
+         void MouseUp()     {m_pState->MouseUp(*this); }
+         void MouseMove()   {m_pState->MouseMove(*this); }
+         void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags)
+         {m_pState->KeyPress(nChar,nRepCnt,nFlags,*this); }
+
+         // State Accessor Functions
+         void SetState(RectSelectFSMState& state) { m_pState = &state; }
+         RectSelectFSMState& GetState() const { return *m_pState; }
+         bool CompareStates(RectSelectFSMState& state)
+         { return &state == m_pState; }
+
+      private:
+         RectSelectFSMState* m_pState;
+      };
+   };
 };
-
-//----------------------------------------------
-// State: Done
-//
-class CRectSelectFSMDoneState : public CRectSelectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("Done"); }
-};
-
-//----------------------------------------------
-// State: WaitingForSecondPoint
-//
-class CRectSelectFSMWaitingForSecondPointState : public CRectSelectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
-   virtual void MouseMove(CRectSelectFSM& fsm) override;
-   virtual void MouseUp(CRectSelectFSM& fsm) override;
-   virtual void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm) override;
-};
-
-//----------------------------------------------
-// State: Start
-//
-class CRectSelectFSMStartState : public CRectSelectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const  override { return _T("Start"); }
-   virtual void Do(CRectSelectFSM& fsm) override;
-};
-
-class CRectSelectFSM : public iRectSelectTask
-{
-public:
-   static CRectSelectFSMStartState Start;
-   static CRectSelectFSMWaitingForSecondPointState WaitingForSecondPoint;
-   static CRectSelectFSMDoneState Done;
-
-   CRectSelectFSM();
-
-   // Event Functions
-   void Do() {m_pState->Do(*this);}
-   void MouseDown()   {m_pState->MouseDown(*this); }
-   void MouseUp()     {m_pState->MouseUp(*this); }
-   void MouseMove()   {m_pState->MouseMove(*this); }
-   void KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags)
-   {m_pState->KeyPress(nChar,nRepCnt,nFlags,*this); }
-
-   // State Accessor Functions
-   void SetState(CRectSelectFSMState& state) { m_pState = &state; }
-   CRectSelectFSMState& GetState() const { return *m_pState; }
-   bool CompareStates(CRectSelectFSMState& state)
-   { return &state == m_pState; }
-
-private:
-   CRectSelectFSMState* m_pState;
-};
-
-#endif // !defined(AFX_LBTNRECTSELECTFSMSTATE_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

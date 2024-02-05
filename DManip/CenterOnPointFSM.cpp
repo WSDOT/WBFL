@@ -21,108 +21,96 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// CenterOnPointFSM.cpp: implementation of the CCenterOnPointFSMState class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
+#include "pch.h"
 #include "CenterOnPointFSM.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
 // Definition of static state objects
-CCenterOnPointFSMStartState CCenterOnPointFSM::Start;
-CCenterOnPointFSMWaitingForPointState CCenterOnPointFSM::WaitingForPoint;
-CCenterOnPointFSMDoneState CCenterOnPointFSM::Done;
+CenterOnPointFSMStartState CenterOnPointFSM::Start;
+CenterOnPointFSMWaitingForPointState CenterOnPointFSM::WaitingForPoint;
+CenterOnPointFSMDoneState CenterOnPointFSM::Done;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CCenterOnPointFSMState::CCenterOnPointFSMState()
+CenterOnPointFSMState::CenterOnPointFSMState()
 {
 
 }
 
-CCenterOnPointFSMState::~CCenterOnPointFSMState()
+CenterOnPointFSMState::~CenterOnPointFSMState()
 {
 
 }
 
-void CCenterOnPointFSMState::Do(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::Do(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::DoubleClick(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::DoubleClick(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("DoubleClick"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::MouseDown(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::MouseDown(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::MouseUp(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::MouseUp(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::MouseMove(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::MouseMove(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
-void CCenterOnPointFSMState::EscKey(CCenterOnPointFSM &fsm)
+void CenterOnPointFSMState::EscKey(CenterOnPointFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("EscKey"),fsm.GetState().StateName());
 }
 
 // States and State Transitions
-void CCenterOnPointFSMWaitingForPointState::MouseMove(CCenterOnPointFSM& fsm)
+void CenterOnPointFSMWaitingForPointState::MouseMove(CenterOnPointFSM& fsm)
 {
 }
 
-void CCenterOnPointFSMWaitingForPointState::MouseDown(CCenterOnPointFSM& fsm)
+void CenterOnPointFSMWaitingForPointState::MouseDown(CenterOnPointFSM& fsm)
 {
    // Action
    fsm.CenterOnPoint();
 
    // Change State
-   fsm.SetState(CCenterOnPointFSM::Done);
+   fsm.SetState(CenterOnPointFSM::Done);
 }
 
-void CCenterOnPointFSMWaitingForPointState::DoubleClick(CCenterOnPointFSM& fsm)
+void CenterOnPointFSMWaitingForPointState::DoubleClick(CenterOnPointFSM& fsm)
 {
 }
 
-void CCenterOnPointFSMWaitingForPointState::EscKey(CCenterOnPointFSM& fsm)
+void CenterOnPointFSMWaitingForPointState::EscKey(CenterOnPointFSM& fsm)
 {
    fsm.Cancel();
-   fsm.SetState(CCenterOnPointFSM::Done);
+   fsm.SetState(CenterOnPointFSM::Done);
 }
 
-void CCenterOnPointFSMStartState::Do(CCenterOnPointFSM& fsm)
+void CenterOnPointFSMStartState::Do(CenterOnPointFSM& fsm)
 {
    // Action
    fsm.InitTask();
 
    // Change State
-   fsm.SetState(CCenterOnPointFSM::WaitingForPoint);
+   fsm.SetState(CenterOnPointFSM::WaitingForPoint);
 }
 
-CCenterOnPointFSM::CCenterOnPointFSM():
+CenterOnPointFSM::CenterOnPointFSM():
 m_pState(&Start)
 {
 }

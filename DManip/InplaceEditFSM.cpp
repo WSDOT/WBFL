@@ -21,56 +21,48 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// InplaceEditFSM.cpp: implementation of the CInplaceEditFSMState class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
+#include "pch.h"
 #include "InplaceEditFSM.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
 // Definition of static state objects
-CInplaceEditFSMStartState        CInplaceEditFSM::Start;
-CInplaceEditFSMEnteringTextState CInplaceEditFSM::EnteringText;
-CInplaceEditFSMDoneState         CInplaceEditFSM::Done;
-CInplaceEditFSMCancelledState    CInplaceEditFSM::Cancelled;
+InplaceEditFSMStartState        InplaceEditFSM::Start;
+InplaceEditFSMEnteringTextState InplaceEditFSM::EnteringText;
+InplaceEditFSMDoneState         InplaceEditFSM::Done;
+InplaceEditFSMCancelledState    InplaceEditFSM::Cancelled;
 
 //////////////////////////////////////////////////////////
 // Finite State Machine Initialization
-CInplaceEditFSM::CInplaceEditFSM():
+InplaceEditFSM::InplaceEditFSM():
 m_pState(&Start) // Begin in the Start state
 {
 }
 
 //////////////////////////////////////////////////////////
 // Default implementation for State objects
-CInplaceEditFSMState::CInplaceEditFSMState()
+InplaceEditFSMState::InplaceEditFSMState()
 {
 }
 
-CInplaceEditFSMState::~CInplaceEditFSMState()
+InplaceEditFSMState::~InplaceEditFSMState()
 {
 
 }
 
-void CInplaceEditFSMState::Do(CInplaceEditFSM &fsm)
+void InplaceEditFSMState::Do(InplaceEditFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CInplaceEditFSMState::LButtonDown(CInplaceEditFSM &fsm)
+void InplaceEditFSMState::LButtonDown(InplaceEditFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("LButtonDown"),fsm.GetState().StateName());
 }
 
-void CInplaceEditFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM &fsm)
+void InplaceEditFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,InplaceEditFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("KeyPress"),fsm.GetState().StateName());
@@ -80,16 +72,16 @@ void CInplaceEditFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInpla
 // States and State Transitions
 
 
-void CInplaceEditFSMStartState::Do(CInplaceEditFSM& fsm)
+void InplaceEditFSMStartState::Do(InplaceEditFSM& fsm)
 {
    // Action
    fsm.InitTask();
 
    // Change State
-   fsm.SetState(CInplaceEditFSM::EnteringText);
+   fsm.SetState(InplaceEditFSM::EnteringText);
 }
 
-void CInplaceEditFSMEnteringTextState::LButtonDown(CInplaceEditFSM& fsm)
+void InplaceEditFSMEnteringTextState::LButtonDown(InplaceEditFSM& fsm)
 {
    // Action
    BOOL bValid = fsm.ValidateData();
@@ -97,21 +89,21 @@ void CInplaceEditFSMEnteringTextState::LButtonDown(CInplaceEditFSM& fsm)
    // Change State
    if ( bValid )
    {
-      fsm.SetState(CInplaceEditFSM::Done);
+      fsm.SetState(InplaceEditFSM::Done);
    }
    else
    {
       ::MessageBeep(MB_ICONEXCLAMATION);
-      fsm.SetState(CInplaceEditFSM::EnteringText);
+      fsm.SetState(InplaceEditFSM::EnteringText);
    }
 }
 
-void CInplaceEditFSMEnteringTextState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CInplaceEditFSM& fsm)
+void InplaceEditFSMEnteringTextState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,InplaceEditFSM& fsm)
 {
    // Conditional action and state change
    if ( nChar == VK_ESCAPE )
    {
-      fsm.SetState(CInplaceEditFSM::Cancelled);
+      fsm.SetState(InplaceEditFSM::Cancelled);
    }
    else if ( nChar == VK_RETURN )
    {

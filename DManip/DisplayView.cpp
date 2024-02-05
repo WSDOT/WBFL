@@ -21,38 +21,30 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DisplayView.cpp : implementation file
-//
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include <DManip\DisplayView.h>
-#include <math.h>
-
-#include "DisplayMgrImpl.h"
-#include "TaskFactoryImpl.h"
-#include "MappingImpl.h"
-
+#include "pch.h"
+#include <DManip/DisplayView.h>
+#include <DManip/DisplayMgrImpl.h>
+#include <DManip/MappingImpl.h>
+#include <DManip/TaskFactory.h>
 #include "DManipDebug.h"
+#include <Colors.h>
+#include <math.h>
 
 #include <ShellScalingApi.h> // needed for Per Monitor DPI information
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
+#if defined _DEBUG
+#include "Helpers.h"
 #endif
 
 // function to determine percent difference
 static bool PassedPD(Float64 datum, Float64 test, Float64 minPD, Float64 Tolerance)
 {
-   ATLASSERT(datum>=0.0);
-   ATLASSERT(test>=0.0);
-   ATLASSERT(minPD>0.0);
-   ATLASSERT(Tolerance>0.0);
+   PRECONDITION(datum>=0.0);
+   PRECONDITION(test>=0.0);
+   PRECONDITION(minPD>0.0);
+   PRECONDITION(Tolerance>0.0);
 
-   if (datum>Tolerance)
+   if (Tolerance < datum)
    {
       Float64 pd = fabs(datum-test)/datum;
 
@@ -64,29 +56,6 @@ static bool PassedPD(Float64 datum, Float64 test, Float64 minPD, Float64 Toleran
    }
 }
 
-static void CopyRect(IRect2d* pSource, IRect2d* pTarget)
-{
-   Float64 left, right, bottom, top;
-   pSource->get_Left(&left);
-   pSource->get_Bottom(&bottom);
-   pSource->get_Right(&right);
-   pSource->get_Top(&top);
-
-   pTarget->put_Left(left);
-   pTarget->put_Bottom(bottom);
-   pTarget->put_Right(right);
-   pTarget->put_Top(top);
-}
-
-static void GetRect(IRect2d* rect,Float64 *left,Float64 *top,Float64 *right,Float64 *bottom)
-{
-   ATLASSERT( rect != 0 && left != 0 && top != 0 && right != 0 && bottom != 0);
-   rect->get_Left(left);
-   rect->get_Right(right);
-   rect->get_Top(top);
-   rect->get_Bottom(bottom);
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayView
@@ -95,24 +64,17 @@ IMPLEMENT_DYNCREATE(CDisplayView, CScrollView)
 
 CDisplayView::CDisplayView()
 {
-   CComObject<CDisplayMgrImpl>* pDM;
-   CComObject<CDisplayMgrImpl>::CreateInstance(&pDM);
-   m_pDispMgr = pDM;
+   m_pDispMgr = WBFL::DManip::DisplayMgr::Create();
 
-   CComObject<CTaskFactoryImpl>* pTF;
-   CComObject<CTaskFactoryImpl>::CreateInstance(&pTF);
-   m_pDispMgr->SetTaskFactory(pTF);
+   auto task_factory = std::make_shared<WBFL::DManip::TaskFactory>();
+   m_pDispMgr->SetTaskFactory(task_factory);
 
    // create mappings for screen and printer
-   CComObject<CMappingImpl>* ppMapping;
-   CComObject<CMappingImpl>::CreateInstance(&ppMapping);
-   m_pPrinterMapping = ppMapping;
-   m_pPrinterMapping->QueryInterface(IID_iCoordinateMap,(void**)&m_pPrinterCoordinateMap);
+   m_pPrinterMapping = std::make_shared<WBFL::DManip::Mapping>();
+   m_pPrinterCoordinateMap = std::dynamic_pointer_cast<WBFL::DManip::iCoordinateMap>(m_pPrinterMapping);
 
-   CComObject<CMappingImpl>* psMapping;
-   CComObject<CMappingImpl>::CreateInstance(&psMapping);
-   m_pScreenMapping = psMapping;
-   m_pScreenMapping->QueryInterface(IID_iCoordinateMap,(void**)&m_pScreenCoordinateMap);
+   m_pScreenMapping = std::make_shared<WBFL::DManip::Mapping>();
+   m_pScreenCoordinateMap = std::dynamic_pointer_cast<WBFL::DManip::iCoordinateMap>(m_pScreenMapping);
 
    // default to screen at first
    m_IsPrinting = false;
@@ -124,13 +86,22 @@ CDisplayView::CDisplayView()
 
 CDisplayView::~CDisplayView()
 {
+   m_pDispMgr->ClearDisplayLists(); // causes this display view to unregister from the display lists
+#if defined _DEBUG
+   m_pDispMgr.reset(); // must force display manager to release otherwise the records wont be empty
+   CHECK(CircularRefDebugger::GetRecordCount((Uint64)this) == 0); // if this fires, there is a circular referenee problem and objects aren't destroyed 
+#endif
 }
 
-void CDisplayView::GetDisplayMgr(iDisplayMgr** dispMgr)
+std::shared_ptr<WBFL::DManip::iDisplayMgr> CDisplayView::GetDisplayMgr()
 {
-   m_pDispMgr.CopyTo(dispMgr);
+   return m_pDispMgr;
 }
 
+std::shared_ptr<const WBFL::DManip::iDisplayMgr> CDisplayView::GetDisplayMgr() const
+{
+   return m_pDispMgr;
+}
 
 BEGIN_MESSAGE_MAP(CDisplayView, CScrollView)
 	//{{AFX_MSG_MAP(CDisplayView)
@@ -149,6 +120,7 @@ BEGIN_MESSAGE_MAP(CDisplayView, CScrollView)
    ON_WM_CONTEXTMENU()
 	//}}AFX_MSG_MAP
    ON_NOTIFY_EX_RANGE(TTN_NEEDTEXT,0,0xFFFF,OnNeedToolTipText)
+   ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -201,7 +173,7 @@ INT_PTR CDisplayView::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
    return retval;
 }
 
-CRect CDisplayView::GetViewRect()
+CRect CDisplayView::GetViewRect() const
 {
    CRect rView;
    if ( m_IsPrinting )
@@ -471,38 +443,38 @@ DROPEFFECT CDisplayView::OnDragScroll( DWORD dwKeyState, CPoint point )
    return de;
 }
 
-DROPEFFECT CDisplayView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point)
+DROPEFFECT CDisplayView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point)
 {
    return DROPEFFECT_NONE;
 }
 
-void CDisplayView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
+void CDisplayView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
 {
    // Do nothing
 }
 
-void CDisplayView::GetCoordinateMap(iCoordinateMap** map)
+void CDisplayView::OnSize(UINT nType, int cx, int cy)
 {
-   m_pCoordinateMap.CopyTo(map);
+   CScrollView::OnSize(nType, cx, cy);
+
+   auto rect = GetAdjustedWorldViewRect();
+   CenterOnPoint(rect.Center(), false);
 }
 
-void CDisplayView::DoCenterOnPoint()
+std::shared_ptr<const WBFL::DManip::iCoordinateMap> CDisplayView::GetCoordinateMap() const
 {
-   CComPtr<iTaskFactory> pFactory;
-   m_pDispMgr->GetTaskFactory(&pFactory);
+   return m_pCoordinateMap;
+}
 
-   CComPtr<iTask> task;
-   pFactory->CreateCenterOnPointTask(this,&task);
+void CDisplayView::ActivateCenterOnPointTask()
+{
+   auto task = m_pDispMgr->GetTaskFactory()->CreateCenterOnPointTask(this);
    m_pDispMgr->SetTask(task);
 }
 
-void CDisplayView::DoZoom()
+void CDisplayView::ActivateZoomTask()
 {
-   CComPtr<iTaskFactory> pFactory;
-   m_pDispMgr->GetTaskFactory(&pFactory);
-
-   CComPtr<iTask> task;
-   pFactory->CreateZoomTask(this,nullptr,RGB(0,255,0),&task);
+   auto task = m_pDispMgr->GetTaskFactory()->CreateZoomTask(this, nullptr, GREEN);
    m_pDispMgr->SetTask(task);
 }
 
@@ -514,25 +486,16 @@ void CDisplayView::Zoom(CRect rect, bool reDraw)
    m_pCoordinateMap->LPtoWP(rect.left,  rect.bottom, &wleft,  &wbot);
    m_pCoordinateMap->LPtoWP(rect.right, rect.top,    &wright, &wtop);
 
-   CComPtr<IRect2d> wrect;
-   wrect.CoCreateInstance(CLSID_Rect2d);
-   wrect->put_Bottom(wbot);
-   wrect->put_Left(wleft);
-   wrect->put_Top(wtop);
-   wrect->put_Right(wright);
-   wrect->Normalize();
+   WBFL::Geometry::Rect2d wrect(wleft, wbot, wright, wtop);
+   wrect.Normalize();
 
    Zoom(wrect, reDraw);
 }
 
-void CDisplayView::Zoom(IRect2d* rect, bool reDraw)
+void CDisplayView::Zoom(const WBFL::Geometry::Rect2d& rect, bool reDraw)
 {
    SetWorldViewRect(rect);
-
-   CComPtr<IPoint2d> point;
-   rect->get_CenterCenter(&point);
-
-   CenterOnPoint(point, reDraw);
+   CenterOnPoint(rect.Center(), reDraw);
 }
 
 void CDisplayView::Zoom(Float64 factor, bool reDraw)
@@ -544,11 +507,9 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
    }
    
    // need to zoom from adjusted space so we are centered properly
-   CComPtr<IRect2d> rect;
-   this->GetAdjustedWorldViewRect(&rect);
-   Float64 wid, hgt;
-   rect->get_Width(&wid);
-   rect->get_Height(&hgt);
+   auto rect = GetAdjustedWorldViewRect();
+   auto wid = rect.Width();
+   auto hgt = rect.Height();
 
    Float64 new_wid = wid/factor;
    Float64 new_hgt = hgt/factor;
@@ -556,15 +517,18 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
    Float64 wneed = (new_wid - wid)/2.0;
    Float64 hneed = (new_hgt - hgt)/2.0;
 
-   rect->Inflate(wneed, hneed);
+   rect.Inflate(wneed, hneed);
 
    SetWorldViewRect(rect);
+
+   auto view_rect = GetAdjustedLogicalViewRect();
+   SetScrollSizes(MM_TEXT, view_rect.Size(), CScrollView::sizeDefault, CScrollView::sizeDefault);
 
    if (reDraw)
       Invalidate();
 }
 
-void CDisplayView::ScaleFont(LOGFONT& lfFont)
+void CDisplayView::ScaleFont(LOGFONT& lfFont) const
 {
    HMONITOR hMonitor = MonitorFromWindow(GetSafeHwnd(), MONITOR_DEFAULTTONEAREST);
    UINT Xdpi, Ydpi;
@@ -586,7 +550,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
 
    // Tricky: Things get weird if the windows is shrunken to far.
    // we can run into numerical problems with the mapper if the extents become too large. Modify
-   // current world orgin and extents to reasonable values so we are more likely to converge on a good solution
+   // current world origin and extents to reasonable values so we are more likely to converge on a good solution
    m_pMapping->SetWorldOrg(0.0, 0.0);
    m_pMapping->SetWorldExt(1.0, 1.0);
 
@@ -595,13 +559,11 @@ void CDisplayView::ScaleToFit(bool reDraw)
 
    for (IndexType it = 0; it<max_iter; it++)
    {
-      CComPtr<IRect2d> rect;
-      m_pDispMgr->GetBoundingBox(false, &rect);
+      auto rect = m_pDispMgr->GetBoundingBox(false);
       Zoom(rect,false);
 
-      Float64 wid, hgt;
-      rect->get_Width(&wid);
-      rect->get_Height(&hgt);
+      auto wid = rect.Width();
+      auto hgt = rect.Height();
 
       // test if we passed tolerance
       if (it+1 == max_iter ||
@@ -624,30 +586,19 @@ void CDisplayView::ScaleToFit(bool reDraw)
    }
 }
 
-void CDisplayView::CenterOnPoint(IPoint2d* wOrg, bool reDraw)
-{
-   Float64 wpx, wpy;
-   wOrg->get_X(&wpx);
-   wOrg->get_Y(&wpy);
-
-   CenterOnPoint(wpx, wpy, reDraw);
-}
-
-void CDisplayView::CenterOnPoint(Float64 wpx, Float64 wpy, bool reDraw)
+void CDisplayView::CenterOnPoint(const WBFL::Geometry::Point2d& wPoint, bool reDraw)
 {
    // get center of adjusted world extents
-   Float64 wox, woy, wex, wey;
-   m_pMapping->GetWorldOrg(&wox, &woy);
-   m_pMapping->GetAdjustedWorldExt(&wex, &wey);
+   const auto& origin = m_pMapping->GetWorldOrg();
+   auto ext = m_pMapping->GetAdjustedWorldExt();
 
-   Float64 wcx = wox + wex/2.0;
-   Float64 wcy = woy + wey/2.0;
+   auto center = origin + ext / 2.0;
 
    // compute distance between centers and offset world view rect this much
-   Float64 xoff = wpx-wcx;
-   Float64 yoff = wpy-wcy;
+   auto offset = wPoint - center;
 
-   m_pMapping->SetWorldOrg(wox+xoff, woy+yoff);
+   auto new_origin = origin + offset;
+   m_pMapping->SetWorldOrg(new_origin);
 
    if (reDraw)
       Invalidate();
@@ -656,44 +607,30 @@ void CDisplayView::CenterOnPoint(Float64 wpx, Float64 wpy, bool reDraw)
 void CDisplayView::CenterOnPoint(CPoint center, bool reDraw)
 {
    // move world rect required distance
-   Float64 wpx, wpy;
-   m_pCoordinateMap->LPtoWP(center.x, center.y, &wpx, &wpy);
+   auto wPoint = m_pCoordinateMap->LPtoWP(center.x, center.y);
 
-   CenterOnPoint(wpx, wpy, reDraw);
+   CenterOnPoint(wPoint, reDraw);
 }
 
 CRect CDisplayView::GetAdjustedLogicalViewRect()
 {
-   LONG lex, ley;
-   m_pMapping->GetAdjustedLogicalExt(&lex, &ley);
-   
-   LONG lox, loy;
-   m_pMapping->GetLogicalOrg(&lox, &loy);
+   auto [lex, ley] = m_pMapping->GetAdjustedLogicalExt();
+   auto [lox, loy] = m_pMapping->GetLogicalOrg();
 
    CRect rect(lox, loy, lox+lex, loy+ley);
    rect.NormalizeRect();
    return rect;
 }
 
-void CDisplayView::GetAdjustedWorldViewRect(IRect2d* *rect)
+WBFL::Geometry::Rect2d CDisplayView::GetAdjustedWorldViewRect()
 {
-   CComPtr<IRect2d> wrect;
-   wrect.CoCreateInstance(CLSID_Rect2d);
-
-   Float64 wex, wey;
-   m_pMapping->GetAdjustedWorldExt(&wex, &wey);
-   Float64 wox, woy;
-   m_pMapping->GetWorldOrg(&wox, &woy);
-
-   wrect->put_Left(wox);
-   wrect->put_Bottom(woy);
-   wrect->put_Right(wox+wex);
-   wrect->put_Top(woy+wey);
-
-   wrect.CopyTo(rect);
+   const auto& org = m_pMapping->GetWorldOrg();
+   auto ext = m_pMapping->GetAdjustedWorldExt();
+   WBFL::Geometry::Rect2d wrect(org, ext);
+   return wrect;
 }
 
-void CDisplayView::SetMappingMode(DManip::MapMode mm, bool reDraw)
+void CDisplayView::SetMappingMode(WBFL::DManip::MapMode mm, bool reDraw)
 {
    m_pMapping->SetMappingMode(mm);
 
@@ -701,7 +638,7 @@ void CDisplayView::SetMappingMode(DManip::MapMode mm, bool reDraw)
       Invalidate();
 }
 
-DManip::MapMode CDisplayView::GetMappingMode()
+WBFL::DManip::MapMode CDisplayView::GetMappingMode()
 {
    return m_pMapping->GetMappingMode();
 }
@@ -717,25 +654,23 @@ void CDisplayView::SetLogicalViewRect(int mapMode, CRect rect)
 
 RECT CDisplayView::GetLogicalViewRect()
 {
+   POINT org = m_pMapping->GetLogicalOrg();
+   SIZE ext = m_pMapping->GetLogicalExt();
+
    RECT rect;
-   m_pMapping->GetLogicalOrg(&rect.left, &rect.bottom);
-   LONG lex, ley;
-   m_pMapping->GetLogicalExt(&lex, &ley);
-   rect.right = rect.left + lex;
-   rect.top   = rect.bottom + ley;
+   rect.left = org.x;
+   rect.bottom = org.y;
+   rect.right = rect.left + ext.cx;
+   rect.top   = rect.bottom + ext.cy;
 
    return rect;
 }
 
-void CDisplayView::SetWorldViewRect(IRect2d* rect)
+void CDisplayView::SetWorldViewRect(const WBFL::Geometry::Rect2d& rect)
 {
-   Float64 bot, lft, top, rgt;
-   GetRect(rect, &lft, &top, &rgt, &bot);
-
-   m_pMapping->SetWorldOrg(lft, bot);
-   m_pMapping->SetWorldExt(rgt-lft, top-bot);
+   m_pMapping->SetWorldOrg(rect.Left(), rect.Bottom());
+   m_pMapping->SetWorldExt(rect.Width(), rect.Height());
 }
-
 
 void CDisplayView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
@@ -752,7 +687,6 @@ void CDisplayView::OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo)
 
 void CDisplayView::OnDestroy()
 {
-   m_pDispMgr.Release();
    CScrollView::OnDestroy();
 }
 
@@ -820,30 +754,26 @@ void CDisplayView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
                              box.top-box.bottom);
 	
    // set world extents and center so that center of screen is at center of view
-   Float64 wox, woy, wex, wey;
-   m_pMapping->GetWorldOrg(&wox, &woy);
-   m_pMapping->GetWorldExt(&wex, &wey);
-   DManip::MapMode mode = m_pMapping->GetMappingMode();
+   const auto& worg = m_pMapping->GetWorldOrg();
+   const auto& wext = m_pMapping->GetWorldExt();
+   auto mode = m_pMapping->GetMappingMode();
 
-   m_pPrinterMapping->SetWorldOrg(wox, woy);
-   m_pPrinterMapping->SetWorldExt(wex, wey);
+   m_pPrinterMapping->SetWorldOrg(worg);
+   m_pPrinterMapping->SetWorldExt(wext);
    m_pPrinterMapping->SetMappingMode(mode);
 
-   Float64 cx,cy,angle;
-   m_pMapping->GetRotation(&cx,&cy,&angle);
-   m_pPrinterMapping->SetRotation(cx,cy,angle);
+   auto [c, angle] = m_pMapping->GetRotation();
+   m_pPrinterMapping->SetRotation(c, angle);
 
-   Float64 waex, waey;
-   m_pMapping->GetAdjustedWorldExt(&waex, &waey);
+   auto ext = m_pMapping->GetAdjustedWorldExt();
 
-   Float64 wcx = wox + waex/2;  // center of screen - adjusted world
-   Float64 wcy = woy + waey/2;
+   auto wc = worg + ext / 2;  // center of screen - adjusted world
 
    // set mapping to printer - to be set back in OnEndPrinting
    m_pMapping       = m_pPrinterMapping;
    m_pCoordinateMap = m_pPrinterCoordinateMap;
 
-   CenterOnPoint(wcx, wcy);
+   CenterOnPoint(wc);
 
 	CScrollView::OnBeginPrinting(pDC, pInfo);
 }

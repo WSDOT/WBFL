@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -11,441 +11,260 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>WBFLDManip</ProjectName>
-    <ProjectGuid>{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}</ProjectGuid>
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{a517c9b8-2cdf-4dab-8169-e42924f367a7}</ProjectGuid>
     <RootNamespace>DManip</RootNamespace>
-    <Keyword>MFCProj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>WBFLDManip</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <UseOfAtl>Dynamic</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <UseOfMfc>Dynamic</UseOfMfc>
-    <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <_ProjectFileVersion>14.0.25431.1</_ProjectFileVersion>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>.\$(Platform)\$(Configuration)\</IntDir>
-    <LinkIncremental>true</LinkIncremental>
-    <GenerateManifest>true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PreBuildEvent>
-      <Command />
-    </PreBuildEvent>
-    <CustomBuildStep>
-      <Message>
-      </Message>
-      <Command>
-      </Command>
-      <Inputs>
-      </Inputs>
-      <Outputs>
-      </Outputs>
-    </CustomBuildStep>
-    <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
-    </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_AFXEXT;BUILDDMANIPLIB;WIN32;_ATL_NO_UUIDOF;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;WBFL_DEBUG;BUILDDMANIPLIB;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
     <Link>
-      <RegisterOutput>false</RegisterOutput>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ModuleDefinitionFile>.\DManip.def</ModuleDefinitionFile>
-      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
-      <GenerateMapFile>false</GenerateMapFile>
       <SubSystem>Windows</SubSystem>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
-      <TargetMachine>MachineX64</TargetMachine>
-      <ImageHasSafeExceptionHandlers>
-      </ImageHasSafeExceptionHandlers>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>shcore.lib</AdditionalDependencies>
-      <OptimizeReferences>false</OptimizeReferences>
-      <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\..\..\Lib/DManip.bsc</OutputFile>
-    </Bscmake>
-    <PostBuildEvent>
-      <Command />
-    </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PreBuildEvent>
-      <Command />
-    </PreBuildEvent>
-    <CustomBuildStep>
-      <Message>
-      </Message>
-      <Command>
-      </Command>
-      <Inputs>
-      </Inputs>
-      <Outputs>
-      </Outputs>
-    </CustomBuildStep>
-    <Midl>
-      <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <MkTypLibCompatible>true</MkTypLibCompatible>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <TargetEnvironment>X64</TargetEnvironment>
-      <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
-    </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_AFXEXT;BUILDDMANIPLIB;WIN32;_ATL_NO_UUIDOF;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
-      <ObjectFileName>$(IntDir)</ObjectFileName>
-      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;BUILDDMANIPLIB;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>0x0409</Culture>
-      <AdditionalIncludeDirectories>$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
     <Link>
-      <RegisterOutput>false</RegisterOutput>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <EnableUAC>true</EnableUAC>
-      <ModuleDefinitionFile>.\DManip.def</ModuleDefinitionFile>
       <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>false</OptimizeReferences>
-      <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <DataExecutionPrevention />
-      <TargetMachine>MachineX64</TargetMachine>
-      <AllowIsolation>true</AllowIsolation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>shcore.lib</AdditionalDependencies>
-      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <ModuleDefinitionFile>
+      </ModuleDefinitionFile>
     </Link>
-    <Bscmake>
-      <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\..\..\Lib/DManip.bsc</OutputFile>
-    </Bscmake>
-    <PostBuildEvent>
-      <Command />
-    </PostBuildEvent>
-    <Manifest>
-      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
-    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AnchoredTextBlockImpl.cpp" />
+    <ClCompile Include="AnchoredTextBlock.cpp" />
     <ClCompile Include="CenterOnPointFSM.cpp" />
     <ClCompile Include="CenterOnPointTaskImpl.cpp" />
-    <ClCompile Include="CompositeDisplayObjectImpl.cpp" />
-    <ClCompile Include="CompoundDrawLineStrategyImpl.cpp" />
-    <ClCompile Include="CompoundDrawPointStrategyImpl.cpp" />
-    <ClCompile Include="ConnectorImpl.cpp" />
-    <ClCompile Include="DimensionLineImpl.cpp" />
+    <ClCompile Include="CompositeDisplayObject.cpp" />
+    <ClCompile Include="CompoundDrawLineStrategy.cpp" />
+    <ClCompile Include="CompoundDrawPointStrategy.cpp" />
+    <ClCompile Include="DimensionLine.cpp" />
     <ClCompile Include="DisplayListImpl.cpp" />
     <ClCompile Include="DisplayMgrImpl.cpp" />
     <ClCompile Include="DisplayObjectDefaultImpl.cpp" />
     <ClCompile Include="DisplayObjectFactoryImpl.cpp" />
     <ClCompile Include="DisplayView.cpp" />
-    <ClCompile Include="DManip.cpp" />
+    <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DragDataImpl.cpp" />
-    <ClCompile Include="EditableTextBlockImpl.cpp" />
-    <ClCompile Include="EditableUnitValueTextBlockImpl.cpp" />
-    <ClCompile Include="ExtRectangleDrawLineStrategyImpl.cpp" />
+    <ClCompile Include="DropSiteImpl.cpp" />
+    <ClCompile Include="EditableStationTextBlock.cpp" />
+    <ClCompile Include="EditableTextBlock.cpp" />
+    <ClCompile Include="EditableUnitValueTextBlock.cpp" />
+    <ClCompile Include="ExtRectangleDrawLineStrategy.cpp" />
     <ClCompile Include="ForeignDragDropFSM.cpp" />
     <ClCompile Include="ForeignDragDropTaskImpl.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="InplaceEditCtrl.cpp" />
-    <ClCompile Include="InplaceEditDefaultImpl.cpp" />
+    <ClCompile Include="InplaceEditableDefaultImpl.cpp" />
     <ClCompile Include="InplaceEditFSM.cpp" />
     <ClCompile Include="InplaceEditTaskImpl.cpp" />
     <ClCompile Include="InplaceNumericEditCtrl.cpp" />
+    <ClCompile Include="LegendDisplayObjectImpl.cpp" />
+    <ClCompile Include="LegendEntryImpl.cpp" />
+    <ClCompile Include="ContextMenuCommandWnd.cpp" />
+    <ClCompile Include="LineDisplayObjectImpl.cpp" />
     <ClCompile Include="LineHitTest.cpp" />
-    <ClCompile Include="LineImpl.cpp" />
     <ClCompile Include="LocalDragDropFSM.cpp" />
     <ClCompile Include="LocalDragDropTaskImpl.cpp" />
     <ClCompile Include="MappingImpl.cpp" />
-    <ClCompile Include="NorthArrowImpl.cpp" />
+    <ClCompile Include="NestedDisplayObjectEventRelay.cpp" />
+    <ClCompile Include="NorthArrow.cpp" />
     <ClCompile Include="OnMouseOverCursor.cpp" />
-    <ClCompile Include="PlugImpl.cpp" />
-    <ClCompile Include="PointDisplayObjectImpl.cpp" />
-    <ClCompile Include="RectangleDrawLineStrategyImpl.cpp" />
-    <ClCompile Include="RectSelectFSM.cpp" />
-    <ClCompile Include="RectSelectTaskImpl.cpp" />
-    <ClCompile Include="ShapeDrawStrategyImpl.cpp" />
-    <ClCompile Include="ShapeGravityWellStrategyImpl.cpp" />
-    <ClCompile Include="SimpleDrawDashedLineStrategyImpl.cpp" />
-    <ClCompile Include="SimpleDrawLineStrategyImpl.cpp" />
-    <ClCompile Include="SimpleDrawPointStrategyImpl.cpp" />
-    <ClCompile Include="SocketFactoryImpl.cpp" />
-    <ClCompile Include="SocketImpl.cpp" />
-    <ClCompile Include="StdAfx.cpp">
+    <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TargetDrawStrategyImpl.cpp" />
-    <ClCompile Include="TaskFactoryImpl.cpp" />
+    <ClCompile Include="PlugImpl.cpp" />
+    <ClCompile Include="PointDisplayObjectImpl.cpp" />
+    <ClCompile Include="PolyLineDisplayObjectImpl.cpp" />
+    <ClCompile Include="RectangleDrawLineStrategy.cpp" />
+    <ClCompile Include="RectSelectFSM.cpp" />
+    <ClCompile Include="RectSelectTaskImpl.cpp" />
+    <ClCompile Include="ShapeDrawStrategy.cpp" />
+    <ClCompile Include="ShapeGravityWellStrategy.cpp" />
+    <ClCompile Include="SimpleDrawDashedLineStrategy.cpp" />
+    <ClCompile Include="SimpleDrawLineStrategy.cpp" />
+    <ClCompile Include="SimpleDrawPointStrategy.cpp" />
+    <ClCompile Include="SocketFactoryImpl.cpp" />
+    <ClCompile Include="SocketImpl.cpp" />
+    <ClCompile Include="TargetDrawStrategy.cpp" />
+    <ClCompile Include="TaskFactory.cpp" />
     <ClCompile Include="TextBlockImpl.cpp" />
     <ClCompile Include="ToolImpl.cpp" />
     <ClCompile Include="ToolPalette.cpp" />
-    <ClCompile Include="ViewTitleImpl.cpp" />
+    <ClCompile Include="ViewTitle.cpp" />
     <ClCompile Include="ZoomRectFSM.cpp" />
     <ClCompile Include="ZoomRectTaskImpl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\DManipTools\PolylineDisplayObject.rgs" />
-    <None Include="AnchoredTextBlock.rgs" />
-    <None Include="CenterOnPointTask.rgs" />
-    <None Include="CompositeDisplayObject.rgs" />
-    <None Include="CompoundDrawLineStrategy.rgs" />
-    <None Include="CompoundDrawPointStrategy.rgs" />
-    <None Include="DimensionLineDisplayObject.rgs" />
-    <None Include="DisplayList.rgs" />
-    <None Include="DisplayMgr.rgs" />
-    <None Include="DisplayObjectFactory.rgs" />
-    <None Include="DManip.def" />
-    <None Include="DragDataSink.rgs" />
-    <None Include="DragDataSource.rgs" />
-    <None Include="EditableTextBlock.rgs" />
-    <None Include="EditableUnitValueTextBlock.rgs" />
-    <None Include="ExtRectangleDrawLineStrategy.rgs" />
-    <None Include="ForeignDragDropTask.rgs" />
-    <None Include="InplaceEditTask.rgs" />
-    <None Include="LineDisplayObject.rgs" />
-    <None Include="LocalDragDropTask.rgs" />
-    <None Include="Mapping.rgs" />
-    <None Include="NorthArrow.rgs" />
-    <None Include="Plug.rgs" />
-    <None Include="PointDisplayObject.rgs" />
-    <None Include="RectangleDrawLineStrategy.rgs" />
-    <None Include="RectSelectTask.rgs" />
-    <None Include="res\DManip.rc2" />
-    <None Include="res\Magnify.cur" />
-    <None Include="res\registry.bin" />
-    <None Include="res\Target.cur" />
-    <None Include="ShapeDrawStrategy.rgs" />
-    <None Include="ShapeDrawStrategy2.rgs" />
-    <None Include="ShapeGravityWellStrategy.rgs" />
-    <None Include="SimpleDrawDashedLineStrategy.rgs" />
-    <None Include="SimpleDrawLineStrategy.rgs" />
-    <None Include="SimpleDrawPointStrategy.rgs" />
-    <None Include="Socket.rgs" />
-    <None Include="SocketFactory.rgs" />
-    <None Include="TargetDrawStrategy.rgs" />
-    <None Include="TaskFactory.rgs" />
-    <None Include="TextBlock.rgs" />
-    <None Include="Tool.rgs" />
-    <None Include="ViewTitle.rgs" />
-    <None Include="ZoomRectTask.rgs" />
+    <ResourceCompile Include="DManip.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="DManip.rc">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">\ARP\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">\ARP\Lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="..\Include\WBFLDManip.idl" />
-  </ItemGroup>
-  <ItemGroup>
+    <ClInclude Include="..\Include\DManip\AnchoredTextBlock.h" />
     <ClInclude Include="..\Include\DManip\AutoLib.h" />
-    <ClInclude Include="..\Include\DManip\CenterOnPointTask.h" />
     <ClInclude Include="..\Include\DManip\CompositeDisplayObject.h" />
     <ClInclude Include="..\Include\DManip\CompoundDrawLineStrategy.h" />
     <ClInclude Include="..\Include\DManip\CompoundDrawPointStrategy.h" />
+    <ClInclude Include="..\Include\DManip\ConnectableImpl.h" />
     <ClInclude Include="..\Include\DManip\Connections.h" />
+    <ClInclude Include="..\Include\DManip\ConnectorImpl.h" />
     <ClInclude Include="..\Include\DManip\CoordinateMap.h" />
     <ClInclude Include="..\Include\DManip\DimensionLine.h" />
     <ClInclude Include="..\Include\DManip\DisplayList.h" />
-    <ClInclude Include="..\Include\Dmanip\DisplayListEvents.h" />
+    <ClInclude Include="..\Include\DManip\DisplayListEvents.h" />
+    <ClInclude Include="..\Include\DManip\DisplayListImpl.h" />
     <ClInclude Include="..\Include\DManip\DisplayMgr.h" />
     <ClInclude Include="..\Include\DManip\DisplayMgrEvents.h" />
+    <ClInclude Include="..\Include\DManip\DisplayMgrImpl.h" />
     <ClInclude Include="..\Include\DManip\DisplayObject.h" />
-    <ClInclude Include="..\Include\DManip\DisplayObjectContainer.h" />
-    <ClInclude Include="..\Include\Dmanip\DisplayObjectDefaultImpl.h" />
+    <ClInclude Include="..\Include\DManip\DisplayObjectDefaultImpl.h" />
     <ClInclude Include="..\Include\DManip\DisplayObjectEvents.h" />
     <ClInclude Include="..\Include\DManip\DisplayObjectFactory.h" />
+    <ClInclude Include="..\Include\DManip\DisplayObjectFactoryImpl.h" />
     <ClInclude Include="..\Include\DManip\DisplayView.h" />
     <ClInclude Include="..\Include\DManip\DManip.h" />
     <ClInclude Include="..\Include\DManip\DManipExp.h" />
     <ClInclude Include="..\Include\DManip\DManipTypes.h" />
     <ClInclude Include="..\Include\DManip\DragData.h" />
+    <ClInclude Include="..\Include\DManip\DragDataImpl.h" />
     <ClInclude Include="..\Include\DManip\Draggable.h" />
     <ClInclude Include="..\Include\DManip\DrawLineStrategy.h" />
     <ClInclude Include="..\Include\DManip\DrawPointStrategy.h" />
     <ClInclude Include="..\Include\DManip\DropSite.h" />
+    <ClInclude Include="..\Include\DManip\DropSiteImpl.h" />
+    <ClInclude Include="..\Include\DManip\EditableStationTextBlock.h" />
     <ClInclude Include="..\Include\DManip\EditableTextBlock.h" />
-    <ClInclude Include="..\Include\Dmanip\EditableUnitValueTextBlock.h" />
+    <ClInclude Include="..\Include\DManip\EditableUnitValueTextBlock.h" />
     <ClInclude Include="..\Include\DManip\ExtRectangleDrawLineStrategy.h" />
-    <ClInclude Include="..\Include\DManip\ForeignDragDropTask.h" />
     <ClInclude Include="..\Include\DManip\GravityWellStrategy.h" />
     <ClInclude Include="..\Include\DManip\InplaceEdit.h" />
     <ClInclude Include="..\Include\DManip\InplaceEditCtrl.h" />
-    <ClInclude Include="..\Include\DManip\InplaceEditTask.h" />
+    <ClInclude Include="..\Include\DManip\InplaceEditableDefaultImpl.h" />
     <ClInclude Include="..\Include\DManip\InplaceNumericEditCtrl.h" />
-    <ClInclude Include="..\Include\DManip\Line.h" />
-    <ClInclude Include="..\Include\DManip\LineStyles.h" />
-    <ClInclude Include="..\Include\DManip\LocalDragDropTask.h" />
+    <ClInclude Include="..\Include\DManip\Legend.h" />
+    <ClInclude Include="..\Include\DManip\LegendDisplayObjectImpl.h" />
+    <ClInclude Include="..\Include\DManip\LegendEntry.h" />
+    <ClInclude Include="..\Include\DManip\LegendEntryImpl.h" />
+    <ClInclude Include="..\Include\DManip\ContextMenuCommandWnd.h" />
+    <ClInclude Include="..\Include\DManip\ContextMenuCommandCallback.h" />
+    <ClInclude Include="..\Include\DManip\LineDisplayObject.h" />
+    <ClInclude Include="..\Include\DManip\LineDisplayObjectImpl.h" />
     <ClInclude Include="..\Include\DManip\Mapping.h" />
+    <ClInclude Include="..\Include\DManip\MappingImpl.h" />
+    <ClInclude Include="..\Include\DManip\NestedDisplayObjectEventRelay.h" />
     <ClInclude Include="..\Include\DManip\NorthArrow.h" />
+    <ClInclude Include="..\Include\DManip\PlugImpl.h" />
     <ClInclude Include="..\Include\DManip\PointDisplayObject.h" />
+    <ClInclude Include="..\Include\DManip\PointDisplayObjectImpl.h" />
+    <ClInclude Include="..\Include\DManip\PolyLineDisplayObject.h" />
+    <ClInclude Include="..\Include\DManip\PolyLineDisplayObjectImpl.h" />
     <ClInclude Include="..\Include\DManip\RectangleDrawLineStrategy.h" />
-    <ClInclude Include="..\Include\DManip\RectSelectTask.h" />
     <ClInclude Include="..\Include\DManip\ShapeDrawStrategy.h" />
     <ClInclude Include="..\Include\DManip\ShapeGravityWellStrategy.h" />
+    <ClInclude Include="..\Include\DManip\SimpleDrawDashedLineStrategy.h" />
     <ClInclude Include="..\Include\DManip\SimpleDrawLineStrategy.h" />
-    <ClInclude Include="..\Include\Dmanip\SimpleDrawPointStrategy.h" />
+    <ClInclude Include="..\Include\DManip\SimpleDrawPointStrategy.h" />
+    <ClInclude Include="..\Include\DManip\SocketFactoryImpl.h" />
+    <ClInclude Include="..\Include\DManip\SocketImpl.h" />
     <ClInclude Include="..\Include\DManip\TargetDrawStrategy.h" />
     <ClInclude Include="..\Include\DManip\Task.h" />
     <ClInclude Include="..\Include\DManip\TaskFactory.h" />
     <ClInclude Include="..\Include\DManip\TextBlock.h" />
+    <ClInclude Include="..\Include\DManip\TextBlockImpl.h" />
     <ClInclude Include="..\Include\DManip\Tool.h" />
+    <ClInclude Include="..\Include\DManip\ToolImpl.h" />
     <ClInclude Include="..\Include\DManip\ToolPalette.h" />
-    <ClInclude Include="..\Include\DManip\ZoomRectTask.h" />
-    <ClInclude Include="AnchoredTextBlockImpl.h" />
+    <ClInclude Include="..\Include\DManip\ViewTitle.h" />
     <ClInclude Include="CenterOnPointFSM.h" />
+    <ClInclude Include="CenterOnPointTask.h" />
     <ClInclude Include="CenterOnPointTaskImpl.h" />
-    <ClInclude Include="CompositeDisplayObjectImpl.h" />
-    <ClInclude Include="CompoundDrawLineStrategyImpl.h" />
-    <ClInclude Include="CompoundDrawPointStrategyImpl.h" />
-    <ClInclude Include="ConnectableImpl.h" />
-    <ClInclude Include="ConnectorImpl.h" />
-    <ClInclude Include="DimensionLineImpl.h" />
-    <ClInclude Include="DisplayListImpl.h" />
-    <ClInclude Include="DisplayMgrImpl.h" />
-    <ClInclude Include="DisplayObjectFactoryImpl.h" />
     <ClInclude Include="DManipDebug.h" />
-    <ClInclude Include="DragDataImpl.h" />
-    <ClInclude Include="EditableTextBlockImpl.h" />
-    <ClInclude Include="EditableUnitValueTextBlockImpl.h" />
-    <ClInclude Include="ExtRectangleDrawLineStrategyImpl.h" />
     <ClInclude Include="ForeignDragDropFSM.h" />
+    <ClInclude Include="ForeignDragDropTask.h" />
     <ClInclude Include="ForeignDragDropTaskImpl.h" />
+    <ClInclude Include="framework.h" />
     <ClInclude Include="Helpers.h" />
-    <ClInclude Include="InplaceEditDefaultImpl.h" />
     <ClInclude Include="InplaceEditFSM.h" />
+    <ClInclude Include="InplaceEditTask.h" />
     <ClInclude Include="InplaceEditTaskImpl.h" />
     <ClInclude Include="LineHitTest.h" />
-    <ClInclude Include="LineImpl.h" />
     <ClInclude Include="LocalDragDropFSM.h" />
+    <ClInclude Include="LocalDragDropTask.h" />
     <ClInclude Include="LocalDragDropTaskImpl.h" />
-    <ClInclude Include="MappingImpl.h" />
-    <ClInclude Include="NorthArrowImpl.h" />
     <ClInclude Include="OnMouseOverCursor.h" />
-    <ClInclude Include="PlugImpl.h" />
-    <ClInclude Include="PointDisplayObjectImpl.h" />
-    <ClInclude Include="RectangleDrawLineStrategyImpl.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="RectSelectFSM.h" />
+    <ClInclude Include="RectSelectTask.h" />
     <ClInclude Include="RectSelectTaskImpl.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="ShapeDrawStrategyImpl.h" />
-    <ClInclude Include="ShapeGravityWellStrategyImpl.h" />
-    <ClInclude Include="SimpleDrawDashedLineStrategyImpl.h" />
-    <ClInclude Include="SimpleDrawLineStrategyImpl.h" />
-    <ClInclude Include="SimpleDrawPointStrategyImpl.h" />
-    <ClInclude Include="SocketFactoryImpl.h" />
-    <ClInclude Include="SocketImpl.h" />
-    <ClInclude Include="StdAfx.h" />
-    <ClInclude Include="TargetDrawStrategyImpl.h" />
-    <ClInclude Include="TaskFactoryImpl.h" />
-    <ClInclude Include="TextBlockImpl.h" />
-    <ClInclude Include="ToolImpl.h" />
-    <ClInclude Include="ViewTitleImpl.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ZoomRectFSM.h" />
+    <ClInclude Include="ZoomRectTask.h" />
     <ClInclude Include="ZoomRectTaskImpl.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EAF\EAF.vcxproj">
-      <Project>{60e04843-976a-4a9f-9839-709e295d04e1}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\Math\Math.vcxproj">
-      <Project>{9c7b0108-aa89-413c-9d75-5d700f0aece1}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\System\System.vcxproj">
-      <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

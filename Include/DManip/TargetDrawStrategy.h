@@ -21,20 +21,56 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TARGETDRAWSTRATEGY_H_
-#define INCLUDED_TARGETDRAWSTRATEGY_H_
 #pragma once
 
-#include <DManip\DrawPointStrategy.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawPointStrategy.h>
+#include <Colors.h>
 
-interface iTargetDrawStrategy : public iDrawPointStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,SetRadius)(LONG radius) PURE;
-   STDMETHOD_(LONG,GetRadius)() PURE;
-   STDMETHOD_(void,SetFgColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetFgColor)() PURE;
-   STDMETHOD_(void,SetBgColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetBgColor)() PURE;
-};
+   namespace DManip
+   {
+      /// @brief A point drawing strategy that draws a surveyor's target symbol
+      class DMANIPCLASS TargetDrawStrategy :  public iDrawPointStrategy
+      {
+      private:
+         TargetDrawStrategy() = default;
 
-#endif // INCLUDED_TARGETDRAWSTRATEGY_H_
+      public:
+         static std::shared_ptr<TargetDrawStrategy> Create() { return std::shared_ptr<TargetDrawStrategy>(new TargetDrawStrategy()); }
+	      virtual ~TargetDrawStrategy() = default;
+
+         /// @brief Radius of the target in logical units
+         /// @param radius 
+         void SetRadius(LONG radius);
+         LONG GetRadius() const;
+
+         /// @brief Target foreground color
+         /// @param crColor 
+         void SetFgColor(COLORREF crColor);
+         COLORREF GetFgColor() const;
+
+         /// @brief Target background color
+         /// @param crColor 
+         void SetBgColor(COLORREF crColor);
+         COLORREF GetBgColor() const;
+
+         // iDrawPointStrategy Implementation
+         virtual void Draw(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const override;
+
+      private:
+         void DrawMe(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC) const;
+
+         COLORREF m_FgColor = RED3;
+         COLORREF m_BgColor = GREY86;
+         LONG m_Radius = 7;
+         
+         mutable WBFL::Geometry::Point2d m_CachePoint;
+         mutable COLORREF m_Color; // color used for drawing foreground (changes based on object's state)
+      };
+   };
+};

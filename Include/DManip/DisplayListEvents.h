@@ -21,15 +21,20 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYLISTEVENTS_H_
-#define INCLUDED_DISPLAYLISTEVENTS_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDisplayListEvents : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,OnDisplayObjectAdded)(IDType listID,iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,OnDisplayObjectRemoved)(IDType listID,SIZE_T doID) PURE;
-   STDMETHOD_(void,OnDisplayObjectsCleared)(IDType listID) PURE;
+   namespace DManip
+   {
+      /// @brief Callback interface that provides notifications when the contents of a display list change
+      class DMANIPCLASS iDisplayListEvents
+      {
+      public:
+         virtual void OnDisplayObjectAdded(IDType listID,std::shared_ptr<iDisplayObject> pDO) = 0;
+         virtual void OnDisplayObjectRemoved(IDType listID,IDType doID) = 0;
+         virtual void OnDisplayObjectsCleared(IDType listID) = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DISPLAYLISTEVENTS_H_

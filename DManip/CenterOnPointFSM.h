@@ -21,94 +21,89 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// CenterOnPointFSM.h: interface for the CCenterOnPointFSM class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_CENTERONPOINTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_CENTERONPOINTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <DManip\CenterOnPointTask.h>
+#include "CenterOnPointTask.h"
 
-class CCenterOnPointFSM;
-
-//----------------------------------------------
-// CCenterOnPointFSMState: The base state class
-//
-class CCenterOnPointFSMState  
+namespace WBFL
 {
-public:
-	CCenterOnPointFSMState();
-	virtual ~CCenterOnPointFSMState();
+   namespace DManip
+   {
+      class CenterOnPointFSM;
 
-	virtual LPCTSTR StateName() const = 0;
-	virtual void Do(CCenterOnPointFSM& fsm);
-	virtual void DoubleClick(CCenterOnPointFSM& fsm);
-	virtual void MouseDown(CCenterOnPointFSM& fsm);
-	virtual void MouseUp(CCenterOnPointFSM& fsm);
-	virtual void MouseMove(CCenterOnPointFSM& fsm);
-	virtual void EscKey(CCenterOnPointFSM& fsm);
+      //----------------------------------------------
+      // CenterOnPointFSMState: The base state class
+      //
+      class CenterOnPointFSMState  
+      {
+      public:
+	      CenterOnPointFSMState();
+	      virtual ~CenterOnPointFSMState();
+
+	      virtual LPCTSTR StateName() const = 0;
+	      virtual void Do(CenterOnPointFSM& fsm);
+	      virtual void DoubleClick(CenterOnPointFSM& fsm);
+	      virtual void MouseDown(CenterOnPointFSM& fsm);
+	      virtual void MouseUp(CenterOnPointFSM& fsm);
+	      virtual void MouseMove(CenterOnPointFSM& fsm);
+	      virtual void EscKey(CenterOnPointFSM& fsm);
+      };
+
+      //----------------------------------------------
+      // State: Done
+      //
+      class CenterOnPointFSMDoneState : public CenterOnPointFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("Done"); }
+      };
+
+      //----------------------------------------------
+      // State: WaitingForPoint
+      //
+      class CenterOnPointFSMWaitingForPointState : public CenterOnPointFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("WaitingForPoint"); }
+         virtual void MouseMove(CenterOnPointFSM& fsm) override;
+         virtual void MouseDown(CenterOnPointFSM& fsm) override;
+         virtual void DoubleClick(CenterOnPointFSM& fsm) override;
+	      virtual void EscKey(CenterOnPointFSM& fsm) override;
+      };
+
+      //----------------------------------------------
+      // State: Start
+      //
+      class CenterOnPointFSMStartState : public CenterOnPointFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("Start"); }
+         virtual void Do(CenterOnPointFSM& fsm) override;
+      };
+
+      class CenterOnPointFSM : public iCenterOnPointTask
+      {
+      public:
+         static CenterOnPointFSMStartState Start;
+         static CenterOnPointFSMWaitingForPointState WaitingForPoint;
+         static CenterOnPointFSMDoneState Done;
+
+         CenterOnPointFSM();
+
+         // Event Functions
+         void Do() {m_pState->Do(*this);}
+         void DoubleClick() {m_pState->DoubleClick(*this);}
+         void MouseDown()   {m_pState->MouseDown(*this); }
+         void MouseUp()     {m_pState->MouseUp(*this); }
+         void MouseMove()   {m_pState->MouseMove(*this); }
+         void EscKey()      {m_pState->EscKey(*this); }
+
+         // State Accessor Functions
+         void SetState(CenterOnPointFSMState& state) { m_pState = &state; }
+         CenterOnPointFSMState& GetState() const { return *m_pState; }
+
+      private:
+         CenterOnPointFSMState* m_pState;
+      };
+   };
 };
-
-//----------------------------------------------
-// State: Done
-//
-class CCenterOnPointFSMDoneState : public CCenterOnPointFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("Done"); }
-};
-
-//----------------------------------------------
-// State: WaitingForPoint
-//
-class CCenterOnPointFSMWaitingForPointState : public CCenterOnPointFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("WaitingForPoint"); }
-   virtual void MouseMove(CCenterOnPointFSM& fsm) override;
-   virtual void MouseDown(CCenterOnPointFSM& fsm) override;
-   virtual void DoubleClick(CCenterOnPointFSM& fsm) override;
-	virtual void EscKey(CCenterOnPointFSM& fsm) override;
-};
-
-//----------------------------------------------
-// State: Start
-//
-class CCenterOnPointFSMStartState : public CCenterOnPointFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("Start"); }
-   virtual void Do(CCenterOnPointFSM& fsm) override;
-};
-
-class CCenterOnPointFSM : public iCenterOnPointTask
-{
-public:
-   static CCenterOnPointFSMStartState Start;
-   static CCenterOnPointFSMWaitingForPointState WaitingForPoint;
-   static CCenterOnPointFSMDoneState Done;
-
-   CCenterOnPointFSM();
-
-   // Event Functions
-   void Do() {m_pState->Do(*this);}
-   void DoubleClick() {m_pState->DoubleClick(*this);}
-   void MouseDown()   {m_pState->MouseDown(*this); }
-   void MouseUp()     {m_pState->MouseUp(*this); }
-   void MouseMove()   {m_pState->MouseMove(*this); }
-   void EscKey()      {m_pState->EscKey(*this); }
-
-   // State Accessor Functions
-   void SetState(CCenterOnPointFSMState& state) { m_pState = &state; }
-   CCenterOnPointFSMState& GetState() const { return *m_pState; }
-
-private:
-   CCenterOnPointFSMState* m_pState;
-};
-
-#endif // !defined(AFX_CENTERONPOINTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

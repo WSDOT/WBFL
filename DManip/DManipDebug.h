@@ -22,4 +22,7 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
-DIAG_DECLARE_GROUP(DManip);
+namespace
+{
+   DIAG_DEFINE_GROUP(DManip, DIAG_GROUP_ENABLE, 1);
+}

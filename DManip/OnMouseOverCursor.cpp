@@ -21,14 +21,8 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "pch.h"
 #include "OnMouseOverCursor.h"
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
 
 COnMouseOverCursor* COnMouseOverCursor::ms_pThis = nullptr;
 

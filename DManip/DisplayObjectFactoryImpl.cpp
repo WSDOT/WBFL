@@ -21,28 +21,29 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include "StdAfx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "DisplayObjectFactoryImpl.h"
-#include "PointDisplayObjectImpl.h"
+#include "pch.h"
+#include <DManip/DisplayObjectFactoryImpl.h>
+#include <DManip/DisplayObject.h>
+#include <DManip/LegendDisplayObjectImpl.h>
+#include <DManip/DragDataImpl.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
-CDisplayObjectFactoryImpl::CDisplayObjectFactoryImpl()
+std::shared_ptr<iDisplayObject> DisplayObjectFactory::Create(CLIPFORMAT cfFormat, COleDataObject* pDataObject) const
 {
-}
- 
-CDisplayObjectFactoryImpl::~CDisplayObjectFactoryImpl()
-{
-}
+   if (cfFormat == LegendDisplayObject::ms_cfFormat)
+   {
+      auto legend = LegendDisplayObject::Create();
+      if (pDataObject)
+      {
+         auto source = DragDataSource::Create();
+         source->SetDataObject(pDataObject);
 
-STDMETHODIMP_(void) CDisplayObjectFactoryImpl::Create(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj)
-{
-   (*dispObj) = 0;
-#pragma Reminder("Implement")
+         auto draggable = std::dynamic_pointer_cast<iDraggable>(legend);
+         draggable->OnDrop(source);
+      }
+      return legend;
+   }
+
+   return nullptr;
 }

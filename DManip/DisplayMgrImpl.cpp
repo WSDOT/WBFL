@@ -21,105 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DisplayMgrImpl.cpp: implementation of the CDisplayMgrImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/DisplayMgrImpl.h>
+#include <DManip/DisplayView.h>
+#include <DManip/DisplayObject.h>
+#include <DManip/DisplayList.h>
+#include <DManip/DropSite.h>
+#include <DManip/CompositeDisplayObject.h>
+#include <DManip/DisplayListImpl.h>
+#include <DManip/DisplayObjectFactoryImpl.h>
+#include <DManip/DragDataImpl.h>
+#include <DManip/ToolImpl.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "DisplayMgrImpl.h"
+#include <DManip/Task.h>
+#include <DManip/TaskFactory.h>
 
-#include "DisplayListImpl.h"
-#include "DisplayObjectFactoryImpl.h"
-#include "DragDataImpl.h"
-#include <MathEx.h>
-#include <algorithm>
-#include <float.h>
-#include "ToolImpl.h"
+#include "Helpers.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif 
+using namespace WBFL::DManip;
 
-// Predicate object for removing displays from the selection list
-// if they belog to a certain list
-class RemoveByListID
+DisplayMgr::~DisplayMgr()
 {
-public:
-   RemoveByListID(IDType listID,BOOL bInclusive) : m_ListID(listID),m_bInclusive(bInclusive) {}
-   bool operator()(DisplayObjectItem dispObj)
-   {
-      CComPtr<iDisplayList> list;
-      dispObj->GetDisplayList(&list);
-      BOOL bRemove = m_bInclusive ? ( list->GetID() == m_ListID ) : ( list->GetID() != m_ListID );
-      if ( bRemove )
-      {
-         dispObj->Select(FALSE);
-         return true;
-      }
-
-      return false;
-   }
-
-private:
-   IDType m_ListID;
-   BOOL m_bInclusive;
-};
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDisplayMgrImpl::CDisplayMgrImpl()
-{
-   m_crSelectionLine = RGB(255,0,0);
-   m_crSelectionFill = RGB(255,50,50);
-}
-
-CDisplayMgrImpl::~CDisplayMgrImpl()
-{
-}
-
-HRESULT CDisplayMgrImpl::FinalConstruct()
-{
-   m_pView = 0;
-
-   m_bLBtnSelectEnabled = FALSE;
-   m_bRBtnSelectEnabled = FALSE;
-   m_bLBtnMultiSelectEnabled = FALSE;
-   m_dwLBtnMultiSelectKey = MK_CONTROL;
-   m_bLBtnRectSelectEnabled = FALSE;
-
-   m_pDropSite = 0;
-
-   // NOTE: Initialization of mapping and scrolling is handled
-   //       in SetView.
-   return S_OK;
-}
-
-void CDisplayMgrImpl::FinalRelease()
-{
+   m_SelectedObjects.clear(); // don't call ClearSelectedObjects here - it depends on DisplayMgr, which is being destroyed
    ClearDisplayLists();
    m_DropTarget.Revoke();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::PrepareDragData(iDragDataSink* pSink)
+void DisplayMgr::PrepareDragData(std::shared_ptr<iDragDataSink> pSink)
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-
-      CComQIPtr<iDraggable,&IID_iDraggable> pDraggable(pDO);
-      ASSERT(pDraggable != 0);
-      pDraggable->PrepareDrag(pSink);
-   }
+   std::for_each(m_SelectedObjects.begin(), m_SelectedObjects.end(), [pSink](auto& display_object)
+      {
+         auto draggable = std::dynamic_pointer_cast<iDraggable>(display_object);
+         CHECK(draggable);
+         draggable->PrepareDrag(pSink);
+      });
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SetView(CDisplayView* pView)
+void DisplayMgr::SetView(CDisplayView* pView)
 {
    // because of the implementation of Revoke and Register, we need to work
    // in the app module state
@@ -132,221 +70,215 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SetView(CDisplayView* pView)
 
    m_pView = pView;
 
-   // If this VERIFY fails, you most likely initilized COM with
+   // If this VERIFY fails, you most likely initialized COM with
    // CoInitialize instead of OleInitialize. You must use
    // OleInitialize for drag and drop to work
    VERIFY( m_DropTarget.Register(m_pView) );
 }
 
-STDMETHODIMP_(CDisplayView*) CDisplayMgrImpl::GetView()
+CDisplayView* DisplayMgr::GetView()
 {
    return m_pView;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetCoordinateMap(iCoordinateMap** map)
+const CDisplayView* DisplayMgr::GetView() const
 {
-   m_pView->GetCoordinateMap(map);
+   return m_pView;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayList(iDisplayList* pDL)
+std::shared_ptr<const iCoordinateMap> DisplayMgr::GetCoordinateMap() const
+{
+   return m_pView->GetCoordinateMap();
+}
+
+std::shared_ptr<iDisplayList> DisplayMgr::CreateDisplayList(IDType id)
+{
+   auto dl = DisplayList::Create(id);
+   if (AddDisplayList(dl))
+      return dl;
+   else
+      return std::shared_ptr<iDisplayList>();
+}
+
+bool DisplayMgr::AddDisplayList(std::shared_ptr<iDisplayList> pDL)
 {
    IDType id = pDL->GetID();
-   CComPtr<iDisplayList> pDLExists;
-   FindDisplayList(id,&pDLExists);
-   if ( pDLExists )
-      return; // A display list with this id already exists
-
-   m_DisplayLists.emplace_back(pDL);
-   pDL->SetDisplayMgr(this);
-
-   pDL->RegisterEventSink(this);
-   InternalRelease();
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayList(IndexType idx,iDisplayList** list)
-{
-   if ( idx < 0 || m_DisplayLists.size() <= idx )
-      return; // Index is out of range
-
-   CComPtr<iDisplayList> pDL = m_DisplayLists[idx];
-   (*list) = pDL;
-   (*list)->AddRef();
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayList(IDType id,iDisplayList** list)
-{
-   (*list) = 0;
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   auto pDLExists = FindDisplayList(id);
+   if (pDLExists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      if ( pDL->GetID() == id )
-      {
-         (*list) = pDL;
-         (*list)->AddRef();
-         return;
-      }
+      CHECK(false);
+      return false; // A display list with this id already exists
    }
 
-   return;
+   m_DisplayLists.emplace_back(pDL);
+   pDL->SetDisplayMgr(weak_from_this());
+
+   auto event_sink = std::dynamic_pointer_cast<iDisplayListEvents>(shared_from_this());
+   pDL->RegisterEventSink(event_sink);
+   return true;
 }
 
-STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayListCount()
+std::shared_ptr<iDisplayList> DisplayMgr::GetDisplayList(IndexType idx)
+{
+   PRECONDITION(0 <= idx and idx < m_DisplayLists.size());
+   return m_DisplayLists[idx];
+}
+
+std::shared_ptr<const iDisplayList> DisplayMgr::GetDisplayList(IndexType idx) const
+{
+   PRECONDITION(0 <= idx and idx < m_DisplayLists.size());
+   return m_DisplayLists[idx];
+}
+
+std::shared_ptr<iDisplayList> DisplayMgr::FindDisplayList(IDType id)
+{
+   auto iter = std::find_if(m_DisplayLists.begin(), m_DisplayLists.end(), [id](auto& list) {return list->GetID() == id; });
+
+   std::shared_ptr<iDisplayList> list;
+   if (iter != m_DisplayLists.end())
+   {
+      list = *iter;
+   }
+   return list;
+}
+
+std::shared_ptr<const iDisplayList> DisplayMgr::FindDisplayList(IDType id) const
+{
+   auto iter = std::find_if(m_DisplayLists.begin(), m_DisplayLists.end(), [id](auto& list) {return list->GetID() == id; });
+
+   std::shared_ptr<iDisplayList> list;
+   if (iter != m_DisplayLists.end())
+   {
+      list = *iter;
+   }
+   return list;
+}
+
+IndexType DisplayMgr::GetDisplayListCount() const
 {
    return m_DisplayLists.size();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayList(IDType key,AccessType access)
+void DisplayMgr::RemoveDisplayList(IDType key,AccessType access)
 {
-   CComPtr<iDisplayList> pDL;
-
-   if ( access == atByIndex )
+   std::shared_ptr<iDisplayList> pDL;
+   decltype(m_DisplayLists.begin()) iter;
+   if ( access == AccessType::ByIndex )
    {
       // Remove by index
       IndexType index = (IndexType)key;
-      if ( index < 0 || m_DisplayLists.size() <= index )
-         return; // index out of bounds
+      PRECONDITION(0 <= index && index < m_DisplayLists.size());
 
-      DisplayListContainer::iterator iter = m_DisplayLists.begin() + index;
-
-      pDL = *iter;
-
-      m_DisplayLists.erase(iter);
+      iter = m_DisplayLists.begin() + index;
    }
    else
    {
       // Remove by id
-      DisplayListContainer::iterator iter;
-      for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
-      {
-         CComPtr<iDisplayList> pDL = *iter;
-         if ( pDL->GetID() == key )
-         {
-            m_DisplayLists.erase(iter);
-            break;;
-         }
-      }
+      iter = std::find_if(m_DisplayLists.begin(), m_DisplayLists.end(), [key](auto& list) {return list->GetID() == key; });
    }
 
-   InternalAddRef();
-   pDL->UnregisterEventSink();
+   if (iter != m_DisplayLists.end())
+   {
+      pDL = *iter;
+      pDL->UnregisterEventSink();
+      m_DisplayLists.erase(iter);
+   }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayLists()
+void DisplayMgr::ClearDisplayLists()
 {
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
-   {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->Clear();
-      InternalAddRef();
-      pDL->UnregisterEventSink();
-   }
-
+   std::for_each(m_DisplayLists.begin(), m_DisplayLists.end(), [](auto& list) {list->Clear(); list->UnregisterEventSink(); });
    m_DisplayLists.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObject(iDisplayObject* pDO,IDType key,AccessType access)
+void DisplayMgr::AddDisplayObject(std::shared_ptr<iDisplayObject> pDO, IDType key, AccessType access)
 {
-   CComPtr<iDisplayList> pDL;
-   if ( access == atByIndex )
-      GetDisplayList(key,&pDL);
+   std::shared_ptr<iDisplayList> pDL;
+   if ( access == AccessType::ByIndex )
+      pDL = GetDisplayList(key);
    else
-      FindDisplayList(key,&pDL);
+      pDL = FindDisplayList(key);
 
-   if ( pDL == 0 )
-      return; // No display list
-
-   pDL->AddDisplayObject(pDO);
+   if ( pDL )
+      pDL->AddDisplayObject(pDO);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SelectObject(iDisplayObject* pDO,BOOL bClearSelection)
+void DisplayMgr::SelectObject(std::shared_ptr<iDisplayObject> pDO, bool bClearSelection)
 {
-   ASSERT(pDO);
-
    if ( bClearSelection )
       ClearSelectedObjects();
 
    // Only call Select if the display object is not currently selected
    // otherwise there will be recursion until the stack pops.
-   if ( !pDO->IsSelected() && pDO->GetSelectionType() != stNone )
+   if ( !pDO->IsSelected() && pDO->GetSelectionType() != SelectionType::None )
    {
       pDO->Select(TRUE);
       m_SelectedObjects.emplace_back(pDO);
 
-      CRect bbox = pDO->GetBoundingBox();
-      InvalidateRect(bbox);
+      CRect bbox = pDO->GetLogicalBoundingBox();
+      m_pView->InvalidateRect(bbox);
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SelectObjects(CRect rect)
+void DisplayMgr::SelectObjects(const RECT& rect)
 {
-   DisplayObjectContainer dispObjs;
-   FindDisplayObjects(rect,&dispObjs);
+   auto dispObjs = FindDisplayObjects(rect);
 
    // If Multi-select isn't enabled and if more than one object was
    // found, don't do the selection.
-   if ( !m_bLBtnMultiSelectEnabled && dispObjs.size() > 1 )
+   if ( !m_bLBtnMultiSelectEnabled && 1 < dispObjs.size() )
       return;
 
-   //ClearSelectedObjects();
-   DisplayObjectContainer::iterator iter;
-   for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      SelectObject(pDO,FALSE);  // Don't clear current selection
-   }
+   std::for_each(dispObjs.begin(), dispObjs.end(), [this](auto& dispObj) {this->SelectObject(dispObj, FALSE); }); // Don't clear current selection
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::RemoveDisplayObject(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess)
+void DisplayMgr::RemoveDisplayObject(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess)
 {
-   CComPtr<iDisplayList> pDL;
+   std::shared_ptr<iDisplayList> pDL;
 
-   if ( dlAccess == atByIndex )
-      GetDisplayList(dlKey,&pDL);
+   if ( dlAccess == AccessType::ByIndex )
+      pDL = GetDisplayList(dlKey);
    else
-      FindDisplayList(dlKey,&pDL);
+      pDL = FindDisplayList(dlKey);
 
-   if ( pDL == 0 )
-      return; // display list not found
-
-   pDL->RemoveDisplayObject(doKey,doAccess);
+   if ( pDL )
+      pDL->RemoveDisplayObject(doKey,doAccess);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects()
+void DisplayMgr::ClearDisplayObjects()
 {
    m_SelectedObjects.clear();
 
    // Clears all display objects from all display list
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
-   {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->Clear();
-   }
+   std::for_each(m_DisplayLists.begin(), m_DisplayLists.end(), [](auto& list) {list->Clear(); });
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearDisplayObjects(IDType key,AccessType access)
+void DisplayMgr::ClearDisplayObjects(IDType key,AccessType access)
 {
    // Clear the display objects from the specified display list;
-   CComPtr<iDisplayList> pDL;
-   if ( access == atByIndex )
-      GetDisplayList(key,&pDL);
+   std::shared_ptr<iDisplayList> pDL;
+   if ( access == AccessType::ByIndex )
+      pDL = GetDisplayList(key);
    else
-      FindDisplayList(key,&pDL);
+      pDL = FindDisplayList(key);
 
-   if ( pDL == 0 )
-      return; // Display list not found
-
-   pDL->Clear();
+   if ( pDL )
+      pDL->Clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetSelectedObjects(DisplayObjectContainer* selObjs)
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::GetSelectedObjects()
 {
-   *selObjs = m_SelectedObjects;
+   return m_SelectedObjects;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SelectAll(BOOL bSelect)
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::GetSelectedObjects() const
+{
+   std::vector<std::shared_ptr<const iDisplayObject>> so;
+   so.insert(so.end(), m_SelectedObjects.begin(), m_SelectedObjects.end());
+   return so;
+}
+
+void DisplayMgr::SelectAll(bool bSelect)
 {
    // Unselect all by clearing whatever is selected
    if ( !bSelect )
@@ -356,41 +288,26 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SelectAll(BOOL bSelect)
    }
 
    // Select all
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   for (auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      IndexType nDO = pDL->GetDisplayObjectCount();
-      for ( IndexType i = 0; i < nDO; i++ )
-      {
-         CComPtr<iDisplayObject> pDO;
-         pDL->GetDisplayObject(i,&pDO);
-         this->SelectObject(pDO,FALSE);
-      }
+      dl->SelectAll();
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjects()
+void DisplayMgr::ClearSelectedObjects()
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      pDO->Select(FALSE);
-   }
-
+   std::for_each(m_SelectedObjects.begin(), m_SelectedObjects.end(), [](auto& disp_obj) {disp_obj->Select(false); });
    m_SelectedObjects.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjectsByList(IDType key,AccessType access,BOOL bInclusive)
+void DisplayMgr::ClearSelectedObjectsByList(IDType key,AccessType access,bool bInclusive)
 {
    // Clears all selection objects that belong to the specified display list
    IDType listID;
 
-   if ( access == atByIndex )
+   if ( access == AccessType::ByIndex )
    {
-      CComPtr<iDisplayList> list;
-      GetDisplayList(key,&list);
+      auto list = GetDisplayList(key);
       listID = list->GetID();
    }
    else
@@ -398,10 +315,18 @@ STDMETHODIMP_(void) CDisplayMgrImpl::ClearSelectedObjectsByList(IDType key,Acces
       listID = key;
    }
 
-   std::erase_if(m_SelectedObjects,RemoveByListID(listID,bInclusive));
+   std::erase_if(m_SelectedObjects, [listID, bInclusive](auto& disp_obj)
+      {
+         auto display_list = disp_obj->GetDisplayList();
+         bool bRemove = bInclusive ? (display_list->GetID() == listID) : (display_list->GetID() != listID);
+         if (bRemove)
+            disp_obj->Select(false);
+
+         return bRemove;
+      });
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::EnableLBtnMultiSelect(BOOL bEnable,DWORD dwKey)
+void DisplayMgr::EnableLBtnMultiSelect(bool bEnable,DWORD dwKey)
 {
    m_bLBtnMultiSelectEnabled = bEnable;
 
@@ -412,124 +337,94 @@ STDMETHODIMP_(void) CDisplayMgrImpl::EnableLBtnMultiSelect(BOOL bEnable,DWORD dw
    m_dwLBtnMultiSelectKey = dwKey;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::IsLBtnMultiSelectEnabled()
+bool DisplayMgr::IsLBtnMultiSelectEnabled() const
 {
    return m_bLBtnMultiSelectEnabled;
 }
 
-STDMETHODIMP_(DWORD) CDisplayMgrImpl::GetLBtnMultiSelectKey()
+DWORD DisplayMgr::GetLBtnMultiSelectKey() const
 {
    return m_dwLBtnMultiSelectKey;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::EnableLBtnSelectRect(BOOL bEnable)
+void DisplayMgr::EnableLBtnSelectRect(bool bEnable)
 {
    m_bLBtnRectSelectEnabled = bEnable;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::IsLBtnSelectRectEnabled()
+bool DisplayMgr::IsLBtnSelectRectEnabled() const
 {
    return m_bLBtnRectSelectEnabled;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::EnableLBtnSelect(BOOL bEnable)
+void DisplayMgr::EnableLBtnSelect(bool bEnable)
 {
    m_bLBtnSelectEnabled = bEnable;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::IsLBtnSelectEnabled()
+bool DisplayMgr::IsLBtnSelectEnabled() const
 {
    return m_bLBtnSelectEnabled;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::EnableRBtnSelect(BOOL bEnable)
+void DisplayMgr::EnableRBtnSelect(bool bEnable)
 {
    m_bRBtnSelectEnabled = bEnable;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::IsRBtnSelectEnabled()
+bool DisplayMgr::IsRBtnSelectEnabled() const
 {
    return m_bRBtnSelectEnabled;
 }
 
 
-STDMETHODIMP_(void) CDisplayMgrImpl::DrawDisplayObjects(CDC* pDC)
+void DisplayMgr::DrawDisplayObjects(CDC* pDC) const
 {
    // draw in reverse order so the deepest display objects are drawn first
    // (Z-order is based on display list order. The top of the Z-order are the display lists
    // at the lowest indicies)
-   DisplayListContainer::reverse_iterator iter;
-   for ( iter = m_DisplayLists.rbegin(); iter != m_DisplayLists.rend(); iter++ )
-   {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->DrawDisplayObjects(pDC,TRUE); // Skip selected display objects (they are drawn below)
-   }
+   std::for_each(m_DisplayLists.rbegin(), m_DisplayLists.rend(), [pDC](auto& dl) {dl->DrawDisplayObjects(pDC, TRUE); });// Skip selected display objects (they are drawn below)
 
    // Draw the selected display objects last so that they are always on top
-   // Draw in reverse order to perserve relative Z-order of selected objects
-   DisplayObjectContainer::reverse_iterator selIter;
-   for ( selIter = m_SelectedObjects.rbegin(); selIter != m_SelectedObjects.rend(); selIter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *selIter;
-      pDO->Draw(pDC);
-   }
+   // Draw in reverse order to preserve relative Z-order of selected objects
+   std::for_each(m_SelectedObjects.rbegin(), m_SelectedObjects.rend(), [pDC](auto& dl) {dl->Draw(pDC); });
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::InvalidateRect(LPCRECT lpRect)
-{
-   m_pView->InvalidateRect(lpRect);
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::InvalidateRgn(CRgn* pRgn)
-{
-   m_pView->InvalidateRgn(pRgn);
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::SetSelectionFillColor(COLORREF color)
+void DisplayMgr::SetSelectionFillColor(COLORREF color)
 {
    m_crSelectionFill;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SetSelectionLineColor(COLORREF color)
+void DisplayMgr::SetSelectionLineColor(COLORREF color)
 {
    m_crSelectionLine;
 }
 
-STDMETHODIMP_(COLORREF) CDisplayMgrImpl::GetSelectionFillColor()
+COLORREF DisplayMgr::GetSelectionFillColor() const
 {
    return m_crSelectionFill;
 }
 
-STDMETHODIMP_(COLORREF) CDisplayMgrImpl::GetSelectionLineColor()
+COLORREF DisplayMgr::GetSelectionLineColor() const
 {
    return m_crSelectionLine;
 }
 
 #if defined(_DEBUG)
-STDMETHODIMP_(void) CDisplayMgrImpl::DrawGravityWells(CDC* pDC)
+void DisplayMgr::DrawGravityWells(CDC* pDC) const
 {
    // draw in reverse order so the deepest display objects are drawn first
    // (Z-order is based on display list order. The top of the Z-order are the display lists
    // at the lowest indicies)
-   DisplayListContainer::reverse_iterator iter;
-   for ( iter = m_DisplayLists.rbegin(); iter != m_DisplayLists.rend(); iter++ )
-   {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->DrawGravityWells(pDC);
-   }
+   std::for_each(m_DisplayLists.rbegin(), m_DisplayLists.rend(), [pDC](auto& dl) {dl->DrawGravityWells(pDC); });
 
    // Draw the selected display objects last so that they are always on top
-   // Draw in reverse order to perserve relative Z-order of selected objects
-   DisplayObjectContainer::reverse_iterator selIter;
-   for ( selIter = m_SelectedObjects.rbegin(); selIter != m_SelectedObjects.rend(); selIter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *selIter;
-      pDO->DrawGravityWell(pDC);
-   }
+   // Draw in reverse order to preserve relative Z-order of selected objects
+   std::for_each(m_SelectedObjects.rbegin(), m_SelectedObjects.rend(), [pDC](auto& dl) {dl->DrawGravityWell(pDC); });
 }
 #endif
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
+bool DisplayMgr::OnLButtonDown(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -540,72 +435,51 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
    }
    else
    {
-      CComPtr<iDisplayObject> pDO;
-      DisplayObjectContainer dispObjs;
+      std::vector<std::shared_ptr<iDisplayObject>> dispObjs;
 
       BOOL bSelectionEnabled = FALSE;
       if ( m_bLBtnSelectEnabled )
       {
          // find the display objects at this click point
-         DisplayObjectContainer doS;
-         FindDisplayObjects(point, &doS);
-         for (const auto& dispObj : doS)
-         {
-            if (dispObj->IsSelected() && dispObj->RetainSelection())
-            {
-               dispObjs.push_back(dispObj);
-            }
-         }
+         auto doS = FindDisplayObjects(point);
+         std::copy_if(doS.begin(), doS.end(), std::back_inserter(dispObjs), [](auto& dispObj) {return dispObj->IsSelected() and dispObj->RetainSelection(); });
 
          if (dispObjs.size() == 0)
          {
-            FindNextSelectableDisplayObject(point, &pDO);
-            if (pDO)
+            auto disp_obj = FindNextSelectableDisplayObject(point);
+            if (disp_obj)
             {
-               dispObjs.push_back(pDO);
+               dispObjs.push_back(disp_obj);
                bSelectionEnabled = TRUE;
             }
             else
             {
-               FindDisplayObjects(point, &dispObjs);
+               dispObjs = FindDisplayObjects(point);
                bSelectionEnabled = FALSE;
             }
          }
       }
 
-      if ( m_bLBtnSelectEnabled && pDO == nullptr )
-      {
-         FindDisplayObjects(point,&dispObjs);
-         bSelectionEnabled = FALSE;
-      }
-
       BOOL bClearSelection = ( !m_bLBtnMultiSelectEnabled || (nFlags & m_dwLBtnMultiSelectKey) != m_dwLBtnMultiSelectKey );
-      if ( 0 < dispObjs.size() )
+      // Some display objects were found
+      for(auto& disp_obj : dispObjs)
       {
-         // Some display objects were found
-         DisplayObjectContainer::iterator iter;
-         for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+         // Let the display object know it was clicked on
+         handled = disp_obj->OnLButtonDown(nFlags,point);
+
+         if ( bSelectionEnabled )
          {
-            pDO.Release();
-            pDO = *iter;
-            
-            // Let the display object know it was clicked on
-            handled = pDO->OnLButtonDown(nFlags,point);
+            // Left mouse button selection is enabled... Select the object
 
-            if ( bSelectionEnabled )
+            // If multi select is not enabled or if the the multiselect key isn't pressed, clear the current selection
+            SelectObject(disp_obj,bClearSelection);
+
+            if (disp_obj->IsSelected() )
             {
-               // Left mouse button selection is enabled... Select the object
+               handled = true; // event was handled with a selection
 
-               // If multi select is not enabled or if the the multiselect key isn't pressed, clear the current selection
-               SelectObject(pDO,bClearSelection);
-
-               if ( pDO->IsSelected() )
-               {
-                  handled = true; // event was handled with a selection
-
-                  if ( !m_bLBtnMultiSelectEnabled )
-                     break; // multi-select is not enabled so we are done selecting
-               }
+               if ( !m_bLBtnMultiSelectEnabled )
+                  break; // multi-select is not enabled so we are done selecting
             }
          }
 
@@ -626,8 +500,7 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
          // begin the task
          if ( m_bLBtnRectSelectEnabled )
          {
-            CComPtr<iTask> task;
-            m_pTaskFactory->CreateRectSelectTask(this,point,&task);
+            auto task = m_pTaskFactory->CreateRectSelectTask(shared_from_this(), point);
             SetTask(task);
             handled = true;
          }
@@ -637,13 +510,13 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDown(UINT nFlags,CPoint point)
    // use our event strategy if not handled
    if (!handled && m_EventSink)
    {
-      handled = m_EventSink->OnLButtonDown(this, nFlags, point);
+      handled = m_EventSink->OnLButtonDown(shared_from_this(), nFlags, point);
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonUp(UINT nFlags,CPoint point)
+bool DisplayMgr::OnLButtonUp(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -654,14 +527,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonUp(UINT nFlags,CPoint point)
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
-
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      auto dispObjs = FindDisplayObjects(point);
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if (pDO->OnLButtonUp(nFlags,point))
+         if (dispObj->OnLButtonUp(nFlags,point))
          {
             handled = true;
             break;
@@ -672,13 +541,13 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonUp(UINT nFlags,CPoint point)
    // use our event strategy if not handled
    if (!handled && m_EventSink)
    {
-      handled = m_EventSink->OnLButtonUp(this, nFlags, point);
+      handled = m_EventSink->OnLButtonUp(shared_from_this(), nFlags, point);
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDblClk(UINT nFlags,CPoint point)
+bool DisplayMgr::OnLButtonDblClk(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -689,14 +558,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDblClk(UINT nFlags,CPoint point)
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
-
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      auto dispObjs = FindDisplayObjects(point);
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if (pDO->OnLButtonDblClk(nFlags,point))
+         if (dispObj->OnLButtonDblClk(nFlags,point))
          {
             handled = true;
             break;  // break on first successful response
@@ -706,14 +571,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnLButtonDblClk(UINT nFlags,CPoint point)
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnLButtonDblClk(this, nFlags, point);
+         handled = m_EventSink->OnLButtonDblClk(shared_from_this(), nFlags, point);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
+bool DisplayMgr::OnRButtonDown(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -726,25 +591,19 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
    else
    {
       // check if right-click occurred over a currently selected display object
-      DisplayObjectContainer curSel;
-      GetSelectedObjects(&curSel);
-      DisplayObjectContainer::iterator iter;
-      for ( iter = curSel.begin(); iter != curSel.end(); iter++ )
+      auto dispObjs = GetSelectedObjects();
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pSelDO;
-         pSelDO = *iter;
-
-         if ( pSelDO->HitTest(point) )
+         if ( dispObj->HitTest(point) )
          {
-            if ( pSelDO->OnRButtonDown(nFlags,point) )
+            if ( dispObj->OnRButtonDown(nFlags,point) )
                handled = true;
          }
       }
 
       if ( !handled )
       {
-         CComPtr<iDisplayObject> pDO;
-         DisplayObjectContainer dispObjs;
+         std::vector<std::shared_ptr<iDisplayObject>> dispObjs;
 
          BOOL bSelectionEnabled = FALSE;
 
@@ -754,28 +613,21 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
             // r-button selection is enabled so we only want the selectable display objects
             // find the display objects at this point... if one of them is already selected,
             // then retain the selection
-            DisplayObjectContainer doS;
-            FindDisplayObjects(point, &doS);
-            for (const auto& dispObj : doS)
-            {
-               if (dispObj->IsSelected())
-               {
-                  dispObjs.push_back(dispObj);
-               }
-            }
+            auto doS = FindDisplayObjects(point);
+            std::copy_if(doS.begin(), doS.end(), std::back_inserter(dispObjs), [](auto& dispObj) {return dispObj->IsSelected(); });
 
             if (dispObjs.size() == 0)
             {
-               FindNextSelectableDisplayObject(point, &pDO);
-               if (pDO)
+               auto disp_obj = FindNextSelectableDisplayObject(point);
+               if (disp_obj)
                {
-                  dispObjs.push_back(pDO);
+                  dispObjs.push_back(disp_obj);
                   bSelectionEnabled = TRUE;
                }
                else
                {
                   // a selectable display object wasn't found... go to the full list of display objects
-                  FindDisplayObjects(point, &dispObjs);
+                  dispObjs = FindDisplayObjects(point);
                   bSelectionEnabled = FALSE;
                }
             }
@@ -783,7 +635,7 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
          else
          {
             // r-button selection is NOT enabled... get all the display objects
-            FindDisplayObjects(point,&dispObjs);
+            dispObjs = FindDisplayObjects(point);
             bSelectionEnabled = FALSE;
          }
 
@@ -791,14 +643,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
          {
             // Some display objects were found
             BOOL bClearSelection = !m_bRBtnSelectEnabled;
-            DisplayObjectContainer::iterator iter;
-            for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+            for(auto& dispObj : dispObjs)
             {
-               pDO.Release();
-               pDO = *iter;
-            
                // Let the display object know it was clicked on
-               if (pDO->OnRButtonDown(nFlags,point))
+               if (dispObj->OnRButtonDown(nFlags,point))
                {
 
                   if ( bSelectionEnabled )
@@ -806,7 +654,7 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
                      // Left mouse button selection is enabled... Select the object
 
                      // If multi select is not enabled or if the the multiselect key isn't pressed, clear the current selection
-                     SelectObject(pDO,bClearSelection);
+                     SelectObject(dispObj,bClearSelection);
                   }
 
                   handled = true;
@@ -827,13 +675,13 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDown(UINT nFlags,CPoint point)
    // use our event strategy if not handled
    if (!handled && m_EventSink)
    {
-      handled = m_EventSink->OnRButtonDown(this, nFlags, point);
+      handled = m_EventSink->OnRButtonDown(shared_from_this(), nFlags, point);
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonUp(UINT nFlags,CPoint point)
+bool DisplayMgr::OnRButtonUp(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -844,14 +692,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonUp(UINT nFlags,CPoint point)
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
-
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      auto dispObjs = FindDisplayObjects(point);
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if (pDO->OnRButtonUp(nFlags,point))
+         if (dispObj->OnRButtonUp(nFlags,point))
          {
             handled = true;
             break;
@@ -861,14 +705,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonUp(UINT nFlags,CPoint point)
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnRButtonUp(this, nFlags, point);
+         handled = m_EventSink->OnRButtonUp(shared_from_this(), nFlags, point);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDblClk(UINT nFlags,CPoint point)
+bool DisplayMgr::OnRButtonDblClk(UINT nFlags,const POINT& point)
 {
    bool handled = false;
 
@@ -879,14 +723,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDblClk(UINT nFlags,CPoint point)
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
-
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      auto dispObjs = FindDisplayObjects(point);
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if(pDO->OnRButtonDblClk(nFlags,point))
+         if(dispObj->OnRButtonDblClk(nFlags,point))
          {
             handled = true;
             break;
@@ -896,14 +736,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnRButtonDblClk(UINT nFlags,CPoint point)
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnRButtonDblClk(this, nFlags, point);
+         handled = m_EventSink->OnRButtonDblClk(shared_from_this(), nFlags, point);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseMove(UINT nFlags, CPoint point)
+bool DisplayMgr::OnMouseMove(UINT nFlags, const POINT& point)
 {
    bool handled = false;
 
@@ -914,15 +754,10 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseMove(UINT nFlags, CPoint point)
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
-
-      DisplayObjectContainer::iterator iter(dispObjs.begin());
-      DisplayObjectContainer::iterator end(dispObjs.end());
-      for ( ; iter != end; iter++ )
+      auto dispObjs = FindDisplayObjects(point);
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if(pDO->OnMouseMove(nFlags,point))
+         if(dispObj->OnMouseMove(nFlags,point))
          {
             handled = true;
             break;
@@ -932,14 +767,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseMove(UINT nFlags, CPoint point)
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnMouseMove(this, nFlags, point);
+         handled = m_EventSink->OnMouseMove(shared_from_this(), nFlags, point);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
+bool DisplayMgr::OnMouseWheel(UINT nFlags, short zDelta, const POINT& point)
 {
    bool handled = false;
 
@@ -950,14 +785,11 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseWheel(UINT nFlags, short zDelta, CPo
    }
    else
    {
-      DisplayObjectContainer dispObjs;
-      FindDisplayObjects(point,&dispObjs);
+      auto dispObjs = FindDisplayObjects(point);
 
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if(pDO->OnMouseWheel(nFlags,zDelta,point))
+         if(dispObj->OnMouseWheel(nFlags,zDelta,point))
          {
             handled = true;
             break;
@@ -967,14 +799,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnMouseWheel(UINT nFlags, short zDelta, CPo
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnMouseWheel(this, nFlags, zDelta, point);
+         handled = m_EventSink->OnMouseWheel(shared_from_this(), nFlags, zDelta, point);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+bool DisplayMgr::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    bool handled = false;
 
@@ -985,9 +817,8 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nF
    }
    else
    {
-      for ( DisplayObjectContainer::iterator iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
+      for(auto& dispObj : m_SelectedObjects)
       {
-         CComPtr<iDisplayObject> dispObj = *iter;
          if (dispObj->OnKeyDown(nChar,nRepCnt,nFlags))
          {
             handled = true;
@@ -998,15 +829,16 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nF
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnKeyDown(this, nChar,nRepCnt,nFlags);
+         handled = m_EventSink->OnKeyDown(shared_from_this(), nChar, nRepCnt, nFlags);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(bool) CDisplayMgrImpl::OnContextMenu(CWnd* pWnd,CPoint screenPoint)
+bool DisplayMgr::OnContextMenu(CWnd* pWnd,const POINT& sp)
 {
+   POINT screenPoint = sp; // make a copy because we are going to change it
    bool handled = false;
 
    if (m_pCurrTask )
@@ -1016,20 +848,17 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnContextMenu(CWnd* pWnd,CPoint screenPoint
    }
    else
    {
-      DisplayObjectContainer::iterator iter;
-      for ( iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
+      for(auto& dispObj : m_SelectedObjects)
       {
-         CComPtr<iDisplayObject> dispObj = *iter;
-
          CPoint pntClient = screenPoint;
          if ( screenPoint.x < 0 || screenPoint.y < 0 )
          {
             // the context menu key was pressed, get a point somewhere near the display object
-            pntClient = dispObj->GetBoundingBox().TopLeft();
+            pntClient = CRect(dispObj->GetLogicalBoundingBox()).TopLeft();
             pntClient += CSize(1,1);
 
             if ( !dispObj->HitTest(pntClient) )
-               pntClient = dispObj->GetBoundingBox().CenterPoint();
+               pntClient = CRect(dispObj->GetLogicalBoundingBox()).CenterPoint();
 
             screenPoint = pntClient;
             pWnd->ClientToScreen(&screenPoint);
@@ -1049,14 +878,14 @@ STDMETHODIMP_(bool) CDisplayMgrImpl::OnContextMenu(CWnd* pWnd,CPoint screenPoint
       // use our event strategy if not handled
       if (!handled && m_EventSink)
       {
-         handled = m_EventSink->OnContextMenu(this, pWnd, screenPoint);
+         handled = m_EventSink->OnContextMenu(shared_from_this(), pWnd, screenPoint);
       }
    }
 
    return handled;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRESULT* pResult)
+BOOL DisplayMgr::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRESULT* pResult)
 {
    BOOL bRetVal = FALSE;
    if ( m_ToolTipObject /*&& id == 9999*/ )
@@ -1069,9 +898,9 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
 
       TOOLTIPTEXT* pTTT = (TOOLTIPTEXT*)pNMHDR;
       m_strToolTipText = m_ToolTipObject->GetToolTipText();
-      if (!m_strToolTipText.IsEmpty())
+      if (!m_strToolTipText.empty())
       {
-         pTTT->lpszText = m_strToolTipText.GetBuffer(m_strToolTipText.GetLength()+1);
+         pTTT->lpszText = (LPTSTR)m_strToolTipText.c_str();
          pTTT->hinst = nullptr;
          bRetVal = TRUE;
 
@@ -1089,64 +918,49 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRE
    return bRetVal;
 }
 
-void FindToolTipDisplayObject(CPoint point,iDisplayObject* pDO,iDisplayObject** ppToolTipDO)
+std::shared_ptr<iDisplayObject> FindToolTipDisplayObject(CPoint point,std::shared_ptr<iDisplayObject> pDO)
 {
-   (*ppToolTipDO) = nullptr;
-
-   if (pDO->GetToolTipText().IsEmpty() || pDO->GetToolTipText().GetLength() == 0)
+   if (pDO->GetToolTipText().empty() || pDO->GetToolTipText().length() == 0)
    {
       // if pDO doesn't have tooltip text, drill down to see if a sub display object
       // has it. The first display object to have tool tip text is the one
-      CComQIPtr<iCompositeDisplayObject> compDO(pDO);
+      auto compDO = std::dynamic_pointer_cast<CompositeDisplayObject>(pDO);
       if (compDO)
       {
          IndexType nDO = compDO->GetDisplayObjectCount();
          for (IndexType doIdx = 0; doIdx < nDO; doIdx++)
          {
-            CComPtr<iDisplayObject> pSubDO;
-            compDO->GetDisplayObject(doIdx, atByIndex, &pSubDO);
+            auto pSubDO = compDO->GetDisplayObject(doIdx, AccessType::ByIndex);
 
             if (pSubDO->HitTest(point))
             {
-               CComPtr<iDisplayObject> ttDO;
-               FindToolTipDisplayObject(point, pSubDO, &ttDO);
+               auto ttDO = FindToolTipDisplayObject(point, pSubDO);
                if (ttDO)
                {
-                  ttDO.CopyTo(ppToolTipDO);
-                  return;
+                  return ttDO;
                }
             }
          }
       }
    }
-   else
-   {
-      *ppToolTipDO = pDO;
-      (*ppToolTipDO)->AddRef();
-   }
+   return pDO;
 }
 
-STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI)
+INT_PTR DisplayMgr::OnToolHitTest(const POINT& point,TOOLINFO* pTI)
 {
-   DisplayObjectContainer dispObjs;
-   FindDisplayObjects(point,&dispObjs);
-
-   DisplayObjectContainer::iterator iter = dispObjs.begin();
-   DisplayObjectContainer::iterator end = dispObjs.end();
-   for (; iter != end; iter++)
+   auto dispObjs = FindDisplayObjects(point);
+   for(auto& dispObj : dispObjs)
    {
-      CComPtr<iDisplayObject> pDO(*iter);
-      m_ToolTipObject.Release();
-      FindToolTipDisplayObject(point, pDO, &m_ToolTipObject);
+      m_ToolTipObject = FindToolTipDisplayObject(point, dispObj);
       if (m_ToolTipObject)
       {
-         ATLASSERT(m_ToolTipObject->HitTest(point));
+         CHECK(m_ToolTipObject->HitTest(point));
 
          pTI->cbSize = sizeof(TOOLINFO);
          pTI->hwnd = m_pView->GetSafeHwnd();
          pTI->uId = MAKELONG(point.x, point.y);
          pTI->lpszText = LPSTR_TEXTCALLBACK;
-         pTI->rect = m_ToolTipObject->GetBoundingBox();
+         pTI->rect = m_ToolTipObject->GetLogicalBoundingBox();
          pTI->uFlags |= TTF_NOTBUTTON | TTF_ALWAYSTIP;
 
          //#if defined _DEBUG
@@ -1161,11 +975,11 @@ STDMETHODIMP_(INT_PTR) CDisplayMgrImpl::OnToolHitTest(CPoint point,TOOLINFO* pTI
       }
    }
 
-   m_ToolTipObject.Release();
+   m_ToolTipObject = nullptr;
    return -1;
 }
 
-STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point)
+DROPEFFECT DisplayMgr::OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, const POINT& point)
 {
    DROPEFFECT de = DROPEFFECT_NONE;
 
@@ -1179,8 +993,7 @@ STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragEnter(COleDataObject* pDataObje
       // If there is a OnDragEnter event and there is not a current task
       // then something foreign just got dragged over the canvas. Start
       // a foreign drag drop task
-      CComPtr<iTask> task;
-      m_pTaskFactory->CreateForeignDragDropTask(this,point,&task);
+      auto task = m_pTaskFactory->CreateForeignDragDropTask(shared_from_this(), point);
       SetTask(task);
 
       de = m_pCurrTask->OnDragEnter(pDataObject,dwKeyState,point);
@@ -1190,13 +1003,13 @@ STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragEnter(COleDataObject* pDataObje
    return de;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDragLeave()
+void DisplayMgr::OnDragLeave()
 {
    if ( m_pCurrTask )
       m_pCurrTask->OnDragLeave();
 }
 
-STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point)
+DROPEFFECT DisplayMgr::OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, const POINT& point)
 {
    DROPEFFECT de = DROPEFFECT_NONE;
    if ( m_pCurrTask )
@@ -1205,7 +1018,7 @@ STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragOver(COleDataObject* pDataObjec
    return de;
 }
 
-STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point)
+BOOL DisplayMgr::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, const POINT& point)
 {
    BOOL bDropped = FALSE;
    if ( m_pCurrTask )
@@ -1214,7 +1027,7 @@ STDMETHODIMP_(BOOL) CDisplayMgrImpl::OnDrop(COleDataObject* pDataObject, DROPEFF
    return bDropped;
 }
 
-STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragScroll( DWORD dwKeyState, CPoint point )
+DROPEFFECT DisplayMgr::OnDragScroll( DWORD dwKeyState, const POINT& point )
 {
    DROPEFFECT de = DROPEFFECT_NONE;
    if ( m_pCurrTask )
@@ -1223,245 +1036,294 @@ STDMETHODIMP_(DROPEFFECT) CDisplayMgrImpl::OnDragScroll( DWORD dwKeyState, CPoin
    return de;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::CreateDragObjects(COleDataObject* pDataObject)
+void DisplayMgr::CreateDragObjects(COleDataObject* pDataObject)
 {
-   ASSERT( m_DragList.size() == 0 );
+   PRECONDITION( m_DragList.size() == 0 );
 
    // first check to see if this from our tool box
-   if (pDataObject->IsDataAvailable(CToolImpl::ms_cfFormat) != FALSE)
+   if (pDataObject->IsDataAvailable(Tool::ms_cfFormat) != FALSE)
    {
       // a tool was dragged over us
-      CComPtr<iTool> tool;
-      ::CoCreateInstance(CLSID_Tool,nullptr,CLSCTX_ALL,IID_iTool,(void**)&tool);
-      CComQIPtr<iDraggable,&IID_iDraggable> draggable(tool);
+      auto tool = Tool::Create();
+      auto draggable = std::dynamic_pointer_cast<iDraggable>(tool);
 
-      CComPtr<iDragDataSource> source;
-      ::CoCreateInstance(CLSID_DragDataSource,nullptr,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+      auto source = DragDataSource::Create();
       source->SetDataObject(pDataObject);
       draggable->OnDrop(source); // Rebuild the tool object from the data object
 
-      m_DragList.emplace_back(draggable.p);
+      m_DragList.emplace_back(draggable);
    }
    else
    {
       // now see if it's a local display object
-      DisplayObjectContainer::iterator iter;
-      for ( iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
+      for(auto& dispObj : m_SelectedObjects)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-         CComQIPtr<iDraggable,&IID_iDraggable> pDraggable(pDO);
+         auto pDraggable = std::dynamic_pointer_cast<iDraggable>(dispObj);
 
          if ( pDraggable )
          {
             bool bCreated = false;
-            CComPtr<iDisplayObject> pDragObject;
             // cycle through factories until we create something successfully
-            for (DisplayObjectFactoriesIterator it=m_pDisplayObjectFactories.begin(); it!=m_pDisplayObjectFactories.end(); it++)
+            for (const auto& factory : m_DisplayObjectFactories)
             {
-               if ( pDataObject->IsDataAvailable(pDraggable->Format()) )
+               if (pDataObject->IsDataAvailable(pDraggable->Format()))
                {
-                  it->m_T->Create(pDraggable->Format(),pDataObject,&pDragObject);
-
-                  if (pDragObject)
-                  {
-                     bCreated = true;
-                     break;
-                  }
+                  auto pDragObject = factory->Create(pDraggable->Format(), pDataObject);
+                  bCreated = true;
+                  break;
                }
             }
 
             if (bCreated)
             {
-               m_DragList.emplace_back(pDraggable.p);
+               m_DragList.emplace_back(pDraggable);
             }
          }
       }
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::DrawDragObjects(const CPoint& dragStart, const CPoint& dragPoint)
+void DisplayMgr::DrawDragObjects(const POINT& dragStart, const POINT& dragPoint)
 {
    CDManipClientDC dc(m_pView);
    int rop2 = dc.SetROP2(R2_NOTXORPEN);
 
-   CComPtr<iCoordinateMap> pMap;
-   m_pView->GetCoordinateMap(&pMap);
+   auto map = GetCoordinateMap();
 
-   IndexType count = m_DragList.size();
-   for ( IndexType i = 0; i < count; i++ )
+   for (auto& draggable : m_DragList)
    {
-      CComPtr<iDisplayObject> pDO;
-      m_DragList[i].m_T->DrawDragImage(&dc, pMap, dragStart, dragPoint);
+      draggable->DrawDragImage(&dc, map, dragStart, dragPoint);
    }
 
    dc.SetROP2(rop2);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::DestroyDragObjects()
+void DisplayMgr::DestroyDragObjects()
 {
    m_DragList.clear();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::RegisterDropSite(iDropSite* pDropSite)
+void DisplayMgr::RegisterDropSite(std::shared_ptr<iDropSite> pDropSite)
 {
    m_pDropSite = pDropSite;
-   if ( m_pDropSite )
-   {
-      m_pDropSite->AddRef();
-   }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::UnregisterDropSite()
+void DisplayMgr::UnregisterDropSite()
 {
-   if ( m_pDropSite )
-   {
-      m_pDropSite->Release();
-   }
-   m_pDropSite = 0;
+   m_pDropSite.reset();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDropSite(iDropSite** dropSite)
+std::shared_ptr<iDropSite> DisplayMgr::GetDropSite()
 {
-   (*dropSite) = m_pDropSite;
-   if ( *dropSite )
-      (*dropSite)->AddRef();
+   return m_pDropSite;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::HighliteDropSite(BOOL bHighlite)
+void DisplayMgr::HighlightDropSite(BOOL bHighlight)
 {
-   if ( m_pDropSite )
+   if ( auto drop_site = m_pDropSite)
    {
       CDManipClientDC dc(m_pView);
-      m_pDropSite->Highlite(&dc,bHighlite);
+      drop_site->Highlight(&dc,bHighlight);
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDragFinished(DROPEFFECT de)
+void DisplayMgr::OnDragFinished(DROPEFFECT de)
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_SelectedObjects.begin(); iter != m_SelectedObjects.end(); iter++ )
+   for(auto& dispObj : m_SelectedObjects)
    {
-      CComPtr<iDisplayObject> pDO = *iter;
-
-      CComQIPtr<iDraggable,&IID_iDraggable> pDraggable(pDO);
-      ASSERT(pDraggable != 0);
+      auto draggable = std::dynamic_pointer_cast<iDraggable>(dispObj);
+      CHECK(draggable);
       
       if ( de & DROPEFFECT_MOVE )
-         pDraggable->OnMoved();
+         draggable->OnMoved();
       else if ( de & DROPEFFECT_COPY )
-         pDraggable->OnCopied();
+         draggable->OnCopied();
    }
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObject(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj)
+std::shared_ptr<iDisplayObject> DisplayMgr::FindDisplayObject(IDType id,IDType listKey,AccessType access)
 {
-   CComPtr<iDisplayList> pDL;
-   if ( access == atByIndex )
-      GetDisplayList(listKey,&pDL);
+   std::shared_ptr<iDisplayList> pDL;
+   if ( access == AccessType::ByIndex )
+      pDL = GetDisplayList(listKey);
    else
-      FindDisplayList(listKey,&pDL);
+      pDL = FindDisplayList(listKey);
 
-   if ( pDL == 0 )
-      return;
-
-   pDL->FindDisplayObject(id,dispObj);
+   return pDL ? pDL->FindDisplayObject(id) : nullptr;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CPoint point,DisplayObjectContainer* dispObjs)
+std::shared_ptr<const iDisplayObject> DisplayMgr::FindDisplayObject(IDType id, IDType listKey, AccessType access) const
 {
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   std::shared_ptr<const iDisplayList> pDL;
+   if (access == AccessType::ByIndex)
+      pDL = GetDisplayList(listKey);
+   else
+      pDL = FindDisplayList(listKey);
+
+   return pDL ? pDL->FindDisplayObject(id) : nullptr;
+}
+
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(const POINT& point)
+{
+   std::vector<std::shared_ptr<iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->FindDisplayObjects(point,dispObjs);
+      auto dos = dl->FindDisplayObjects(point);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
    }
 
    // remove duplicates
-   std::sort(dispObjs->begin(), dispObjs->end());
-   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(IPoint2d* point,DisplayObjectContainer* dispObjs)
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObjects(const POINT& point) const
 {
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   std::vector<std::shared_ptr<const iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->FindDisplayObjects(point,dispObjs);
+      auto dos = dl->FindDisplayObjects(point);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
    }
 
    // remove duplicates
-   std::sort(dispObjs->begin(), dispObjs->end());
-   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::FindDisplayObjects(CRect rect,DisplayObjectContainer* dispObjs)
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(const WBFL::Geometry::Point2d& point)
 {
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   std::vector<std::shared_ptr<iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      pDL->FindDisplayObjects(rect,dispObjs);
+      auto dos = dl->FindDisplayObjects(point);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
    }
 
    // remove duplicates
-   std::sort(dispObjs->begin(), dispObjs->end());
-   dispObjs->erase(std::unique(dispObjs->begin(), dispObjs->end()), dispObjs->end());
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
 }
 
-STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayObjectCount()
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObjects(const WBFL::Geometry::Point2d& point) const
 {
-   SIZE_T count = 0;
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   std::vector<std::shared_ptr<const iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-      count += pDL->GetDisplayObjectCount();
+      auto dos = dl->FindDisplayObjects(point);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
    }
+
+   // remove duplicates
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
+}
+
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(const RECT& rect)
+{
+   std::vector<std::shared_ptr<iDisplayObject>> display_objects;
+   for(auto& dl : m_DisplayLists)
+   {
+      auto dos = dl->FindDisplayObjects(rect);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
+   }
+
+   // remove duplicates
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
+}
+
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObjects(const RECT& rect) const
+{
+   std::vector<std::shared_ptr<const iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
+   {
+      auto dos = dl->FindDisplayObjects(rect);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
+   }
+
+   // remove duplicates
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
+}
+
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(const WBFL::Geometry::Rect2d& rect)
+{
+   std::vector<std::shared_ptr<iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
+   {
+      auto dos = dl->FindDisplayObjects(rect);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
+   }
+
+   // remove duplicates
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
+}
+
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) const
+{
+   std::vector<std::shared_ptr<const iDisplayObject>> display_objects;
+   for (auto& dl : m_DisplayLists)
+   {
+      auto dos = dl->FindDisplayObjects(rect);
+      display_objects.insert(display_objects.end(), dos.begin(), dos.end());
+   }
+
+   // remove duplicates
+   std::sort(display_objects.begin(), display_objects.end());
+   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   return display_objects;
+}
+
+IndexType DisplayMgr::GetDisplayObjectCount() const
+{
+   IndexType count = 0;
+   std::for_each(m_DisplayLists.begin(), m_DisplayLists.end(), [&count](auto& dl) {count += dl->GetDisplayObjectCount(); });
    return count;
 }
 
-STDMETHODIMP_(IndexType) CDisplayMgrImpl::GetDisplayObjectFactoryCount()
+IndexType DisplayMgr::GetDisplayObjectFactoryCount() const
 {
-   return m_pDisplayObjectFactories.size();
+   return m_DisplayObjectFactories.size();
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::AddDisplayObjectFactory(iDisplayObjectFactory* factory)
+void DisplayMgr::AddDisplayObjectFactory(std::shared_ptr<iDisplayObjectFactory> factory)
 {
-   m_pDisplayObjectFactories.emplace_back(factory);
+   m_DisplayObjectFactories.emplace_back(factory);
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetDisplayObjectFactory(IndexType idx, iDisplayObjectFactory** factory)
+std::shared_ptr<iDisplayObjectFactory> DisplayMgr::GetDisplayObjectFactory(IndexType idx)
 {
-   if (idx>=0 && idx<GetDisplayObjectFactoryCount())
-   {
-      m_pDisplayObjectFactories[idx].m_T.CopyTo(factory);
-   }
-   else
-   {
-      ATLASSERT(false);
-      *factory = 0;
-   }
+   PRECONDITION(0 <= idx && idx < m_DisplayObjectFactories.size());
+   return m_DisplayObjectFactories[idx];
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SetTaskFactory(iTaskFactory* pFactory)
+std::shared_ptr<const iDisplayObjectFactory> DisplayMgr::GetDisplayObjectFactory(IndexType idx) const
+{
+   PRECONDITION(0 <= idx && idx < m_DisplayObjectFactories.size());
+   return m_DisplayObjectFactories[idx];
+}
+
+void DisplayMgr::SetTaskFactory(std::shared_ptr<TaskFactory> pFactory)
 {
    m_pTaskFactory = pFactory;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::GetTaskFactory(iTaskFactory** factory)
+std::shared_ptr<TaskFactory> DisplayMgr::GetTaskFactory()
 {
-   (*factory) = m_pTaskFactory;
-   (*factory)->AddRef();
+   return m_pTaskFactory;
 }
 
-STDMETHODIMP_(void) CDisplayMgrImpl::SetTask(iTask* pTask)
+void DisplayMgr::SetTask(std::shared_ptr<iTask> pTask)
 {
-   if ( m_pCurrTask )
-   {
-      m_pCurrTask.Release();
-   }
-
    m_pCurrTask = pTask;
 
    if ( m_pCurrTask )
@@ -1470,10 +1332,9 @@ STDMETHODIMP_(void) CDisplayMgrImpl::SetTask(iTask* pTask)
    }
 }
 
-void CDisplayMgrImpl::GetBoundingBox(bool boundOrigin, IRect2d** pRect)
+WBFL::Geometry::Rect2d DisplayMgr::GetBoundingBox(bool boundOrigin) const
 {
-   CComPtr<IRect2d> rect;
-   rect.CoCreateInstance(CLSID_Rect2d);
+   WBFL::Geometry::Rect2d rect;
 
    // Begin with an inverted world
    Float64 rl =  DBL_MAX;
@@ -1489,20 +1350,16 @@ void CDisplayMgrImpl::GetBoundingBox(bool boundOrigin, IRect2d** pRect)
       for ( IndexType i = 0; i < nDisplayObjects; i++ )
       {
          bHasDO = true;
-
-         CComPtr<iDisplayObject> pDO;
-         pDL->GetDisplayObject(i,&pDO);
+         auto pDO = pDL->GetDisplayObject(i);
 
          if ( pDO->IsVisible() )
          {
-            CComPtr<IRect2d> box;
-            pDO->GetBoundingBox(&box);
+            auto box = pDO->GetBoundingBox();
 
-            Float64 lBox,rBox,tBox,bBox;
-            box->get_Left(&lBox);
-            box->get_Right(&rBox);
-            box->get_Top(&tBox);
-            box->get_Bottom(&bBox);
+            auto lBox = box.Left();
+            auto rBox = box.Right();
+            auto tBox = box.Top();
+            auto bBox = box.Bottom();
 
             rl = Min(rl,lBox);
             rr = Max(rr,rBox);
@@ -1514,37 +1371,31 @@ void CDisplayMgrImpl::GetBoundingBox(bool boundOrigin, IRect2d** pRect)
 
    if (bHasDO)
    {
-      rect->put_Left(rl);
-      rect->put_Right(rr);
-      rect->put_Top(rt);
-      rect->put_Bottom(rb);
+      rect.Left() = rl;
+      rect.Right() = rr;
+      rect.Top() = rt;
+      rect.Bottom() = rb;
    }
 
    if ( boundOrigin )
    {
       // If BoundZero is enabled, force the bottom left corner of the
       // world rect to (0,0) if it does not already contain it.
-      rect->BoundPoint(0,0);
+      rect.BoundPoint(0,0);
    }
 
-   rect.CopyTo(pRect);
+   return rect;
 }
 
-std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllDisplayObjects(CPoint point)
+std::vector<std::shared_ptr<iDisplayObject> > DisplayMgr::FindAllDisplayObjects(const POINT& point)
 {
-   std::vector<CComPtr<iDisplayObject> > dispObjects;
-
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   std::vector<std::shared_ptr<iDisplayObject> > dispObjects;
+   for(auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-
-      CComPtr<iDisplayObject> dispObj;
-      IndexType doCount = pDL->GetDisplayObjectCount();
+      IndexType doCount = dl->GetDisplayObjectCount();
       for ( IndexType i = 0; i < doCount; i++ )
       {
-         dispObj.Release();
-         pDL->GetDisplayObject(i,&dispObj);
+         auto dispObj = dl->GetDisplayObject(i);
          if ( dispObj->HitTest(point) )
             dispObjects.push_back(dispObj);
       }
@@ -1553,22 +1404,17 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllDisplayObjects(CPo
    return dispObjects;
 }
 
-std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllSelectableDisplayObjects(CPoint point)
+std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindAllSelectableDisplayObjects(const POINT& point)
 {
-   std::vector<CComPtr<iDisplayObject> > dispObjects;
+   std::vector<std::shared_ptr<iDisplayObject>> dispObjects;
 
-   DisplayListContainer::iterator iter;
-   for ( iter = m_DisplayLists.begin(); iter != m_DisplayLists.end(); iter++ )
+   for(auto& dl : m_DisplayLists)
    {
-      CComPtr<iDisplayList> pDL = *iter;
-
-      CComPtr<iDisplayObject> dispObj;
-      IndexType doCount = pDL->GetDisplayObjectCount();
+      IndexType doCount = dl->GetDisplayObjectCount();
       for ( IndexType i = 0; i < doCount; i++ )
       {
-         dispObj.Release();
-         pDL->GetDisplayObject(i,&dispObj);
-         if ( dispObj->GetSelectionType() == stAll && dispObj->HitTest(point) )
+         auto dispObj = dl->GetDisplayObject(i);
+         if ( dispObj->GetSelectionType() == SelectionType::All && dispObj->HitTest(point) )
             dispObjects.push_back(dispObj);
       }
    }
@@ -1576,24 +1422,24 @@ std::vector<CComPtr<iDisplayObject> > CDisplayMgrImpl::FindAllSelectableDisplayO
    return dispObjects;
 }
 
-void CDisplayMgrImpl::FindNextSelectableDisplayObject(CPoint point,iDisplayObject* *pDispObj)
+std::shared_ptr<iDisplayObject> DisplayMgr::FindNextSelectableDisplayObject(const POINT& point)
 {
-   std::vector<CComPtr<iDisplayObject> > dispObjects = FindAllSelectableDisplayObjects(point);
-   std::vector<CComPtr<iDisplayObject> >::reverse_iterator iter;
+   auto dispObjects = FindAllSelectableDisplayObjects(point);
 
    if ( dispObjects.size() == 0 )
    {
       // No display objects were found
-      (*pDispObj) = 0;
-      return;
+      return nullptr;
    }
 
    // Traverse the vector in reverse order, looking for the first display object that
    // is selected. Once found, back up one position (move forward in the display list).
    // This is the next display object to be selected. If none are selected, select the first one
-   for ( iter = dispObjects.rbegin(); iter != dispObjects.rend(); iter++ )
+   auto iter = dispObjects.rbegin();
+   auto end = dispObjects.rend();
+   for ( ; iter != end; iter++ )
    {
-      CComPtr<iDisplayObject> dispObj = *iter;
+      auto dispObj(*iter);
       if ( iter == dispObjects.rbegin() && dispObj->IsSelected() )
       {
          // If the first display object is selected (which would be the last display object
@@ -1604,52 +1450,49 @@ void CDisplayMgrImpl::FindNextSelectableDisplayObject(CPoint point,iDisplayObjec
       else if ( dispObj->IsSelected() )
       {
          iter--; // Back up one
-         (*pDispObj) = (*iter);
-         (*pDispObj)->AddRef();
-         return;
+         return *iter;
       }
    }
 
    // If we got this far, nothing is selected, or the last display object in the list is selected
    // In either event, we want the first display object
-   (*pDispObj) = *(dispObjects.begin());
-   (*pDispObj)->AddRef();
-   return;
+   return *(dispObjects.begin());
 }
 
-// iDisplayListEvents
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectAdded(IDType listID,iDisplayObject* pDO)
-{
-   CRect box = pDO->GetBoundingBox();
-   m_pView->InvalidateRect(box);
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectRemoved(IDType listID,SIZE_T doID)
-{
-   m_pView->Invalidate();
-}
-
-STDMETHODIMP_(void) CDisplayMgrImpl::OnDisplayObjectsCleared(IDType listID)
-{
-   m_pView->Invalidate();
-}
-
-void CDisplayMgrImpl::RegisterEventSink(iDisplayMgrEvents* pEventSink)
+void DisplayMgr::RegisterEventSink(std::shared_ptr<iDisplayMgrEvents> pEventSink)
 {
    UnregisterEventSink();
    m_EventSink = pEventSink;
 }
 
-void CDisplayMgrImpl::UnregisterEventSink()
+void DisplayMgr::UnregisterEventSink()
 {
-   m_EventSink = 0;
+   m_EventSink.reset();
 }
 
-void CDisplayMgrImpl::GetEventSink(iDisplayMgrEvents** pEventSink)
+std::shared_ptr<iDisplayMgrEvents> DisplayMgr::GetEventSink()
 {
-   if ( pEventSink == nullptr )
-      return;
+   return m_EventSink;
+}
 
-   (*pEventSink) = m_EventSink;
-   (*pEventSink)->AddRef();
+// iDisplayListEvents
+void DisplayMgr::OnDisplayObjectAdded(IDType listID, std::shared_ptr<iDisplayObject> pDO)
+{
+   CRect box = pDO->GetLogicalBoundingBox();
+   if (m_pView->GetSafeHwnd()) m_pView->InvalidateRect(box);
+
+#if defined _DEBUG
+   auto& record = CircularRefDebugger::GetRecord((void*)(pDO.get()));
+   record.view_address = (Uint64)m_pView;
+#endif
+}
+
+void DisplayMgr::OnDisplayObjectRemoved(IDType listID, IDType doID)
+{
+   if(m_pView->GetSafeHwnd()) m_pView->Invalidate();
+}
+
+void DisplayMgr::OnDisplayObjectsCleared(IDType listID)
+{
+   if (m_pView->GetSafeHwnd()) m_pView->Invalidate();
 }

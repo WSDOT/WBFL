@@ -21,144 +21,144 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DisplayObjectDefaultImpl.h: interface for the CDisplayObjectDefaultImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <DManip\DManipExp.h>
-#include <DManip\DisplayObject.h>
-#include <DManip\DisplayList.h>
-
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayObject.h>
+#include <DManip/DisplayObjectEvents.h>
+#include <DManip/DisplayList.h>
+#include <DManip/GravityWellStrategy.h>
 #include <set>
 
-struct iDropSite;
-interface ISize2d;
-
-class DMANIPCLASS CDisplayObjectDefaultImpl
+namespace WBFL
 {
-public:
-	CDisplayObjectDefaultImpl();
-	virtual ~CDisplayObjectDefaultImpl();
+   namespace DManip
+   {
+      class iDropSite;
+      class NestedDisplayObjectEventRelay;
 
-   virtual HRESULT Do_FinalConstruct();
-   virtual void Do_FinalRelease();
+      /// @brief This class implements the majority of the iDisplayObject interface
+      /// Many derived display object interfaces inherit from this class to provide a near
+      /// complete implementation.
+      class DMANIPCLASS DisplayObjectDefaultImpl : public iDisplayObject, public std::enable_shared_from_this<DisplayObjectDefaultImpl>
+      {
+      public:
+	      DisplayObjectDefaultImpl(IDType id = INVALID_ID);
+	      virtual ~DisplayObjectDefaultImpl();
 
-   void SetDisplayObject(iDisplayObject* pParent);
+         virtual void SetID(IDType id) override;
+         virtual IDType GetID() const override;
 
-   // iDisplayObject implementation
-   virtual void Do_SetID(IDType id);
-   virtual IDType Do_GetID();
+         virtual void SetItemData(void* pVoid, bool bDelete) override;
+         virtual void GetItemData(void** ppVoid) override;
 
-   virtual void Do_SetItemData(void* pVoid,bool bDelete);
-   virtual void Do_GetItemData(void** ppVoid);
+         virtual void SetDisplayList(std::weak_ptr<iDisplayList> pDL) override;
+         virtual std::shared_ptr<iDisplayList> GetDisplayList() override;
+         virtual std::shared_ptr<const iDisplayList> GetDisplayList() const override;
 
-   virtual void Do_SetDisplayList(iDisplayList * pList);
-   virtual void Do_GetDisplayList(iDisplayList** list);
+         virtual void Visible(bool bVisible) override;
+         virtual bool IsVisible() const override;
 
-   virtual void Do_Visible(BOOL bVisible);
-   virtual BOOL Do_IsVisible();
+         // Drawing
+         //virtual void Draw(CDC* pDC) override;
+         //virtual void Highlight(CDC* pDC, bool bHighlight) override;
 #if defined(_DEBUG)
-   virtual void Do_DrawGravityWell(CDC* pDC);
-#endif 
+         virtual void DrawGravityWell(CDC* pDC) override;
+#endif
 
-   // Size and Hit Testing
-   virtual void Do_SetGravityWellStrategy(iGravityWellStrategy* pStrategy);
-   virtual void Do_GetGravityWellStrategy(iGravityWellStrategy** pStrategy);
-   virtual BOOL Do_HitTest(CPoint point);
-   virtual BOOL Do_TouchesRect(CRect r);
-   virtual CRect Do_GetBoundingBox();
+         // Size and Hit Testing
+         virtual void SetGravityWellStrategy(std::shared_ptr<iGravityWellStrategy> pStrategy) override;
+         virtual std::shared_ptr<iGravityWellStrategy> GetGravityWellStrategy() override;
+         virtual bool HitTest(const POINT& point) const override;
+         virtual RECT GetLogicalBoundingBox() const override;
+         //virtual WBFL::Geometry::Rect2d GetBoundingBox() const override; // subclasses need to implement
+         virtual bool TouchesRect(const RECT& r) const override;
 
-   // Selection
-   virtual void Do_Select(BOOL bSelect);
-   virtual BOOL Do_IsSelected();
-   virtual void Do_SetSelectionType(SelectionType st);
-   virtual SelectionType Do_GetSelectionType();
-   virtual void Do_RetainSelection(BOOL bRetain);
-   virtual BOOL Do_RetainSelection();
+         // Selection
+         virtual void Select(bool bSelect) override;
+         virtual bool IsSelected() const override;
+         virtual void SetSelectionType(SelectionType st) override;
+         virtual SelectionType GetSelectionType() const override;
+         virtual void  RetainSelection(bool bRetain) override;
+         virtual bool  RetainSelection() const override;
+
+         // Tool Tips
+         virtual void SetToolTipText(LPCTSTR lpszToolTipText) override;
+         virtual std::_tstring GetToolTipText() const override;
+         virtual void SetMaxTipWidth(INT maxWidth) override;
+         virtual INT GetMaxTipWidth() const override;
+         virtual void SetTipDisplayTime(INT iTime) override;
+         virtual INT GetTipDisplayTime() const override;
+
+         // Interface Events
+         // Called by the framework when UI events occur that are directed
+         // towards this display object.
+         virtual bool OnLButtonDown(UINT nFlags, const POINT& point) override;
+         virtual bool OnLButtonUp(UINT nFlags, const POINT& point) override;
+         virtual bool OnLButtonDblClk(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonDown(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonUp(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonDblClk(UINT nFlags, const POINT& point) override;
+         virtual bool OnMouseMove(UINT nFlags, const POINT& point) override;
+         virtual bool OnMouseWheel(UINT nFlags, short zDelta, const POINT& point) override;
+         virtual bool OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual bool OnContextMenu(CWnd* pWnd, const POINT& point) override;
+
+         // Event Sink
+         virtual void RegisterEventSink(std::shared_ptr<iDisplayObjectEvents> pEventSink) override;
+         virtual void UnregisterEventSink() override;
+         virtual std::shared_ptr<iDisplayObjectEvents> GetEventSink() override;
+
+         // Drag Drop
+         virtual void RegisterDropSite(std::shared_ptr<iDropSite> pDropSite) override;
+         virtual void UnregisterDropSite() override;
+         virtual std::shared_ptr<iDropSite> GetDropSite() override;
+
+         // Composite linkage
+         virtual void SetParent(std::weak_ptr<iDisplayObject> pParent) override;
+         virtual std::shared_ptr<iDisplayObject> GetParent() override;
+
+      protected:
+         IDType m_ID = INVALID_ID;
+         bool m_bIsVisible = true;
+         std::weak_ptr<iDisplayList> m_pDispList;
+
+         std::shared_ptr<iGravityWellStrategy> m_pGravityWellStrategy;
+         std::shared_ptr<iDropSite> m_pDropSite;
+         bool m_bSelected = false;
+         bool m_bRetainSelection = true;
+         std::_tstring m_strToolTipText = _T("");
+         INT m_MaxToolTipWidth = -1;
+         INT m_ToolTipDisplayTime = -1;
+         SelectionType m_SelectionType = SelectionType::None;
+         WBFL::Geometry::Rect2d m_ReusableRect;
+
+         void* m_pItemData = nullptr;
+         bool m_bDeleteItemData = false;
+
+         std::shared_ptr<iDisplayObjectEvents> m_EventSink;
+
+         std::weak_ptr<iDisplayObject> m_pCompositeParent;
 
 
-   // Tool Tips
-   virtual void Do_SetToolTipText(LPCTSTR lpszToolTipText);
-   virtual CString Do_GetToolTipText();
-   virtual void Do_SetMaxTipWidth(INT maxWidth);
-   virtual INT Do_GetMaxTipWidth();
-   virtual void Do_SetTipDisplayTime(INT iTime);
-   virtual INT Do_GetTipDisplayTime();
-
-
-   // Interface Events
-   virtual bool Do_OnLButtonDown(UINT nFlags,CPoint point);
-   virtual bool Do_OnLButtonUp(UINT nFlags,CPoint point);
-   virtual bool Do_OnLButtonDblClk(UINT nFlags,CPoint point);
-   virtual bool Do_OnRButtonDown(UINT nFlags,CPoint point);
-   virtual bool Do_OnRButtonUp(UINT nFlags,CPoint point);
-   virtual bool Do_OnRButtonDblClk(UINT nFlags,CPoint point);
-   virtual bool Do_OnMouseMove(UINT nFlags,CPoint point);
-   virtual bool Do_OnMouseWheel(UINT nFlags,short zDelta,CPoint point);
-   virtual bool Do_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-   virtual bool Do_OnContextMenu(CWnd* pWnd,CPoint point);
-
-   // Event Sinks
-   virtual void Do_RegisterEventSink(iDisplayObjectEvents* pEventSink);
-   virtual void Do_UnregisterEventSink();
-   virtual void Do_GetEventSink(iDisplayObjectEvents** pEventSink);
-
-   // Drag Drop
-   virtual void Do_RegisterDropSite(iDropSite* pDropSite);
-   virtual void Do_UnregisterDropSite();
-   virtual void Do_GetDropSite(iDropSite** dropSite);
-
-   // Composite
-   virtual void Do_SetParent(iDisplayObject* pParent);
-   virtual void Do_GetParent(iDisplayObject** ppParent);
-
-   // Notifies all sinks of display object events
-   virtual void Fire_OnChanged();
-   virtual void Fire_OnDragMoved(ISize2d* offset);
-   virtual void Fire_OnMoved();
-   virtual void Fire_OnCopied();
-   virtual bool Fire_OnLButtonDown(UINT nFlags,CPoint point);
-   virtual bool Fire_OnLButtonUp(UINT nFlags,CPoint point);
-   virtual bool Fire_OnLButtonDblClk(UINT nFlags,CPoint point);
-   virtual bool Fire_OnRButtonDown(UINT nFlags,CPoint point);
-   virtual bool Fire_OnRButtonUp(UINT nFlags,CPoint point);
-   virtual bool Fire_OnRButtonDblClk(UINT nFlags,CPoint point);
-   virtual bool Fire_OnMouseMove(UINT nFlags,CPoint point);
-   virtual bool Fire_OnMouseWheel(UINT nFlags,short zDelta,CPoint point);
-   virtual bool Fire_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-   virtual bool Fire_OnContextMenu(CWnd* pWnd,CPoint point);
-   virtual void Fire_OnSelect();
-   virtual void Fire_OnUnselect();
-
-
-protected:
-   IDType m_ID;
-   BOOL m_bIsVisible;
-   iDisplayObject* m_pParent; // this parent is the DO that owns this implementation object
-   CComPtr<iGravityWellStrategy> m_pGravityWellStrategy;
-   iDisplayList* m_pDispList;
-   CComPtr<iDropSite> m_pDropSite;
-   BOOL m_bSelected;
-   BOOL m_bRetainSelection;
-   CString m_strToolTipText;
-   INT m_MaxToolTipWidth;
-   INT m_ToolTipDisplayTime;
-   SelectionType m_SelectionType;
-   CComPtr<IRect2d> m_ReusableRect;
-
-   void* m_pItemData;
-   bool m_bDeleteItemData;
-
-   CComPtr<iDisplayObjectEvents> m_EventSink;
-
-   iDisplayObject* m_pCompositeParent; // weak reference to parent object... typically used when this DO is part of a composite
+         // Notifies all sinks of display object events
+         friend NestedDisplayObjectEventRelay;
+         virtual void Fire_OnChanged();
+         virtual void Fire_OnDragMoved(const WBFL::Geometry::Size2d& offset);
+         virtual void Fire_OnMoved();
+         virtual void Fire_OnCopied();
+         virtual bool Fire_OnLButtonDown(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnLButtonUp(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnLButtonDblClk(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnRButtonDown(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnRButtonUp(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnRButtonDblClk(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnMouseMove(UINT nFlags, const POINT& point);
+         virtual bool Fire_OnMouseWheel(UINT nFlags, short zDelta, const POINT& point);
+         virtual bool Fire_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+         virtual bool Fire_OnContextMenu(CWnd* pWnd, const POINT& point);
+         virtual void Fire_OnSelect();
+         virtual void Fire_OnUnselect();
+      };
+   };
 };
-
-#endif // !defined(AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_)

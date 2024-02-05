@@ -21,42 +21,13 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// SocketFactoryImpl.cpp: implementation of the CSocketFactoryImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/SocketFactoryImpl.h>
+#include <DManip/SocketImpl.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "SocketFactoryImpl.h"
-#include "SocketImpl.h"
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CSocketFactoryImpl::CSocketFactoryImpl()
+std::shared_ptr<iSocket> SocketFactory::CreateSocket(IDType id,const WBFL::Geometry::Point2d& pos) const
 {
-
-}
-
-CSocketFactoryImpl::~CSocketFactoryImpl()
-{
-
-}
-
-STDMETHODIMP_(void) CSocketFactoryImpl::CreateSocket(IDType id,IPoint2d* pos,iSocket** socket)
-{
-   CComObject<CSocketImpl>* pSocket;
-   CComObject<CSocketImpl>::CreateInstance(&pSocket);
-   pSocket->SetID(id);
-   pSocket->SetPosition(pos);
-   (*socket) = pSocket;
-   (*socket)->AddRef();
+   return std::make_shared<Socket>(id, pos);
 }

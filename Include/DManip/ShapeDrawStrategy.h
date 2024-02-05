@@ -21,67 +21,94 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SHAPEDRAWSTRATEGY_H_
-#define INCLUDED_SHAPEDRAWSTRATEGY_H_
 #pragma once
 
-#include <DManip\DrawPointStrategy.h>
-#include <DManip\LineStyles.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawPointStrategy.h>
+#include <DManip/DManipTypes.h>
+#include <DManip/GravityWellStrategy.h>
+#include <Colors.h>
+#include <optional>
 
-interface IShape;
-
-interface iShapeDrawStrategy : public iDrawPointStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,SetShape)(IShape* pShape) PURE;
-   STDMETHOD_(void,GetShape)(IShape** ppShape) PURE;
-   STDMETHOD_(void,SetSolidLineStyle)(LineStyleType lineStyle) PURE;
-   STDMETHOD_(LineStyleType,GetSolidLineStyle)() PURE;
-   STDMETHOD_(void,SetSolidLineColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetSolidLineColor)() PURE;
-   STDMETHOD_(void,SetSolidFillColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetSolidFillColor)() PURE;
-   STDMETHOD_(void,SetSolidLineWidth)(UINT nPixels) PURE;
-   STDMETHOD_(UINT,GetSolidLineWidth)() PURE;
-   STDMETHOD_(void,SetVoidLineStyle)(LineStyleType lineStyle) PURE;
-   STDMETHOD_(LineStyleType,GetVoidLineStyle)() PURE;
-   STDMETHOD_(void,SetVoidLineColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetVoidLineColor)() PURE;
-   STDMETHOD_(void,SetVoidFillColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetVoidFillColor)() PURE;
-   STDMETHOD_(void,SetVoidLineWidth)(UINT nPixels) PURE;
-   STDMETHOD_(UINT,GetVoidLineWidth)() PURE;
-   STDMETHOD_(void,DoFill)(bool doFill) PURE;
-   STDMETHOD_(bool,DoFill)() PURE;
-   STDMETHOD_(void,HasBoundingShape)(bool bHasBoundingShape) PURE;
-   STDMETHOD_(bool,HasBoundingShape)() PURE;
+   namespace Geometry
+   {
+      class CompositeShape;
+   };
+
+   namespace DManip
+   {
+      /// @brief Drawing strategy that draws a shape for the associated point display object.
+      /// Also uses the shape to define a gravity well
+      class DMANIPCLASS ShapeDrawStrategy :
+         public iDrawPointStrategy,
+         public iGravityWellStrategy
+      {
+      private:
+         ShapeDrawStrategy(std::shared_ptr<const WBFL::Geometry::Shape> shape);
+      public:
+         static std::shared_ptr<ShapeDrawStrategy> Create(std::shared_ptr<const WBFL::Geometry::Shape> shape=nullptr) { return std::shared_ptr<ShapeDrawStrategy>(new ShapeDrawStrategy(shape)); }
+         virtual ~ShapeDrawStrategy() = default;
+
+         /// @brief The shape to draw
+         /// @param shape 
+         void SetShape(std::shared_ptr<const WBFL::Geometry::Shape> shape);
+         std::shared_ptr<const WBFL::Geometry::Shape> GetShape() const;
+         void SetSolidLineStyle(LineStyleType lineStyle);
+         LineStyleType GetSolidLineStyle() const;
+         void SetSolidLineColor(COLORREF crColor);
+         COLORREF GetSolidLineColor() const;
+         void SetSolidFillColor(COLORREF crColor);
+         COLORREF GetSolidFillColor() const;
+         void SetSolidLineWidth(UINT nPixels);
+         UINT GetSolidLineWidth() const;
+         void SetVoidLineStyle(LineStyleType lineStyle);
+         LineStyleType GetVoidLineStyle() const;
+         void SetVoidLineColor(COLORREF crColor);
+         COLORREF GetVoidLineColor() const;
+         void SetVoidFillColor(COLORREF crColor);
+         COLORREF GetVoidFillColor() const;
+         void SetVoidLineWidth(UINT nPixels);
+         UINT GetVoidLineWidth() const;
+         void Fill(bool bFill);
+         bool Fill() const;
+
+         /// @brief If true, the bounding perimeter of the shape can be used for hit testing
+         /// @param bHasBoundingShape 
+         void HasBoundingShape(bool bHasBoundingShape);
+         bool HasBoundingShape() const;
+
+         // iDrawPointStrategy Implementation
+         virtual void Draw(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const override;
+
+         // iGravityWellStrategy
+         virtual void GetGravityWell(std::shared_ptr<const iDisplayObject> pDO, CRgn* pRgn) override;
+
+      private:
+         LineStyleType m_SolidLineStyle = LineStyleType::Solid;
+         LineStyleType m_VoidLineStyle = LineStyleType::Solid;
+         COLORREF m_SolidLineColor = BLACK;
+         COLORREF m_SolidFillColor = BLACK;
+         COLORREF m_VoidLineColor = WHITE;
+         COLORREF m_VoidFillColor = WHITE;
+         UINT m_SolidLineWidth = 1;
+         UINT m_VoidLineWidth = 1;
+         bool m_bFill = false;
+         bool m_bHasBoundingShape = true;
+
+         std::shared_ptr<const WBFL::Geometry::Shape> m_Shape;
+         std::shared_ptr<const WBFL::Geometry::CompositeShape> m_CompositeShape;
+
+         mutable std::optional<WBFL::Geometry::Rect2d> m_BoundingBox;
+
+         void DrawMe(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const;
+         void DrawShape(std::shared_ptr<const iDisplayObject> pDO, CDC* pDC, std::shared_ptr<const WBFL::Geometry::CompositeShape> compositeShape, CPen& solidPen, CBrush& solidBrush, CPen& voidPen, CBrush& voidBrush) const;
+         void DrawShape(std::shared_ptr<const iDisplayObject> pDO, CDC* pDC, std::shared_ptr<const WBFL::Geometry::Shape> shape) const;
+         std::vector<WBFL::Geometry::Point2d> GetPointsInWorldSpace(std::shared_ptr<const iDisplayObject> pDO, std::shared_ptr<const WBFL::Geometry::Shape> shape) const;
+      };
+   };
 };
-
-
-#include <GeomModel/Shape.h>
-interface iShapeDrawStrategy2 : public iDrawPointStrategy
-{
-   STDMETHOD_(void, SetShape)(const std::shared_ptr<const WBFL::Geometry::Shape>& shape) PURE;
-   STDMETHOD_(const std::shared_ptr<const WBFL::Geometry::Shape>&, GetShape)() PURE;
-   STDMETHOD_(void, SetSolidLineStyle)(LineStyleType lineStyle) PURE;
-   STDMETHOD_(LineStyleType, GetSolidLineStyle)() PURE;
-   STDMETHOD_(void, SetSolidLineColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF, GetSolidLineColor)() PURE;
-   STDMETHOD_(void, SetSolidFillColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF, GetSolidFillColor)() PURE;
-   STDMETHOD_(void, SetSolidLineWidth)(UINT nPixels) PURE;
-   STDMETHOD_(UINT, GetSolidLineWidth)() PURE;
-   STDMETHOD_(void, SetVoidLineStyle)(LineStyleType lineStyle) PURE;
-   STDMETHOD_(LineStyleType, GetVoidLineStyle)() PURE;
-   STDMETHOD_(void, SetVoidLineColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF, GetVoidLineColor)() PURE;
-   STDMETHOD_(void, SetVoidFillColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF, GetVoidFillColor)() PURE;
-   STDMETHOD_(void, SetVoidLineWidth)(UINT nPixels) PURE;
-   STDMETHOD_(UINT, GetVoidLineWidth)() PURE;
-   STDMETHOD_(void, DoFill)(bool doFill) PURE;
-   STDMETHOD_(bool, DoFill)() PURE;
-   STDMETHOD_(void, HasBoundingShape)(bool bHasBoundingShape) PURE;
-   STDMETHOD_(bool, HasBoundingShape)() PURE;
-};
-
-#endif // INCLUDED_SHAPEDRAWSTRATEGY_H_

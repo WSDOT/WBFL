@@ -21,154 +21,132 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// InplaceEditTaskImpl.cpp: implementation of the CInplaceEditTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
+#include "pch.h"
 #include "InplaceEditTaskImpl.h"
-
-#include <DManip\DisplayView.h>
-#include <DManip\InplaceEdit.h>
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+#include <DManip/DisplayView.h>
+#include <DManip/DisplayObject.h>
+#include <DManip/DisplayMgr.h>
 
 #define IDC_EDIT 100
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
+using namespace WBFL::DManip;
 
-CInplaceEditTaskImpl::CInplaceEditTaskImpl()
-{
-}
-
-CInplaceEditTaskImpl::~CInplaceEditTaskImpl()
-{
-}
-
-void CInplaceEditTaskImpl::Init(CDisplayView* pView,iInplaceEditable* pEditable)
+InplaceEditTask::InplaceEditTask(CDisplayView* pView,std::shared_ptr<iInplaceEditable> pEditable)
 {
    m_pView = pView;
    m_pView->SetCapture();
    m_pEditable = pEditable;
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::Start()
+void InplaceEditTask::Start()
 {
    Do();
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& point)
+void InplaceEditTask::OnLButtonUp(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
+void InplaceEditTask::OnRButtonUp(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnMouseMove(UINT nFlags, const CPoint& point)
+void InplaceEditTask::OnMouseMove(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
+void InplaceEditTask::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnLButtonDown(UINT nFlags, const CPoint& point)
+void InplaceEditTask::OnLButtonDown(UINT nFlags, const CPoint& point)
 {
    LButtonDown();
    CompleteTask(); // Task only ends if in Done state
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnRButtonDown(UINT nFlags, const CPoint& point)
+void InplaceEditTask::OnRButtonDown(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnLButtonDblClk(UINT nFlags,const CPoint& point)
+void InplaceEditTask::OnLButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnRButtonDblClk(UINT nFlags,const CPoint& point)
+void InplaceEditTask::OnRButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void InplaceEditTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    KeyPress(nChar,nRepCnt,nFlags);
    CompleteTask(); // Task only ends if in Done state
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnContextMenu(CWnd* pWnd,const CPoint& point)
+void InplaceEditTask::OnContextMenu(CWnd* pWnd,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(DROPEFFECT) CInplaceEditTaskImpl::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
+DROPEFFECT InplaceEditTask::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::OnDragLeave()
+void InplaceEditTask::OnDragLeave()
 {
 }
 
-STDMETHODIMP_(DROPEFFECT) CInplaceEditTaskImpl::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
-{
-   return DROPEFFECT_NONE;
-}
-
-STDMETHODIMP_(DROPEFFECT) CInplaceEditTaskImpl::OnDragScroll(DWORD dwKeyState,CPoint point)
+DROPEFFECT InplaceEditTask::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(BOOL) CInplaceEditTaskImpl::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
+DROPEFFECT InplaceEditTask::OnDragScroll(DWORD dwKeyState,CPoint point)
+{
+   return DROPEFFECT_NONE;
+}
+
+BOOL InplaceEditTask::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
 {
    return FALSE;
 }
 
-STDMETHODIMP_(DROPEFFECT) CInplaceEditTaskImpl::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
+DROPEFFECT InplaceEditTask::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
 {
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
+void InplaceEditTask::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::InitTask()
+void InplaceEditTask::InitTask()
 {
    m_pEditable->CreateEditControl();
 }
 
-STDMETHODIMP_(BOOL) CInplaceEditTaskImpl::ValidateData()
+BOOL InplaceEditTask::ValidateData()
 {
    return m_pEditable->ValidateData();
 }
 
-STDMETHODIMP_(void) CInplaceEditTaskImpl::NotifyEditable()
+void InplaceEditTask::NotifyEditable()
 {
    m_pEditable->OnDataChanged();
 }
 
-void CInplaceEditTaskImpl::CompleteTask()
+void InplaceEditTask::CompleteTask()
 {
-   if ( CompareStates(CInplaceEditFSM::Cancelled) || CompareStates(CInplaceEditFSM::Done) )
+   if ( CompareStates(InplaceEditFSM::Cancelled) || CompareStates(InplaceEditFSM::Done) )
    {
       ReleaseCapture();
 
@@ -176,15 +154,13 @@ void CInplaceEditTaskImpl::CompleteTask()
 
       CDManipClientDC dc(m_pView);
 
-      CComQIPtr<iDisplayObject,&IID_iDisplayObject> dispObj(m_pEditable);
-      CRect box = dispObj->GetBoundingBox();
-      m_pView->InvalidateRect(box);
+      auto disp_obj = std::dynamic_pointer_cast<iDisplayObject>(m_pEditable);
+      auto box = disp_obj->GetLogicalBoundingBox();
+      m_pView->InvalidateRect(&box);
 
-      if ( CompareStates(CInplaceEditFSM::Done) )
+      if ( CompareStates(InplaceEditFSM::Done) )
          m_pEditable->OnDataChanged();
 
-      CComPtr<iDisplayMgr> pDispMgr;
-      m_pView->GetDisplayMgr(&pDispMgr);
-      pDispMgr->SetTask(nullptr);
+      m_pEditable->EndInplaceEdit();
    }
 }

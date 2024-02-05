@@ -21,82 +21,68 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ForeignDragDropTaskImpl.h: interface for the CForeignDragDropTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_FOREIGNDRAGDROPTASKIMPL_H_
-#define INCLUDED_FOREIGNDRAGDROPTASKIMPL_H_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include "resource.h"
 #include "ForeignDragDropFSM.h"
+#include <DManip/Task.h>
 
-class ATL_NO_VTABLE CForeignDragDropTaskImpl : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CForeignDragDropTaskImpl, &CLSID_ForeignDragDropTask>,
-   public CForeignDragDropFSM,
-   public iTask
+namespace WBFL
 {
-public:
-	CForeignDragDropTaskImpl();
-	virtual ~CForeignDragDropTaskImpl();
+   namespace DManip
+   {
+      class iDisplayMgr;
+      class iCoordinateMap;
 
-	void Init(iDisplayMgr* pDM,const CPoint& startPoint);
+      class ForeignDragDropTask :
+         public ForeignDragDropFSM,
+         public iTask
+      {
+      public:
+	      ForeignDragDropTask();
+         ForeignDragDropTask(std::shared_ptr<iDisplayMgr> pDM, const CPoint& startPoint);
+         virtual ~ForeignDragDropTask();
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+         // ForeignDragDropTask methods (from ForeignDragDropFSM)
+	      virtual void InitTask() override;
+         virtual void CreateDragObjects() override;
+         virtual void DestroyDragObjects() override;
+         virtual DROPEFFECT DetermineDropEffect() override;
+         virtual void TrackDragObjects() override;
+         virtual void NotifyDropTarget() override;
+         virtual void FSMError(LPCTSTR t, LPCTSTR s) override;
 
-DECLARE_REGISTRY_RESOURCEID(IDR_FOREIGNDRAGDROPTASK)
+         // iTask methods
+         virtual void Start() override;
+	      virtual void OnLButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnMouseMove(UINT nFlags, const CPoint& point) override;
+         virtual void OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point) override;
+         virtual void OnLButtonDown(UINT nFlags, const CPoint& point) override;
+         virtual void OnRButtonDown(UINT nFlags, const CPoint& point) override;
+         virtual void OnLButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual void OnContextMenu(CWnd* pWnd,const CPoint& point) override;
+         virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual void OnDragLeave() override;
+         virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual DROPEFFECT OnDragScroll(DWORD dwKeyState,CPoint point) override;
+         virtual BOOL OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+         virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
-BEGIN_COM_MAP(CForeignDragDropTaskImpl)
-   COM_INTERFACE_ENTRY(iTask)
-	COM_INTERFACE_ENTRY(iForeignDragDropTask)
-END_COM_MAP()
+      private:
+         std::shared_ptr<iDisplayMgr> m_pDispMgr;
+         std::shared_ptr<const iCoordinateMap> m_pMap;
+         CPoint m_DragStart; // This is the world point where drag and drop started
+         CPoint m_LastPoint; // The is the last drag point
+         CPoint m_DragPoint; // This is the world point corresponding to the current mouse position
 
-   // CForeignDragDropTask methods (from CForeignDragDropFSM)
-	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) override;
-	STDMETHOD_(void,InitTask)() override;
-   STDMETHOD_(void,CreateDragObjects)() override;
-   STDMETHOD_(void,DestroyDragObjects)() override;
-   STDMETHOD_(DROPEFFECT,DetermineDropEffect)() override;
-   STDMETHOD_(void,TrackDragObjects)() override;
-   STDMETHOD_(void,NotifyDropTarget)() override;
+         WBFL::Geometry::Point2d  m_PointCache; // create once, use many
 
-   // iTask methods
-   STDMETHOD_(void,Start)() override;
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point) override;
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point) override;
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point) override;
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point) override;
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point) override;
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(void,OnDragLeave)() override;
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
-
-private:
-   CComPtr<iDisplayMgr> m_pDispMgr;
-   CComPtr<iCoordinateMap> m_pMap;
-   CPoint m_DragStart; // This is the world point where drag and drop started
-   CPoint m_LastPoint; // The is the last drag point
-   CPoint m_DragPoint; // This is the world point corresponding to the current mouse position
-
-   CComPtr<IPoint2d>  m_PointCache; // create once, use many
-
-   COleDataObject* m_pDataObject;
-   DWORD m_dwKeyState;
-   DROPEFFECT m_dropEffect;
-   DROPEFFECT m_dropList;
+         COleDataObject* m_pDataObject;
+         DWORD m_dwKeyState;
+         DROPEFFECT m_dropEffect;
+         DROPEFFECT m_dropList;
+      };
+   };
 };
-
-#endif // INCLUDED_FOREIGNDRAGDROPTASKIMPL_H_

@@ -21,74 +21,58 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// RectSelectTaskImpl.h: interface for the CRectSelectTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include "resource.h"
 #include "RectSelectFSM.h"
+#include <DManip/Task.h>
 
-class ATL_NO_VTABLE CRectSelectTaskImpl : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CRectSelectTaskImpl, &CLSID_RectSelectTask>,
-   public CRectSelectFSM,
-   public iTask
+namespace WBFL
 {
-public:
-	CRectSelectTaskImpl();
-	virtual ~CRectSelectTaskImpl();
+   namespace DManip
+   {
+      class iDisplayMgr;
 
-   void Init(iDisplayMgr* pDM,const CPoint& startPoint);
+      class RectSelectTask :
+         public RectSelectFSM,
+         public iTask
+      {
+      public:
+	      RectSelectTask();
+         RectSelectTask(std::shared_ptr<iDisplayMgr> pDM, const CPoint& startPoint);
+         virtual ~RectSelectTask();
 
+         // RectSelectTask methods (from RectSelectFSM)
+	      virtual void FSMError(LPCTSTR t,LPCTSTR s) override;
+	      virtual void SelectObjects() override;
+         virtual void ClearRect() override;
+	      virtual void TrackRect() override;
+	      virtual void InitTask() override;
+         virtual void Cancel() override;
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+         // iTask methods
+         virtual void Start() override;
+	      virtual void OnLButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnMouseMove(UINT nFlags, const CPoint& point) override;
+         virtual void OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point) override;
+         virtual void OnLButtonDown(UINT nFlags, const CPoint& point) override;
+         virtual void OnRButtonDown(UINT nFlags, const CPoint& point) override;
+         virtual void OnLButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual void OnContextMenu(CWnd* pWnd,const CPoint& point) override;
+         virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual void OnDragLeave() override;
+         virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual DROPEFFECT OnDragScroll(DWORD dwKeyState,CPoint point) override;
+         virtual BOOL OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+         virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
-DECLARE_REGISTRY_RESOURCEID(IDR_RECTSELECTTASK)
-
-BEGIN_COM_MAP(CRectSelectTaskImpl)
-   COM_INTERFACE_ENTRY(iTask)
-	COM_INTERFACE_ENTRY(iRectSelectTask)
-END_COM_MAP()
-
-   // CRectSelectTask methods (from CRectSelectFSM)
-	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
-	STDMETHOD_(void,SelectObjects)();
-   STDMETHOD_(void,ClearRect)();
-	STDMETHOD_(void,TrackRect)();
-	STDMETHOD_(void,InitTask)();
-   STDMETHOD_(void,Cancel)();
-
-   // iTask methods
-   STDMETHOD_(void,Start)();
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point);
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point);
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(void,OnDragLeave)();
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point);
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point);
-
-private:
-   CComPtr<iDisplayMgr> m_pDispMgr;
-   CPoint m_FirstPoint;
-   CPoint m_SecondPoint;
-   CPoint m_TempPoint;
+      private:
+         std::shared_ptr<iDisplayMgr> m_pDispMgr;
+         CPoint m_FirstPoint;
+         CPoint m_SecondPoint;
+         CPoint m_TempPoint;
+      };
+   };
 };
-
-#endif // !defined(AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

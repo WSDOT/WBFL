@@ -21,15 +21,21 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECTFACTORY_H_
-#define INCLUDED_DISPLAYOBJECTFACTORY_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDisplayObject;
-
-interface iDisplayObjectFactory : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj) PURE;
-};
+   namespace DManip
+   {
+      class iDisplayObject;
 
-#endif // INCLUDED_DISPLAYOBJECTFACTORY_H_
+      /// @brief Interface defining a display object factory
+      class DMANIPCLASS iDisplayObjectFactory
+      {
+      public:
+         /// @brief Creates a display object based on drag and drop data
+         virtual std::shared_ptr<iDisplayObject> Create(CLIPFORMAT cfFormat,COleDataObject* pDataObject) const = 0;
+      };
+   };
+};

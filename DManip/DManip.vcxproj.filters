@@ -1,127 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="CenterOnPointFSM.cpp">
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CenterOnPointTaskImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CompositeDisplayObjectImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CompoundDrawLineStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConnectorImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DimensionLineImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayListImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayMgrImpl.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DisplayObjectDefaultImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayObjectFactoryImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DisplayView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DManip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DragDataImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EditableTextBlockImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EditableUnitValueTextBlockImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ExtRectangleDrawLineStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForeignDragDropFSM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForeignDragDropTaskImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Helpers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InplaceEditCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InplaceEditDefaultImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InplaceEditFSM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InplaceEditTaskImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InplaceNumericEditCtrl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LineHitTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LineImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LocalDragDropFSM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LocalDragDropTaskImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MappingImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NorthArrowImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OnMouseOverCursor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlugImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PointDisplayObjectImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RectangleDrawLineStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RectSelectFSM.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RectSelectTaskImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShapeDrawStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShapeGravityWellStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleDrawDashedLineStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleDrawLineStrategyImpl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SimpleDrawPointStrategyImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SocketFactoryImpl.cpp">
@@ -130,25 +30,76 @@
     <ClCompile Include="SocketImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StdAfx.cpp">
+    <ClCompile Include="PointDisplayObjectImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TargetDrawStrategyImpl.cpp">
+    <ClCompile Include="SimpleDrawPointStrategy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TaskFactoryImpl.cpp">
+    <ClCompile Include="LineDisplayObjectImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextBlockImpl.cpp">
+    <ClCompile Include="PlugImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LineHitTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayMgrImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayListImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayObjectFactoryImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DragDataImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ToolImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ToolPalette.cpp">
+    <ClCompile Include="InplaceEditTaskImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ViewTitleImpl.cpp">
+    <ClCompile Include="InplaceEditCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InplaceEditableDefaultImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InplaceEditFSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InplaceNumericEditCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectSelectFSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectSelectTaskImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalDragDropFSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalDragDropTaskImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ForeignDragDropFSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ForeignDragDropTaskImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CenterOnPointFSM.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CenterOnPointTaskImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ZoomRectFSM.cpp">
@@ -157,45 +108,191 @@
     <ClCompile Include="ZoomRectTaskImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnchoredTextBlockImpl.cpp">
+    <ClCompile Include="MappingImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CompoundDrawPointStrategyImpl.cpp">
+    <ClCompile Include="AnchoredTextBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompositeDisplayObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompoundDrawLineStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CompoundDrawPointStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DimensionLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DropSiteImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableTextBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtRectangleDrawLineStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NorthArrow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OnMouseOverCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RectangleDrawLineStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeDrawStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeGravityWellStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDrawDashedLineStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDrawLineStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TargetDrawStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlockImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolPalette.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewTitle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PolyLineDisplayObjectImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableUnitValueTextBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LegendEntryImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LegendDisplayObjectImpl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ContextMenuCommandWnd.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditableStationTextBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NestedDisplayObjectEventRelay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\DManip\AutoLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ResourceCompile Include="DManip.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="CenterOnPointFSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\DManip\CenterOnPointTask.h">
+    <ClInclude Include="CenterOnPointTask.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CenterOnPointTaskImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\DManip\CompositeDisplayObject.h">
+    <ClInclude Include="DManipDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompositeDisplayObjectImpl.h">
+    <ClInclude Include="ForeignDragDropFSM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ForeignDragDropTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ForeignDragDropTaskImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InplaceEditFSM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LineHitTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalDragDropFSM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalDragDropTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalDragDropTaskImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OnMouseOverCursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectSelectFSM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectSelectTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RectSelectTaskImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZoomRectFSM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZoomRectTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ZoomRectTaskImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\AnchoredTextBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\AutoLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\CompositeDisplayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\CompoundDrawLineStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CompoundDrawLineStrategyImpl.h">
+    <ClInclude Include="..\Include\DManip\CompoundDrawPointStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectableImpl.h">
+    <ClInclude Include="..\Include\DManip\ConnectableImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\Connections.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ConnectorImpl.h">
+    <ClInclude Include="..\Include\DManip\ConnectorImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\CoordinateMap.h">
@@ -204,16 +301,13 @@
     <ClInclude Include="..\Include\DManip\DimensionLine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DimensionLineImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\DManip\DisplayList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Dmanip\DisplayListEvents.h">
+    <ClInclude Include="..\Include\DManip\DisplayListEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayListImpl.h">
+    <ClInclude Include="..\Include\DManip\DisplayListImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\DisplayMgr.h">
@@ -222,16 +316,13 @@
     <ClInclude Include="..\Include\DManip\DisplayMgrEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayMgrImpl.h">
+    <ClInclude Include="..\Include\DManip\DisplayMgrImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\DisplayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\DManip\DisplayObjectContainer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Dmanip\DisplayObjectDefaultImpl.h">
+    <ClInclude Include="..\Include\DManip\DisplayObjectDefaultImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\DisplayObjectEvents.h">
@@ -240,16 +331,10 @@
     <ClInclude Include="..\Include\DManip\DisplayObjectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DisplayObjectFactoryImpl.h">
+    <ClInclude Include="..\Include\DManip\DisplayObjectFactoryImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\DisplayView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\DManip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DManipDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\DManipExp.h">
@@ -261,7 +346,7 @@
     <ClInclude Include="..\Include\DManip\DragData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DragDataImpl.h">
+    <ClInclude Include="..\Include\DManip\DragDataImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\Draggable.h">
@@ -276,37 +361,19 @@
     <ClInclude Include="..\Include\DManip\DropSite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\DManip\DropSiteImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Include\DManip\EditableTextBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EditableTextBlockImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Dmanip\EditableUnitValueTextBlock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EditableUnitValueTextBlockImpl.h">
+    <ClInclude Include="..\Include\DManip\EditableUnitValueTextBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\ExtRectangleDrawLineStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ExtRectangleDrawLineStrategyImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ForeignDragDropFSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\ForeignDragDropTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ForeignDragDropTaskImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\DManip\GravityWellStrategy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\InplaceEdit.h">
@@ -315,124 +382,88 @@
     <ClInclude Include="..\Include\DManip\InplaceEditCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InplaceEditDefaultImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InplaceEditFSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\InplaceEditTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InplaceEditTaskImpl.h">
+    <ClInclude Include="..\Include\DManip\InplaceEditableDefaultImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\InplaceNumericEditCtrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\DManip\Line.h">
+    <ClInclude Include="..\Include\DManip\LineDisplayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LineHitTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LineImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\LineStyles.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LocalDragDropFSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\LocalDragDropTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LocalDragDropTaskImpl.h">
+    <ClInclude Include="..\Include\DManip\LineDisplayObjectImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\Mapping.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MappingImpl.h">
+    <ClInclude Include="..\Include\DManip\MappingImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\NorthArrow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NorthArrowImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OnMouseOverCursor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlugImpl.h">
+    <ClInclude Include="..\Include\DManip\PlugImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\PointDisplayObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PointDisplayObjectImpl.h">
+    <ClInclude Include="..\Include\DManip\PointDisplayObjectImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\PolyLineDisplayObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\PolyLineDisplayObjectImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\RectangleDrawLineStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RectangleDrawLineStrategyImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RectSelectFSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\RectSelectTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RectSelectTaskImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\DManip\ShapeDrawStrategy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ShapeDrawStrategyImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\ShapeGravityWellStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShapeGravityWellStrategyImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleDrawDashedLineStrategyImpl.h">
+    <ClInclude Include="..\Include\DManip\SimpleDrawDashedLineStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\SimpleDrawLineStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleDrawLineStrategyImpl.h">
+    <ClInclude Include="..\Include\DManip\SimpleDrawPointStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\Dmanip\SimpleDrawPointStrategy.h">
+    <ClInclude Include="..\Include\DManip\SocketFactoryImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SimpleDrawPointStrategyImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketFactoryImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StdAfx.h">
+    <ClInclude Include="..\Include\DManip\SocketImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\TargetDrawStrategy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TargetDrawStrategyImpl.h">
+    <ClInclude Include="..\Include\DManip\TextBlockImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\Tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\ToolImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\ToolPalette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\ViewTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InplaceEditTaskImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\DManip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\Task.h">
@@ -441,198 +472,35 @@
     <ClInclude Include="..\Include\DManip\TaskFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TaskFactoryImpl.h">
+    <ClInclude Include="..\Include\DManip\EditableStationTextBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\Legend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\LegendEntryImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\LegendDisplayObjectImpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\ContextMenuCommandCallback.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\ContextMenuCommandWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InplaceEditTask.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\DManip\LegendEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\DManip\TextBlock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextBlockImpl.h">
+    <ClInclude Include="..\Include\DManip\NestedDisplayObjectEventRelay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\DManip\Tool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\ToolPalette.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewTitleImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ZoomRectFSM.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\ZoomRectTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ZoomRectTaskImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AnchoredTextBlockImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CompoundDrawPointStrategyImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\DManip\CompoundDrawPointStrategy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="..\Include\WBFLDManip.idl" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DManip.def" />
-    <None Include="CenterOnPointTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="CompositeDisplayObject.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="CompoundDrawLineStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DimensionLineDisplayObject.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DisplayList.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DisplayMgr.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DisplayObjectFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\DManip.rc2">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DragDataSink.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="DragDataSource.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="EditableTextBlock.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="EditableUnitValueTextBlock.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ExtRectangleDrawLineStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ForeignDragDropTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="InplaceEditTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="LineDisplayObject.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="LocalDragDropTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\Magnify.cur">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Mapping.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="NorthArrow.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Plug.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="PointDisplayObject.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\DManipTools\PolylineDisplayObject.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="RectangleDrawLineStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="RectSelectTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\registry.bin">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ShapeDrawStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ShapeGravityWellStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SimpleDrawDashedLineStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SimpleDrawLineStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SimpleDrawPointStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Socket.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SocketFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\Target.cur">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="TargetDrawStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="TaskFactory.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="TextBlock.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Tool.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ViewTitle.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ZoomRectTask.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="AnchoredTextBlock.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="CompoundDrawPointStrategy.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="ShapeDrawStrategy2.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{71dbf275-831d-4572-b650-6b3fd8d4aec8}</UniqueIdentifier>
-      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{dc7de4d4-0cae-4877-ae6a-49a6e2860cfb}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl</Extensions>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{d60add3a-ce78-4cd4-97ec-811b9362c580}</UniqueIdentifier>
-      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="DManip.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -1,23 +1,51 @@
-#ifndef INCLUDED_DROPSITEIMPL_H_
-#define INCLUDED_DROPSITEIMPL_H_
+///////////////////////////////////////////////////////////////////////
+// DManip - Direct Manipulation Framework
+// Copyright © 1999-2024  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
 
-#include <DManip\DManipExp.h>
-#include <DManip\DropSite.h>
+#pragma once
 
-class DMANIPCLASS CDropSiteImpl : public iDropSite
+#include <DManip/DManipExp.h>
+#include <DManip/DropSite.h>
+
+namespace WBFL
 {
-public:
-   CDropSiteImpl();
-   ~CDropSiteImpl();
+   namespace DManip
+   {
+      /// @brief Provides a basic implementation of a drop site. Objects cannot be dropped on this site, CanDrop always returns DROPEFFECT_NONE.
+      /// Subclasses can override the implementation as needed.
+      class DMANIPCLASS DropSite : public iDropSite
+      {
+      public:
+         DropSite() = default;
+         ~DropSite() = default;
 
-   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,WBFLGeometry::IPoint2dPtr point);
-   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,WBFLGeometry::IPoint2dPtr point);
+         virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point);
+         virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
 
-   virtual void SetDisplayObject(iDisplayObject* pDO);
-   virtual iDisplayObject* GetDisplayObject();
+         virtual void SetDisplayObject(std::shared_ptr<iDisplayObject> pDO);
+         virtual std::shared_ptr<iDisplayObject> GetDisplayObject();
 
-private:
-   iDisplayObject* m_pDispObj;
+      private:
+         std::shared_ptr<iDisplayObject> m_pDispObj;
+      };
+   };
 };
-
-#endif // INCLUDED_DROPSITEIMPL_H_

@@ -21,138 +21,284 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYMGR_H_
-#define INCLUDED_DISPLAYMGR_H_
 #pragma once
 
-#include <DManip\DisplayObjectContainer.h>
-#include <DManip\DManipTypes.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DManipTypes.h>
+#include <DManip/CoordinateMap.h>
 
 class CDisplayView;
-interface iCoordinateMap;
-interface iDisplayObject;
-interface iDisplayObjectFactory;
-interface iDisplayList;
-interface iDropSite;
-interface iDraggable;
-interface iDragDataSink;
-interface iTaskFactory;
-interface iTask;
-interface iDisplayMgrEvents;
 
-interface iDisplayMgr : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,SetView)(CDisplayView* pView) PURE;
+   namespace DManip
+   {
+      class iCoordinateMap;
+      class iDisplayObject;
+      class iDisplayObjectFactory;
+      class iDisplayList;
+      class iDropSite;
+      class iDraggable;
+      class iDragDataSink;
+      class iTask;
+      class iDisplayMgrEvents;
+      class TaskFactory;
 
-   // Be very careful using the View!!!
-   // Do not use the view unless you are ABSOLUTELY SURE that the method you are 
-   // calling it from has nothing to do with printing or print preview. If all you 
-   // need is scaling, use GetCoordinateMap from below. 
-   // If all you want is to call InvalidateRect, or InvalidateRgn, call the methods below
-   STDMETHOD_(CDisplayView*,GetView)() PURE;
-
-   STDMETHOD_(void,GetCoordinateMap)(iCoordinateMap** map) PURE;
-
-   // Display List Management
-   STDMETHOD_(void,AddDisplayList)(iDisplayList* pDL) PURE;
-   STDMETHOD_(void,GetDisplayList)(IndexType idx,iDisplayList** list) PURE;
-   STDMETHOD_(void,FindDisplayList)(IDType id,iDisplayList** list) PURE;
-   STDMETHOD_(IndexType,GetDisplayListCount)() PURE;
-   STDMETHOD_(void,RemoveDisplayList)(IDType key,AccessType access) PURE;
-   STDMETHOD_(void,ClearDisplayLists)() PURE;
-
-   // Display Object Management
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO,IDType key,AccessType access) PURE;
-   STDMETHOD_(void,FindDisplayObject)(IDType id,IDType listKey,AccessType access,iDisplayObject** dispObj) PURE;
-   STDMETHOD_(void,FindDisplayObjects)(CPoint point,DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point,DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,FindDisplayObjects)(CRect rect,DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) PURE;
-   STDMETHOD_(void,ClearDisplayObjects)() PURE;
-   STDMETHOD_(void,ClearDisplayObjects)(IDType key,AccessType access) PURE;
-   STDMETHOD_(IndexType,GetDisplayObjectCount)() PURE;
-   STDMETHOD_(IndexType,GetDisplayObjectFactoryCount)() PURE;
-   STDMETHOD_(void,AddDisplayObjectFactory)(iDisplayObjectFactory* factory) PURE;
-   STDMETHOD_(void,GetDisplayObjectFactory)(IndexType idx, iDisplayObjectFactory** factory) PURE;
-
-   // Selecting and Selections
-   STDMETHOD_(void,SelectObject)(iDisplayObject* pDO,BOOL bClearSelection) PURE;
-   STDMETHOD_(void,SelectObjects)(CRect r) PURE;
-   STDMETHOD_(void,ClearSelectedObjects)() PURE;
-   STDMETHOD_(void,ClearSelectedObjectsByList)(IDType key,AccessType access,BOOL bInclusive) PURE;
-   STDMETHOD_(void,GetSelectedObjects)(DisplayObjectContainer* selObjs) PURE;
-   STDMETHOD_(void,SelectAll)(BOOL bSelect) PURE;
-
-   // Selection Methods
-   STDMETHOD_(void,EnableLBtnMultiSelect)(BOOL bEnable,DWORD dwKey) PURE;
-   STDMETHOD_(BOOL,IsLBtnMultiSelectEnabled)() PURE;
-   STDMETHOD_(DWORD,GetLBtnMultiSelectKey)() PURE;
-   STDMETHOD_(void,EnableLBtnSelectRect)(BOOL bEnable) PURE;
-   STDMETHOD_(BOOL,IsLBtnSelectRectEnabled)() PURE;
-   STDMETHOD_(void,EnableLBtnSelect)(BOOL bEnable) PURE;
-   STDMETHOD_(BOOL,IsLBtnSelectEnabled)() PURE;
-   STDMETHOD_(void,EnableRBtnSelect)(BOOL bEnable) PURE;
-   STDMETHOD_(BOOL,IsRBtnSelectEnabled)() PURE;
-
-   // Drawing
-   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC) PURE;
-   STDMETHOD_(void,SetSelectionFillColor)(COLORREF color) PURE;
-   STDMETHOD_(void,SetSelectionLineColor)(COLORREF color) PURE;
-   STDMETHOD_(COLORREF,GetSelectionFillColor)() PURE;
-   STDMETHOD_(COLORREF,GetSelectionLineColor)() PURE;
-   STDMETHOD_(void,GetBoundingBox)(bool boundOrigin, IRect2d** ppRect) PURE;
-   STDMETHOD_(void,InvalidateRect)(LPCRECT lpRect) PURE;
-   STDMETHOD_(void,InvalidateRgn)(CRgn* pRgn) PURE;
-
-#if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWells)(CDC* pDC) PURE;
+      /// @brief Interface defining a Display Manager 
+      /// The display manager is responsible for managing the display lists, display objects, selections, 
+      /// drawing, scaling, drag and drop, events, and tasks. 
+      /// The display manager coordinates all of the interactions of the direct manipulation framework.
+      class DMANIPCLASS iDisplayMgr
+      {
+      public:
+#if defined _DEBUG
+         iDisplayMgr();
+         virtual ~iDisplayMgr();
 #endif
 
-   // Input Events
-   STDMETHOD_(bool,OnLButtonDown)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonUp)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonDblClk)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDown)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonUp)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDblClk)(UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseMove)(UINT nFlags, CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseWheel)(UINT nFlags, short zDelta, CPoint point) PURE;
-   STDMETHOD_(bool,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) PURE;
-   STDMETHOD_(bool,OnContextMenu)(CWnd* pWnd,CPoint point) PURE;
+         /// @brief Sets the associated view class
+         /// @param pView 
+         virtual void SetView(CDisplayView* pView) = 0;
+         virtual CDisplayView* GetView() = 0;
+         virtual const CDisplayView* GetView() const = 0;
 
-   // Tool Tips
-   STDMETHOD_(BOOL,OnNeedToolTipText)(UINT id,NMHDR* pNMHDR,LRESULT* pResult) PURE;
-   STDMETHOD_(INT_PTR,OnToolHitTest)(CPoint point,TOOLINFO* pTI) PURE;
+         /// @brief Returns the coordinate mapping object
+         /// @return 
+         virtual std::shared_ptr<const iCoordinateMap> GetCoordinateMap() const = 0;
 
-   // OLE Drag/Drop Events
- 	STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) PURE;
-	STDMETHOD_(void,OnDragLeave)() PURE;
-	STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) PURE;
-	STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) PURE;
-   STDMETHOD_(DROPEFFECT,OnDragScroll)( DWORD dwKeyState, CPoint point ) PURE;
+         /// @brief Creates a new display list.
+         /// @param id Must be a unique ID.
+         /// @return The new display list, or nullptr if failed to create
+         virtual std::shared_ptr<iDisplayList> CreateDisplayList(IDType id) = 0;
 
-   // Drag and Drop
-   STDMETHOD_(void,PrepareDragData)(iDragDataSink* pSink) PURE;
-   STDMETHOD_(void,CreateDragObjects)(COleDataObject* pDataObject) PURE;
-   STDMETHOD_(void,DrawDragObjects)(const CPoint& dragStart, const CPoint& dragPoint) PURE;
-   STDMETHOD_(void,DestroyDragObjects)() PURE;
-   STDMETHOD_(void,RegisterDropSite)(iDropSite* pDropSite) PURE;
-   STDMETHOD_(void,UnregisterDropSite)() PURE;
-   STDMETHOD_(void,GetDropSite)(iDropSite** dropSite) PURE;
-   STDMETHOD_(void,HighliteDropSite)(BOOL bHighlite) PURE;
-   STDMETHOD_(void,OnDragFinished)(DROPEFFECT de) PURE;
+         /// @brief Adds a previously created display list. The display list ID must be unique
+         /// @param pDL 
+         /// @return true if successful
+         virtual bool AddDisplayList(std::shared_ptr<iDisplayList> pDL) = 0;
 
-   // Tasks
-   STDMETHOD_(void,SetTaskFactory)(iTaskFactory* pFactory) PURE;
-   STDMETHOD_(void,GetTaskFactory)(iTaskFactory** factory) PURE;
-   STDMETHOD_(void,SetTask)(iTask* pTask) PURE;
+         /// @brief Returns a display list
+         /// @param idx 
+         /// @return 
+         virtual std::shared_ptr<iDisplayList> GetDisplayList(IndexType idx) = 0;
+         virtual std::shared_ptr<const iDisplayList> GetDisplayList(IndexType idx) const = 0;
 
-   // Event Sink - This gives the canvas a pluggable event handling strategy for events 
-   //              that are not handled by display objects
-   STDMETHOD_(void,RegisterEventSink)(iDisplayMgrEvents* pEventSink) PURE;
-   STDMETHOD_(void,UnregisterEventSink)() PURE;
-   STDMETHOD_(void,GetEventSink)(iDisplayMgrEvents** pEventSink) PURE;
+         /// @brief Find a display list based on its ID
+         /// @param id 
+         /// @return 
+         virtual std::shared_ptr<iDisplayList> FindDisplayList(IDType id) = 0;
+         virtual std::shared_ptr<const iDisplayList> FindDisplayList(IDType id) const = 0;
 
+         /// @brief Returns the number of display lists
+         /// @return 
+         virtual IndexType GetDisplayListCount() const = 0;
+
+         /// @brief Removes a display list
+         /// @param key 
+         /// @param access 
+         virtual void RemoveDisplayList(IDType key,AccessType access) = 0;
+
+         /// @brief Clears all display lists
+         virtual void ClearDisplayLists() = 0;
+
+         /// @brief Adds a display object to a display list
+         /// @param pDO 
+         /// @param key key that identifies the display list
+         /// @param access Identifies the type of key
+         virtual void AddDisplayObject(std::shared_ptr<iDisplayObject> pDO,IDType key,AccessType access) = 0;
+
+         /// @brief Find a display object
+         /// @param id ID of the display object to find
+         /// @param listKey 
+         /// @param access 
+         /// @return 
+         virtual std::shared_ptr<iDisplayObject> FindDisplayObject(IDType id, IDType listKey, AccessType access) = 0;
+         virtual std::shared_ptr<const iDisplayObject> FindDisplayObject(IDType id, IDType listKey, AccessType access) const = 0;
+
+         /// @brief Searches all display lists to find display objects containing a logical point
+         /// @param point 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const POINT& point) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const POINT& point) const = 0;
+
+         /// @brief Searches all display lists to find display objects containing a model space point
+         /// @param point 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Point2d& point) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Point2d& point) const = 0;
+
+         /// @brief Searches all display lists to find display objects contained within a logical rectangle
+         /// @param rect 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const RECT& rect) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const RECT& rect) const = 0;
+
+         /// @brief Searches all display lists to find display objects contained within a model space rectangle
+         /// @param rect 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) const = 0;
+
+         /// @brief Removes a display object from a display list
+         /// @param doKey 
+         /// @param doAccess 
+         /// @param dlKey 
+         /// @param dlAccess 
+         virtual void RemoveDisplayObject(IDType doKey,AccessType doAccess,IDType dlKey,AccessType dlAccess) = 0;
+
+         /// @brief Clears all display objects from all display lists
+         virtual void ClearDisplayObjects() = 0;
+
+         /// @brief Clears all display objects from the specified display list
+         /// @param key 
+         /// @param access 
+         virtual void ClearDisplayObjects(IDType key,AccessType access) = 0;
+
+         /// @brief Returns the number of display objects in all display lists
+         /// @return 
+         virtual IndexType GetDisplayObjectCount() const = 0;
+
+         /// @brief Adds a display object factory
+         /// @param factory 
+         virtual void AddDisplayObjectFactory(std::shared_ptr<iDisplayObjectFactory> factory) = 0;
+         virtual std::shared_ptr<iDisplayObjectFactory> GetDisplayObjectFactory(IndexType idx) = 0;
+         virtual std::shared_ptr<const iDisplayObjectFactory> GetDisplayObjectFactory(IndexType idx) const = 0;
+         /// @brief Returns the number of display object factories
+         /// @return 
+         virtual IndexType GetDisplayObjectFactoryCount() const = 0;
+
+         // Selecting and Selections
+         
+         /// @brief Selects a display object
+         /// @param pDO The display object to select
+         /// @param bClearSelection If true, clears any previous selection
+         virtual void SelectObject(std::shared_ptr<iDisplayObject> pDO,bool bClearSelection) = 0;
+
+         /// @brief Selects all selectable display objects within a logical rectangle
+         /// @param r 
+         virtual void SelectObjects(const RECT& r) = 0;
+
+         /// @brief Clears all selected display objects
+         virtual void ClearSelectedObjects() = 0;
+
+         /// @brief Clears all selected display objects associated with a display list
+         /// @param key 
+         /// @param access 
+         /// @param bInclusive If true, the selected display objects belonging to the specified display list are unselected, otherwise all but the selected display objects belonging to the specified display list are unselected
+         virtual void ClearSelectedObjectsByList(IDType key,AccessType access,bool bInclusive) = 0;
+
+         /// @brief Returns the selected display objects
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> GetSelectedObjects() = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> GetSelectedObjects() const = 0;
+
+         /// @brief Selects, or unselects all selectable display objects
+         /// @param bSelect 
+         virtual void SelectAll(bool bSelect = true) = 0;
+
+         // Selection Methods
+
+         /// @brief Enables left button multi-select
+         /// @param bEnable 
+         /// @param dwKey Key to press along with left button for multi-select to occur
+         virtual void EnableLBtnMultiSelect(bool bEnable,DWORD dwKey) = 0;
+         virtual bool IsLBtnMultiSelectEnabled() const = 0;
+         virtual DWORD GetLBtnMultiSelectKey() const = 0;
+
+         /// @brief Enables selection by drawing a rectangle with the left mouse button clicked
+         /// @param bEnable 
+         virtual void EnableLBtnSelectRect(bool bEnable) = 0;
+         virtual bool IsLBtnSelectRectEnabled() const = 0;
+
+         /// @brief Enables object selection with the left mouse button
+         /// @param bEnable 
+         virtual void EnableLBtnSelect(bool bEnable) = 0;
+         virtual bool IsLBtnSelectEnabled() const = 0;
+
+         /// @brief Enables object selection with the right mouse button
+         /// @param bEnable 
+         virtual void EnableRBtnSelect(bool bEnable) = 0;
+         virtual bool IsRBtnSelectEnabled() const = 0;
+
+         // Drawing
+
+         /// @brief Draws all of the visible display objects
+         /// @param pDC 
+         virtual void DrawDisplayObjects(CDC* pDC) const = 0;
+
+         /// @brief Sets the fill color for selected objects
+         /// @param color 
+         virtual void SetSelectionFillColor(COLORREF color) = 0;
+         virtual COLORREF GetSelectionFillColor() const = 0;
+
+         /// @brief Sets the line color for selected display objects
+         /// @param color 
+         virtual void SetSelectionLineColor(COLORREF color) = 0;
+         virtual COLORREF GetSelectionLineColor() const = 0;
+
+         /// @brief Returns the model space bounding box.
+         /// @param boundOrigin If true, the bounding box will include (0,0)
+         /// @return 
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(bool boundOrigin) const = 0;
+
+      #if defined(_DEBUG)
+         virtual void DrawGravityWells(CDC* pDC) const = 0;
+      #endif
+
+         /// @{
+         /// Input Events
+         virtual bool OnLButtonDown(UINT nFlags,const POINT& point) = 0;
+         virtual bool OnLButtonUp(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnLButtonDblClk(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDown(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonUp(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDblClk(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseMove(UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseWheel(UINT nFlags, short zDelta, const POINT& point) = 0;
+         virtual bool OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) = 0;
+         virtual bool OnContextMenu(CWnd* pWnd, const POINT& point) = 0;
+         /// @}
+
+         /// @{
+         /// Tool Tips
+         virtual BOOL OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRESULT* pResult) = 0;
+         virtual INT_PTR OnToolHitTest(const POINT& point,TOOLINFO* pTI) = 0;
+         /// @}
+
+         /// @{
+         // OLE Drag/Drop Events
+ 	      virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, const POINT& point) = 0;
+	      virtual void OnDragLeave() = 0;
+	      virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, const POINT& point) = 0;
+	      virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, const POINT& point) = 0;
+         virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, const POINT& point ) = 0;
+         /// @}
+
+         /// @{
+         // Drag and Drop
+         virtual void PrepareDragData(std::shared_ptr<iDragDataSink> pSink) = 0;
+         virtual void CreateDragObjects(COleDataObject* pDataObject) = 0;
+         virtual void DrawDragObjects(const POINT& dragStart, const POINT& dragPoint) = 0;
+         virtual void DestroyDragObjects() = 0;
+         virtual void RegisterDropSite(std::shared_ptr<iDropSite> pDropSite) = 0;
+         virtual void UnregisterDropSite() = 0;
+         virtual std::shared_ptr<iDropSite> GetDropSite() = 0;
+         virtual void HighlightDropSite(BOOL bHighlight) = 0;
+         virtual void OnDragFinished(DROPEFFECT de) = 0;
+         /// @}
+
+         /// @{
+         // Tasks
+         virtual void SetTaskFactory(std::shared_ptr<TaskFactory> pFactory) = 0;
+         virtual std::shared_ptr<TaskFactory> GetTaskFactory() = 0;
+         virtual void SetTask(std::shared_ptr<iTask> pTask) = 0;
+         /// @}
+
+         /// @{
+         /// Event Sink - This gives the canvas a pluggable event handling strategy for events that are not handled by display objects
+         virtual void RegisterEventSink(std::shared_ptr<iDisplayMgrEvents> pEventSink) = 0;
+         virtual void UnregisterEventSink() = 0;
+         virtual std::shared_ptr<iDisplayMgrEvents> GetEventSink() = 0;
+         /// @}
+      };
+   };
 };
-
-#endif // INCLUDED_DISPLAYMGR_H_

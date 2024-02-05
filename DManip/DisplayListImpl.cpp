@@ -21,121 +21,84 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DisplayListImpl.cpp: implementation of the CDisplayListImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/DisplayListImpl.h>
+#include <DManip/DisplayObject.h>
+#include <DManip/DisplayMgr.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "DisplayListImpl.h"
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDisplayListImpl::CDisplayListImpl()
+void DisplayList::SetDisplayMgr(std::weak_ptr<iDisplayMgr> pDispMgr)
 {
-}
-
-CDisplayListImpl::~CDisplayListImpl()
-{
-   Clear();
-}
-
-HRESULT CDisplayListImpl::FinalConstruct()
-{
-   m_pDispMgr = 0;
-   m_ID = -1;
-   return S_OK;
-}
-
-STDMETHODIMP_(void) CDisplayListImpl::SetDisplayMgr(iDisplayMgr* pDispMgr)
-{
-   if ( m_dwRef >= 2 && m_pDispMgr )
-      DestroyStrongRef();
-
-   if ( m_pDispMgr )
-      m_pDispMgr->Release();
-
    m_pDispMgr = pDispMgr;
-
-   if ( m_dwRef >= 2 && m_pDispMgr )
-      CreateStrongRef();
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::GetDisplayMgr(iDisplayMgr** dispMgr)
+std::shared_ptr<iDisplayMgr> DisplayList::GetDisplayMgr()
 {
-   *dispMgr = m_pDispMgr;
-   (*dispMgr)->AddRef();
+   return m_pDispMgr.lock();
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::SetID(IDType id)
+std::shared_ptr<const iDisplayMgr> DisplayList::GetDisplayMgr() const
+{
+   return m_pDispMgr.lock();
+}
+
+void DisplayList::SetID(IDType id)
 {
    m_ID = id;
 }
 
-STDMETHODIMP_(IDType) CDisplayListImpl::GetID()
+IDType DisplayList::GetID() const
 {
    return m_ID;
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::AddDisplayObject(iDisplayObject* pDO)
+void DisplayList::AddDisplayObject(std::shared_ptr<iDisplayObject> pDO)
 {
    m_DisplayObjects.emplace_back(pDO);
-   pDO->SetDisplayList(this);
+   pDO->SetDisplayList(weak_from_this());
    Fire_OnDisplayObjectAdded(pDO);
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::GetDisplayObject(IndexType index,iDisplayObject** dispObj)
+std::shared_ptr<iDisplayObject> DisplayList::GetDisplayObject(IndexType index)
 {
-   (*dispObj) = 0;
-   if ( index < 0 || m_DisplayObjects.size() <= index )
-      return;
-
-   CComPtr<iDisplayObject> pDO = m_DisplayObjects[index];
-   (*dispObj) = pDO;
-   (*dispObj)->AddRef();
+   PRECONDITION(0 <= index and index <= m_DisplayObjects.size());
+   if (m_DisplayObjects.empty()) return nullptr;
+   return m_DisplayObjects[index];
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObject(IDType id,iDisplayObject** dispObj)
+std::shared_ptr<const iDisplayObject> DisplayList::GetDisplayObject(IndexType index) const
 {
-   (*dispObj) = 0;
-
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      if ( pDO->GetID() == id )
-      {
-         (*dispObj) = pDO;
-         (*dispObj)->AddRef();
-         return;
-      }
-   }
-
-   return;
+   PRECONDITION(0 <= index and index <= m_DisplayObjects.size());
+   if (m_DisplayObjects.empty()) return nullptr;
+   return m_DisplayObjects[index];
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::RemoveDisplayObject(IDType key,AccessType access)
+std::shared_ptr<iDisplayObject> DisplayList::FindDisplayObject(IDType id)
 {
-   IDType doID;
-   if ( access = atByIndex )
+   auto iter = std::find_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), [id](auto& dispObj) {return dispObj->GetID() == id; });
+   return (iter == m_DisplayObjects.end() ? nullptr : *iter);
+}
+
+std::shared_ptr<const iDisplayObject> DisplayList::FindDisplayObject(IDType id) const
+{
+   auto iter = std::find_if(m_DisplayObjects.cbegin(), m_DisplayObjects.cend(), [id](auto& dispObj) {return dispObj->GetID() == id; });
+   return (iter == m_DisplayObjects.cend() ? nullptr : *iter);
+}
+
+void DisplayList::RemoveDisplayObject(IDType key,AccessType access)
+{
+   IDType doID = INVALID_ID;
+   if ( access == AccessType::ByIndex )
    {
       IndexType index = (IndexType)key;
       // Remove display object by index
       if ( index < 0 || m_DisplayObjects.size() <= index )
          return;
 
-      DisplayObjectContainer::iterator iter = m_DisplayObjects.begin() + index;
+      auto iter = m_DisplayObjects.begin() + index;
+      auto pDO(*iter);
       
-      CComPtr<iDisplayObject> pDO = *iter;
       doID = pDO->GetID();
 
       m_DisplayObjects.erase(iter);
@@ -143,23 +106,18 @@ STDMETHODIMP_(void) CDisplayListImpl::RemoveDisplayObject(IDType key,AccessType 
    else
    {
       // Remove display object by id
-      DisplayObjectContainer::iterator iter;
-      for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-      {
-         CComPtr<iDisplayObject> pDO = *iter;
-         if ( pDO->GetID() == key )
-         {
-            doID = key;
-            m_DisplayObjects.erase(iter);
-            break;
-         }
-      }
+      auto iter = std::find_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), [key](auto& dispObj) {return dispObj->GetID() == key; });
+      if (iter == m_DisplayObjects.end())
+         return;
+
+      doID = key;
+      m_DisplayObjects.erase(iter);
    }
 
    Fire_OnDisplayObjectRemoved(doID);
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::Clear()
+void DisplayList::Clear()
 {
    if ( !m_DisplayObjects.empty() )
    {
@@ -168,170 +126,179 @@ STDMETHODIMP_(void) CDisplayListImpl::Clear()
    }
 }
 
-STDMETHODIMP_(IndexType) CDisplayListImpl::GetDisplayObjectCount()
+IndexType DisplayList::GetDisplayObjectCount() const
 {
    return m_DisplayObjects.size();
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObjects(CPoint point,DisplayObjectContainer* dispObjs)
+std::vector<std::shared_ptr<iDisplayObject>> DisplayList::FindDisplayObjects(const POINT& point)
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      if ( pDO->HitTest(point) )
-      {
-         dispObjs->push_back(pDO);
-      }
-   }
+   std::vector<std::shared_ptr<iDisplayObject>> dispObjs;
+   std::copy_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), std::back_inserter(dispObjs), [&point](auto& dispObj) { return dispObj->HitTest(point); });
+   return dispObjs;
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObjects(IPoint2d* point,DisplayObjectContainer* dispObjs)
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayList::FindDisplayObjects(const POINT& point) const
 {
-   CComPtr<iDisplayMgr> pDispMgr;
-   GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
-
-   CPoint p;
-   pMap->WPtoLP(point,&p.x,&p.y);
-   FindDisplayObjects(p,dispObjs);
+   std::vector<std::shared_ptr<const iDisplayObject>> dispObjs;
+   std::copy_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), std::back_inserter(dispObjs), [&point](auto& dispObj) { return dispObj->HitTest(point); });
+   return dispObjs;
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::FindDisplayObjects(CRect rect,DisplayObjectContainer* selObjs)
+std::vector<std::shared_ptr<iDisplayObject>> DisplayList::FindDisplayObjects(const WBFL::Geometry::Point2d& point)
 {
-   rect.NormalizeRect();
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      if ( pDO->TouchesRect(rect) )
-         selObjs->push_back(pDO);
-   }
+   auto dispMgr = GetDisplayMgr();
+   auto map = dispMgr->GetCoordinateMap();
+
+   POINT p;
+   map->WPtoLP(point,&p.x,&p.y);
+   return FindDisplayObjects(p);
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::DrawDisplayObjects(CDC* pDC,bool bSkipSelected)
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayList::FindDisplayObjects(const WBFL::Geometry::Point2d& point) const
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
+   auto dispMgr = GetDisplayMgr();
+   auto map = dispMgr->GetCoordinateMap();
 
+   POINT p;
+   map->WPtoLP(point, &p.x, &p.y);
+   return FindDisplayObjects(p);
+}
+
+std::vector<std::shared_ptr<iDisplayObject>> DisplayList::FindDisplayObjects(const RECT& rect)
+{
+   CRect r(rect);
+   r.NormalizeRect();
+
+   std::vector<std::shared_ptr<iDisplayObject>> dispObjs;
+   std::copy_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), std::back_inserter(dispObjs), [&r](auto& dispObj) { return dispObj->TouchesRect(r); });
+   return dispObjs;
+}
+
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayList::FindDisplayObjects(const RECT& rect) const
+{
+   CRect r(rect);
+   r.NormalizeRect();
+
+   std::vector<std::shared_ptr<const iDisplayObject>> dispObjs;
+   std::copy_if(m_DisplayObjects.begin(), m_DisplayObjects.end(), std::back_inserter(dispObjs), [&r](auto& dispObj) { return dispObj->TouchesRect(r); });
+   return dispObjs;
+}
+
+std::vector<std::shared_ptr<iDisplayObject>> DisplayList::FindDisplayObjects(const WBFL::Geometry::Rect2d& rect)
+{
+   auto dispMgr = GetDisplayMgr();
+   auto map = dispMgr->GetCoordinateMap();
+
+   POINT tl, br;
+   map->WPtoLP(rect.TopLeft(), &tl.x, &tl.y);
+   map->WPtoLP(rect.BottomRight(), &br.x, &br.y);
+   RECT r;
+   r.left = tl.x;
+   r.right = br.x;
+   r.top = tl.y;
+   r.bottom = br.y;
+   return FindDisplayObjects(r);
+}
+
+std::vector<std::shared_ptr<const iDisplayObject>> DisplayList::FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) const
+{
+   auto dispMgr = GetDisplayMgr();
+   auto map = dispMgr->GetCoordinateMap();
+
+   POINT tl, br;
+   map->WPtoLP(rect.TopLeft(), &tl.x, &tl.y);
+   map->WPtoLP(rect.BottomRight(), &br.x, &br.y);
+   RECT r;
+   r.left = tl.x;
+   r.right = br.x;
+   r.top = tl.y;
+   r.bottom = br.y;
+   return FindDisplayObjects(r);
+}
+
+void DisplayList::DrawDisplayObjects(CDC* pDC,bool bSkipSelected)
+{
+   for(auto& display_object : m_DisplayObjects)
+   {
       if ( !bSkipSelected )
       {
          // if not skipping selected, draw
-         pDO->Draw(pDC);
+         display_object->Draw(pDC);
       }
       else
       {
          // if skipping selected, draw only if not selected
-         if ( !pDO->IsSelected() )
-            pDO->Draw(pDC);
+         if ( !display_object->IsSelected() )
+            display_object->Draw(pDC);
       }
    }
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::HideDisplayObjects(bool bHide)
+void DisplayList::HideDisplayObjects(bool bHide)
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      pDO->Visible( !bHide );
-   }
+   std::for_each(m_DisplayObjects.begin(), m_DisplayObjects.end(), [bHide](auto& display_object) {display_object->Visible(!bHide); });
 }
 
-STDMETHODIMP_(void) CDisplayListImpl::GetWorldExtents(ISize2d* *ext)
+void DisplayList::SelectAll()
 {
-   CComPtr<IRect2d> worldRect;
-   worldRect.CoCreateInstance(CLSID_Rect2d);
-
-   IndexType nDisplayObjects = GetDisplayObjectCount();
-   for ( IndexType i = 0; i < nDisplayObjects; i++ )
-   {
-      CComPtr<iDisplayObject> pDO;
-      GetDisplayObject(i,&pDO);
-
-      CComPtr<IRect2d> box;
-      pDO->GetBoundingBox(&box);
-
-      if (i==0)
-      {
-         Float64 lBox,rBox,tBox,bBox;
-         box->get_Left(&lBox);
-         box->get_Right(&rBox);
-         box->get_Top(&tBox);
-         box->get_Bottom(&bBox);
-
-         worldRect = box;
-      }
-      else
-      {
-         worldRect->Union(box);
-      }
-   }
-
-   Float64 wx,wy;
-   worldRect->get_Width(&wx);
-   worldRect->get_Height(&wy);
-
-   CComPtr<ISize2d> size;
-   size.CoCreateInstance(CLSID_Size2d);
-   size->put_Dx(wx);
-   size->put_Dy(wy);
-
-   (*ext) = size;
-   (*ext)->AddRef();
+   auto display_mgr = GetDisplayMgr();
+   std::for_each(m_DisplayObjects.begin(), m_DisplayObjects.end(), [display_mgr](auto& display_object) {display_mgr->SelectObject(display_object,FALSE); });
 }
 
+WBFL::Geometry::Size2d DisplayList::GetModelExtents() const
+{
+   WBFL::Geometry::Rect2d world_rect;
+
+   if (m_DisplayObjects.size() == 0)
+      return world_rect.Size();
+
+   auto iter = m_DisplayObjects.begin();
+   auto& display_object(*iter);
+   world_rect = display_object->GetBoundingBox();
+   iter++;
+   std::for_each(iter, m_DisplayObjects.end(), [&world_rect](auto& display_object) {world_rect.Union(display_object->GetBoundingBox()); });
+
+   return world_rect.Size();
+}
 
 #if defined(_DEBUG)
-STDMETHODIMP_(void) CDisplayListImpl::DrawGravityWells(CDC* pDC)
+void DisplayList::DrawGravityWells(CDC* pDC)
 {
-   DisplayObjectContainer::iterator iter;
-   for ( iter = m_DisplayObjects.begin(); iter != m_DisplayObjects.end(); iter++ )
-   {
-      CComPtr<iDisplayObject> pDO = *iter;
-      pDO->DrawGravityWell( pDC );
-   }
+   std::for_each(m_DisplayObjects.begin(), m_DisplayObjects.end(), [pDC](auto& display_object) {display_object->DrawGravityWell(pDC); });
 }
 #endif
 
-void CDisplayListImpl::RegisterEventSink(iDisplayListEvents* pEventSink)
+void DisplayList::RegisterEventSink(std::shared_ptr<iDisplayListEvents> pEventSink)
 {
    UnregisterEventSink();
    m_EventSink = pEventSink;
 }
 
-void CDisplayListImpl::UnregisterEventSink()
+void DisplayList::UnregisterEventSink()
 {
-   m_EventSink = 0;
+   m_EventSink.reset();
 }
 
-void CDisplayListImpl::GetEventSink(iDisplayListEvents** pEventSink)
+std::shared_ptr<iDisplayListEvents> DisplayList::GetEventSink()
 {
-   if ( pEventSink == nullptr )
-      return;
-
-   (*pEventSink) = m_EventSink;
-   (*pEventSink)->AddRef();
+   return m_EventSink;
 }
 
-void CDisplayListImpl::Fire_OnDisplayObjectAdded(iDisplayObject* pDO)
+void DisplayList::Fire_OnDisplayObjectAdded(std::shared_ptr<iDisplayObject> pDO)
 {
-   if ( m_EventSink )
-      m_EventSink->OnDisplayObjectAdded(m_ID,pDO);
+   if (auto event_sink = m_EventSink)
+      event_sink->OnDisplayObjectAdded(m_ID,pDO);
 }
 
-void CDisplayListImpl::Fire_OnDisplayObjectRemoved(IDType doID)
+void DisplayList::Fire_OnDisplayObjectRemoved(IDType doID)
 {
-   if ( m_EventSink )
-      m_EventSink->OnDisplayObjectRemoved(m_ID,doID);
+   if (auto event_sink = m_EventSink)
+      event_sink->OnDisplayObjectRemoved(m_ID,doID);
 }
 
-void CDisplayListImpl::Fire_OnDisplayObjectsCleared()
+void DisplayList::Fire_OnDisplayObjectsCleared()
 {
-   if ( m_EventSink )
-      m_EventSink->OnDisplayObjectsCleared(m_ID);
+   if (auto event_sink = m_EventSink)
+      event_sink->OnDisplayObjectsCleared(m_ID);
 }

@@ -20,29 +20,91 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
-#ifndef INCLUDED_RECTANGLEDRAWDRAWLINESTRATEGY_H_
-#define INCLUDED_RECTANGLEDRAWDRAWLINESTRATEGY_H_
 #pragma once
 
-#include <DManip\DrawLineStrategy.h>
-#include <DManip\LineStyles.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawLineStrategy.h>
+#include <DManip/GravityWellStrategy.h>
+#include <DManip/DManipTypes.h>
+#include <Colors.h>
 
-interface iRectangleDrawLineStrategy : public iDrawLineStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,SetWidth)(Float64 width) PURE;
-   STDMETHOD_(Float64,GetWidth)() PURE;
-   STDMETHOD_(void,SetLineWidth)(UINT nWidth) PURE;
-   STDMETHOD_(UINT,GetLineWidth)() PURE;
-   STDMETHOD_(void,SetColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetColor)() PURE;
-   STDMETHOD_(void,SetLineStyle)(LineStyleType style) PURE;
-   STDMETHOD_(LineStyleType,GetLineStyle)() PURE;
-   STDMETHOD_(void,PerimeterGravityWell)(BOOL bPerimeterGravityWell) PURE;
-   STDMETHOD_(void,SetFillColor)(COLORREF crColor) PURE;
-   STDMETHOD_(COLORREF,GetFillColor)() PURE;
-   STDMETHOD_(void,DoFill)(BOOL doFill) PURE;
-   STDMETHOD_(BOOL,DoFill)() PURE;
-};
+   namespace DManip
+   {
+      /// @brief A line drawing strategy that represents a line as a rectangular area centered on the line.
+      /// The shape of the line representation is also used as a gravity well.
+      class DMANIPCLASS RectangleDrawLineStrategy :
+         public iDrawLineStrategy,
+         public iGravityWellStrategy
+      {
+      private:
+         RectangleDrawLineStrategy() = default;
+      public:
+         static std::shared_ptr<RectangleDrawLineStrategy> Create() { return std::shared_ptr<RectangleDrawLineStrategy>(new RectangleDrawLineStrategy()); }
+	      virtual ~RectangleDrawLineStrategy() = default;
 
-#endif // INCLUDED_RECTANGLEDRAWDRAWLINESTRATEGY_H_
+         /// @brief Defines the width of the rectangle in model space
+         /// @param width 
+         void SetWidth(Float64 width);
+         Float64 GetWidth() const;
+         
+         /// @brief Sets the width of the line used to draw the rectangle
+         /// @param nWidth 
+         void SetLineWidth(UINT nWidth);
+         UINT GetLineWidth() const;
+
+         /// @brief Sets the line color
+         /// @param crColor 
+         void SetColor(COLORREF crColor);
+         COLORREF GetColor() const;
+
+         /// @brief Sets the line style
+         /// @param style 
+         void SetLineStyle(LineStyleType style);
+         LineStyleType GetLineStyle() const;
+
+         /// @brief Sets the fill color
+         /// @param crColor 
+         void SetFillColor(COLORREF crColor);
+         COLORREF GetFillColor() const;
+
+         /// @brief Indicates if the rectangle is filled
+         /// @param bFill 
+         void Fill(bool bFill);
+         bool Fill() const;
+
+         /// @brief If true, the perimeter of the rectangle is used as the
+         /// gravity well, otherwise hits must be on the line.
+         /// @param bPerimeterGravityWell 
+         void PerimeterGravityWell(bool bPerimeterGravityWell);
+
+      // iLineDrawStrategy
+      public:
+         virtual void Draw(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iLineDisplayObject> pDO) const override;
+
+      // iGravityWellStrategy
+      public:
+         virtual void GetGravityWell(std::shared_ptr<const iDisplayObject> pDO, CRgn* pRgn) override;
+
+      private:
+         bool m_bPerimeterGravityWell = true;
+         bool m_bFill = false;
+         Float64 m_RectWidth = 0.0;
+         UINT m_nWidth = 1;
+         COLORREF m_crColor = BLACK;
+         COLORREF m_crFillColor = WHITE;
+
+         LineStyleType m_Style = LineStyleType::Solid;
+
+         WBFL::Geometry::Point2d GetStartPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         WBFL::Geometry::Point2d GetEndPoint(std::shared_ptr<const iLineDisplayObject> pDO) const;
+         void GetPoints(std::shared_ptr<const iLineDisplayObject> pDO,WBFL::Geometry::Point2d* pntTopLeft, WBFL::Geometry::Point2d* pntBottomLeft, WBFL::Geometry::Point2d* pntBottomRight, WBFL::Geometry::Point2d* pntTopRight) const;
+         void GetDrawRect(std::shared_ptr<const iLineDisplayObject>,CPoint* p1,CPoint* p2,CPoint* p3,CPoint* p4) const;
+         void DrawPerimeter(CDC* pDC,LineStyleType lineStyle, COLORREF color, CPoint& p1,CPoint& p2,CPoint& p3,CPoint& p4) const;
+      };
+   };
+};

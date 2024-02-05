@@ -21,39 +21,27 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// CenterOnPointTaskImpl.cpp: implementation of the CCenterOnPointTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
+#include "pch.h"
+#include "resource.h"
 #include "CenterOnPointTaskImpl.h"
+#include <DManip/DisplayView.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CCenterOnPointTaskImpl::CCenterOnPointTaskImpl()
+CenterOnPointTask::CenterOnPointTask()
 {
 }
 
-CCenterOnPointTaskImpl::~CCenterOnPointTaskImpl()
-{
-}
-
-void CCenterOnPointTaskImpl::Init(CDisplayView* pView)
+CenterOnPointTask::CenterOnPointTask(CDisplayView* pView)
 {
    m_pView = pView;
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::Start()
+CenterOnPointTask::~CenterOnPointTask()
+{
+}
+
+void CenterOnPointTask::Start()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
@@ -64,105 +52,99 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::Start()
    Do();
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& point)
+void CenterOnPointTask::OnLButtonUp(UINT nFlags,const CPoint& point)
 {
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
-{
-   // Do nothing
-}
-
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnMouseMove(UINT nFlags, const CPoint& point)
+void CenterOnPointTask::OnRButtonUp(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
+void CenterOnPointTask::OnMouseMove(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnLButtonDown(UINT nFlags, const CPoint& point)
+void CenterOnPointTask::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
+{
+   // Do nothing
+}
+
+void CenterOnPointTask::OnLButtonDown(UINT nFlags, const CPoint& point)
 {
    m_Point = point;
 
    MouseDown();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   m_pView->GetDisplayMgr(&pDispMgr);
-
-   pDispMgr->SetTask(nullptr);
+   m_pView->GetDisplayMgr()->SetTask(nullptr);
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnRButtonDown(UINT nFlags, const CPoint& point)
+void CenterOnPointTask::OnRButtonDown(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnRButtonDblClk(UINT nFlags,const CPoint& point)
+void CenterOnPointTask::OnRButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnLButtonDblClk(UINT nFlags,const CPoint& point)
+void CenterOnPointTask::OnLButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void CenterOnPointTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    if ( nChar == VK_ESCAPE )
    {
       EscKey();
-      CComPtr<iDisplayMgr> pDispMgr;
-      m_pView->GetDisplayMgr(&pDispMgr);
-
-      pDispMgr->SetTask(nullptr);
+      m_pView->GetDisplayMgr()->SetTask(nullptr);
    }
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnContextMenu(CWnd* pWnd,const CPoint& point)
+void CenterOnPointTask::OnContextMenu(CWnd* pWnd,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(DROPEFFECT) CCenterOnPointTaskImpl::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
-{
-   // Do nothing
-   return DROPEFFECT_NONE;
-}
-
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::OnDragLeave()
-{
-   // Do nothing
-}
-
-STDMETHODIMP_(DROPEFFECT) CCenterOnPointTaskImpl::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
+DROPEFFECT CenterOnPointTask::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(DROPEFFECT) CCenterOnPointTaskImpl::OnDragScroll(DWORD dwKeyState,CPoint point)
+void CenterOnPointTask::OnDragLeave()
+{
+   // Do nothing
+}
+
+DROPEFFECT CenterOnPointTask::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(BOOL) CCenterOnPointTaskImpl::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
+DROPEFFECT CenterOnPointTask::OnDragScroll(DWORD dwKeyState,CPoint point)
+{
+   // Do nothing
+   return DROPEFFECT_NONE;
+}
+
+BOOL CenterOnPointTask::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
 {
    // Do nothing
    return FALSE;
 }
 
-STDMETHODIMP_(DROPEFFECT) CCenterOnPointTaskImpl::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
+DROPEFFECT CenterOnPointTask::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::CenterOnPoint()
+void CenterOnPointTask::CenterOnPoint()
 {
    ReleaseCapture();
    SetCursor(m_OldCursor);
@@ -171,16 +153,16 @@ STDMETHODIMP_(void) CCenterOnPointTaskImpl::CenterOnPoint()
    m_pView->CenterOnPoint(m_Point);
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
+void CenterOnPointTask::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::InitTask()
+void CenterOnPointTask::InitTask()
 {
 }
 
-STDMETHODIMP_(void) CCenterOnPointTaskImpl::Cancel()
+void CenterOnPointTask::Cancel()
 {
    ReleaseCapture();
    SetCursor(m_OldCursor);

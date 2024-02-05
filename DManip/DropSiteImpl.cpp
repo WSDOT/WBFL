@@ -1,32 +1,47 @@
-#include "stdafx.h"
-#include <DManip\DropSiteImpl.h>
+///////////////////////////////////////////////////////////////////////
+// DManip - Direct Manipulation Framework
+// Copyright © 1999-2024  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
 
-CDropSiteImpl::CDropSiteImpl()
-{
-   m_pDispObj = 0;
-}
+#include "pch.h"
+#include <DManip/DropSiteImpl.h>
 
-CDropSiteImpl::~CDropSiteImpl()
-{
-}
+using namespace WBFL::DManip;
 
-DROPEFFECT CDropSiteImpl::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,WBFLGeometry::IPoint2dPtr point)
+DROPEFFECT DropSite::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point)
 {
    return DROPEFFECT_NONE;
 }
 
-void CDropSiteImpl::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,WBFLGeometry::IPoint2dPtr point)
+void DropSite::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
 {
    // Do nothing
-   AfxMessageBox("CDropSiteImpl::OnDropped");
 }
 
-void CDropSiteImpl::SetDisplayObject(iDisplayObject* pDO)
+void DropSite::SetDisplayObject(std::shared_ptr<iDisplayObject> pDO)
 {
    m_pDispObj = pDO;
 }
 
-iDisplayObject* CDropSiteImpl::GetDisplayObject()
+std::shared_ptr<iDisplayObject> DropSite::GetDisplayObject()
 {
    return m_pDispObj;
 }

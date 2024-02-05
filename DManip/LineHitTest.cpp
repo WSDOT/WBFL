@@ -21,62 +21,46 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include <DManip\DManip.h>
+#include "pch.h"
 #include "LineHitTest.h"
+#include <DManip/DisplayList.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/DisplayObject.h>
 #include <Math.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
-BOOL CLineHitTest::HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point)
+bool LineHitTest::HitTest(const iDisplayObject* pDO, WBFL::Geometry::Point2d s, WBFL::Geometry::Point2d e, const POINT& point)
 {
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto display_list = pDO->GetDisplayList();
+   auto display_mgr = display_list->GetDisplayMgr();
+   auto map = display_mgr->GetCoordinateMap();
 
    // Determine the angle of the line
-   Float64 sx,sy, ex, ey;
-   pStart->get_X(&sx);
-   pStart->get_Y(&sy);
-
-   pEnd->get_X(&ex);
-   pEnd->get_Y(&ey);
+   auto [sx, sy] = s.GetLocation();
+   auto [ex, ey] = e.GetLocation();
 
    Float64 angle = atan2(ey-sy,ex-sx);
 
    // Rotate end point so that it is on the X-axis and to the right of the start point
-   pEnd->RotateEx(pStart,-angle);
-
-   Float64 rex, rey;
-   pEnd->get_X(&rex);
-   pEnd->get_Y(&rey);
+   e.Rotate(s, -angle);
+   
+   auto [rex, rey] = e.GetLocation();
 
    // convert start and end in to logical space
-   Float64 startWX,startWY, endWX, endWY;
-   pMap->MPtoWP(pStart,&startWX,&startWY);
-   pMap->MPtoWP(pEnd,  &endWX,  &endWY);
+   auto world_start = map->MPtoWP(s);
+   auto world_end = map->MPtoWP(e);
 
    CPoint start, end;
-   pMap->WPtoLP(startWX,startWY,&start.x,&start.y);
-   pMap->WPtoLP(endWX,  endWY,  &end.x,  &end.y);
+   map->WPtoLP(world_start,&start.x,&start.y);
+   map->WPtoLP(world_end,  &end.x,  &end.y);
 
    CRect box(start,end);
    box.InflateRect(0,4);
 
    CPoint testPoint;
-   Float64 c = cos(-angle);
-   Float64 s = sin(-angle);
-   testPoint.x =  (point.x - start.x)*c + (point.y - start.y)*s + start.x;
-   testPoint.y = -(point.y - start.y)*c + (point.x - start.x)*s + start.y;
+   testPoint.x = LONG( (point.x - start.x) * cos(-angle) + (point.y - start.y) * sin(-angle) + start.x);
+   testPoint.y = LONG(-(point.y - start.y) * cos(-angle) + (point.x - start.x) * sin(-angle) + start.y);
 
    return box.PtInRect(testPoint);
 }

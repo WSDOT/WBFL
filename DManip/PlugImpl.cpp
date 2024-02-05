@@ -21,68 +21,40 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// PlugImpl.cpp: implementation of the CPlugImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/PlugImpl.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "PlugImpl.h"
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CPlugImpl::CPlugImpl()
+void Plug::Notify(std::shared_ptr<iSocket> socket)
 {
-   m_pSocket = nullptr;
-}
-
-CPlugImpl::~CPlugImpl()
-{
-
-}
-
-STDMETHODIMP_(void) CPlugImpl::Notify(iSocket* socket)
-{
-   std::vector< iPlugEvents* >::iterator iter(m_EventSinks.begin());
-   std::vector< iPlugEvents* >::iterator end(m_EventSinks.end());
-   for ( ; iter != end; iter++ )
+   for (auto& sink : m_EventSinks)
    {
-      iPlugEvents* sink = *iter;
-      sink->Notify(this);
+      sink.lock()->Notify(shared_from_this());
    }
 }
 
-STDMETHODIMP_(void) CPlugImpl::OnRemove(iSocket* socket)
+void Plug::OnRemove(std::shared_ptr<iSocket> socket)
 {
    socket->Disconnect(m_dwCookie);
 }
 
-STDMETHODIMP_(void) CPlugImpl::SetSocket(iSocket* pSocket)
+void Plug::SetSocket(std::shared_ptr<iSocket> socket)
 {
-   m_pSocket = pSocket;
+   m_pSocket = socket;
 }
 
-STDMETHODIMP_(void) CPlugImpl::GetSocket(iSocket** socket)
+std::shared_ptr<iSocket> Plug::GetSocket()
 {
-   (*socket) = m_pSocket;
-
-   if ( m_pSocket != nullptr )
-   {
-      (*socket)->AddRef();
-   }
+   return m_pSocket;
 }
 
-STDMETHODIMP_(void) CPlugImpl::Register(iPlugEvents* pEventSink)
+std::shared_ptr<const iSocket> Plug::GetSocket() const
 {
-#pragma Reminder("Use a connection point here!!!")
+   return m_pSocket;
+}
+
+void Plug::Register(std::weak_ptr<iPlugEvents> pEventSink)
+{
    m_EventSinks.push_back( pEventSink );
 }

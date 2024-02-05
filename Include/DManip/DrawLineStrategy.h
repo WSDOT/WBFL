@@ -21,24 +21,33 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DRAWLINESTRATEGY_H_
-#define INCLUDED_DRAWLINESTRATEGY_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iLineDisplayObject;
-
-interface iDrawLineStrategy : public IUnknown
+namespace WBFL
 {
-   // Draws the line in its normal or selected state
-   STDMETHOD_(void,Draw)(iLineDisplayObject* pDO,CDC* pDC) PURE;
+   namespace DManip
+   {
+      class iLineDisplayObject;
+      class iCoordinateMap;
 
-   // Draws the line while it is being dragged
-   STDMETHOD_(void,DrawDragImage)(iLineDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) PURE;
+      /// @brief Interface implemented by line drawing strategy objects. 
+      /// By implementing a line drawing strategy, line display objects can easily be drawn in different ways.
+      class DMANIPCLASS iDrawLineStrategy
+      {
+      public:
+         /// @brief Called by the framework when a line display object needs to be drawn
+         virtual void Draw(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC) const = 0;
 
-   // Draws the line in a highlited state. Usually when something is being dragged over it
-   STDMETHOD_(void,DrawHighlite)(iLineDisplayObject* pDO,CDC* pDC,BOOL bHighlite) PURE;
+         /// @brief Called by the framework when a line is being dragged and it needs to be drawn
+         virtual void DrawDragImage(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const = 0;
 
-   STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box) PURE;
+         /// @brief Called by the framework whenever an appropriate object is dragged over this display object. 
+         /// The line display object needs to be drawn highlighted to indicate to the user that it is a valid point to drop.
+         virtual void DrawHighlight(std::shared_ptr<const iLineDisplayObject> pDO,CDC* pDC,bool bHighlight) const = 0;
+
+         /// @brief Returns the size of the display object in world coordinates
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iLineDisplayObject> pDO) const = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DRAWLINESTRATEGY_H_

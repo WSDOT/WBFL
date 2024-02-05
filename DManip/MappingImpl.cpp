@@ -21,29 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// MappingImpl.cpp: implementation of the CMappingImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/MappingImpl.h>
+#include <DManip/DisplayView.h>
 
-#include "stdafx.h"
-
-
-#include <WBFLDManip.h>
-#include <DManip\DManip_clsid.cpp>
-#include <DManip\DManipTypes.h>
-#include <DManip\Mapping.h>
-#include <DManip\CoordinateMap.h>
-#include <DManip\DisplayView.h>
-#include "MappingImpl.h"
-
-#include <MathEx.h>
-#include <algorithm>
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
 LONG round_to_nearest_whole_number(Float64 x)
 {
@@ -58,20 +40,32 @@ LONG round_to_nearest_whole_number(Float64 x)
    return  LONG((x - LONG(x)) > 0.5) ? (LONG)ceil(x) : (LONG)floor(x);
 } // round_to_nearest_whole_number
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
-CMappingImpl::CMappingImpl()
+Mapping::Mapping()
 {
    // crazy dummy values to help detect errors
    m_WEX_over_LEX = -9999; // m_WorldExtentX/m_LogicalExtentX
    m_WEY_over_LEY = -9999; // m_WorldExtentY/m_LogicalExtentY
    m_LEX_over_WEX = -9999; // m_LogicalExtentX/m_WorldExtentX
    m_LEY_over_WEY = -9999; // m_LogicalExtentY/m_WorldExtentY
+
+   m_WorldExtent.SetDimensions(1.0,1.0);
+
+   m_LogicalExtentX = 1;
+   m_LogicalExtentY = 1;
+   m_LogicalOriginX = 1;
+   m_LogicalOriginY = 1;
+   m_OriginalLogicalExtentX = 1;
+   m_OriginalLogicalExtentY = 1;
+
+   SetRotation(0, 0, 0);
+
+   UpdateMappingScale();
+
+   m_MappingMode = MapMode::Anisotropic;
 }
 
-CMappingImpl::~CMappingImpl()
+Mapping::~Mapping()
 {
    // if this assert fires it means that there was a mismatch in the number of 
    // calls to PrepareDC and CleanUpDC. This is not good form.
@@ -82,31 +76,7 @@ CMappingImpl::~CMappingImpl()
    }
 }
 
-HRESULT CMappingImpl::FinalConstruct()
-{
-   m_WorldExtentX = 1.;
-   m_WorldExtentY = 1.;
-   m_WorldOriginX = 0.;
-   m_WorldOriginY = 0.;
-
-   m_LogicalExtentX = 1;
-   m_LogicalExtentY = 1;
-   m_LogicalOriginX = 1;
-   m_LogicalOriginY = 1;
-   m_OriginalLogicalExtentX = 1;
-   m_OriginalLogicalExtentY = 1;
-
-   SetRotation(0,0,0);
-
-   UpdateMappingScale();
-
-   m_MappingMode = DManip::Anisotropic;
-
-   return S_OK;
-}
-
-
-STDMETHODIMP_(void) CMappingImpl::PrepareDC(CDC* dc)
+void Mapping::PrepareDC(CDC* dc)
 {
    // save off dc and mapping information
    StackFrame item;
@@ -137,92 +107,64 @@ STDMETHODIMP_(void) CMappingImpl::PrepareDC(CDC* dc)
    m_Stack.push_back(item);
 }
 
-STDMETHODIMP_(void) CMappingImpl::CleanUpDC(CDC* dc)
+void Mapping::CleanUpDC(CDC* dc)
 {
    StackFrame& item = m_Stack.front();
 
    // pop DC off of stack
    m_Stack.pop_back();
-//   TRACE("CMappingImpl::Pop DC %d \n",m_Stack.size());
+//   TRACE("Mapping::Pop DC %d \n",m_Stack.size());
 }
 
 
-STDMETHODIMP_(void) CMappingImpl::CleanUpPrintDC(CDC* dc)
+void Mapping::CleanUpPrintDC(CDC* dc)
 {
    // pop all print DCs off of stack
    // we must do this because there is no way to know how many dc's were popped
    // onto our stack during printing
-//   TRACE("CMappingImpl::Pop Print DC %d\n",m_Stack.size());
+//   TRACE("Mapping::Pop Print DC %d\n",m_Stack.size());
    while(!m_Stack.empty())
       m_Stack.pop_back();
 }
 
 
-STDMETHODIMP_(void) CMappingImpl::SetWorldExt(Float64 wx,Float64 wy)
+void Mapping::SetWorldExt(Float64 wx,Float64 wy)
 {
-   m_WorldExtentX = wx;
-   m_WorldExtentY = wy;
+   SetWorldExt({ wx,wy });
+}
 
+void Mapping::SetWorldExt(const WBFL::Geometry::Size2d& wExt)
+{
+   m_WorldExtent = wExt;
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetWorldExt(ISize2d* wExt)
+const WBFL::Geometry::Size2d& Mapping::GetWorldExt() const
 {
-   Float64 dx,dy;
-   wExt->get_Dx(&dx);
-   wExt->get_Dy(&dy);
-   SetWorldExt( dx, dy );
+   return m_WorldExtent;
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetWorldExt(Float64* wx,Float64* wy)
+void Mapping::SetWorldOrg(Float64 wx,Float64 wy)
 {
-   *wx = m_WorldExtentX;
-   *wy = m_WorldExtentY;
+   SetWorldOrg({ wx,wy });
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetWorldExt(ISize2d* *wExt)
+void Mapping::SetWorldOrg(const WBFL::Geometry::Point2d& wOrg)
 {
-   CComPtr<ISize2d> ext;
-   ext.CoCreateInstance(CLSID_Size2d);
-   ext->put_Dx(m_WorldExtentX);
-   ext->put_Dy(m_WorldExtentY);
-
-   (*wExt) = ext;
-   (*wExt)->AddRef();
+   m_WorldOrigin = wOrg;
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetWorldOrg(Float64 wx,Float64 wy)
+const WBFL::Geometry::Point2d& Mapping::GetWorldOrg() const
 {
-   m_WorldOriginX = wx;
-   m_WorldOriginY = wy;
+   return m_WorldOrigin;
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetWorldOrg(IPoint2d* wOrg)
+void Mapping::SetLogicalOrg(const POINT& org)
 {
-   Float64 x,y;
-   wOrg->get_X(&x);
-   wOrg->get_Y(&y);
-   SetWorldOrg( x, y );
+   SetLogicalOrg(org.x, org.y);
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetWorldOrg(Float64* wx,Float64* wy)
-{
-   *wx = m_WorldOriginX;
-   *wy = m_WorldOriginY;
-}
-
-STDMETHODIMP_(void) CMappingImpl::GetWorldOrg(IPoint2d* *wOrg)
-{
-   CComPtr<IPoint2d> org;
-   org.CoCreateInstance(CLSID_Point2d);
-   org->put_X(m_WorldOriginX);
-   org->put_Y(m_WorldOriginY);
-
-   (*wOrg) = org;
-   (*wOrg)->AddRef();
-}
-
-STDMETHODIMP_(void) CMappingImpl::SetLogicalOrg(LONG lx,LONG ly)
+void Mapping::SetLogicalOrg(LONG lx,LONG ly)
 {
    m_LogicalOriginX = lx;
    m_LogicalOriginY = ly;
@@ -230,13 +172,12 @@ STDMETHODIMP_(void) CMappingImpl::SetLogicalOrg(LONG lx,LONG ly)
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetLogicalOrg(LONG* lx,LONG* ly)
+POINT Mapping::GetLogicalOrg() const
 {
-   *lx = m_LogicalOriginX;
-   *ly = m_LogicalOriginY;
+   return { m_LogicalOriginX, m_LogicalOriginY };
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetLogicalExt(LONG lx,LONG ly)
+void Mapping::SetLogicalExt(LONG lx,LONG ly)
 {
    m_OriginalLogicalExtentX = lx;
    m_OriginalLogicalExtentY = ly;
@@ -244,42 +185,39 @@ STDMETHODIMP_(void) CMappingImpl::SetLogicalExt(LONG lx,LONG ly)
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetLogicalExt(LONG* lx,LONG* ly)
+SIZE Mapping::GetLogicalExt() const
 {
-   *lx = m_OriginalLogicalExtentX;
-   *ly = m_OriginalLogicalExtentY;
+   return { m_OriginalLogicalExtentX, m_OriginalLogicalExtentY };
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetAdjustedLogicalExt(LONG* lx,LONG* ly)
+SIZE Mapping::GetAdjustedLogicalExt() const
 {
-   *lx = m_LogicalExtentX;
-   *ly = m_LogicalExtentY;
+   return { m_LogicalExtentX, m_LogicalExtentY };
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetAdjustedWorldExt(Float64* dx,Float64* dy)
+WBFL::Geometry::Size2d Mapping::GetAdjustedWorldExt() const
 {
    // convert adjusted logical extents to world
    Float64 wox, woy, wex, wey;
    LPtoWP(m_LogicalOriginX, m_LogicalOriginY, &wox, &woy);
    LPtoWP(m_LogicalOriginX + m_OriginalLogicalExtentX, m_LogicalOriginY + m_OriginalLogicalExtentY, &wex, &wey);
 
-   *dx = fabs(wox-wex);
-   *dy = fabs(woy-wey);
+   return { fabs(wox - wex), fabs(woy - wey) };
 }
  
 
-STDMETHODIMP_(void) CMappingImpl::SetMappingMode(DManip::MapMode mm)
+void Mapping::SetMappingMode(MapMode mm)
 {
    m_MappingMode = mm;
    UpdateLogicalExtents();
 }
 
-STDMETHODIMP_(DManip::MapMode) CMappingImpl::GetMappingMode()
+MapMode Mapping::GetMappingMode()
 {
    return m_MappingMode;
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetRotation(Float64 cx,Float64 cy,Float64 angle)
+void Mapping::SetRotation(Float64 cx,Float64 cy,Float64 angle)
 {
    m_RotationX = cx;
    m_RotationY = cy;
@@ -288,88 +226,79 @@ STDMETHODIMP_(void) CMappingImpl::SetRotation(Float64 cx,Float64 cy,Float64 angl
    m_cosR = cos(angle);
 }
 
-STDMETHODIMP_(void) CMappingImpl::SetRotation(IPoint2d* c,Float64 angle)
+void Mapping::SetRotation(const WBFL::Geometry::Point2d& c,Float64 angle)
 {
-   Float64 cx,cy;
-   c->get_X(&cx);
-   c->get_Y(&cy);
+   auto [cx, cy] = c.GetLocation();
    SetRotation(cx,cy,angle);
 }
 
-STDMETHODIMP_(void) CMappingImpl::GetRotation(Float64* cx,Float64* cy,Float64* angle)
+std::pair<WBFL::Geometry::Point2d,Float64> Mapping::GetRotation() const
 {
-   *cx = m_RotationX;
-   *cy = m_RotationY;
-   *angle = m_Rotation;
+   return { {m_RotationX, m_RotationY}, m_Rotation };
 }
 
 //////////////////////////////////////////////////////////
 // iCoordinateMap
-STDMETHODIMP_(void) CMappingImpl::MPtoWP(Float64 mx,Float64 my,Float64* wx,Float64* wy)
+void Mapping::MPtoWP(Float64 mx,Float64 my,Float64* wx,Float64* wy) const
 {
    // clockwise rotation
    *wx = (mx - m_RotationX)*m_cosR - (my - m_RotationY)*m_sinR;
    *wy = (mx - m_RotationX)*m_sinR + (my - m_RotationY)*m_cosR;
 }
 
-STDMETHODIMP_(void) CMappingImpl::MPtoWP(IPoint2d* mp,Float64* wx,Float64* wy)
+WBFL::Geometry::Point2d Mapping::MPtoWP(const WBFL::Geometry::Point2d& mp) const
 {
-   Float64 mx,my;
-   mp->get_X(&mx);
-   mp->get_Y(&my);
-   MPtoWP(mx,my,wx,wy);
+   auto [mx, my] = mp.GetLocation();
+   Float64 wx, wy;
+   MPtoWP(mx, my, &wx, &wy);
+   return { wx,wy };
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoMP(Float64 wx,Float64 wy,Float64* mx,Float64* my)
+void Mapping::WPtoMP(Float64 wx, Float64 wy, Float64* mx, Float64* my) const
 {
    // counter-clockwise rotation
-   *mx =  wx*m_cosR + wy*m_sinR + m_RotationX;
-   *my = -wx*m_sinR + wy*m_cosR + m_RotationY;
+   *mx = wx * m_cosR + wy * m_sinR + m_RotationX;
+   *my = -wx * m_sinR + wy * m_cosR + m_RotationY;
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoMP(IPoint2d* wp,Float64* mx,Float64* my)
+void Mapping::WPtoMP(const WBFL::Geometry::Point2d& wp,Float64* mx,Float64* my) const
 {
-   Float64 wx,wy;
-   wp->get_X(&wx);
-   wp->get_Y(&wy);
+   auto [wx, wy] = wp.GetLocation();
    WPtoMP(wx,wy,mx,my);
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoLP(Float64 wx,Float64 wy,LONG* lx,LONG* ly)
+void Mapping::WPtoLP(Float64 wx,Float64 wy,LONG* lx,LONG* ly) const
 {
-   if (m_WorldExtentX == 0)
+   if (m_WorldExtent.Dx() == 0)
    {
       *lx = m_LogicalOriginX;
    }
    else
    {
       Float64 x;
-      x = (wx - m_WorldOriginX)*m_LEX_over_WEX + m_LogicalOriginX;
+      x = (wx - m_WorldOrigin.X())*m_LEX_over_WEX + m_LogicalOriginX;
       *lx = round_to_nearest_whole_number(x);
    }
 
-   if ( m_WorldExtentY == 0 )
+   if ( m_WorldExtent.Dy() == 0 )
    {
       *ly = m_LogicalOriginY;
    }
    else
    {
       Float64 y;
-      y = (wy - m_WorldOriginY)*m_LEY_over_WEY + m_LogicalOriginY;
+      y = (wy - m_WorldOrigin.Y())*m_LEY_over_WEY + m_LogicalOriginY;
       *ly = round_to_nearest_whole_number(y);
    }
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoLP(IPoint2d* wp,LONG* lx,LONG* ly)
+void Mapping::WPtoLP(const WBFL::Geometry::Point2d& wp,LONG* lx,LONG* ly) const
 {
-   Float64 x,y;
-   wp->get_X(&x);
-   wp->get_Y(&y);
-
+   auto [x, y] = wp.GetLocation();
    WPtoLP( x, y, lx, ly );
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy)
+void Mapping::LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy) const
 {
    if (m_LogicalExtentX == 0)
    {
@@ -377,7 +306,7 @@ STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy
    }
    else
    {
-      *wx = (lx - m_LogicalOriginX)*m_WEX_over_LEX + m_WorldOriginX;
+      *wx = (lx - m_LogicalOriginX)*m_WEX_over_LEX + m_WorldOrigin.X();
    }
 
    if (m_LogicalExtentY == 0)
@@ -386,25 +315,18 @@ STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy
    }
    else
    {
-      *wy = (ly - m_LogicalOriginY)*m_WEY_over_LEY + m_WorldOriginY;
+      *wy = (ly - m_LogicalOriginY)*m_WEY_over_LEY + m_WorldOrigin.Y();
    }
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoWP(LONG lx,LONG ly,IPoint2d** wp)
+WBFL::Geometry::Point2d Mapping::LPtoWP(LONG lx,LONG ly) const
 {
    Float64 wx,wy;
    LPtoWP(lx,ly,&wx,&wy);
-
-   CComPtr<IPoint2d> p;
-   p.CoCreateInstance(CLSID_Point2d);
-
-   p->Move(wx,wy);
-
-   (*wp) = p;
-   (*wp)->AddRef();
+   return WBFL::Geometry::Point2d(wx, wy);
 }
 
-STDMETHODIMP_(void) CMappingImpl::WPtoTP(Float64 wx,Float64 wy,LONG* tx,LONG* ty)
+void Mapping::WPtoTP(Float64 wx,Float64 wy,LONG* tx,LONG* ty) const
 {
    // two-step conversion
    LONG lx, ly;
@@ -413,7 +335,7 @@ STDMETHODIMP_(void) CMappingImpl::WPtoTP(Float64 wx,Float64 wy,LONG* tx,LONG* ty
    LPtoTP(lx, ly, tx, ty);
 }
 
-STDMETHODIMP_(void) CMappingImpl::TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy)
+void Mapping::TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy) const
 {
    // two-step conversion
    LONG lx, ly;
@@ -422,25 +344,25 @@ STDMETHODIMP_(void) CMappingImpl::TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy
    LPtoWP(lx, ly, wx, wy);
 }
 
-STDMETHODIMP_(void) CMappingImpl::LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty)
+void Mapping::LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty) const
 {
    ATLASSERT(!m_Stack.empty());
-   StackFrame& item = m_Stack.front();
+   const StackFrame& item = m_Stack.front();
 
    *tx = round_to_nearest_whole_number( item.m_TextCoordMapperX.GetA(lx) );
    *ty = round_to_nearest_whole_number( item.m_TextCoordMapperY.GetA(ly) );
 }
 
-STDMETHODIMP_(void) CMappingImpl::TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly)
+void Mapping::TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly) const
 {
    ATLASSERT(!m_Stack.empty());
-   StackFrame& item = m_Stack.front();
+   const StackFrame& item = m_Stack.front();
 
    *lx = round_to_nearest_whole_number( item.m_TextCoordMapperX.GetB(tx) );
    *ly = round_to_nearest_whole_number( item.m_TextCoordMapperY.GetB(ty) );
 }
 
-STDMETHODIMP_(CSize) CMappingImpl::GetTextWindowExtent()
+CSize Mapping::GetTextWindowExtent() const
 {
    LONG lox, loy;
    LPtoTP(0, 0, &lox, &loy);
@@ -451,7 +373,7 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextWindowExtent()
    return CSize( abs(lex-lox), abs(ley-loy) );
 }
  
-STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(CDisplayView* pView, const LOGFONT& font, LPCTSTR lpszText)
+CSize Mapping::GetTextExtent(const CDisplayView* pView, const LOGFONT& font, LPCTSTR lpszText) const
 {
    if (m_Stack.empty())
    {
@@ -477,10 +399,10 @@ STDMETHODIMP_(CSize) CMappingImpl::GetTextExtent(CDisplayView* pView, const LOGF
    return size;
 }
 
-void CMappingImpl::UpdateLogicalExtents()
+void Mapping::UpdateLogicalExtents()
 {
-   if (m_WorldExtentX==0.0 || m_OriginalLogicalExtentX==0 ||
-       m_WorldExtentY==0.0 || m_OriginalLogicalExtentY==0)
+   if (m_WorldExtent.Dx() == 0.0 || m_OriginalLogicalExtentX ==0 ||
+       m_WorldExtent.Dy() == 0.0 || m_OriginalLogicalExtentY == 0)
    {
       m_LogicalExtentX = m_OriginalLogicalExtentX;
       m_LogicalExtentY = m_OriginalLogicalExtentY;
@@ -488,21 +410,21 @@ void CMappingImpl::UpdateLogicalExtents()
       return;
    }
 
-   if ( m_MappingMode == DManip::Anisotropic )
+   if ( m_MappingMode == MapMode::Anisotropic )
    {
       // Just a straight mapping
       m_LogicalExtentX = m_OriginalLogicalExtentX;
       m_LogicalExtentY = m_OriginalLogicalExtentY;
 
    }
-   else if ( m_MappingMode == DManip::Isotropic )
+   else if ( m_MappingMode == MapMode::Isotropic )
    {
       // prevent divide by zero issues
-      if (!IsZero(m_WorldExtentX) && !IsZero(m_WorldExtentX) && m_OriginalLogicalExtentY != 0 )
+      if (!IsZero(m_WorldExtent.Dx()) && !IsZero(m_WorldExtent.Dx()) && m_OriginalLogicalExtentY != 0 )
       {
          // compute aspect ratio of logical and world extents
          Float64 logical_aspect_ratio = fabs((Float64)m_OriginalLogicalExtentX/(Float64)m_OriginalLogicalExtentY);
-         Float64 world_aspect_ratio   = fabs(m_WorldExtentX/m_WorldExtentY);
+         Float64 world_aspect_ratio   = fabs(m_WorldExtent.Dx()/m_WorldExtent.Dy());
 
          // adjust aspect ratio of logical space to match world
          if (logical_aspect_ratio < world_aspect_ratio)
@@ -530,26 +452,26 @@ void CMappingImpl::UpdateLogicalExtents()
    UpdateMappingScale();
 } 
 
-void CMappingImpl::UpdateMappingScale()
+void Mapping::UpdateMappingScale()
 {
    if ( m_LogicalExtentX == 0 )
       m_WEX_over_LEX = 1;
    else
-      m_WEX_over_LEX = m_WorldExtentX/(Float64)m_LogicalExtentX;
+      m_WEX_over_LEX = m_WorldExtent.Dx()/(Float64)m_LogicalExtentX;
 
    if ( m_LogicalExtentY == 0 )
       m_WEY_over_LEY = 1;
    else
-      m_WEY_over_LEY = m_WorldExtentY/(Float64)m_LogicalExtentY;
+      m_WEY_over_LEY = m_WorldExtent.Dy()/(Float64)m_LogicalExtentY;
 
 
-   if ( IsZero(m_WorldExtentX) )
+   if ( IsZero(m_WorldExtent.Dx()) )
       m_LEX_over_WEX = 1;
    else
-      m_LEX_over_WEX = (Float64)m_LogicalExtentX/m_WorldExtentX;
+      m_LEX_over_WEX = (Float64)m_LogicalExtentX/m_WorldExtent.Dx();
 
-   if ( IsZero(m_WorldExtentY) )
+   if ( IsZero(m_WorldExtent.Dy()) )
       m_LEY_over_WEY = 1;
    else
-      m_LEY_over_WEY = (Float64)m_LogicalExtentY/m_WorldExtentY;
+      m_LEY_over_WEY = (Float64)m_LogicalExtentY/m_WorldExtent.Dy();
 }

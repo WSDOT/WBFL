@@ -21,19 +21,41 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_
-#define INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_
 #pragma once
 
-#include <DManip\DrawLineStrategy.h>
-#include <DManip\LineStyles.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DrawLineStrategy.h>
+#include <DManip/DManipTypes.h>
 
-interface iCompoundDrawLineStrategy : public iDrawLineStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,AddStrategy)(iDrawLineStrategy* pStrategy) PURE;
-   STDMETHOD_(void,RemoveStrategy)(IndexType index) PURE;
-   STDMETHOD_(void, GetStrategy)(IndexType index, iDrawLineStrategy** ppStrategy) PURE;
-   STDMETHOD_(IndexType,Count)() PURE;
-};
+   namespace DManip
+   {
+      /// @brief A strategy that draws a line with multiple subordinate strategies
+      /// An example is drawing a simple line as well as a rectangular representation of the line
+      class DMANIPCLASS CompoundDrawLineStrategy : public iDrawLineStrategy
+      {
+      private:
+         CompoundDrawLineStrategy() = default;
+      public:
+         static std::shared_ptr<CompoundDrawLineStrategy> Create() { return std::shared_ptr<CompoundDrawLineStrategy>(new CompoundDrawLineStrategy()); }
+	      virtual ~CompoundDrawLineStrategy() = default;
 
-#endif // INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_
+         void AddStrategy(std::shared_ptr<iDrawLineStrategy> pStrategy);
+         void RemoveStrategy(IndexType index);
+         std::shared_ptr<iDrawLineStrategy> GetStrategy(IndexType index);
+         std::shared_ptr<const iDrawLineStrategy> GetStrategy(IndexType index) const;
+         IndexType Count() const;
+
+         // iLineDrawStrategy
+         virtual void Draw(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC) const override;
+         virtual void DrawDragImage(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+         virtual void DrawHighlight(std::shared_ptr<const iLineDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iLineDisplayObject> pDO) const override;
+
+      private:
+         using Strategies = std::vector<std::shared_ptr<iDrawLineStrategy>> ;
+         Strategies m_Strategies;
+      };
+   };
+};

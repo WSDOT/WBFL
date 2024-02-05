@@ -21,51 +21,61 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COORDINATEMAP_H_
-#define INCLUDED_COORDINATEMAP_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
 class CDisplayView;
 
-interface iCoordinateMap : public IUnknown
+namespace WBFL
 {
-   // Model Space - the space in which the model is created
-   // World Space - space resulting from the model space being rotated, translated, and scaled 
-   // Logical Space - space of the drawing window
+   namespace DManip
+   {
+      /// @brief Interface defining coordinate mapping between logical, text, model, and world coordinate spaces
+      /// Model Space - the space in which the model is created
+      /// World Space - space resulting from the model space being rotated, translated, and scaled 
+      /// Logical Space - space of the drawing window
+      /// Text Space - space for text, in twips
+      class DMANIPCLASS iCoordinateMap
+      {
+      public:
+         /// @{
+         /// @brief Maps Model point to World Point conversions
+         virtual void MPtoWP(Float64 mx,Float64 my,Float64* wx,Float64* wy) const = 0;
+         virtual WBFL::Geometry::Point2d MPtoWP(const WBFL::Geometry::Point2d& mp) const = 0;
 
-   // Model point to World Point conversions
-   STDMETHOD_(void,MPtoWP)(Float64 mx,Float64 my,Float64* wx,Float64* wy) PURE;
-   STDMETHOD_(void,MPtoWP)(IPoint2d* mp,Float64* wx,Float64* wy) PURE;
+         virtual void WPtoMP(Float64 wx,Float64 wy,Float64* mx,Float64* my) const = 0;
+         virtual void WPtoMP(const WBFL::Geometry::Point2d& wp,Float64* mx,Float64* my) const = 0;
+         /// @}
 
-   STDMETHOD_(void,WPtoMP)(Float64 wx,Float64 wy,Float64* mx,Float64* my) PURE;
-   STDMETHOD_(void,WPtoMP)(IPoint2d* wp,Float64* mx,Float64* my) PURE;
+         /// @{
+         /// @brief Maps World point to Logical Point conversions
+         virtual void WPtoLP(Float64 wx,Float64 wy,LONG* lx,LONG* ly) const = 0;
+         virtual void WPtoLP(const WBFL::Geometry::Point2d& wp,LONG* lx,LONG* ly) const = 0;
 
-   // World point to Logical Point conversions
-   STDMETHOD_(void,WPtoLP)(Float64 wx,Float64 wy,LONG* lx,LONG* ly) PURE;
-   STDMETHOD_(void,WPtoLP)(IPoint2d* wp,LONG* lx,LONG* ly) PURE;
+         virtual void LPtoWP(LONG lx,LONG ly,Float64* wx,Float64* wy) const = 0;
+         virtual WBFL::Geometry::Point2d LPtoWP(LONG lx,LONG ly) const = 0;
+         /// @}
 
-   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,Float64* wx,Float64* wy) PURE;
-   STDMETHOD_(void,LPtoWP)(LONG lx,LONG ly,IPoint2d** wp) PURE;
+         /// @{
+         /// @brief Maps points to Text space. This space is always isometrically mapped.
+         ///  -The origin of this space is at the Logical Origin
+         ///  -Each text unit is a twip, or 1/20 of a point.(Because a point is 1/72 inch, a twip is 1/1440 inch.) 
+         ///  -Positive X is to the right positive Y is up on the device.
+         virtual void WPtoTP(Float64 wx,Float64 wy,LONG* tx,LONG* ty) const = 0;
+         virtual void TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy) const = 0;
 
-   // conversion to Text space. This space is always isometrically mapped.
-   //  -The origin of this space is at the Logical Origin
-   //  -Each text unit is a twip, or 1/20 of a point.(Because a point 
-   //   is 1/72 inch, a twip is 1/1440 inch.) 
-   //  -Positive X is to the right positive Y is up on the device.
-   STDMETHOD_(void,WPtoTP)(Float64 wx,Float64 wy,LONG* tx,LONG* ty) PURE;
-   STDMETHOD_(void,TPtoWP)(LONG tx,LONG ty,Float64* wx,Float64* wy) PURE;
+         virtual void LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty) const = 0;
+         virtual void TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly) const = 0;
+         /// @}
 
-   STDMETHOD_(void,LPtoTP)(LONG lx,LONG ly,LONG* tx,LONG* ty) PURE;
-   STDMETHOD_(void,TPtoLP)(LONG tx,LONG ty,LONG* lx,LONG* ly) PURE;
+         /// @brief Get size of window in text space coordinates (twips)
+         /// This window is the size of the logical extents.
+         virtual CSize GetTextWindowExtent() const = 0;
 
-   // Get size of window in text space coordinates (twips)
-   // This window is the size of the logical extents.
-   STDMETHOD_(CSize,GetTextWindowExtent)() PURE;
-
-   // get text extent in logical coord's. Font dimensions are expected in
-   // 1/10 points (i.e., in form needed by CreatePointFontIndirect).
-   // Adjust for DPI scaling
-   STDMETHOD_(CSize,GetTextExtent)(CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) PURE;
+         /// @brief Get text extent in logical coordinates. Font dimensions are expected in
+         /// 1/10 points (i.e., in form needed by CreatePointFontIndirect).
+         /// Adjust for DPI scaling
+         virtual CSize GetTextExtent(const CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) const = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_COORDINATEMAP_H_

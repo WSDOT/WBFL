@@ -21,31 +21,65 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DRAGGABLE_H_
-#define INCLUDED_DRAGGABLE_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDragDataSource;
-interface iDragDataSink;
-interface iDragData;
-interface iCoordinateMap;
-
-interface iDraggable : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,SetDragData)(iDragData* dd) PURE;
-   STDMETHOD_(void,GetDragData)(iDragData** dd) PURE;
+   namespace Geometry
+   {
+      class Size2d;
+   };
 
-   STDMETHOD_(UINT,Format)() PURE;
-   STDMETHOD_(void,PrepareDrag)(iDragDataSink* pSink) PURE;
-   STDMETHOD_(void,OnDrop)(iDragDataSource* pSource) PURE;
-   STDMETHOD_(void,OnDragMoved)(ISize2d* offset) PURE;
-   STDMETHOD_(void,OnMoved)() PURE;
-   STDMETHOD_(void,OnCopied)() PURE;
+   namespace DManip
+   {
+      class iDragDataSource;
+      class iDragDataSink;
+      class iDragData;
+      class iCoordinateMap;
 
-   STDMETHOD_(void,DrawDragImage)(CDC* pDC,
-                                  iCoordinateMap* map,
-                                  const CPoint& dragStart,
-                                  const CPoint& dragPoint) PURE;
+      /// @brief Implemented by display objects that can participate in a drag/drop operation.
+      class DMANIPCLASS iDraggable
+      {
+      public:
+         /// @brief Sets the drag data object
+         /// @param dd 
+         virtual void SetDragData(std::shared_ptr<iDragData> dd) = 0;
+         virtual std::shared_ptr<iDragData> GetDragData() = 0;
+
+         /// @brief Returns the clipboard format
+         /// @return 
+         virtual UINT Format() = 0;
+
+         /// @brief Called by the framework to prepare a draggable object for drag drop operation.
+         /// After saving display object specific data, calls PrepareDrag on the associated DragData object.
+         /// @param pSink 
+         virtual void PrepareDrag(std::shared_ptr<iDragDataSink> pSink) = 0;
+
+         /// @brief Called by the framework when the draggable object has been dropped. 
+         /// The draggable object reads the data is stored in PrepareDrag and then calls OnDrop on the associated DragData object.
+         /// @param pSource 
+         virtual void OnDrop(std::shared_ptr<iDragDataSource> pSource) = 0;
+         
+         /// @brief Called by the framework when a draggable display object is moved within a DisplayView
+         /// @param offset 
+         virtual void OnDragMoved(const WBFL::Geometry::Size2d& offset) = 0;
+
+         /// @brief Called by the framework when a draggable display object is moved from one DisplayView to another.
+         virtual void OnMoved() = 0;
+
+         /// @brief Called by the framework when a draggable display object is copied from one DisplayView to another, or copied within a DisplayView
+         virtual void OnCopied() = 0;
+
+         /// @brief Called by the framework whenever the display object needs to be drawn during a drag/drop operation.
+         /// @param pDC The device context for drawing
+         /// @param map The coordinate mapping. Draggable objects are created on demand and do not necessarily belong to a display list and therefore don't have access to the display manager's coordinate map. For this reason, the coordinate map is provided directly in this function.
+         /// @param dragStart The starting point of the drag/drop operation in world space
+         /// @param dragPoint The current location of the cursor in world space
+         virtual void DrawDragImage(CDC* pDC,
+                                    std::shared_ptr<const iCoordinateMap> map,
+                                    const POINT& dragStart,
+                                    const POINT& dragPoint) = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DRAGGABLE_H_

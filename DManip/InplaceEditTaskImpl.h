@@ -21,72 +21,60 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// InplaceEditTaskImpl.h: interface for the CInplaceEditTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_InplaceEditTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_InplaceEditTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include "resource.h"
+#include <DManip/DManipExp.h>
 #include "InplaceEditFSM.h"
+#include <DManip/Task.h>
+#include <DManip/InplaceEdit.h>
 
-class ATL_NO_VTABLE CInplaceEditTaskImpl : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CInplaceEditTaskImpl, &CLSID_InplaceEditTask>,
-   public CInplaceEditFSM,
-   public iTask
+class CDisplayView;
+
+namespace WBFL
 {
-public:
-	CInplaceEditTaskImpl();
-	virtual ~CInplaceEditTaskImpl();
+   namespace DManip
+   {
+      /// @brief A task used for inplace editing of text
+      class DMANIPCLASS InplaceEditTask :
+         public InplaceEditFSM,
+         public iTask
+      {
+      public:
+	      InplaceEditTask() = default;
+         InplaceEditTask(CDisplayView* pView, std::shared_ptr<iInplaceEditable> pEditable);
+	      virtual ~InplaceEditTask() = default;
 
-   void Init(CDisplayView* pView,iInplaceEditable* pEditable);
 
+         // InplaceEditTask methods (from InplaceEditFSM)
+	      virtual void FSMError(LPCTSTR t,LPCTSTR s) override;
+	      virtual void InitTask() override;
+         virtual BOOL ValidateData() override;
+         virtual void NotifyEditable() override;
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+         // iTask methods
+         virtual void Start() override;
+         virtual void OnLButtonDown(UINT nFlags, const CPoint& point) override;
+	      virtual void OnLButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnLButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDown(UINT nFlags, const CPoint& point) override;
+         virtual void OnRButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnMouseMove(UINT nFlags, const CPoint& point) override;
+         virtual void OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point) override;
+         virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual void OnContextMenu(CWnd* pWnd,const CPoint& point) override;
+         virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual void OnDragLeave() override;
+         virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual DROPEFFECT OnDragScroll(DWORD dwKeyState,CPoint point) override;
+         virtual BOOL OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+         virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
-DECLARE_REGISTRY_RESOURCEID(IDR_INPLACEEDITTASK)
+      private:
+         CDisplayView* m_pView;
+         std::shared_ptr<iInplaceEditable> m_pEditable;
 
-BEGIN_COM_MAP(CInplaceEditTaskImpl)
-   COM_INTERFACE_ENTRY(iTask)
-	COM_INTERFACE_ENTRY(iInplaceEditTask)
-END_COM_MAP()
-
-   // CInplaceEditTask methods (from CInplaceEditFSM)
-	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s);
-	STDMETHOD_(void,InitTask)();
-   STDMETHOD_(BOOL,ValidateData)();
-   STDMETHOD_(void,NotifyEditable)();
-
-   // CTask methods
-   STDMETHOD_(void,Start)();
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point);
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point);
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point);
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point);
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags);
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point);
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(void,OnDragLeave)();
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point);
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point);
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point);
-
-private:
-   CDisplayView* m_pView;
-   CComPtr<iInplaceEditable> m_pEditable;
-
-   void CompleteTask();
+         void CompleteTask();
+      };
+   };
 };
-
-#endif // !defined(AFX_InplaceEditTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

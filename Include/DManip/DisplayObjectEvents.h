@@ -21,39 +21,51 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECTEVENTS_H_
-#define INCLUDED_DISPLAYOBJECTEVENTS_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDisplayObjectEvents : public IUnknown
+namespace WBFL
 {
-   // UI Events that are directed towards the display object
-   STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point) PURE;
-   STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags) PURE;
-   STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point) PURE;
+   namespace DManip
+   {
+      class iDisplayObject;
 
-   // The display object contains some internal data that was changed
-   STDMETHOD_(void,OnChanged)(iDisplayObject* pDO) PURE;
+      /// @brief Interface implemented by objects wanting to receive display object events. Objects implementing this interface
+      /// provide application specific event processing for individual display objects. The first parameter in all of the methods
+      /// on this interface is the display object to which the event belongs. This allows a single display objects event object to
+      /// be registered with multiple display objects
+      class DMANIPCLASS iDisplayObjectEvents
+      {
+      public:
+         // UI Events that are directed towards the display object
+         virtual bool OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnLButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnLButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseMove(std::shared_ptr<iDisplayObject> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseWheel(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,short zDelta, const POINT& point) = 0;
+         virtual bool OnKeyDown(std::shared_ptr<iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags) = 0;
+         virtual bool OnContextMenu(std::shared_ptr<iDisplayObject> pDO,CWnd* pWnd, const POINT& point) = 0;
 
-   // The display object was moved to a different location on the canvas via
-   // dragging
-   STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset) PURE;
+         /// @brief The display object contains some internal data that was changed
+         virtual void OnChanged(std::shared_ptr<iDisplayObject> pDO) = 0;
 
-   // The display object was drag and dropped
-   STDMETHOD_(void,OnMoved)(iDisplayObject* pDO) PURE;
+         /// @brief The display object was moved to a different location on the canvas via dragging
+         virtual void OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset) = 0;
 
-   // The display object was drag/dropped copied
-   STDMETHOD_(void,OnCopied)(iDisplayObject* pDO) PURE;
+         /// @brief The display object was drag and dropped
+         virtual void OnMoved(std::shared_ptr<iDisplayObject> pDO) = 0;
 
-   STDMETHOD_(void,OnSelect)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO) PURE;
+         /// @brief The display object was drag/dropped copied
+         virtual void OnCopied(std::shared_ptr<iDisplayObject> pDO) = 0;
+
+          /// @brief The display object was selected
+          virtual void OnSelect(std::shared_ptr<iDisplayObject> pDO) = 0;
+
+          /// @brief The display object was unselected
+          virtual void OnUnselect(std::shared_ptr<iDisplayObject> pDO) = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DISPLAYOBJECTEVENTS_H_

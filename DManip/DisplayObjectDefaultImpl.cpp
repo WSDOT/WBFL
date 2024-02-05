@@ -21,241 +21,43 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// DisplayObjectDefaultImpl.cpp: implementation of the CDisplayObjectDefaultImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/DisplayObjectDefaultImpl.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/CoordinateMap.h>
+#include <DManip/DropSite.h>
+#include <DManip/DisplayView.h>
 
-#include "stdafx.h"
-#include <DManip\DManip.h>
-#include <DManip\DisplayObjectDefaultImpl.h>
+using namespace WBFL::DManip;
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif 
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CDisplayObjectDefaultImpl::CDisplayObjectDefaultImpl()
+DisplayObjectDefaultImpl::DisplayObjectDefaultImpl(IDType id) :
+   m_ID(id)
 {
-   m_pParent = 0;
-   m_strToolTipText = "";
-   m_MaxToolTipWidth = -1; // use default width
-   m_ToolTipDisplayTime = -1; // use default duration
-   m_bSelected = FALSE;
-   m_bRetainSelection = TRUE; // retain selection if this DO is selected
-   m_pDispList = 0;
+};
 
-   m_ID = -1;
-   m_bIsVisible = TRUE;
-
-   m_pDropSite  = nullptr;
-
-   m_SelectionType = stNone;
-
-   // we will be using this a lot so allocate once, use many
-   m_ReusableRect.CoCreateInstance(CLSID_Rect2d);
-
-   m_pItemData = nullptr;
-
-   m_pCompositeParent = nullptr;
-}
-
-CDisplayObjectDefaultImpl::~CDisplayObjectDefaultImpl()
+DisplayObjectDefaultImpl::~DisplayObjectDefaultImpl()
 {
    if ( m_pItemData && m_bDeleteItemData )
    {
       delete m_pItemData;
       m_pItemData = nullptr;
    }
+
+   UnregisterEventSink();
+   UnregisterDropSite();
 }
 
-HRESULT CDisplayObjectDefaultImpl::Do_FinalConstruct()
-{
-   return S_OK;
-}
-
-void CDisplayObjectDefaultImpl::Do_FinalRelease()
-{
-   Do_UnregisterEventSink();
-   Do_UnregisterDropSite();
-}
-
-void CDisplayObjectDefaultImpl::SetDisplayObject(iDisplayObject* pParent)
-{
-   m_pParent = pParent;
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnChanged()
-{
-   if ( m_EventSink )
-      m_EventSink->OnChanged(m_pParent);
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnDragMoved(ISize2d* offset)
-{
-   if ( m_EventSink )
-      m_EventSink->OnDragMoved(m_pParent,offset);
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnMoved()
-{
-   if ( m_EventSink )
-      m_EventSink->OnMoved(m_pParent);
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnCopied()
-{
-   if ( m_EventSink )
-      m_EventSink->OnCopied(m_pParent);
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnLButtonDblClk(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnLButtonDblClk(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnLButtonDown(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnLButtonDown(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnLButtonUp(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnLButtonUp(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnRButtonDown(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnRButtonDown(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnRButtonUp(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnRButtonUp(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnRButtonDblClk(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnRButtonDblClk(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnMouseMove(UINT nFlags,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnMouseMove(m_pParent,nFlags,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnMouseWheel(UINT nFlags,short zDelta, CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnMouseWheel(m_pParent,nFlags,zDelta,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnKeyDown(m_pParent,nChar,nRepCnt,nFlags);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-bool CDisplayObjectDefaultImpl::Fire_OnContextMenu(CWnd* pWnd,CPoint point)
-{
-   if ( m_EventSink )
-   {
-      return m_EventSink->OnContextMenu(m_pParent,pWnd,point);
-   }
-   else
-   {
-      return false;
-   }
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnSelect()
-{
-   if ( m_EventSink )
-      m_EventSink->OnSelect(m_pParent);
-}
-
-void CDisplayObjectDefaultImpl::Fire_OnUnselect()
-{
-   if ( m_EventSink )
-      m_EventSink->OnUnselect(m_pParent);
-}
-
-void CDisplayObjectDefaultImpl::Do_SetID(IDType id)
+void DisplayObjectDefaultImpl::SetID(IDType id)
 {
    m_ID = id;
 }
 
-IDType CDisplayObjectDefaultImpl::Do_GetID()
+IDType DisplayObjectDefaultImpl::GetID() const
 {
    return m_ID;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetItemData(void* pVoid,bool bDelete)
+void DisplayObjectDefaultImpl::SetItemData(void* pVoid,bool bDelete)
 {
    if ( m_pItemData && m_bDeleteItemData )
    {
@@ -267,40 +69,38 @@ void CDisplayObjectDefaultImpl::Do_SetItemData(void* pVoid,bool bDelete)
    m_bDeleteItemData = bDelete;
 }
 
-void CDisplayObjectDefaultImpl::Do_GetItemData(void** ppVoid)
+void DisplayObjectDefaultImpl::GetItemData(void** ppVoid)
 {
    (*ppVoid) = m_pItemData;
 }
 
-void CDisplayObjectDefaultImpl::Do_Visible(BOOL bVisible)
+void DisplayObjectDefaultImpl::Visible(bool bVisible)
 {
    BOOL bRedraw = (m_bIsVisible != bVisible);
    m_bIsVisible = bVisible;
 
-   if ( bRedraw && m_pDispList != nullptr )
+   if ( bRedraw && m_pDispList.lock() != nullptr )
    {
-      CComPtr<iDisplayMgr> pDispMgr;
-      m_pDispList->GetDisplayMgr(&pDispMgr);
-      CRect box = m_pParent->GetBoundingBox();
+      auto pDispMgr = m_pDispList.lock()->GetDisplayMgr();
+      CRect box = GetLogicalBoundingBox();
       box.InflateRect(1,1);
-      pDispMgr->InvalidateRect(box);
+      pDispMgr->GetView()->InvalidateRect(box);
    }
 }
 
-BOOL CDisplayObjectDefaultImpl::Do_IsVisible()
+bool DisplayObjectDefaultImpl::IsVisible() const
 {
    return m_bIsVisible;
 }
 
 #if defined(_DEBUG)
-void CDisplayObjectDefaultImpl::Do_DrawGravityWell(CDC* pDC)
+void DisplayObjectDefaultImpl::DrawGravityWell(CDC* pDC)
 {
    // Draw gravity well for selected objects only
 //   if ( !m_pParent->IsSelected() )
 //      return;
 
-   CComPtr<iGravityWellStrategy> strategy;
-   m_pParent->GetGravityWellStrategy(&strategy);
+   auto strategy = GetGravityWellStrategy();
 
    COLORREF color = RGB(255,200,200);
 
@@ -312,90 +112,84 @@ void CDisplayObjectDefaultImpl::Do_DrawGravityWell(CDC* pDC)
    if ( strategy )
    {
       CRgn rgn;
-      strategy->GetGravityWell(m_pParent,&rgn);
+      strategy->GetGravityWell(shared_from_this(), &rgn);
       pDC->FrameRgn(&rgn,&frameBrush,2,2);
       pDC->FillRgn(&rgn,&fillBrush);
    }
    else
    {
-      CRect box = m_pParent->GetBoundingBox();
+      CRect box = GetLogicalBoundingBox();
       pDC->FrameRect(&box,&frameBrush);
       pDC->FillRect(&box,&fillBrush);
    }
 }
 #endif
 
-void CDisplayObjectDefaultImpl::Do_SetDisplayList(iDisplayList * pDL)
+void DisplayObjectDefaultImpl::SetDisplayList(std::weak_ptr<iDisplayList> pDL)
 {
-   // weak reference
    m_pDispList = pDL;
 }
 
-void CDisplayObjectDefaultImpl::Do_GetDisplayList(iDisplayList** list)
+std::shared_ptr<iDisplayList> DisplayObjectDefaultImpl::GetDisplayList()
 {
-   (*list) = m_pDispList;
-   if ( *list )
-      (*list)->AddRef();
+   return m_pDispList.lock();
 }
 
-void CDisplayObjectDefaultImpl::Do_SetGravityWellStrategy(iGravityWellStrategy* pStrategy)
+std::shared_ptr<const iDisplayList> DisplayObjectDefaultImpl::GetDisplayList() const
+{
+   return m_pDispList.lock();
+}
+
+void DisplayObjectDefaultImpl::SetGravityWellStrategy(std::shared_ptr<iGravityWellStrategy> pStrategy)
 {
    m_pGravityWellStrategy = pStrategy;
 }
 
-void CDisplayObjectDefaultImpl::Do_GetGravityWellStrategy(iGravityWellStrategy** pStrategy)
+std::shared_ptr<iGravityWellStrategy> DisplayObjectDefaultImpl::GetGravityWellStrategy()
 {
-   (*pStrategy) = m_pGravityWellStrategy;
-   if ( *pStrategy )
-      (*pStrategy)->AddRef();
+   return m_pGravityWellStrategy;
 }
 
-BOOL CDisplayObjectDefaultImpl::Do_HitTest(CPoint point)
+bool DisplayObjectDefaultImpl::HitTest(const POINT& point) const
 {
    if ( m_pGravityWellStrategy )
    {
       CRgn rgn;
-      m_pGravityWellStrategy->GetGravityWell(m_pParent,&rgn);
+      m_pGravityWellStrategy->GetGravityWell(shared_from_this(), &rgn);
       if ( rgn.m_hObject != nullptr )
-         return rgn.PtInRegion(point);
+         return rgn.PtInRegion(point) == TRUE ? true : false;
       else
-         return FALSE;
+         return false;
    }
    else
    {
-      CRect box = m_pParent->GetBoundingBox();
+      CRect box = GetLogicalBoundingBox();
       return box.PtInRect(point);
    }
 
-   return FALSE;
+   return false;
 }
 
-BOOL CDisplayObjectDefaultImpl::Do_TouchesRect(CRect r)
+bool DisplayObjectDefaultImpl::TouchesRect(const RECT& r) const
 {
-   CRect box = m_pParent->GetBoundingBox();
+   CRect box = GetLogicalBoundingBox();
    return ( (box.left < r.right && r.left < box.right) &&
-      (box.bottom > r.top && r.bottom > box.top) ) ? TRUE : FALSE;
+      (box.bottom > r.top && r.bottom > box.top) ) ? true : false;
 }
 
-CRect CDisplayObjectDefaultImpl::Do_GetBoundingBox()
+RECT DisplayObjectDefaultImpl::GetLogicalBoundingBox() const
 {
-   // In leiu of an implementation supplied by the parent object,
+   // In lieu of an implementation supplied by the parent object,
    // get the bounding box in world coordinates and map to
    // logical coordinates.
+   auto box = GetBoundingBox();
+   auto wl = box.Left();
+   auto wr = box.Right();
+   auto wt = box.Top();
+   auto wb = box.Bottom();
 
-   CComPtr<IRect2d> box;
-   m_pParent->GetBoundingBox(&box);
-   Float64 wl, wr, wt, wb;
-   box->get_Left(&wl);
-   box->get_Right(&wr);
-   box->get_Top(&wt);
-   box->get_Bottom(&wb);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   m_pDispList->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> map;
-   pDispMgr->GetCoordinateMap(&map);
+   auto pDispMgr = m_pDispList.lock()->GetDisplayMgr();
+   auto map = pDispMgr->GetCoordinateMap();
 
    LONG l,r,t,b;
    map->WPtoLP(wl, wt, &l, &t);
@@ -406,10 +200,10 @@ CRect CDisplayObjectDefaultImpl::Do_GetBoundingBox()
    return rect;
 }
 
-void CDisplayObjectDefaultImpl::Do_Select(BOOL bSelect)
+void DisplayObjectDefaultImpl::Select(bool bSelect)
 {
    // If the display object cannot be selected, just get the heck outta here
-   if ( m_SelectionType == stNone )
+   if ( m_SelectionType == SelectionType::None )
       return;
 
    if ( m_bSelected == bSelect )
@@ -422,8 +216,7 @@ void CDisplayObjectDefaultImpl::Do_Select(BOOL bSelect)
    else
       Fire_OnUnselect();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   m_pDispList->GetDisplayMgr(&pDispMgr);
+   auto pDispMgr = m_pDispList.lock()->GetDisplayMgr();
 
 // selecting the gravity well region tends to leave stray marks when an object is
 // unselected. For this reason, I've changed this to use only the bounding box
@@ -439,171 +232,316 @@ void CDisplayObjectDefaultImpl::Do_Select(BOOL bSelect)
 //   }
 //   else
 //   {
-      CRect box = m_pParent->GetBoundingBox();
+      CRect box = GetLogicalBoundingBox();
       box.InflateRect(1,1); // inflate a bit for tolerancing
-      pDispMgr->InvalidateRect(box);
+      pDispMgr->GetView()->InvalidateRect(box);
 //   }
 }
 
-BOOL CDisplayObjectDefaultImpl::Do_IsSelected()
+bool DisplayObjectDefaultImpl::IsSelected() const
 {
    return m_bSelected;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetSelectionType(SelectionType st)
+void DisplayObjectDefaultImpl::SetSelectionType(SelectionType st)
 {
    m_SelectionType = st;
 }
 
-SelectionType CDisplayObjectDefaultImpl::Do_GetSelectionType()
+SelectionType DisplayObjectDefaultImpl::GetSelectionType() const
 {
    return m_SelectionType;
 }
 
-void CDisplayObjectDefaultImpl::Do_RetainSelection(BOOL bRetain)
+void DisplayObjectDefaultImpl::RetainSelection(bool bRetain)
 {
    m_bRetainSelection = bRetain;
 }
 
-BOOL CDisplayObjectDefaultImpl::Do_RetainSelection()
+bool DisplayObjectDefaultImpl::RetainSelection() const
 {
    return m_bRetainSelection;
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnLButtonDblClk(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnLButtonDblClk(UINT nFlags,const POINT& point)
 {
    return Fire_OnLButtonDblClk(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnLButtonDown(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnLButtonDown(UINT nFlags, const POINT& point)
 {
    return Fire_OnLButtonDown(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnLButtonUp(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnLButtonUp(UINT nFlags, const POINT& point)
 {
    return Fire_OnLButtonUp(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnRButtonDown(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnRButtonDown(UINT nFlags, const POINT& point)
 {
    return Fire_OnRButtonDown(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnRButtonUp(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnRButtonUp(UINT nFlags, const POINT& point)
 {
    return Fire_OnRButtonUp(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnRButtonDblClk(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnRButtonDblClk(UINT nFlags, const POINT& point)
 {
    return Fire_OnRButtonDblClk(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnMouseMove(UINT nFlags,CPoint point)
+bool DisplayObjectDefaultImpl::OnMouseMove(UINT nFlags, const POINT& point)
 {
    return Fire_OnMouseMove(nFlags,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnMouseWheel(UINT nFlags,short zDelta,CPoint point)
+bool DisplayObjectDefaultImpl::OnMouseWheel(UINT nFlags,short zDelta, const POINT& point)
 {
    return Fire_OnMouseWheel(nFlags,zDelta,point);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+bool DisplayObjectDefaultImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    return Fire_OnKeyDown(nChar,nRepCnt,nFlags);
 }
 
-bool CDisplayObjectDefaultImpl::Do_OnContextMenu(CWnd* pWnd,CPoint point)
+bool DisplayObjectDefaultImpl::OnContextMenu(CWnd* pWnd, const POINT& point)
 {
    return Fire_OnContextMenu(pWnd,point);
 }
 
-void CDisplayObjectDefaultImpl::Do_SetToolTipText(LPCTSTR lpszToolTipText)
+void DisplayObjectDefaultImpl::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    m_strToolTipText = lpszToolTipText;
 }
 
-CString CDisplayObjectDefaultImpl::Do_GetToolTipText()
+std::_tstring DisplayObjectDefaultImpl::GetToolTipText() const
 {
    return m_strToolTipText;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetMaxTipWidth(INT maxWidth)
+void DisplayObjectDefaultImpl::SetMaxTipWidth(INT maxWidth)
 {
    m_MaxToolTipWidth = maxWidth;
 }
 
-INT CDisplayObjectDefaultImpl::Do_GetMaxTipWidth()
+INT DisplayObjectDefaultImpl::GetMaxTipWidth() const
 {
    return m_MaxToolTipWidth;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetTipDisplayTime(INT iTime)
+void DisplayObjectDefaultImpl::SetTipDisplayTime(INT iTime)
 {
    m_ToolTipDisplayTime = iTime;
 }
 
-INT CDisplayObjectDefaultImpl::Do_GetTipDisplayTime()
+INT DisplayObjectDefaultImpl::GetTipDisplayTime() const
 {
    return m_ToolTipDisplayTime;
 }
 
-void CDisplayObjectDefaultImpl::Do_RegisterEventSink(iDisplayObjectEvents* pEventSink)
+void DisplayObjectDefaultImpl::RegisterEventSink(std::shared_ptr<iDisplayObjectEvents> pEventSink)
 {
-   Do_UnregisterEventSink();
+   UnregisterEventSink();
 
    m_EventSink = pEventSink;
 }
 
-void CDisplayObjectDefaultImpl::Do_UnregisterEventSink()
+void DisplayObjectDefaultImpl::UnregisterEventSink()
 {
-   m_EventSink = nullptr;
+   m_EventSink.reset();
 }
 
-void CDisplayObjectDefaultImpl::Do_GetEventSink(iDisplayObjectEvents** pEventSink)
+std::shared_ptr<iDisplayObjectEvents> DisplayObjectDefaultImpl::GetEventSink()
 {
-   (*pEventSink) = m_EventSink;
-   if (m_EventSink)
-   {
-      (*pEventSink)->AddRef();
-   }
+   return m_EventSink;
 }
 
-void CDisplayObjectDefaultImpl::Do_RegisterDropSite(iDropSite* pDropSite)
+void DisplayObjectDefaultImpl::RegisterDropSite(std::shared_ptr<iDropSite> pDropSite)
 {
    m_pDropSite = pDropSite;
-   m_pDropSite->SetDisplayObject(m_pParent);
+   m_pDropSite->SetDisplayObject(weak_from_this());
 }
 
-void CDisplayObjectDefaultImpl::Do_UnregisterDropSite()
+void DisplayObjectDefaultImpl::UnregisterDropSite()
 {
-   if ( m_pDropSite )
+   if (m_pDropSite)
    {
-      m_pDropSite->SetDisplayObject(nullptr);
-      m_pDropSite = nullptr;
+      m_pDropSite->SetDisplayObject(std::shared_ptr<iDisplayObject>());
+      m_pDropSite.reset();
    }
 }
 
-void CDisplayObjectDefaultImpl::Do_GetDropSite(iDropSite** dropSite)
+std::shared_ptr<iDropSite> DisplayObjectDefaultImpl::GetDropSite()
 {
-   (*dropSite) = m_pDropSite;
-
-   if ( *dropSite )
-      (*dropSite)->AddRef();
+   return m_pDropSite;
 }
 
-void CDisplayObjectDefaultImpl::Do_SetParent(iDisplayObject* pParent)
+void DisplayObjectDefaultImpl::SetParent(std::weak_ptr<iDisplayObject> pParent)
 {
    m_pCompositeParent = pParent;
 }
 
-void CDisplayObjectDefaultImpl::Do_GetParent(iDisplayObject** ppParent)
+std::shared_ptr<iDisplayObject> DisplayObjectDefaultImpl::GetParent()
 {
-   (*ppParent) = m_pCompositeParent;
-   if (*ppParent)
+   return m_pCompositeParent.lock();
+}
+
+void DisplayObjectDefaultImpl::Fire_OnChanged()
+{
+   if (m_EventSink)
+      m_EventSink->OnChanged(shared_from_this());
+}
+
+void DisplayObjectDefaultImpl::Fire_OnDragMoved(const WBFL::Geometry::Size2d& offset)
+{
+   if (m_EventSink)
+      m_EventSink->OnDragMoved(shared_from_this(), offset);
+}
+
+void DisplayObjectDefaultImpl::Fire_OnMoved()
+{
+   if (m_EventSink)
+      m_EventSink->OnMoved(shared_from_this());
+}
+
+void DisplayObjectDefaultImpl::Fire_OnCopied()
+{
+   if (m_EventSink)
+      m_EventSink->OnCopied(shared_from_this());
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnLButtonDblClk(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
    {
-      (*ppParent)->AddRef();
+      return m_EventSink->OnLButtonDblClk(shared_from_this(), nFlags, point);
    }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnLButtonDown(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnLButtonDown(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnLButtonUp(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnLButtonUp(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnRButtonDown(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnRButtonDown(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnRButtonUp(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnRButtonUp(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnRButtonDblClk(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnRButtonDblClk(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnMouseMove(UINT nFlags, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnMouseMove(shared_from_this(), nFlags, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnMouseWheel(UINT nFlags, short zDelta, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnMouseWheel(shared_from_this(), nFlags, zDelta, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnKeyDown(shared_from_this(), nChar, nRepCnt, nFlags);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+bool DisplayObjectDefaultImpl::Fire_OnContextMenu(CWnd* pWnd, const POINT& point)
+{
+   if (m_EventSink)
+   {
+      return m_EventSink->OnContextMenu(shared_from_this(), pWnd, point);
+   }
+   else
+   {
+      return false;
+   }
+}
+
+void DisplayObjectDefaultImpl::Fire_OnSelect()
+{
+   if (m_EventSink)
+      m_EventSink->OnSelect(shared_from_this());
+}
+
+void DisplayObjectDefaultImpl::Fire_OnUnselect()
+{
+   if (m_EventSink)
+      m_EventSink->OnUnselect(shared_from_this());
 }

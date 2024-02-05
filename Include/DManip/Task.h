@@ -21,35 +21,40 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TASK_H_
-#define INCLUDED_TASK_H_
 #pragma once
 
-interface iTask : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,Start)() PURE;
+   namespace DManip
+   {
+      /// @brief An interface defining a task, based on the Task Master architecture
+      class iTask
+      {
+      public:
+         /// @brief Called by the framework when the task is started
+         virtual void Start() = 0;
 
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point) PURE;
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point) PURE;
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point) PURE;
+         virtual void OnLButtonDown(UINT nFlags, const CPoint& point) = 0;
+	      virtual void OnLButtonUp(UINT nFlags,const CPoint& point) = 0;
+         virtual void OnLButtonDblClk(UINT nFlags,const CPoint& point) = 0;
 
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point) PURE;
-	STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point) PURE;
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point) PURE;
+         virtual void OnRButtonDown(UINT nFlags, const CPoint& point) = 0;
+	      virtual void OnRButtonUp(UINT nFlags,const CPoint& point) = 0;
+         virtual void OnRButtonDblClk(UINT nFlags,const CPoint& point) = 0;
 
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point) PURE;
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point) PURE;
+         virtual void OnMouseMove(UINT nFlags, const CPoint& point) = 0;
+         virtual void OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point) = 0;
 
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd, const CPoint& point) PURE;
+         virtual void OnContextMenu(CWnd* pWnd, const CPoint& point) = 0;
 
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags)  PURE;
+         virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)  = 0;
 
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) PURE;
-   STDMETHOD_(void,OnDragLeave)() PURE;
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) PURE;
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point) PURE;
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) PURE;
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) PURE;
+         virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) = 0;
+         virtual void OnDragLeave() = 0;
+         virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) = 0;
+         virtual DROPEFFECT OnDragScroll(DWORD dwKeyState,CPoint point) = 0;
+         virtual BOOL OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) = 0;
+         virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_TASK_H_

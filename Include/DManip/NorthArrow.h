@@ -21,26 +21,53 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_NORTHARROW_H_
-#define INCLUDED_NORTHARROW_H_
 #pragma once
 
-#include <DManip\DisplayObject.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayObjectDefaultImpl.h>
 
-interface iNorthArrow : public iDisplayObject
+namespace WBFL
 {
-   STDMETHOD_(void,SetText)(LPCTSTR lpszText) PURE;
-   STDMETHOD_(CString,GetText)() PURE;
+   namespace DManip
+   {
+      /// @brief Specialized display object representing a north arrow
+      class DMANIPCLASS NorthArrow : public DisplayObjectDefaultImpl
+      {
+      private:
+         NorthArrow(IDType id);
 
-   // set font. Note that font height is in 10th of points.
-   STDMETHOD_(void,SetFont)(const LOGFONT& Font) PURE;
-   STDMETHOD_(void,GetFont)(LOGFONT* pFont) PURE;
+      public:
+         static std::shared_ptr<NorthArrow> Create(IDType id = INVALID_ID) { return std::shared_ptr<NorthArrow>(new NorthArrow(id)); }
+	      virtual ~NorthArrow() = default;
 
-   STDMETHOD_(void,SetDirection)(Float64 angle) PURE;
-   STDMETHOD_(Float64,GetDirection)() PURE;
+         void SetText(LPCTSTR lpszText);
+         CString GetText() const;
 
-   STDMETHOD_(void,SetSize)(LONG size) PURE;
-   STDMETHOD_(LONG,GetSize)() PURE;
+         void SetFont(const LOGFONT& Font);
+         LOGFONT GetFont() const;
+
+         /// @brief Direction of north relative to the horizontal axis of the screen
+         void SetDirection(Float64 angle);
+         Float64 GetDirection() const;
+
+         /// @brief Size of the north arrow in logical coordinates
+         /// @param size 
+         void SetSize(LONG size);
+         LONG GetSize() const;
+
+         // iDisplayObject Implementation
+         // Drawing
+         virtual void Draw(CDC* pDC) override;
+         virtual void Highlight(CDC* pDC,bool bHighlight) override;
+
+         virtual RECT GetLogicalBoundingBox() const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox() const override; 
+
+      private:
+         CString m_strText = _T("");
+         LOGFONT m_Font;
+         Float64 m_Direction = PI_OVER_2;
+         LONG m_Size = 50;
+      };
+   };
 };
-
-#endif // INCLUDED_NORTHARROW_H_

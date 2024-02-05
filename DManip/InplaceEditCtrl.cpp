@@ -24,30 +24,11 @@
 // InplaceEdit.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include <DManip\InplaceEditCtrl.h>
+#include "pch.h"
+#include <DManip/InplaceEditCtrl.h>
+#include <DManip/Task.h>
 
-#include <DManip\Task.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CInplaceEdit
-
-CInplaceEdit::CInplaceEdit()
-{
-   m_pTask = 0;
-}
-
-CInplaceEdit::~CInplaceEdit()
-{
-}
-
-void CInplaceEdit::SetTask(iTask* pTask)
+void CInplaceEdit::SetTask(std::shared_ptr<WBFL::DManip::iTask> pTask)
 {
    m_pTask = pTask;
 }
@@ -63,10 +44,14 @@ END_MESSAGE_MAP()
 
 void CInplaceEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
-   ASSERT(m_pTask != 0);
-   m_pTask->AddRef();
-   m_pTask->OnKeyDown(nChar,nRepCnt,nFlags);
+   PRECONDITION(m_pTask);
 
+	// copy the task pointer. Certain key press events, such as "Return", will
+	// call SetTask will nullptr because the task is done... however, the task
+	// object needs to persist until the end of this function call. Making a 
+	// copy of the shared pointer will guarentee the lifetime of the task through 
+	// end of the function.
+	auto task = m_pTask;
+   task->OnKeyDown(nChar,nRepCnt,nFlags);
 	CEdit::OnChar(nChar, nRepCnt, nFlags);
-   m_pTask->Release();
 }

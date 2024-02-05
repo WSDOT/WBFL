@@ -21,44 +21,50 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MAPPING_H_
-#define INCLUDED_MAPPING_H_
 #pragma once
 
-interface iMapping : public IUnknown
+#include <DManip/DManipExp.h>
+#include <DManip/DManipTypes.h>
+
+namespace WBFL
 {
-   // Set up text scaling factors in the DC
-   // this method should be called from OnPrepareDC in your view
-   // and it must be cleaned up after drawing by calling CleanUpDC
-   STDMETHOD_(void,PrepareDC)(CDC* dc) PURE;
-   STDMETHOD_(void,CleanUpDC)(CDC* dc) PURE;
-   // Print DC's must be cleaned up by this call from CView::OnEndPrinting
-   STDMETHOD_(void,CleanUpPrintDC)(CDC* dc) PURE;
+   namespace DManip
+   {
+      /// @brief Interface that defines mapping between model and world space
+      class DMANIPCLASS iMapping
+      {
+      public:
+         // Set up text scaling factors in the DC
+         // this method should be called from OnPrepareDC in your view
+         // and it must be cleaned up after drawing by calling CleanUpDC
+         virtual void PrepareDC(CDC* dc) = 0;
+         virtual void CleanUpDC(CDC* dc) = 0;
+         // Print DC's must be cleaned up by this call from CView::OnEndPrinting
+         virtual void CleanUpPrintDC(CDC* dc) = 0;
 
-   // Set up world extents. mapping is to logical extents,
-   STDMETHOD_(void,SetWorldExt)(Float64 wx,Float64 wy) PURE;
-   STDMETHOD_(void,SetWorldExt)(ISize2d* wExt) PURE;
-   STDMETHOD_(void,GetWorldExt)(Float64* wx,Float64* wy) PURE;
-   STDMETHOD_(void,GetWorldExt)(ISize2d* *wExt) PURE;
+         // Set up world extents. mapping is to logical extents,
+         virtual void SetWorldExt(Float64 wx,Float64 wy) = 0;
+         virtual void SetWorldExt(const WBFL::Geometry::Size2d& wExt) = 0;
+         virtual const WBFL::Geometry::Size2d& GetWorldExt() const = 0;
 
-   STDMETHOD_(void,SetWorldOrg)(Float64 wx,Float64 wy) PURE;
-   STDMETHOD_(void,SetWorldOrg)(IPoint2d* wOrg) PURE;
-   STDMETHOD_(void,GetWorldOrg)(Float64* wx,Float64* wy) PURE;
-   STDMETHOD_(void,GetWorldOrg)(IPoint2d* *wOrg) PURE;
+         virtual void SetWorldOrg(Float64 wx,Float64 wy) = 0;
+         virtual void SetWorldOrg(const WBFL::Geometry::Point2d& wOrg) = 0;
+         virtual const WBFL::Geometry::Point2d& GetWorldOrg() const = 0;
 
-   STDMETHOD_(void,SetLogicalOrg)(LONG lx,LONG ly) PURE;
-   STDMETHOD_(void,GetLogicalOrg)(LONG* lx,LONG* ly) PURE;
-   STDMETHOD_(void,SetLogicalExt)(LONG lx,LONG ly) PURE;
-   STDMETHOD_(void,GetLogicalExt)(LONG* lx,LONG* ly) PURE;
-   STDMETHOD_(void,GetAdjustedLogicalExt)(LONG* lx,LONG* ly) PURE;
-   STDMETHOD_(void,GetAdjustedWorldExt)(Float64* dx,Float64* dy) PURE;
+         virtual void SetLogicalOrg(const POINT& org) = 0;
+         virtual void SetLogicalOrg(LONG lx,LONG ly) = 0;
+         virtual POINT GetLogicalOrg() const = 0;
+         virtual void SetLogicalExt(LONG lx,LONG ly) = 0;
+         virtual SIZE GetLogicalExt() const = 0;
+         virtual SIZE GetAdjustedLogicalExt() const = 0;
+         virtual WBFL::Geometry::Size2d GetAdjustedWorldExt() const = 0;
 
-   STDMETHOD_(void,SetMappingMode)(DManip::MapMode mm) PURE;
-   STDMETHOD_(DManip::MapMode,GetMappingMode)() PURE;
+         virtual void SetMappingMode(MapMode mm) = 0;
+         virtual MapMode GetMappingMode() = 0;
 
-   STDMETHOD_(void,SetRotation)(Float64 cx,Float64 cy,Float64 angle) PURE;
-   STDMETHOD_(void,SetRotation)(IPoint2d* c,Float64 angle) PURE;
-   STDMETHOD_(void,GetRotation)(Float64* cx,Float64* cy,Float64* angle) PURE;
+         virtual void SetRotation(Float64 cx,Float64 cy,Float64 angle) = 0;
+         virtual void SetRotation(const WBFL::Geometry::Point2d& c,Float64 angle) = 0;
+         virtual std::pair<WBFL::Geometry::Point2d,Float64> GetRotation() const = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_MAPPING_H_

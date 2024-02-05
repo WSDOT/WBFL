@@ -21,44 +21,31 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ZoomRectTaskImpl.cpp: implementation of the CZoomRectTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
+#include "pch.h"
+#include "resource.h"
 #include "ZoomRectTaskImpl.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CZoomRectTaskImpl::CZoomRectTaskImpl()
+ZoomRectTask::ZoomRectTask()
 {
    m_pTrackPen = nullptr;
    m_Cursor = nullptr;
 }
 
-CZoomRectTaskImpl::~CZoomRectTaskImpl()
+ZoomRectTask::ZoomRectTask(CDisplayView* pView, HCURSOR hCursor, COLORREF color)
+{
+   m_pView = pView;
+   m_Cursor = hCursor;
+   m_pTrackPen = new CPen(PS_SOLID, 1, color);
+}
+
+ZoomRectTask::~ZoomRectTask()
 {
    delete m_pTrackPen;
 }
 
-void CZoomRectTaskImpl::Init(CDisplayView* pView,HCURSOR hCursor,COLORREF color)
-{
-   m_pView = pView;
-   m_Cursor = hCursor;
-   m_pTrackPen = new CPen(PS_SOLID,1,color);
-}
-
-STDMETHODIMP_(void) CZoomRectTaskImpl::Start()
+void ZoomRectTask::Start()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
@@ -71,108 +58,104 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::Start()
    Do();
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& point)
+void ZoomRectTask::OnLButtonUp(UINT nFlags,const CPoint& point)
 {
    m_TempPoint = point;
 
    MouseUp();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   m_pView->GetDisplayMgr(&pDispMgr);
-   pDispMgr->SetTask(nullptr);
+   m_pView->GetDisplayMgr()->SetTask(nullptr);
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
+void ZoomRectTask::OnRButtonUp(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnMouseMove(UINT nFlags, const CPoint& point)
+void ZoomRectTask::OnMouseMove(UINT nFlags, const CPoint& point)
 {
    m_TempPoint = point;
 
    MouseMove();
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
+void ZoomRectTask::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnLButtonDown(UINT nFlags, const CPoint& point)
+void ZoomRectTask::OnLButtonDown(UINT nFlags, const CPoint& point)
 {
    m_TempPoint = point;
 
    MouseDown();
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnRButtonDown(UINT nFlags, const CPoint& point)
+void ZoomRectTask::OnRButtonDown(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnLButtonDblClk(UINT nFlags,const CPoint& point)
+void ZoomRectTask::OnLButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnRButtonDblClk(UINT nFlags,const CPoint& point)
+void ZoomRectTask::OnRButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+void ZoomRectTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
    if ( nChar == VK_ESCAPE )
    {
       EscKey();
-      CComPtr<iDisplayMgr> pDispMgr;
-      m_pView->GetDisplayMgr(&pDispMgr);
-      pDispMgr->SetTask(nullptr);
+      m_pView->GetDisplayMgr()->SetTask(nullptr);
    }
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnContextMenu(CWnd* pWnd,const CPoint& point)
+void ZoomRectTask::OnContextMenu(CWnd* pWnd,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(DROPEFFECT) CZoomRectTaskImpl::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
-{
-   // Do nothing
-   return DROPEFFECT_NONE;
-}
-
-STDMETHODIMP_(void) CZoomRectTaskImpl::OnDragLeave()
-{
-   // Do nothing
-}
-
-STDMETHODIMP_(DROPEFFECT) CZoomRectTaskImpl::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
+DROPEFFECT ZoomRectTask::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(DROPEFFECT) CZoomRectTaskImpl::OnDragScroll(DWORD dwKeyState,CPoint point)
+void ZoomRectTask::OnDragLeave()
+{
+   // Do nothing
+}
+
+DROPEFFECT ZoomRectTask::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(BOOL) CZoomRectTaskImpl::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
+DROPEFFECT ZoomRectTask::OnDragScroll(DWORD dwKeyState,CPoint point)
+{
+   // Do nothing
+   return DROPEFFECT_NONE;
+}
+
+BOOL ZoomRectTask::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
 {
    // Do nothing
    return FALSE;
 }
 
-STDMETHODIMP_(DROPEFFECT) CZoomRectTaskImpl::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
+DROPEFFECT ZoomRectTask::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
 {
    // Do nothing
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::ZoomRect()
+void ZoomRectTask::ZoomRect()
 {
    // TODO
    ClearRect();
@@ -182,12 +165,12 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::ZoomRect()
    m_pView->Zoom(CRect(m_FirstPoint,m_SecondPoint));
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::RecordFirstPoint()
+void ZoomRectTask::RecordFirstPoint()
 {
    m_FirstPoint = m_SecondPoint = m_TempPoint;
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::ClearRect()
+void ZoomRectTask::ClearRect()
 {
    if ( m_pView->GetCapture() == m_pView )
    {
@@ -195,7 +178,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::ClearRect()
    }
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::TrackRect()
+void ZoomRectTask::TrackRect()
 {
    if ( m_pView->GetCapture() == m_pView )
    {
@@ -205,16 +188,16 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::TrackRect()
    }
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
+void ZoomRectTask::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::InitTask()
+void ZoomRectTask::InitTask()
 {
 }
 
-STDMETHODIMP_(void) CZoomRectTaskImpl::Cancel()
+void ZoomRectTask::Cancel()
 {
    ClearRect();
    ReleaseCapture();
@@ -222,7 +205,7 @@ STDMETHODIMP_(void) CZoomRectTaskImpl::Cancel()
 }
 
 
-void CZoomRectTaskImpl::DrawRect(CPoint& from,CPoint& to)
+void ZoomRectTask::DrawRect(CPoint& from,CPoint& to)
 {
    CDManipClientDC dc(m_pView);
 

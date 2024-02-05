@@ -21,34 +21,137 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DIMENSIONLINE_H_
-#define INCLUDED_DIMENSIONLINE_H_
 #pragma once
 
-#include <DManip\DisplayObject.h>
-#include <DManip\DManipTypes.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayObjectDefaultImpl.h>
+#include <DManip/TextBlock.h>
+#include <DManip/DManipTypes.h>
+#include <DManip/ConnectorImpl.h>
+#include <DManip/NestedDisplayObjectEventRelay.h>
 
-struct iTextBlock;
-
-// Note that all distances set below are in twips (1/1440 inches)
-interface iDimensionLine : public iDisplayObject
+namespace WBFL
 {
-   STDMETHOD_(void,SetAngle)(Float64 angle) PURE;
-   STDMETHOD_(Float64,GetAngle)() PURE;
-   STDMETHOD_(void,SetWitnessLength)(LONG l) PURE;
-   STDMETHOD_(LONG,GetWitnessLength)() PURE;
-   STDMETHOD_(void,SetHiddenWitnessLength)(LONG l) PURE;
-   STDMETHOD_(LONG,GetHiddenWitnessLength)() PURE;
-   STDMETHOD_(void,SetWitnessOffset)(LONG wOffset) PURE;
-   STDMETHOD_(LONG,GetWitnessOffset)() PURE;
-   STDMETHOD_(void,SetArrowHeadSize)(CSize size) PURE;
-   STDMETHOD_(CSize,GetArrowHeadSize)() PURE;
-   STDMETHOD_(void,SetArrowHeadStyle)(DManip::ArrowHeadStyleType style) PURE;
-   STDMETHOD_(DManip::ArrowHeadStyleType,GetArrowHeadStyle)() PURE;
-   STDMETHOD_(void,EnableAutoText)(BOOL bEnable) PURE;
-   STDMETHOD_(BOOL,IsAutoTextEnabled)() PURE;
-   STDMETHOD_(void,SetTextBlock)(iTextBlock* pTextBlock) PURE;
-   STDMETHOD_(void,GetTextBlock)(iTextBlock** textBlock) PURE;
-};
+   namespace DManip
+   {
+      /// @brief A display object that represents dimension lines on an engineering drawing
+      /// All lengths, such as witness length, are in twips (1/1440 inches)
+      class DMANIPCLASS DimensionLine :
+         public DisplayObjectDefaultImpl,
+         public Connector<DisplayObjectDefaultImpl>
+      {
+      private:
+         DimensionLine(IDType id);
+         void Init();
 
-#endif // INCLUDED_DIMENSIONLINE_H_
+      public:
+         static std::shared_ptr<DimensionLine> Create(IDType id = INVALID_ID);
+         virtual ~DimensionLine();
+
+         /// @brief Angle of the dimension line, measured from horizontal
+         /// @param angle 
+         void SetAngle(Float64 angle);
+         Float64 GetAngle() const;
+
+         /// @brief Sets the length of the witness line
+         /// @param l 
+         void SetWitnessLength(LONG l);
+         LONG GetWitnessLength() const;
+
+         /// @brief Sets an additional length to be added to the witness line, but this length is not drawn
+         /// @param l 
+         void SetHiddenWitnessLength(LONG l);
+         LONG GetHiddenWitnessLength() const;
+
+         /// @brief Sets the witness line offset. The witness line offset is the distance from the connector point to the start of the witness line.
+         /// @param wOffset 
+         void SetWitnessOffset(LONG wOffset);
+         LONG GetWitnessOffset() const;
+
+         /// @brief Set the size of the arrow heads
+         /// @param size cx is width, cy is length
+         void SetArrowHeadSize(CSize size);
+         CSize GetArrowHeadSize() const;
+
+         /// @brief Sets the arrow head style
+         /// @param style 
+         void SetArrowHeadStyle(ArrowHeadStyleType style);
+         ArrowHeadStyleType GetArrowHeadStyle() const;
+
+         /// @brief Sets autotext model. When enabled, the dimension line text is automatically updated as the end points of the dimension line move.
+         /// @param bEnable 
+         void EnableAutoText(bool bEnable);
+         bool IsAutoTextEnabled() const;
+
+         /// @brief Sets the text block object used to display the dimension line text.
+         /// @param pTextBlock 
+         void SetTextBlock(std::shared_ptr<iTextBlock> pTextBlock);
+         std::shared_ptr<iTextBlock> GetTextBlock();
+         std::shared_ptr<const iTextBlock> GetTextBlock() const;
+
+
+         // iDisplayObject Implementation
+         virtual void SetDisplayList(std::weak_ptr<iDisplayList> pDL) override;
+         virtual void Draw(CDC* pDC) override;
+         virtual void Highlight(CDC* pDC,bool bHighlight) override;
+
+         // Size and Hit Testing
+         virtual bool HitTest(const POINT& point) const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox() const override; 
+
+         // Tool Tips
+         virtual std::_tstring GetToolTipText() const override;
+         virtual void SetMaxTipWidth(INT maxWidth) override;
+         virtual INT GetMaxTipWidth() const override;
+         virtual void SetTipDisplayTime(INT iTime) override;
+         virtual INT GetTipDisplayTime() const override;
+
+         virtual bool OnLButtonDown(UINT nFlags, const POINT& point) override;
+         virtual bool OnLButtonUp(UINT nFlags, const POINT& point) override;
+         virtual bool OnLButtonDblClk(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonDown(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonUp(UINT nFlags, const POINT& point) override;
+         virtual bool OnRButtonDblClk(UINT nFlags, const POINT& point) override;
+         virtual bool OnMouseMove(UINT nFlags, const POINT& point) override;
+         virtual bool OnMouseWheel(UINT nFlags, short zDelta, const POINT& point) override;
+         virtual bool OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual bool OnContextMenu(CWnd* pWnd, const POINT& point) override;
+
+      private:
+         std::shared_ptr<iTextBlock> m_TextBlock;
+
+         Float64 m_Angle = 0;
+         bool m_bAlignWithPlugs = true;
+         LONG   m_HiddenWitnessLength = 0;
+         LONG   m_LenWitness = (1440*3)/8;
+         LONG   m_DimOffset = (1440/16);
+         LONG   m_WitnessOffset = (1440/32);
+         int   m_ArrowHeight = (1440/16);
+         int   m_ArrowWidth = (1440/16);
+
+         struct ARROWHEAD
+         {
+            CPoint tip,left,right;
+         };
+
+         mutable ARROWHEAD m_StartArrow;
+         mutable ARROWHEAD m_EndArrow;
+
+         ArrowHeadStyleType m_Style = ArrowHeadStyleType::Filled;
+
+         bool m_bAutoText = false; // If TRUE, the text is equal to the distance between plugs
+
+         // Working points
+         mutable CPoint m_ptA, m_ptB, m_ptC, m_ptD, m_ptE, m_ptF, m_ptZ, m_ptStart, m_ptEnd;
+         virtual void UpdateWorkPoints() const;
+         void UpdateArrowHeads(Float64 stx, Float64 sty) const;
+         void UpdateTextBlock() const;
+         void IncludePointInRect(CPoint p,CRect* pRect) const;
+
+         WBFL::Geometry::Point2d GetStartPoint() const;
+         WBFL::Geometry::Point2d GetEndPoint() const;
+
+         std::shared_ptr<NestedDisplayObjectEventRelay> m_EventRelay;
+      };
+   };
+};

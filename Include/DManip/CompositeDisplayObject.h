@@ -21,18 +21,56 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOSITEDISPLAYOBJECT_H_
-#define INCLUDED_COMPOSITEDISPLAYOBJECT_H_
 #pragma once
 
-interface iCompositeDisplayObject : public iDisplayObject
-{
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) PURE;
-   STDMETHOD_(IndexType,GetDisplayObjectCount)() PURE;
-   STDMETHOD_(void,GetDisplayObject)(IDType key,AccessType access,iDisplayObject* *ppDO) PURE;
-   STDMETHOD_(void,ClearDisplayObjects)() PURE;
-   STDMETHOD_(void,GetDisplayObjects)(iDisplayList** dispList) PURE;
-};
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayObjectDefaultImpl.h>
+#include <optional>
 
-#endif // INCLUDED_COMPOSITEDISPLAYOBJECT_H_
+namespace WBFL
+{
+   namespace DManip
+   {
+      /// @brief A display object that is composed from other display objects
+      class DMANIPCLASS CompositeDisplayObject : public DisplayObjectDefaultImpl
+      {
+      private:
+         CompositeDisplayObject(IDType id);
+
+      public:
+         static std::shared_ptr<CompositeDisplayObject> Create(IDType id = INVALID_ID) { return std::shared_ptr<CompositeDisplayObject>(new CompositeDisplayObject(id)); }
+         virtual ~CompositeDisplayObject();
+
+         void AddDisplayObject(std::shared_ptr<iDisplayObject> pDO);
+         void RemoveDisplayObject(IDType key, AccessType access);
+         IndexType GetDisplayObjectCount();
+         std::shared_ptr<iDisplayObject> GetDisplayObject(IDType key, AccessType access);
+         void ClearDisplayObjects();
+         std::shared_ptr<iDisplayList> GetDisplayObjects();
+
+         // iDisplayObject Implementation
+         virtual void SetDisplayList(std::weak_ptr<iDisplayList> pDL) override;
+         virtual void Visible(bool bVisible) override;
+         virtual void Draw(CDC* pDC) override;
+         virtual void Highlight(CDC* pDC, bool bHighlight) override;
+      #if defined(_DEBUG)
+         virtual void DrawGravityWell(CDC* pDC) override;
+      #endif
+
+         // Size and Hit Testing
+         virtual bool HitTest(const POINT& point) const override;
+         virtual RECT GetLogicalBoundingBox() const override;
+         virtual WBFL::Geometry::Rect2d GetBoundingBox() const override;
+         virtual bool TouchesRect(const RECT& r) const override;
+
+         // Selection
+         virtual void Select(bool bSelect) override;
+         virtual void SetSelectionType(SelectionType st) override;
+         virtual void RetainSelection(bool bRetain);
+
+      private:
+         std::shared_ptr<iDisplayList> m_CompositeItems;
+         mutable std::optional<WBFL::Geometry::Rect2d> m_BoundingBox;
+      };
+   };
+};

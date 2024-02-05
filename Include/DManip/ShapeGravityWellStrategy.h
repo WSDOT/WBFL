@@ -21,18 +21,37 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_
-#define INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_
 #pragma once
 
-#include <DManip\GravityWellStrategy.h>
+#include <DManip/DManipExp.h>
+#include <DManip/GravityWellStrategy.h>
 
-interface IShape;
+#include <GeomModel/Shape.h>
 
-interface iShapeGravityWellStrategy : public iGravityWellStrategy
+namespace WBFL
 {
-   STDMETHOD_(void,SetShape)(IShape* pShape) PURE;
-   STDMETHOD_(void,GetShape)(IShape** ppShape) PURE;
-};
+   namespace DManip
+   {
+      /// @brief Uses a shape to define the boundaries of a gravity well
+      class DMANIPCLASS ShapeGravityWellStrategy : public iGravityWellStrategy
+      {
+      private:
+         ShapeGravityWellStrategy(std::shared_ptr<WBFL::Geometry::Shape> shape);
 
-#endif // INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_
+      public:
+         static std::shared_ptr<ShapeGravityWellStrategy> Create(std::shared_ptr<WBFL::Geometry::Shape> shape=nullptr) { return std::shared_ptr<ShapeGravityWellStrategy>(new ShapeGravityWellStrategy(shape)); }
+	      virtual ~ShapeGravityWellStrategy() = default;
+
+         void SetShape(std::shared_ptr<WBFL::Geometry::Shape> shape);
+         std::shared_ptr<WBFL::Geometry::Shape> GetShape();
+         std::shared_ptr<const WBFL::Geometry::Shape> GetShape() const;
+
+         // iGravityWellStrategy Implementation
+         virtual void GetGravityWell(std::shared_ptr<const iDisplayObject> pDO, CRgn* pRgn) override;
+
+      private:
+         std::shared_ptr<WBFL::Geometry::Shape> m_Shape;
+         std::shared_ptr<WBFL::Geometry::CompositeShape> m_CompositeShape;
+      };
+   };
+};

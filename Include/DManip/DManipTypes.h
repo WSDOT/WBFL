@@ -21,30 +21,70 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DMANIPTYPES_H_
-#define INCLUDED_DMANIPTYPES_H_
 #pragma once
 
-typedef enum AccessType
+namespace WBFL
 {
-   atByID = 1,
-   atByIndex = 2
-} AccessType;
-
-
-namespace DManip
-{
-   // mapping modes for scaling views
-   enum MapMode {Isotropic, Anisotropic };
-   enum MapModeModifier {NoFit, BestFitX, BestFitY, BestFitXY };
-
-   typedef enum ArrowHeadStyleType
+   namespace DManip
    {
-      ahsLines  = 1, // Arrow heads are lines
-      ahsOpen   = 2, // Arrow head is non-filled triangle
-      ahsFilled = 3  // Arrow head is filled triangle
-   } ArrowHeadStyleType;
-}
 
+      /// @brief Indicates how a display object can be selected
+      enum class SelectionType
+      {
+         None,  ///< cannot be selected
+         NotUI, ///< cannot be selected via the user interface (but can be selected through code)
+         All    ///< can be selected by any means
+      };
 
-#endif // INCLUDED_DMANIPTYPES_H_
+      /// @brief Defines the access key type for display lists, display objects, etc.
+      enum class AccessType
+      {
+         ByID,
+         ByIndex
+      };
+
+      /// @brief Defines mapping modes for scaling views
+      enum class MapMode 
+      {
+         Isotropic, ///< X and Y axes have the same scale
+         Anisotropic  ///< The scale of the X and Y axes can be different
+      };
+
+      /// @brief Defines a mapping mode modifier
+      enum class MapModeModifier 
+      {
+         NoFit,   ///< No adjustments
+         BestFitX,  ///< Adjusts scale so the size is maximized in the X-direction
+         BestFitY,  ///< Adjusts scale so the size is maximized in the Y-direction
+         BestFitXY  ///< Adjusts scale so the size is maximized in the X or Y direction, whichever gives the best fit
+      };
+
+      /// @brief Defines the arrow head style for dimension lines
+      enum class ArrowHeadStyleType
+      {
+         Lines, ///< Arrow heads are lines
+         Open, ///< Arrow head is non-filled triangle
+         Filled  ///< Arrow head is filled triangle
+      };
+
+      /// @brief Defines line styles
+      enum class LineStyleType
+      {
+         Null, Solid, Dot, Dash, Centerline
+      };
+
+      /// @brief Defines how a point is drawing
+      enum class PointType
+      {
+         None,   ///< Nothing drawing at the vertices
+         Circle, ///< An open circle is drawn at the vertices
+         Dot,    ///< A solid dot is drawn at the vertices
+         Square,
+         CrossHair
+         // Triangle
+         // Pentagon
+         // Hexagon
+         // Star???
+      };
+   };
+};

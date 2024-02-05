@@ -21,145 +21,133 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// RectSelectFSMState.cpp: implementation of the CZoomRectFSMState class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
+#include "pch.h"
 #include "ZoomRectFSM.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
 // Definition of static state objects
-CZoomRectFSMStartState CZoomRectFSM::Start;
-CZoomRectFSMWaitingForFirstPointState CZoomRectFSM::WaitingForFirstPoint;
-CZoomRectFSMWaitingForSecondPointState CZoomRectFSM::WaitingForSecondPoint;
-CZoomRectFSMDoneState CZoomRectFSM::Done;
+ZoomRectFSMStartState ZoomRectFSM::Start;
+ZoomRectFSMWaitingForFirstPointState ZoomRectFSM::WaitingForFirstPoint;
+ZoomRectFSMWaitingForSecondPointState ZoomRectFSM::WaitingForSecondPoint;
+ZoomRectFSMDoneState ZoomRectFSM::Done;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CZoomRectFSMState::CZoomRectFSMState()
+ZoomRectFSMState::ZoomRectFSMState()
 {
 
 }
 
-CZoomRectFSMState::~CZoomRectFSMState()
+ZoomRectFSMState::~ZoomRectFSMState()
 {
 
 }
 
-void CZoomRectFSMState::Do(CZoomRectFSM &fsm)
+void ZoomRectFSMState::Do(ZoomRectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::DoubleClick(CZoomRectFSM &fsm)
+void ZoomRectFSMState::DoubleClick(ZoomRectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("DoubleClick"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::MouseDown(CZoomRectFSM &fsm)
+void ZoomRectFSMState::MouseDown(ZoomRectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::MouseUp(CZoomRectFSM &fsm)
+void ZoomRectFSMState::MouseUp(ZoomRectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::MouseMove(CZoomRectFSM &fsm)
+void ZoomRectFSMState::MouseMove(ZoomRectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
-void CZoomRectFSMState::EscKey(CZoomRectFSM& fsm)
+void ZoomRectFSMState::EscKey(ZoomRectFSM& fsm)
 {
    // Default implementation
    fsm.FSMError(_T("EscKey"),fsm.GetState().StateName());
 }
 
 // States and State Transitions
-void CZoomRectFSMWaitingForFirstPointState::MouseMove(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForFirstPointState::MouseMove(ZoomRectFSM& fsm)
 {
 }
 
-void CZoomRectFSMWaitingForFirstPointState::MouseDown(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForFirstPointState::MouseDown(ZoomRectFSM& fsm)
 {
    // Action
    fsm.RecordFirstPoint();
 
    // Change State
-   fsm.SetState(CZoomRectFSM::WaitingForSecondPoint);
+   fsm.SetState(ZoomRectFSM::WaitingForSecondPoint);
 }
 
-void CZoomRectFSMWaitingForFirstPointState::DoubleClick(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForFirstPointState::DoubleClick(ZoomRectFSM& fsm)
 {
 }
 
-void CZoomRectFSMWaitingForFirstPointState::EscKey(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForFirstPointState::EscKey(ZoomRectFSM& fsm)
 {
    // Action
    fsm.Cancel();
 
    // State Change
-   fsm.SetState(CZoomRectFSM::Done);
+   fsm.SetState(ZoomRectFSM::Done);
 }
 
-void CZoomRectFSMWaitingForSecondPointState::MouseUp(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForSecondPointState::MouseUp(ZoomRectFSM& fsm)
 {
    // Action
    fsm.ZoomRect();
 
    // Change State
-   fsm.SetState(CZoomRectFSM::Done);
+   fsm.SetState(ZoomRectFSM::Done);
 }
 
-void CZoomRectFSMWaitingForSecondPointState::MouseMove(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForSecondPointState::MouseMove(ZoomRectFSM& fsm)
 {
    // Action
    fsm.TrackRect();
 
    // Change State
-   fsm.SetState(CZoomRectFSM::WaitingForSecondPoint);
+   fsm.SetState(ZoomRectFSM::WaitingForSecondPoint);
 }
 
-void CZoomRectFSMWaitingForSecondPointState::DoubleClick(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForSecondPointState::DoubleClick(ZoomRectFSM& fsm)
 {
    // No action or state change. Just a stub so the default error doesn't occur
 }
 
-void CZoomRectFSMWaitingForSecondPointState::EscKey(CZoomRectFSM& fsm)
+void ZoomRectFSMWaitingForSecondPointState::EscKey(ZoomRectFSM& fsm)
 {
    // Action
    fsm.Cancel();
 
    // State Change
-   fsm.SetState(CZoomRectFSM::Done);
+   fsm.SetState(ZoomRectFSM::Done);
 }
 
 
-void CZoomRectFSMStartState::Do(CZoomRectFSM& fsm)
+void ZoomRectFSMStartState::Do(ZoomRectFSM& fsm)
 {
    // Action
    fsm.InitTask();
 
    // Change State
-   fsm.SetState(CZoomRectFSM::WaitingForFirstPoint);
+   fsm.SetState(ZoomRectFSM::WaitingForFirstPoint);
 }
 
-CZoomRectFSM::CZoomRectFSM():
+ZoomRectFSM::ZoomRectFSM():
 m_pState(&Start)
 {
 }

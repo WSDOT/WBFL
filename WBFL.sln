@@ -12,10 +12,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLCogo", "COGO\Cogo.vcxpr
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CogoTest", "COGO\CogoTest\CogoTest.vcxproj", "{08F43812-A85E-43FE-85F8-6704C21AA7EE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManip", "DManip\DManip.vcxproj", "{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManipTools", "DManipTools\DManipTools.vcxproj", "{1C007106-B50E-45AD-9A59-05F8F0BD6499}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLEngTools", "EngTools\EngTools.vcxproj", "{FE54EDE6-52C3-42C5-9348-710BC38A8EC0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0727C73E-E23D-4B55-800C-0C17CA862844} = {0727C73E-E23D-4B55-800C-0C17CA862844}
@@ -196,6 +192,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GraphingUnitTests", "Graphi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReporterUnitTests", "Reporter\ReporterUnitTests\ReporterUnitTests.vcxproj", "{B0EB79E9-DE1C-441E-968A-8E98C40FDED1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManip", "DManip\DManip.vcxproj", "{A517C9B8-2CDF-4DAB-8169-E42924F367A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -228,22 +226,6 @@ Global
 		{08F43812-A85E-43FE-85F8-6704C21AA7EE}.Release|x64.Build.0 = Release|x64
 		{08F43812-A85E-43FE-85F8-6704C21AA7EE}.Release|x86.ActiveCfg = Release|x64
 		{08F43812-A85E-43FE-85F8-6704C21AA7EE}.Release|x86.Build.0 = Release|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Debug|x64.ActiveCfg = Debug|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Debug|x64.Build.0 = Debug|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Debug|x86.ActiveCfg = Debug|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Debug|x86.Build.0 = Debug|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x64.ActiveCfg = Release|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x64.Build.0 = Release|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x86.ActiveCfg = Release|x64
-		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x86.Build.0 = Release|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Debug|x64.ActiveCfg = Debug|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Debug|x64.Build.0 = Debug|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Debug|x86.ActiveCfg = Debug|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Debug|x86.Build.0 = Debug|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Release|x64.ActiveCfg = Release|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Release|x64.Build.0 = Release|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Release|x86.ActiveCfg = Release|x64
-		{1C007106-B50E-45AD-9A59-05F8F0BD6499}.Release|x86.Build.0 = Release|x64
 		{FE54EDE6-52C3-42C5-9348-710BC38A8EC0}.Debug|x64.ActiveCfg = Debug|x64
 		{FE54EDE6-52C3-42C5-9348-710BC38A8EC0}.Debug|x64.Build.0 = Debug|x64
 		{FE54EDE6-52C3-42C5-9348-710BC38A8EC0}.Debug|x86.ActiveCfg = Debug|x64
@@ -770,6 +752,12 @@ Global
 		{B0EB79E9-DE1C-441E-968A-8E98C40FDED1}.Release|x64.ActiveCfg = Release|x64
 		{B0EB79E9-DE1C-441E-968A-8E98C40FDED1}.Release|x64.Build.0 = Release|x64
 		{B0EB79E9-DE1C-441E-968A-8E98C40FDED1}.Release|x86.ActiveCfg = Release|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Debug|x64.ActiveCfg = Debug|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Debug|x64.Build.0 = Debug|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Debug|x86.ActiveCfg = Debug|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Release|x64.ActiveCfg = Release|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Release|x64.Build.0 = Release|x64
+		{A517C9B8-2CDF-4DAB-8169-E42924F367A7}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

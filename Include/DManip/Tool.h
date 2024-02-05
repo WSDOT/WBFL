@@ -21,22 +21,36 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TOOL_H
-#define INCLUDED_TOOL_H
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iTool : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,SetID)(UINT id) PURE;
-   STDMETHOD_(UINT,GetID)() PURE; // Resource Identifier
-   STDMETHOD_(void,SetToolTipText)(LPCTSTR lpszText) PURE;
-   STDMETHOD_(CString,GetToolTipText)() PURE;
+   namespace DManip
+   {
+      /// @brief Interface defining a tool that may be placed in a CToolPalette
+      class DMANIPCLASS iTool
+      {
+      public:
+         /// @brief Sets the identifier of the tool. 
+         /// Must be the same as the resource identifier as the dialog bar control
+         virtual void SetID(UINT id) = 0;
+         virtual UINT GetID() const = 0; 
+
+         /// @brief Sets the tooltip text for the tool
+         virtual void SetToolTipText(LPCTSTR lpszText) = 0;
+         virtual std::_tstring GetToolTipText() const = 0;
+      };
+
+      /// @brief Interface defining the icon resource associated with a tool
+      class DMANIPCLASS iToolIcon
+      {
+      public:
+         /// @brief Sets the icon resource
+         /// @param hInstance Instance handle for the instance owning the icon resource
+         /// @param IconResId Identifier of the icon resource
+         /// @return 
+         virtual HRESULT SetIcon(HINSTANCE hInstance, WORD IconResId) = 0;
+      };
+   };
 };
-
-
-interface iToolIcon : public IUnknown
-{
-   STDMETHOD_(HRESULT,SetIcon)(HINSTANCE hInstance, WORD IconResId) PURE;
-};
-
-#endif // INCLUDED_TOOL_H

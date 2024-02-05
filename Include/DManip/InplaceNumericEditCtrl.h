@@ -21,23 +21,17 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_FLOATEDIT_H__DC21B442_DE85_11D4_8CE4_0080C7380027__INCLUDED_)
-#define AFX_FLOATEDIT_H__DC21B442_DE85_11D4_8CE4_0080C7380027__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// InplaceNumericEditCtrl.h : header file
-//
 
 #define WM_EDITERROR WM_USER + 100
 
-#include <DManip\DManipExp.h>
-#include <DManip\InplaceEditCtrl.h>
+#include <DManip/DManipExp.h>
+#include <DManip/InplaceEditCtrl.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CInplaceNumericEdit window
 
+/// @brief A specialized CEdit-derived control that allows only numeric input
 class DMANIPCLASS CInplaceNumericEdit : public CInplaceEdit
 {
 // Construction
@@ -67,10 +61,3 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_FLOATEDIT_H__DC21B442_DE85_11D4_8CE4_0080C7380027__INCLUDED_)

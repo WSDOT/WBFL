@@ -21,52 +21,124 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYLIST_H_
-#define INCLUDED_DISPLAYLIST_H_
 #pragma once
 
-#include <DManip\DisplayObjectContainer.h>
-#include <DManip\DManipTypes.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DManipTypes.h>
 
-struct iDisplayObject;
-struct iDisplayMgr;
-struct iDisplayListEvents;
-interface IPoint2d;
-interface ISize2d;
-
-interface iDisplayList : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,SetDisplayMgr)(iDisplayMgr* pDispMgr) PURE;
-   STDMETHOD_(void,GetDisplayMgr)(iDisplayMgr** dispMgr) PURE;
+   namespace DManip
+   {
+      class iDisplayObject;
+      class iDisplayMgr;
+      class iDisplayListEvents;
 
-   STDMETHOD_(void,SetID)(IDType id) PURE;
-   STDMETHOD_(IDType,GetID)() PURE;
-
-   STDMETHOD_(void,AddDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,GetDisplayObject)(IndexType index,iDisplayObject** dispObj) PURE;
-   STDMETHOD_(void,FindDisplayObject)(IDType id,iDisplayObject** dispObj) PURE;
-   STDMETHOD_(void,RemoveDisplayObject)(IDType key,AccessType access) PURE;
-   STDMETHOD_(void,Clear)() PURE;
-   STDMETHOD_(IndexType,GetDisplayObjectCount)() PURE;
-
-   STDMETHOD_(void,FindDisplayObjects)(CRect rect,      DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,FindDisplayObjects)(CPoint point,    DisplayObjectContainer* dispObjs) PURE;
-   STDMETHOD_(void,FindDisplayObjects)(IPoint2d* point, DisplayObjectContainer* dispObjs) PURE;
-
-   STDMETHOD_(void,DrawDisplayObjects)(CDC* pDC,bool bSkipSelected) PURE;
-   STDMETHOD_(void,HideDisplayObjects)(bool bHide) PURE;
-
-   STDMETHOD_(void,GetWorldExtents)(ISize2d* *ext) PURE;
-
-#if defined(_DEBUG)
-   STDMETHOD_(void,DrawGravityWells)(CDC* pDC) PURE;
+      /// @brief Interface defining a list of display objects.
+      class DMANIPCLASS iDisplayList
+      {
+      public:
+#if defined _DEBUG
+         iDisplayList();
+         virtual ~iDisplayList();
 #endif
 
-   // Event Sink
-   STDMETHOD_(void,RegisterEventSink)(iDisplayListEvents* pEventSink) PURE;
-   STDMETHOD_(void,UnregisterEventSink)() PURE;
-   STDMETHOD_(void,GetEventSink)(iDisplayListEvents** pEventSink) PURE;
+         /// @brief Sets the display list identifier. Display lists must be given unique identifiers.
+         /// @param id 
+         virtual void SetID(IDType id) = 0;
+         virtual IDType GetID() const = 0;
+
+         /// @brief Manages the associated display manager
+         /// @param pDispMgr 
+         virtual void SetDisplayMgr(std::weak_ptr<iDisplayMgr> pDispMgr) = 0;
+         virtual std::shared_ptr<iDisplayMgr> GetDisplayMgr() = 0;
+         virtual std::shared_ptr<const iDisplayMgr> GetDisplayMgr() const = 0;
+
+         /// @brief Adds a display object to the list
+         /// @param pDO 
+         virtual void AddDisplayObject(std::shared_ptr<iDisplayObject> pDO) = 0;
+
+         /// @brief Returns a display object from the list
+         /// @param index Index of the display object
+         /// @return If the display list is empty, a nullptr is returned
+         virtual std::shared_ptr<iDisplayObject> GetDisplayObject(IndexType index) = 0;
+         virtual std::shared_ptr<const iDisplayObject> GetDisplayObject(IndexType index) const = 0;
+         
+         /// @brief Searches for a display object based on its identifier
+         /// @param id 
+         /// @return 
+         virtual std::shared_ptr<iDisplayObject> FindDisplayObject(IDType id) = 0;
+         virtual std::shared_ptr<const iDisplayObject> FindDisplayObject(IDType id) const = 0;
+
+         /// @brief Finds a display object based on a logical rectangle
+         /// @param rect 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const RECT& rect) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const RECT& rect) const = 0;
+
+         /// @brief Finds a display object that overlaps a logical point
+         /// @param point 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const POINT& point) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const POINT& point) const = 0;
+
+         /// @brief Finds a display object contained within a model space rectangle
+         /// @param rect 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Rect2d& rect) const = 0;
+
+         /// @brief Find a display object that overlaps a model space point
+         /// @param point 
+         /// @return 
+         virtual std::vector<std::shared_ptr<iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Point2d& point) = 0;
+         virtual std::vector<std::shared_ptr<const iDisplayObject>> FindDisplayObjects(const WBFL::Geometry::Point2d& point) const = 0;
+
+
+         /// @brief Removes a display object
+         /// @param key display object identifier
+         /// @param access Indicates identifier type
+         virtual void RemoveDisplayObject(IDType key,AccessType access) = 0;
+
+         /// @brief Clears the display, removing all display objects
+         virtual void Clear() = 0;
+
+         /// @brief Returns teh number of display objects in the list
+         /// @return 
+         virtual IndexType GetDisplayObjectCount() const = 0;
+
+         /// @brief Selects all display objects
+         virtual void SelectAll() = 0;
+
+         /// @brief Draws all display objects in the list
+         /// @param pDC 
+         /// @param bSkipSelected If true, selected display objects are not drawn
+         virtual void DrawDisplayObjects(CDC* pDC,bool bSkipSelected) = 0;
+
+         /// @brief Hides display objects. Hidden display objects are not considered when
+         /// computing model extents
+         /// @param bHide 
+         virtual void HideDisplayObjects(bool bHide) = 0;
+
+         /// @brief Returns the model space extents of all the display objects in the list
+         /// @return 
+         virtual WBFL::Geometry::Size2d GetModelExtents() const = 0;
+
+      #if defined(_DEBUG)
+         virtual void DrawGravityWells(CDC* pDC) = 0;
+      #endif
+
+         /// @brief Registers an event sink with this display list. The event sink is notified of any events
+         /// that occur on the list (such as adding or remove a display object)
+         /// @param pEventSink 
+         virtual void RegisterEventSink(std::shared_ptr<iDisplayListEvents> pEventSink) = 0;
+
+         /// @brief Unregisters the event sink
+         virtual void UnregisterEventSink() = 0;
+
+         /// @brief Returns the event sink
+         /// @return 
+         virtual std::shared_ptr<iDisplayListEvents> GetEventSink() = 0;
+      };
+   };
 };
-
-
-#endif // INCLUDED_DISPLAYLIST_H_
