@@ -580,16 +580,16 @@ std::vector<T> linspace(T a, T b, size_t N)
 
 #undef  M_PI
 #if (202002L <= _MSVC_LANG)
-#define M_PI        std::numbers::pi_v<Float64>
+#define M_PI        std::numbers::pi
 #else
 #define M_PI        3.1415926535897932384626433832795
 #endif
 
 #undef  TWO_PI
-#define TWO_PI      2.0*M_PI //6.28318530717958647692528676655901
+#define TWO_PI      (2.0*M_PI) //6.28318530717958647692528676655901
 
 #undef  PI_OVER_2
-#define PI_OVER_2   M_PI/2 //1.57079632679489661923132169163975
+#define PI_OVER_2   (M_PI/2.0) //1.57079632679489661923132169163975
 
 /// Converts an angle from degrees to radians
 inline Float64 ToRadians(Float64 deg) { return deg*M_PI/180.; }
