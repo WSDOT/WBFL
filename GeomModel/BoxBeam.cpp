@@ -192,7 +192,7 @@ void BoxBeam::Offset(const Size2d& delta)
 void BoxBeam::Rotate(const Point2d& center, Float64 angle)
 {
    m_Rotation += angle;
-   GetComposite()->Rotate(center, angle);
+   GetHookPoint()->Rotate(center, angle);
    SetDirtyFlag();
 }
 
