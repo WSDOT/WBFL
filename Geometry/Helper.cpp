@@ -1012,16 +1012,17 @@ HRESULT ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape)
 std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape)
 {
    std::shared_ptr<WBFL::Geometry::Shape> shape;
-   if (dynamic_cast<CCompositeShape*>(pShape))
+
+   CComQIPtr<ICompositeShape> cshape(pShape);
+   if (cshape)
    {
       std::shared_ptr<WBFL::Geometry::CompositeShape> composite_shape = std::make_shared<WBFL::Geometry::CompositeShape>();
-      CComQIPtr<ICompositeShape> comp(pShape);
       IndexType nShapes;
-      comp->get_Count(&nShapes);
+      cshape->get_Count(&nShapes);
       for (IndexType i = 0; i < nShapes; i++)
       {
          CComPtr<ICompositeShapeItem> item;
-         comp->get_Item(i, &item);
+         cshape->get_Item(i, &item);
          VARIANT_BOOL bVoid;
          item->get_Void(&bVoid);
          CComPtr<IShape> s;
@@ -1030,7 +1031,6 @@ std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape)
          auto converted_shape = ConvertShape(s);
          composite_shape->AddShape(converted_shape, bVoid == VARIANT_TRUE ? WBFL::Geometry::CompositeShape::ShapeType::Void : WBFL::Geometry::CompositeShape::ShapeType::Solid);
       }
-
       shape = composite_shape;
    }
    else
@@ -1044,16 +1044,4 @@ std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape)
    }
 
    return shape;
-
-
-   //if (dynamic_cast<CCircle*>(pShape))
-   //{
-   //   auto s = dynamic_cast<CCircle*>(pShape)->GetShape().CreateClone().release();
-   //   shape = std::shared_ptr<WBFL::Geometry::Shape>(s);
-   //}
-   //else if (dynamic_cast<CCircularSegment*>(pShape))
-   //{
-   //   auto s = dynamic_cast<CCircularSegment*>(pShape)->GetShape().CreateClone().release();
-   //   shape = std::shared_ptr<WBFL::Geometry::Shape>(s);
-   //}
 }

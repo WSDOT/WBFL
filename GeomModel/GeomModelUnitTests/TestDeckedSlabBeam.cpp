@@ -396,5 +396,17 @@ namespace GeomModelUnitTest
          Assert::IsTrue(points[i++] == Point2d(-38.875000, 38.875000));
          Assert::IsTrue(i == points.size());
       }
-	};
+
+      TEST_METHOD(Rotate2)
+      {
+         // there was a bug on shapes implementing ShapeOnCompositeImpl
+         // where the hook point did not get moved when the shape was rotated
+         // this test confirms the hook points moves
+         auto beam = GetTestBeam();
+         auto hookPnt_before = *beam.GetHookPoint();
+         beam.Rotate(Point2d(5, 5), M_PI / 2);
+         auto hookPnt_after = *beam.GetHookPoint();
+         Assert::IsFalse(hookPnt_before == hookPnt_after);
+      }
+   };
 }

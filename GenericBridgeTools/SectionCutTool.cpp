@@ -710,8 +710,8 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                {
                   Float64 el3; // top of girder elevation on left side of flange (point 3)
                   Float64 el4; // top of girder elevation on right side of flange (point 4)
-                  el3 = elclg - gross_depth - haunch - (ms_location - ms_width / 2)*orientation;
-                  el4 = elclg - gross_depth - haunch - (ms_location + ms_width / 2)*orientation;
+                  el3 = elclg - gross_depth - haunch + (ms_location - ms_width / 2)*orientation;
+                  el4 = elclg - gross_depth - haunch + (ms_location + ms_width / 2)*orientation;
 
                   if (!bHasMSProfile)
                   {
@@ -778,7 +778,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         Float64 x, y;
                         if (!IsZero(orientation))
                         {
-                           msPoint->RotateEx(pntTC, -orientation);
+                           msPoint->RotateEx(pntTC, orientation);
                         }
                         msPoint->Location(&x, &y);
                         x /= cos_skew;
@@ -1601,7 +1601,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
                Float64 x, y;
                if (!IsZero(orientation))
                {
-                  msPoint->RotateEx(pntTC, -orientation);
+                  msPoint->RotateEx(pntTC, orientation);
                }
                msPoint->Location(&x, &y);
 
@@ -1642,7 +1642,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
             Float64 x, y;
             if (!IsZero(orientation))
             {
-               msPoint->RotateEx(pntTC, -orientation);
+               msPoint->RotateEx(pntTC, orientation);
             }
             msPoint->Location(&x, &y);
 
