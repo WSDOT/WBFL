@@ -571,10 +571,7 @@ Float64 LldfTypeBC::MomentSkewCorrectionFactor() const
    if ( 60.0 < WBFL::Units::ConvertFromSysUnits(avg_skew_angle, WBFL::Units::Measure::Degree) )
       avg_skew_angle = WBFL::Units::ConvertToSysUnits(60.0,WBFL::Units::Measure::Degree);
 
-   skew = 1.05 - 0.25*tan(WBFL::Units::ConvertFromSysUnits(avg_skew_angle,WBFL::Units::Measure::Radian));
-
-   if ( skew > 1.0 )
-      skew = 1.0;
+   skew = min(1.05 - 0.25*tan(WBFL::Units::ConvertFromSysUnits(avg_skew_angle,WBFL::Units::Measure::Radian)),1.0);
 
    return skew;
 }
