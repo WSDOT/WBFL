@@ -25,6 +25,7 @@
 #include "Resource.h"
 #include <MfcTools\CogoDDX.h>
 #include <Units\Convert.h>
+#include <CoordGeom/Station.h>
 #include <algorithm>
 #include <cctype>
 
@@ -128,144 +129,84 @@ void DDX_Angle(CDataExchange* pDX,int nIDC,IAngle* pAngle,IDisplayUnitFormatter*
    delete[] lpszBuffer;
 }
 
-void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, bool bUnitModeSI, const WBFL::Units::Length& usDisplayUnit, const WBFL::Units::Length& siDisplayUnit )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& value, bool bUnitModeSI)
 {
-#pragma Reminder("UPDATE: does this need to take station equation zone index into account")
-   const WBFL::Units::Length& displayUnit = ( bUnitModeSI ? siDisplayUnit : usDisplayUnit );
-
-   HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
-
-   ASSERT( ::IsWindow( hWndCtrl ) );
-
-   int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
-   cLength = (cLength == 1 ? 32 : cLength );
-   LPTSTR lpszBuffer = new TCHAR[cLength];
-
-   CComPtr<IStation> objStation;
-   HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
-   ASSERT(SUCCEEDED(hr));
-
-	if (pDX->m_bSaveAndValidate)
-	{
-	   // Transfer data from the control
-	   ::GetWindowText(hWndCtrl, lpszBuffer, cLength);
-      hr = objStation->FromString(CComBSTR(lpszBuffer),bUnitModeSI ? umSI : umUS);
-      if ( FAILED(hr) )
-      {
-         // Fail throws an exception delete lpszBuffer so we don't leak memory.
-         delete[] lpszBuffer;
-         lpszBuffer = 0;
-         pDX->Fail();
-      }
-
-      objStation->get_Value(&station);
-      station = WBFL::Units::ConvertToSysUnits( station, displayUnit );
-    }
-	else
-	{
-      station = WBFL::Units::ConvertFromSysUnits( station, displayUnit );
-      objStation->put_Value(station);
-      CComBSTR bstrStation;
-      hr = objStation->AsString(bUnitModeSI ? umSI : umUS,VARIANT_FALSE,&bstrStation);
-      if ( FAILED(hr) )
-      {
-         // Something got screwed up!!!
-
-         // Fail throws an exception delete lpszBuffer so we don't leak memory.
-         delete[] lpszBuffer;
-         lpszBuffer = 0;
-
-         pDX->Fail();
-      }
-
-
-		::SetWindowText(hWndCtrl,CString(bstrStation));
-	}
-   delete[] lpszBuffer;
+   DDX_Station(pDX, nIDC, value, bUnitModeSI ? WBFL::Units::StationFormats::SI : WBFL::Units::StationFormats::US);
 }
 
-void DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Units::StationFormat& unitStation )
+void DDX_Station( CDataExchange* pDX, int nIDC, Float64& value, const WBFL::Units::StationFormat& unitStation )
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
-   UnitModeType unitMode = unitStation.GetUnitOfMeasure() == WBFL::Units::StationFormat::UnitOfMeasure::Feet ? umUS : umSI;
-   const WBFL::Units::Length& displayUnit = (unitMode == umUS ? WBFL::Units::Measure::Feet : WBFL::Units::Measure::Meter);
+   HWND hWndCtrl = pDX->PrepareEditCtrl(nIDC);
 
-   HWND hWndCtrl = pDX->PrepareEditCtrl( nIDC );
+   ASSERT(::IsWindow(hWndCtrl));
 
-   ASSERT( ::IsWindow( hWndCtrl ) );
+   int cLength = ::GetWindowTextLength(hWndCtrl) + 1;
+   cLength = (cLength == 1 ? 32 : cLength);
+   auto lpszBuffer = std::make_unique<TCHAR[]>(cLength);
 
-   int cLength = ::GetWindowTextLength( hWndCtrl ) + 1;
-   cLength = (cLength == 1 ? 32 : cLength );
-   auto lpszBuffer(std::make_unique<TCHAR[]>(cLength));;
-
-   CComPtr<IStation> objStation;
-   HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
-   ASSERT(SUCCEEDED(hr));
+   WBFL::COGO::Station station(value);
 
 	if (pDX->m_bSaveAndValidate)
 	{
 	   // Transfer data from the control
 	   ::GetWindowText(hWndCtrl, lpszBuffer.get(), cLength);
-      hr = objStation->FromString(CComBSTR(lpszBuffer.get()),unitMode);
-      if ( FAILED(hr) )
+
+      try
       {
-         // Fail throws an exception delete lpszBuffer so we don't leak memory.
-         CString strError;
-         if ( unitMode == umUS )
-            strError = _T("Invalid station format. Enter the station in the following format: xx+yy.zz");
-         else
-            strError = _T("Invalid station format. Enter the station in the following format: xx+yyy.zz");
-         
-         AfxMessageBox(strError);
-         
+         station.FromString(lpszBuffer.get(), unitStation);
+      }
+      catch (...)
+      {
+         CString msg(_T("Invalid station"));
+         AfxMessageBox(msg, MB_ICONEXCLAMATION);
          pDX->Fail();
       }
 
-      objStation->get_Value(&station);
+      value = station.GetValue();
    }
 	else
 	{  
-      objStation->put_Value(station);
-      CComBSTR bstrStation;
-      hr = objStation->AsString(unitMode,VARIANT_FALSE,&bstrStation);
-      if ( FAILED(hr) )
+      std::_tstring strStation;
+      try
+      {
+         strStation = station.AsString(unitStation);
+      }
+      catch (...)
       {
          // Something got screwed up!!!
+         CString msg(_T("Invalid station"));
+         AfxMessageBox(msg, MB_ICONEXCLAMATION);
          pDX->Fail();
       }
 
-
-		::SetWindowText(hWndCtrl,CString(bstrStation));
-	}
+      ::SetWindowText(hWndCtrl, strStation.c_str());
+   }
 }
 
-void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI, const WBFL::Units::Length& usDisplayUnit, const WBFL::Units::Length& siDisplayUnit )
+void DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitModeSI)
+{
+   DDV_GreaterThanStation(pDX, station, stationLimit, bUnitModeSI ? WBFL::Units::StationFormats::SI : WBFL::Units::StationFormats::US);
+}
+
+void DDV_GreaterThanStation(CDataExchange* pDX, Float64 value, Float64 stationLimit, const WBFL::Units::StationFormat& unitStation)
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
 
-   const WBFL::Units::Length& displayUnit = ( bUnitsModeSI ? siDisplayUnit : usDisplayUnit );
 	if (!pDX->m_bSaveAndValidate)
 	{
 		TRACE0("Warning: initial dialog data is out of range.\n");
 		return;         // don't stop now
 	}
 
-   if( !(stationLimit < station) )
+   if (!(stationLimit < value))
    {
-      CComPtr<IStation> objStation;
-      HRESULT hr = objStation.CoCreateInstance(CLSID_Station);
-      ATLASSERT( SUCCEEDED(hr) );
+      WBFL::COGO::Station station(stationLimit);
+      auto strLimit = station.AsString(unitStation);
 
       CString msg;
-      stationLimit = WBFL::Units::ConvertFromSysUnits( stationLimit, displayUnit );
-      objStation->put_Value(stationLimit);
-
-      CComBSTR bstrStationLimit;
-      hr = objStation->AsString(bUnitsModeSI ? umSI : umUS,VARIANT_FALSE,&bstrStationLimit);
-      ATLASSERT( SUCCEEDED(hr) );
-
-      msg.Format(_T("Please enter a station that is greater than %s"), CString(bstrStationLimit));
-	   AfxMessageBox( msg, MB_ICONEXCLAMATION);
+      msg.Format(_T("Please enter a station that is greater than %s"), strLimit.c_str());
+      AfxMessageBox(msg, MB_ICONEXCLAMATION);
 	   pDX->Fail();
    }
 }
