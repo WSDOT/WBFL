@@ -43,6 +43,8 @@ void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, b
 void MFCTOOLSFUNC DDX_Station( CDataExchange* pDX, int nIDC, Float64& station, const WBFL::Units::StationFormat& unitStation );
 void MFCTOOLSFUNC DDV_GreaterThanStation( CDataExchange* pDX, Float64 station, Float64 stationLimit, bool bUnitsModeSI);
 void MFCTOOLSFUNC DDV_GreaterThanStation(CDataExchange* pDX, Float64 station, Float64 stationLimit, const WBFL::Units::StationFormat& unitStation);
+void MFCTOOLSFUNC DDV_StationInRange(CDataExchange* pDX, Float64 station, Float64 minStation, Float64 maxStation, bool bUnitModeSI);
+void MFCTOOLSFUNC DDV_StationInRange(CDataExchange* pDX, Float64 value, Float64 minStation, Float64 maxStation, const WBFL::Units::StationFormat& unitStation);
 void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation);
 
 #endif // INCLUDED_MFCTOOLS_COGODDX_H_
