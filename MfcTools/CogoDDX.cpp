@@ -199,13 +199,37 @@ void DDV_GreaterThanStation(CDataExchange* pDX, Float64 value, Float64 stationLi
       return;         // don't stop now
    }
 
-   if (!(stationLimit < value))
+   if (!::IsGT(stationLimit,value))
    {
       WBFL::COGO::Station station(stationLimit);
       auto strLimit = station.AsString(unitStation);
 
       CString msg;
       msg.Format(_T("Please enter a station that is greater than %s"), strLimit.c_str());
+      AfxMessageBox(msg, MB_ICONEXCLAMATION);
+      pDX->Fail();
+   }
+}
+
+void DDV_StationInRange(CDataExchange* pDX, Float64 station, Float64 minStation, Float64 maxStation, bool bUnitModeSI)
+{
+   DDV_StationInRange(pDX, station, minStation, maxStation, bUnitModeSI ? WBFL::Units::StationFormats::SI : WBFL::Units::StationFormats::US);
+}
+
+void DDV_StationInRange(CDataExchange* pDX, Float64 value, Float64 minStation, Float64 maxStation, const WBFL::Units::StationFormat& unitStation)
+{
+#pragma Reminder("UPDATE: does this need to take station equation zone index into account")
+
+   if (!pDX->m_bSaveAndValidate)
+   {
+      TRACE0("Warning: initial dialog data is out of range.\n");
+      return;         // don't stop now
+   }
+
+   if (::IsLT(value,minStation) || ::IsLT(maxStation,value))
+   {
+      CString msg;
+      msg.Format(_T("Please enter a station between %s and %s"), WBFL::COGO::Station(minStation).AsString(unitStation).c_str(),WBFL::COGO::Station(maxStation).AsString(unitStation).c_str());
       AfxMessageBox(msg, MB_ICONEXCLAMATION);
       pDX->Fail();
    }
