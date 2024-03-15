@@ -440,7 +440,7 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
    }
    row++;
 
-   (*pTable)(row,0) << _T("Allowable Factor of Safety Against Failure");
+   (*pTable)(row,0) << _T("Minimum Factor of Safety Against Failure");
    (*pTable)(row,1) << scalar.SetValue(criteria.MinFSf);
    row++;
 
@@ -457,11 +457,11 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
    pPara = new rptParagraph;
    *pChapter << pPara;
 
-   pTable = rptStyleManager::CreateTableNoHeading(2,_T("Factor of Safety against Rollover"));
+   pTable = rptStyleManager::CreateTableNoHeading(2,_T("Factor of Safety Against Failure at Rollover"));
    *pPara << pTable << rptNewLine;
 
    row = pTable->GetNumberOfHeaderRows();
-   (*pTable)(row, 0) << _T("Factor of Safety against Rollover (") << FS_R << _T(")");
+   (*pTable)(row, 0) << _T("Factor of Safety Against Failure at Rollover (") << FS_R << _T(")");
    (*pTable)(row,1) << scalar.SetValue(results.MinFsRollover);
    if (bLabelImpact)
    {
@@ -473,7 +473,7 @@ void OneEndSeatedStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder
    }
    row++;
 
-   (*pTable)(row,0) << _T("Minimum Factor of Safety against Rollover");
+   (*pTable)(row,0) << _T("Minimum Factor of Safety Against Failure at Rollover");
    (*pTable)(row,1) << scalar.SetValue(criteria.MinFSf);
    row++;
 
@@ -1927,7 +1927,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
 
          pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
          *pChapter << pPara;
-         *pPara << _T("Factor of Safety against Rollover") << rptNewLine;
+         *pPara << _T("Factor of Safety Against Failure at Rollover") << rptNewLine;
          pPara = new rptParagraph;
          *pChapter << pPara;
 
@@ -1990,7 +1990,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
             }
          }
 
-         *pPara << FS_R << _T(" = Factor of Safety against Rollover") << rptNewLine;
+         *pPara << FS_R << _T(" = Factor of Safety Against Failure at Rollover") << rptNewLine;
          if (pResults->bRolloverStability[+impactDir[impactCase]][+wind])
          {
             *pPara << FS_R << _T(" = [");
@@ -2280,7 +2280,7 @@ void OneEndSeatedStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,c
 
       *pPara << rptNewLine;
 
-      *pPara << _T("The minimum Factor of Safety against Rollover, ") << strTitle << rptNewLine;
+      *pPara << _T("The minimum Factor of Safety Against Failure at Rollover, ") << strTitle << rptNewLine;
       *pPara << FS_R << _T(" Min = ");
       if (pResults->MinFsRollover == Float64_Max)
       {
