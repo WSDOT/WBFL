@@ -106,7 +106,8 @@ STDMETHODIMP CPier::get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasur
    Float64 LCO, RCO;
    get_CurbLineOffset(qcbLeft,clMeasure,&LCO);
    get_CurbLineOffset(qcbRight,clMeasure,&RCO);
-   *pWcc = fabs(LCO) + fabs(RCO); // curb-curb width is unsigned, but offsets are signed... uses absolute value
+   *pWcc = RCO - LCO; 
+   ATLASSERT(0 <= *pWcc);
    return S_OK;
 }
 
