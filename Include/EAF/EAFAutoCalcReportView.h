@@ -62,6 +62,7 @@ public:
    virtual void UpdateNow() override;
    virtual void UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint) override;
    virtual void EditReport() override;
+	virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
 
 protected:
 	virtual ~CEAFAutoCalcReportView();

@@ -179,6 +179,30 @@ void CEAFAutoCalcReportView::EditReport()
    }
 }
 
+void CEAFAutoCalcReportView::RefreshReport()
+{
+   CEAFReportView::RefreshReport();
+
+   CEAFLicensePlateChildFrame* pParent = GetLpFrame();
+   if (m_pReportSpec != nullptr && !m_pReportSpec->IsValid())
+   {
+      pParent->SetLicensePlateMode(eafTypes::lpfOn);
+      pParent->SetLicensePlateText(m_ErrorMsg.c_str());
+   }
+   else
+   {
+      CDocument* pDoc = GetDocument();
+      CEAFAutoCalcDocMixin* pAutoCalcDoc = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
+      ATLASSERT(pAutoCalcDoc); // your document must use the autocalc mix in
+      if (pAutoCalcDoc->IsAutoCalcEnabled() && pParent->GetLicensePlateMode() == eafTypes::lpfOn)
+      {
+         // if auto calc is enable and there was no error updating the view,
+         // make sure the license plate frame is off
+         pParent->SetLicensePlateMode(eafTypes::lpfOff);
+      }
+   }
+}
+
 HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
 {
    HRESULT hr = CEAFReportView::UpdateReportBrowser(pHint);
