@@ -384,7 +384,10 @@ std::vector<std::shared_ptr<PathElement>> Path::CreateOffsetPath(Float64 offset)
       {
          auto& prev_offset_element = path_elements.back();
          auto& next_offset_element = e.front();
-         if (prev_offset_element->GetEndPoint() != next_offset_element->GetStartPoint())
+         auto prev_segment = std::dynamic_pointer_cast<PathSegment>(prev_offset_element);
+         auto next_segment = std::dynamic_pointer_cast<PathSegment>(next_offset_element);
+
+         if (prev_segment && next_segment && prev_offset_element->GetEndPoint() != next_offset_element->GetStartPoint())
          {
             // the offset path isn't continuous, adjust end points
             auto prev_offset_tangent = prev_offset_element->GetEndTangent();
@@ -392,15 +395,11 @@ std::vector<std::shared_ptr<PathElement>> Path::CreateOffsetPath(Float64 offset)
 
             WBFL::Geometry::Point2d pi;
             auto result = WBFL::Geometry::GeometricOperations::Intersect(prev_offset_tangent, next_offset_tangent, &pi);
-            CHECK(result == 1);
-
-            // Assuming that the discontinuous elements are PathSegments
-            auto prev_segment = std::dynamic_pointer_cast<PathSegment>(prev_offset_element);
-            auto next_segment = std::dynamic_pointer_cast<PathSegment>(next_offset_element);
-            CHECK(prev_segment);
-            CHECK(next_segment);
-            prev_segment->ThroughPoints(prev_segment->GetStartPoint(), pi);
-            next_segment->ThroughPoints(pi, next_segment->GetEndPoint());
+            if (result == 1)
+            {
+               prev_segment->ThroughPoints(prev_segment->GetStartPoint(), pi);
+               next_segment->ThroughPoints(pi, next_segment->GetEndPoint());
+            }
          }
       }
 
