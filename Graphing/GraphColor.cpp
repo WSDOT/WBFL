@@ -122,6 +122,6 @@ COLORREF GraphColor::GetColor(IndexType graphIndex)
 
    Float64 hue = pickHue(RangeType(m_MinHue, m_MaxHue), (int)graphIndex*5); // 5 gives a good color distribution (after testing)
 
-   auto [red,green,blue] = WBFL::System::ColorConverter::HSLtoRGB(hue,lightness,saturation);
+   auto [red,green,blue] = WBFL::System::ColorConverter::HSLtoRGB(hue,saturation,lightness);
    return RGB(red,green,blue);
 }
