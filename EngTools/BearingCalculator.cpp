@@ -732,7 +732,7 @@ bool BearingCalculator::MinimumLengthCheck(const Bearing& brg, const BearingLoad
 
 bool BearingCalculator::MinimumWidthCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
-	if (brg.GetLength() >= GetMinimumAllowableWidth(brg, brg_loads))
+	if (brg.GetWidth() >= GetMinimumAllowableWidth(brg, brg_loads))
 	{
 		return true;
 	}
