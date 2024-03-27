@@ -256,6 +256,74 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads));
 		}
 
+
+		TEST_METHOD(TestPGExampleFail)
+		{
+
+			Bearing brg;
+			BearingLoads brg_loads;
+			BearingCalculator brg_calc;
+
+			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
+			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));
+			brg_calc.SetAbsoluteMinimumShimThickness(WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch));
+
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerBulkModulus(), WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetMaximumAllowableStress(), WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetAbsoluteMinimumShimThickness(), WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch)));
+
+			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::PSI));
+			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(190, WBFL::Units::Measure::PSI));
+			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(36, WBFL::Units::Measure::KSI));
+			brg.SetFatigueThreshold(WBFL::Units::ConvertToSysUnits(24, WBFL::Units::Measure::KSI));
+			brg.SetCoverThickness(WBFL::Units::ConvertToSysUnits(0.25, WBFL::Units::Measure::Inch));
+			brg.SetLength(WBFL::Units::ConvertToSysUnits(14, WBFL::Units::Measure::Inch));
+			brg.SetWidth(WBFL::Units::ConvertToSysUnits(16, WBFL::Units::Measure::Inch));
+			brg.SetIntermediateLayerThickness(WBFL::Units::ConvertToSysUnits(0.5, WBFL::Units::Measure::Inch));
+			brg.SetNumIntLayers(9);
+			brg.SetSteelShimThickness(WBFL::Units::ConvertToSysUnits(0.075, WBFL::Units::Measure::Inch));
+			brg_loads.SetStaticRotation(0.01174);
+			brg_loads.SetCyclicRotation(0.00303);
+			brg_loads.SetRotationX(0.015);
+			brg_loads.SetRotationY(0.000);
+			brg_loads.SetShearDeformation(WBFL::Units::ConvertToSysUnits(2.38, WBFL::Units::Measure::Inch));
+			brg_loads.SetDeadLoad(WBFL::Units::ConvertToSysUnits(216, WBFL::Units::Measure::Kip));
+			brg_loads.SetLiveLoad(WBFL::Units::ConvertToSysUnits(51, WBFL::Units::Measure::Kip));
+			brg_loads.SetFixedTranslationX(BearingLoads::FixedTranslationX::No);
+			brg_loads.SetFixedTranslationY(BearingLoads::FixedTranslationY::Yes);
+
+			Assert::IsTrue(brg_calc.MinimumAreaCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumLengthCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumWidthCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MaximumStressCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumShapeFactorCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MaximumShapeFactorCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads));
+			Assert::IsFalse(brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads));
+			Assert::IsFalse(brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads));
+			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads));
+			Assert::IsTrue(brg_calc.StabilityXDirectionCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.StabilityYDirectionCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.RestraintSystemRequirementCheck(brg, brg_loads));
+			Assert::IsFalse(brg_calc.HydrostaticStressCheck(brg, brg_loads));
+			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads));
+
+
+		}
+
 		TEST_METHOD(TestEtc)
 		{
 
