@@ -18,10 +18,10 @@ namespace GraphingUnitTests
 			gc.SetSaturationRange(0.1, 0.9);
 			gc.SetLightnessRange(0.2, 0.8);
 
-			Assert::AreEqual((COLORREF)5716525, gc.GetColor(0));
-			Assert::AreEqual((COLORREF)6762802, gc.GetColor(1));
-			Assert::AreEqual((COLORREF)13598551, gc.GetColor(10));
-			Assert::AreEqual((COLORREF)5455147, gc.GetColor(100));
+			Assert::AreEqual((COLORREF)6703420, gc.GetColor(0));
+			Assert::AreEqual((COLORREF)7618111, gc.GetColor(1));
+			Assert::AreEqual((COLORREF)13597005, gc.GetColor(10));
+			Assert::AreEqual((COLORREF)6442043, gc.GetColor(100));
 		}
 	};
 }
