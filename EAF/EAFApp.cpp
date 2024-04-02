@@ -1852,6 +1852,7 @@ WBFL::Units::IndirectMeasure init_si_units()
    im.Curvature.Update(       WBFL::Units::Measure::PerMillimeter,            1.0e-9,14, 8, WBFL::System::NumericFormatTool::Format::Fixed);
    im.SmallStress.Update(     WBFL::Units::Measure::Pa,                        0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
    im.WindPressure.Update(    WBFL::Units::Measure::Pa,                        0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Temperature.Update(     WBFL::Units::Measure::Celsius,                   0.01,  8, 3, WBFL::System::NumericFormatTool::Format::Fixed);
    im.Velocity.Update(        WBFL::Units::Measure::KilometerPerHour,          0.001, 9, 2, WBFL::System::NumericFormatTool::Format::Fixed);
 
    return im;
@@ -1904,6 +1905,7 @@ WBFL::Units::IndirectMeasure init_english_units()
    im.Curvature.Update(       WBFL::Units::Measure::PerInch,        1.0e-9,14, 8, WBFL::System::NumericFormatTool::Format::Fixed);
    im.SmallStress.Update(     WBFL::Units::Measure::KSF,            1.0e-5, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
    im.WindPressure.Update(    WBFL::Units::Measure::PSF,            1.0e-5, 8, 3, WBFL::System::NumericFormatTool::Format::Fixed );
+   im.Temperature.Update(     WBFL::Units::Measure::Fahrenheit,     0.01,   8, 3, WBFL::System::NumericFormatTool::Format::Fixed);
    im.Velocity.Update(        WBFL::Units::Measure::MilePerHour,    1.0e-5, 8, 2, WBFL::System::NumericFormatTool::Format::Fixed );
 
    return im;
