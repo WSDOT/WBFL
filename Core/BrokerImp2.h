@@ -128,7 +128,22 @@ private:
 
    std::map<CComBSTR,CComBSTR> m_CLSIDMap;
 
-   using Agents = std::map<CLSID,CComPtr<IAgentEx>>; // interface pointers are referenced counted
+   class Key : public std::pair<IndexType, CLSID>
+   {
+   public:
+      Key(IndexType idx, CLSID clsid) : std::pair<IndexType,CLSID>(idx, clsid) {}
+      bool operator<(const Key& key) 
+      {
+         if (first == key.first)
+            return second < key.second;
+         else if (first < key.first)
+            return true;
+         else
+            return false;
+      }
+   };
+
+   using Agents = std::map<Key,CComPtr<IAgentEx>>; // interface pointers are referenced counted
    Agents m_Agents;
    Agents m_ExtensionAgents;
 
