@@ -19,7 +19,6 @@ namespace EngToolsUnitTests
 
             Assert::IsTrue(IsEqual(brg.GetLength(), WBFL::Units::ConvertToSysUnits(11.0, WBFL::Units::Measure::Inch)));
             Assert::IsTrue(IsEqual(brg.GetWidth(), WBFL::Units::ConvertToSysUnits(27.0, WBFL::Units::Measure::Inch)));
-            Assert::IsTrue(IsEqual(brg.GetWidth(), WBFL::Units::ConvertToSysUnits(27, WBFL::Units::Measure::Inch)));
             Assert::IsTrue(IsEqual(brg.GetShearModulusMinimum(), WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::PSI)));
             Assert::IsTrue(IsEqual(brg.GetShearModulusMaximum(), WBFL::Units::ConvertToSysUnits(190, WBFL::Units::Measure::PSI)));
             Assert::IsTrue(IsEqual(brg.GetIntermediateLayerThickness(), WBFL::Units::ConvertToSysUnits(0.5, WBFL::Units::Measure::Inch)));
@@ -35,6 +34,7 @@ namespace EngToolsUnitTests
             Assert::IsTrue(IsEqual(brg.GetTotalSteelShimThickness(), WBFL::Units::ConvertToSysUnits(0.374, WBFL::Units::Measure::Inch), 0.001));
             Assert::IsTrue(IsEqual(brg.GetTotalSteelShims(), 5));
             Assert::IsTrue(IsEqual(brg.GetShapeFactor(), 7.82, 0.01));
+            Assert::IsTrue(IsEqual(brg.GetBearingWeight(), WBFL::Units::ConvertToSysUnits(63.65, WBFL::Units::Measure::Pound), 0.1));
 
       }
 	};

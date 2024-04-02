@@ -140,9 +140,19 @@ Float64 Bearing::GetShapeFactor() const
 {
     return GetArea() / (2 * m_intermediate_layer_thickness * (m_length + m_width));
 }
+Float64 WBFL::EngTools::Bearing::GetBearingWeight() const
+{
+    Float64 mass = GetArea() * (GetTotalElastomerThickness() * m_density_elastomer + GetTotalSteelShimThickness() * m_density_steel);
+
+    Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
+
+    Float64 weight = mass * g;
+
+    return weight;
+}
 Float64 Bearing::GetTotalElastomerThickness() const
 {
-    auto ttotal = m_cover_thickness * 2 + m_number_intermediate_layers * m_intermediate_layer_thickness;
+    Float64 ttotal = m_cover_thickness * 2 + m_number_intermediate_layers * m_intermediate_layer_thickness;
     return ttotal;
 }
 Float64 Bearing::GetTotalSteelShimThickness() const

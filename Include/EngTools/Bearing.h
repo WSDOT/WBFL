@@ -117,6 +117,8 @@ namespace WBFL
             IndexType GetTotalSteelShims() const;
             /// @return bearing pad shape factor
             Float64 GetShapeFactor() const;
+            /// @return bearing weight
+            Float64 GetBearingWeight() const;
 
 
 
