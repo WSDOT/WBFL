@@ -61,10 +61,12 @@ Float64 BearingCalculator::GetMaximumAllowableStress() const
 {
 	return m_maximum_allowable_stress;
 }
+
 Float64 BearingCalculator::GetAbsoluteMinimumShimThickness() const
 {
 	return m_absolute_minimum_shim_thickness;
 }
+
 Float64 BearingCalculator::GetElastomerBulkModulus() const
 {
 	return m_elastomer_bulk_modulus;
