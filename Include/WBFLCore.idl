@@ -125,6 +125,15 @@ library WBFLCore
 		[helpstring("method Init2")] HRESULT Init2();
 		[helpstring("method GetClassID")] HRESULT GetClassID([out]CLSID* pCLSID);
 	};
+
+	[
+		uuid(C1F4D0C1-51CE-4F0B-B307-801188A1B7C4)
+	]
+	interface IAgentPriority : IUnknown
+	{
+		IndexType GetPriority();
+	};
+
 	[
 		uuid(E6268300-26FA-11d2-8EB0-006097DF3C68),
 		helpstring("IAgentPersist Interface"),

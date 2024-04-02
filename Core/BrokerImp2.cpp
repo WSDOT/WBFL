@@ -220,7 +220,7 @@ void CBrokerImp2::ListConnectionPointLeaks(IAgentEx* pAgent)
          while ( pEnumConnections->Next(1,&cdata,nullptr) != S_FALSE )
          {
             WATCHX(IFC,0,_T("Leaked connection point cookie ") << cdata.dwCookie);
-            cdata.pUnk->Release(); // documtation says caller must call Release
+            cdata.pUnk->Release(); // documentation says caller must call Release
             leakCount++;
          }
 
@@ -482,7 +482,12 @@ HRESULT CBrokerImp2::LoadAgents( CLSID * clsid, IndexType nClsid,IIndexArray** p
       hr = ::CoCreateInstance( clsid[i], nullptr, CLSCTX_INPROC_SERVER, IID_IAgentEx, (void**)&pAgent );
       if ( SUCCEEDED( hr ) )
       {
-         agents.insert( std::make_pair(clsid[i],pAgent) );
+         IndexType priority_index = 999;
+         CComQIPtr<IAgentPriority> priority(pAgent);
+         if (priority)
+            priority_index = priority->GetPriority();
+
+         agents.insert( std::make_pair(Key(priority_index,clsid[i]),pAgent) );
          if ( FAILED(pAgent->SetBroker(this)) || FAILED(pAgent->RegInterfaces()) )
          {
             if ( *plErrIndex )
@@ -558,7 +563,8 @@ HRESULT CBrokerImp2::AddAgent(IAgentEx* pAgent,Agents& agents)
    CLSID clsid;
    pAgent->GetClassID(&clsid);
 
-   agents.insert( std::make_pair(clsid,pAgent) );
+   IndexType priority = 999;
+   agents.insert( std::make_pair(Key(priority,clsid),pAgent) );
 
    return S_OK;
 }
@@ -802,7 +808,7 @@ HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator be
 {
    while ( begin != end )
    {
-      auto [clsid, pAgent](*begin);
+      auto [key, pAgent](*begin);
       HRESULT hr = S_OK;
       IAgentPersist* pPersist;
       hr = pAgent->QueryInterface( IID_IAgentPersist, (void**)&pPersist );
@@ -812,7 +818,7 @@ HRESULT CBrokerImp2::SaveAgentData(IStructuredSave* pStrSave,Agents::iterator be
          pStrSave->BeginUnit(_T("Agent"),1.0);
 
          LPOLESTR postr = 0;
-         hr = StringFromCLSID(clsid, &postr);
+         hr = StringFromCLSID(key.second, &postr);
 
          // capture the class id of the agent
          pStrSave->put_Property(_T("CLSID"),CComVariant(postr));
@@ -930,18 +936,24 @@ HRESULT CBrokerImp2::LoadOldFormat(IStructuredLoad* pStrLoad)
 
 HRESULT CBrokerImp2::FindAgent(const CLSID& clsid,IAgentEx** ppAgent)
 {
-   Agents::iterator found( m_Agents.find(clsid) );
-   if ( found != m_Agents.end() )
+   for (auto& [key,agent] : m_Agents)
    {
-      (*ppAgent) = (*found).second;
-      return S_OK;
+      if (key.second == clsid)
+      {
+         (*ppAgent) = agent;
+         (*ppAgent)->AddRef();
+         return S_OK;
+      }
    }
 
-   found = m_ExtensionAgents.find(clsid);
-   if ( found != m_ExtensionAgents.end() )
+   for (auto& [key, agent] : m_ExtensionAgents)
    {
-      (*ppAgent) = (*found).second;
-      return S_OK;
+      if (key.second == clsid)
+      {
+         (*ppAgent) = agent;
+         (*ppAgent)->AddRef();
+         return S_OK;
+      }
    }
 
    return E_FAIL;
