@@ -84,9 +84,9 @@ public:
 	public:
 	virtual void OnInitialUpdate();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	protected:
+   virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
+protected:
 	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
-	virtual void OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint);
 	//}}AFX_VIRTUAL
 
 // Implementation

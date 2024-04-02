@@ -83,6 +83,7 @@ CEAFAutoCalcDocMixin* CEAFAutoCalcViewMixin::GetAutoCalcDocument()
 
 CEAFLicensePlateChildFrame* CEAFAutoCalcViewMixin::GetLpFrame()
 {
+   AFX_MANAGE_STATE(AfxGetAppModuleState());
    CEAFLicensePlateChildFrame* plp = 0;
    CWnd *pParent = m_pView->GetParentFrame();
    ASSERT_KINDOF(CEAFLicensePlateChildFrame,pParent); // frame must be in a license plate frame
