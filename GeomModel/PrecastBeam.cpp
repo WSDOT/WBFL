@@ -446,7 +446,10 @@ void PrecastBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
    polygon->AddPoint(p1_x, p1_y);  // 1 (top center)
    polygon->AddPoint(p2_x, p2_y);
    polygon->AddPoint(p3_x, p3_y);
-   polygon->AddPoint(p4_x, p4_y);
+   if (0.0 < m_W1)
+   {
+      polygon->AddPoint(p4_x, p4_y);
+   }
    polygon->AddPoint(p5_x, p5_y);
    polygon->AddPoint(p6_x, p6_y);
    polygon->AddPoint(p7_x, p7_y);
