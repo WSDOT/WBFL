@@ -500,6 +500,17 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
       // Flange on both sides or no flange
       p6_x = -m_W2 / 2 + m_W4 + m_W5 + T;
    }
+   
+   if (IsZero(p6_x))
+   {
+      // if p6_x is zero, it is on the centerline of the beam
+      // when the polygon mirrors the points because of symmetry, 
+      // the right side of the shape wont have a top flange
+      // because points on the mirrorring axis aren't duplicated.
+      // to prevent this from happening, move p6_x just off the
+      // mirrroring axis by slightly more than the tolerance.
+      p6_x -= 1.1 * TOLERANCE;
+   }
    Float64 p6_y = m_D1;
 
    Float64 p7_x = p6_x;
