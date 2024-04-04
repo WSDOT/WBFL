@@ -855,10 +855,22 @@ void Polygon::GetAllPoints(std::vector<Point2d>* points) const
    for (; iter != end; iter++)
    {
       // working in reverse order, add the mirrored points to the vector of points
+      // don't mirror points that are on the axis of symmetry
       const auto& point(*iter);
-      points->emplace_back(GetMirroredPoint(point));
+      if( (m_Symmetry == Symmetry::X && !IsEqual(point.Y(),m_SymmetryAxis))
+          or
+          (m_Symmetry == Symmetry::Y && !IsEqual(point.X(), m_SymmetryAxis))
+         )
+      {
+         points->emplace_back(GetMirroredPoint(point));
+      }
    }
-   _RemoveDuplicatePoints(*points);
+
+   // close the polygon if first and last point are different
+   if (points->front() != points->back())
+   {
+      points->emplace_back(points->front());
+   }
 }
 
 std::unique_ptr<Shape> Polygon::CreateClippedShape_Private(const Line2d& line, Line2d::Side side, const std::vector<Point2d>& points) const
