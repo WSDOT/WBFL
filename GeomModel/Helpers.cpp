@@ -22,17 +22,25 @@
 ///////////////////////////////////////////////////////////////////////
 #include <GeomModel/GeomModelLib.h>
 #include "Helpers.h"
+#include <MathEx.h>
 
 using namespace WBFL::Geometry;
 
 void WBFL::Geometry::GenerateFillet(std::vector<Point2d>& vPoints, Float64 cx, Float64 cy, Float64 r, Float64 startAngle, Float64 delta, IndexType nSpaces)
 {
-   Float64 dAngle = delta / nSpaces;
-   for (IndexType i = 0; i <= nSpaces; i++)
+   if (IsZero(r))
    {
-      Float64 x = cx + r * cos(startAngle + i * dAngle);
-      Float64 y = cy + r * sin(startAngle + i * dAngle);
+      vPoints.emplace_back(cx, cy);
+   }
+   else
+   {
+      Float64 dAngle = delta / nSpaces;
+      for (IndexType i = 0; i <= nSpaces; i++)
+      {
+         Float64 x = cx + r * cos(startAngle + i * dAngle);
+         Float64 y = cy + r * sin(startAngle + i * dAngle);
 
-      vPoints.emplace_back(x, y);
+         vPoints.emplace_back(x, y);
+      }
    }
 }
