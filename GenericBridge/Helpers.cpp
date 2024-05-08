@@ -248,7 +248,6 @@ void AdjustForEndBlocks(IPrecastBeam* pBeam, Float64 Wt, Float64 Wb)
       // end block is wider than the top flange
       w1 = 0;
       w2 = 0;
-      d7 += D1 + D2 + D3;
       t1 = Wt;
    }
    else if (W2 + T1 / 2 < Wt / 2)
@@ -282,7 +281,6 @@ void AdjustForEndBlocks(IPrecastBeam* pBeam, Float64 Wt, Float64 Wb)
       // end block is wider than the bottom flange
       w3 = 0;
       w4 = 0;
-      d7 += D4 + D5 + D6;
       t2 = Wb;
    }
    else if (W4 + T2 / 2 < Wb / 2)
