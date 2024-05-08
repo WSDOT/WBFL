@@ -563,8 +563,12 @@ HRESULT CBrokerImp2::AddAgent(IAgentEx* pAgent,Agents& agents)
    CLSID clsid;
    pAgent->GetClassID(&clsid);
 
-   IndexType priority = 999;
-   agents.insert( std::make_pair(Key(priority,clsid),pAgent) );
+   IndexType priority_index = 999;
+   CComQIPtr<IAgentPriority> priority(pAgent);
+   if (priority)
+      priority_index = priority->GetPriority();
+
+   agents.insert( std::make_pair(Key(priority_index,clsid),pAgent) );
 
    return S_OK;
 }
