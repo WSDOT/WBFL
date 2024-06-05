@@ -411,7 +411,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    }
 
    // Shape is to be in girder path coordinates so X = 0 is at the CL Pier
-   // Y = 0 is also at the CL Pier and is estabilished by projecting a horizontal
+   // Y = 0 is also at the CL Pier and is established by projecting a horizontal
    // line from the top,left corner of the profile... That is, the elevation of the top
    // left corner of the profile is 0.
    //
@@ -563,8 +563,25 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_BeamShape(Float64 Xs, SectionCo
       CComQIPtr<IFlangedDeckedSection> section(newShape);
       section->AddTopFlangeThickening(top_flange_thickening);
 
-      m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, newShape);
+      auto result = m_ShapeCache.emplace_hint(m_ShapeCache.end(), Xs, newShape);
+      newShape.Release();
+      result->second->Clone(&newShape);
    }
+
+#if defined _DEBUG
+   // the cached shapes are expected to be in cstGirder coordinates
+   // the X value of the hook point should be zero
+   for (auto shape_ : m_ShapeCache)
+   {
+      CComPtr<IXYPosition> shape__;
+      shape_.second.QueryInterface(&shape__);
+      CComPtr<IPoint2d> hkpnt;
+      shape__->get_LocatorPoint(lpHookPoint, &hkpnt);
+      Float64 x, y;
+      hkpnt->Location(&x, &y);
+      ATLASSERT(IsZero(x));
+   }
+#endif
 
    if (coordinateSystem == cstBridge)
    {
@@ -593,7 +610,7 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_TopFlangeSlope(Float64* pSlope)
    CComQIPtr<IFlangedDeckedSection> section(m_Shapes.front().Shape);
    ATLASSERT(section); // if this is nullptr... how did it get in the system????
 
-   // This object reprsents a prismatic shape... all sections are the same
+   // This object represents a prismatic shape... all sections are the same
    HRESULT hr = S_OK;
 
    Float64 n1, n2;
