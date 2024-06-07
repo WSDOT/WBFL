@@ -28,6 +28,7 @@
 
 std::_tstring rptStyleManager::ms_ReportTitleStyle           = _T("ReportTitle");
 std::_tstring rptStyleManager::ms_ReportSubtitleStyle        = _T("ReportSubtitle");
+std::_tstring rptStyleManager::ms_ChapterTitleStyle          = _T("ChapterTitle");
 std::_tstring rptStyleManager::ms_HeadingStyle               = _T("Heading");
 std::_tstring rptStyleManager::ms_SubheadingStyle            = _T("Subheading");
 std::_tstring rptStyleManager::ms_TableColumnHeadingStyle    = _T("ColumnHeading");
@@ -71,6 +72,17 @@ void rptStyleManager::InitStyles()
    rptsubtitle.SetAlignment(rptRiStyle::CENTER);
    flag = psl->AddNamedStyle(ms_ReportSubtitleStyle, rptsubtitle);
    //ATLASSERT(flag);
+
+   // Chapter Titles
+   rptRiStyle  chaptertitle;
+   chaptertitle.SetFontType(rptRiStyle::SWISS);
+   chaptertitle.SetFontSize(13);
+   chaptertitle.SetIsHeading(true);
+   chaptertitle.SetAlignment(rptRiStyle::LEFT);
+   chaptertitle.SetBold( true );
+   chaptertitle.SetColor( rptRiStyle::Blue );
+   flag = psl->AddNamedStyle(ms_ChapterTitleStyle, chaptertitle);
+   //ATLASSERT(flag);
    
    // Headings
    rptRiStyle headings;
@@ -106,14 +118,14 @@ void rptStyleManager::InitStyles()
        //ATLASSERT(flag);
    }
 
-   rptRiStyle  chaptertitle;
-   chaptertitle.SetFontType(rptRiStyle::SWISS);
-   chaptertitle.SetFontSize(13);
-   chaptertitle.SetIsHeading(true);
-   chaptertitle.SetAlignment(rptRiStyle::LEFT);
-   chaptertitle.SetBold(true);
-   chaptertitle.SetColor(rptRiStyle::Blue);
-   psl->SetHeadingStyle(1, chaptertitle);
+   //rptRiStyle  chaptertitle;
+   //chaptertitle.SetFontType(rptRiStyle::SWISS);
+   //chaptertitle.SetFontSize(13);
+   //chaptertitle.SetIsHeading(true);
+   //chaptertitle.SetAlignment(rptRiStyle::LEFT);
+   //chaptertitle.SetBold(true);
+   //chaptertitle.SetColor(rptRiStyle::Blue);
+   //psl->SetHeadingStyle(1, chaptertitle);
 
 
    // Table Column Headings
@@ -210,6 +222,11 @@ LPCTSTR rptStyleManager::GetReportTitleStyle()
 LPCTSTR rptStyleManager::GetReportSubtitleStyle()
 {
    return ms_ReportSubtitleStyle.c_str();
+}
+
+LPCTSTR rptStyleManager::GetChapterTitleStyle()
+{
+   return ms_ChapterTitleStyle.c_str();
 }
 
 LPCTSTR rptStyleManager::GetHeadingStyle()

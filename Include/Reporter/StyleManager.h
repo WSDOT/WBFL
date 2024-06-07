@@ -75,6 +75,9 @@ public:
    /// Returns the Style for the Report Subtitle.
    static LPCTSTR GetReportSubtitleStyle();
 
+   /// Returns the Style for the Chapter Titles.
+   static LPCTSTR GetChapterTitleStyle();
+
    /// Returns the style for Headings
    static LPCTSTR GetHeadingStyle();
 
