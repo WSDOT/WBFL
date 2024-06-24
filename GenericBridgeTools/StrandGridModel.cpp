@@ -1295,7 +1295,6 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlopeEx(Float64 Xs, IIndexA
       // strands are assumed to be horizonal
       *slope = DBL_MAX;
       return S_OK;
-   }
 
    // strand positions - adjusted for current offset value
    CComPtr<IPoint2dCollection> start, end;
