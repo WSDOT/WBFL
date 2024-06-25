@@ -77,6 +77,7 @@ interface IEAFDisplayUnits : IUnknown
    virtual const WBFL::Units::PressureData&       GetSidewalkPressureUnit() = 0;
    virtual const WBFL::Units::PressureData&       GetOverlayWeightUnit() = 0;
    virtual const WBFL::Units::PressureData&       GetWindPressureUnit() = 0;
+   virtual const WBFL::Units::TemperatureData&    GetTemperatureUnit() = 0;
    virtual const WBFL::Units::VelocityData&       GetVelocityUnit() = 0;
 };
 

@@ -250,6 +250,7 @@ public:
    virtual const WBFL::Units::PressureData&       GetSidewalkPressureUnit() override;
    virtual const WBFL::Units::PressureData&       GetOverlayWeightUnit() override;
    virtual const WBFL::Units::PressureData&       GetWindPressureUnit() override;
+   virtual const WBFL::Units::TemperatureData&    GetTemperatureUnit() override;
    virtual const WBFL::Units::VelocityData&       GetVelocityUnit() override;
 
 // IEAFStatusCenter

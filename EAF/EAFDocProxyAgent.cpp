@@ -543,6 +543,12 @@ const WBFL::Units::PressureData& CEAFDocProxyAgent::GetWindPressureUnit()
    return pApp->GetDisplayUnits()->WindPressure;
 }
 
+const WBFL::Units::TemperatureData& CEAFDocProxyAgent::GetTemperatureUnit()
+{
+    CEAFApp* pApp = EAFGetApp();
+    return pApp->GetDisplayUnits()->Temperature;
+}
+
 const WBFL::Units::VelocityData& CEAFDocProxyAgent::GetVelocityUnit()
 {
    CEAFApp* pApp = EAFGetApp();

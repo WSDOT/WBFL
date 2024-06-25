@@ -159,6 +159,7 @@ namespace WBFL
          PerLengthData      Curvature{ Measure::PerMillimeter };
          ForceLength2Data   ForceLength2{ Measure::KilonewtonMeter2 };
          SqrtPressureData   SqrtPressure{ Measure::SqrtMPa };
+         TemperatureData    Temperature{ Measure::Celsius };
          VelocityData       Velocity{ Measure::KilometerPerHour };
       };
    };

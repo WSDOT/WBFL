@@ -79,6 +79,9 @@ namespace WBFL
             /// @brief Sets the density of the elastomer
             /// @param pe
             void SetDensityElastomer(Float64 pe);
+            /// @brief Sets the use of externally bonded plates
+            /// @param use
+            void SetUseExternalPlates(bool use);
 
 
 
@@ -119,7 +122,8 @@ namespace WBFL
             Float64 GetShapeFactor() const;
             /// @return bearing weight
             Float64 GetBearingWeight() const;
-
+            /// @return uses externally bonded plates
+            bool UseExternalPlates() const;
 
 
 
@@ -136,6 +140,7 @@ namespace WBFL
             IndexType m_number_intermediate_layers{ 4 }; ///< number of intermediate elastomer layers
             Float64 m_density_steel{ WBFL::Units::ConvertToSysUnits(490.0, WBFL::Units::Measure::LbfPerFeet3) }; ///< steel density
             Float64 m_density_elastomer{ WBFL::Units::ConvertToSysUnits(74.93, WBFL::Units::Measure::LbfPerFeet3) }; ///< elastomer density
+            bool m_ext_plates{false}; ///< uses externally bonded plates
 
         };
     }; // EngTools
