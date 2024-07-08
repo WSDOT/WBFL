@@ -78,6 +78,10 @@ void Bearing::SetDensityElastomer(Float64 pe)
 {
     m_density_elastomer = pe;
 }
+void Bearing::SetUseExternalPlates(bool use)
+{
+    m_ext_plates = use;
+}
 
 
 
@@ -122,14 +126,19 @@ IndexType Bearing::GetNumIntLayers() const
 {
     return m_number_intermediate_layers;
 }
-double Bearing::GetDensitySteel() const
+Float64 Bearing::GetDensitySteel() const
 {
     return m_density_steel;
 }
-double Bearing::GetDensityElastomer() const
+Float64 Bearing::GetDensityElastomer() const
 {
     return m_density_elastomer;
 }
+bool Bearing::UseExternalPlates() const
+{
+    return m_ext_plates;
+}
+
 
 //Calculated Bearing properties
 Float64 Bearing::GetArea() const
