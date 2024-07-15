@@ -106,7 +106,7 @@ public:
    /// The table label is placed below the caption and above the table.
    rptParagraph& TableLabel() {return m_Label;}
 
-   /// Returns the table Caption paragram
+   /// Returns the table Caption paragraph
    ///
    /// The table caption is placed above the table.
    rptParagraph& TableCaption() {return m_Caption;}
@@ -155,7 +155,7 @@ public:
    /// This function will append the data to any other data that exists in the column.
    void FillColumn(ColumnIndexType ColNo, rptRcUnitValue& ProtoReal, const std::vector<Float64>& vValues);
 
-   /// Fills a columne with section values by using the given rptRcSectionValue object as a prototype.
+   /// Fills a column with section values by using the given rptRcSectionValue object as a prototype.
    /// This function will append the data to any other data that exists in the column.
    void FillColumn(ColumnIndexType colNo,rptRcSectionValue& rPrototype, const std::vector<WBFL::System::SectionValue>& vValues);
 

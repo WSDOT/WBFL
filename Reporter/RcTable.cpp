@@ -31,7 +31,7 @@
 
 rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
 {
-   CHECK(NumColumns>0);
+   CHECK(0 < NumColumns);
    m_NumColumns = NumColumns;
 
    // first row is header unless overridden
@@ -46,7 +46,7 @@ rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
    m_Alignment = rptRiStyle::LEFT;
 
    // allocate style holders for each of the table columns and set
-   // the table as the next step in the stle chain-of-dependency
+   // the table as the next step in the style chain-of-dependency
 
    m_pColumnStyles = new rptStyleHolder[m_NumColumns];
    CHECK(m_pColumnStyles);
@@ -115,7 +115,7 @@ rptRcTable& rptRcTable::operator= (const rptRcTable& rOther)
 
 rptTableCellParagraph& rptRcTable::operator()( RowIndexType RowNo, ColumnIndexType ColNo)
 {
-   PRECONDITION(ColNo<m_NumColumns);
+   CHECK(ColNo<m_NumColumns);
    if ( m_NumColumns <= ColNo )
    {
       ColNo = m_NumColumns-1;
@@ -774,7 +774,7 @@ void rptRcTable::MakeCopy(const rptRcTable& rOther)
       m_TableData[i][0].ClearParent();
       m_TableData[i][0].SetParent(this);
 
-      // the rest of the rows look to thier ColumnStyles for style info.
+      // the rest of the rows look to their ColumnStyles for style info.
       for (ColumnIndexType j=1; j<clsize; j++)
       {
          m_TableData[i][j].ClearParent(); 
@@ -839,7 +839,7 @@ void rptRcTable::SetNumberOfColumns(ColumnIndexType nColumns)
       m_TableData[i][0].ClearParent();
       m_TableData[i][0].SetParent(this);
 
-      // the rest of the rows look to thier ColumnStyles for style info.
+      // the rest of the rows look to their ColumnStyles for style info.
       for (ColumnIndexType j=1; j<clsize; j++)
       {
          m_TableData[i][j].ClearParent(); 
