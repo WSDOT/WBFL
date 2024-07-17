@@ -32,16 +32,24 @@
 
 class rptRiStyle;
 class rptPageLayout;
+class rptReport;
 
 /// This class contains helper functions to aid the htmlVisitor classses in getting their job done.
 class REPORTERCLASS rptHtmlHelper
 {
 public:
-   /// enum for paragraph anchor starting value. for toc generation
-   /// 100 chapters - should be a realistic limitation
-   enum {ParaStart=100};
+   /// enum for chapters and paragraph anchor starting values. for toc generation
+   /// 1000 chapters - should be a realistic limitation
+   enum {ChapterStart=0, ParaStart=1000};
 
-   rptHtmlHelper();
+   enum class BrowserType
+   {
+      IE, // based on IWebBrowser2 control (Internet Explorer)
+      Edge// based on WebView2 (Edge)
+   };
+
+
+   rptHtmlHelper(BrowserType type);
 
    /// Get stylistic information to put into HTML style block.
    static std::_tstring GetStyleString(const rptRiStyle& MyStyle);
@@ -57,8 +65,13 @@ public:
    /// string is returned empty if no name exists
    std::_tstring GetElementName(const rptStyleName& rstyleName) const;
 
+   BrowserType GetBrowserType() const { return m_BrowserType; }
+
 private:
+   rptHtmlHelper();
+
    bool m_DidVisit;
+   BrowserType m_BrowserType;
 
    using StyleElementMap = std::map<rptStyleName, std::_tstring, std::less<rptStyleName>>;
    StyleElementMap m_StyleElementMap;

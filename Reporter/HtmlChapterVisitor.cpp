@@ -29,7 +29,7 @@ rptHtmlChapterVisitor::rptHtmlChapterVisitor(std::_tostream* pMyOstream,
                      Uint32 logPixelsX,Uint32 logPixelsY):
    rptOutputChapterVisitor(pMyOstream),
    m_Helper(rmyHelper),
-   m_CurrAnchor(0),
+   m_CurrAnchor(rptHtmlHelper::ChapterStart),
    m_CurrParagraphAnchor(rptHtmlHelper::ParaStart),
    m_LogPixelsX(logPixelsX),
    m_LogPixelsY(logPixelsY)
