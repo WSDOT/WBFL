@@ -159,6 +159,11 @@ void CReportManagerAgent::SetReportBrowserType(WBFL::Reporting::ReportBrowser::T
    m_pRptMgr->SetReportBrowserType(browserType);
 }
 
+WBFL::Reporting::ReportBrowser::Type CReportManagerAgent::GetReportBrowserType() const
+{
+   return m_pRptMgr->GetReportBrowserType();
+}
+
 std::shared_ptr<WBFL::Reporting::ReportBrowser> CReportManagerAgent::CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    return m_pRptMgr->CreateReportBrowser(hwndParent, dwStyle, pRptSpec, pRptSpecBuilder);

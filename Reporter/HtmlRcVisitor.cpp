@@ -47,6 +47,7 @@
 #include <Reporter\RcSectionScalar.h>
 #include <Reporter\RcStation.h>
 #include <Reporter\RcComposite.h>
+#include <Reporter\HtmlHelper.h>
 
 // Private include files
 #include "HtmlUnitTagFormat.h"
@@ -198,25 +199,57 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       
    *m_pOstream << std::endl;
 
-   // create a paragraph visitor
-   rptHtmlParagraphVisitor my_visitor(m_pOstream, /*m_pUnitSnapShot,*/ m_pPageLayout, m_Helper,m_LogPixelsX,m_LogPixelsY);
+   // table label
+   rptParagraph& labelPara = pTable->TableLabel();
 
-   // table caption & label
-   rptParagraph& cap = pTable->TableCaption();
-   rptParagraph& label = pTable->TableLabel();
-
-   bool is_cap = !(cap.IsEmpty() && label.IsEmpty());
+   bool is_cap = !labelPara.IsEmpty();
    if (is_cap)
    {
-      *m_pOstream << _T("<CAPTION>");
+      // We won't use a typical paragraph visitor here. Caption paragraphs are simple, and we need to add 
+      // a custom behavior to copy table to clipboard. This only works in Edge
+      if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+      {
+         *m_pOstream << _T("<CAPTION onclick = \"TableCaptionFunction(this)\">") << std::endl;
+      }
+      else
+      {
+         *m_pOstream << _T("<CAPTION>") << std::endl;
+      }
 
-      if (!cap.IsEmpty())
-         // visit the caption paragraph
-         cap.Accept(my_visitor);
+      if (!labelPara.IsEmpty())
+      {
+         rptStyleName style = labelPara.GetStyleName();
+         // get corresponding element name for style name
+         std::_tstring el_name = m_Helper.GetElementName(style);
 
-      if (!label.IsEmpty())
-          // visit the label paragraph
-         label.Accept(my_visitor);
+         if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+         {
+            *m_pOstream << _T("<P class = \"") << el_name << _T(" tablecaptiontooltip\">") << std::endl;
+         }
+         else
+         {
+            *m_pOstream << _T("<P class = \"") << el_name << _T("\">") << std::endl;
+         }
+
+         // create a report content visitor
+         rptHtmlRcVisitor my_visitor(m_pOstream, m_pPageLayout, m_Helper, m_LogPixelsX, m_LogPixelsY);
+
+         // iterate over all report content in label
+         rptParagraph::ConstParagraphContentIterator pci;
+         for (pci = labelPara.ConstBegin(); pci != labelPara.ConstEnd(); pci++)
+         {
+            (*pci)->Accept(my_visitor);
+         }
+
+         if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+         {
+            *m_pOstream << _T("<SPAN class = \"tablecaptiontooltiptext\">Click to Select Table</SPAN></P") << std::endl;
+         }
+         else
+         {
+            *m_pOstream << _T("</P") << std::endl;
+         }
+      }
 
       *m_pOstream << _T("</CAPTION>")<<std::endl;
    }
@@ -245,6 +278,9 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 
       // row information
       *m_pOstream << _T("<TR>");
+
+      // create a paragraph visitor
+      rptHtmlParagraphVisitor my_visitor(m_pOstream, /*m_pUnitSnapShot,*/ m_pPageLayout, m_Helper, m_LogPixelsX, m_LogPixelsY);
 
       for (ColumnIndexType colno = 0; colno<num_cols; colno++)
       {

@@ -33,7 +33,7 @@ namespace ReporterUnitTests
             std::_tofstream ofile(m_Filename.c_str());
 
             // Initializing the report visitor
-            rptHtmlReportVisitor visitor(&ofile, m_LogPixelsX, m_LogPixelsY);
+            rptHtmlReportVisitor visitor(&ofile, m_LogPixelsX, m_LogPixelsY, rptHtmlHelper::BrowserType::IE);
 
             // Visiting the report
             visitor.VisitReport(testReport.get());

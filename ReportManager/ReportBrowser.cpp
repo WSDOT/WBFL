@@ -66,10 +66,12 @@ std::_tstring filename_to_URL(const std::_tstring& fname)
 
 ReportBrowser::ReportBrowser(Type type)
 {
+   m_BrowserType = type;
+
    if (type == Type::IE)
       m_pReportView = std::make_unique<IEReportView>();
    else if (type == Type::Edge)
-      m_pReportView = std::make_unique<EdgeReportView>();
+      m_pReportView = std::make_unique<EdgeReportView>(this);
    else
       CHECK(false); // is there a new type?
 }
@@ -95,8 +97,16 @@ void ReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefre
    logPixX = dc.GetDeviceCaps(LOGPIXELSX);
    logPixY = dc.GetDeviceCaps(LOGPIXELSY);
 
-   rptHtmlReportVisitor visitor( &ofile, logPixX, logPixY );
+   rptHtmlReportVisitor visitor( &ofile, logPixX, logPixY, m_BrowserType==Type::IE ? rptHtmlHelper::BrowserType::IE : rptHtmlHelper::BrowserType::Edge);
    visitor.VisitReport( pReport.get() );
+
+   // For the Edge browser we need to manually create the TOC
+   auto pedge = dynamic_cast<EdgeReportView*>(m_pReportView.get());
+   if (pedge != nullptr)
+   {
+      // Use html helper to generate TOC from C++
+      pedge->SetTableOfContents(rptHtmlReportVisitor::GenerateTOC(pReport.get()) );
+   }
 
    if (bRefresh)
    {

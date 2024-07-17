@@ -24,6 +24,8 @@
 #include <Reporter\ReporterLib.h>
 #include <Reporter\HtmlHelper.h>
 #include <Reporter\PageLayout.h>
+#include <Reporter\Report.h>
+#include <Reporter\Paragraph.h>
 #include <Reporter\RiStyle.h>
 #include <Reporter\FontStyleLibrary.h>
 #include <ostream>
@@ -41,7 +43,8 @@ static LPCTSTR  HtmlFontList[] = { _T("Times"),      // - default (pot luck)
 
 
 
-rptHtmlHelper::rptHtmlHelper()
+rptHtmlHelper::rptHtmlHelper(BrowserType type):
+   m_BrowserType(type)
 {
    // no visits have happened yet
    m_DidVisit=false;
@@ -136,28 +139,14 @@ std::_tstring rptHtmlHelper::GetPageLayoutString(const rptPageLayout& MyLayout)
 
 void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
 {
+   // different stream for each media type
    std::_tostringstream osPrint, osScreen, osBoth;
-
-   osPrint << _T("@media print") << std::endl;
-   osPrint << _T("{") << std::endl;
-   osPrint << _T("THEAD {display: table-header-group;}") << std::endl;
-   osPrint << _T("TFOOT {display: table-footer-group;}") << std::endl;
-
-   osScreen << _T("@media screen") << std::endl;
-   osScreen << _T("{") << std::endl;
-
-   osBoth << _T("@media screen,print") << std::endl;
-   osBoth << _T("{") << std::endl;
 
    // clear out the existing map if there is one
    m_StyleElementMap.clear();
 
    // get the font library singleton
    rptFontStyleLibrary* plib = rptFontStyleLibrary::Instance();
-
-   // write out the beginning of the style block
-   os << std::endl;
-   os << _T(" <STYLE TYPE=\"text/css\">") << std::endl;
 
    // get a vector of all named styles in library
    std::vector<rptStyleName> svec;
@@ -177,12 +166,22 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
       std::_tostringstream ms;
       ms << _T("S") << i;
       m_StyleElementMap.insert( std::pair<std::_tstring, std::_tstring> (mystr, ms.str()));
-      if (i==0) // body text
+      if (i==0)
       {
-         os << _T("   ") << _T("BODY") << _T(" {  background: white; }") << std::endl;
+         // body text has block of its own
+         os << std::endl;
+         os << _T("<style>") << std::endl;
+         os << _T("   ") << _T("body") << _T(" {  background: white; }") << std::endl;
+         os << _T("   ") << _T("P") << _T(" { margin: 0pt 0pt 0pt 0pt; ") << ss << _T(" }") << std::endl;
 
-         os << _T("   ") << _T("P") << _T(" { margin: 0pt 0pt 0pt 0pt; ") << ss << 
-            _T(" }") << std::endl;
+         // Tooltip for table caption copy tool
+         os << _T("   ") << "/* Tooltip container - only active on screen */" << std::endl;
+         os << _T("   ") << "P.tableCaptionToolTip{ text-decoration-line: underline; text-decoration-style: dotted;}" << std::endl;
+         os << _T("   ") << "/* Table Caption ToolTip text */" << std::endl;
+         os << _T("   ") << "P.tableCaptionToolTip .tableCaptionToolTiptext{ visibility: hidden; width:auto; background-color: rgb(78, 78, 78); color: #fff; text-align: center; padding: 5px 0; border-radius: 6px; position: absolute; z-index: 1; }" << std::endl;
+         os << _T("   ") << "/* Show the ToolTip text when you mouse over the table caption container */" << std::endl;
+         os << _T("   ") << "P.tableCaptionToolTip:hover .tableCaptionToolTiptext{visibility: visible;}" << std::endl;
+         os << _T("</style>") << std::endl;
       }
       else
       {
@@ -212,22 +211,6 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
          }
       }
    }
-
-
-
-   // end of style block
-   os << _T(" </STYLE>") << std::endl;
-
-
-
-
-   // write out the beginning of the style block
-   os << std::endl;
-   os << _T(" <STYLE TYPE=\"text/css\">") << std::endl;
-
-
-
- 
 
    // cycle over all styles add to style-element map and write out style-element mapping
    std::_tstring hss;
@@ -266,18 +249,31 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
             osBoth << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
         }
    }
-   
 
-   osPrint << _T("}") << std::endl;
-   osScreen << _T("}") << std::endl;
-   osBoth << _T("}") << std::endl;
+   os << std::endl;
 
-   os << osPrint.str() << std::endl;
+   // We have styles for each media type. Now write to file with start-end info
+   os << _T("<style media=\"print\">") << std::endl;
+   os << _T("   ") << _T("THEAD {display: table-header-group;}") << std::endl;
+   os << _T("   ") << _T("TFOOT {display: table-footer-group;}") << std::endl;
+   os << std::endl;
+   // tooltips don't show for print
+   os << _T("   ") << _T("/* Tooltip container - do nothing for print */") << std::endl;
+   os << _T("   ") << _T("P.tableCaptionToolTip{ text-decoration-line:none; }") << std::endl;
+   os << _T("   ") << _T("P.tableCaptionToolTip .tableCaptionToolTiptext{ visibility: hidden; }") << std::endl;
+   os << _T("   ") << _T("P.tableCaptionToolTip:hover .tableCaptionToolTiptext{ visibility: hidden; }") << std::endl;
+   os << _T("</style>") << std::endl;
+   os << std::endl;
+
+   os << _T("<style media=\"screen\">") << std::endl;
    os << osScreen.str() << std::endl;
+   os << _T("</style>") << std::endl;
+   os << std::endl;
+
+   os << _T("<style>") << std::endl;
    os << osBoth.str() << std::endl;
-
-
-
+   os << _T("</style>") << std::endl;
+   os << std::endl;
 
    m_DidVisit = true;
 }

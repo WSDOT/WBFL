@@ -26,16 +26,16 @@
 #include <ReportManager\IReportView.h>
 
 #include <wrl.h>
-#include <wrl/event.h>
-#include <wil/result.h>
 #include <wil/com.h>
 #include "WebView2.h"
 #include "WebView2EnvironmentOptions.h"
+#include <Reporter\HtmlHelper.h>
+#include <ReportManager\ReportBrowser.h>
 
 class EdgeReportView : public WBFL::Reporting::IReportView
 {
 public:
-   EdgeReportView();
+   EdgeReportView(WBFL::Reporting::ReportBrowser* parentReportBrowser);
 
    virtual BOOL Create(
       LPCTSTR lpszWindowName,
@@ -43,6 +43,8 @@ public:
       const RECT& rect,
       HWND hwndParent,
       UINT nID) override;
+
+   HRESULT OnCreateEnvironmentCompleted(HRESULT result, ICoreWebView2Environment* environment);
 
    virtual void FitToParent() override;
    virtual void Move(POINT topLeft) override;
@@ -57,13 +59,35 @@ public:
    virtual void Forward() override;
    virtual void Navigate(LPCTSTR uri) override;
 
-private:
-   HWND m_hwndParent; // handle of parent window
-   std::_tstring m_strURI; // caches the URI
+   // Table of Contents context menu (different than Internet Explorer)
+   // The IE browser builds its table of contents from the HTML DOM in custsite.cpp
+   // The Edge WebView2 object does not have a C++ interface to the DOM, so the only browser-based method is really 
+   // messy asyncronous jscript calls, that will result in nasty bugs, I beleive.
+   // So we will build the TOC directly in C++ and pass it to this class
 
-   // Pointer to WebViewController
-   wil::com_ptr<ICoreWebView2Controller> m_webviewController;
+   void SetTableOfContents(const std::vector<rptHtmlReportVisitor::ChapterTocItem>& tableOfContents);
+
+   void OnEdit() { m_pParentReportBrowser->Edit(true); }
+
+private:
+   WBFL::Reporting::ReportBrowser* m_pParentReportBrowser; // need access to our parents functions
+   HWND m_hwndParent; // handle of parent window
+   std::_tstring m_strRawURI; // caches the URI of file
 
    // Pointer to WebView window
    wil::com_ptr<ICoreWebView2> m_webview;
+
+   // The following is state that belongs with the webview, and should
+   // be reinitialized along with it. Everything here is undefined when
+   // m_webView is null.
+   wil::com_ptr<ICoreWebView2Environment> m_webViewEnvironment;
+   wil::com_ptr<ICoreWebView2Controller> m_webviewController;
+   wil::com_ptr<ICoreWebView2ContextMenuItem> m_tableOfContentsSubMenuItem;
+
+   EventRegistrationToken m_contextMenuRequestedToken;
+
+   std::vector<rptHtmlReportVisitor::ChapterTocItem> m_TableOfContents;
+
+   void HandleTOCsubMenu(UINT32 id);
+
 };

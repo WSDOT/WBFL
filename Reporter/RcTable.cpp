@@ -76,8 +76,7 @@ rptRcTable::rptRcTable(ColumnIndexType NumColumns, Float64 InitWidth)
       m_ColumnWidths.push_back(CellWidth);
    }
 
-   // set style parent of caption and label to this table
-   m_Caption.SetParent(this);
+   // set style parent of label to this table
    m_Label.SetParent(this);
 
    // set up some reasonable styles for cell borders
@@ -720,7 +719,6 @@ void rptRcTable::MakeCopy(const rptRcTable& rOther)
 {
    m_NumColumns                 = rOther.m_NumColumns;
    m_Label                      = rOther.m_Label;
-   m_Caption                    = rOther.m_Caption;
    m_ColumnWidths               = rOther.m_ColumnWidths;
    m_OutsideBorderStyle         = rOther.m_OutsideBorderStyle;
    m_InsideBorderStyle          = rOther.m_InsideBorderStyle;

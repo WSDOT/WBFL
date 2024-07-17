@@ -131,9 +131,12 @@ namespace WBFL
          std::shared_ptr<rptReport> m_pReport;
          std::shared_ptr<const ReportBuilderManager> m_pRptMgr;
 
+         Type m_BrowserType;
+
          void Navigate(LPCTSTR uri);
 
          void MakeFilename();
       };
+
    };
 };

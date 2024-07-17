@@ -99,12 +99,12 @@ void rptChapter::SetEjectPageBreakBefore(bool doBreak)
    m_bEjectPageBefore = doBreak;
 }
 
-rptChapter::ConstChapterParagraphIterator rptChapter::ConstBegin()
+rptChapter::ConstChapterParagraphIterator rptChapter::ConstBegin() const
 {
    return m_ParagraphVec.begin();
 }
 
-rptChapter::ConstChapterParagraphIterator rptChapter::ConstEnd()
+rptChapter::ConstChapterParagraphIterator rptChapter::ConstEnd() const
 {
    return m_ParagraphVec.end();
 }

@@ -28,9 +28,26 @@
 using namespace Microsoft::WRL;
 
 
+static void CheckFailure(HRESULT hr, CString const& message)
+{
+   if (FAILED(hr))
+   {
+      CString text;
+      text.Format(L"%s : 0x%08X", (LPCTSTR)message, hr);
 
+      // TODO: log text
 
-EdgeReportView::EdgeReportView()
+      std::exit(hr);
+   }
+}
+
+#define CHECK_FAILURE_STRINGIFY(arg)         #arg
+#define CHECK_FAILURE_FILE_LINE(file, line)  ([](HRESULT hr){ CheckFailure(hr, L"Failure at " CHECK_FAILURE_STRINGIFY(file) L"(" CHECK_FAILURE_STRINGIFY(line) L")"); })
+#define CHECK_FAILURE                        CHECK_FAILURE_FILE_LINE(__FILE__, __LINE__)
+#define CHECK_FAILURE_BOOL(value)            CHECK_FAILURE((value) ? S_OK : E_UNEXPECTED)
+
+EdgeReportView::EdgeReportView(WBFL::Reporting::ReportBrowser* parentReportBrowser):
+   m_pParentReportBrowser(parentReportBrowser)
 {
 }
 
@@ -43,8 +60,8 @@ BOOL EdgeReportView::Create(
 {
 	m_hwndParent = hwndParent;
 
-	// <-- WebView2 sample code starts here -->
-	// Step 3 - Create a single WebView within the parent window
+   // Code below taken from MSFT's sample and modified
+	// Create a single WebView within the parent window
 	// Locate the browser and set up the environment for WebView
 	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
 		Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -57,14 +74,21 @@ BOOL EdgeReportView::Create(
 							m_webviewController = controller;
 							m_webviewController->get_CoreWebView2(&m_webview);
 						}
+                  else
+                  {
+                     ASSERT(0);
+                     return E_FAIL;
+                  }
 
-						// Add a few settings for the webview
-						// The demo step is redundant since the values are the default settings
+						// Settings for the webview
 						wil::com_ptr<ICoreWebView2Settings> settings;
 						m_webview->get_Settings(&settings);
 						settings->put_IsScriptEnabled(TRUE);
-						settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-						settings->put_IsWebMessageEnabled(TRUE);
+						// settings->put_AreDefaultScriptDialogsEnabled(TRUE);
+						// settings->put_IsWebMessageEnabled(TRUE);
+#ifndef _DEBUG
+                  settings->put_AreDevToolsEnabled(FALSE); // get rid of "inspect" and "view page source" for production
+#endif
 
 						// Resize WebView to fit the bounds of the parent window
 						RECT bounds;
@@ -72,68 +96,272 @@ BOOL EdgeReportView::Create(
 						m_webviewController->put_Bounds(bounds);
 
 						// Schedule an async task to navigate to our file
-						m_webview->Navigate(m_strURI.c_str());
+						m_webview->Navigate(m_strRawURI.c_str());
 
-						//// <NavigationEvents>
-						//// Step 4 - Navigation events
-						//// register an ICoreWebView2NavigationStartingEventHandler to cancel any non-https navigation
-						//EventRegistrationToken token;
-						//webview->add_NavigationStarting(Callback<ICoreWebView2NavigationStartingEventHandler>(
-						//	[](ICoreWebView2* webview, ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT {
-						//		wil::unique_cotaskmem_string uri;
-						//		args->get_Uri(&uri);
-						//		std::wstring source(uri.get());
-						//		//if (source.substr(0, 5) != L"https") {
-						//		//	args->put_Cancel(true);
-						//		//}
-						//		return S_OK;
-						//	}).Get(), &token);
-						//// </NavigationEvents>
+                  LPCWSTR subFolder = nullptr;
+                  std::wstring userDataFolder;
+                  // Use default options from constructor
+                  auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
 
-						//// <Scripting>
-						//// Step 5 - Scripting
-						//// Schedule an async task to add initialization script that freezes the Object object
-						//webview->AddScriptToExecuteOnDocumentCreated(L"Object.freeze(Object);", nullptr);
-						//// Schedule an async task to get the document URL
-						//webview->ExecuteScript(L"window.document.URL;", Callback<ICoreWebView2ExecuteScriptCompletedHandler>(
-						//	[](HRESULT errorCode, LPCWSTR resultObjectAsJson) -> HRESULT {
-						//		LPCWSTR URL = resultObjectAsJson;
-						//		//doSomethingWithURL(URL);
-						//		return S_OK;
-						//	}).Get());
-						//// </Scripting>
+                  HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
+                     subFolder, userDataFolder.c_str(), options.Get(),
+                     Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+                        this, &EdgeReportView::OnCreateEnvironmentCompleted)
+                     .Get());
+                  //! [CreateCoreWebView2EnvironmentWithOptions]
+                  if (!SUCCEEDED(hr))
+                  {
+                     MessageBox(m_hwndParent, L"Failed to create WebView2 environment", nullptr, MB_OK);
+                  }
 
-						//// <CommunicationHostWeb>
-						//// Step 6 - Communication between host and web content
-						//// Set an event handler for the host to return received message back to the web content
-						//webview->add_WebMessageReceived(Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-						//	[](ICoreWebView2* webview, ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT {
-						//		wil::unique_cotaskmem_string message;
-						//		args->TryGetWebMessageAsString(&message);
-						//		// processMessage(&message);
-						//		webview->PostWebMessageAsString(message.get());
-						//		return S_OK;
-						//	}).Get(), &token);
+                  //
+                  // Context menus
+                  // 
+                  wil::com_ptr<ICoreWebView2_11>            m_webView2_11;
+                  m_webview->QueryInterface(IID_PPV_ARGS(&m_webView2_11));
+ 
+                  m_webView2_11->add_ContextMenuRequested(
+                  Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
+                     [this](
+                        ICoreWebView2* sender,
+                        ICoreWebView2ContextMenuRequestedEventArgs* eventArgs)
+                     {
+                        wil::com_ptr<ICoreWebView2ContextMenuRequestedEventArgs> args =
+                           eventArgs;
+                        wil::com_ptr<ICoreWebView2ContextMenuItemCollection> items;
+                        CHECK_FAILURE(args->get_MenuItems(&items));
 
-						//// Schedule an async task to add initialization script that
-						//// 1) Add an listener to print message from the host
-						//// 2) Post document URL to the host
-						//webview->AddScriptToExecuteOnDocumentCreated(
-						//	L"window.chrome.webview.addEventListener(\'message\', event => alert(event.data));" \
-						//	L"window.chrome.webview.postMessage(window.document.URL);",
-						//	nullptr);
-						//// </CommunicationHostWeb>
+                        wil::com_ptr<ICoreWebView2ContextMenuTarget> target;
+                        CHECK_FAILURE(args->get_ContextMenuTarget(&target));
+
+                        COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
+                        CHECK_FAILURE(target->get_Kind(&targetKind));
+
+                        // Remove the 'Shared' context menu item.
+                        // This item doesn't make sense because the report file is temporary
+                        UINT32 itemsCount;
+                        CHECK_FAILURE(items->get_Count(&itemsCount));
+
+                        UINT32 removeIndex = itemsCount;
+                        wil::com_ptr<ICoreWebView2ContextMenuItem> current;
+                        for (UINT32 i = 0; i < itemsCount; i++)
+                        {
+                           CHECK_FAILURE(items->GetValueAtIndex(i, &current));
+                           wil::unique_cotaskmem_string name;
+                           CHECK_FAILURE(current->get_Name(&name));
+                           if (std::wstring(L"share") == name.get())
+                           {
+                              removeIndex = i;
+                           }
+                        }
+                        if (removeIndex < itemsCount)
+                        {
+                           CHECK_FAILURE(items->RemoveValueAtIndex(removeIndex));
+                        }
+
+                        // Remove the 'Save image as' context menu item for image context
+                        // selections.
+                        if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_IMAGE)
+                        {
+                           UINT32 itemsCount;
+                           CHECK_FAILURE(items->get_Count(&itemsCount));
+
+                           UINT32 removeIndex = itemsCount;
+                           wil::com_ptr<ICoreWebView2ContextMenuItem> current;
+                           for (UINT32 i = 0; i < itemsCount; i++)
+                           {
+                              CHECK_FAILURE(items->GetValueAtIndex(i, &current));
+                              wil::unique_cotaskmem_string name;
+                              CHECK_FAILURE(current->get_Name(&name));
+                              if (std::wstring(L"saveImageAs") == name.get())
+                              {
+                                 removeIndex = i;
+                              }
+                           }
+                           if (removeIndex < itemsCount)
+                           {
+                              CHECK_FAILURE(items->RemoveValueAtIndex(removeIndex));
+                           }
+                        }
+
+                        // Add our custom menu items for all cases except when text is selected.
+                        // Otherwise use default Edge menu
+                        if (targetKind != COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
+                        {
+                           wil::com_ptr<ICoreWebView2Environment9> webviewEnvironment;
+                           CHECK_FAILURE(m_webViewEnvironment->QueryInterface(IID_PPV_ARGS(&webviewEnvironment)));
+
+                           // Add menu item for Select All
+                           wil::com_ptr<ICoreWebView2ContextMenuItem> selectAllMenuItem;
+                           CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                              L"Select All", nullptr,
+                              COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND,
+                              &selectAllMenuItem));
+                           CHECK_FAILURE(selectAllMenuItem->add_CustomItemSelected(
+                              Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                 [pedgeView = this](ICoreWebView2ContextMenuItem* sender, IUnknown* args)
+                                 {
+                                    pedgeView->SelectAll();
+                                    return S_OK;
+                                 }).Get(), nullptr));
+
+                           CHECK_FAILURE(items->InsertValueAtIndex(0, selectAllMenuItem.get()));
+
+                           // Add menu item for Find
+#pragma Reminder("WebView2 Find feature should be added by MSFT in Late 2024 - Check to see if this has happened")
+                           wil::com_ptr<ICoreWebView2ContextMenuItem> findMenuItem;
+                           CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                              L"Press F3 or <Ctrl>-F to Find", nullptr,
+                              COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND,
+                              &findMenuItem));
+                           findMenuItem->put_IsEnabled(FALSE);
+                           //CHECK_FAILURE(findMenuItem->add_CustomItemSelected(
+                           //   Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                           //      [webview = m_webview](ICoreWebView2ContextMenuItem* sender, IUnknown* args)
+                           //      {
+                           //         // The script method below works poorly. Hopefully MSFT will add a real feature in future
+                           //         // HRESULT hr = webview->ExecuteScript(L"window.find(false,false,false,false,false,false,true);", nullptr);
+                           //         return S_OK;
+                           //      }).Get(), nullptr));
+
+                           CHECK_FAILURE(items->InsertValueAtIndex(0, findMenuItem.get()));
+
+                           // Table of Contents menu items
+                           if (!m_TableOfContents.empty())
+                           {
+                              // Separator before toc
+                              wil::com_ptr<ICoreWebView2ContextMenuItem> separatorMenuItem;
+                              CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                                 L"", nullptr,
+                                 COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR,
+                                 &separatorMenuItem));
+                              CHECK_FAILURE(items->InsertValueAtIndex(0, separatorMenuItem.get()));
+
+                              // Add custom context menu item for table of contents
+                              if (m_tableOfContentsSubMenuItem)
+                              {
+                                 m_tableOfContentsSubMenuItem.put_void();
+                              }
+
+                              CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(L"Table of Contents", nullptr,
+                                 COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SUBMENU, &m_tableOfContentsSubMenuItem));
+
+                              // Create 2nd level chapter TOC items and add to menu
+                              UINT32 tocChapIdx = 0;
+                              for (const auto& tocChapterItem : m_TableOfContents)
+                              {
+                                 // Chapter items can be submenu or a direct command depending if subparagraphs
+                                 COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND kind = tocChapterItem.m_ParagraphTOCItems.empty() ?
+                                    COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SUBMENU;
+
+                                 wil::com_ptr<ICoreWebView2ContextMenuItem> chapterTocMenuItem;
+                                 CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                                    tocChapterItem.m_TocItem.m_Title.c_str(), nullptr,
+                                    kind, &chapterTocMenuItem));
+                                 CHECK_FAILURE(chapterTocMenuItem->add_CustomItemSelected(
+                                    Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                       [pedgeView = this, target, id = tocChapterItem.m_TocItem.m_ID](ICoreWebView2ContextMenuItem* sender, IUnknown* args)
+                                       {
+                                          pedgeView->HandleTOCsubMenu(id);
+                                          return S_OK;
+                                       }).Get(), nullptr));
+
+                                 // Create 3rd level paragraph toc menu items and add
+                                 UINT32 tocParaIdx = 0;
+                                 for (const auto& tocParaItem : tocChapterItem.m_ParagraphTOCItems)
+                                 {
+                                    wil::com_ptr<ICoreWebView2ContextMenuItem> paraTocMenuItem;
+                                    CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                                       tocParaItem.m_Title.c_str(), nullptr,
+                                       COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND,
+                                       &paraTocMenuItem));
+                                    CHECK_FAILURE(paraTocMenuItem->add_CustomItemSelected(
+                                       Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                          [pedgeView = this, target, id = tocParaItem.m_ID](ICoreWebView2ContextMenuItem* sender, IUnknown* args)
+                                          {
+                                             pedgeView->HandleTOCsubMenu(id);
+                                             return S_OK;
+                                          }).Get(), nullptr));
+
+                                    wil::com_ptr<ICoreWebView2ContextMenuItemCollection>  chapterTocContextSubMenuItemChildren;
+                                    CHECK_FAILURE(chapterTocMenuItem->get_Children(&chapterTocContextSubMenuItemChildren));
+                                    chapterTocContextSubMenuItemChildren->InsertValueAtIndex(tocParaIdx++, paraTocMenuItem.get());
+                                 }
+
+
+                                 wil::com_ptr<ICoreWebView2ContextMenuItemCollection>  tocSubMenuItemChildren;
+                                 CHECK_FAILURE(m_tableOfContentsSubMenuItem->get_Children(&tocSubMenuItemChildren));
+                                 tocSubMenuItemChildren->InsertValueAtIndex(tocChapIdx++, chapterTocMenuItem.get());
+                              }
+
+                              CHECK_FAILURE(items->InsertValueAtIndex(0, m_tableOfContentsSubMenuItem.get()));
+
+                              // Add menu item for Edit
+                              wil::com_ptr<ICoreWebView2ContextMenuItem> editMenuItem;
+                              CHECK_FAILURE(webviewEnvironment->CreateContextMenuItem(
+                                 L"Edit", nullptr,
+                                 COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND,
+                                 &editMenuItem));
+                              CHECK_FAILURE(editMenuItem->add_CustomItemSelected(
+                                 Callback<ICoreWebView2CustomItemSelectedEventHandler>(
+                                    [pedgeView = this](ICoreWebView2ContextMenuItem* sender, IUnknown* args)
+                                    {
+                                       pedgeView->OnEdit();
+                                       return S_OK;
+                                    }).Get(), nullptr));
+
+                              CHECK_FAILURE(items->InsertValueAtIndex(0, editMenuItem.get()));
+                           }
+                        }
+                        // menu will be displayed
+                        return S_OK;
+                     })
+                  .Get(), &m_contextMenuRequestedToken);
 
 						return S_OK;
 					}).Get());
 				return S_OK;
 			}).Get());
 
-
-
-	// <-- WebView2 sample code ends here -->
-
 	return TRUE;
+}
+
+// This is the callback passed to CreateCoreWebView2EnvironmentWithOptions.
+HRESULT EdgeReportView::OnCreateEnvironmentCompleted(
+   HRESULT result, ICoreWebView2Environment* environment)
+{
+   if (result != S_OK)
+   {
+      MessageBox(m_hwndParent, L"Failed to create environment object.",nullptr,S_OK);
+      return S_OK;
+   }
+
+   // Need to grab onto this variable here so we can create context menu
+   m_webViewEnvironment = environment;
+
+   return S_OK;
+}
+
+static CString filename_to_URL(const std::_tstring& fname)
+{
+   //turn into an internet-looking url
+   CString filename(fname.c_str());
+   filename.Replace(_T("///"), _T("//"));
+
+   return filename;
+}
+
+
+void EdgeReportView::HandleTOCsubMenu(UINT32 id)
+{
+   CString filename = filename_to_URL(m_strRawURI);
+   CString anc;
+   anc.Format(_T("file://%s#_%d"), filename, id);
+
+   if (m_webview)
+   {
+      m_webview->Navigate(anc);
+   }
 }
 
 void EdgeReportView::FitToParent()
@@ -167,21 +395,10 @@ void EdgeReportView::Size(SIZE size)
 
 void EdgeReportView::Print(bool bPrompt)
 {
-#pragma Reminder("WORKING HERE - Report Viewer Printing")
-   // Build footer string
-   //std::_tstring lftFoot = m_pRptSpec->GetLeftFooter();
-   //std::_tstring ctrFoot = m_pRptSpec->GetCenterFooter();
-   CString footer;
-   //footer.Format(_T("%s&b%s&b&d"), lftFoot.c_str(), ctrFoot.c_str());
-
-   // Build Header string
-   //std::_tstring lftHead = m_pRptSpec->GetLeftHeader();
-   //std::_tstring ctrHead = m_pRptSpec->GetCenterHeader();
-   CString header;
-   //header.Format(_T("%s&b%s&bPage &p of &P"), lftHead.c_str(), ctrHead.c_str());
-
-   // Print from browser
-   //m_pWebBrowser->Print(header, footer);
+   COREWEBVIEW2_PRINT_DIALOG_KIND printDialogKind = COREWEBVIEW2_PRINT_DIALOG_KIND_BROWSER;
+   wil::com_ptr<ICoreWebView2_16> webView2_16;
+   CHECK_FAILURE(m_webview->QueryInterface(IID_PPV_ARGS(&webView2_16)));
+   CHECK_FAILURE(webView2_16->ShowPrintUI(printDialogKind));
 }
 
 void EdgeReportView::Find()
@@ -197,24 +414,15 @@ void EdgeReportView::Find()
 
 void EdgeReportView::SelectAll()
 {
-//   LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-//   IOleCommandTarget* pIOleCmdTarget;
-//   if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
-//   {
-//      pIOleCmdTarget->Exec(nullptr, OLECMDID_SELECTALL, OLECMDEXECOPT_DODEFAULT, nullptr, nullptr);
-//      pIOleCmdTarget->Release();
-//   }
+   if (m_webview != nullptr)
+   {
+      m_webview->ExecuteScript(L"document.execCommand(\"SelectAll\")", nullptr);
+   }
 }
 
 void EdgeReportView::Copy()
 {
-   //LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   //IOleCommandTarget* pIOleCmdTarget;
-   //if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
-   //{
-   //   pIOleCmdTarget->Exec(nullptr, OLECMDID_COPY, OLECMDEXECOPT_DODEFAULT, nullptr, nullptr);
-   //   pIOleCmdTarget->Release();
-   //}
+   // Handled by Edge
 }
 
 void EdgeReportView::Refresh()
@@ -224,13 +432,7 @@ void EdgeReportView::Refresh()
 
 void EdgeReportView::ViewSource()
 {
-   //LPDISPATCH lpDispatch = m_pWebBrowser->GetDocument();
-   //IOleCommandTarget* pIOleCmdTarget;
-   //if (S_OK == lpDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pIOleCmdTarget))
-   //{
-   //   pIOleCmdTarget->Exec(&CGID_IWebBrowserPriv, CWBCmdGroup::HTMLID_VIEWSOURCE, 0, nullptr, nullptr);
-   //   pIOleCmdTarget->Release();
-   //}
+   // Handled by Edge as part of dev tools
 }
 
 void EdgeReportView::Back()
@@ -246,9 +448,19 @@ void EdgeReportView::Forward()
 void EdgeReportView::Navigate(LPCTSTR uri)
 {
 	// creation of web view 2 occurs asynchronously. 
-	// store the uri
 	// Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler> will call Navigate
 	// with this URI once the control is ready to display something
-	m_strURI = uri;
+
+   // store the raw file uri
+   if (m_strRawURI.empty())
+   {
+      m_strRawURI = uri;
+   }
+
 	if(m_webview) m_webview->Navigate(uri);
+}
+
+void EdgeReportView::SetTableOfContents(const std::vector<rptHtmlReportVisitor::ChapterTocItem>& tableOfContents)
+{
+   m_TableOfContents = tableOfContents;
 }
