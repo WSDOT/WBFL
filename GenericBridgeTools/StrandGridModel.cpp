@@ -1632,6 +1632,15 @@ STDMETHODIMP CStrandGridModel::GetStrandCGProfile(VARIANT_BOOL bIncludeTempStran
          }
       }
 
+      // make sure points are within the girder
+      auto iter = vPoints.begin();
+      auto end = vPoints.end();
+      for (; iter != end; iter++)
+      {
+         *iter = std::max<Float64>(*iter, 0.0);
+         *iter = std::min<Float64>(*iter, Ls);
+      }
+
       // sort and eliminate duplicate points
       std::sort(vPoints.begin(), vPoints.end());
       vPoints.erase(std::unique(vPoints.begin(), vPoints.end()), vPoints.end());
