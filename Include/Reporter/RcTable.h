@@ -103,7 +103,7 @@ public:
 
    /// Returns the table Label paragraph
    ///
-   /// The table label is placed above the table.
+   /// The table label is placed below the caption and above the table.
    rptParagraph& TableLabel() {return m_Label;}
 
    /// Returns the table Caption paragraph
@@ -250,6 +250,7 @@ private:
    RowIndexType m_NumberOfStripedRows;
    bool m_bStripeRows;
    rptParagraph m_Label;
+   rptParagraph m_Caption;
 
    // 2D array of paragraphs - the table data
    // Column Headers are held in row zero
