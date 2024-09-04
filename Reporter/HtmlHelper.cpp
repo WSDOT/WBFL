@@ -192,7 +192,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
             osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << _T(" }") << std::endl;
 
             osScreen << _T("/* ") << mystr << _T(" */") << std::endl;
-            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {display: none;}; ") << std::endl;
+            osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {display: none;} ") << std::endl;
          }
          else if ( style.GetMediaType() == rptRiStyle::Screen )
          {
@@ -201,7 +201,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
             osScreen << _T("   ") << _T("P.") << ms.str() << _T(" {") << ss << _T(" }") << std::endl;
 
             osPrint << _T("/* ") << mystr << _T(" */") << std::endl;
-            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {display: none}; ") << std::endl;
+            osPrint << _T("   ") << _T("P.") << ms.str() << _T(" {display: none;} ") << std::endl;
          }
          else
          {
@@ -231,7 +231,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
             osPrint << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
 
             osScreen << _T("/* ") << _T(" */") << std::endl;
-            osScreen << _T("   ") << _T("h") << hLevel << _T(" {display: none;}; ") << std::endl;
+            osScreen << _T("   ") << _T("h") << hLevel << _T(" {display: none;} ") << std::endl;
         }
         else if (style.GetMediaType() == rptRiStyle::Screen)
         {
@@ -240,7 +240,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
             osScreen << _T("   ") << _T("h") << hLevel << _T(" {") << hss << _T(" }") << std::endl;
 
             osPrint << _T("/* ") << _T(" */") << std::endl;
-            osPrint << _T("   ") << _T("h") << hLevel << _T(" {display: none}; ") << std::endl;
+            osPrint << _T("   ") << _T("h") << hLevel << _T(" {display: none;} ") << std::endl;
         }
         else
         {
