@@ -31,6 +31,9 @@ namespace WBFL
       class REPORTMANAGERCLASS IReportView
       {
       public:
+         virtual ~IReportView()
+         {;}
+
          virtual BOOL Create(
             LPCTSTR lpszWindowName,
             DWORD dwStyle,

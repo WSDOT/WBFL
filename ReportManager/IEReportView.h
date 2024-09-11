@@ -31,6 +31,7 @@ class IEReportView : public WBFL::Reporting::IReportView
 {
 public:
    IEReportView();
+   virtual ~IEReportView() {;}
 
    virtual BOOL Create(
       LPCTSTR lpszWindowName,

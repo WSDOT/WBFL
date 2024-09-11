@@ -37,6 +37,8 @@ class EdgeReportView : public WBFL::Reporting::IReportView
 public:
    EdgeReportView(WBFL::Reporting::ReportBrowser* parentReportBrowser);
 
+   virtual ~EdgeReportView() {;}
+
    virtual BOOL Create(
       LPCTSTR lpszWindowName,
       DWORD dwStyle,
