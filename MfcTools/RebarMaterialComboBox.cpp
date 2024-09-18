@@ -70,17 +70,23 @@ void CRebarMaterialComboBox::Initialize(bool bFilterBySpec)
 
    AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade40).c_str()  );
    AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
-   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade75).c_str()  );
-   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
-   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
-   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade80).c_str()  );
 
-   if ( bFilterBySpec )
+   if (bFilterBySpec && WBFL::LRFD::BDSManager::Edition::ThirdEditionWith2005Interims <= WBFL::LRFD::BDSManager::GetEdition())
    {
-      if (WBFL::LRFD::BDSManager::Edition::SixthEditionWith2013Interims <= WBFL::LRFD::BDSManager::GetEdition() )
-      {
-         AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
-      }
+      AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615, WBFL::Materials::Rebar::Grade::Grade75).c_str());
+      AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A615, WBFL::Materials::Rebar::Grade::Grade80).c_str());
+   }
+
+   AddString( WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706,  WBFL::Materials::Rebar::Grade::Grade60).c_str()  );
+   
+   if (bFilterBySpec && WBFL::LRFD::BDSManager::Edition::ThirdEditionWith2005Interims <= WBFL::LRFD::BDSManager::GetEdition())
+   {
+      AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A706, WBFL::Materials::Rebar::Grade::Grade80).c_str());
+   }
+
+   if ( bFilterBySpec && WBFL::LRFD::BDSManager::Edition::SixthEditionWith2013Interims <= WBFL::LRFD::BDSManager::GetEdition() )
+   {
+      AddString(WBFL::LRFD::RebarPool::GetMaterialName(WBFL::Materials::Rebar::Type::A1035, WBFL::Materials::Rebar::Grade::Grade100).c_str() );
    }
 }
 
