@@ -38,6 +38,7 @@
 #include <fstream>
 
 #include <memory>
+#include <EAF\EAFApp.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CSysAgent command target
@@ -105,6 +106,8 @@ private:
    std::_tstring m_LastMessage; // most recent message
 
    CComPtr<ILogFile> m_LogFile;
+
+   CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
 };
 
 OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)

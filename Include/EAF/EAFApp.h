@@ -215,6 +215,9 @@ public:
 
    BOOL IsCommandLineMode() { return m_bCommandLineMode; }
 
+   // Don't show UI. Must be in command line mode
+   CEAFCommandLineInfo::CommandLineDisplayMode GetCommandLineMode() const; 
+
    virtual void EnableAutoSave(BOOL bEnable, int interval);
    BOOL IsAutoSaveEnabled();
    int GetAutoSaveInterval();
@@ -269,6 +272,7 @@ private:
    BOOL m_bAutoSaveEnabled; // TRUE If AutoSave mode is enabled
 
    BOOL m_bCommandLineMode; // set to TRUE if the application is running in command line mode
+   CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
 
    WBFL::System::Date m_LastRunDate;
 

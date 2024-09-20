@@ -114,6 +114,8 @@ HRESULT CSysAgent::ValidateThread()
 
 STDMETHODIMP CSysAgent::Init()
 {
+   m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
+
    return ValidateThread();
 }
 
@@ -148,6 +150,12 @@ STDMETHODIMP CSysAgent::ShutDown()
    }
    m_pThread = nullptr;
 
+   if (m_CommandLineDisplayMode==CEAFCommandLineInfo::cldEchoProgress)
+   {
+      // echo message when app is finished
+      std::cout << "Finished." << std::endl;
+   }
+
    return S_OK;
 }
 
@@ -164,128 +172,185 @@ STDMETHODIMP CSysAgent::GetClassID(CLSID* pCLSID)
 // 
 STDMETHODIMP CSysAgent::CreateProgressWindow(DWORD dwMask, UINT nDelay)
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return PROGRESS_E_CREATE;
-   }
-
-   m_cProgressRef++;
-
-   if (1 == m_cProgressRef)
-   {
-      CWnd* pMainWnd = nullptr;
-      {
-         AFX_MANAGE_STATE(AfxGetAppModuleState());
-         pMainWnd = AfxGetMainWnd();
-      }
-
-      HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd,dwMask,nDelay);
-      ATLASSERT( SUCCEEDED(hr) );
-      if ( FAILED(hr) )
-      {
-         m_cProgressRef--;
-         return PROGRESS_E_CREATE;
-      }
-   }
-
-   // Save last message that was issued by the previous window
-   if (0 < m_LastMessage.size())
-   {
-      m_MessageStack.push_back(m_LastMessage);
+      // do nothing if UI is not to be shown
+      return S_OK;
    }
    else
    {
-      UpdateMessage(_T("Working..."));
-   }
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
+      {
+         return PROGRESS_E_CREATE;
+      }
 
-   return S_OK;
+      m_cProgressRef++;
+
+      if (1 == m_cProgressRef)
+      {
+         CWnd* pMainWnd = nullptr;
+         {
+            AFX_MANAGE_STATE(AfxGetAppModuleState());
+            pMainWnd = AfxGetMainWnd();
+         }
+
+         HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd, dwMask, nDelay);
+         ATLASSERT(SUCCEEDED(hr));
+         if (FAILED(hr))
+         {
+            m_cProgressRef--;
+            return PROGRESS_E_CREATE;
+         }
+      }
+
+      // Save last message that was issued by the previous window
+      if (0 < m_LastMessage.size())
+      {
+         m_MessageStack.push_back(m_LastMessage);
+      }
+      else
+      {
+         UpdateMessage(_T("Working..."));
+      }
+
+      return S_OK;
+   }
 }
 
 STDMETHODIMP CSysAgent::Init(short begin, short end, short inc)
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return E_FAIL;
+      // do nothing if UI is not to be shown
+      return S_OK;
    }
-   m_pThread->Init(begin,end,inc);
-   return S_OK;
+   else
+   {
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
+      {
+         return E_FAIL;
+      }
+      m_pThread->Init(begin, end, inc);
+      return S_OK;
+   }
 }
 
 STDMETHODIMP CSysAgent::Increment()
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return E_FAIL;
+      // do nothing if UI is not to be shown
+      return S_OK;
    }
-   m_pThread->Increment();
-   return S_OK;
+   else
+   {
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
+      {
+         return E_FAIL;
+      }
+      m_pThread->Increment();
+      return S_OK;
+   }
 }
 
 STDMETHODIMP CSysAgent::UpdateMessage( LPCTSTR msg)
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return E_FAIL;
+      if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+      {
+         // Don't show "Working...". There are 10's of thousands
+         int result = lstrcmp(msg, _T("Wor"));
+         if (result != 0)
+         {
+            std::cout << CStringA(msg) << std::endl;
+         }
+      }
+
+      return S_OK;
    }
+   else
+   {
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
+      {
+         return E_FAIL;
+      }
 
-   m_LastMessage = msg;
-    m_pThread->UpdateMessage(msg);
+      m_LastMessage = msg;
+      m_pThread->UpdateMessage(msg);
 
-   return S_OK;
+      return S_OK;
+   }
 }
 
 STDMETHODIMP CSysAgent::Continue()
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return E_FAIL;
+      // do nothing if UI is not to be shown
+      return S_OK;
    }
+   else
+   {
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
+      {
+         return E_FAIL;
+      }
 
-   return m_pThread->Continue() ? S_OK : S_FALSE;
+      return m_pThread->Continue() ? S_OK : S_FALSE;
+   }
 }
 
 STDMETHODIMP CSysAgent::DestroyProgressWindow()
 {
-   // must have a valid thread before we can do anything else
-   if (FAILED(ValidateThread()))
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
    {
-      return E_FAIL;
-   }
-
-#if defined _DEBUG
-   if ( 0 < m_cProgressRef )
-   {
-      // if there is at least one creater of the progress window
-      // the thread had better still be alive
-      ATLASSERT(m_pThread != nullptr);
-   }
-#endif
-
-   m_cProgressRef--;
-   ATLASSERT( 0 <= m_cProgressRef );
-
-   if ( m_cProgressRef == 0 )
-   {
-      m_pThread->ResetContinueState();
-      m_pThread->DestroyProgressWindow();
+      // do nothing if UI is not to be shown
+      return S_OK;
    }
    else
    {
-      // restore message from previous window in stack
-      if (!m_MessageStack.empty() )
+      // must have a valid thread before we can do anything else
+      if (FAILED(ValidateThread()))
       {
-         m_LastMessage = m_MessageStack.back();
-         m_MessageStack.pop_back();
-         m_pThread->UpdateMessage(m_LastMessage.c_str());
+         return E_FAIL;
       }
-   }
 
-   return S_OK;
+#if defined _DEBUG
+      if (0 < m_cProgressRef)
+      {
+         // if there is at least one creater of the progress window
+         // the thread had better still be alive
+         ATLASSERT(m_pThread != nullptr);
+      }
+#endif
+
+      m_cProgressRef--;
+      ATLASSERT(0 <= m_cProgressRef);
+
+      if (m_cProgressRef == 0)
+      {
+         m_pThread->ResetContinueState();
+         m_pThread->DestroyProgressWindow();
+      }
+      else
+      {
+         // restore message from previous window in stack
+         if (!m_MessageStack.empty())
+         {
+            m_LastMessage = m_MessageStack.back();
+            m_MessageStack.pop_back();
+            m_pThread->UpdateMessage(m_LastMessage.c_str());
+         }
+      }
+
+      return S_OK;
+   }
 }
 
 

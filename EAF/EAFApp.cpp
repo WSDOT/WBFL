@@ -52,6 +52,7 @@
 
 #include "EAFHelpWindowThread.h"
 
+#include <iostream>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -70,6 +71,19 @@ WBFL::Units::IndirectMeasure init_english_units();
 
 #define ID_REPLACE_FILE (WM_USER+1)
 
+// Found this hack to enable connecting to console via cout in an MFC app at:
+// https://stackoverflow.com/questions/5094502/how-do-i-write-to-stdout-from-an-mfc-program
+void EnableCoutForMFC()
+{
+   if (AttachConsole(ATTACH_PARENT_PROCESS))
+   {
+      FILE* pCout;
+      freopen_s(&pCout, "CONOUT$", "w", stdout);
+      std::cout.clear();
+      std::wcout.clear();
+   }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFApp
@@ -83,6 +97,7 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_bTipsEnabled = false;
    m_bUseOnlineDocumentation = TRUE;
    m_bCommandLineMode = FALSE;
+   m_CommandLineDisplayMode = CEAFCommandLineInfo::cldDefault,
 
    m_bUseHelpWindow = TRUE;
    m_pHelpWindowThread = nullptr;
@@ -221,7 +236,27 @@ BOOL CEAFApp::InitInstance()
       ShowUsageMessage();
       return FALSE;
    }
-   
+
+   if (cmdInfo.m_bCommandLineMode && (cmdInfo.m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress || cmdInfo.m_CommandLineDisplayMode == CEAFCommandLineInfo::cldSilent))
+   {
+      // We are hiding UI 
+      m_CommandLineDisplayMode = cmdInfo.m_CommandLineDisplayMode;
+
+      m_nCmdShow = SW_HIDE; // Hide UI if told from command line
+
+      if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+      {
+         // Enable writing to cout via iostream
+         EnableCoutForMFC();
+         std::cout << "Starting BridgeLink from command line." << std::endl;
+      }
+   }
+   else
+   {
+      // show UI
+      m_CommandLineDisplayMode = CEAFCommandLineInfo::cldDefault;
+   }
+
    // The main window has been initialized, so show and update it.
    m_pMainWnd->ShowWindow(m_nCmdShow);
    m_pMainWnd->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
@@ -1078,6 +1113,11 @@ int CEAFApp::GetAutoSaveInterval()
    {
       return 5 * 60 * 1000; // 5 minute as default
    }
+}
+
+CEAFCommandLineInfo::CommandLineDisplayMode CEAFApp::GetCommandLineMode() const
+{
+   return m_CommandLineDisplayMode;
 }
 
 void CEAFApp::EnableAutoSave(BOOL bEnable, int interval)
