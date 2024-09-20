@@ -32,9 +32,17 @@ public:
    CEAFCommandLineInfo();
    virtual ~CEAFCommandLineInfo();
 
+   enum CommandLineDisplayMode
+   {
+      cldDefault,       // Show UI and progress window
+      cldEchoProgress,  // Hide UI. Send progress messages to std::out
+      cldSilent,        // silent mode. don't show anything
+   };
+
    UINT m_nParams;
    BOOL  m_bUsageMessage; // set to TRUE if a usage message is required (/?)
    BOOL  m_bCommandLineMode; // set this to TRUE if this is a batch run
+   CommandLineDisplayMode  m_CommandLineDisplayMode; // display mode if this is a batch run
    BOOL  m_bError; // set this to TRUE if there is a problem with the command line and the application
                    // needs to display the command line usage message and exit
    BOOL m_bTargetApp;

@@ -34,6 +34,7 @@ CEAFCommandLineInfo::CEAFCommandLineInfo() :
 CCommandLineInfo(),
 m_bUsageMessage(FALSE),
 m_bCommandLineMode(FALSE),
+m_CommandLineDisplayMode(CEAFCommandLineInfo::cldDefault),
 m_bError(FALSE),
 m_bTargetApp(FALSE),
 m_nParams(0)
@@ -80,6 +81,15 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
          m_strTargetApp = strParam.Right(length - 4); 
          m_bCommandLineMode = TRUE;
       }
+   }
+
+   if (strParam.CompareNoCase(_T("NoUI")) == 0)
+   {
+      m_CommandLineDisplayMode = cldEchoProgress;
+   }
+   else if (strParam.CompareNoCase(_T("NoUIS")) == 0)
+   {
+      m_CommandLineDisplayMode = cldSilent;
    }
 }
 
