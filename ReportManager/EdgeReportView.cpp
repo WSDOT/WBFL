@@ -81,14 +81,15 @@ BOOL EdgeReportView::Create(
                   }
 
 						// Settings for the webview
-						wil::com_ptr<ICoreWebView2Settings> settings;
-						m_webview->get_Settings(&settings);
-						settings->put_IsScriptEnabled(TRUE);
-						// settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-						// settings->put_IsWebMessageEnabled(TRUE);
+						wil::com_ptr<ICoreWebView2Settings> settings2;
+						m_webview->get_Settings(&settings2);
+						settings2->put_IsScriptEnabled(TRUE);
 #ifndef _DEBUG
-                  settings->put_AreDevToolsEnabled(FALSE); // get rid of "inspect" and "view page source" for production
+                  settings2->put_AreDevToolsEnabled(FALSE); // get rid of "inspect" and "view page source" for production
 #endif
+                  // disable drag and drop (much easier than handling
+                  wil::com_ptr<ICoreWebView2Controller4> controller4 = m_webviewController.query<ICoreWebView2Controller4>();
+                  controller4->put_AllowExternalDrop(FALSE);
 
 						// Resize WebView to fit the bounds of the parent window
 						RECT bounds;
@@ -113,6 +114,61 @@ BOOL EdgeReportView::Create(
                   {
                      MessageBox(m_hwndParent, L"Failed to create WebView2 environment", nullptr, MB_OK);
                   }
+
+                  //
+                  // Deal with accelerator keys
+                  //
+                  wil::com_ptr<ICoreWebView2Settings3> settings3 = settings2.query<ICoreWebView2Settings3>();
+                  settings3->put_AreBrowserAcceleratorKeysEnabled(TRUE);
+
+                  CHECK_FAILURE(m_webviewController->add_AcceleratorKeyPressed(
+                     Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                        [this](
+                           ICoreWebView2Controller* sender,
+                           ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+                        {
+                           COREWEBVIEW2_KEY_EVENT_KIND kind;
+                           CHECK_FAILURE(args->get_KeyEventKind(&kind));
+                           // We only care about key down events.
+                           if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
+                              kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
+                           {
+                              UINT key;
+                              CHECK_FAILURE(args->get_VirtualKey(&key));
+
+                              wil::com_ptr<ICoreWebView2AcceleratorKeyPressedEventArgs2> args2;
+
+                              args->QueryInterface(IID_PPV_ARGS(&args2));
+                              if (args2)
+                              {
+                                 // Allow standard Edge Ctrl-shortcuts to be processed but send others to parent window
+                                 if (!(key == VK_CONTROL)) // ignore ctrl key by itself
+                                 {
+                                    if ((GetKeyState(VK_CONTROL) < 0))
+                                    {
+                                       bool isEdge = (key == 'F' || key == 'P' || key == 'R' || key == 'X' || key == 'C' || key == 'V' || key == 'A' || key == 'Z' || key == VK_OEM_PLUS || key == VK_OEM_MINUS);
+
+                                       if (!isEdge)
+                                       {
+                                          // Tell the browser to skip the key and send command to parent window
+                                          CHECK_FAILURE(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE));
+                                          PostMessage(m_hwndParent, WM_KEYDOWN, VK_CONTROL, 0); // Press Ctrl
+                                          PostMessage(m_hwndParent, WM_KEYDOWN, key, 0);
+                                       }
+                                    }
+                                    else if (key == VK_F1)
+                                    {
+                                       // Allow help
+                                       CHECK_FAILURE(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE));
+                                       PostMessage(m_hwndParent, WM_KEYDOWN, key, 0);
+                                    }
+                                 }
+                              }
+                           }
+                           return S_OK;
+                        })
+                     .Get(),
+                     &m_acceleratorKeyPressedToken));
 
                   //
                   // Context menus

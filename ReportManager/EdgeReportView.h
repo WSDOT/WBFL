@@ -90,6 +90,7 @@ private:
 
    std::vector<rptHtmlReportVisitor::ChapterTocItem> m_TableOfContents;
 
-   void HandleTOCsubMenu(UINT32 id);
+   EventRegistrationToken m_acceleratorKeyPressedToken;
 
+   void HandleTOCsubMenu(UINT32 id);
 };
