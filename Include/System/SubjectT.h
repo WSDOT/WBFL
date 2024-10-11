@@ -60,7 +60,12 @@ namespace WBFL
             TSubject* pts = dynamic_cast<TSubject*>(this);
             CHECK(pts);
 
-            std::for_each(std::begin(m_Observers), std::end(m_Observers), [&](TObserver& observer) {observer.Update(*pts, hint); });
+            // We can end up with the same observer multiple times in m_Observers. This will cause redundant Updates making the program run "forever"
+            // Use a pointer comparison to insure that each unique observer only gets notified once.
+            std::set< TObserver* > myset;
+            std::for_each(std::begin(m_Observers), std::end(m_Observers), [&](TObserver& observer) { myset.insert( &(observer)); });
+
+            std::for_each(std::begin(myset), std::end(myset), [&](TObserver* observer) {observer->Update(*pts, hint); });
          }
 
       private:
