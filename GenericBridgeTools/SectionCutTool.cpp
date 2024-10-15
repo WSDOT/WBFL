@@ -600,7 +600,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
             Float64 offset, elev;
             if ( bIsNormal )
             {
-               profile->GetRidgePointOffsetAndElevation(surfaceID,CComVariant(objStation),ridgePointIdx,alignmentPointIdx,&offset,&elev);
+               profile->GetRidgePointOffsetAndElevation(surfaceID, CComVariant(objStation), alignmentPointIdx, ridgePointIdx, &offset, &elev);
             }
             else
             {
