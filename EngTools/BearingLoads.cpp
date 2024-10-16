@@ -50,11 +50,11 @@ void BearingLoads::SetRotationY(Float64 ry)
 }
 void BearingLoads::SetStaticRotation(Float64 rst)
 {
-    m_static_rotation = abs(rst);
+    m_static_rotation = rst;
 }
 void BearingLoads::SetCyclicRotation(Float64 rcy)
 {
-    m_cyclic_rotation = abs(rcy);
+    m_cyclic_rotation = rcy;
 }
 void BearingLoads::SetShearDeformation(Float64 shear_def)
 {
