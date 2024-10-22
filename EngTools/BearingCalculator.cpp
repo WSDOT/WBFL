@@ -951,7 +951,7 @@ bool BearingCalculator::StaticAxialSecondaryShearStrainCheck(const Bearing& brg,
 
 bool BearingCalculator::PrimaryShearStrainComboSumCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
-	if (GetPrimaryShearStrainComboSum(brg, brg_loads) <= 5.0)
+	if (abs(GetPrimaryShearStrainComboSum(brg, brg_loads)) <= 5.0)
 	{
 		return true;
 	}
@@ -963,7 +963,7 @@ bool BearingCalculator::PrimaryShearStrainComboSumCheck(const Bearing& brg, cons
 
 bool BearingCalculator::SecondaryShearStrainComboSumCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
-	if (GetSecondaryShearStrainComboSum(brg, brg_loads) <= 5.0)
+	if (abs(GetSecondaryShearStrainComboSum(brg, brg_loads)) <= 5.0)
 	{
 		return true;
 	}
