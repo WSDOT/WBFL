@@ -33,7 +33,7 @@ namespace WBFL
       /// @brief An entry in a legend
       class DMANIPCLASS LegendEntry : public iLegendEntry
       {
-      private:
+      protected:
          LegendEntry() = default;
 
       public:

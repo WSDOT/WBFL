@@ -303,7 +303,7 @@ void CMainFrame::OnReactionReport()
    CLBAMViewerDoc* pDoc = dynamic_cast<CLBAMViewerDoc*>(pVDoc);
    ATLASSERT(pDoc);
 
-   CComBSTR curr_stg = pDoc->GetStage();
+   CComBSTR curr_stg(pDoc->GetStage());
    if (curr_stg.Length()==0)
       return;
 
@@ -320,7 +320,7 @@ void CMainFrame::OnReactionReport()
    hr = gen_util->GetSupportIDsForStage(pDoc->m_pModel, curr_stg, &support_ids);
    ATLASSERT(SUCCEEDED(hr));
 
-   CollectionIndexType supsiz;
+   IndexType supsiz;
    support_ids->get_Count(&supsiz);
    if (supsiz==0)
    {

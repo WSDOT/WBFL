@@ -33,7 +33,7 @@ namespace WBFL
       /// @brief Specialized display object representing a north arrow
       class DMANIPCLASS NorthArrow : public DisplayObjectDefaultImpl
       {
-      private:
+      protected:
          NorthArrow(IDType id);
 
       public:

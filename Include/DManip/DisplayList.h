@@ -25,6 +25,7 @@
 
 #include <DManip/DManipExp.h>
 #include <DManip/DManipTypes.h>
+#include <vector>
 
 namespace WBFL
 {

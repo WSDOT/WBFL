@@ -9,6 +9,9 @@
 #include "DataSetUtils.h"
 #include <iomanip>
 
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -31,9 +34,9 @@ LoadCaseDataSetBuilder::~LoadCaseDataSetBuilder()
 
 }
 
-void LoadCaseDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void LoadCaseDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    // check to see if cumulative results are requested. If so, we have to filter out internally generated
    // pois
@@ -44,12 +47,12 @@ void LoadCaseDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
 
    if (summType==rsCumulative)
    {
-      CollectionIndexType size;
+      IndexType size;
       poiList->get_Count(&size);
       cumm_poi_list.CoCreateInstance(CLSID_IDArray);
       cumm_loc_list.CoCreateInstance(CLSID_DblArray);
-      CollectionIndexType new_size=0;
-      for (CollectionIndexType ip=0; ip<size; ip++)
+      IndexType new_size=0;
+      for (IndexType ip=0; ip<size; ip++)
       {
          IDType id;
          poiList->get_Item(ip, &id);
@@ -76,39 +79,37 @@ void LoadCaseDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
 
    if (currRt!=CLBAMViewerDoc::rtStress)
    {
-      BuildForceDataSets(arr, ploc_list, currStg, currRt, summType,
+      BuildForceDataSets(arr, ploc_list, CComBSTR(currStg), currRt, summType,
                          color, dataSets);
    }
    else
    {
-      BuildStressDataSets(arr, ploc_list, currStg, currRt, summType,
+      BuildStressDataSets(arr, ploc_list, CComBSTR(currStg), currRt, summType,
                           color, dataSets);
    }
 }
 
 void LoadCaseDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
+   USES_CONVERSION;
+
    HRESULT hr;
    // create dataset 
-   CComPtr<iGraphXyDataProvider> dataset_p;
-   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
+   auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
    // deal with legend
-   CComPtr<iDataPointFactory> fac;
-   dataset_p->get_DataPointFactory(&fac);
-   CComQIPtr<iSymbolLegendEntry> entry(fac);
+   auto fac = dataset_p->GetDataPointFactory();
+   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-   entry->put_Color(color);
-   entry->put_SymbolCharacterCode(200);
-   entry->put_DoDrawLine(TRUE);
+   entry->SetColor(color);
+   entry->SetSymbolCharacterCode(200);
+   entry->DoDrawLine(TRUE);
 
-   entry->put_Name(m_LoadCase);
+   entry->SetName(OLE2T(m_LoadCase));
 
-   CComPtr<iDataSet2d> dataset;
-   dataset_p->get_DataSet(&dataset);
+   auto dataset = dataset_p->GetDataSet();
 
    CComPtr<ISectionResult3Ds> srs;
    if (m_LoadCase.Length()>0)
@@ -126,7 +127,7 @@ void LoadCaseDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locLis
 
       FillDataSet(locList, dataset, srs, currRt);
 
-      dataSets->push_back(dataset_p.Detach());
+      dataSets->push_back(dataset_p);
    }
    else
       ATLASSERT(0); 
@@ -134,11 +135,11 @@ void LoadCaseDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locLis
 
 void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
 
-   CollectionIndexType size;
+   IndexType size;
    locList->get_Count(&size);
 
    if (m_LoadCase.Length()>0)
@@ -148,7 +149,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
       PROCESS_HR(hr);
 
       // loop over each stress point
-      CollectionIndexType isp=0;
+      IndexType isp=0;
       bool loop=true;
       while(loop)
       {
@@ -156,25 +157,21 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
          bool is_results = false;
 
          // create dataset 
-         CComPtr<iGraphXyDataProvider> dataset_p;
-         hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-         ATLASSERT(SUCCEEDED(hr));
+         auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
          // deal with legend
-         CComPtr<iDataPointFactory> fac;
-         dataset_p->get_DataPointFactory(&fac);
-         CComQIPtr<iSymbolLegendEntry> entry(fac);
+         auto fac = dataset_p->GetDataPointFactory();
+         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-         entry->put_Color(color);
-         entry->put_SymbolCharacterCode(DWORD(49+isp));
-         entry->put_DoDrawLine(TRUE);
+         entry->SetColor(color);
+         entry->SetSymbolCharacterCode(DWORD(49+isp));
+         entry->DoDrawLine(TRUE);
 
-         entry->put_Name(m_LoadCase);
+         entry->SetName(OLE2T(m_LoadCase));
 
-         CComPtr<iDataSet2d> dataset;
-         dataset_p->get_DataSet(&dataset);
+         auto dataset = dataset_p->GetDataSet();
 
-         for (CollectionIndexType ipoi=0; ipoi<size; ipoi++)
+         for (IndexType ipoi=0; ipoi<size; ipoi++)
          {
             double loc;
             hr=locList->get_Item(ipoi,&loc);
@@ -187,7 +184,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
             double val;
 
             // left side
-            CollectionIndexType cnt;
+            IndexType cnt;
             hr = sr->get_LeftCount(&cnt);
             PROCESS_HR(hr);
 
@@ -198,11 +195,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
 
                hr = sr->GetLeftResult(isp, &val);
 
-               CComPtr<IPoint2d> pnt;
-               hr = pnt.CoCreateInstance(CLSID_Point2d);
-               ATLASSERT(SUCCEEDED(hr));
-               pnt->put_X(loc);
-               pnt->put_Y(val);
+               WBFL::Geometry::Point2d pnt(loc, val);
                dataset->Add(pnt);
             }
 
@@ -217,11 +210,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
 
                hr = sr->GetRightResult(isp, &val);
 
-               CComPtr<IPoint2d> pnt;
-               hr = pnt.CoCreateInstance(CLSID_Point2d);
-               ATLASSERT(SUCCEEDED(hr));
-               pnt->put_X(loc);
-               pnt->put_Y(val);
+               WBFL::Geometry::Point2d pnt(loc, val);
                dataset->Add(pnt);
             }
          }
@@ -234,7 +223,7 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
          }
          else
          {
-            dataSets->push_back(dataset_p.Detach());
+            dataSets->push_back(dataset_p);
          }
       }
    }
@@ -296,9 +285,9 @@ void LoadCaseDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BSTR cur
 
    PROCESS_HR(hr);
 
-   CollectionIndexType size;
+   IndexType size;
    supportlist->get_Count(&size);
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       CComPtr<IResult3D> sr;
       hr = srs->get_Item(i, &sr);

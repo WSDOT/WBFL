@@ -28,22 +28,12 @@ CSupportEvents::~CSupportEvents()
 {
 }
 
-BEGIN_INTERFACE_MAP(CSupportEvents,CCmdTarget)
-   INTERFACE_PART(CSupportEvents,IID_iDisplayObjectEvents,DisplayObjectEvents)
-   INTERFACE_PART(CSupportEvents,IID_iDragData,DragData)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CSupportEvents,DisplayObjectEvents);
-DELEGATE_CUSTOM_INTERFACE(CSupportEvents,DragData);
-
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CSupportEvents::OnChanged(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO, ISize2d* offset)
+void CSupportEvents::OnDragMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
-
    // Move the support and the display object
    IDType id = pDO->GetID();
 /*
@@ -60,43 +50,38 @@ STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnDragMoved(iDisplayOb
    jnt->X = x;
    jnt->Y = y;
 */
-   CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> jntRep(pDO);
+   auto jntRep = std::dynamic_pointer_cast<WBFL::DManip::iPointDisplayObject>(pDO);
    ASSERT(jntRep != NULL);
    jntRep->Offset(offset,TRUE,FALSE);
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
+void CSupportEvents::OnMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
    // Support got dropped in a different view... Need to delete the support and
    // all members that attach to it.
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CSupportEvents::OnCopied(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
    // This support got drag/drop copied to a different view... No big deal
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnLButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
-
    // Support got double clicked on... Display its editing dialog
    IDType id = pDO->GetID();
-   pThis->EditSupport(id);
+   EditSupport(id);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnLButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
    // Select the display object and start a drag and drop task
 
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
-
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto list = pDO->GetDisplayList();
+   auto dispMgr = list->GetDisplayMgr();
 
    // If control key is pressed, don't clear current selection
    // (i.e. we want multi-select)
@@ -105,98 +90,86 @@ STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnLButtonDown(iDisplay
    if ( bMultiSelect )
    {
       // clear all selected objects that aren't part of the support list
-      dispMgr->ClearSelectedObjectsByList(SUPPORT_LIST,atByIndex,FALSE);
+      dispMgr->ClearSelectedObjectsByList(SUPPORT_LIST,AccessType::ByIndex,FALSE);
    }
 
    dispMgr->SelectObject(pDO,!bMultiSelect);
 
    // d&d task
-   CComPtr<iTaskFactory> factory;
-   dispMgr->GetTaskFactory(&factory);
-   CComPtr<iTask> task;
-   factory->CreateLocalDragDropTask(dispMgr,point,&task);
+   auto factory = dispMgr->GetTaskFactory();
+   auto task = factory->CreateLocalDragDropTask(dispMgr,point);
    dispMgr->SetTask(task);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnRButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnRButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnRButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnLButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CSupportEvents::OnMouseMove(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CSupportEvents::OnMouseWheel(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CSupportEvents::OnKeyDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    IDType id = pDO->GetID();
 
    switch(nChar)
    {
    case VK_RETURN:
-      pThis->EditSupport(id);
+      EditSupport(id);
       break;
 
    case VK_DELETE:
-      pThis->DeleteSupport(id);
+      DeleteSupport(id);
       break;
    }
 
    return true;
 }
 
-STDMETHODIMP_(bool) CSupportEvents::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CSupportEvents::OnContextMenu(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CSupportEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CSupportEvents::OnSelect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CSupportEvents::OnUnselect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(UINT) CSupportEvents::XDragData::Format()
+UINT CSupportEvents::Format()
 {
    return ms_Format;
 }
 
-STDMETHODIMP_(BOOL) CSupportEvents::XDragData::PrepareForDrag(iDisplayObject* pDO,iDragDataSink* pSink)
+bool CSupportEvents::PrepareForDrag(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,std::shared_ptr<WBFL::DManip::iDragDataSink> pSink)
 {
    pSink->CreateFormat(ms_Format);
 
@@ -205,15 +178,13 @@ STDMETHODIMP_(BOOL) CSupportEvents::XDragData::PrepareForDrag(iDisplayObject* pD
    return TRUE;
 }
 
-STDMETHODIMP_(void) CSupportEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
+void CSupportEvents::OnDrop(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,std::shared_ptr<WBFL::DManip::iDragDataSource> pSource)
 {
    IDType id;
    pSource->PrepareFormat(ms_Format);
    pSource->Read(ms_Format,&id,sizeof(id));
    pDO->SetID(id);
 }
-
-
 
 void CSupportEvents::EditSupport(IDType jntID)
 {

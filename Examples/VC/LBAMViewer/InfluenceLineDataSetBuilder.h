@@ -18,11 +18,11 @@ public:
 	virtual ~InfluenceLineDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, const CString& currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                             COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
+                             COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets);
 
-   virtual long ColorDemand(BSTR currStg, CLBAMViewerDoc::ResponseType curr_rt)
+   virtual long ColorDemand(const CString& currStg, CLBAMViewerDoc::ResponseType curr_rt)
    {
       return 1;
    }

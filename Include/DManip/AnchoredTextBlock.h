@@ -33,7 +33,7 @@ namespace WBFL
       /// @brief Draw text at a location anchored in the view using view coordinates
       class DMANIPCLASS AnchoredTextBlock : public DisplayObjectDefaultImpl
       {
-      private:
+      protected:
          AnchoredTextBlock(IDType id);
 
       public:

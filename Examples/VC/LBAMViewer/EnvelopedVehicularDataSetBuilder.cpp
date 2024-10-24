@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <WbflAtlExt.h> // WBFL ATL Extensions and helpers
 #include "LBAMViewerUtils.h"
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -34,18 +36,18 @@ EnvelopedVehicularDataSetBuilder::~EnvelopedVehicularDataSetBuilder()
 
 }
 
-void EnvelopedVehicularDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void EnvelopedVehicularDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    if (currRt!=CLBAMViewerDoc::rtStress)
    {
-      BuildForceDataSets(poiList, locList, currStg, currRt, summType,
+      BuildForceDataSets(poiList, locList, CComBSTR(currStg), currRt, summType,
                          color, dataSets);
    }
    else
    {
-      BuildStressDataSets(poiList, locList, currStg, currRt, summType,
+      BuildStressDataSets(poiList, locList, CComBSTR(currStg), currRt, summType,
                           color, dataSets);
    }
 }
@@ -61,7 +63,7 @@ CString EnvelopedVehicularDataSetBuilder::GetDescription()
 
 void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
    // deal with vehicle type
@@ -108,10 +110,10 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDb
 
    double flip = is_force ? -1.0 : 1.0;
 
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    poiList->get_Count(&poi_cnt);
 
-   for (CollectionIndexType iopt=0; iopt<2; iopt++)
+   for (IndexType iopt=0; iopt<2; iopt++)
    {
       // first maximize
       // For shear, BEAM max = -FE min
@@ -130,24 +132,19 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDb
       }
 
       // create dataset 
-      CComPtr<iGraphXyDataProvider> dataset_p;
-      hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-      ATLASSERT(SUCCEEDED(hr));
+      auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
       // deal with legend
-      CComPtr<iDataPointFactory> fac;
-      dataset_p->get_DataPointFactory(&fac);
-      CComQIPtr<iSymbolLegendEntry> entry(fac);
+      auto fac = dataset_p->GetDataPointFactory();
+      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-      entry->put_Color(iopt == 0 ? color : ~color);
-      entry->put_SymbolCharacterCode(symbol_code);
-      entry->put_DoDrawLine(TRUE);
+      entry->SetColor(iopt == 0 ? color : ~color);
+      entry->SetSymbolCharacterCode(symbol_code);
+      entry->DoDrawLine(TRUE);
 
-      CComBSTR bstr(str);
-      entry->put_Name(bstr);
+      entry->SetName(str.LockBuffer());
 
-      CComPtr<iDataSet2d> dataset;
-      dataset_p->get_DataSet(&dataset);
+      auto dataset = dataset_p->GetDataSet();
 
       CComPtr<ILiveLoadModelSectionResults> results;
 
@@ -169,12 +166,12 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDb
       }
       PROCESS_HR(hr);
 
-      CollectionIndexType res_size;
+      IndexType res_size;
       hr = results->get_Count(&res_size);
       PROCESS_HR(hr);
 
       ATLASSERT(res_size==poi_cnt);
-      for (CollectionIndexType ipoi=0; ipoi<res_size; ipoi++)
+      for (IndexType ipoi=0; ipoi<res_size; ipoi++)
       {
          double left_result, right_result;
          ILiveLoadConfiguration** ppDummy=NULL;
@@ -190,30 +187,23 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDb
          }
 
          // fill up data set
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
          double loc;
          locList->get_Item(ipoi, &loc);
-         pnt->put_X(loc);
-         pnt->put_Y(left_result);
+
+         WBFL::Geometry::Point2d pnt(loc, left_result);
          dataset->Add(pnt);
 
-         CComPtr<IPoint2d> rpnt;
-         hr = rpnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
-         rpnt->put_X(loc);
-         rpnt->put_Y(flip*right_result);
+         WBFL::Geometry::Point2d rpnt(loc,flip*right_result);
          dataset->Add(rpnt);
       }
 
-      dataSets->push_back( dataset_p.Detach());
+      dataSets->push_back( dataset_p );
    }
 }
 
 void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
    // deal with vehicle type
@@ -235,7 +225,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
       ATLASSERT(0);
    }
 
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    poiList->get_Count(&poi_cnt);
 
    CComPtr<ILiveLoadModelStressResults> results;
@@ -249,12 +239,12 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
                                               &results);
    PROCESS_HR(hr);
 
-   CollectionIndexType res_size;
+   IndexType res_size;
    hr = results->get_Count(&res_size);
    PROCESS_HR(hr);
 
    // loop over each stress point
-   CollectionIndexType isp=0;
+   IndexType isp=0;
    bool loop=true;
    while(loop)
    {
@@ -262,28 +252,23 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
       bool is_results = false;
 
       // create dataset 
-      CComPtr<iGraphXyDataProvider> dataset_p;
-      hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-      ATLASSERT(SUCCEEDED(hr));
+      auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
       // deal with legend
-      CComPtr<iDataPointFactory> fac;
-      dataset_p->get_DataPointFactory(&fac);
-      CComQIPtr<iSymbolLegendEntry> entry(fac);
+      auto fac = dataset_p->GetDataPointFactory();
+      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-      entry->put_Color(color);
-      entry->put_SymbolCharacterCode(DWORD(47+isp));
-      entry->put_DoDrawLine(TRUE);
+      entry->SetColor(color);
+      entry->SetSymbolCharacterCode(DWORD(47+isp));
+      entry->DoDrawLine(TRUE);
 
       CString str;
       str.Format(_T("Env. %s %d"), LL_NAMES[m_LlmType], m_VehicleIndex);
-      CComBSTR bstr(str);
-      entry->put_Name(bstr);
+      entry->SetName(str.LockBuffer());
 
-      CComPtr<iDataSet2d> dataset;
-      dataset_p->get_DataSet(&dataset);
+      auto dataset = dataset_p->GetDataSet();
 
-      for (CollectionIndexType ipoi=0; ipoi<res_size; ipoi++)
+      for (IndexType ipoi=0; ipoi<res_size; ipoi++)
       {
          double loc;
          locList->get_Item(ipoi,&loc);
@@ -296,7 +281,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
          double val;
 
          // left side
-         CollectionIndexType cnt;
+         IndexType cnt;
          hr = left_sr->get_Count(&cnt);
          PROCESS_HR(hr);
 
@@ -307,11 +292,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
 
             hr = left_sr->GetResult(isp, &val);
 
-            CComPtr<IPoint2d> pnt;
-            hr = pnt.CoCreateInstance(CLSID_Point2d);
-            ATLASSERT(SUCCEEDED(hr));
-            pnt->put_X(loc);
-            pnt->put_Y(val);
+            WBFL::Geometry::Point2d pnt(loc, val);
             dataset->Add(pnt);
          }
 
@@ -326,11 +307,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
 
             hr = right_sr->GetResult(isp, &val);
 
-            CComPtr<IPoint2d> pnt;
-            hr = pnt.CoCreateInstance(CLSID_Point2d);
-            ATLASSERT(SUCCEEDED(hr));
-            pnt->put_X(loc);
-            pnt->put_Y(val);
+            WBFL::Geometry::Point2d pnt(loc, val);
             dataset->Add(pnt);
          }
       }
@@ -343,7 +320,7 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
       }
       else
       {
-         dataSets->push_back(dataset_p.Detach());
+         dataSets->push_back(dataset_p);
       }
    }
 }
@@ -449,9 +426,9 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(IIDArray* supportlist
 
    ILiveLoadConfiguration* null_config=NULL;
 
-   CollectionIndexType size;
+   IndexType size;
    supportlist->get_Count(&size);
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       hr = fx_min->GetResult(i, &rx, &null_config);
@@ -492,7 +469,7 @@ void EnvelopedVehicularDataSetBuilder::BuildReactionReport(IIDArray* supportlist
       PROCESS_HR(hr);
    }
 
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       hr = fx_max->GetResult(i, &rx, &null_config);

@@ -19,30 +19,16 @@ CJointDrawStrategyImpl::CJointDrawStrategyImpl(CFEA2DDoc* pDoc)
    m_pDoc = pDoc;
 }
 
-BEGIN_INTERFACE_MAP(CJointDrawStrategyImpl,CCmdTarget)
-   INTERFACE_PART(CJointDrawStrategyImpl,IID_iDrawPointStrategy,DrawPointStrategy)
-   INTERFACE_PART(CJointDrawStrategyImpl,IID_iJointDrawStrategy,Strategy)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CJointDrawStrategyImpl,DrawPointStrategy);
-DELEGATE_CUSTOM_INTERFACE(CJointDrawStrategyImpl,Strategy);
-
-STDMETHODIMP_(void) CJointDrawStrategyImpl::XStrategy::SetJoint(IFem2dJoint* joint)
+void CJointDrawStrategyImpl::SetJoint(IFem2dJoint* joint)
 {
-   METHOD_PROLOGUE(CJointDrawStrategyImpl,Strategy)
-
-   pThis->m_Joint = joint;
+   m_Joint = joint;
 }
 
-STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::Draw(iPointDisplayObject* pDO,CDC* pDC)
+void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC) const
 {
-   METHOD_PROLOGUE(CJointDrawStrategyImpl,DrawPointStrategy);
+   auto pDL = pDO->GetDisplayList();
 
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
+   auto pDispMgr = pDL->GetDisplayMgr();
 
    COLORREF color;
 
@@ -51,30 +37,25 @@ STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::Draw(iPointDispl
    else
       color = RGB(0,255,0);
 
-   CComPtr<IPoint2d> pos;
-   pDO->GetPosition(&pos);
+   auto pos = pDO->GetPosition();
 
-   pThis->Draw(pDO,pDC,color,pos);
+   Draw(pDO,pDC,color,pos);
 }
 
-STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
+void CJointDrawStrategyImpl::DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,bool bHighlite) const
 {
-   METHOD_PROLOGUE(CJointDrawStrategyImpl,DrawPointStrategy);
    Draw(pDO,pDC);
 }
 
-STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint)
+void CJointDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const
 {
-   METHOD_PROLOGUE(CJointDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<IPoint2d> dragPoint;
-   map->LPtoWP(cpdragPoint.x, cpdragPoint.y, &dragPoint);
+   auto dragPoint = map->LPtoWP(cpdragPoint.x, cpdragPoint.y);
 
    // Draw the joint
-   pThis->Draw(pDO,pDC,RGB(255,0,0),dragPoint);
+   Draw(pDO,pDC,RGB(255,0,0),dragPoint);
 
    // Draw the members that attach to the joint
-   CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
+   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dJointCollection> joints;
    model->get_Joints(&joints);
 
@@ -136,20 +117,15 @@ STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iP
    }
 }
 
-STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::GetBoundingBox(iPointDisplayObject* pDO,IRect2d** ppRect)
+WBFL::Geometry::Rect2d CJointDrawStrategyImpl::GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const
 {
-   METHOD_PROLOGUE(CJointDrawStrategyImpl,DrawPointStrategy);
-
    Float64 px, py;
-   pThis->m_Joint->get_X(&px);
-   pThis->m_Joint->get_Y(&py);
+   m_Joint->get_X(&px);
+   m_Joint->get_Y(&py);
 
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    double xo,yo;
    pMap->TPtoWP(0,0,&xo,&yo);
@@ -159,28 +135,15 @@ STDMETHODIMP_(void) CJointDrawStrategyImpl::XDrawPointStrategy::GetBoundingBox(i
    double wid = fabs(x2-xo)/2.0;
    double hgt = fabs(y2-yo)/2.0;
 
-   CComPtr<IRect2d> rect;
-   rect.CoCreateInstance(CLSID_Rect2d);
-
-   rect->put_Left(px-wid);
-   rect->put_Bottom(py-hgt);
-   rect->put_Right(px+wid);
-   rect->put_Top(py+hgt);
-
-   (*ppRect) = rect;
-   (*ppRect)->AddRef();
+   return WBFL::Geometry::Rect2d(px-wid,py-hgt,px+wid,py+hgt);
 }
 
-void CJointDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc)
+void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const
 {
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    long cx,cy;
    pMap->WPtoLP(loc,&cx,&cy);

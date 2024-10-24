@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief A display list, implementing the iDisplayList interface
       class DMANIPCLASS DisplayList : public iDisplayList, public std::enable_shared_from_this<DisplayList>
       {
-      private:
+      protected:
          DisplayList(IDType id) : m_ID(id) {};
 
       public:

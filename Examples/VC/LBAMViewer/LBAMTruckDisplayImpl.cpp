@@ -43,19 +43,9 @@ BEGIN_MESSAGE_MAP(CLBAMTruckDisplayImpl, CCmdTarget)
 END_MESSAGE_MAP()
 
 BEGIN_INTERFACE_MAP(CLBAMTruckDisplayImpl,CCmdTarget)
-   INTERFACE_PART(CLBAMTruckDisplayImpl,IID_iDrawPointStrategy,DrawPointStrategy)
-   INTERFACE_PART(CLBAMTruckDisplayImpl,IID_iLBAMTruckDrawStrategy,Strategy)
-   INTERFACE_PART(CLBAMTruckDisplayImpl,IID_iLBAMTruckEvents,Events)
-   INTERFACE_PART(CLBAMTruckDisplayImpl,IID_iDisplayObjectEvents,DisplayObjectEvents)
-   INTERFACE_PART(CLBAMTruckDisplayImpl,IID_iDragData,DragData)
    INTERFACE_PART(CLBAMTruckDisplayImpl,IID_ILiveLoadConfigurationEvents,LiveLoadEvents)
 END_INTERFACE_MAP()
 
-DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,DrawPointStrategy);
-DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,Strategy);
-DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,Events);
-DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,DragData);
 DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,LiveLoadEvents);
 
 // This goes in the source code file
@@ -67,10 +57,8 @@ DELEGATE_CUSTOM_INTERFACE(CLBAMTruckDisplayImpl,LiveLoadEvents);
  END_DISPATCH_MAP()
  
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::Init(iPointDisplayObject* pDO, ILBAMModel* model, LiveLoadModelType llType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement)
+void CLBAMTruckDisplayImpl::Init(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, ILBAMModel* model, LiveLoadModelType llType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Events);
-
    HRESULT hr;
    // get our vehicular load
    CComPtr<ILiveLoad> liveload;
@@ -126,25 +114,25 @@ STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::Init(iPointDisplayObject* pD
    hr = llm->get_VehicularLoads(&vls);
    ATLASSERT(SUCCEEDED(hr));
 
-   hr = vls->get_Item(vehicleIndex, &(pThis->m_VehicularLoad));
+   hr = vls->get_Item(vehicleIndex, &(m_VehicularLoad));
    ATLASSERT(SUCCEEDED(hr));
 #pragma Reminder("This class needs to listen to the model for vehicle changes in order to be robust")
 
    // use placement to listen for events
-   pThis->m_Placement = placement;
+   m_Placement = placement;
 
-   IDispatch* pid = pThis->GetIDispatch(FALSE);
+   IDispatch* pid = GetIDispatch(FALSE);
    if (!AfxConnectionAdvise (placement,
         IID_ILiveLoadConfigurationEvents, pid, FALSE,
-        &pThis->m_PlacementCookie))
+        &m_PlacementCookie))
    {
       ATLASSERT(0);
    }
 
-   pThis->m_Dirty = true;
+   m_Dirty = true;
 }
 
-void CLBAMTruckDisplayImpl::Compute(iPointDisplayObject* pDO)
+void CLBAMTruckDisplayImpl::Compute(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const
 {
    // compute local parameters if things get stale
    if (m_Dirty)
@@ -161,7 +149,7 @@ void CLBAMTruckDisplayImpl::Compute(iPointDisplayObject* pDO)
    }
 }
 
-void CLBAMTruckDisplayImpl::UpdateTruckPosition(iPointDisplayObject* pDO, double location)
+void CLBAMTruckDisplayImpl::UpdateTruckPosition(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, double location) const
 {
    // position is middle of truck
    double length =0.0;
@@ -171,136 +159,95 @@ void CLBAMTruckDisplayImpl::UpdateTruckPosition(iPointDisplayObject* pDO, double
    }
 
    double xloc = location+length/2.0;
-   CComPtr<IPoint2d> pnt;
-   pnt.CoCreateInstance(CLSID_Point2d);
-   pnt->put_X(xloc);
-   pnt->put_Y( m_RoadwayElevation + (m_WheelDiameter + m_TrailerHeight)/2. );
-   pDO->SetPosition(pnt, FALSE, FALSE);
+   WBFL::Geometry::Point2d pnt;
+   pnt.X() = xloc;
+   pnt.Y() = m_RoadwayElevation + (m_WheelDiameter + m_TrailerHeight)/2.;
+
+   // poor form, but just trying to get this working again after DManip modernization
+   std::const_pointer_cast<WBFL::DManip::iPointDisplayObject>(pDO)->SetPosition(pnt, FALSE, FALSE);
 }
 
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::GetLiveLoadConfiguration(ILiveLoadConfiguration** placement)
+void CLBAMTruckDisplayImpl::GetLiveLoadConfiguration(ILiveLoadConfiguration** placement)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Events);
-
-   HRESULT hr = pThis->m_Placement.CopyTo(placement);
+   HRESULT hr = m_Placement.CopyTo(placement);
 }
 
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::GetRoadwayElevation(double *pVal)
+void CLBAMTruckDisplayImpl::GetRoadwayElevation(double *pVal)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Events);
-
-   *pVal = pThis->m_RoadwayElevation;
+   *pVal = m_RoadwayElevation;
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XEvents::SetRoadwayElevation(iPointDisplayObject* pDO, double newVal)
+void CLBAMTruckDisplayImpl::SetRoadwayElevation(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, double newVal)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Events);
-
-   pThis->m_RoadwayElevation = newVal;
-
-   pThis->m_Dirty = true;
+   m_RoadwayElevation = newVal;
+   m_Dirty = true;
 }
 
-
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XStrategy::SetColor(COLORREF color)
+void CLBAMTruckDisplayImpl::SetColor(COLORREF color)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,Strategy);
-   pThis->m_Color = color;
+   m_Color = color;
 }
 
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDrawPointStrategy::Draw(iPointDisplayObject* pDO,CDC* pDC)
+void CLBAMTruckDisplayImpl::Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC) const
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DrawPointStrategy);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
 
    COLORREF color;
 
    if ( pDO->IsSelected() )
       color = pDispMgr->GetSelectionLineColor();
    else
-      color = pThis->m_Color;
+      color = m_Color;
 
-   CComPtr<IPoint2d> pos;
-   pDO->GetPosition(&pos);
+   auto pos = pDO->GetPosition();
 
-   pThis->Draw(pDO,pDC,color,pos);
+   Draw(pDO,pDC,color,pos);
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDrawPointStrategy::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
+void CLBAMTruckDisplayImpl::DrawHighlight(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,bool bHighlite) const
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DrawPointStrategy);
    Draw(pDO,pDC);
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDrawPointStrategy::DrawDragImage(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint)
+void CLBAMTruckDisplayImpl::DrawDragImage(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC, std::shared_ptr<const WBFL::DManip::iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DrawPointStrategy);
-
-   CComPtr<IPoint2d> dragPoint;
-   map->LPtoWP(cpdragPoint.x, cpdragPoint.y, &dragPoint);
-
-   pThis->Draw(pDO,pDC,RGB(150,150,150),dragPoint);
+   auto dragPoint = map->LPtoWP(cpdragPoint.x, cpdragPoint.y);
+   Draw(pDO,pDC,RGB(150,150,150),dragPoint);
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDrawPointStrategy::GetBoundingBox(iPointDisplayObject* pDO,IRect2d** pBox)
-{
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DrawPointStrategy);
-
-   pThis->Compute(pDO);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
-
-   double dx=0, dy=0;
-
-   if ( pThis->m_AxleLocations.size() > 1)
-   {
-      dx = (fabs(pThis->m_AxleLocations.back()) + 2*pThis->m_WheelDiameter) / 2.0;
-      dy = (pThis->m_TrailerHeight + pThis->m_WheelDiameter) / 2.0;
-   }
-
-   CComPtr<IPoint2d> point;
-   pDO->GetPosition(&point);
-   double xp, yp;
-   point->get_X(&xp);
-   point->get_Y(&yp);
-
-   CComPtr<IRect2d> box;
-   box.CoCreateInstance(CLSID_Rect2d);
-
-   box->put_Right(xp + dx);
-   box->put_Left(xp - dx);
-   box->put_Top(yp + dy);
-   box->put_Bottom(yp - dy);
-
-   (*pBox) = box;
-   (*pBox)->AddRef();
-}
-
-void CLBAMTruckDisplayImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* userLoc)
+WBFL::Geometry::Rect2d CLBAMTruckDisplayImpl::GetBoundingBox(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const
 {
    Compute(pDO);
 
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto pMap = pDispMgr->GetCoordinateMap();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
+   double dx=0, dy=0;
 
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   if ( m_AxleLocations.size() > 1)
+   {
+      dx = (fabs(m_AxleLocations.back()) + 2*m_WheelDiameter) / 2.0;
+      dy = (m_TrailerHeight + m_WheelDiameter) / 2.0;
+   }
+
+   auto point = pDO->GetPosition();
+   auto [xp, yp] = point.GetLocation();
+
+   return WBFL::Geometry::Rect2d(xp - dx, yp - dy, xp + dx, yp + dy);
+}
+
+void CLBAMTruckDisplayImpl::Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& userLoc) const
+{
+   Compute(pDO);
+
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    // set up some constants
    AxleIndexType num_wheels = m_AxleLocations.size();
@@ -313,7 +260,7 @@ void CLBAMTruckDisplayImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF colo
 
       // get location of first wheel on roadway
       double fwx, fwy;
-      userLoc->get_X(&fwx);
+      fwx = userLoc.X();
       fwx -= m_AxleLocations.back()/2.; // point location is at center of truck
       fwy = m_RoadwayElevation;
 
@@ -410,61 +357,51 @@ void CLBAMTruckDisplayImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF colo
    }
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CLBAMTruckDisplayImpl::OnChanged(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-
    // not sure how this would ever get called
-   pThis->m_Dirty = true;
+   m_Dirty = true;
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
+void CLBAMTruckDisplayImpl::OnDragMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,const WBFL::Geometry::Size2d& offset)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-
    double pos;
-   pThis->m_Placement->get_TruckPosition(&pos);
+   m_Placement->get_TruckPosition(&pos);
 
-   double xoff;
-   offset->get_Dx(&xoff);
+   double xoff = offset.Dx();
 
    pos += xoff;
 
-   CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> ppdo(pDO);
-   ATLASSERT(ppdo!=NULL);
+   // Not sure what this code was for - commented on when updated for DManip refactoring
+   //auto ppdo = std::dynamic_pointer_cast<WBFL::DManip::iPointDisplayObject>(pDO);
+   //ATLASSERT(ppdo!=NULL);
 
-   pThis->m_Placement->put_TruckPosition(pos);
+   m_Placement->put_TruckPosition(pos);
 
-   pThis->m_Dirty = true;
+   m_Dirty = true;
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
-{
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-
-   ASSERT(FALSE); // Points must be dropped on a member. This event should never occur
-}
-
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CLBAMTruckDisplayImpl::OnMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
    ASSERT(FALSE); // Points must be dropped on a member. This event should never occur
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+void CLBAMTruckDisplayImpl::OnCopied(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-   pThis->EditTruckPosition();
+   ASSERT(FALSE); // Points must be dropped on a member. This event should never occur
+}
+
+bool CLBAMTruckDisplayImpl::OnLButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
+{
+   EditTruckPosition();
 
    return true;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnLButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
-
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto list = pDO->GetDisplayList();
+   auto dispMgr = list->GetDisplayMgr();
 
    // If control key is pressed, don't clear current selection
    // (i.e. we want multi-select)
@@ -473,75 +410,65 @@ STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnLButtonDown(i
    if ( bMultiSelect )
    {
       // clear all selected objects that aren't part of the load list
-      dispMgr->ClearSelectedObjectsByList(LOAD_LIST,atByID,FALSE);
+      dispMgr->ClearSelectedObjectsByList(LOAD_LIST,AccessType::ByID,FALSE);
    }
 
    dispMgr->SelectObject(pDO,!bMultiSelect);
 
    // d&d task
-   CComPtr<iTaskFactory> factory;
-   dispMgr->GetTaskFactory(&factory);
-   CComPtr<iTask> task;
-   factory->CreateLocalDragDropTask(dispMgr,point,&task);
+   auto factory = dispMgr->GetTaskFactory();
+   auto task = factory->CreateLocalDragDropTask(dispMgr,point);
    dispMgr->SetTask(task);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnRButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnLButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnRButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnRButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CLBAMTruckDisplayImpl::OnMouseMove(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CLBAMTruckDisplayImpl::OnMouseWheel(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CLBAMTruckDisplayImpl::OnKeyDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
-
    switch(nChar)
    {
    case VK_RIGHT:
    case VK_LEFT:
       {
          double pos;
-         pThis->m_Placement->get_TruckPosition(&pos);
+         m_Placement->get_TruckPosition(&pos);
 
          double xoff = nChar==VK_RIGHT ? 1.0 : -1.0;
          pos += xoff;
 
-         pThis->m_Placement->put_TruckPosition(pos);
-         pThis->m_Dirty = true;
+         m_Placement->put_TruckPosition(pos);
+         m_Dirty = true;
       }
       break;
       break;
@@ -553,100 +480,95 @@ STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnKeyDown(iDisp
    return true;
 }
 
-STDMETHODIMP_(bool) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CLBAMTruckDisplayImpl::OnContextMenu(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CLBAMTruckDisplayImpl::OnSelect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CLBAMTruckDisplayImpl::OnUnselect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(UINT) CLBAMTruckDisplayImpl::XDragData::Format()
+UINT CLBAMTruckDisplayImpl::Format()
 {
    return ms_Format;
 }
 
-STDMETHODIMP_(BOOL) CLBAMTruckDisplayImpl::XDragData::PrepareForDrag(iDisplayObject* pDO,iDragDataSink* pSink)
+bool CLBAMTruckDisplayImpl::PrepareForDrag(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,std::shared_ptr<iDragDataSink> pSink)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DragData);
-
    // Create a place to store the drag data for this object
    pSink->CreateFormat(ms_Format);
 
    // write pointers
-   pSink->Write(ms_Format,&pThis->m_Placement.p,sizeof(ILiveLoadConfiguration*));
-   pSink->Write(ms_Format,&pThis->m_VehicularLoad.p,sizeof(IVehicularLoad*));
+   pSink->Write(ms_Format,&m_Placement.p,sizeof(ILiveLoadConfiguration*));
+   pSink->Write(ms_Format,&m_VehicularLoad.p,sizeof(IVehicularLoad*));
 
    // road elevation
-   pSink->Write(ms_Format,&pThis->m_RoadwayElevation,sizeof(double));
+   pSink->Write(ms_Format,&m_RoadwayElevation,sizeof(double));
 
    // write cached truck drawing information
-   AxleIndexType size = pThis->m_AxleLocations.size();
+   AxleIndexType size = m_AxleLocations.size();
    pSink->Write(ms_Format,&size,sizeof(AxleIndexType));
    for ( AxleIndexType i=0; i<size; i++)
    {
-      pSink->Write(ms_Format,&pThis->m_AxleLocations[i],sizeof(double));
+      pSink->Write(ms_Format,&m_AxleLocations[i],sizeof(double));
    }
 
    for ( AxleIndexType i=0; i<size; i++)
    {
-      pSink->Write(ms_Format,&pThis->m_ActiveAxles[i],sizeof(bool));
+      pSink->Write(ms_Format,&m_ActiveAxles[i], sizeof(BOOL));
    }
 
-   pSink->Write(ms_Format,&pThis->m_WheelDiameter,sizeof(double));
-   pSink->Write(ms_Format,&pThis->m_CabHeight,sizeof(double));
-   pSink->Write(ms_Format,&pThis->m_TrailerHeight,sizeof(double));
+   pSink->Write(ms_Format,&m_WheelDiameter,sizeof(double));
+   pSink->Write(ms_Format,&m_CabHeight,sizeof(double));
+   pSink->Write(ms_Format,&m_TrailerHeight,sizeof(double));
 
    return TRUE;
 }
 
-STDMETHODIMP_(void) CLBAMTruckDisplayImpl::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
+void CLBAMTruckDisplayImpl::OnDrop(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO,std::shared_ptr<WBFL::DManip::iDragDataSource> pSource)
 {
-   METHOD_PROLOGUE(CLBAMTruckDisplayImpl,DragData);
-
    // Tell the source we are about to read from our format
    pSource->PrepareFormat(ms_Format);
 
    // read pointers
    ILiveLoadConfiguration* pvp;
    pSource->Read(ms_Format,&pvp,sizeof(ILiveLoadConfiguration*));
-   pThis->m_Placement = pvp;
+   m_Placement = pvp;
 
    IVehicularLoad* pvl;
    pSource->Read(ms_Format, &pvl, sizeof(IVehicularLoad*));
-   pThis->m_VehicularLoad = pvl;
+   m_VehicularLoad = pvl;
 
    // road elevation
-   pSource->Read(ms_Format,&pThis->m_RoadwayElevation,sizeof(double));
+   pSource->Read(ms_Format,&m_RoadwayElevation,sizeof(double));
 
    // write cached truck drawing information
    long size;
    pSource->Read(ms_Format,&size,sizeof(long));
-   pThis->m_AxleLocations.reserve(size);
+   m_AxleLocations.reserve(size);
 
    for ( long i=0; i<size; i++)
    {
       double d;
       pSource->Read(ms_Format,&d,sizeof(double));
-      pThis->m_AxleLocations.push_back(d);
+      m_AxleLocations.push_back(d);
    }
 
    for ( long i=0; i<size; i++)
    {
-      bool b;
-      pSource->Read(ms_Format,&b,sizeof(bool));
-      pThis->m_ActiveAxles.push_back(b);
+      BOOL b;
+      pSource->Read(ms_Format,&b,sizeof(BOOL));
+      m_ActiveAxles.push_back(b);
    }
 
-   pSource->Read(ms_Format,&pThis->m_WheelDiameter,sizeof(double));
-   pSource->Read(ms_Format,&pThis->m_CabHeight,sizeof(double));
-   pSource->Read(ms_Format,&pThis->m_TrailerHeight,sizeof(double));
+   pSource->Read(ms_Format,&m_WheelDiameter,sizeof(double));
+   pSource->Read(ms_Format,&m_CabHeight,sizeof(double));
+   pSource->Read(ms_Format,&m_TrailerHeight,sizeof(double));
 
 }
 
@@ -654,7 +576,7 @@ void CLBAMTruckDisplayImpl::EditTruck()
 {
 }
 
-void CLBAMTruckDisplayImpl::CacheTruckParameters()
+void CLBAMTruckDisplayImpl::CacheTruckParameters() const
 {
    m_AxleLocations.clear();
 
@@ -700,7 +622,7 @@ void CLBAMTruckDisplayImpl::CacheTruckParameters()
       hr = m_Placement->get_AxleConfig(&axle_config);
       ATLASSERT(SUCCEEDED(hr));
 
-      CollectionIndexType axle_config_size = 0;
+      IndexType axle_config_size = 0;
       axle_config->get_Count(&axle_config_size);
 
       if (axle_config_size>0)
@@ -728,7 +650,7 @@ void CLBAMTruckDisplayImpl::CacheTruckParameters()
          m_ActiveAxles[i] = true;
          if ( is_axle_config )
          {
-            CollectionIndexType fidx;
+            IndexType fidx;
             HRESULT hresult = axle_config->Find(i,&fidx);
             if (FAILED(hresult))
             {

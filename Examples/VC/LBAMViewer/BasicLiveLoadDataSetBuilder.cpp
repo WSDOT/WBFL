@@ -7,6 +7,9 @@
 #include "BasicLiveLoadDataSetBuilder.h"
 
 #include "DataSetUtils.h"
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
+
 #include "LBAMViewerUtils.h"
 #include <iomanip>
 
@@ -54,18 +57,18 @@ void BasicLiveLoadDataSetBuilder::GetTruckInfo(LiveLoadModelType* modelType, Veh
    m_Placement.CopyTo(placement);
 }
 
-void BasicLiveLoadDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void BasicLiveLoadDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                                 CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                                COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                                COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    if (currRt!=CLBAMViewerDoc::rtStress)
    {
-      BuildForceDataSets(poiList, locList, currStg, currRt, summType,
+      BuildForceDataSets(poiList, locList, CComBSTR(currStg), currRt, summType,
                          color, dataSets);
    }
    else
    {
-      BuildStressDataSets(poiList, locList, currStg, currRt, summType,
+      BuildStressDataSets(poiList, locList, CComBSTR(currStg), currRt, summType,
                           color, dataSets);
    }
 }
@@ -80,32 +83,24 @@ CString BasicLiveLoadDataSetBuilder::GetDescription()
 
 void BasicLiveLoadDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
-
-   HRESULT hr;
-
    // create dataset
-   CComPtr<iGraphXyDataProvider> dataset_p;
-   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
+   auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
    // deal with legend
-   CComPtr<iDataPointFactory> fac;
-   dataset_p->get_DataPointFactory(&fac);
-   CComQIPtr<iSymbolLegendEntry> entry(fac);
+   auto fac = dataset_p->GetDataPointFactory();
+   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-   entry->put_Color(color);
-   entry->put_SymbolCharacterCode(198);
-   entry->put_DoDrawLine(TRUE);
+   entry->SetColor(color);
+   entry->SetSymbolCharacterCode(198);
+   entry->DoDrawLine(TRUE);
 
    CString tmp;
    tmp.Format(_T("%s %d"), LL_NAMES[m_LlmType], m_LlIndex);
-   CComBSTR btmp(tmp);
-   entry->put_Name(btmp);
+   entry->SetName(tmp.LockBuffer());
 
-   CComPtr<iDataSet2d> dataset;
-   dataset_p->get_DataSet(&dataset);
+   auto dataset = dataset_p->GetDataSet();
 
    CComPtr<ISectionResult3Ds> srs;
 
@@ -134,6 +129,7 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArra
 
    m_Placement->put_ForceEffect(fet);
 
+   HRESULT hr;
    if (is_force)
    {
       hr = m_Response->ComputeForces(poiList, currStg, roGlobal, m_Placement, &srs);
@@ -146,15 +142,15 @@ void BasicLiveLoadDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArra
 
 
    FillDataSet(locList, dataset, srs, currRt);
-   dataSets->push_back( dataset_p.Detach());
+   dataSets->push_back( dataset_p );
 }
 
 void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    poiList->get_Count(&poi_cnt);
 
    CComPtr<ISectionStressResults> srs;
@@ -164,7 +160,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
    PROCESS_HR(hr);
 
    // loop over each stress point
-   CollectionIndexType isp=0;
+   IndexType isp=0;
    bool loop=true;
    while(loop)
    {
@@ -172,27 +168,23 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
       bool is_results = false;
 
       // create datasets for min and max responses
-      CComPtr<iGraphXyDataProvider> dataset_p;
-      dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
+      auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
       // deal with legend
-      CComPtr<iDataPointFactory> fac;
-      dataset_p->get_DataPointFactory(&fac);
-      CComQIPtr<iSymbolLegendEntry> entry(fac);
+      auto fac = dataset_p->GetDataPointFactory();
+      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-      entry->put_Color(color);
-      entry->put_SymbolCharacterCode(DWORD(47+isp));
-      entry->put_DoDrawLine(TRUE);
+      entry->SetColor(color);
+      entry->SetSymbolCharacterCode(DWORD(47+isp));
+      entry->DoDrawLine(TRUE);
 
       CString tmp;
       tmp.Format(_T("%s %d - SP %d"), LL_NAMES[m_LlmType], m_LlIndex, isp);
-      CComBSTR btmp(tmp);
-      entry->put_Name(btmp);
+      entry->SetName(tmp.LockBuffer());
 
-      CComPtr<iDataSet2d> dataset;
-      dataset_p->get_DataSet(&dataset);
+      auto dataset = dataset_p->GetDataSet();
 
-      for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+      for (IndexType ipoi=0; ipoi<poi_cnt; ipoi++)
       {
          double loc;
          locList->get_Item(ipoi, &loc);
@@ -204,7 +196,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
          double val;
 
          // left side
-         CollectionIndexType cnt;
+         IndexType cnt;
          hr = sr->get_LeftCount(&cnt);
          PROCESS_HR(hr);
 
@@ -215,12 +207,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
 
             hr = sr->GetLeftResult(isp, &val);
 
-            CComPtr<IPoint2d> pnt;
-            hr = pnt.CoCreateInstance(CLSID_Point2d);
-            ATLASSERT(SUCCEEDED(hr));
-            pnt->put_X(loc);
-            pnt->put_Y(val);
-            dataset->Add(pnt);
+            dataset->Add(WBFL::Geometry::Point2d(loc,val));
          }
 
          // right side
@@ -234,12 +221,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
 
             hr = sr->GetRightResult(isp, &val);
 
-            CComPtr<IPoint2d> pnt;
-            hr = pnt.CoCreateInstance(CLSID_Point2d);
-            ATLASSERT(SUCCEEDED(hr));
-            pnt->put_X(loc);
-            pnt->put_Y(val);
-            dataset->Add(pnt);
+            dataset->Add(WBFL::Geometry::Point2d(loc,val));
          }
       }
 
@@ -251,7 +233,7 @@ void BasicLiveLoadDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
       }
       else
       {
-         dataSets->push_back(dataset_p.Detach());
+         dataSets->push_back(dataset_p);
       }
    }
 }
@@ -379,9 +361,9 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BST
    }
    PROCESS_HR(hr);
 
-   CollectionIndexType size;
+   IndexType size;
    supportlist->get_Count(&size);
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       CComPtr<IResult3D> result;
@@ -412,7 +394,7 @@ void BasicLiveLoadDataSetBuilder::BuildReactionReport(IIDArray* supportlist, BST
    }
    PROCESS_HR(hr);
 
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       CComPtr<IResult3D> result;

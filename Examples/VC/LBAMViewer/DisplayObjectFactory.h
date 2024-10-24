@@ -12,10 +12,12 @@ class CLBAMViewerDoc;
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayObjectFactory command target
 
-class CDisplayObjectFactory : public CCmdTarget
+class CDisplayObjectFactory : public WBFL::DManip::iDisplayObjectFactory
 {
 public:
-	CDisplayObjectFactory(CLBAMViewerDoc* pDoc);
+   CDisplayObjectFactory() = delete;
+   CDisplayObjectFactory(CLBAMViewerDoc* pDoc);
+   virtual ~CDisplayObjectFactory();
 
 // Attributes
 public:
@@ -26,19 +28,12 @@ public:
 
 // Implementation
 protected:
-	CDisplayObjectFactory();
-
-	virtual ~CDisplayObjectFactory();
-
-   DECLARE_INTERFACE_MAP()
 
    // iDisplayObjectFactory Implementation
-   BEGIN_INTERFACE_PART(Factory,iDisplayObjectFactory)
-      STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj);
-   END_INTERFACE_PART(Factory)
+   std::shared_ptr<WBFL::DManip::iDisplayObject> Create(CLIPFORMAT cfFormat,COleDataObject* pDataObject) const override;
 
 private:
-   CComPtr<iDisplayObjectFactory> m_Factory;
+   std::shared_ptr<WBFL::DManip::iDisplayObjectFactory> m_Factory;
    CLBAMViewerDoc* m_pDoc;
 };
 

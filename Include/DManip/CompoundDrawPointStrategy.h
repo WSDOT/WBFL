@@ -34,8 +34,9 @@ namespace WBFL
       /// An example is drawing a simple point as well as a shape representation of the point
       class DMANIPCLASS CompoundDrawPointStrategy : public iDrawPointStrategy
       {
-      private:
+      protected:
          CompoundDrawPointStrategy() = default;
+
       public:
          static std::shared_ptr<CompoundDrawPointStrategy> Create() { return std::shared_ptr<CompoundDrawPointStrategy>(new CompoundDrawPointStrategy()); }
 	      virtual ~CompoundDrawPointStrategy() = default;

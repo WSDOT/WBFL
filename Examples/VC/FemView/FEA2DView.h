@@ -42,8 +42,8 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point);
-   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point);
+   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState, const WBFL::Geometry::Point2d& point) override;
+   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point) override;
 //
 //   virtual void OnChanged(IDisplayMgr* pDM,IDisplayList* pDL,IDisplayObject* pDO);
 //   virtual void OnMoved(IDisplayMgr* pDM,IDisplayList* pDL,IDisplayObject* pDO,ISize2d* offset);

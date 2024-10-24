@@ -1,7 +1,9 @@
 #ifndef INCLUDED_POINTLOADDRAWSTRATEGYIMPL_H_
 #define INCLUDED_POINTLOADDRAWSTRATEGYIMPL_H_
 
-class CPointLoadDrawStrategyImpl : public CCmdTarget
+using namespace WBFL::DManip;
+
+class CPointLoadDrawStrategyImpl : public iPointLoadDrawStrategy, public iDrawPointStrategy
 {
 public:
    CPointLoadDrawStrategyImpl();
@@ -10,23 +12,18 @@ public:
 
    void Init(IFem2dPointLoad* pLoad,COLORREF color);
 
-   DECLARE_INTERFACE_MAP()
+   // iPointLoadDrawStrategy
+   void SetLoad(IFem2dPointLoad* load) override;
+   void SetColor(COLORREF color) override;
 
-   BEGIN_INTERFACE_PART(Strategy,iPointLoadDrawStrategy)
-      STDMETHOD_(void,SetLoad)(IFem2dPointLoad* load);
-      STDMETHOD_(void,SetColor)(COLORREF color);
-   END_INTERFACE_PART(Strategy)
-
-
-   BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
-      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
-      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** ppRect);
-   END_INTERFACE_PART(DrawPointStrategy)
+   // iDrawPointStrategy
+   void Draw(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC) const override;
+   void DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+   void DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+   WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const override;
 
 private:
-   virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
+   void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color, const WBFL::Geometry::Point2d& loc) const;
    CComPtr<IFem2dPointLoad> m_Load;
    COLORREF m_Color;
 };

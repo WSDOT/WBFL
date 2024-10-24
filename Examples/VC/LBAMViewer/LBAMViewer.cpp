@@ -216,13 +216,13 @@ CLBAMViewerModule _Module;
 BEGIN_OBJECT_MAP(ObjectMap)
 END_OBJECT_MAP()
 
-LONG CLBAMViewerModule::Unlock()
+LONG CLBAMViewerModule::Unlock() throw()
 {
 	AfxOleUnlockApp();
 	return 0;
 }
 
-LONG CLBAMViewerModule::Lock()
+LONG CLBAMViewerModule::Lock() throw()
 {
 	AfxOleLockApp();
 	return 1;

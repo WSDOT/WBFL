@@ -18,82 +18,54 @@ CPointLoadDrawStrategyImpl::CPointLoadDrawStrategyImpl()
 {
 }
 
-BEGIN_INTERFACE_MAP(CPointLoadDrawStrategyImpl,CCmdTarget)
-   INTERFACE_PART(CPointLoadDrawStrategyImpl,IID_iDrawPointStrategy,DrawPointStrategy)
-   INTERFACE_PART(CPointLoadDrawStrategyImpl,IID_iPointLoadDrawStrategy,Strategy)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CPointLoadDrawStrategyImpl,DrawPointStrategy);
-DELEGATE_CUSTOM_INTERFACE(CPointLoadDrawStrategyImpl,Strategy);
-
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XStrategy::SetLoad(IFem2dPointLoad* load)
+void CPointLoadDrawStrategyImpl::SetLoad(IFem2dPointLoad* load)
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,Strategy);
-   pThis->m_Load = load;
+   m_Load = load;
 }
 
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XStrategy::SetColor(COLORREF color)
+void CPointLoadDrawStrategyImpl::SetColor(COLORREF color)
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,Strategy);
-   pThis->m_Color = color;
+   m_Color = color;
 }
 
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XDrawPointStrategy::Draw(iPointDisplayObject* pDO,CDC* pDC)
+void CPointLoadDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC) const
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
 
    COLORREF color;
 
    if ( pDO->IsSelected() )
       color = pDispMgr->GetSelectionLineColor();
    else
-      color = pThis->m_Color;
+      color = m_Color;
 
-   CComPtr<IPoint2d> pos;
-   pDO->GetPosition(&pos);
+   auto pos = pDO->GetPosition();
 
-   pThis->Draw(pDO,pDC,color,pos);
+   Draw(pDO,pDC,color,pos);
 }
 
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XDrawPointStrategy::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
+void CPointLoadDrawStrategyImpl::DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,DrawPointStrategy);
    Draw(pDO,pDC);
 }
 
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint)
+void CPointLoadDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<IPoint2d> dragPoint;
-   map->LPtoWP(cpdragPoint.x, cpdragPoint.y, &dragPoint);
-
-   pThis->Draw(pDO,pDC,RGB(255,0,0),dragPoint);
+   auto dragPoint = map->LPtoWP(cpdragPoint.x, cpdragPoint.y);
+   Draw(pDO,pDC,RGB(255,0,0),dragPoint);
 }
 
-STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XDrawPointStrategy::GetBoundingBox(iPointDisplayObject* pDO, IRect2d** ppRect)
+WBFL::Geometry::Rect2d CPointLoadDrawStrategyImpl::GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const
 {
-   METHOD_PROLOGUE(CPointLoadDrawStrategyImpl,DrawPointStrategy);
+   auto point = pDO->GetPosition();
 
-   CComPtr<IPoint2d> point;
-   pDO->GetPosition(&point);
+   auto [px,py] = point.GetLocation();
 
-   double px, py;
-   point->get_X(&px);
-   point->get_Y(&py);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    double xo,yo;
    pMap->TPtoWP(0,0,&xo,&yo);
@@ -103,29 +75,16 @@ STDMETHODIMP_(void) CPointLoadDrawStrategyImpl::XDrawPointStrategy::GetBoundingB
    double wid = fabs(x2-xo)/2.0;
    double hgt = fabs(y2-yo)/2.0;
 
-   CComPtr<IRect2d> rect;
-   rect.CoCreateInstance(CLSID_Rect2d);
-
-   rect->put_Left(px-wid);
-   rect->put_Bottom(py-hgt);
-   rect->put_Right(px+wid);
-   rect->put_Top(py+hgt);
-
-   (*ppRect) = rect;
-   (*ppRect)->AddRef();
+   return WBFL::Geometry::Rect2d(px - wid, py - hgt, px + wid, py + hgt);
 }
 
 
-void CPointLoadDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc)
+void CPointLoadDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const
 {
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
 
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    long cx,cy;
    pMap->WPtoLP(loc,&cx,&cy);

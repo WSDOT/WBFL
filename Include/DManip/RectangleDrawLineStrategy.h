@@ -38,8 +38,9 @@ namespace WBFL
          public iDrawLineStrategy,
          public iGravityWellStrategy
       {
-      private:
+      protected:
          RectangleDrawLineStrategy() = default;
+
       public:
          static std::shared_ptr<RectangleDrawLineStrategy> Create() { return std::shared_ptr<RectangleDrawLineStrategy>(new RectangleDrawLineStrategy()); }
 	      virtual ~RectangleDrawLineStrategy() = default;

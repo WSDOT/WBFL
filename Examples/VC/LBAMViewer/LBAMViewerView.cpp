@@ -34,7 +34,7 @@ static char THIS_FILE[] = __FILE__;
 #define DRW_OFFSET 100
 
 // useful local functions
-void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, double xEnd, double yEnd, iDisplayList* pDL, ISuperstructureMember* ssm, long* pCurrID);
+void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, double xEnd, double yEnd, std::shared_ptr<iDisplayList> pDL, ISuperstructureMember* ssm, long* pCurrID);
 
 
 bool GetPointAlongLineSegment(double xStart, double yStart, double xEnd, double yEnd, double dist, double* xLoc, double* yLoc)
@@ -181,7 +181,7 @@ DROPEFFECT CLBAMViewerView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState
    }
    else
    {
-      CComQIPtr<iDraggable> drag(m_Legend);
+      auto drag = std::dynamic_pointer_cast<iDraggable>(m_Legend);
       UINT format = drag->Format();
       if ( pDataObject->IsDataAvailable(format) )
          return DROPEFFECT_MOVE;
@@ -198,95 +198,65 @@ void CLBAMViewerView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffec
 
 void CLBAMViewerView::OnInitialUpdate() 
 {
-   HRESULT hr;
    try
    {
       CDisplayView::OnInitialUpdate();
 
       // Setup the local display object factory
       CLBAMViewerDoc* pDoc = GetDocument();
-      CComPtr<iDisplayMgr> dispMgr;
-      GetDisplayMgr(&dispMgr);
-      CDisplayObjectFactory* factory = new CDisplayObjectFactory(pDoc);
-      dispMgr->AddDisplayObjectFactory((iDisplayObjectFactory*)factory->GetInterface(&IID_iDisplayObjectFactory));
+      auto dispMgr = GetDisplayMgr();
+      auto factory = std::make_shared<CDisplayObjectFactory>(pDoc);
+      dispMgr->AddDisplayObjectFactory(factory);
 
       // factory from dmaniptools
-      CComPtr<iDisplayObjectFactory> pfac2;
-      hr = pfac2.CoCreateInstance(CLSID_DManipToolsDisplayObjectFactory);
-      ATLASSERT(SUCCEEDED(hr));
-      dispMgr->AddDisplayObjectFactory(pfac2);
+      //CComPtr<iDisplayObjectFactory> pfac2;
+      //hr = pfac2.CoCreateInstance(CLSID_DManipToolsDisplayObjectFactory);
+      //ATLASSERT(SUCCEEDED(hr));
+      //dispMgr->AddDisplayObjectFactory(pfac2);
 
       // Create display lists
       // dimension lines
-      CComPtr<iDisplayList> dlList;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&dlList);
-      dlList->SetID(DIMLINE_LIST);
+      auto dlList = WBFL::DManip::DisplayList::Create(DIMLINE_LIST);
       dispMgr->AddDisplayList(dlList);
 
       // supports
-      CComPtr<iDisplayList> sup_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&sup_list);
-      sup_list->SetID(SUPPORT_LIST);
+      auto sup_list = WBFL::DManip::DisplayList::Create(SUPPORT_LIST);
       dispMgr->AddDisplayList(sup_list);
 
       // temporary supports
-      CComPtr<iDisplayList> ts_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&ts_list);
-      ts_list->SetID(TEMPSUPPORT_LIST);
+      auto ts_list = WBFL::DManip::DisplayList::Create(TEMPSUPPORT_LIST);
       dispMgr->AddDisplayList(ts_list);
 
       // spans
-      CComPtr<iDisplayList> span_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&span_list);
-      span_list->SetID(SPAN_LIST);
+      auto span_list = WBFL::DManip::DisplayList::Create(SPAN_LIST);
       dispMgr->AddDisplayList(span_list);
 
       // superstructuremembers
-      CComPtr<iDisplayList> ssm_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&ssm_list);
-      ssm_list->SetID(SSM_LIST);
+      auto ssm_list = WBFL::DManip::DisplayList::Create(SSM_LIST);
       dispMgr->AddDisplayList(ssm_list);
 
       // graph
-      CComPtr<iDisplayList> graph_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&graph_list);
-      graph_list->SetID(GRAPH_LIST);
-      dispMgr->AddDisplayList(graph_list);
+      auto graph_list = WBFL::DManip::DisplayList::Create(GRAPH_LIST);
 
       // legend
-      CComPtr<iDisplayList> legend_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&legend_list);
-      legend_list->SetID(LEGEND_LIST);
+      auto legend_list = WBFL::DManip::DisplayList::Create(LEGEND_LIST);
       dispMgr->AddDisplayList(legend_list);
 
       // truck
-      CComPtr<iDisplayList> truck_list;
-      ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&truck_list);
-      truck_list->SetID(TRUCK_LIST);
+      auto truck_list = WBFL::DManip::DisplayList::Create(TRUCK_LIST);
       dispMgr->AddDisplayList(truck_list);
 
       // Make sure mapping has a DC
       CDManipClientDC dc(this);
 
       // create our one and only graph display object
-      hr = m_Graph.CoCreateInstance(CLSID_GraphXyDisplayObject);
-      ATLASSERT(SUCCEEDED(hr));
-
-      CComPtr<iDisplayObject> gdo;
-      hr = m_Graph->QueryInterface(IID_iDisplayObject, (void**)&gdo);
-      ATLASSERT(SUCCEEDED(hr));
-      graph_list->AddDisplayObject(gdo);
+      m_Graph = CGraphXyDisplayObject::Create();
+      graph_list->AddDisplayObject(m_Graph);
 
       // create our one and only legend display object
-      hr = m_Legend.CoCreateInstance(CLSID_LegendDisplayObject);
-      ATLASSERT(SUCCEEDED(hr));
-
-      m_Legend->put_Title(CComBSTR("Legend"));
-
-      CComPtr<iDisplayObject> lgdo;
-      hr = m_Legend->QueryInterface(IID_iDisplayObject, (void**)&lgdo);
-      ATLASSERT(SUCCEEDED(hr));
-      legend_list->AddDisplayObject(lgdo);
+      m_Legend = CLegendDisplayObject::Create();
+      m_Legend->SetTitle(_T("Legend"));
+      legend_list->AddDisplayObject(m_Legend);
 
 
       EnableToolTips();
@@ -330,14 +300,13 @@ void CLBAMViewerView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
       else
       {
          CLBAMViewerDoc* pDoc = GetDocument();
-         CComPtr<iDisplayMgr> dispMgr;
-         GetDisplayMgr(&dispMgr);
+         auto dispMgr = GetDisplayMgr();
 
          if (lHint == GRAPH_SETTING_HINT)
          {
             // only grid setting changed
             BOOL show_grid = pDoc->GetShowGrid();
-            m_Graph->put_DoDisplayGrid(show_grid==FALSE ? VARIANT_FALSE:VARIANT_TRUE );
+            m_Graph->DoDisplayGrid(show_grid==FALSE ? VARIANT_FALSE:VARIANT_TRUE );
             m_Graph->Commit();
          }
          else 
@@ -412,18 +381,15 @@ void CLBAMViewerView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
 	Invalidate(TRUE);
 }
 
-bool CLBAMViewerView::BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr)
+bool CLBAMViewerView::BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
    HRESULT hr;
    CComPtr<ILBAMModel> model = pDoc->m_pModel;
 
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(SUPPORT_LIST,&pDL);
-   ATLASSERT(pDL);
+   auto pDL = dispMgr->FindDisplayList(SUPPORT_LIST);
    pDL->Clear();
 
-   CComPtr<iDisplayObjectFactory> factory;
-   dispMgr->GetDisplayObjectFactory(0,&factory);
+   auto factory = dispMgr->GetDisplayObjectFactory(0);
 
    CComPtr<ISupports> supports;
    hr = model->get_Supports(&supports);
@@ -451,38 +417,29 @@ bool CLBAMViewerView::BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayM
          CComPtr<ISupport> support;
          hr = supports->get_Item(nsprt,&support);
 
-         CComPtr<IPoint2d> point;
-         point.CoCreateInstance(__uuidof(Point2d));
-         point->put_X(loc);
-         point->put_Y(0.0);
+         WBFL::Geometry::Point2d point(loc, 0.0);
 
-         CComPtr<iDisplayObject> dispObj;
-         factory->Create(CSupportEvents::ms_Format,NULL,&dispObj);
+         auto dispObj = factory->Create(CSupportEvents::ms_Format,NULL);
 
-         CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> ptDispObj(dispObj);
+         auto ptDispObj = std::dynamic_pointer_cast<iPointDisplayObject>(dispObj);
       
-         CComPtr<iDrawPointStrategy> ds;
-         ptDispObj->GetDrawingStrategy(&ds);
+         auto ds = ptDispObj->GetDrawingStrategy();
 
-         CComQIPtr<iSupportDrawStrategy,&IID_iSupportDrawStrategy> strategy(ds);
+         auto strategy = std::dynamic_pointer_cast<iSupportDrawStrategy>(ds);
          strategy->SetSupport(support, nsprt);
 
-         CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> supportRep(dispObj);
-         supportRep->SetPosition(point,FALSE,FALSE);
-         supportRep->SetID(nsprt);
+         ptDispObj->SetPosition(point,FALSE,FALSE);
+         ptDispObj->SetID(nsprt);
 
          CString strToolTipText;
-         double x, y;
-         point->get_X(&x);
-         point->get_Y(&y);
+         auto [x, y] = point.GetLocation();
          strToolTipText.Format(_T("Support %d (%f,%f)"),nsprt, x, y);
-         supportRep->SetToolTipText(strToolTipText);
+         ptDispObj->SetToolTipText(strToolTipText);
 
-         CComQIPtr<iConnectable,&IID_iConnectable> connectable(supportRep);
-         CComPtr<iSocket> socket;
-         connectable->AddSocket(0,point,&socket);
+         auto connectable = std::dynamic_pointer_cast<iConnectable>(ptDispObj);
+         auto socket = connectable->AddSocket(0,point);
 
-         pDL->AddDisplayObject(supportRep);
+         pDL->AddDisplayObject(dispObj);
 
          if (nsprt <nspans)
          {
@@ -497,17 +454,14 @@ bool CLBAMViewerView::BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayM
    return true;
 }
 
-bool CLBAMViewerView::BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr)
+bool CLBAMViewerView::BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
-   HRESULT hr;
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(TEMPSUPPORT_LIST,&pDL);
-   ATLASSERT(pDL);
+   auto pDL = dispMgr->FindDisplayList(TEMPSUPPORT_LIST);
    pDL->Clear();
 
-   CComPtr<iDisplayObjectFactory> factory;
-   dispMgr->GetDisplayObjectFactory(0,&factory);
+   auto factory = dispMgr->GetDisplayObjectFactory(0);
 
+   HRESULT hr;
    CComPtr<ILBAMModel> model = pDoc->m_pModel;
    CComPtr<IStages> stages;
    hr = model->get_Stages(&stages);
@@ -545,39 +499,30 @@ bool CLBAMViewerView::BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisp
             hr = ts->get_Location(&lloc);
             model->ComputeLocation(id, mtTemporarySupport, -1.0, &xloc, &yloc);
 
-            CComPtr<IPoint2d> point;
-            point.CoCreateInstance(__uuidof(Point2d));
-            point->put_X(xloc);
-            point->put_Y(yloc);
+            WBFL::Geometry::Point2d point(xloc, yloc);
 
             // use of support's events class might cause problems when editing is enabled
-            CComPtr<iDisplayObject> dispObj;
-            factory->Create(CTemporarySupportEvents::ms_Format,NULL,&dispObj);
+            auto dispObj = factory->Create(CTemporarySupportEvents::ms_Format,NULL);
 
-            CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> ptDispObj(dispObj);
+            auto ptDispObj = std::dynamic_pointer_cast<iPointDisplayObject>(dispObj);
    
-            CComPtr<iDrawPointStrategy> ds;
-            ptDispObj->GetDrawingStrategy(&ds);
+            auto ds = ptDispObj->GetDrawingStrategy();
 
-            CComQIPtr<iTemporarySupportDrawStrategy,&IID_iTemporarySupportDrawStrategy> strategy(ds);
+            auto strategy = std::dynamic_pointer_cast<iTemporarySupportDrawStrategy>(ds);
             strategy->SetTemporarySupport(ts, id);
 
-            CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> supportRep(dispObj);
-            supportRep->SetPosition(point,FALSE,FALSE);
-            supportRep->SetID(id);
+            ptDispObj->SetPosition(point,FALSE,FALSE);
+            ptDispObj->SetID(id);
 
             CString strToolTipText;
-            double x, y;
-            point->get_X(&x);
-            point->get_Y(&y);
+            auto [x, y] = point.GetLocation();
             strToolTipText.Format(_T("TemporarySupport %d (%f,%f)"),id, x, y);
-            supportRep->SetToolTipText(strToolTipText);
+            ptDispObj->SetToolTipText(strToolTipText);
 
-            CComQIPtr<iConnectable,&IID_iConnectable> connectable(supportRep);
-            CComPtr<iSocket> socket;
-            connectable->AddSocket(0,point,&socket);
+            auto connectable = std::dynamic_pointer_cast<iConnectable>(ptDispObj);
+            auto socket = connectable->AddSocket(0,point);
 
-            pDL->AddDisplayObject(supportRep);
+            pDL->AddDisplayObject(ptDispObj);
 
             double length;
             hr = span->get_Length(&length);
@@ -590,13 +535,12 @@ bool CLBAMViewerView::BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisp
 }
 
 
-void CLBAMViewerView::BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr)
+void CLBAMViewerView::BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
    HRESULT hr;
    CComPtr<ILBAMModel> model = pDoc->m_pModel;
    
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(SPAN_LIST,&pDL);
+   auto pDL = dispMgr->FindDisplayList(SPAN_LIST);
    pDL->Clear();
 
    // Connect display objects representing supports with
@@ -607,43 +551,32 @@ void CLBAMViewerView::BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr*
    hr = spans->get_Count(&nspans);
    for ( SpanIndexType nspan = 0; nspan < nspans; nspan++ )
    {
-      CComPtr<iLineDisplayObject> span_rep;
-      ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&span_rep);
+      auto span_rep = WBFL::DManip::LineDisplayObject::Create();
       span_rep->SetID(nspan);
 
-      CComPtr<iDrawLineStrategy> ds;
-      span_rep->GetDrawLineStrategy(&ds);
-      CComPtr<iSimpleDrawLineStrategy> sds;
-      hr = ds->QueryInterface(IID_iSimpleDrawLineStrategy, (void**)&sds);
-      ATLASSERT(SUCCEEDED(hr));
+      auto ds = span_rep->GetDrawLineStrategy();
+      auto sds = std::dynamic_pointer_cast<WBFL::DManip::SimpleDrawLineStrategy>(ds);
 
       sds->SetColor( RGB(0,0,0));
       sds->SetWidth(2);
 
-      CComQIPtr<iConnector,&IID_iConnector> connector(span_rep);
+      auto connector = std::dynamic_pointer_cast<iConnector>(span_rep);
 
-      CComPtr<iPlug> startPlug;
-      connector->GetStartPlug(&startPlug);
+      auto startPlug = connector->GetStartPlug();
+      auto endPlug   = connector->GetEndPlug();
 
-      CComPtr<iPlug> endPlug;
-      connector->GetEndPlug(&endPlug);
+      auto pstart_support_rep = dispMgr->FindDisplayObject(nspan,SUPPORT_LIST,AccessType::ByID);
 
-      CComPtr<iDisplayObject> pstart_support_rep;
-      dispMgr->FindDisplayObject(nspan,SUPPORT_LIST,atByID,&pstart_support_rep);
+      auto pend_support_rep = dispMgr->FindDisplayObject(nspan+1,SUPPORT_LIST,AccessType::ByID);
 
-      CComPtr<iDisplayObject> pend_support_rep;
-      dispMgr->FindDisplayObject(nspan+1,SUPPORT_LIST,atByID,&pend_support_rep);
-
-      CComQIPtr<iConnectable,&IID_iConnectable> startConnectable(pstart_support_rep);
-      CComPtr<iSocket> socket;
-      startConnectable->GetSocket(0,atByIndex,&socket);
+      auto startConnectable = std::dynamic_pointer_cast<iConnectable>(pstart_support_rep);
+      auto socket = startConnectable->GetSocket(0,AccessType::ByIndex);
       DWORD dwCookie;
-      socket->Connect(startPlug,&dwCookie);
+      dwCookie = socket->Connect(startPlug);
 
-      CComQIPtr<iConnectable,&IID_iConnectable> endConnectable(pend_support_rep);
-      socket.Release();
-      endConnectable->GetSocket(0,atByIndex,&socket);
-      socket->Connect(endPlug,&dwCookie);
+      auto endConnectable = std::dynamic_pointer_cast<iConnectable>(pend_support_rep);
+      socket = endConnectable->GetSocket(0,AccessType::ByIndex);
+      dwCookie = socket->Connect(endPlug);
 
       CString strToolTip;
       strToolTip.Format(_T("Span %d"), nspan);
@@ -660,24 +593,21 @@ void CLBAMViewerView::BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr*
    }
 }
 
-void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr)
+void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
    HRESULT hr;
    CComPtr<ILBAMModel> model = pDoc->m_pModel;
    CComPtr<IStages> stages;
    hr = model->get_Stages(&stages);
 
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(SSM_LIST,&pDL);
-   ATLASSERT(pDL);
+   auto pDL = dispMgr->FindDisplayList(SSM_LIST);
    pDL->Clear();
 
-   CComPtr<iDisplayObjectFactory> factory;
-   dispMgr->GetDisplayObjectFactory(0,&factory);
+   auto factory = dispMgr->GetDisplayObjectFactory(0);
 
    CComPtr<ISuperstructureMembers> ssms;
    hr = model->get_SuperstructureMembers(&ssms);
-   CollectionIndexType nssms;
+   IndexType nssms;
    hr = ssms->get_Count(&nssms);
    double offset;
    hr = ssms->get_Offset(&offset);
@@ -689,23 +619,19 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
 
    // make starting point
    double loc = -offset;
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(__uuidof(Point2d));
-   point->put_X(loc);
-   point->put_Y(total_length/DRW_OFFSET);
+
+   WBFL::Geometry::Point2d point(loc, total_length / DRW_OFFSET);
 
    long curr_id=0;
-   CComPtr<iPointDisplayObject> startpt_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&startpt_rep);
+   auto startpt_rep = WBFL::DManip::PointDisplayObject::Create();
    startpt_rep->SetPosition(point,FALSE,FALSE);
    startpt_rep->SetID(curr_id++);
-   CComQIPtr<iConnectable,&IID_iConnectable> start_connectable(startpt_rep);
-   CComPtr<iSocket> start_socket;
-   start_connectable->AddSocket(0,point,&start_socket);
+   auto start_connectable = std::dynamic_pointer_cast<iConnectable>(startpt_rep);
+   auto start_socket = start_connectable->AddSocket(0,point);
    pDL->AddDisplayObject(startpt_rep);
    startpt_rep->Visible(FALSE);
 
-   for ( CollectionIndexType nssm = 0; nssm < nssms; nssm++ )
+   for ( IndexType nssm = 0; nssm < nssms; nssm++ )
    {
       CComPtr<ISuperstructureMember> ssm;
       hr = ssms->get_Item(nssm,&ssm);
@@ -713,23 +639,20 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       double length;
       hr = ssm->get_Length(&length);
       loc += length;
-      point->put_X(loc);
+      point.X() = loc;
 
       // end point display object
-      CComPtr<iPointDisplayObject> endpt_rep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&endpt_rep);
+      auto endpt_rep = WBFL::DManip::PointDisplayObject::Create();
       endpt_rep->SetPosition(point,FALSE,FALSE);
       endpt_rep->SetID(curr_id++);
-      CComQIPtr<iConnectable,&IID_iConnectable> end_connectable(endpt_rep);
-      CComPtr<iSocket> end_socket;
-      end_connectable->AddSocket(0,point,&end_socket);
+      auto end_connectable = std::dynamic_pointer_cast<iConnectable>(endpt_rep);
+      auto end_socket = end_connectable->AddSocket(0,point);
 
       pDL->AddDisplayObject(endpt_rep);
       endpt_rep->Visible(FALSE);
 
       // line to represent ssm
-      CComPtr<iLineDisplayObject> ssm_rep;
-      ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&ssm_rep);
+      auto ssm_rep = WBFL::DManip::LineDisplayObject::Create();
       ssm_rep->SetID(10000+curr_id++);
 
 
@@ -742,8 +665,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
       //draw_ssm->SetColor( colors.Item((int)nssm) );
       //ssm_rep->SetDrawLineStrategy(draw_ssm);
 
-      CComPtr<iSimpleDrawLineStrategy> draw_ssm;
-      ::CoCreateInstance(CLSID_SimpleDrawLineStrategy,NULL,CLSCTX_ALL,IID_iSimpleDrawLineStrategy,(void**)&draw_ssm);
+      auto draw_ssm = WBFL::DManip::SimpleDrawLineStrategy::Create();
       draw_ssm->SetWidth(3);
       draw_ssm->SetColor(colors.Item((int)nssm));
       ssm_rep->SetDrawLineStrategy(draw_ssm);
@@ -759,7 +681,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
          stages->FindIndex(start_rel_stage,&rel_index);
          if ( rel_index == INVALID_INDEX || rel_index>m_CurrentStageIndex )
          {
-            draw_ssm->SetBeginType(leCircle);
+            draw_ssm->SetBeginType(WBFL::DManip::PointType::Circle);
             draw_ssm->SetBeginSize(10);
          }
       }
@@ -774,31 +696,25 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
          stages->FindIndex(end_rel_stage,&rel_index);
          if ( rel_index == INVALID_INDEX || rel_index>m_CurrentStageIndex )
          {
-            draw_ssm->SetEndType(leCircle);
+            draw_ssm->SetEndType(WBFL::DManip::PointType::Circle);
             draw_ssm->SetEndSize(10);
          }
       }
       ::SysFreeString(end_rel_stage);
 
       // plug in
-      CComQIPtr<iConnector,&IID_iConnector> connector(ssm_rep);
+      auto connector = std::dynamic_pointer_cast<iConnector>(ssm_rep);
 
-      CComPtr<iPlug> startPlug;
-      connector->GetStartPlug(&startPlug);
+      auto startPlug = connector->GetStartPlug();
+      auto endPlug = connector->GetEndPlug();
 
-      CComPtr<iPlug> endPlug;
-      connector->GetEndPlug(&endPlug);
+      auto startConnectable = std::dynamic_pointer_cast<iConnectable>(startpt_rep);
+      auto socket = startConnectable->GetSocket(0,AccessType::ByIndex);
+      DWORD dwCookie = socket->Connect(startPlug);
 
-      CComQIPtr<iConnectable,&IID_iConnectable> startConnectable(startpt_rep);
-      CComPtr<iSocket> socket;
-      startConnectable->GetSocket(0,atByIndex,&socket);
-      DWORD dwCookie;
-      socket->Connect(startPlug,&dwCookie);
-
-      CComQIPtr<iConnectable,&IID_iConnectable> endConnectable(endpt_rep);
-      socket.Release();
-      endConnectable->GetSocket(0,atByIndex,&socket);
-      socket->Connect(endPlug,&dwCookie);
+      auto endConnectable = std::dynamic_pointer_cast<iConnectable>(endpt_rep);
+      socket = endConnectable->GetSocket(0,AccessType::ByIndex);
+      dwCookie = socket->Connect(endPlug);
 
       CString strToolTip;
       strToolTip.Format(_T("SuperstructureMember %d"), nssm);
@@ -816,7 +732,7 @@ void CLBAMViewerView::BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* 
    }
 }
 
-void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, double xEnd, double yEnd, iDisplayList* pDL, ISuperstructureMember* ssm, long* pCurrID)
+void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, double xEnd, double yEnd, std::shared_ptr<iDisplayList> pDL, ISuperstructureMember* ssm, long* pCurrID)
 {
    HRESULT hr;
    CComPtr<IFilteredSegmentCollection> segs;
@@ -827,18 +743,13 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
    CColorIterator colors( RGB(255, 20, 20), RGB( 20,  20, 255), (int)nsegs);
 
    // make starting point
-   CComPtr<IPoint2d> point;
-   point.CoCreateInstance(__uuidof(Point2d));
-   point->put_X(xStart);
-   point->put_Y(yStart);
+   WBFL::Geometry::Point2d point(xStart, yStart);
 
-   CComPtr<iPointDisplayObject> startpt_rep;
-   ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&startpt_rep);
+   auto startpt_rep = WBFL::DManip::PointDisplayObject::Create();
    startpt_rep->SetPosition(point,FALSE,FALSE);
    startpt_rep->SetID(30000+(*pCurrID)++);
-   CComQIPtr<iConnectable,&IID_iConnectable> start_connectable(startpt_rep);
-   CComPtr<iSocket> start_socket;
-   start_connectable->AddSocket(0,point,&start_socket);
+   auto start_connectable = std::dynamic_pointer_cast<iConnectable>(startpt_rep);
+   auto start_socket = start_connectable->AddSocket(0,point);
    pDL->AddDisplayObject(startpt_rep);
    startpt_rep->Visible(FALSE);
 
@@ -854,53 +765,40 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
       double xloc, yloc;
       GetPointAlongLineSegment(xStart, yStart, xEnd, yEnd, loc, &xloc, &yloc);
 
-      point->put_X(xloc);
-      point->put_Y(yloc);
+      point.Move(xloc, yloc);
 
       // end point display object
-      CComPtr<iPointDisplayObject> endpt_rep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&endpt_rep);
+      auto endpt_rep = WBFL::DManip::PointDisplayObject::Create();
       endpt_rep->SetPosition(point,FALSE,FALSE);
       endpt_rep->SetID(30000+(*pCurrID)++);
-      CComQIPtr<iConnectable,&IID_iConnectable> end_connectable(endpt_rep);
-      CComPtr<iSocket> end_socket;
-      end_connectable->AddSocket(0,point,&end_socket);
+      auto end_connectable = std::dynamic_pointer_cast<iConnectable>(endpt_rep);
+      auto end_socket = end_connectable->AddSocket(0,point);
       pDL->AddDisplayObject(endpt_rep);
       endpt_rep->Visible(FALSE);
 
       // line to represent seg
-      CComPtr<iLineDisplayObject> seg_rep;
-      ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&seg_rep);
+      auto seg_rep = WBFL::DManip::LineDisplayObject::Create();
       seg_rep->SetID(30000+(*pCurrID)++);
 
-      CComPtr<iDrawLineStrategy> ds;
-      seg_rep->GetDrawLineStrategy(&ds);
-      CComPtr<iSimpleDrawLineStrategy> sds;
-      hr = ds->QueryInterface(IID_iSimpleDrawLineStrategy,(void**)&sds);
-      ATLASSERT(SUCCEEDED(hr));
+      auto ds = seg_rep->GetDrawLineStrategy();
+      auto sds = std::dynamic_pointer_cast<WBFL::DManip::SimpleDrawLineStrategy>(ds);
 
       sds->SetColor( colors.Item((int)iseg) );
       sds->SetWidth(5);
 
       // plug in
-      CComQIPtr<iConnector,&IID_iConnector> connector(seg_rep);
+      auto connector = std::dynamic_pointer_cast<iConnector>(seg_rep);
 
-      CComPtr<iPlug> startPlug;
-      connector->GetStartPlug(&startPlug);
+      auto startPlug = connector->GetStartPlug();
+      auto endPlug = connector->GetEndPlug();
 
-      CComPtr<iPlug> endPlug;
-      connector->GetEndPlug(&endPlug);
+      auto startConnectable = std::dynamic_pointer_cast<iConnectable>(startpt_rep);
+      auto socket = startConnectable->GetSocket(0,AccessType::ByIndex);
+      DWORD dwCookie = socket->Connect(startPlug);
 
-      CComQIPtr<iConnectable,&IID_iConnectable> startConnectable(startpt_rep);
-      CComPtr<iSocket> socket;
-      startConnectable->GetSocket(0,atByIndex,&socket);
-      DWORD dwCookie;
-      socket->Connect(startPlug,&dwCookie);
-
-      CComQIPtr<iConnectable,&IID_iConnectable> endConnectable(endpt_rep);
-      socket.Release();
-      endConnectable->GetSocket(0,atByIndex,&socket);
-      socket->Connect(endPlug,&dwCookie);
+      auto endConnectable = std::dynamic_pointer_cast<iConnectable>(endpt_rep);
+      endConnectable->GetSocket(0,AccessType::ByIndex);
+      dwCookie = socket->Connect(endPlug);
 
       CString strToolTip;
       strToolTip.Format(_T("Segment %d"), iseg);
@@ -914,7 +812,7 @@ void BuildSegmentDisplayObjects(CString& Stage, double xStart, double yStart, do
    }
 }
 
-void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr)
+void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
    HRESULT hr;
 
@@ -927,7 +825,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
       m_Legend->ClearEntries();
 
       BOOL show_grid = pDoc->GetShowGrid();
-      m_Graph->put_DoDisplayGrid(show_grid==FALSE ? VARIANT_FALSE:VARIANT_TRUE );
+      m_Graph->DoDisplayGrid(show_grid==FALSE ? VARIANT_FALSE:VARIANT_TRUE );
 
       if (m_FirstSize)
       {
@@ -948,27 +846,23 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
 
       #pragma Reminder("Hack - placing graph in view")
          // assume that column lengths are less than 10% of lbam length
-         CComPtr<IRect2d> graph_bounds;
-         m_Graph->get_GraphBounds(&graph_bounds);
+         auto graph_bounds = m_Graph->GetGraphBounds();
 
          double graph_top = -lbam_length/10.0;
          double graph_bottom = graph_top - lbam_length/2; // 2:1 aspect
 
-         graph_bounds->put_Left(-overhang);
-         graph_bounds->put_Right(lbam_length-overhang);
-         graph_bounds->put_Top(graph_top);
-         graph_bounds->put_Bottom(graph_bottom);
+         graph_bounds.Left() = -overhang;
+         graph_bounds.Right() = lbam_length-overhang;
+         graph_bounds.Top() = graph_top;
+         graph_bounds.Bottom() = graph_bottom;
 
-         CComPtr<IPoint2d> leg_pos;
-         leg_pos.CoCreateInstance(CLSID_Point2d);
-         leg_pos->put_X(lbam_length/2.0);
-         leg_pos->put_Y(graph_top);
+         WBFL::Geometry::Point2d leg_pos(lbam_length/2.0, graph_top);
 
-         m_Legend->put_Position(leg_pos,FALSE,FALSE);
+         m_Legend->SetPosition(leg_pos,FALSE,FALSE);
       }
       // get analysis information
-      CComBSTR curr_stg = pDoc->GetStage();
-      if (curr_stg.Length()==0)
+      CString curr_stg = pDoc->GetStage();
+      if (curr_stg.GetLength()==0)
          return;
 
       BOOL is_cumm = pDoc->GetAccumulateResults();
@@ -982,10 +876,10 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
 
       CComPtr<IIDArray> poilist;
       CComPtr<IDblArray> loclist;
-      hr = poi_utility->GetSuperstructurePois(curr_stg , &poilist, &loclist);
+      hr = poi_utility->GetSuperstructurePois(CComBSTR(curr_stg), &poilist, &loclist);
       PROCESS_HR(hr);
 
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       poilist->get_Count(&poi_cnt);
 
       // remove internally generated pois if asked
@@ -996,7 +890,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
          CComPtr<IDblArray> new_loclist;
          hr = new_loclist.CoCreateInstance(CLSID_DblArray);
 
-         for (CollectionIndexType i=0; i<poi_cnt; i++)
+         for (IndexType i=0; i<poi_cnt; i++)
          {
             PoiIDType poi_id;
             hr = poilist->get_Item(i,&poi_id);
@@ -1047,7 +941,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
          COLORREF color = graph_colors.Item((int)i);
 
          iDataSetBuilder* pbld = pframe->GetDataSetBuilder(i);
-         std::vector<iGraphXyDataProvider*> data_sets;
+         std::vector<std::shared_ptr<iGraphXyDataProvider>> data_sets;
 
          CString cmsg(pbld->GetDescription());
          cmsg = CString(_T("Computing ")) + cmsg;
@@ -1065,15 +959,12 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
          IndexType num_ds = data_sets.size();
          for (IndexType ids=0; ids<num_ds; ids++)
          {
-            iGraphXyDataProvider* pds = data_sets[ids];
+            auto pds = data_sets[ids];
             m_Graph->AddData(pds);
 
-            CComPtr<iDataPointFactory> fac;
-            pds->get_DataPointFactory(&fac);
-            CComQIPtr<iLegendEntry> entry(fac);
+            auto fac = pds->GetDataPointFactory();
+            auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
             m_Legend->AddEntry(entry);
-
-            pds->Release();
          }
 
          // create and set up truck display object if needed for this vehicle
@@ -1081,21 +972,16 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
          {
             has_truck_data = true;
 
-            CComPtr<iDisplayList> pDL;
-            dispMgr->FindDisplayList(TRUCK_LIST,&pDL);
-            ATLASSERT(pDL);
+            auto pDL = dispMgr->FindDisplayList(TRUCK_LIST);
 
-            CComPtr<iDisplayObjectFactory> factory;
-            dispMgr->GetDisplayObjectFactory(0,&factory);
+            auto factory = dispMgr->GetDisplayObjectFactory(0);
 
-            CComPtr<iDisplayObject> disp_obj;
-            factory->Create(CLBAMTruckDisplayImpl::ms_Format,NULL,&disp_obj);
+            auto disp_obj = factory->Create(CLBAMTruckDisplayImpl::ms_Format,NULL);
 
-            CComPtr<iDisplayObjectEvents> sink;
-            disp_obj->GetEventSink(&sink);
+            auto sink = disp_obj->GetEventSink();
 
-            CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> point_disp(disp_obj);
-            CComQIPtr<iLBAMTruckEvents,&IID_iLBAMTruckEvents> truck_events(sink);
+            auto point_disp = std::dynamic_pointer_cast<iPointDisplayObject>(disp_obj);
+            auto truck_events = std::dynamic_pointer_cast<iLBAMTruckEvents>(sink);
 
             LiveLoadModelType model_type;
             VehicleIndexType vehicle_index;
@@ -1105,7 +991,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
             truck_events->Init(point_disp, pDoc->m_pModel, model_type, vehicle_index, placement );
             truck_events->SetRoadwayElevation(point_disp, m_RoadwayElevation);
 
-            CComQIPtr<iLBAMTruckDrawStrategy,&IID_iLBAMTruckDrawStrategy> truck_strat(truck_events);
+            auto truck_strat = std::dynamic_pointer_cast<iLBAMTruckDrawStrategy>(truck_events);
             truck_strat->SetColor(color);
 
             pDL->AddDisplayObject(disp_obj);
@@ -1115,32 +1001,25 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr
       prog_mon->put_GaugeValue(pDoc->m_LoadCombinationCookie,100);
 
       // size legend to fit entry texts
-      CSize size;
-      m_Legend->GetMinCellSize(&size);
+      auto size = m_Legend->GetMinCellSize();
       size.cy += 60; // expand a bit (twips) to give border buffer
-      m_Legend->put_CellSize(size);
+      m_Legend->SetCellSize(size);
 
-      hr = m_Graph->Commit();
-      PROCESS_HR(hr);
-
+      m_Graph->Commit();
    }
    catch(HRESULT hr)
    {
       if (hr==S_FALSE)
       {
          // analysis was cancelled - clear graph objects
-         hr = m_Graph->ClearData();
-         PROCESS_HR(hr);
-         hr = m_Graph->Commit();
-         PROCESS_HR(hr);
+         m_Graph->ClearData();
+         m_Graph->Commit();
 
          m_Legend->ClearEntries();
 
          if (has_truck_data)
          {
-            CComPtr<iDisplayList> pDL;
-            dispMgr->FindDisplayList(TRUCK_LIST,&pDL);
-            ATLASSERT(pDL);
+            auto pDL = dispMgr->FindDisplayList(TRUCK_LIST);
             pDL->Clear();
          }
       }
@@ -1163,13 +1042,11 @@ void CLBAMViewerView::DealWithExceptions()
    catch (CString& rstring)
    {
       // clear out display lists and display a message
-      CComPtr<iDisplayMgr> dispMgr;
-      GetDisplayMgr(&dispMgr);
-      CollectionIndexType cnt = dispMgr->GetDisplayListCount();
-      for (CollectionIndexType i=0; i<cnt; i++)
+      auto dispMgr = GetDisplayMgr();
+      IndexType cnt = dispMgr->GetDisplayListCount();
+      for (IndexType i=0; i<cnt; i++)
       {
-         CComPtr<iDisplayList> pDL;
-         dispMgr->GetDisplayList(i,&pDL);
+         auto pDL = dispMgr->GetDisplayList(i);
          pDL->Clear();
       }
 
@@ -1201,16 +1078,14 @@ void CLBAMViewerView::DealWithExceptions()
    }
 }
 
-void CLBAMViewerView::ClearTruckData(iDisplayMgr* dispMgr)
+void CLBAMViewerView::ClearTruckData(std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr)
 {
    // clean out truck placement data
 
    if (dispMgr!=NULL)
    {
       // clear truck display list
-      CComPtr<iDisplayList> pDL;
-      dispMgr->FindDisplayList(TRUCK_LIST,&pDL);
-      ATLASSERT(pDL);
+      auto pDL = dispMgr->FindDisplayList(TRUCK_LIST);
       pDL->Clear();
    }
 }
@@ -1225,8 +1100,7 @@ void CLBAMViewerView::OnSize(UINT nType, int cx, int cy)
       CRect rect;
       this->GetClientRect(&rect);
 
-      CComPtr<iDisplayMgr> dispMgr;
-      GetDisplayMgr(&dispMgr);
+      auto dispMgr = GetDisplayMgr();
 
       SetLogicalViewRect(MM_TEXT,rect);
 

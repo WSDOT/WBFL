@@ -35,7 +35,7 @@ namespace WBFL
       /// @brief Uses a shape to define the boundaries of a gravity well
       class DMANIPCLASS ShapeGravityWellStrategy : public iGravityWellStrategy
       {
-      private:
+      protected:
          ShapeGravityWellStrategy(std::shared_ptr<WBFL::Geometry::Shape> shape);
 
       public:

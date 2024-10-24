@@ -44,8 +44,10 @@ namespace WBFL
          public InplaceEditableDefaultImpl,
          public iTextBlock
       {
-      private:
+      protected:
          EditableTextBlock(IDType id);
+
+      private:
          void Init();
 
       public:

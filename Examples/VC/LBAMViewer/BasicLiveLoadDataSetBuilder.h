@@ -23,11 +23,11 @@ public:
 	virtual ~BasicLiveLoadDataSetBuilder();
 
    // iDataSetBuilder
-   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
+   virtual void BuildDataSets(IIDArray* poilist, IDblArray* loclist, const CString& currStg,
                              CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                             COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
+                             COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets);
 
-   virtual long ColorDemand(BSTR currStg, CLBAMViewerDoc::ResponseType curr_rt)
+   virtual long ColorDemand(const CString& currStg, CLBAMViewerDoc::ResponseType curr_rt)
    {
       return 1;
    }
@@ -40,18 +40,18 @@ public:
                                     std::_tostream& pos);
 
 
-   // indicate whether a truck placement is assocatiated with data set
+   // indicate whether a truck placement is associated with data set
    virtual bool HasTruckPlacement();
    virtual void GetTruckInfo(LiveLoadModelType* modelType, VehicleIndexType* vehicleIndex, ILiveLoadConfiguration** placement);
 
 private:
    void BuildForceDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
                            CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
+                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets);
 
    void BuildStressDataSets(IIDArray* poilist, IDblArray* loclist, BSTR currStg,
                             CLBAMViewerDoc::ResponseType curr_rt, ResultsSummationType summ_type,
-                            COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets);
+                            COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets);
 
 
 	BasicLiveLoadDataSetBuilder();

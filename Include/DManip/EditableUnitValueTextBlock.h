@@ -54,7 +54,7 @@ namespace WBFL
          public iTextBlock,
          public InplaceEditableDefaultImpl
       {
-      private:
+      protected:
          EditableUnitValueTextBlock(const T& indirectMeasure,IDType id) : m_IndirectMeasure(indirectMeasure), iTextBlock(id)
          {
             m_EditableTextBlock = EditableTextBlock::Create();
@@ -62,6 +62,7 @@ namespace WBFL
             m_pctlUnitTag = std::make_unique<CStatic>();
          }
 
+      private:
          void Init()
          {
             m_EventRelay = NestedDisplayObjectEventRelay::Create(this);

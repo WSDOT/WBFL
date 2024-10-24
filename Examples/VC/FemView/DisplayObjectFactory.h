@@ -7,25 +7,22 @@
 // DisplayObjectFactory.h : header file
 //
 
+using namespace WBFL::DManip;
+
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayObjectFactory command target
 
-class CDisplayObjectFactory : public CCmdTarget
+class CDisplayObjectFactory : public iDisplayObjectFactory
 {
 public:
 	CDisplayObjectFactory(CFEA2DDoc* pDoc);
    ~CDisplayObjectFactory();
 
-   DECLARE_INTERFACE_MAP()
-
-   // iDisplayObjectFactory Implementation
-   BEGIN_INTERFACE_PART(Factory,iDisplayObjectFactory)
-      STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj);
-   END_INTERFACE_PART(Factory)
+   virtual std::shared_ptr<iDisplayObject> Create(CLIPFORMAT cfFormat, COleDataObject* pDataObject) const;
 
 private:
-   CComPtr<iDisplayObjectFactory> m_Factory;
    CFEA2DDoc* m_pDoc;
+   std::shared_ptr<DisplayObjectFactory> m_Factory;
 };
 
 /////////////////////////////////////////////////////////////////////////////

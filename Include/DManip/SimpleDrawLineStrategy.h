@@ -35,7 +35,7 @@ namespace WBFL
       /// @brief Line drawing strategy that draws a basic line
       class DMANIPCLASS SimpleDrawLineStrategy : public iDrawLineStrategy
       {
-      private:
+      protected:
          SimpleDrawLineStrategy() = default;
 
       public:

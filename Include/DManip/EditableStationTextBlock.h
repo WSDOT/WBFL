@@ -40,8 +40,10 @@ namespace WBFL
          public InplaceEditableDefaultImpl,
          public iTextBlock
       {
-      private:
+      protected:
          EditableStationTextBlock(IDType id);
+
+      private:
          void Init();
          std::_tstring AsString() const;
 

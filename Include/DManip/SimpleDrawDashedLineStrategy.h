@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief A line drawing strategy that draws a line dashed with two colors
       class DMANIPCLASS SimpleDrawDashedLineStrategy : public iDrawLineStrategy
       {
-      private:
+      protected:
          SimpleDrawDashedLineStrategy() = default;
 
       public:

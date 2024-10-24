@@ -21,11 +21,6 @@
 #include <WBFLLBAMLiveLoader_i.c>
 #include <WBFLLBAMUtility_i.c>
 #include <WBFLLBAMAnalysisUtility_i.c>
-#include <DManip\DManip_clsid.cpp>
 #include "LBAMViewer_i.c"
 #include "LBAMTruckDrawStrategy.h"
 #include "LBAMTruckEvents.h"
-#include <WBFLDManip.h>
-#include <WBFLDManip_i.c>
-#include <WBFLDManipTools.h>
-#include <WBFLDManipTools_i.c>

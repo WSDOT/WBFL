@@ -4,7 +4,13 @@
 #include "LBAMTruckDrawStrategy.h"
 #include "LBAMTruckEvents.h"
 
-class CLBAMTruckDisplayImpl : public CCmdTarget
+class CLBAMTruckDisplayImpl : 
+   public CCmdTarget,
+   public iLBAMTruckDrawStrategy, 
+   public iLBAMTruckEvents, 
+   public WBFL::DManip::iDrawPointStrategy, 
+   public WBFL::DManip::iDisplayObjectEvents,
+   public WBFL::DManip::iDragData
 {
 public:
    CLBAMTruckDisplayImpl();
@@ -12,49 +18,40 @@ public:
 
    DECLARE_INTERFACE_MAP()
 
-   BEGIN_INTERFACE_PART(Strategy,iLBAMTruckDrawStrategy)
-      STDMETHOD_(void,SetColor)(COLORREF color);
-   END_INTERFACE_PART(Strategy)
+   void SetColor(COLORREF color) override;
 
-   BEGIN_INTERFACE_PART(Events,iLBAMTruckEvents)
-      STDMETHOD_(void,Init)(iPointDisplayObject* pDO,ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement);
-      STDMETHOD_(void,GetLiveLoadConfiguration)(ILiveLoadConfiguration** dispObj);
-		STDMETHOD_(void,GetRoadwayElevation)(double *pVal);
-		STDMETHOD_(void,SetRoadwayElevation)(iPointDisplayObject* pDO, double newVal);
-   END_INTERFACE_PART(Events)
+   void Init(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex, ILiveLoadConfiguration* placement) override;
+   void GetLiveLoadConfiguration(ILiveLoadConfiguration** dispObj) override;
+	void GetRoadwayElevation(double *pVal) override;
+	void SetRoadwayElevation(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, double newVal) override;
 
-   BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
-      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
-      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint);
-      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** box);
-   END_INTERFACE_PART(DrawPointStrategy)
+   void Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC) const override;
+   void DrawDragImage(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const WBFL::DManip::iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const override;
+   void DrawHighlight(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC, bool bHighlite) const override;
+   WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const override;
 
-   BEGIN_INTERFACE_PART(DisplayObjectEvents,iDisplayObjectEvents)
-      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
-   END_INTERFACE_PART(DisplayObjectEvents)
+   // iDisplayObjectEvents Implementation
+   void OnChanged(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO) override;
+   void OnDragMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset) override;
+   bool OnLButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDblClk(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonUp(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseMove(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseWheel(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nFlags, short zDelta, const POINT& point) override;
+   void OnMoved(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO) override;
+   void OnCopied(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO) override;
+   bool OnKeyDown(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   bool OnContextMenu(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, CWnd* pWnd, const POINT& point) override;
+   void OnSelect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO) override;
+   void OnUnselect(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO) override;
 
    // iDragData Implementation
-   BEGIN_INTERFACE_PART(DragData,iDragData)
-      STDMETHOD_(UINT,Format)();
-      STDMETHOD_(BOOL,PrepareForDrag)(iDisplayObject* pDO,iDragDataSink* pSink);
-      STDMETHOD_(void,OnDrop)(iDisplayObject* pDO,iDragDataSource* pSource);
-   END_INTERFACE_PART(DragData)
+   UINT Format() override;
+   bool PrepareForDrag(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, std::shared_ptr<WBFL::DManip::iDragDataSink> pSink) override;
+   void OnDrop(std::shared_ptr<WBFL::DManip::iDisplayObject> pDO, std::shared_ptr<WBFL::DManip::iDragDataSource> pSource) override;
 
    BEGIN_INTERFACE_PART(LiveLoadEvents,ILiveLoadConfigurationEvents)
       STDMETHOD_(HRESULT,OnLiveLoadConfigurationChanged)(ILiveLoadConfiguration* placement);
@@ -79,7 +76,7 @@ public:
    static UINT ms_Format;
 
 public:
-   virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color, IPoint2d* loc);
+   void Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,COLORREF color, const WBFL::Geometry::Point2d& loc) const;
    COLORREF m_Color;
 
    CComPtr<ILiveLoadConfiguration> m_Placement;
@@ -89,17 +86,17 @@ public:
    double                           m_RoadwayElevation;
 
    // dirty flag and Compute function
-   bool m_Dirty;
-   void Compute(iPointDisplayObject* pDO);
+   mutable bool m_Dirty;
+   void Compute(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const;
 
    // cached truck parameters
-   void CacheTruckParameters();
-   void UpdateTruckPosition(iPointDisplayObject* pDO, double location);
-   std::vector<double> m_AxleLocations;  // axle locations relative to first axle
-   std::vector<bool>   m_ActiveAxles;
-   double              m_WheelDiameter;
-   double              m_CabHeight;
-   double              m_TrailerHeight;
+   void CacheTruckParameters() const;
+   void UpdateTruckPosition(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, double location) const;
+   mutable std::vector<double> m_AxleLocations;  // axle locations relative to first axle
+   mutable std::vector<BOOL>   m_ActiveAxles;
+   mutable double              m_WheelDiameter;
+   mutable double              m_CabHeight;
+   mutable double              m_TrailerHeight;
 
 };
 

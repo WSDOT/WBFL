@@ -3,32 +3,25 @@
 
 #include "TemporarySupportDrawStrategy.h"
 
-class CTemporarySupportDrawStrategyImpl : public CCmdTarget
+class CTemporarySupportDrawStrategyImpl : public iTemporarySupportDrawStrategy, public WBFL::DManip::iDrawPointStrategy
 {
 public:
    CTemporarySupportDrawStrategyImpl(CLBAMViewerDoc* pDoc);
 
 
-   DECLARE_INTERFACE_MAP()
+   void SetTemporarySupport(ITemporarySupport* jnt, IDType supportID) override;
 
-   BEGIN_INTERFACE_PART(Strategy,iTemporarySupportDrawStrategy)
-      STDMETHOD_(void,SetTemporarySupport)(ITemporarySupport* jnt, IDType supportID);
-   END_INTERFACE_PART(Strategy)
-
-   BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
-      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
-      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint);
-      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d**box);
-   END_INTERFACE_PART(DrawPointStrategy)
+   void Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC) const override;
+   void DrawDragImage(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const WBFL::DManip::iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const override;
+   void DrawHighlight(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO, CDC* pDC, bool bHighlite) const override;
+   WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const override;
 
 private:
    CLBAMViewerDoc* m_pDoc;
    CComPtr<ITemporarySupport> m_Support;
    IDType                       m_SupportID;
 
-   virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
-
+   virtual void Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const;
 };
 
 #endif // INCLUDED_SUPPORTDRAWSTRATEGYIMPL_H_

@@ -40,7 +40,7 @@ namespace WBFL
          public iDraggable,
          public Connectable<DisplayObjectDefaultImpl>
       {
-      private:
+      protected:
          PointDisplayObject(IDType id);
 
       public:

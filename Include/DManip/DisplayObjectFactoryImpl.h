@@ -36,7 +36,7 @@ namespace WBFL
       /// Creates LegendDisplayObject instances
       class DMANIPCLASS DisplayObjectFactory : public iDisplayObjectFactory
       {
-      private:
+      protected:
          DisplayObjectFactory() = default;
 
       public:

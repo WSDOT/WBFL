@@ -9,46 +9,42 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class CMemberDropSite : public CCmdTarget  
+using namespace WBFL::DManip;
+
+class CMemberDropSite : public iDisplayObjectEvents, public iDropSite
 {
 public:
 	CMemberDropSite(CFEA2DDoc* pDoc);
 	virtual ~CMemberDropSite();
 
-   DECLARE_INTERFACE_MAP()
-
    // iDisplayObjectEvents Implementation
-   BEGIN_INTERFACE_PART(DisplayObjectEvents,iDisplayObjectEvents)
-      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
-   END_INTERFACE_PART(DisplayObjectEvents)
+   void OnChanged(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset) override;
+   bool OnKeyDown(std::shared_ptr<iDisplayObject> pDO, UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   bool OnContextMenu(std::shared_ptr<iDisplayObject> pDO, CWnd* pWnd, const POINT& point) override;
+   bool OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseMove(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseWheel(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, short zDelta, const POINT& point) override;
+   void OnMoved(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnCopied(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnSelect(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnUnselect(std::shared_ptr<iDisplayObject> pDO) override;
 
-   BEGIN_INTERFACE_PART(DropSite,iDropSite)
-      STDMETHOD_(DROPEFFECT,CanDrop)(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point);
-      STDMETHOD_(void,OnDropped)(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point);
-      STDMETHOD_(void,SetDisplayObject)(iDisplayObject* pDO);
-      STDMETHOD_(void,GetDisplayObject)(iDisplayObject** dispObj);
-      STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite);
-   END_INTERFACE_PART(DropSite)
+   // iDropSite
+   DROPEFFECT CanDrop(COleDataObject* pDataObject, DWORD dwKeyState, const WBFL::Geometry::Point2d& point) override;
+   void OnDropped(COleDataObject* pDataObject, DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point) override;
+   void SetDisplayObject(std::weak_ptr<iDisplayObject> pDO) override;
+   std::shared_ptr<iDisplayObject> GetDisplayObject() override;
+   void Highlight(CDC* pDC, BOOL bHighlight) override;
 
 private:
    CFEA2DDoc* m_pDoc;
-   // weak reference
-   iDisplayObject* m_DispObj;
+   std::weak_ptr<iDisplayObject> m_DispObj;
 
    void DeleteMember(IDType mbrID);
    void EditMember(IDType mbrID);

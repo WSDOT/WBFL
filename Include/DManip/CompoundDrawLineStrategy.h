@@ -35,8 +35,9 @@ namespace WBFL
       /// An example is drawing a simple line as well as a rectangular representation of the line
       class DMANIPCLASS CompoundDrawLineStrategy : public iDrawLineStrategy
       {
-      private:
+      protected:
          CompoundDrawLineStrategy() = default;
+
       public:
          static std::shared_ptr<CompoundDrawLineStrategy> Create() { return std::shared_ptr<CompoundDrawLineStrategy>(new CompoundDrawLineStrategy()); }
 	      virtual ~CompoundDrawLineStrategy() = default;

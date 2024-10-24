@@ -36,7 +36,7 @@ namespace WBFL
       class DMANIPCLASS SimpleDrawPointStrategy :
          public iDrawPointStrategy
       {
-      private:
+      protected:
          SimpleDrawPointStrategy() = default;
 
       public:

@@ -23,8 +23,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CMemberDropSite::CMemberDropSite(CFEA2DDoc* pDoc):
-m_DispObj(0)
+CMemberDropSite::CMemberDropSite(CFEA2DDoc* pDoc)
 {
    m_pDoc = pDoc;
 }
@@ -34,52 +33,39 @@ CMemberDropSite::~CMemberDropSite()
 
 }
 
-BEGIN_INTERFACE_MAP(CMemberDropSite,CCmdTarget)
-   INTERFACE_PART(CMemberDropSite,IID_iDisplayObjectEvents,DisplayObjectEvents)
-   INTERFACE_PART(CMemberDropSite,IID_iDropSite,DropSite)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CMemberDropSite,DisplayObjectEvents);
-DELEGATE_CUSTOM_INTERFACE(CMemberDropSite,DropSite);
-
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CMemberDropSite::OnChanged(std::shared_ptr<iDisplayObject> pDO)
 {
    ASSERT(FALSE); // Member display objects don't have internal data that can be changed
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
+void CMemberDropSite::OnDragMoved(std::shared_ptr<iDisplayObject> pDO,const WBFL::Geometry::Size2d& offset)
 {
    ASSERT(FALSE); // Member shouldn't get moved
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
+void CMemberDropSite::OnMoved(std::shared_ptr<iDisplayObject> pDO)
 {
    ASSERT(FALSE); // Member shouldn't get moved
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CMemberDropSite::OnCopied(std::shared_ptr<iDisplayObject> pDO)
 {
    ASSERT(FALSE); // Member shouldn't get copied
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
-
    // Member got double clicked on... Display its editing dialog
    IDType id = pDO->GetID();
-   pThis->EditMember(id);
+   EditMember(id);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnLButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
-
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto list = pDO->GetDisplayList();
+   auto dispMgr = list->GetDisplayMgr();
 
    // If control key is pressed, don't clear current selection
    // (i.e. we want multi-select)
@@ -88,7 +74,7 @@ STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonDown(iDispla
    if ( bMultiSelect )
    {
       // clear all selected objects that aren't part of the member list
-      dispMgr->ClearSelectedObjectsByList(MBR_LIST,atByID,FALSE);
+      dispMgr->ClearSelectedObjectsByList(MBR_LIST,AccessType::ByID,FALSE);
    }
 
    dispMgr->SelectObject(pDO,!bMultiSelect);
@@ -96,156 +82,121 @@ STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonDown(iDispla
    return true;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnRButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnRButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnLButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CMemberDropSite::OnMouseMove(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CMemberDropSite::OnMouseWheel(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CMemberDropSite::OnSelect(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
-
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
-
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto list = pDO->GetDisplayList();
+   auto dispMgr = list->GetDisplayMgr();
 
    // Create a dimension line display object with in-place editable text
    // 1. Get the sockets for the line display object that represents the member
-   CComQIPtr<iConnector,&IID_iConnector> connector(pDO);
-   CComPtr<iPlug> startPlug;
-   CComPtr<iPlug> endPlug;
-   connector->GetStartPlug(&startPlug);
-   connector->GetEndPlug(&endPlug);
+   auto connector = std::dynamic_pointer_cast<iConnector>(pDO);
+   auto startPlug = connector->GetStartPlug();
+   auto endPlug = connector->GetEndPlug();
 
-   CComPtr<iSocket> startSocket;
-   CComPtr<iSocket> endSocket;
-   startPlug->GetSocket(&startSocket);
-   endPlug->GetSocket(&endSocket);
+   auto startSocket = startPlug->GetSocket();
+   auto endSocket = endPlug->GetSocket();
 
    // 2. Create the dimension line display object
    //    Hook onto its connector interface
-   CComPtr<iDimensionLine> dimLine;
-   ::CoCreateInstance(CLSID_DimensionLineDisplayObject,NULL,CLSCTX_ALL,IID_iDimensionLine,(void**)&dimLine);
-   connector.Release();
-   dimLine->QueryInterface(IID_iConnector,(void**)&connector);
+   auto dimLine = DimensionLine::Create();
+   connector = std::dynamic_pointer_cast<iConnector>(dimLine);
 
    // 3. Attach its plugs to the same sockets the line display object is using
-   startPlug.Release();
-   endPlug.Release();
-   connector->GetStartPlug(&startPlug);
-   connector->GetEndPlug(&endPlug);
+   startPlug = connector->GetStartPlug();
+   endPlug = connector->GetEndPlug();
 
    DWORD dwCookie;
-   startSocket->Connect(startPlug,&dwCookie);
-   endSocket->Connect(endPlug,&dwCookie);
+   dwCookie = startSocket->Connect(startPlug);
+   dwCookie = endSocket->Connect(endPlug);
 
    // 4. Attach an inplace editable text block to the dimension line
-   CComPtr<iEditableTextBlock> textBlock;
-   ::CoCreateInstance(CLSID_EditableTextBlock,NULL,CLSCTX_ALL,IID_iEditableTextBlock,(void**)&textBlock);
+   auto textBlock = EditableTextBlock::Create();
    dimLine->SetTextBlock(textBlock);
    dimLine->EnableAutoText(TRUE);
 
    // 5. Create an event sink and attach it to the dimension line
-   CEditMbrLength* pEdit = new CEditMbrLength(pThis->m_pDoc);
-   CComPtr<iDisplayObjectEvents> pDOE = (iDisplayObjectEvents*)pEdit->GetInterface(&IID_iDisplayObjectEvents);
-   dimLine->RegisterEventSink(pDOE);
+   auto pEdit = std::make_shared<CEditMbrLength>(m_pDoc);
+   dimLine->RegisterEventSink(pEdit);
 
    // 6. Assign the member ID to the dimension line display object
    IDType mbrID = pDO->GetID();
    dimLine->SetID(mbrID);
 
    // 7. Add the new display object to the display
-   dispMgr->AddDisplayObject(dimLine,DIMLINE_LIST,atByID);
+   dispMgr->AddDisplayObject(dimLine,DIMLINE_LIST,AccessType::ByID);
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CMemberDropSite::OnUnselect(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
+   auto list = pDO->GetDisplayList();
+   auto dispMgr = list->GetDisplayMgr();
 
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
-
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
-
-   list.Release();
-   dispMgr->FindDisplayList(DIMLINE_LIST,&list);
+   list = dispMgr->FindDisplayList(DIMLINE_LIST);
    list->Clear();
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CMemberDropSite::OnKeyDown(std::shared_ptr<iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
-
    IDType id = pDO->GetID();
    switch (nChar)
    {
    case VK_RETURN:
-      pThis->EditMember(id);
+      EditMember(id);
       break;
 
    case VK_DELETE:
-      pThis->DeleteMember(id);
+      DeleteMember(id);
       break;
    }
 
    return true;
 }
 
-STDMETHODIMP_(bool) CMemberDropSite::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CMemberDropSite::OnContextMenu(std::shared_ptr<iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(DROPEFFECT) CMemberDropSite::XDropSite::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point)
+DROPEFFECT CMemberDropSite::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DropSite);
-
    // Was a tool dragged over the member?
-   CComPtr<iTool> tool;
-   ::CoCreateInstance(CLSID_Tool,NULL,CLSCTX_ALL,IID_iTool,(void**)&tool);
-   CComQIPtr<iDraggable,&IID_iDraggable> draggable(tool);
+   auto tool = Tool::Create();
 
-   if ( pDataObject->IsDataAvailable( draggable->Format() ) )
+   if ( pDataObject->IsDataAvailable( tool->Format() ) )
    {
-      CComPtr<iDragDataSource> source;
-      ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+      auto source = DragDataSource::Create();
       source->SetDataObject(pDataObject);
-      draggable->OnDrop(source); // Rebuild the tool object from the data object
+      tool->OnDrop(source); // Rebuild the tool object from the data object
 #pragma Reminder("Use a factory for the line above")
       if ( tool->GetID() == IDC_CONCLOAD_TOOL )
          return DROPEFFECT_MOVE;
@@ -261,10 +212,8 @@ STDMETHODIMP_(DROPEFFECT) CMemberDropSite::XDropSite::CanDrop(COleDataObject* pD
    return DROPEFFECT_NONE;
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
+void CMemberDropSite::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DropSite);
-
    // Something was dropped on a display object that represents a member
    // in the fem model. We know that, because this object is a drop site
    // for just such a situation.
@@ -272,17 +221,14 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
    // Let's see what was dropped
 
    // Was it a tool from the palette?
-   CComPtr<iTool> tool;
-   ::CoCreateInstance(CLSID_Tool,NULL,CLSCTX_ALL,IID_iTool,(void**)&tool);
-   CComQIPtr<iDraggable,&IID_iDraggable> draggable(tool);
-   if ( pDataObject->IsDataAvailable(draggable->Format()) )
+   auto tool = Tool::Create();
+   if ( pDataObject->IsDataAvailable(tool->Format()) )
    {
       // Yes, but which one?
-      CComPtr<iDragDataSource> source;
-      ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+      auto source = DragDataSource::Create();
       source->SetDataObject(pDataObject);
 
-      draggable->OnDrop(source); // Rebuild the tool object from the data object
+      tool->OnDrop(source); // Rebuild the tool object from the data object
 #pragma Reminder("Use a factory for the line above")
 
       // Was it the concentrated load tool?
@@ -292,11 +238,10 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
 
          // An Add Point Load tool was dropped. Create a new point load
          // on the member the tool was dropped on.
-         CComPtr<iDisplayObject> pDispObj;
-         GetDisplayObject(&pDispObj);
+         auto pDispObj = GetDisplayObject();
          IDType mbrID = pDispObj->GetID();
 
-         CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
+         CComPtr<IFem2dModel> model = m_pDoc->m_Model;
          CAddPointLoadDlg dlg(model,TRUE);
 
          dlg.m_MbrID = mbrID;
@@ -335,27 +280,23 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
       //////////////// BEGIN HERE
       // This code should be handed by a factory
 #pragma Reminder("Use a factory object for this")
-      CComPtr<iPointDisplayObject> loadRep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&loadRep);
+      auto loadRep = PointDisplayObject::Create();
 
       // Associate a drag data object with it
-      CPointLoadEventsImpl* pEvents = new CPointLoadEventsImpl(pThis->m_pDoc);
-      CComQIPtr<iDragData,&IID_iDragData> dd(pEvents->GetInterface(&IID_IUnknown));
-      CComQIPtr<iDraggable,&IID_iDraggable> draggable(loadRep);
-      draggable->SetDragData(dd);
+      auto pEvents = std::make_shared<CPointLoadEventsImpl>(m_pDoc);
+      loadRep->SetDragData(pEvents);
 
       // create a data source and associate the data object with it
-      CComPtr<iDragDataSource> source;
-      ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+      auto source = DragDataSource::Create();
       source->SetDataObject(pDataObject);
 
       // rebuild the display object from the data source
-      draggable->OnDrop(source);
+      loadRep->OnDrop(source);
       //////////////// END HERE
 
       // Create a new load in the fem model
       CComPtr<IFem2dLoadingCollection> loadings;
-      pThis->m_pDoc->m_Model->get_Loadings(&loadings);
+      m_pDoc->m_Model->get_Loadings(&loadings);
       CComPtr<IFem2dLoading> loading;
       loadings->Find(pEvents->m_Loading,&loading);
       if ( loading == NULL )
@@ -371,7 +312,7 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
       try
       {
          CComPtr<IFem2dPointLoad> ptLoad;
-         ptLoads->Create(id,pThis->m_DispObj->GetID(),pEvents->m_Location,pEvents->m_Fx,pEvents->m_Fy,pEvents->m_Mz, pEvents->m_Orientation,&ptLoad);
+         ptLoads->Create(id,m_DispObj.lock()->GetID(), pEvents->m_Location, pEvents->m_Fx, pEvents->m_Fy, pEvents->m_Mz, pEvents->m_Orientation, &ptLoad);
       }
       //catch(_com_error& error)
       //{
@@ -387,23 +328,19 @@ STDMETHODIMP_(void) CMemberDropSite::XDropSite::OnDropped(COleDataObject* pDataO
    }
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDropSite::SetDisplayObject(iDisplayObject* pDO)
+void CMemberDropSite::SetDisplayObject(std::weak_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DropSite);
-   pThis->m_DispObj = pDO;
+   m_DispObj = pDO;
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDropSite::GetDisplayObject(iDisplayObject** dispObj)
+std::shared_ptr<iDisplayObject> CMemberDropSite::GetDisplayObject()
 {
-   METHOD_PROLOGUE(CMemberDropSite,DropSite);
-   *dispObj = pThis->m_DispObj;
-   (*dispObj)->AddRef();
+   return m_DispObj.lock();
 }
 
-STDMETHODIMP_(void) CMemberDropSite::XDropSite::Highlite(CDC* pDC,BOOL bHighlite)
+void CMemberDropSite::Highlight(CDC* pDC,BOOL bHighlite)
 {
-   METHOD_PROLOGUE(CMemberDropSite,DropSite);
-   pThis->m_DispObj->Highlite(pDC,bHighlite);
+   m_DispObj.lock()->Highlight(pDC, bHighlite);
 }
 
 

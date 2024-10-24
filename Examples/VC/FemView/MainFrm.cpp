@@ -6,6 +6,8 @@
 
 #include "MainFrm.h"
 
+using namespace WBFL::DManip;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -87,8 +89,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.SetBarStyle(m_wndToolBar.GetBarStyle() |
 		CBRS_TOOLTIPS | CBRS_FLYBY);
 
-   CComPtr<iTool> tool;
-   ::CoCreateInstance(CLSID_Tool,NULL,CLSCTX_ALL,IID_iTool,(void**)&tool);
+	auto tool = Tool::Create();
    tool->SetID(IDC_CONCLOAD_TOOL);
    tool->SetToolTipText(_T("Create Point Load"));
    m_wndToolPalette.AddTool(tool);

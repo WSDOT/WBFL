@@ -39,7 +39,7 @@ namespace WBFL
          public iToolIcon,
          public iDraggable
       {
-      private:
+      protected:
          Tool(UINT id) : m_ID(id) {}
       
       public:

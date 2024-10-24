@@ -5,8 +5,9 @@
 #include "stdafx.h"
 #include "lbamviewer.h"
 #include "DistributionFactorDataSetBuilder.h"
-
+#include "GraphXYDisplayObjectImpl.h"
 #include "DataSetUtils.h"
+#include "Legend.h"
 #include <iomanip>
 
 #ifdef _DEBUG
@@ -32,61 +33,50 @@ DistributionFactorDataSetBuilder::~DistributionFactorDataSetBuilder()
 
 }
 
-void DistributionFactorDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void DistributionFactorDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
-   HRESULT hr;
-
    // create dataset 
-   // create dataset 
-   CComPtr<iGraphXyDataProvider> dataset_p;
-   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
+   auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
    // deal with legend
-   CComPtr<iDataPointFactory> fac;
-   dataset_p->get_DataPointFactory(&fac);
-   CComQIPtr<iSymbolLegendEntry> entry(fac);
+   auto fac = dataset_p->GetDataPointFactory();
+   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-   entry->put_Color(color);
-   entry->put_SymbolCharacterCode(187);
-   entry->put_DoDrawLine(TRUE);
+   entry->SetColor(color);
+   entry->SetSymbolCharacterCode(187);
+   entry->DoDrawLine(TRUE);
 
-   CComBSTR btmp("Dist. Factor");
-   entry->put_Name(btmp);
+   entry->SetName(_T("Dist. Factor"));
 
-   CComPtr<iDataSet2d> dataset;
-   dataset_p->get_DataSet(&dataset);
+   auto dataset = dataset_p->GetDataSet();
 
    // need to get information at pois
    CComPtr<ILBAMFactory> poi_utility;
-   hr = poi_utility.CoCreateInstance(CLSID_LRFDFactory);
+   HRESULT hr = poi_utility.CoCreateInstance(CLSID_LRFDFactory);
    PROCESS_HR(hr);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    poiList->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       poiList->get_Item(ip, &poi_id);
       CComPtr<IDistributionFactor> left_df, right_df;
-      HRESULT hr = m_pDfs->GetPOIDistributionFactor(poi_id, currStg, &left_df, &right_df);
+      HRESULT hr = m_pDfs->GetPOIDistributionFactor(poi_id, CComBSTR(currStg), &left_df, &right_df);
       PROCESS_HR(hr);
 
       if (left_df != NULL)
       {
 
          // fill up data set
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
          double loc;
          locList->get_Item(ip, &loc);
-         pnt->put_X(loc);
 
          double val = GetVal(left_df);
-         pnt->put_Y(val);
+
+         WBFL::Geometry::Point2d pnt(loc, val);
          dataset->Add(pnt);
       }
       else
@@ -96,19 +86,16 @@ void DistributionFactorDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArra
       {
 
          // fill up data set
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
          double loc;
          locList->get_Item(ip, &loc);
-         pnt->put_X(loc);
 
          double val = GetVal(right_df);
-         pnt->put_Y(val);
+
+         WBFL::Geometry::Point2d pnt(loc, val);
          dataset->Add(pnt);
       }
    }
-   dataSets->push_back(dataset_p.Detach());
+   dataSets->push_back(dataset_p);
 }
 
 double DistributionFactorDataSetBuilder::GetVal(IDistributionFactor* pdf)

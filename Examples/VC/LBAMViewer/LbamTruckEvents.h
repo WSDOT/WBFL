@@ -2,12 +2,12 @@
 #define INCLUDED_LBAMTRUCKEVENTS_H_
 
 
-interface iLBAMTruckEvents : public IUnknown
+interface iLBAMTruckEvents
 {
-   STDMETHOD_(void,Init)(iPointDisplayObject* pDO, ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex,ILiveLoadConfiguration* placement) PURE;
-   STDMETHOD_(void,GetLiveLoadConfiguration)(ILiveLoadConfiguration** dispObj) PURE;
-	STDMETHOD_(void,GetRoadwayElevation)(double *pVal) PURE;
-	STDMETHOD_(void,SetRoadwayElevation)(iPointDisplayObject* pDO, double newVal) PURE;
+   virtual void Init(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex,ILiveLoadConfiguration* placement) = 0;
+   virtual void GetLiveLoadConfiguration(ILiveLoadConfiguration** dispObj) = 0;
+	virtual void GetRoadwayElevation(double *pVal) = 0;
+	virtual void SetRoadwayElevation(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, double newVal) = 0;
 };
 
 #endif // INCLUDED_LBAMTruckEVENTS_H_

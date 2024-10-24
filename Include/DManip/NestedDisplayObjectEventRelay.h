@@ -39,7 +39,7 @@ namespace WBFL
       /// This object breaks the circular dependency.
       class NestedDisplayObjectEventRelay : public iDisplayObjectEvents
       {
-      private:
+      protected:
          NestedDisplayObjectEventRelay(DisplayObjectDefaultImpl* parent);
 
       public:

@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief A point drawing strategy that draws a surveyor's target symbol
       class DMANIPCLASS TargetDrawStrategy :  public iDrawPointStrategy
       {
-      private:
+      protected:
          TargetDrawStrategy() = default;
 
       public:

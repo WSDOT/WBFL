@@ -9,6 +9,9 @@
 #include "DataSetUtils.h"
 #include <iomanip>
 
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -16,19 +19,19 @@ static char THIS_FILE[]=__FILE__;
 #endif
 
 // free function to fill dataset from combo result
-void FillComboDataSet(ILoadCombinationSectionResults* results, IDblArray* locList, iDataSet2d* dataset, bool isShearForce, bool doFlip)
+void FillComboDataSet(ILoadCombinationSectionResults* results, IDblArray* locList, std::shared_ptr<iDataSet2d> dataset, bool isShearForce, bool doFlip)
 {
    HRESULT hr;
-   CollectionIndexType res_size;
+   IndexType res_size;
    hr = results->get_Count(&res_size);
    PROCESS_HR(hr);
 
    double flip = (doFlip? -1 : 1);
 
-   CollectionIndexType locsiz;
+   IndexType locsiz;
    locList->get_Count(&locsiz);
    ATLASSERT(res_size==locsiz);
-   for (CollectionIndexType ipoi=0; ipoi<res_size; ipoi++)
+   for (IndexType ipoi=0; ipoi<res_size; ipoi++)
    {
       double left_result, right_result;
       ILoadCombinationResultConfiguration** ppDummy=NULL;
@@ -42,23 +45,14 @@ void FillComboDataSet(ILoadCombinationSectionResults* results, IDblArray* locLis
       }
 
       // fill up data set
-      CComPtr<IPoint2d> pnt;
-      hr = pnt.CoCreateInstance(CLSID_Point2d);
-      ATLASSERT(SUCCEEDED(hr));
-
       double loc;
       locList->get_Item(ipoi, &loc);
-      pnt->put_X(loc);
-      pnt->put_Y(left_result);
+      WBFL::Geometry::Point2d pnt(loc, left_result);
       dataset->Add(pnt);
 
       if (right_result!= flip * left_result)
       {
-         CComPtr<IPoint2d> rpnt;
-         hr = rpnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
-         rpnt->put_X(loc);
-         rpnt->put_Y(flip* right_result);
+         WBFL::Geometry::Point2d rpnt(loc, flip * right_result);
          dataset->Add(rpnt);
       }
    }
@@ -81,9 +75,9 @@ LoadCombinationDataSetBuilder::~LoadCombinationDataSetBuilder()
 
 }
 
-void LoadCombinationDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void LoadCombinationDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    if (m_LoadCombination.Length()<=0)
       ATLASSERT(0);
@@ -96,12 +90,12 @@ void LoadCombinationDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* 
    CComPtr<IDblArray> ploc_list;
    if (summType==rsCumulative)
    {
-      CollectionIndexType size;
+      IndexType size;
       poiList->get_Count(&size);
       cumm_poi_list.CoCreateInstance(CLSID_IDArray);
       cumm_loc_list.CoCreateInstance(CLSID_DblArray);
       long new_size=0;
-      for (CollectionIndexType ip=0; ip<size; ip++)
+      for (IndexType ip=0; ip<size; ip++)
       {
          PoiIDType id;
          poiList->get_Item(ip,&id);
@@ -126,19 +120,19 @@ void LoadCombinationDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* 
 
    if (currRt!=CLBAMViewerDoc::rtStress)
    {
-      BuildForceDataSets(arr, ploc_list, currStg, currRt, summType,
+      BuildForceDataSets(arr, ploc_list, CComBSTR(currStg), currRt, summType,
                          color, dataSets);
    }
    else
    {
-      BuildStressDataSets(arr, ploc_list, currStg, currRt, summType,
+      BuildStressDataSets(arr, ploc_list, CComBSTR(currStg), currRt, summType,
                           color, dataSets);
    }
 }
 
 void LoadCombinationDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
 
@@ -183,24 +177,19 @@ void LoadCombinationDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray*
       }
 
       // create dataset 
-      CComPtr<iGraphXyDataProvider> dataset_p;
-      hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-      ATLASSERT(SUCCEEDED(hr));
+      auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
       // deal with legend
-      CComPtr<iDataPointFactory> fac;
-      dataset_p->get_DataPointFactory(&fac);
-      CComQIPtr<iSymbolLegendEntry> entry(fac);
+      auto fac = dataset_p->GetDataPointFactory();
+      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-      entry->put_Color(color);
-      entry->put_SymbolCharacterCode(229);
-      entry->put_DoDrawLine(TRUE);
+      entry->SetColor(color);
+      entry->SetSymbolCharacterCode(229);
+      entry->DoDrawLine(TRUE);
 
-      CComBSTR btmp(str);
-      entry->put_Name(btmp);
+      entry->SetName(str.LockBuffer());
 
-      CComPtr<iDataSet2d> dataset;
-      dataset_p->get_DataSet(&dataset);
+      auto dataset = dataset_p->GetDataSet();
 
       CComPtr<ILoadCombinationSectionResults> srs;
 
@@ -226,17 +215,17 @@ void LoadCombinationDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray*
 
       FillComboDataSet(srs, locList, dataset, currRt==CLBAMViewerDoc::rtFy, do_flip);
 
-      dataSets->push_back(dataset_p.Detach());
+      dataSets->push_back(dataset_p);
    }
 }
 
 void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locList, BSTR currStg,
                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
 
-   CollectionIndexType size;
+   IndexType size;
    locList->get_Count(&size);
 
    if (m_LoadCombination.Length()>0)
@@ -249,7 +238,7 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
       PROCESS_HR(hr);
 
       // loop over each stress point
-      CollectionIndexType isp=0;
+      IndexType isp=0;
       bool loop=true;
       while(loop)
       {
@@ -257,29 +246,24 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
          bool is_results = false;
 
          // create dataset 
-         CComPtr<iGraphXyDataProvider> dataset_p;
-         hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-         ATLASSERT(SUCCEEDED(hr));
+         auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
          // deal with legend
-         CComPtr<iDataPointFactory> fac;
-         dataset_p->get_DataPointFactory(&fac);
-         CComQIPtr<iSymbolLegendEntry> entry(fac);
+         auto fac = dataset_p->GetDataPointFactory();
+         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-         entry->put_Color(color);
-         entry->put_SymbolFontFace(_T("Wingdings2"));
-         entry->put_SymbolCharacterCode(DWORD(116+isp));
-         entry->put_DoDrawLine(TRUE);
+         entry->SetColor(color);
+         entry->SetSymbolFontFace(_T("Wingdings2"));
+         entry->SetSymbolCharacterCode(DWORD(116+isp));
+         entry->DoDrawLine(TRUE);
 
          CString str;
          str.Format(_T("%s SP %d"), m_LoadCombination ,isp);
-         CComBSTR btmp(str);
-         entry->put_Name(btmp);
+         entry->SetName(str.LockBuffer());
 
-         CComPtr<iDataSet2d> dataset;
-         dataset_p->get_DataSet(&dataset);
+         auto dataset = dataset_p->GetDataSet();
 
-         for (CollectionIndexType ipoi=0; ipoi<size; ipoi++)
+         for (IndexType ipoi=0; ipoi<size; ipoi++)
          {
             double loc;
             locList->get_Item(ipoi,&loc);
@@ -291,7 +275,7 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
             double val;
 
             // left side
-            CollectionIndexType cnt;
+            IndexType cnt;
             hr = left_res->get_Count(&cnt);
             PROCESS_HR(hr);
 
@@ -302,11 +286,7 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
 
                hr = left_res->GetResult(isp, &val);
 
-               CComPtr<IPoint2d> pnt;
-               hr = pnt.CoCreateInstance(CLSID_Point2d);
-               ATLASSERT(SUCCEEDED(hr));
-               pnt->put_X(loc);
-               pnt->put_Y(val);
+               WBFL::Geometry::Point2d pnt(loc, val);
                dataset->Add(pnt);
             }
 
@@ -321,11 +301,7 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
 
                hr = right_res->GetResult(isp, &val);
 
-               CComPtr<IPoint2d> pnt;
-               hr = pnt.CoCreateInstance(CLSID_Point2d);
-               ATLASSERT(SUCCEEDED(hr));
-               pnt->put_X(loc);
-               pnt->put_Y(val);
+               WBFL::Geometry::Point2d pnt(loc, val);
                dataset->Add(pnt);
             }
          }
@@ -338,7 +314,7 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
          }
          else
          {
-            dataSets->push_back(dataset_p.Detach());
+            dataSets->push_back(dataset_p);
          }
       }
    }
@@ -415,9 +391,9 @@ void LoadCombinationDataSetBuilder::BuildReactionReport(IIDArray* supportlist, B
 
    ILoadCombinationResultConfiguration* null_config=NULL;
 
-   CollectionIndexType size;
+   IndexType size;
    supportlist->get_Count(&size);
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       hr = fx_min->GetResult(i, &rx, &null_config);
@@ -460,7 +436,7 @@ void LoadCombinationDataSetBuilder::BuildReactionReport(IIDArray* supportlist, B
    }
 
 
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       double rx, ry, rz;
       hr = fx_max->GetResult(i, &rx, &null_config);

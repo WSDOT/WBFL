@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{a517c9b8-2cdf-4dab-8169-e42924f367a7}</ProjectGuid>
+    <ProjectGuid>{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}</ProjectGuid>
     <RootNamespace>DManip</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>WBFLDManip</ProjectName>

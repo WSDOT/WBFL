@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief A display object for a polygon line. The polyline is defined by a sequence of points and is connected by straight lines.
       class DMANIPCLASS PolyLineDisplayObject : public iPolyLineDisplayObject
       {
-      private:
+      protected:
          PolyLineDisplayObject(IDType id);
 
       public:

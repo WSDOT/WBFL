@@ -35,7 +35,7 @@ namespace WBFL
       /// Multiple lines of text can be drawn. Lines must be seperated by \n
       class DMANIPCLASS TextBlock : public iTextBlock
       {
-      private:
+      protected:
          TextBlock(IDType id);
 
       public:

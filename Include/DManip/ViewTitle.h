@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief Draws text as a title on a view. The title is centered on the top of the display view
       class DMANIPCLASS ViewTitle : public DisplayObjectDefaultImpl
       {
-      private:
+      protected:
          ViewTitle(IDType id);
 
       public:

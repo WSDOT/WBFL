@@ -45,8 +45,9 @@ namespace WBFL
          public iDrawPointStrategy,
          public iGravityWellStrategy
       {
-      private:
+      protected:
          ShapeDrawStrategy(std::shared_ptr<const WBFL::Geometry::Shape> shape);
+
       public:
          static std::shared_ptr<ShapeDrawStrategy> Create(std::shared_ptr<const WBFL::Geometry::Shape> shape=nullptr) { return std::shared_ptr<ShapeDrawStrategy>(new ShapeDrawStrategy(shape)); }
          virtual ~ShapeDrawStrategy() = default;

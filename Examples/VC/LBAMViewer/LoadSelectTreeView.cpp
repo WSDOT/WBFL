@@ -468,11 +468,11 @@ void CLoadSelectTreeView::UpdateLoadGroups(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTr
    CComPtr<ILoadGroups> LoadGroups;
    hr = pVDoc->m_pModel->get_LoadGroups(&LoadGroups); // list of LoadGroups in document
 
-   CollectionIndexType nLoadGroups;
+   IndexType nLoadGroups;
    hr = LoadGroups->get_Count(&nLoadGroups);
    if (nLoadGroups != 0)
    {
-      for (CollectionIndexType ilgg=0; ilgg<nLoadGroups; ilgg++)
+      for (IndexType ilgg=0; ilgg<nLoadGroups; ilgg++)
       {
          CComBSTR blg;
          CComPtr<ILoadGroup> LoadGroup;
@@ -502,11 +502,11 @@ void CLoadSelectTreeView::UpdateLoadCases(CLBAMViewerDoc* pVDoc, CTreeCtrl* pTre
    CComPtr<ILoadCases> LoadCases;
    hr = pVDoc->m_pModel->get_LoadCases(&LoadCases); // list of LoadCases in document
 
-   CollectionIndexType nLoadCases;
+   IndexType nLoadCases;
    hr = LoadCases->get_Count(&nLoadCases);
    if (nLoadCases != 0)
    {
-      for (CollectionIndexType ilgg=0; ilgg<nLoadCases; ilgg++)
+      for (IndexType ilgg=0; ilgg<nLoadCases; ilgg++)
       {
          CComBSTR blg;
          CComPtr<ILoadCase> LoadCase;
@@ -536,11 +536,11 @@ void CLoadSelectTreeView::UpdateLoadCombinations(CLBAMViewerDoc* pVDoc, CTreeCtr
    CComPtr<ILoadCombinations> LoadCombinations;
    hr = pVDoc->m_pModel->get_LoadCombinations(&LoadCombinations); // list of LoadCombinations in document
 
-   CollectionIndexType nLoadCombinations;
+   IndexType nLoadCombinations;
    hr = LoadCombinations->get_Count(&nLoadCombinations);
    if (nLoadCombinations != 0)
    {
-      for (CollectionIndexType ilgg=0; ilgg<nLoadCombinations; ilgg++)
+      for (IndexType ilgg=0; ilgg<nLoadCombinations; ilgg++)
       {
          CComBSTR blg;
          CComPtr<ILoadCombination> LoadCombination;
@@ -722,11 +722,11 @@ void CLoadSelectTreeView::UpdatePoiDependentTree(CLBAMViewerDoc* pVDoc, CTreeCtr
    CComPtr<IPOIs> pois;
    hr = pVDoc->m_pModel->get_POIs(&pois); 
 
-   CollectionIndexType npois;
+   IndexType npois;
    hr = pois->get_Count(&npois);
    if (npois != 0)
    {
-      for (CollectionIndexType ipoi=0; ipoi<npois; ipoi++)
+      for (IndexType ipoi=0; ipoi<npois; ipoi++)
       {
          CComPtr<IPOI> poi;
          hr = pois->get_Item(ipoi,&poi);

@@ -36,7 +36,7 @@ namespace WBFL
       /// @brief A draggable legend display object with a context menu that allows the user to dynamically change the arrangement of legend entries
       class DMANIPCLASS LegendDisplayObject : public iLegendDisplayObject, public iDraggable, public iContextMenuCommandCallback
       {
-      private:
+      protected:
          LegendDisplayObject(IDType id);
 
       public:
@@ -103,7 +103,7 @@ namespace WBFL
          WBFL::Geometry::Point2d m_Position;
          std::_tstring m_Title;
          LOGFONT  m_Font;
-         RowIndexType m_nRows = 1;
+         IndexType m_nRows = 1;
          bool     m_bDrawBorder = true;
          bool     m_bFill = true;
          COLORREF m_FillColor = LIGHTYELLOW;

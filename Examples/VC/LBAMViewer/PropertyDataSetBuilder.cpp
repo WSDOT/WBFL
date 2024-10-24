@@ -9,6 +9,9 @@
 #include "DataSetUtils.h"
 #include <iomanip>
 
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -34,43 +37,37 @@ PropertyDataSetBuilder::~PropertyDataSetBuilder()
 
 }
 
-void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
-   HRESULT hr;
-
    // create dataset 
    // create dataset 
-   CComPtr<iGraphXyDataProvider> dataset_p;
-   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
+   auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
    // deal with legend
-   CComPtr<iDataPointFactory> fac;
-   dataset_p->get_DataPointFactory(&fac);
-   CComQIPtr<iSymbolLegendEntry> entry(fac);
+   auto fac = dataset_p->GetDataPointFactory();
+   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-   entry->put_Color(color);
+   entry->SetColor(color);
 
    CComBSTR bstr;
    UINT symbol;
    GetPInfo(m_Type, &symbol, bstr);
-   entry->put_SymbolCharacterCode(symbol);
-   entry->put_DoDrawLine(TRUE);
-   entry->put_Name(bstr);
+   entry->SetSymbolCharacterCode(symbol);
+   entry->DoDrawLine(TRUE);
+   entry->SetName(OLE2T(bstr));
 
-   CComPtr<iDataSet2d> dataset;
-   dataset_p->get_DataSet(&dataset);
+   auto dataset = dataset_p->GetDataSet();
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    poiList->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       poiList->get_Item(ip,&poi_id);
       CComPtr<ISegmentCrossSection> left_cs, right_cs;
-      HRESULT hr = m_pGetCrossSection->GetSegmentCrossSectionAtPOI(poi_id, currStg, &left_cs, &right_cs);
+      HRESULT hr = m_pGetCrossSection->GetSegmentCrossSectionAtPOI(poi_id, CComBSTR(currStg), &left_cs, &right_cs);
       PROCESS_HR(hr);
 
       double xloc;
@@ -81,11 +78,7 @@ void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
          double val = GetVal(left_cs);
 
          // fill up data set
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
-         pnt->put_X(xloc);
-         pnt->put_Y(val);
+         WBFL::Geometry::Point2d pnt(xloc, val);
          dataset->Add(pnt);
       }
       else
@@ -96,15 +89,11 @@ void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
          double val = GetVal(right_cs);
 
          // fill up data set
-         CComPtr<IPoint2d> pnt;
-         hr = pnt.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
-         pnt->put_X(xloc);
-         pnt->put_Y(val);
+         WBFL::Geometry::Point2d pnt(xloc, val);
          dataset->Add(pnt);
       }
    }
-   dataSets->push_back(dataset_p.Detach());
+   dataSets->push_back(dataset_p);
 }
 
 double PropertyDataSetBuilder::GetVal(ISegmentCrossSection* pcs)

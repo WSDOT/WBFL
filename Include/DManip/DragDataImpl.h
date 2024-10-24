@@ -36,7 +36,7 @@ namespace WBFL
       /// @brief A drag data source object implementing the iDragDataSource interface
       class DMANIPCLASS DragDataSource : public iDragDataSource
       {
-      private:
+      protected:
          DragDataSource() = default;
 
       public:

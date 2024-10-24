@@ -34,7 +34,7 @@ namespace WBFL
       /// @brief A display object that is composed from other display objects
       class DMANIPCLASS CompositeDisplayObject : public DisplayObjectDefaultImpl
       {
-      private:
+      protected:
          CompositeDisplayObject(IDType id);
 
       public:

@@ -26,6 +26,8 @@
 #include <DManip/DManipExp.h>
 #include <DManip/DManipTypes.h>
 #include <GeomModel/Primitives.h>
+#include <memory>
+#include <string>
 
 namespace WBFL
 {

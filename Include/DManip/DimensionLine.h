@@ -40,8 +40,10 @@ namespace WBFL
          public DisplayObjectDefaultImpl,
          public Connector<DisplayObjectDefaultImpl>
       {
-      private:
+      protected:
          DimensionLine(IDType id);
+
+      private:
          void Init();
 
       public:

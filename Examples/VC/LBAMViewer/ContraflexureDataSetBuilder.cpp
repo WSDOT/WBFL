@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "lbamviewer.h"
 #include "ContraflexureDataSetBuilder.h"
+#include "GraphXYDisplayObjectImpl.h"
+#include "LegendDisplayObject.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -26,30 +28,25 @@ ContraflexureDataSetBuilder::~ContraflexureDataSetBuilder()
 {
 }
 
-void ContraflexureDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void ContraflexureDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
    // create dataset 
-   CComPtr<iGraphXyDataProvider> dataset_p;
-   hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-   ATLASSERT(SUCCEEDED(hr));
+   auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
    // deal with legend
-   CComPtr<iDataPointFactory> fac;
-   dataset_p->get_DataPointFactory(&fac);
-   CComQIPtr<iSymbolLegendEntry> entry(fac);
+   auto fac = dataset_p->GetDataPointFactory();
+   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-   entry->put_Color(color);
-   entry->put_SymbolCharacterCode(64);
-   entry->put_DoDrawLine(TRUE);
+   entry->SetColor(color);
+   entry->SetSymbolCharacterCode(64);
+   entry->DoDrawLine(TRUE);
 
-   CComBSTR btmp("Contraflexure");
-   entry->put_Name(btmp);
+   entry->SetName(_T("Contraflexure"));
 
-   CComPtr<iDataSet2d> dataset;
-   dataset_p->get_DataSet(&dataset);
+   auto dataset = dataset_p->GetDataSet();
 
    ForceEffectType fet;
    if (currRt==CLBAMViewerDoc::rtFx )
@@ -79,7 +76,7 @@ void ContraflexureDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* lo
    if (currRt==CLBAMViewerDoc::rtFx || currRt==CLBAMViewerDoc::rtFy || currRt==CLBAMViewerDoc::rtMz)
    {
       // forces
-      hr = m_pContraflexureResponse->ComputeContraflexureResponse(currStg, fet, &influence);
+      hr = m_pContraflexureResponse->ComputeContraflexureResponse(CComBSTR(currStg), fet, &influence);
       PROCESS_HR(hr);
    }
 
@@ -90,30 +87,25 @@ void ContraflexureDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* lo
    }
 
    // fill up data set
-   CollectionIndexType cnt;
+   IndexType cnt;
    InfluenceSideType side = ilsBoth;
 
    hr = influence->get_Count(side, &cnt);
    ATLASSERT(SUCCEEDED(hr));
-   for (CollectionIndexType ii=0; ii<cnt; ii++)
+   for (IndexType ii=0; ii<cnt; ii++)
    {
       double value, location;
       InfluenceLocationType itype;
       hr = influence->Item(ii, side, &value, &itype, &location);
       ATLASSERT(SUCCEEDED(hr));
 
-      CComPtr<IPoint2d> pnt;
-      hr = pnt.CoCreateInstance(CLSID_Point2d);
-      ATLASSERT(SUCCEEDED(hr));
-
       if (currRt==CLBAMViewerDoc::rtFy)
          value *= -1;  // beam diagram coordinates
 
-      pnt->put_X(location);
-      pnt->put_Y(value);
+      WBFL::Geometry::Point2d pnt(location, value);
 
       dataset->Add(pnt);
    }
 
-   dataSets->push_back( dataset_p.Detach());
+   dataSets->push_back(dataset_p);
 }

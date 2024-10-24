@@ -15,9 +15,6 @@
 #include "resource.h"       // main symbols
 #include "LBAMViewer_i.h"
 
-#include <WBFLDManip.h>
-#include <WBFLDManipTools.h>
-
 /////////////////////////////////////////////////////////////////////////////
 // CLBAMViewerApp:
 // See LBAMViewer.cpp for the implementation of this class

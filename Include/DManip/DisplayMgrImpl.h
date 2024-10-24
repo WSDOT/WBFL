@@ -42,7 +42,7 @@ namespace WBFL
          public iDisplayListEvents,
          public std::enable_shared_from_this<DisplayMgr>
       {
-      private:
+      protected:
          DisplayMgr() = default;
 
       public:

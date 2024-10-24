@@ -9,6 +9,9 @@
 #include "DataSetUtils.h"
 #include <iomanip>
 
+#include "GraphXYDisplayObjectImpl.h"
+#include "Legend.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -32,37 +35,34 @@ StressPointDataSetBuilder::~StressPointDataSetBuilder()
 
 }
 
-void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, BSTR currStg,
+void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList, const CString& currStg,
                                            CLBAMViewerDoc::ResponseType currRt, ResultsSummationType summType,
-                                           COLORREF color, std::vector<iGraphXyDataProvider*>* dataSets)
+                                           COLORREF color, std::vector<std::shared_ptr<iGraphXyDataProvider>>* dataSets)
 {
    HRESULT hr;
-   CollectionIndexType size;
+   IndexType size;
    locList->get_Count(&size);
 
    if (size>0)
    {
 
       // loop over each stress point
-      CollectionIndexType isp=0;
+      IndexType isp=0;
       bool loop=true;
       while(loop)
       {
          bool is_results = false;
 
          // create dataset 
-         CComPtr<iGraphXyDataProvider> dataset_p;
-         hr = dataset_p.CoCreateInstance(CLSID_GraphXyDataProvider);
-         ATLASSERT(SUCCEEDED(hr));
+         auto dataset_p = std::make_shared<CGraphXyDataProvider>();
 
          // deal with legend
-         CComPtr<iDataPointFactory> fac;
-         dataset_p->get_DataPointFactory(&fac);
-         CComQIPtr<iSymbolLegendEntry> entry(fac);
+         auto fac = dataset_p->GetDataPointFactory();
+         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
 
-         entry->put_Color(color);
-         entry->put_SymbolCharacterCode(115);
-         entry->put_DoDrawLine(TRUE);
+         entry->SetColor(color);
+         entry->SetSymbolCharacterCode(115);
+         entry->DoDrawLine(TRUE);
 
          CString str;
          if (m_Type == stSa)
@@ -74,13 +74,11 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
             str.Format(_T("Sm at Sp %d"), isp);
          }
 
-         CComBSTR btmp(str);
-         entry->put_Name(btmp);
+         entry->SetName(str.LockBuffer());
 
-         CComPtr<iDataSet2d> dataset;
-         dataset_p->get_DataSet(&dataset);
+         auto dataset = dataset_p->GetDataSet();
 
-         for (CollectionIndexType ipoi=0; ipoi<size; ipoi++)
+         for (IndexType ipoi=0; ipoi<size; ipoi++)
          {
             double loc;
             locList->get_Item(ipoi,&loc);
@@ -88,12 +86,12 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
             poiList->get_Item(ipoi,&poi_id);
 
             CComPtr<IStressPoints> left_sps, right_sps;
-            hr = m_pStressPoints->GetStressPointsAtPOI(poi_id, currStg, &left_sps, &right_sps);
+            hr = m_pStressPoints->GetStressPointsAtPOI(poi_id, CComBSTR(currStg), &left_sps, &right_sps);
 
             // left side
             if (left_sps!=NULL)
             {
-               CollectionIndexType cnt;
+               IndexType cnt;
                hr = left_sps->get_Count(&cnt);
                PROCESS_HR(hr);
 
@@ -107,11 +105,7 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
 
                   double val = GetVal(psp);
 
-                  CComPtr<IPoint2d> pnt;
-                  hr = pnt.CoCreateInstance(CLSID_Point2d);
-                  ATLASSERT(SUCCEEDED(hr));
-                  pnt->put_X(loc);
-                  pnt->put_Y(val);
+                  WBFL::Geometry::Point2d pnt(loc, val);
                   dataset->Add(pnt);
                }
             }
@@ -119,7 +113,7 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
             // right side
             if (right_sps!=NULL)
             {
-               CollectionIndexType cnt;
+               IndexType cnt;
                hr = right_sps->get_Count(&cnt);
                PROCESS_HR(hr);
 
@@ -133,11 +127,7 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
 
                   double val = GetVal(psp);
 
-                  CComPtr<IPoint2d> pnt;
-                  hr = pnt.CoCreateInstance(CLSID_Point2d);
-                  ATLASSERT(SUCCEEDED(hr));
-                  pnt->put_X(loc);
-                  pnt->put_Y(val);
+                  WBFL::Geometry::Point2d pnt(loc, val);
                   dataset->Add(pnt);
                }
             }
@@ -152,7 +142,7 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
          }
          else
          {
-            dataSets->push_back(dataset_p.Detach());
+            dataSets->push_back(dataset_p);
          }
       }
    }

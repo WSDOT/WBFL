@@ -38,7 +38,7 @@ namespace WBFL
          public iLineDisplayObject,
          public Connector<DisplayObjectDefaultImpl>
       {
-      private:
+      protected:
          LineDisplayObject(IDType id);
 
       public:

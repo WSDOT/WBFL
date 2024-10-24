@@ -9,43 +9,37 @@
 
 class CFEA2DDoc;
 
+using namespace WBFL::DManip;
+
 /////////////////////////////////////////////////////////////////////////////
 // CJointEvents command target
 
-class CJointEvents : public CCmdTarget
+class CJointEvents : public WBFL::DManip::iDisplayObjectEvents, public WBFL::DManip::iDragData
 {
 public:
 	CJointEvents(CFEA2DDoc* pDoc);
    ~CJointEvents();
 
-   DECLARE_INTERFACE_MAP()
+   virtual void OnChanged(std::shared_ptr<iDisplayObject> pDO) override;
+   virtual void OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset) override;
+   virtual bool OnKeyDown(std::shared_ptr<iDisplayObject> pDO, UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   virtual bool OnContextMenu(std::shared_ptr<iDisplayObject> pDO, CWnd* pWnd, const POINT& point) override;
+   virtual bool OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnLButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnLButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnRButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnRButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnMouseMove(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   virtual bool OnMouseWheel(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, short zDelta, const POINT& point) override;
+   virtual void OnMoved(std::shared_ptr<iDisplayObject> pDO) override;
+   virtual void OnCopied(std::shared_ptr<iDisplayObject> pDO) override;
+   virtual void OnSelect(std::shared_ptr<iDisplayObject> pDO) override;
+   virtual void OnUnselect(std::shared_ptr<iDisplayObject> pDO) override;
 
-   // iDisplayObjectEvents Implementation
-   BEGIN_INTERFACE_PART(DisplayObjectEvents,iDisplayObjectEvents)
-      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
-   END_INTERFACE_PART(DisplayObjectEvents)
-
-   // iDragData Implementation
-   BEGIN_INTERFACE_PART(DragData,iDragData)
-      STDMETHOD_(UINT,Format)();
-      STDMETHOD_(BOOL,PrepareForDrag)(iDisplayObject* pDO,iDragDataSink* pSink);
-      STDMETHOD_(void,OnDrop)(iDisplayObject* pDO,iDragDataSource* pSource);
-   END_INTERFACE_PART(DragData)
+   virtual UINT Format() override;
+   virtual bool PrepareForDrag(std::shared_ptr<iDisplayObject> pDO, std::shared_ptr<iDragDataSink> pSink) override;
+   virtual void OnDrop(std::shared_ptr<iDisplayObject> pDO, std::shared_ptr<iDragDataSource> pSource) override;
 
 public:
    static UINT ms_Format;

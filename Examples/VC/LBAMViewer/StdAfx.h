@@ -26,6 +26,7 @@
 #include <afxcview.h>
 
 #include <WBFLDebug.h>
+#include <WBFLTypes.h>
 
 #ifndef _AFX_NO_AFXCMN_SUPPORT
 #include <afxcmn.h>			// MFC support for Windows Common Controls
@@ -37,7 +38,6 @@
 #include "LBAMViewerGUID.c"
 
 #include <DManip\DManip.h>
-#include "DManipTools\DManipTools.h"
 
 #include <WBFLTools.h>
 #include <WBFLUnitServer.h>
@@ -62,8 +62,8 @@
 class CLBAMViewerModule : public CComModule
 {
 public:
-	LONG Unlock();
-	LONG Lock();
+	LONG Unlock() throw();
+	LONG Lock() throw();
 	DWORD dwThreadID;
 };
 extern CLBAMViewerModule _Module;
@@ -90,5 +90,7 @@ private:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
+
+using namespace WBFL::DManip;
 
 #endif // !defined(AFX_STDAFX_H__FF18985F_F484_4470_82BC_88603EE38124__INCLUDED_)

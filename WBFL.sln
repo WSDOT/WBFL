@@ -193,6 +193,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReporterUnitTests", "Reporter\ReporterUnitTests\ReporterUnitTests.vcxproj", "{B0EB79E9-DE1C-441E-968A-8E98C40FDED1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManip", "DManip\DManip.vcxproj", "{A517C9B8-2CDF-4DAB-8169-E42924F367A7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3C66A5DB-A451-4912-A984-DDBF2E890495} = {3C66A5DB-A451-4912-A984-DDBF2E890495}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

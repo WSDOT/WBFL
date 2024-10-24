@@ -18,31 +18,16 @@ CTemporarySupportDrawStrategyImpl::CTemporarySupportDrawStrategyImpl(CLBAMViewer
    m_pDoc = pDoc;
 }
 
-BEGIN_INTERFACE_MAP(CTemporarySupportDrawStrategyImpl,CCmdTarget)
-   INTERFACE_PART(CTemporarySupportDrawStrategyImpl,IID_iDrawPointStrategy,DrawPointStrategy)
-   INTERFACE_PART(CTemporarySupportDrawStrategyImpl,IID_iTemporarySupportDrawStrategy,Strategy)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
-DELEGATE_CUSTOM_INTERFACE(CTemporarySupportDrawStrategyImpl,Strategy);
-
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XStrategy::SetTemporarySupport(ITemporarySupport* support, IDType supportID)
+void CTemporarySupportDrawStrategyImpl::SetTemporarySupport(ITemporarySupport* support, IDType supportID)
 {
-   METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,Strategy)
-
-   pThis->m_Support = support;
-   pThis->m_SupportID = supportID;
+   m_Support = support;
+   m_SupportID = supportID;
 }
 
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::Draw(iPointDisplayObject* pDO,CDC* pDC)
+void CTemporarySupportDrawStrategyImpl::Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC) const
 {
-   METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
 
    COLORREF color;
 
@@ -51,38 +36,28 @@ STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::Draw(
    else
       color = RGB(200,200,255);
 
-   CComPtr<IPoint2d> pos;
-   pDO->GetPosition(&pos);
-   pThis->Draw(pDO,pDC,color,pos);
+   auto pos = pDO->GetPosition();
+   Draw(pDO,pDC,color,pos);
 }
 
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::DrawHighlite(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite)
+void CTemporarySupportDrawStrategyImpl::DrawHighlight(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,bool bHighlite) const
 {
-   METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
    Draw(pDO,pDC);
 }
 
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::DrawDragImage(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& cpdragPoint)
+void CTemporarySupportDrawStrategyImpl::DrawDragImage(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC, std::shared_ptr<const WBFL::DManip::iCoordinateMap> map, const POINT& dragStart, const POINT& cpdragPoint) const
 {
-   METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<IPoint2d> dragPoint;
-   map->LPtoWP(cpdragPoint.x, cpdragPoint.y, &dragPoint);
+   auto dragPoint = map->LPtoWP(cpdragPoint.x, cpdragPoint.y);
 
    // Draw the support
-   pThis->Draw(pDO,pDC,RGB(255,0,0),dragPoint);
+   Draw(pDO,pDC,RGB(255,0,0),dragPoint);
 }
 
-STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::GetBoundingBox(iPointDisplayObject* pDO,IRect2d** pBox)
+WBFL::Geometry::Rect2d CTemporarySupportDrawStrategyImpl::GetBoundingBox(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO) const
 {
-   METHOD_PROLOGUE(CTemporarySupportDrawStrategyImpl,DrawPointStrategy);
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    double xo,yo;
    pMap->TPtoWP(0,0,&xo,&yo);
@@ -92,35 +67,17 @@ STDMETHODIMP_(void) CTemporarySupportDrawStrategyImpl::XDrawPointStrategy::GetBo
    double width = (x2-xo)/2.0;
    double height = (y2-yo);
 
-   CComPtr<IPoint2d> point;
-   pDO->GetPosition(&point);
-   double xp, yp;
-   point->get_X(&xp);
-   point->get_Y(&yp);
+   auto point = pDO->GetPosition();
+   auto [xp, yp] = point.GetLocation();
 
-   CComPtr<IRect2d> box;
-   box.CoCreateInstance(CLSID_Rect2d);
-
-   box->put_Top(yp);
-   box->put_Left(xp - width);
-   box->put_Bottom(yp - height);
-   box->put_Right(xp + width);
-
-   (*pBox) = box;
-   (*pBox)->AddRef();
+   return WBFL::Geometry::Rect2d(xp - width, yp - height, xp + width, yp);
 }
 
-
-void CTemporarySupportDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc)
+void CTemporarySupportDrawStrategyImpl::Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const
 {
-   HRESULT hr;
-
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto pDL = pDO->GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto pMap = pDispMgr->GetCoordinateMap();
 
    LONG topx,topy; // location of top
    pMap->WPtoLP(loc,&topx,&topy);
@@ -141,7 +98,7 @@ void CTemporarySupportDrawStrategyImpl::Draw(iPointDisplayObject* pDO,CDC* pDC,C
    CBrush* pOldBrush = pDC->SelectObject(&brush);
 
    double length;
-   hr = m_Support->get_Length(&length);
+   m_Support->get_Length(&length);
    BoundaryConditionType ct;
    m_Support->get_BoundaryCondition(&ct);
 

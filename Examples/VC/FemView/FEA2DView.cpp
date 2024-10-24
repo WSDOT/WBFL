@@ -99,33 +99,25 @@ void CFEA2DView::OnInitialUpdate()
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
 
-   CComPtr<iDisplayMgr> dispMgr;
-   GetDisplayMgr(&dispMgr);
+   auto dispMgr = GetDisplayMgr();
 
    // Setup the display object factory
-   CDisplayObjectFactory* factory = new CDisplayObjectFactory(pDoc);
-   iDisplayObjectFactory* pfac = (iDisplayObjectFactory*)factory->GetInterface(&IID_iDisplayObjectFactory);
-   dispMgr->AddDisplayObjectFactory(pfac);
-   pfac->Release();
+   dispMgr->AddDisplayObjectFactory(std::make_shared<CDisplayObjectFactory>(pDoc));
 
    // Create display lists
-   CComPtr<iDisplayList> dlList;
-   ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&dlList);
+   auto dlList = DisplayList::Create();
    dlList->SetID(DIMLINE_LIST);
    dispMgr->AddDisplayList(dlList);
 
-   CComPtr<iDisplayList> loadList;
-   ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&loadList);
+   auto loadList = DisplayList::Create();
    loadList->SetID(LOAD_LIST);
    dispMgr->AddDisplayList(loadList);
 
-   CComPtr<iDisplayList> jntList;
-   ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&jntList);
+   auto jntList = DisplayList::Create();
    jntList->SetID(JNT_LIST);
    dispMgr->AddDisplayList(jntList);
 
-   CComPtr<iDisplayList> mbrList;
-   ::CoCreateInstance(CLSID_DisplayList,NULL,CLSCTX_ALL,IID_iDisplayList,(void**)&mbrList);
+   auto mbrList = DisplayList::Create();
    mbrList->SetID(MBR_LIST);
    dispMgr->AddDisplayList(mbrList);
 
@@ -133,7 +125,7 @@ void CFEA2DView::OnInitialUpdate()
    BuildMemberDisplayObjects();
    BuildLoadDisplayObjects();
 
-   SetMappingMode(DManip::Isotropic);
+   SetMappingMode(MapMode::Isotropic);
 
    ScaleToFit();
 
@@ -148,14 +140,11 @@ void CFEA2DView::BuildJointDisplayObjects()
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
 
-   CComPtr<iDisplayMgr> dispMgr;
-   GetDisplayMgr(&dispMgr);
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(JNT_LIST,&pDL);
+   auto dispMgr = GetDisplayMgr();
+   auto pDL = dispMgr->FindDisplayList(JNT_LIST);
    pDL->Clear();
 
-   CComPtr<iDisplayObjectFactory> factory;
-   dispMgr->GetDisplayObjectFactory(0,&factory);
+   auto factory = dispMgr->GetDisplayObjectFactory(0);
 
    CComPtr<IFem2dJointCollection> joints;
    model->get_Joints(&joints);
@@ -172,37 +161,29 @@ void CFEA2DView::BuildJointDisplayObjects()
       joint->get_X(&x);
       joint->get_Y(&y);
 
-      CComPtr<IPoint2d> point;
-      point.CoCreateInstance(CLSID_Point2d);
-      point->put_X(x);
-      point->put_Y(y);
+      WBFL::Geometry::Point2d point(x, y);
 
-      CComPtr<iDisplayObject> dispObj;
-      factory->Create(CJointEvents::ms_Format,NULL,&dispObj);
+      auto dispObj = factory->Create(CJointEvents::ms_Format,NULL);
+      auto ptDispObj = std::dynamic_pointer_cast<iPointDisplayObject>(dispObj);
+      auto ds = ptDispObj->GetDrawingStrategy();
+      auto strategy = std::dynamic_pointer_cast<iJointDrawStrategy>(ds);
 
-      CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> ptDispObj(dispObj);
-      
-      CComPtr<iDrawPointStrategy> ds;
-      ptDispObj->GetDrawingStrategy(&ds);
-
-      CComQIPtr<iJointDrawStrategy,&IID_iJointDrawStrategy> strategy(ds);
       strategy->SetJoint(joint);
 
-      CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> jointRep(dispObj);
-      jointRep->SetPosition(point,FALSE,FALSE);
+      ptDispObj->SetPosition(point,FALSE,FALSE);
 
       JointIDType ID;
       joint->get_ID(&ID);
-      jointRep->SetID(ID);
+      ptDispObj->SetID(ID);
 
       joint->get_X(&x);
       joint->get_Y(&y);
 
       CString strToolTipText;
       strToolTipText.Format(_T("Joint %d (%f,%f)"),ID,x,y);
-      jointRep->SetToolTipText(strToolTipText);
+      ptDispObj->SetToolTipText(strToolTipText);
 
-      pDL->AddDisplayObject(jointRep);
+      pDL->AddDisplayObject(ptDispObj);
    }
 }
 
@@ -211,11 +192,9 @@ void CFEA2DView::BuildMemberDisplayObjects()
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
    
-   CComPtr<iDisplayMgr> dispMgr;
-   GetDisplayMgr(&dispMgr);
+   auto dispMgr = GetDisplayMgr();
 
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(MBR_LIST,&pDL);
+   auto pDL = dispMgr->FindDisplayList(MBR_LIST);
    pDL->Clear();
 
    // Connect display objects representing joints with
@@ -241,78 +220,62 @@ void CFEA2DView::BuildMemberDisplayObjects()
       joints->Find(startJntID,&pStartJnt);
       joints->Find(endJntID,  &pEndJnt);
 
-      CComPtr<iLineDisplayObject> mbrRep;
-      ::CoCreateInstance(CLSID_LineDisplayObject,NULL,CLSCTX_ALL,IID_iLineDisplayObject,(void**)&mbrRep);
+      auto mbrRep = LineDisplayObject::Create();
 
       MemberIDType mbrID;
       pMbr->get_ID(&mbrID);
       mbrRep->SetID(mbrID);
 
-      CComPtr<iSimpleDrawLineStrategy> drawStrategy;
-      ::CoCreateInstance(CLSID_SimpleDrawLineStrategy,NULL,CLSCTX_ALL,IID_iSimpleDrawLineStrategy,(void**)&drawStrategy);
+      auto drawStrategy = SimpleDrawLineStrategy::Create();
       mbrRep->SetDrawLineStrategy(drawStrategy);
 
       VARIANT_BOOL bIsReleased;
       pMbr->IsReleased(metStart,mbrReleaseMz,&bIsReleased);
       if ( bIsReleased == VARIANT_TRUE )
-         drawStrategy->SetBeginType(leCircle);
+         drawStrategy->SetBeginType(PointType::Circle);
 
       pMbr->IsReleased(metEnd,mbrReleaseMz,&bIsReleased);
       if ( bIsReleased == VARIANT_TRUE )
-         drawStrategy->SetEndType(leCircle);
+         drawStrategy->SetEndType(PointType::Circle);
       
-      CComQIPtr<iConnector,&IID_iConnector> connector(mbrRep);
+      auto connector = std::dynamic_pointer_cast<iConnector>(mbrRep);
 
-      CComPtr<iPlug> startPlug;
-      connector->GetStartPlug(&startPlug);
+      auto startPlug = connector->GetStartPlug();
+      auto endPlug = connector->GetEndPlug();
 
-      CComPtr<iPlug> endPlug;
-      connector->GetEndPlug(&endPlug);
+      auto pStartJntRep = dispMgr->FindDisplayObject(startJntID,JNT_LIST,AccessType::ByID);
+      auto pEndJntRep   = dispMgr->FindDisplayObject(endJntID,  JNT_LIST,AccessType::ByID);
 
-      CComPtr<iDisplayObject> pStartJntRep;
-      dispMgr->FindDisplayObject(startJntID,JNT_LIST,atByID,&pStartJntRep);
-
-      CComPtr<iDisplayObject> pEndJntRep;
-      dispMgr->FindDisplayObject(endJntID,JNT_LIST,atByID,&pEndJntRep);
-
-      CComQIPtr<iConnectable,&IID_iConnectable> startConnectable(pStartJntRep);
-      CComPtr<iSocket> socket;
-      CComPtr<IPoint2d> point;
+      auto startConnectable = std::dynamic_pointer_cast<iConnectable>(pStartJntRep);
+      std::shared_ptr<iSocket> socket;
+      WBFL::Geometry::Point2d point;
 
       Float64 x,y;
       pStartJnt->get_X(&x);
       pStartJnt->get_Y(&y);
 
-      point.CoCreateInstance(CLSID_Point2d);
-      point->Move(x,y);
-      startConnectable->AddSocket(0,point,&socket);
-      DWORD dwCookie;
-      socket->Connect(startPlug,&dwCookie);
+      point.Move(x,y);
+      socket = startConnectable->AddSocket(0,point);
+      
+      DWORD dwCookie = socket->Connect(startPlug);
 
-      CComQIPtr<iConnectable,&IID_iConnectable> endConnectable(pEndJntRep);
-      point.Release();
-      socket.Release();
+      auto endConnectable = std::dynamic_pointer_cast<iConnectable>(pEndJntRep);
 
       pEndJnt->get_X(&x);
       pEndJnt->get_Y(&y);
 
-      point.CoCreateInstance(CLSID_Point2d);
-      point->Move(x,y);
-      endConnectable->AddSocket(0,point,&socket);
-      socket->Connect(endPlug,&dwCookie);
+      point.Move(x,y);
+      socket = endConnectable->AddSocket(0,point);
+      dwCookie = socket->Connect(endPlug);
 
       CString strToolTip;
       pMbr->get_ID(&mbrID);
       strToolTip.Format(_T("Member %d"),mbrID);
       mbrRep->SetToolTipText(strToolTip);
 
-      CMemberDropSite* pDropSite = new CMemberDropSite(pDoc);
-      iDropSite* dropSite = (iDropSite*)pDropSite->GetInterface(&IID_iDropSite);
-      mbrRep->RegisterDropSite(dropSite);
-
-      iDisplayObjectEvents* pDOE = (iDisplayObjectEvents*)pDropSite->GetInterface(&IID_iDisplayObjectEvents);
-      mbrRep->RegisterEventSink(pDOE);
-      long n = pDOE->Release();
+      auto pDropSite = std::make_shared<CMemberDropSite>(pDoc);
+      mbrRep->RegisterDropSite(pDropSite);
+      mbrRep->RegisterEventSink(pDropSite);
 
       pDL->AddDisplayObject(mbrRep);
    }
@@ -331,15 +294,12 @@ void CFEA2DView::BuildLoadDisplayObjects()
    CFEA2DDoc* pDoc = GetDocument();
    CComPtr<IFem2dModel> model = pDoc->m_Model;
 
-   CComPtr<iDisplayMgr> dispMgr;
-   GetDisplayMgr(&dispMgr);
+   auto dispMgr = GetDisplayMgr();
 
-   CComPtr<iDisplayList> pDL;
-   dispMgr->FindDisplayList(LOAD_LIST,&pDL);
+   auto pDL = dispMgr->FindDisplayList(LOAD_LIST);
    pDL->Clear();
 
-   CComPtr<iDisplayObjectFactory> factory;
-   dispMgr->GetDisplayObjectFactory(0,&factory);
+   auto factory = dispMgr->GetDisplayObjectFactory(0);
 
    CComPtr<IFem2dMemberCollection> members;
    model->get_Members(&members);
@@ -393,19 +353,13 @@ void CFEA2DView::BuildLoadDisplayObjects()
          startJoint->get_X(&startX);
          startJoint->get_Y(&startY);
 
-         CComPtr<IPoint2d> startPoint;
-         startPoint.CoCreateInstance(CLSID_Point2d);
-         startPoint->put_X(startX);
-         startPoint->put_Y(startY);
+         WBFL::Geometry::Point2d startPoint(startX, startY);
 
          Float64 endX, endY;
          endJoint->get_X(&endX);
          endJoint->get_Y(&endY);
 
-         CComPtr<IPoint2d> endPoint;
-         endPoint.CoCreateInstance(CLSID_Point2d);
-         endPoint->put_X(endX);
-         endPoint->put_Y(endY);
+         WBFL::Geometry::Point2d endPoint(endX, endY);
 
          double angle = atan2(endY - startY, endX - startX);
 
@@ -417,28 +371,19 @@ void CFEA2DView::BuildLoadDisplayObjects()
          if ( location < 0 ) // fractional load
             location = -1*location*mbrLength;
 
-         CComPtr<IPoint2d> point;
-         point.CoCreateInstance(CLSID_Point2d);
-         point->put_X(startX + location*cos(angle));
-         point->put_Y(startY + location*sin(angle));
+         WBFL::Geometry::Point2d point(startX + location*cos(angle), startY + location*sin(angle));
 
-         CComPtr<iDisplayObject> dispObj;
-         factory->Create(CPointLoadEventsImpl::ms_Format,NULL,&dispObj);
-
-         CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> ptDispObj(dispObj);
-         CComPtr<iDrawPointStrategy> ds;
-         ptDispObj->GetDrawingStrategy(&ds);
-
-         CComQIPtr<iPointLoadDrawStrategy,&IID_iPointLoadDrawStrategy> strategy(ds);
+         auto dispObj = factory->Create(CPointLoadEventsImpl::ms_Format,NULL);
+         auto ptDispObj = std::dynamic_pointer_cast<iPointDisplayObject>(dispObj);
+         
+         auto ds = ptDispObj->GetDrawingStrategy();
+         auto strategy = std::dynamic_pointer_cast<iPointLoadDrawStrategy>(ds);
          strategy->SetLoad(ptLoad);
          strategy->SetColor(color);
 
-         CComPtr<iDisplayObjectEvents> sink;
-         dispObj->GetEventSink(&sink);
-         CComQIPtr<iPointLoadEvents,&IID_iPointLoadEvents> events(sink);
+         auto sink = dispObj->GetEventSink();
+         auto events = std::dynamic_pointer_cast<iPointLoadEvents>(sink);
          events->InitFromLoad(ptLoad);
-
-         CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> loadRep(dispObj);
 
          LoadIDType loadID;
          ptLoad->get_ID(&loadID);
@@ -446,14 +391,14 @@ void CFEA2DView::BuildLoadDisplayObjects()
          LoadCaseIDType loadcaseID;
          loading->get_ID(&loadcaseID);
 
-         loadRep->SetPosition(point,FALSE,FALSE);
-         loadRep->SetID(loadID);
+         ptDispObj->SetPosition(point,FALSE,FALSE);
+         ptDispObj->SetID(loadID);
 
          CString strToolTipText;
          strToolTipText.Format(_T("Loading %d Load %d"),loadcaseID,loadID);
-         loadRep->SetToolTipText(strToolTipText);
+         ptDispObj->SetToolTipText(strToolTipText);
 
-         pDL->AddDisplayObject(loadRep);
+         pDL->AddDisplayObject(ptDispObj);
       }
    }
 }
@@ -491,7 +436,7 @@ CFEA2DDoc* CFEA2DView::GetDocument() // non-debug version is inline
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DView message handlers
-DROPEFFECT CFEA2DView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point)
+DROPEFFECT CFEA2DView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point)
 {
    // This override has to determine if the thing being dragged over it can
    // be dropped. In order to do that, it must unpackage the OleDataObject.
@@ -508,7 +453,7 @@ DROPEFFECT CFEA2DView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoi
    return DROPEFFECT_NONE;
 }
 
-void CFEA2DView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
+void CFEA2DView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
 {
    AfxMessageBox(_T("OnDropped"));
 }
@@ -593,19 +538,18 @@ void CFEA2DView::OnViewScaleToFit()
 
 void CFEA2DView::OnViewCenterOnPoint() 
 {
-   DoCenterOnPoint();	
+   ActivateCenterOnPointTask();
 }
 
 void CFEA2DView::OnViewZoom() 
 {
-   DoZoom();	
+   ActivateZoomTask();
 }
 
 void CFEA2DView::OnViewSetScale() 
 {
    AfxMessageBox(_T("Setting scale to 2"));
-   CComPtr<iDisplayMgr> dispMgr;
-   GetDisplayMgr(&dispMgr);
+   auto dispMgr = GetDisplayMgr();
    Zoom(2);
    Invalidate();
 }
@@ -626,11 +570,9 @@ void CFEA2DView::OnMouseMove(UINT nFlags, CPoint point)
 
    double wx,wy;
 
-   CComPtr<iDisplayMgr> pDM;
-   GetDisplayMgr(&pDM);
+   auto pDM = GetDisplayMgr();
 
-   CComPtr<iCoordinateMap> pMap;
-   pDM->GetCoordinateMap(&pMap);
+   auto pMap = pDM->GetCoordinateMap();
 
    pMap->LPtoWP(logPoint.x,logPoint.y,&wx,&wy);
 
@@ -706,11 +648,9 @@ void CFEA2DView::OnViewJoints()
 
    m_bHideJoints = !m_bHideJoints;
 
-   CComPtr<iDisplayMgr> pDM;
-   GetDisplayMgr(&pDM);
+   auto pDM = GetDisplayMgr();
 
-   CComPtr<iDisplayList> pDL;
-   pDM->FindDisplayList(JNT_LIST,&pDL);
+   auto pDL = pDM->FindDisplayList(JNT_LIST);
    pDL->HideDisplayObjects(m_bHideJoints);
 }
 
@@ -725,11 +665,9 @@ void CFEA2DView::OnViewLoads()
 
    m_bHideLoads = !m_bHideLoads;
 
-   CComPtr<iDisplayMgr> pDM;
-   GetDisplayMgr(&pDM);
+   auto pDM = GetDisplayMgr();
 
-   CComPtr<iDisplayList> pDL;
-   pDM->FindDisplayList(LOAD_LIST,&pDL);
+   auto pDL = pDM->FindDisplayList(LOAD_LIST);
    pDL->HideDisplayObjects(m_bHideLoads);
 }
 
@@ -744,11 +682,9 @@ void CFEA2DView::OnViewMembers()
 
    m_bHideMembers = !m_bHideMembers;
 
-   CComPtr<iDisplayMgr> pDM;
-   GetDisplayMgr(&pDM);
+   auto pDM = GetDisplayMgr();
 
-   CComPtr<iDisplayList> pDL;
-   pDM->FindDisplayList(MBR_LIST,&pDL);
+   auto pDL = pDM->FindDisplayList(MBR_LIST);
    pDL->HideDisplayObjects(m_bHideMembers);
 }
 
@@ -762,8 +698,7 @@ void CFEA2DView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    // Model changed, re-build everything
    if ( lHint == 1 )
    {
-      CComPtr<iDisplayMgr> pDM;
-      GetDisplayMgr(&pDM);
+      auto pDM = GetDisplayMgr();
 
       pDM->ClearDisplayObjects();
       BuildJointDisplayObjects();
