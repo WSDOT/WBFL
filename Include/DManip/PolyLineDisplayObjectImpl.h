@@ -42,6 +42,7 @@ namespace WBFL
          ~PolyLineDisplayObject() = default;
 
          // iDisplayObject Implementation
+         virtual bool HitTest(const POINT& point) const override;
 
          // Drawing
          virtual void Draw(CDC* pDC) override;

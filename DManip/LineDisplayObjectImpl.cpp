@@ -56,6 +56,13 @@ void LineDisplayObject::Draw(CDC* pDC)
 {
    if (!IsVisible()) return; // don't draw if not visible
 
+   // Draw gravity well for hit test if uncommented.
+   //auto start = GetStartPoint();
+   //auto end = GetEndPoint();
+   //CRect box = LineHitTest::GetHitRect(this, start, end);
+   //COLORREF color = RGB(0, 200, 0);
+   //pDC->FillSolidRect(box, color);
+
    if (m_DrawStrategy)
    {
       auto dispObj = std::dynamic_pointer_cast<iLineDisplayObject>(shared_from_this());

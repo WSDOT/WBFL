@@ -32,35 +32,28 @@ using namespace WBFL::DManip;
 
 bool LineHitTest::HitTest(const iDisplayObject* pDO, WBFL::Geometry::Point2d s, WBFL::Geometry::Point2d e, const POINT& point)
 {
+
+   CRect box = GetHitRect(pDO, s, e);
+
+   return box.PtInRect(point);
+}
+
+CRect WBFL::DManip::LineHitTest::GetHitRect(const iDisplayObject* pDO, WBFL::Geometry::Point2d s, WBFL::Geometry::Point2d e)
+{
    auto display_list = pDO->GetDisplayList();
    auto display_mgr = display_list->GetDisplayMgr();
    auto map = display_mgr->GetCoordinateMap();
-
-   // Determine the angle of the line
-   auto [sx, sy] = s.GetLocation();
-   auto [ex, ey] = e.GetLocation();
-
-   Float64 angle = atan2(ey-sy,ex-sx);
-
-   // Rotate end point so that it is on the X-axis and to the right of the start point
-   e.Rotate(s, -angle);
-   
-   auto [rex, rey] = e.GetLocation();
 
    // convert start and end in to logical space
    auto world_start = map->MPtoWP(s);
    auto world_end = map->MPtoWP(e);
 
-   CPoint start, end;
-   map->WPtoLP(world_start,&start.x,&start.y);
-   map->WPtoLP(world_end,  &end.x,  &end.y);
+   CPoint cstart, cend;
+   map->WPtoLP(world_start, &cstart.x, &cstart.y);
+   map->WPtoLP(world_end, &cend.x, &cend.y);
 
-   CRect box(start,end);
-   box.InflateRect(0,4);
+   CRect box(cstart, cend);
+   box.InflateRect(4, 4);
 
-   CPoint testPoint;
-   testPoint.x = LONG( (point.x - start.x) * cos(-angle) + (point.y - start.y) * sin(-angle) + start.x);
-   testPoint.y = LONG(-(point.y - start.y) * cos(-angle) + (point.x - start.x) * sin(-angle) + start.y);
-
-   return box.PtInRect(testPoint);
+   return box;
 }

@@ -32,7 +32,8 @@ namespace WBFL
       class LineHitTest
       {
       public:
-         static bool HitTest(const iDisplayObject* pDO,WBFL::Geometry::Point2d start,WBFL::Geometry::Point2d end,const POINT& point);
+         static bool HitTest(const iDisplayObject* pDO, WBFL::Geometry::Point2d start, WBFL::Geometry::Point2d end, const POINT& point);
+         static CRect GetHitRect(const iDisplayObject* pDO, WBFL::Geometry::Point2d start, WBFL::Geometry::Point2d end);
       };
    };
 };

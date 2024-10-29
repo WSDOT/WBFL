@@ -39,10 +39,21 @@ void PolyLineDisplayObject::Draw(CDC* pDC)
 {
    if (!IsVisible()) return; // don't draw if not visible
 
-   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
+   COLORREF line_color;
+   if (IsSelected())
+   {
+      auto disp_mgr = GetDisplayList()->GetDisplayMgr();
+      line_color = disp_mgr->GetSelectionLineColor();
+   }
+   else
+   {
+      line_color = m_Color;
+   }
 
-   CPen pen(PS_SOLID, m_Width, m_Color);
+   CPen pen(PS_SOLID, m_Width, line_color);
    CPen* pOldPen = pDC->SelectObject(&pen);
+
+   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
 
    auto iter = m_Points.begin();
    auto end = m_Points.end();
@@ -61,6 +72,80 @@ void PolyLineDisplayObject::Draw(CDC* pDC)
 
    pDC->SelectObject(pOldPen);
 }
+
+bool PolyLineDisplayObject::HitTest(const POINT& point) const
+{
+   if (m_Points.empty())
+   {
+      return false;
+   }
+
+   if (m_pGravityWellStrategy)
+   {
+      // If there is a gravity well, use the default hit test implementation
+      return __super::HitTest(point);
+   }
+   else
+   {
+      // Otherwise, use this strategy
+      // Return true if the distance between the point and any line segment is less than the line width
+      auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
+
+      // Get line width threshold in model coords
+      LONG lwid = max(4, m_Width);
+
+      // Width in model space
+      Float64 wxo, wyo;
+      map->LPtoWP(0, 0, &wxo, &wyo);
+      Float64 wx2, wy2;
+      map->LPtoWP(lwid, lwid, &wx2, &wy2);
+      Float64 mxo, myo;
+      map->WPtoMP(wxo, wyo, &mxo, &myo);
+      Float64 mx2, my2;
+      map->WPtoMP(wx2, wy2, &mx2, &my2);
+
+      Float64 threshold = abs(mx2 - mxo); // just use distance along x
+
+      // Convert target point to model coords
+      WBFL::Geometry::Point2d wpoint = map->LPtoWP(point.x, point.y);
+      Float64 mx, my;
+      map->WPtoMP(wpoint, &mx, &my);
+      WBFL::Geometry::Point2d mpoint(mx, my);
+
+      // Iterate over all segments to test for a hit
+      std::vector<WBFL::Geometry::Point2d>::const_iterator startPointIter = m_Points.begin();
+      std::vector<WBFL::Geometry::Point2d>::const_iterator endPointIter = startPointIter;
+      while (++endPointIter != m_Points.end())
+      {
+         // First need to use a line to get nearest point along an infinite line
+         const WBFL::Geometry::Point2d& startPoint(*startPointIter);
+         const WBFL::Geometry::Point2d& endPoint(*endPointIter);
+
+         if (startPoint != endPoint) // Line2d will throw below if we have equal points
+         {
+            WBFL::Geometry::Line2d line(startPoint, endPoint);
+
+            WBFL::Geometry::Point2d closestPoint = WBFL::Geometry::GeometricOperations::PointOnLineNearest(line, mpoint);
+            Float64 dist = mpoint.Distance(closestPoint);
+            if (dist < threshold)
+            {
+               // Point is close enough to an infinite line. Now we need to see if it's along our segment
+               WBFL::Geometry::LineSegment2d lineSeg(startPoint.X(), startPoint.Y(), endPoint.X(), endPoint.Y());
+               if (WBFL::Geometry::GeometricOperations::DoesLineSegmentContainPoint(lineSeg, closestPoint, 0.01)) // assuming metric, and a mm is close enough
+               {
+                  return true;
+               }
+            }
+         }
+
+         startPointIter = endPointIter;
+      }
+   }
+
+   return false;
+}
+
+
 
 void PolyLineDisplayObject::Highlight(CDC* pDC, bool bHighlight)
 {

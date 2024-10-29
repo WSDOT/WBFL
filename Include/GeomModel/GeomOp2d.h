@@ -208,6 +208,9 @@ namespace WBFL
 
          /// Returns true if p is in the triangle formed by verties A, B, and C
          static bool IsPointInTriangle(const Point2d& p, const Point2d& A, const Point2d& B, const Point2d& C);
+
+         // Returns true if a point lies along a segment within a tolerance distance
+         static bool DoesLineSegmentContainPoint(const LineSegment2d& l1, const Point2d& point, Float64 tolerance);
       };
    }; // Geometry
 }; // WBFL
