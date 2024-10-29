@@ -181,7 +181,7 @@ STDMETHODIMP_(void) CSimpleDrawPointStrategyImpl::GetBoundingBox(iPointDisplayOb
       Float64 xo,yo;
       pMap->LPtoWP(0,0,&xo,&yo);
       Float64 x2,y2;
-      pMap->LPtoWP(2,2,&x2,&y2);
+      pMap->LPtoWP(4,4,&x2,&y2);
 
       Float64 wid = fabs(x2-xo);
       Float64 hgt = fabs(y2-yo);

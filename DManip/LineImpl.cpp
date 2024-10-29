@@ -33,6 +33,9 @@
 #include "SimpleDrawLineStrategyImpl.h"
 #include <MathEx.h>
 
+#include <WBFLGeometry\GeomHelpers.h>
+
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -77,6 +80,14 @@ STDMETHODIMP_(void) CLineImpl::Draw(CDC* pDC)
    if ( !IsVisible() ) // Don't draw if not visible
       return;
 
+   //CComPtr<IPoint2d> start, end;
+   //GetStartPoint(&start);
+   //GetEndPoint(&end);
+
+   //CRect box = CLineHitTest::GetHitRect(this, start, end);
+   //COLORREF color = RGB(0, 200, 0);
+   //pDC->FillSolidRect(box, color);
+
    m_DrawStrategy->Draw(this,pDC);
 }
 
@@ -94,11 +105,87 @@ STDMETHODIMP_(BOOL) CLineImpl::HitTest(CPoint point)
    }
    else
    {
-      // otherwise, use this strategy
-      CComPtr<IPoint2d> start, end;
-      GetStartPoint(&start);
-      GetEndPoint(&end);
-      return CLineHitTest::HitTest(this,start,end,point);
+      // ***** This is a Temporary HACK!!! ***************
+      // Do not merge code below into the new DManip architecture
+      //
+      iSimpleDrawLineStrategy* pSimple = dynamic_cast<iSimpleDrawLineStrategy*>(m_DrawStrategy.p);
+      if (pSimple)
+      {
+         CComPtr<iDisplayList> pDL;
+         Do_GetDisplayList(&pDL);
+         CComPtr<iDisplayMgr> pDispMgr;
+         pDL->GetDisplayMgr(&pDispMgr);
+         CComPtr<iCoordinateMap> pMap;
+         pDispMgr->GetCoordinateMap(&pMap);
+
+         // Get line width threshold in model coords
+         LONG lwid = max(4, pSimple->GetWidth());
+
+         // Width in model space
+         Float64 wxo, wyo;
+         pMap->LPtoWP(0, 0, &wxo, &wyo);
+         Float64 wx2, wy2;
+         pMap->LPtoWP(lwid, lwid, &wx2, &wy2);
+         Float64 mxo, myo;
+         pMap->WPtoMP(wxo, wyo, &mxo, &myo);
+         Float64 mx2, my2;
+         pMap->WPtoMP(wx2, wy2, &mx2, &my2);
+
+         Float64 threshold = abs(mx2 - mxo); // just use distance along x
+
+         // Convert target point to model coords
+         CComPtr<IPoint2d> wpoint;
+         pMap->LPtoWP(point.x, point.y,&wpoint);
+         Float64 mx, my;
+         pMap->WPtoMP(wpoint, &mx, &my);
+
+         CComPtr<IPoint2d> mpoint;
+         mpoint.CoCreateInstance(CLSID_Point2d);
+         mpoint->Move(mx, my);
+
+         // First need to use a line to get nearest point along an infinite line
+         CComPtr<IPoint2d> startpoint, endpoint;
+         GetEndPoints(&startpoint, &endpoint);
+
+         if (S_OK != startpoint->SameLocation(endpoint)) // Line2d will throw below if we have equal points
+         {
+            CComPtr<ILine2d> line;
+            line.CoCreateInstance(CLSID_Line2d);
+            line->ThroughPoints(startpoint, endpoint);
+
+            CComPtr<IGeomUtil2d> util;
+            util.CoCreateInstance(CLSID_GeomUtil);
+
+            CComPtr<IPoint2d> closestPoint;
+            util->PointOnLineNearest(line, mpoint, &closestPoint);
+
+            Float64 dist;
+            mpoint->DistanceEx(closestPoint, &dist);
+            if (dist < threshold)
+            {
+               // Point is close enough to an infinite line. Now we need to see if it's along our segment
+               CComPtr<ILineSegment2d> lineSeg;
+               lineSeg.CoCreateInstance(CLSID_LineSegment2d);
+               lineSeg->ThroughPoints(startpoint, endpoint);
+
+               VARIANT_BOOL retVal;
+               geomUtil::DoesLineSegmentContainPoint(lineSeg, closestPoint, 0.01, &retVal);// assuming metric, and a mm is close enough
+               if (retVal==VARIANT_TRUE) 
+               {
+                  return TRUE;
+               }
+            }
+         }
+      }
+      else
+      {
+         // otherwise, use this strategy
+         CComPtr<IPoint2d> start, end;
+         GetStartPoint(&start);
+         GetEndPoint(&end);
+         BOOL hit = CLineHitTest::HitTest(this, start, end, point);
+         return hit;
+      }
    }
 
    return FALSE;

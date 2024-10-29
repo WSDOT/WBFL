@@ -34,6 +34,13 @@ static char THIS_FILE[] = __FILE__;
 
 BOOL CLineHitTest::HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point)
 {
+   CRect box = GetHitRect(pDO, pStart, pEnd);
+
+   return box.PtInRect(point);
+}
+
+CRect CLineHitTest::GetHitRect(iDisplayObject* pDO, IPoint2d* pStart, IPoint2d* pEnd)
+{
    CComPtr<iDisplayList> pDL;
    pDO->GetDisplayList(&pDL);
 
@@ -43,40 +50,17 @@ BOOL CLineHitTest::HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,C
    CComPtr<iCoordinateMap> pMap;
    pDispMgr->GetCoordinateMap(&pMap);
 
-   // Determine the angle of the line
-   Float64 sx,sy, ex, ey;
-   pStart->get_X(&sx);
-   pStart->get_Y(&sy);
-
-   pEnd->get_X(&ex);
-   pEnd->get_Y(&ey);
-
-   Float64 angle = atan2(ey-sy,ex-sx);
-
-   // Rotate end point so that it is on the X-axis and to the right of the start point
-   pEnd->RotateEx(pStart,-angle);
-
-   Float64 rex, rey;
-   pEnd->get_X(&rex);
-   pEnd->get_Y(&rey);
-
    // convert start and end in to logical space
-   Float64 startWX,startWY, endWX, endWY;
-   pMap->MPtoWP(pStart,&startWX,&startWY);
-   pMap->MPtoWP(pEnd,  &endWX,  &endWY);
+   Float64 startWX, startWY, endWX, endWY;
+   pMap->MPtoWP(pStart, &startWX, &startWY);
+   pMap->MPtoWP(pEnd, &endWX, &endWY);
 
    CPoint start, end;
-   pMap->WPtoLP(startWX,startWY,&start.x,&start.y);
-   pMap->WPtoLP(endWX,  endWY,  &end.x,  &end.y);
+   pMap->WPtoLP(startWX, startWY, &start.x, &start.y);
+   pMap->WPtoLP(endWX, endWY, &end.x, &end.y);
 
-   CRect box(start,end);
-   box.InflateRect(0,4);
+   CRect box(start, end);
+   box.InflateRect(4, 4);
 
-   CPoint testPoint;
-   Float64 c = cos(-angle);
-   Float64 s = sin(-angle);
-   testPoint.x =  (point.x - start.x)*c + (point.y - start.y)*s + start.x;
-   testPoint.y = -(point.y - start.y)*c + (point.x - start.x)*s + start.y;
-
-   return box.PtInRect(testPoint);
+   return box;
 }

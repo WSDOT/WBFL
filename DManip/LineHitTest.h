@@ -32,6 +32,8 @@ class CLineHitTest
 {
 public:
    static BOOL HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point);
+
+   static CRect GetHitRect(iDisplayObject* pDO, IPoint2d* pStart, IPoint2d* pEnd);
 };
 
 #endif // INCLUDED_LINEHITTEST_H_
