@@ -60,6 +60,7 @@
 #include <Reporter\RcUnsigned.h>
 #include <Reporter\RcComposite.h>
 #include <Reporter\RcImage.h>
+#include <Reporter\RcEquation.h>
 #include <Reporter\RcDateTime.h>
 #include <Reporter\PageLayout.h>
 #include <Reporter\HtmlReportVisitor.h>
