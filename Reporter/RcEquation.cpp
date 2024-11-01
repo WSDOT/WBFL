@@ -28,13 +28,11 @@
 #include <sstream>
 
 rptRcEquation::rptRcEquation() :
-rptReportContent(),
-m_FileName( _T("Unspecified") ),
-m_mathDisplay(InLine)
+rptReportContent()
 {
 }
 
-rptRcEquation::rptRcEquation(const std::_tstring& fileName, const std::_tstring& laTeX, rptRcEquation::Display dsp) :
+rptRcEquation::rptRcEquation(const std::_tstring& fileName, const std::_tstring& laTeX, rptRcEquation::DisplayType dsp) :
 rptReportContent(),
 m_FileName( fileName ),
 m_LaTeX(laTeX),
@@ -42,40 +40,8 @@ m_mathDisplay(dsp)
 {
 }
 
-rptRcEquation::rptRcEquation(const rptRcEquation& rOther) :
-rptReportContent(rOther)
-{
-   m_FileName = rOther.m_FileName;
-   m_LaTeX = rOther.m_LaTeX;
-   m_mathDisplay = rOther.m_mathDisplay;
-}
-
-rptRcEquation::~rptRcEquation()
-{
-}
-
-rptRcEquation& rptRcEquation::operator= (const rptRcEquation& rOther)
-{
-   if( this != &rOther )
-   {
-      m_FileName = rOther.m_FileName;
-      m_LaTeX = rOther.m_LaTeX;
-      m_mathDisplay = rOther.m_mathDisplay;
-   }
-
-   return *this;
-}
-
 void rptRcEquation::Accept( rptRcVisitor& rVisitor )
 {
-#if defined _DEBUG
-   // test to make sure the file exists
-   WIN32_FIND_DATA findData;
-   HANDLE handle = ::FindFirstFile(m_FileName.c_str(),&findData);
-   CHECK(handle != INVALID_HANDLE_VALUE);
-   if ( handle != INVALID_HANDLE_VALUE )
-      ::FindClose(handle);
-#endif
    rVisitor.VisitRcEquation( this );
 }
 
@@ -83,8 +49,6 @@ rptReportContent* rptRcEquation::CreateClone() const
 {
    return new rptRcEquation( *this );
 }
-
-//======================== ACCESS     =======================================
 
 const std::_tstring& rptRcEquation::GetFileName() const
 {
@@ -106,12 +70,12 @@ void rptRcEquation::SetLaTeX(const std::_tstring& LaTeX)
     m_LaTeX = LaTeX;
 }
 
-void rptRcEquation::SetMathDisplay(rptRcEquation::Display dsp)
+void rptRcEquation::SetMathDisplay(rptRcEquation::DisplayType dsp)
 {
     m_mathDisplay = dsp;
 }
 
-rptRcEquation::Display rptRcEquation::GetMathDisplay() const
+rptRcEquation::DisplayType rptRcEquation::GetMathDisplay() const
 {
     return m_mathDisplay;
 }

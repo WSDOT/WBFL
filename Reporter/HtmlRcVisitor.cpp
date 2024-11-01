@@ -507,6 +507,16 @@ void rptHtmlRcVisitor::VisitRcHyperTarget(rptRcHyperTarget* my_m)
 void rptHtmlRcVisitor::VisitRcImage(rptRcImage* pImage)
 {
    std::_tstring file_name = pImage->GetFileName();
+
+#if defined _DEBUG
+   // test to make sure the file exists
+   WIN32_FIND_DATA findData;
+   HANDLE handle = ::FindFirstFile(file_name.c_str(), &findData);
+   CHECK(handle != INVALID_HANDLE_VALUE);
+   if (handle != INVALID_HANDLE_VALUE)
+      ::FindClose(handle);
+#endif
+
    std::_tstring picture_description = pImage->GetPictureDescription();
    std::_tstring align = _T("bottom");
    switch( pImage->GetImageAlignment() )
@@ -589,7 +599,7 @@ void rptHtmlRcVisitor::VisitRcEquation(rptRcEquation* pEqn)
 {
     if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
     {
-        if (pEqn->GetMathDisplay() == rptRcEquation::InLine)
+        if (pEqn->GetMathDisplay() == rptRcEquation::DisplayType::InLine)
         {
             *m_pOstream << _T("\\({\\displaystyle ") << pEqn->GetLaTeX() << _T("}\\)") << std::endl;
         }
