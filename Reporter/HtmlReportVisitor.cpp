@@ -98,6 +98,15 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 //   }
 
 
+   
+   if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+   {
+       *m_pOstream << _T("<script type = \"text/javascript\"") << std::endl;
+       *m_pOstream << _T("    src = \"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\">") << std::endl;
+       *m_pOstream << _T("</script>") << std::endl;
+   }
+
+
    *m_pOstream << _T("</head>") << std::endl<<std::endl;
 
    *m_pOstream << _T("<BODY onDragStart=\"onde()\" >") << std::endl;
@@ -145,6 +154,7 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
       //   *m_pOstream << _T("   alert(\"Table copied to clipboard. You can now past into Word or Excel\");") << std::endl;
       *m_pOstream << _T("}") << std::endl;
       *m_pOstream << _T("</script>") << std::endl;
+
    }
 
    *m_pOstream << _T("</html>") <<std::endl;
