@@ -38,7 +38,6 @@
 #include <Reporter\RcDateTime.h>
 #include <Reporter\RcHyperTarget.h>
 #include <Reporter\RcImage.h>
-#include <Reporter\RcEquation.h>
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcScalar.h>
 #include <Reporter\RcPercentage.h>
@@ -583,26 +582,6 @@ void rptHtmlRcVisitor::VisitRcImage(rptRcImage* pImage)
 
       *m_pOstream << _T("/>") << std::endl;
    }
-}
-
-void rptHtmlRcVisitor::VisitRcEquation(rptRcEquation* pEqn)
-{
-    if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
-    {
-        if (pEqn->GetMathDisplay() == rptRcEquation::InLine)
-        {
-            *m_pOstream << _T("\\({\\displaystyle ") << pEqn->GetLaTeX() << _T("}\\)") << std::endl;
-        }
-        else
-        {
-            *m_pOstream << _T("$$\\displaystyle ") << pEqn->GetLaTeX() << _T("$$") << std::endl;
-        }
-    }
-    else
-    {
-        rptRcImage pImage(pEqn->GetFileName());
-        VisitRcImage(&pImage);
-    }
 }
 
 //------------------------------------------------------------------------

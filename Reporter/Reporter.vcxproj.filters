@@ -166,9 +166,6 @@
     <ClCompile Include="Heading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RcEquation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Reporter\AutoLib.h">
@@ -346,9 +343,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\Reporter\Heading.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\Reporter\RcEquation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

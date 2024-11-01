@@ -211,7 +211,6 @@
     <ClCompile Include="RcColor.cpp" />
     <ClCompile Include="RcComposite.cpp" />
     <ClCompile Include="RcDateTime.cpp" />
-    <ClCompile Include="RcEquation.cpp" />
     <ClCompile Include="RcFlowModifier.cpp" />
     <ClCompile Include="RcFontModifier.cpp" />
     <ClCompile Include="RcHyperTarget.cpp" />
@@ -268,7 +267,6 @@
     <ClInclude Include="..\Include\Reporter\RcColor.h" />
     <ClInclude Include="..\Include\Reporter\RcComposite.h" />
     <ClInclude Include="..\Include\Reporter\RcDateTime.h" />
-    <ClInclude Include="..\Include\Reporter\RcEquation.h" />
     <ClInclude Include="..\Include\Reporter\RcFlowModifier.h" />
     <ClInclude Include="..\Include\Reporter\RcFontModifier.h" />
     <ClInclude Include="..\Include\Reporter\RcHyperTarget.h" />

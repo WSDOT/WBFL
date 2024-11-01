@@ -40,7 +40,6 @@ class REPORTERCLASS rptParagraph;
 class REPORTERCLASS rptRcDateTime;
 class REPORTERCLASS rptRcHyperTarget;
 class REPORTERCLASS rptRcImage;
-class REPORTERCLASS rptRcEquation;
 class REPORTERCLASS rptRcSymbol;
 class REPORTERCLASS rptRcScalar;
 class REPORTERCLASS rptRcPercentage;
@@ -71,7 +70,6 @@ public:
    virtual void VisitRcDateTime(rptRcDateTime*) = 0;
    virtual void VisitRcHyperTarget(rptRcHyperTarget*) = 0;
    virtual void VisitRcImage(rptRcImage*) = 0;
-   virtual void VisitRcEquation(rptRcEquation*) = 0;
    virtual void VisitRcSymbol(rptRcSymbol*) = 0;
    virtual void VisitRcScalar(rptRcScalar*) = 0;
    virtual void VisitRcPercentage(rptRcPercentage*) = 0;

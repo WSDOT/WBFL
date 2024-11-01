@@ -85,9 +85,6 @@ public:
    /// Visit an image
    void VisitRcImage(rptRcImage*);
 
-   /// Visit an equation
-   void VisitRcEquation(rptRcEquation*);
-
    /// Visit a symbol
    void VisitRcSymbol(rptRcSymbol*);
 
