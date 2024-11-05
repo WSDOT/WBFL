@@ -28,11 +28,13 @@ m_PlacementCookie(0)
 
 CLBAMTruckDisplayImpl::~CLBAMTruckDisplayImpl()
 {
-   IDispatch* pid = this->GetIDispatch(FALSE);
-   AfxConnectionUnadvise (m_Placement, IID_ILiveLoadConfigurationEvents,
-                          pid, FALSE, 
-                          m_PlacementCookie);
-
+   if (m_PlacementCookie != 0)
+   {
+      IDispatch* pid = this->GetIDispatch(FALSE);
+      AfxConnectionUnadvise(m_Placement, IID_ILiveLoadConfigurationEvents,
+         pid, FALSE,
+         m_PlacementCookie);
+   }
 }
 
 BEGIN_MESSAGE_MAP(CLBAMTruckDisplayImpl, CCmdTarget)
@@ -471,10 +473,11 @@ bool CLBAMTruckDisplayImpl::OnKeyDown(std::shared_ptr<WBFL::DManip::iDisplayObje
          m_Dirty = true;
       }
       break;
-      break;
    case VK_RETURN:
-   case VK_DELETE:
-      ATLASSERT(0);
+      EditTruckPosition();
+      break;
+   //case VK_DELETE:
+   //   ATLASSERT(0);
    }
 
    return true;

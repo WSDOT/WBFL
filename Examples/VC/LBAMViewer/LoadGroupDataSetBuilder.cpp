@@ -97,11 +97,11 @@ void LoadGroupDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locLi
 
    // deal with legend
    auto fac = dataset_p->GetDataPointFactory();
-   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+   auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
    entry->SetColor(color);
    entry->SetSymbolCharacterCode(204);
-   entry->DoDrawLine(TRUE);
+   entry->DrawLine(TRUE);
 
    entry->SetName(OLE2T(m_LoadGroup));
 
@@ -158,11 +158,11 @@ void LoadGroupDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locL
 
          // deal with legend
          auto fac = dataset_p->GetDataPointFactory();
-         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+         auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
          entry->SetColor(color);
          entry->SetSymbolCharacterCode(DWORD(49+isp));
-         entry->DoDrawLine(TRUE);
+         entry->DrawLine(true);
 
          entry->SetName(OLE2T(m_LoadGroup));
 

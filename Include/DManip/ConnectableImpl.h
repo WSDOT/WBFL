@@ -102,13 +102,19 @@ namespace WBFL
 
          virtual void RemoveAllSockets() override
          {
-            std::for_each(m_Sockets.begin(), m_Sockets.end(), [](auto& socket) {socket->DisconnectAll(); });
-            m_Sockets.clear();
+            if (!m_Sockets.empty())
+            {
+               std::for_each(m_Sockets.begin(), m_Sockets.end(), [](auto& socket) {socket->DisconnectAll(); });
+               m_Sockets.clear();
+            }
          }
 
          virtual void DrawSockets(CDC* pDC, std::shared_ptr<const iCoordinateMap> pMap) override
          {
-            std::for_each(m_Sockets.begin(), m_Sockets.end(), [pDC,pMap](auto& socket) {socket->Draw(pDC,pMap); });
+            if (!m_Sockets.empty())
+            {
+               std::for_each(m_Sockets.begin(), m_Sockets.end(), [pDC, pMap](auto& socket) {socket->Draw(pDC, pMap); });
+            }
          }
 
          virtual DWORD Connect(IDType key, AccessType access, std::shared_ptr<iPlug> plug) override

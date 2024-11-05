@@ -136,11 +136,11 @@ void EnvelopedVehicularDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDb
 
       // deal with legend
       auto fac = dataset_p->GetDataPointFactory();
-      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+      auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
       entry->SetColor(iopt == 0 ? color : ~color);
       entry->SetSymbolCharacterCode(symbol_code);
-      entry->DoDrawLine(TRUE);
+      entry->DrawLine(TRUE);
 
       entry->SetName(str.LockBuffer());
 
@@ -256,11 +256,11 @@ void EnvelopedVehicularDataSetBuilder::BuildStressDataSets(IIDArray* poiList, ID
 
       // deal with legend
       auto fac = dataset_p->GetDataPointFactory();
-      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+      auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
       entry->SetColor(color);
       entry->SetSymbolCharacterCode(DWORD(47+isp));
-      entry->DoDrawLine(TRUE);
+      entry->DrawLine(TRUE);
 
       CString str;
       str.Format(_T("Env. %s %d"), LL_NAMES[m_LlmType], m_VehicleIndex);

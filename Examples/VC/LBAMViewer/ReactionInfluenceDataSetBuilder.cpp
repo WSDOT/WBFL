@@ -39,11 +39,11 @@ void ReactionInfluenceDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray
 
    // deal with legend
    auto fac = dataset_p->GetDataPointFactory();
-   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+   auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
    entry->SetColor(color);
    entry->SetSymbolCharacterCode(213);
-   entry->DoDrawLine(TRUE);
+   entry->DrawLine(true);
 
    CString str;
    str.Format(_T("React Infl %d"),m_SupportId);

@@ -208,6 +208,12 @@ void CLBAMViewerView::OnInitialUpdate()
       auto factory = std::make_shared<CDisplayObjectFactory>(pDoc);
       dispMgr->AddDisplayObjectFactory(factory);
 
+      m_pDispMgr->EnableLBtnSelect(TRUE);
+      m_pDispMgr->EnableRBtnSelect(TRUE);
+      m_pDispMgr->SetSelectionLineColor(SELECTED_OBJECT_LINE_COLOR);
+      m_pDispMgr->SetSelectionFillColor(SELECTED_OBJECT_FILL_COLOR);
+
+
       // factory from dmaniptools
       //CComPtr<iDisplayObjectFactory> pfac2;
       //hr = pfac2.CoCreateInstance(CLSID_DManipToolsDisplayObjectFactory);
@@ -237,6 +243,7 @@ void CLBAMViewerView::OnInitialUpdate()
 
       // graph
       auto graph_list = WBFL::DManip::DisplayList::Create(GRAPH_LIST);
+      dispMgr->AddDisplayList(graph_list);
 
       // legend
       auto legend_list = WBFL::DManip::DisplayList::Create(LEGEND_LIST);
@@ -255,7 +262,7 @@ void CLBAMViewerView::OnInitialUpdate()
 
       // create our one and only legend display object
       m_Legend = CLegendDisplayObject::Create();
-      m_Legend->SetTitle(_T("Legend"));
+      // m_Legend->SetTitle(_T("Legend"));
       legend_list->AddDisplayObject(m_Legend);
 
 
@@ -844,9 +851,9 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, std::shared
          hr = ssms->get_Offset(&overhang);
          PROCESS_HR(hr);
 
-      #pragma Reminder("Hack - placing graph in view")
+      #pragma Reminder("Hack - placing graph and legend in view")
          // assume that column lengths are less than 10% of lbam length
-         auto graph_bounds = m_Graph->GetGraphBounds();
+         WBFL::Geometry::Rect2d graph_bounds;
 
          double graph_top = -lbam_length/10.0;
          double graph_bottom = graph_top - lbam_length/2; // 2:1 aspect
@@ -856,7 +863,10 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, std::shared
          graph_bounds.Top() = graph_top;
          graph_bounds.Bottom() = graph_bottom;
 
-         WBFL::Geometry::Point2d leg_pos(lbam_length/2.0, graph_top);
+         m_Graph->SetGraphBounds(graph_bounds);
+
+         // want legend just above top of graph
+         WBFL::Geometry::Point2d leg_pos(0.0, graph_top+(graph_top-graph_bottom)/15.);
 
          m_Legend->SetPosition(leg_pos,FALSE,FALSE);
       }
@@ -977,6 +987,7 @@ void CLBAMViewerView::BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, std::shared
             auto factory = dispMgr->GetDisplayObjectFactory(0);
 
             auto disp_obj = factory->Create(CLBAMTruckDisplayImpl::ms_Format,NULL);
+            disp_obj->SetSelectionType(WBFL::DManip::SelectionType::All);
 
             auto sink = disp_obj->GetEventSink();
 

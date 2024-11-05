@@ -16,12 +16,17 @@ CLegendEntryImpl::CLegendEntryImpl() :
 {
 }
 
-void CLegendEntryImpl::SetName(std::_tstring newVal)
+void CLegendEntryImpl::SetName(LPCTSTR lpszName)
 {
-   m_Name = newVal;
+   m_Name = lpszName;
 }
 
-std::_tstring CLegendEntryImpl::GetSymbolFontFace()
+std::_tstring CLegendEntryImpl::GetName() const
+{
+   return m_Name;
+}
+
+std::_tstring CLegendEntryImpl::GetSymbolFontFace() const
 {
    return m_FontFace;
 }
@@ -31,7 +36,7 @@ void CLegendEntryImpl::SetSymbolFontFace(LPCTSTR  newVal)
    m_FontFace = newVal;
 }
 
-long CLegendEntryImpl::GetSymbolSize()
+long CLegendEntryImpl::GetSymbolSize() const
 {
    return m_FontSize;
 }
@@ -42,7 +47,7 @@ void CLegendEntryImpl::SetSymbolSize(long size)
    m_FontSize = size;
 }
 
-DWORD CLegendEntryImpl::GetSymbolCharacterCode()
+DWORD CLegendEntryImpl::GetSymbolCharacterCode() const
 {
    return m_CharCode;
 }
@@ -52,7 +57,7 @@ void CLegendEntryImpl::SetSymbolCharacterCode(DWORD code)
    m_CharCode = code;
 }
 
-COLORREF CLegendEntryImpl::GetColor()
+COLORREF CLegendEntryImpl::GetColor() const
 {
    return m_Color;
 }
@@ -62,69 +67,68 @@ void CLegendEntryImpl::SetColor(COLORREF color)
    m_Color = color;
 }
 
-BOOL CLegendEntryImpl::DoDrawLine()
+bool CLegendEntryImpl::DrawLine() const
 {
    return m_DoDrawLine;
 }
 
-void CLegendEntryImpl::DoDrawLine(BOOL doDraw)
+void CLegendEntryImpl::DrawLine(bool doDraw)
 {
    m_DoDrawLine = doDraw;
 }
 
+void CLegendEntryImpl::Draw(CDC* pDC, const RECT& drawRect, bool beingDragged) const
+{
+   if (m_CharCode == 0 && !m_DoDrawLine)
+   {
+      // fill rect solid
+      CBrush brush(m_Color);
+      CPen back_pen(PS_SOLID, 1, m_Color);
+      CBrush* pold_brush = pDC->SelectObject(&brush);
+      CPen* pold_pen = pDC->SelectObject(&back_pen);
 
-//void CLegendEntryImpl::Draw(CDC* pDC, CRect& drawRect, BOOL beingDragged)
-//{
-//   if (m_CharCode == 0 && !m_DoDrawLine)
-//   {
-//      // fill rect solid
-//      CBrush brush(m_Color);
-//      CPen back_pen(PS_SOLID, 1, m_Color);
-//      CBrush* pold_brush = pDC->SelectObject(&brush);
-//      CPen* pold_pen = pDC->SelectObject(&back_pen);
-//
-//      pDC->Rectangle(drawRect);
-//
-//      pDC->SelectObject(&pold_brush);
-//      pDC->SelectObject(&pold_pen);
-//   }
-//   else
-//   {
-//      long midy = (drawRect.top + drawRect.bottom) / 2;
-//
-//      if (m_DoDrawLine)
-//      {
-//         CPen pen(PS_SOLID, 3, m_Color);
-//         CPen* old_pen = pDC->SelectObject(&pen);
-//
-//         pDC->MoveTo(drawRect.left, midy);
-//         pDC->LineTo(drawRect.right, midy);
-//
-//         pDC->SelectObject(old_pen);
-//      }
-//
-//      if (!beingDragged && m_CharCode != 0)
-//      {
-//         COLORREF old_col = pDC->SetTextColor(m_Color);
-//         CFont font;
-//         font.CreatePointFont(m_FontSize, m_FontFace.c_str(), pDC);
-//         CFont* old_font = pDC->SelectObject(&font);
-//
-//         CRect rect(0, 0, 0, 0);
-//         pDC->DrawText((LPCTSTR)&m_CharCode, 1, &rect, DT_CALCRECT);
-//         long hgt2 = 1 + rect.Height() / 2;
-//
-//         long midx = (drawRect.left + drawRect.right) / 2;
-//
-//         UINT old_align = pDC->SetTextAlign(TA_CENTER | TA_TOP);
-//         pDC->TextOut(midx, midy - hgt2, (LPCTSTR)&m_CharCode, 1);
-//
-//         pDC->SetTextAlign(old_align);
-//         pDC->SelectObject(old_font);
-//         pDC->SetTextColor(old_col);
-//      }
-//   }
-//}
+      pDC->Rectangle(&drawRect);
+
+      pDC->SelectObject(&pold_brush);
+      pDC->SelectObject(&pold_pen);
+   }
+   else
+   {
+      long midy = (drawRect.top + drawRect.bottom) / 2;
+
+      if (m_DoDrawLine)
+      {
+         CPen pen(PS_SOLID, 3, m_Color);
+         CPen* old_pen = pDC->SelectObject(&pen);
+
+         pDC->MoveTo(drawRect.left, midy);
+         pDC->LineTo(drawRect.right, midy);
+
+         pDC->SelectObject(old_pen);
+      }
+
+      if (!beingDragged && m_CharCode != 0)
+      {
+         COLORREF old_col = pDC->SetTextColor(m_Color);
+         CFont font;
+         font.CreatePointFont(m_FontSize, m_FontFace.c_str(), pDC);
+         CFont* old_font = pDC->SelectObject(&font);
+
+         CRect rect(0, 0, 0, 0);
+         pDC->DrawText((LPCTSTR)&m_CharCode, 1, &rect, DT_CALCRECT);
+         long hgt2 = 1 + rect.Height() / 2;
+
+         long midx = (drawRect.left + drawRect.right) / 2;
+
+         UINT old_align = pDC->SetTextAlign(TA_CENTER | TA_TOP);
+         pDC->TextOut(midx, midy - hgt2, (LPCTSTR)&m_CharCode, 1);
+
+         pDC->SetTextAlign(old_align);
+         pDC->SelectObject(old_font);
+         pDC->SetTextColor(old_col);
+      }
+   }
+}
 
 std::shared_ptr<WBFL::DManip::iDisplayObject> CLegendEntryImpl::CreateDataPoint(Float64 dataX, Float64 dataY, Float64 graphX, Float64 graphY)
 {
@@ -156,6 +160,67 @@ std::shared_ptr<WBFL::DManip::iDisplayObject> CLegendEntryImpl::CreateDataPoint(
 
    return dp_rep;
 }
+
+COLORREF CLegendEntryImpl::GetColor()
+{
+   return m_Color;
+}
+
+void CLegendEntryImpl::WriteDragData(std::shared_ptr<WBFL::DManip::iDragDataSink> pSink, UINT cfFormat)
+{
+   // name
+   long len = (long)m_Name.length();
+   pSink->Write(cfFormat, &len, sizeof(long));
+   if (0 < len)
+   {
+      auto tstr = m_Name.c_str();
+      pSink->Write(cfFormat, (void*)tstr, len * sizeof(wchar_t)); // string data
+   }
+
+   // font face
+   len = (long)m_FontFace.length();
+   pSink->Write(cfFormat, &len, sizeof(long));
+   pSink->Write(cfFormat, (void*)LPCTSTR(m_FontFace.c_str()), len * sizeof(TCHAR));
+
+   pSink->Write(cfFormat, &m_FontSize, sizeof(long));
+   pSink->Write(cfFormat, &m_CharCode, sizeof(DWORD));
+   pSink->Write(cfFormat, &m_Color, sizeof(COLORREF));
+   pSink->Write(cfFormat, &m_DoDrawLine, sizeof(BOOL));
+}
+
+void CLegendEntryImpl::ReadDragData(std::shared_ptr<WBFL::DManip::iDragDataSource> pSource, UINT cfFormat)
+{
+   long len;
+   // name
+   pSource->Read(cfFormat, &len, sizeof(long));
+   wchar_t* wstr = new wchar_t[len + 1];
+
+   if (len > 0)
+      pSource->Read(cfFormat, wstr, len * sizeof(wchar_t));
+
+   wstr[len] = _T('\0');
+   m_Name = wstr;
+
+   delete[] wstr;
+
+   // font face
+   pSource->Read(cfFormat, &len, sizeof(long));
+   TCHAR* tstr = new TCHAR[len + 1];
+
+   if (len > 0)
+      pSource->Read(cfFormat, tstr, len * sizeof(TCHAR));
+
+   tstr[len] = _T('\0');
+   m_FontFace = tstr;
+
+   delete[] tstr;
+
+   pSource->Read(cfFormat, &m_FontSize, sizeof(long));
+   pSource->Read(cfFormat, &m_CharCode, sizeof(DWORD));
+   pSource->Read(cfFormat, &m_Color, sizeof(COLORREF));
+   pSource->Read(cfFormat, &m_DoDrawLine, sizeof(BOOL));
+}
+
 
 //void CLegendEntryImpl::WriteDragData(std::shared_ptr<WBFL::DManip::iDragDataSink> pSink, UINT cfFormat)
 //{

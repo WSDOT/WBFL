@@ -101,11 +101,11 @@ void LoadCaseDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray* locLis
 
    // deal with legend
    auto fac = dataset_p->GetDataPointFactory();
-   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+   auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
    entry->SetColor(color);
    entry->SetSymbolCharacterCode(200);
-   entry->DoDrawLine(TRUE);
+   entry->DrawLine(TRUE);
 
    entry->SetName(OLE2T(m_LoadCase));
 
@@ -161,11 +161,11 @@ void LoadCaseDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray* locLi
 
          // deal with legend
          auto fac = dataset_p->GetDataPointFactory();
-         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+         auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
          entry->SetColor(color);
          entry->SetSymbolCharacterCode(DWORD(49+isp));
-         entry->DoDrawLine(TRUE);
+         entry->DrawLine(TRUE);
 
          entry->SetName(OLE2T(m_LoadCase));
 

@@ -4,27 +4,34 @@
 #include "GraphXYDisplayObject.h"
 
 class CLegendEntryImpl :
-   public iSymbolLegendEntry,
+   public WBFL::DManip::iLegendEntry,
    public iDataPointFactory
 {
 public:
    CLegendEntryImpl();
 
-   // iSymbolLegendEntry 
-   void SetName(std::_tstring name) override;
-   std::_tstring GetSymbolFontFace() override;
+   // iLegendEntry 
+   void SetName(LPCTSTR lpszName) override;
+   std::_tstring GetName() const override;
+   std::_tstring GetSymbolFontFace() const override;
    void SetSymbolFontFace(LPCTSTR newVal) override;
-   long GetSymbolSize() override;
+   long GetSymbolSize() const override;
    void SetSymbolSize(long code) override;
-   DWORD GetSymbolCharacterCode() override;
+   DWORD GetSymbolCharacterCode() const override;
    void SetSymbolCharacterCode(DWORD code) override;
-   COLORREF GetColor() override;
+   COLORREF GetColor() const override;
    void SetColor(COLORREF color) override;
-   BOOL DoDrawLine() override;
-   void DoDrawLine(BOOL doDraw) override;
+   bool DrawLine() const override;
+   void DrawLine(bool bDraw) override;
+
+   void Draw(CDC* pDC, const RECT& drawRect, bool beingDrabbed) const override;
+  
+   void WriteDragData(std::shared_ptr<WBFL::DManip::iDragDataSink> pSink, UINT cfFormat) override;
+   void ReadDragData(std::shared_ptr<WBFL::DManip::iDragDataSource> pSource, UINT cfFormat) override;
 
    // iDataPointFactory
    std::shared_ptr<WBFL::DManip::iDisplayObject> CreateDataPoint(Float64 dataX, Float64 dataY, Float64 graphX, Float64 graphY) override;
+   COLORREF GetColor() override;
 
 private:
    std::_tstring m_Name;
@@ -32,5 +39,5 @@ private:
    long     m_FontSize;
    DWORD    m_CharCode;
    COLORREF m_Color;
-   BOOL     m_DoDrawLine;
+   bool     m_DoDrawLine;
 };

@@ -38,11 +38,11 @@ void ContraflexureDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* lo
 
    // deal with legend
    auto fac = dataset_p->GetDataPointFactory();
-   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+   auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
    entry->SetColor(color);
    entry->SetSymbolCharacterCode(64);
-   entry->DoDrawLine(TRUE);
+   entry->DrawLine(TRUE);
 
    entry->SetName(_T("Contraflexure"));
 

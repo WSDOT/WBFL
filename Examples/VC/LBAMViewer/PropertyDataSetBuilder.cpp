@@ -47,7 +47,7 @@ void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
 
    // deal with legend
    auto fac = dataset_p->GetDataPointFactory();
-   auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+   auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
    entry->SetColor(color);
 
@@ -55,7 +55,7 @@ void PropertyDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locList
    UINT symbol;
    GetPInfo(m_Type, &symbol, bstr);
    entry->SetSymbolCharacterCode(symbol);
-   entry->DoDrawLine(TRUE);
+   entry->DrawLine(TRUE);
    entry->SetName(OLE2T(bstr));
 
    auto dataset = dataset_p->GetDataSet();

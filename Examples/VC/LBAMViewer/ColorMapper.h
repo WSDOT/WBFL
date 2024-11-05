@@ -26,8 +26,12 @@
 // Oct 1999 - Released as open source
 // Feb 2002 - Converted to mfc
 
-#if !defined (COLORMAPPER_H_)
-#define COLORMAPPER_H_
+#pragma once
+
+// Color managment in the lbamviewer is a mess. Start collecting colors here:
+#define SELECTED_OBJECT_LINE_COLOR RED4
+#define SELECTED_OBJECT_FILL_COLOR BLUE
+
 
 // Color mapping class for Windows
 //
@@ -125,5 +129,3 @@ private:
 
    CColorIterator();
 };
-
-#endif // COLORMAPPER_H_

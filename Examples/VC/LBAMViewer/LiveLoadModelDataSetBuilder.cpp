@@ -116,12 +116,12 @@ void LiveLoadModelDataSetBuilder::BuildForceDataSets(IIDArray* poiList, IDblArra
 
       // deal with legend
       auto fac = dataset_p->GetDataPointFactory();
-      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+      auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
       entry->SetColor(color);
       entry->SetSymbolFontFace(_T("Webdings"));
       entry->SetSymbolCharacterCode(104);
-      entry->DoDrawLine(TRUE);
+      entry->DrawLine(TRUE);
 
       entry->SetName(str.LockBuffer());
 
@@ -231,12 +231,12 @@ void LiveLoadModelDataSetBuilder::BuildStressDataSets(IIDArray* poiList, IDblArr
 
       // deal with legend
       auto fac = dataset_p->GetDataPointFactory();
-      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+      auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
       entry->SetColor(color);
       entry->SetSymbolFontFace(_T("Wingdings"));
       entry->SetSymbolCharacterCode(DWORD(128+isp));
-      entry->DoDrawLine(TRUE);
+      entry->DrawLine(true);
 
       CString str;
       str.Format(_T("LL Env %s SP %d"), LL_NAMES[m_LlmType],isp);

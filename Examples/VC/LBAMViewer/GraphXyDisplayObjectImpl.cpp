@@ -408,7 +408,7 @@ void CGraphXyDisplayObject::DrawGraph(Float64 worldTop, Float64 worldLeft, Float
 
          // draw values along horizontal axis
          UINT locator = TA_CENTER | TA_TOP;
-         Float64 tl_y = worldBottom - tic_size / 2;
+         Float64 tl_y = worldBottom + tic_size;
 
          for (IndexType ig = 0; ig <= num_xsegs; ig++)
          {
@@ -608,7 +608,7 @@ void CGraphXyDisplayObject::ClearDisplayObjects()
          }
       }
 
-      ClearDisplayObjects();
+      CompositeDisplayObject::ClearDisplayObjects();
       m_NumDos = 0;
    }
 }
@@ -673,7 +673,7 @@ std::shared_ptr<iDataSet2d> CGraphXyDataProvider::GetDataSet()
 
 void CGraphXyDataProvider::SetDataPointFactory(std::shared_ptr<iDataPointFactory> factory)
 {
-   m_Factory = factory;
+  m_Factory = factory;
 }
 
 std::shared_ptr<iDataPointFactory> CGraphXyDataProvider::GetDataPointFactory()

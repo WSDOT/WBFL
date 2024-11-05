@@ -7,36 +7,6 @@ interface iDragDataSource;
 interface iDisplayObject;
 
 
-// configurable legend entry to use symbols based on the Windows'
-// "Symbol" font
-interface iSymbolLegendEntry : public WBFL::DManip::LegendEntry
-{
-   virtual void SetName(std::_tstring name) = 0;
-
-   // name of font face for symbol
-   // "Symbol" is the default
-   virtual std::_tstring GetSymbolFontFace() = 0;
-   virtual void SetSymbolFontFace(LPCTSTR newVal) = 0;
-
-   // character font size in 1/10 points
-   virtual long GetSymbolSize() = 0;
-   virtual void SetSymbolSize(long code) = 0;
-
-   // Unicode constant defining symbol to be used for legend item
-   // Refer to Word's Insert Symbol command for a list of these codes
-   // NOTE that a value of zero will fill the entire legend box with the 
-   // current color.
-   virtual DWORD GetSymbolCharacterCode() = 0;
-   virtual void SetSymbolCharacterCode(DWORD code) = 0;
-
-   virtual COLORREF GetColor() = 0;
-   virtual void SetColor(COLORREF color) = 0;
-
-   // draw a horizontal colored line across the legend box
-   virtual BOOL DoDrawLine() = 0;
-   virtual void DoDrawLine(BOOL doDraw) = 0;
-};
-
 interface iLegendDisplayObject : WBFL::DManip::LegendDisplayObject
 {
    // location of top left corner of border

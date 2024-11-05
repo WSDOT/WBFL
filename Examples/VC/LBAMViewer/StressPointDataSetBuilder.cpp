@@ -58,11 +58,11 @@ void StressPointDataSetBuilder::BuildDataSets(IIDArray* poiList, IDblArray* locL
 
          // deal with legend
          auto fac = dataset_p->GetDataPointFactory();
-         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+         auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
          entry->SetColor(color);
          entry->SetSymbolCharacterCode(115);
-         entry->DoDrawLine(TRUE);
+         entry->DrawLine(TRUE);
 
          CString str;
          if (m_Type == stSa)

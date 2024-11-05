@@ -181,11 +181,11 @@ void LoadCombinationDataSetBuilder::BuildForceDataSets(IIDArray* arr, IDblArray*
 
       // deal with legend
       auto fac = dataset_p->GetDataPointFactory();
-      auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+      auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
       entry->SetColor(color);
       entry->SetSymbolCharacterCode(229);
-      entry->DoDrawLine(TRUE);
+      entry->DrawLine(TRUE);
 
       entry->SetName(str.LockBuffer());
 
@@ -250,12 +250,12 @@ void LoadCombinationDataSetBuilder::BuildStressDataSets(IIDArray* arr, IDblArray
 
          // deal with legend
          auto fac = dataset_p->GetDataPointFactory();
-         auto entry = std::dynamic_pointer_cast<iSymbolLegendEntry>(fac);
+         auto entry = std::dynamic_pointer_cast<iLegendEntry>(fac);
 
          entry->SetColor(color);
          entry->SetSymbolFontFace(_T("Wingdings2"));
          entry->SetSymbolCharacterCode(DWORD(116+isp));
-         entry->DoDrawLine(TRUE);
+         entry->DrawLine(TRUE);
 
          CString str;
          str.Format(_T("%s SP %d"), m_LoadCombination ,isp);
