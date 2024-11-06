@@ -265,6 +265,9 @@
   <ItemGroup>
     <CustomBuild Include="Stability.def" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Equations.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

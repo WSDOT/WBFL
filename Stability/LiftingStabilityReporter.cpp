@@ -866,7 +866,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
 
    if (IsEqual(Ll, Lr))
    {
-      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("s")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+      *pPara << _T("Offset Factor, ") << rptRcEquation(std::_tstring(rptStyleManager::GetImagePath())+_T("WBFLStability/OffsetFactor_EqualOverhangs.png"), _T("F_o = \\left(\\dfrac{L_s}{L_g}\\right)^2 - \\dfrac{1}{3}")) << _T(" = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
    }
    else
    {
