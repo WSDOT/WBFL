@@ -870,8 +870,7 @@ void LiftingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder, const
    }
    else
    {
-      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("a")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T("[1 - 2(b - a)/") << Sub2(_T("L"), _T("a")) << _T("]") << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
-      *pPara << _T("where a = Min(Ll,Lr), b = Max(Ll,Lr), and ") << Sub2(_T("L"), _T("a")) << _T(" = ") << Sub2(_T("L"), _T("g")) << _T(" - 2a") << rptNewLine;
+      *pPara << _T("Offset Factor, ") << rptRcEquation(std::_tstring(rptStyleManager::GetImagePath()) + _T("WBFLStability/OffsetFactor_UnequalOverhangs.png"), _T("F_o = \\left(\\dfrac{L_a}{L_g} \\right)^2 \\left[1-\\dfrac{2(b-a)}{L_a}\\right] - \\dfrac{1}{3}, a = min(L_t,L_l), b = max(L_t,L_l), L_a =L_g - 2a")) << _T(" = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
    }
 
    Float64 camber = pStabilityProblem->GetCamber();
