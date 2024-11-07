@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -68,39 +66,73 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\LBAMViewer.ico"
+
 IDR_LBAMTYPE            ICON                    "res\\LBAMViewerDoc.ico"
+
 IDI_OPEN_FOLDER_ICON    ICON                    "res\\OPENFOLD.ICO"
+
 IDI_FOLDER_ICON         ICON                    "res\\CLSDFOLD.ICO"
+
 IDI_LOADGROUP_ICON      ICON                    "res\\icon1.ico"
+
 IDI_SELECTED_LOADGROUP_ICON ICON                    "res\\idr_open.ico"
+
 IDI_TRUCK_ICON          ICON                    "res\\vehicula.ico"
+
 IDI_SELECTED_TRUCK_ICON ICON                    "res\\ico00002.ico"
+
 IDI_TRUCK_LANE_ICON     ICON                    "res\\idr_truc.ico"
+
 IDI_SELECTED_TRUCK_LANE_ICON ICON                    "res\\ico00003.ico"
+
 IDI_LANE_ICON           ICON                    "res\\ico00004.ico"
+
 IDI_SELECTED_LANE_ICON  ICON                    "res\\ico00005.ico"
+
 IDI_PEDESTRIAN_ICON     ICON                    "res\\pedestri.ico"
+
 IDI_SELECTED_PEDESTRIAN_ICON ICON                    "res\\ico00006.ico"
+
 IDI_ENVELOPE_TRUCK_ICON ICON                    "res\\ico00001.ico"
+
 IDI_SELECTED_ENVELOPE_TRUCK_ICON ICON                    "res\\ico00007.ico"
+
 IDI_INFLUENCE_LINE_ICON ICON                    "res\\influenc.ico"
+
 IDI_SELECTED_INFLUENCE_LINE_ICON ICON                    "res\\selected.ico"
+
 IDI_ENVELOPED_TRUCK_LANE_ICON ICON                    "res\\envelope.ico"
+
 IDI_SELECTED_ENVELOPED_TRUCK_LANE_ICON ICON                    "res\\ico00008.ico"
+
 IDI_CONTRAFLEXURE_ICON  ICON                    "res\\ico00009.ico"
+
 IDI_SELECTED_CONTRAFLEXURE_ICON ICON                    "res\\ico00010.ico"
+
 IDI_LIVE_LOAD_MODEL_ICON ICON                    "res\\live_loa.ico"
+
 IDI_SELECTED_LIVE_LOAD_MODEL_ICON ICON                    "res\\ico00011.ico"
+
 IDI_LIVE_LOAD_TL_MODEL_ICON ICON                    "res\\ico00012.ico"
+
 IDI_SELECTED_LIVE_LOAD_TL_MODEL_ICON ICON                    "res\\ico00013.ico"
+
 IDI_LOADCASE_ICON       ICON                    "res\\loadcase.ico"
+
 IDI_SELECTED_LOADCASE_ICON ICON                    "res\\ico00014.ico"
+
 IDI_LOADCOMBINATION_ICON ICON                    "res\\ico00015.ico"
+
 IDI_SELECTED_LOADCOMBINATION_ICON ICON                    "res\\ico00016.ico"
+
 IDI_PROPERTY_ICON       ICON                    "res\\ico00017.ico"
+
 IDI_SELECTED_PROPERTY_ICON ICON                    "res\\ico00018.ico"
+
 IDI_DF_ICON             ICON                    "res\\ico00019.ico"
+
 IDI_SELECTED_DF_ICON    ICON                    "res\\icon2.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -108,17 +140,22 @@ IDI_SELECTED_DF_ICON    ICON                    "res\\icon2.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 LIBRARY_MANAGER         BITMAP                  "res\\bitmap1.bmp"
+
 FOLDER                  BITMAP                  "res\\bitmap2.bmp"
+
 OPEN_FOLDER             BITMAP                  "res\\bmp00001.bmp"
+
 IDB_TREE_STATES         BITMAP                  "res\\tree_sta.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Toolbar
 //
 
-IDR_MAINFRAME TOOLBAR  16, 15
+IDR_MAINFRAME TOOLBAR 16, 15
 BEGIN
     BUTTON      ID_FILE_NEW
     BUTTON      ID_FILE_OPEN
@@ -140,7 +177,7 @@ END
 // Menu
 //
 
-IDR_MAINFRAME MENU 
+IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -177,7 +214,7 @@ BEGIN
     END
 END
 
-IDR_LBAMTYPE MENU 
+IDR_LBAMTYPE MENU
 BEGIN
     POPUP "&File"
     BEGIN
@@ -229,7 +266,7 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_MAINFRAME ACCELERATORS
 BEGIN
     "N",            ID_FILE_NEW,            VIRTKEY, CONTROL
     "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL
@@ -255,7 +292,7 @@ END
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG  0, 0, 235, 55
+IDD_ABOUTBOX DIALOG 0, 0, 235, 55
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About LBAMViewer"
 FONT 8, "MS Sans Serif"
@@ -266,7 +303,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
 END
 
-IDD_SUPPORT_EDIT_DLG DIALOG  0, 0, 187, 95
+IDD_SUPPORT_EDIT_DLG DIALOG 0, 0, 187, 95
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "Edit Support Properties"
 FONT 8, "MS Sans Serif"
@@ -275,7 +312,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
 END
 
-IDD_TEMPORARY_SUPPORT_DLG DIALOG  0, 0, 187, 95
+IDD_TEMPORARY_SUPPORT_DLG DIALOG 0, 0, 187, 95
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
 FONT 8, "MS Sans Serif"
@@ -296,7 +333,7 @@ BEGIN
     CONTROL         "Grid",IDC_GRID,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,293,3,29,10
 END
 
-IDD_TRUCK_POSITION DIALOG  0, 0, 187, 163
+IDD_TRUCK_POSITION DIALOG 0, 0, 187, 163
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 CAPTION "Edit Truck Position"
 FONT 8, "MS Sans Serif"
@@ -315,10 +352,10 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,104,142,50,14
 END
 
-IDD_REACTION_REPORT_DLG DIALOG  0, 0, 331, 229
+IDD_REACTION_REPORT_DLG DIALOGEX 0, 0, 331, 229
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Reaction Report"
-FONT 8, "MS Sans Serif"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,140,208,50,14
     CONTROL         "",IDC_RICHEDIT1,"RICHEDIT",TCS_HOTTRACK | TCS_VERTICAL | TCS_MULTISELECT | WS_BORDER | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,7,7,317,183
@@ -369,7 +406,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -456,30 +493,42 @@ END
 
 IDR_LBAMVIEWER          REGISTRY                "LBAMViewer.rgs"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_REACTION_REPORT_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDR_MAINFRAME           "LBAMViewer"
     IDR_LBAMTYPE            "\nLBAM\nLBAM\nLBAM Files (*.xml)\n.xml\nWBFLLBAMViewer.Document\nLBAM Document"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_APP_TITLE       "LBAMViewer"
     AFX_IDS_IDLEMESSAGE     "For Help, press F1"
     AFX_IDS_HELPMODEMESSAGE "Select an object on which to get Help"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_INDICATOR_EXT        "EXT"
     ID_INDICATOR_CAPS       "CAP"
@@ -489,7 +538,7 @@ BEGIN
     ID_INDICATOR_REC        "REC"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_NEW             "Create a new document\nNew"
     ID_FILE_OPEN            "Open an existing document\nOpen"
@@ -502,7 +551,7 @@ BEGIN
     ID_FILE_PRINT_PREVIEW   "Display full pages\nPrint Preview"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
     ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
@@ -513,7 +562,7 @@ BEGIN
     ID_HELP                 "Display help for current task or command\nHelp"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_FILE_MRU_FILE1       "Open this document"
     ID_FILE_MRU_FILE2       "Open this document"
@@ -533,13 +582,13 @@ BEGIN
     ID_FILE_MRU_FILE16      "Open this document"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
     ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
     ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
@@ -549,7 +598,7 @@ BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_EDIT_CLEAR           "Erase the selection\nErase"
     ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
@@ -564,13 +613,13 @@ BEGIN
     ID_EDIT_REDO            "Redo the previously undone action\nRedo"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     ID_VIEW_TOOLBAR         "Show or hide the toolbar\nToggle ToolBar"
     ID_VIEW_STATUS_BAR      "Show or hide the status bar\nToggle StatusBar"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCSIZE          "Change the window size"
     AFX_IDS_SCMOVE          "Change the window position"
@@ -581,21 +630,21 @@ BEGIN
     AFX_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
     AFX_IDS_MDICHILD        "Activate this window"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     AFX_IDS_PREVIEW_CLOSE   "Close print preview mode\nCancel Preview"
     IDS_INVALID_N_SPANS     "Invalid number of Spans or Supports. You must have one more Support than Spans."
     IDS_GRAPHXYDISPLAYOBJECT "GraphXyDisplayObject Class"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDM_LOADGROUP           "Static Results for LoadGroups"
     IDM_CONTRAFLEXURE       "Results of contraflexure analysis"
@@ -604,7 +653,7 @@ BEGIN
     IDM_IG_POIS             "Check to display internally-generated POI's"
 END
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

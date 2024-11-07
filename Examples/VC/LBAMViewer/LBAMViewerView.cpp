@@ -164,7 +164,7 @@ CLBAMViewerDoc* CLBAMViewerView::GetDocument() // non-debug version is inline
 
 /////////////////////////////////////////////////////////////////////////////
 // CLBAMViewerView message handlers
-DROPEFFECT CLBAMViewerView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point)
+DROPEFFECT CLBAMViewerView::CanDrop(COleDataObject* pDataObject, DWORD dwKeyState, const WBFL::Geometry::Point2d& point)
 {
    // This override has to determine if the thing being dragged over it can
    // be dropped. In order to do that, it must unpackage the OleDataObject.
@@ -190,7 +190,7 @@ DROPEFFECT CLBAMViewerView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState
    return DROPEFFECT_NONE;
 }
 
-void CLBAMViewerView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point)
+void CLBAMViewerView::OnDropped(COleDataObject* pDataObject, DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
 {
    AfxMessageBox(_T("OnDropped"));
 }

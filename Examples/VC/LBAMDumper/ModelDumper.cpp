@@ -167,9 +167,9 @@ static void DumpDistributionFactors(std::_tostream& os, ILBAMModel* model)
    os<<_T(" --- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------")<<endl;
 
    double start_loc=oh;
-   CollectionIndexType df_cnt;
+   IndexType df_cnt;
    hr = fdfc->get_Count(&df_cnt);
-   for (CollectionIndexType idf=0; idf<df_cnt; idf++)
+   for (IndexType idf=0; idf<df_cnt; idf++)
    {
       CComPtr<IDistributionFactorSegment> dfseg;
       hr = fdfc->get_Item(idf, &dfseg);
@@ -236,14 +236,14 @@ static void DumpLoadGroups(std::_tostream& os, ILBAMModel* model)
    CComPtr<ILoadGroups> LoadGroups;
    hr = model->get_LoadGroups(&LoadGroups);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    hr = LoadGroups->get_Count(&cnt);
    if (cnt>0)
    {
       os<<_T(" No.            Name                  Transient                             Description")<<endl
         <<_T(" --- -------------------------------- --------- --------------------------------------------------------------------------------")<<endl;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (IndexType i=0; i<cnt; i++)
       {
          CComPtr<ILoadGroup> LoadGroup;
          hr = LoadGroups->get_Item(i,&LoadGroup);
@@ -272,14 +272,14 @@ static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
    CComPtr<ILoadCases> LoadCases;
    hr = model->get_LoadCases(&LoadCases);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    hr = LoadCases->get_Count(&cnt);
    if (cnt>0)
    {
       os<<_T(" No.            Name                         LoadGroups                                        Description")<<endl
         <<_T(" --- -------------------------------- -------------------------------- --------------------------------------------------------------------------------")<<endl;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (IndexType i=0; i<cnt; i++)
       {
          CComPtr<ILoadCase> LoadCase;
          hr = LoadCases->get_Item(i,&LoadCase);
@@ -287,7 +287,7 @@ static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
          hr = LoadCase->get_Name(&name);
          hr = LoadCase->get_Description(&descr);
          
-         CollectionIndexType lg_cnt;
+         IndexType lg_cnt;
          hr = LoadCase->get_LoadGroupCount(&lg_cnt);
          // the first load group
          CComBSTR lg0(_T(" "));
@@ -299,7 +299,7 @@ static void DumpLoadCases(std::_tostream& os, ILBAMModel* model)
          os<<right<<setw(4)<<i<<_T(" ")<<setw(33)<<left<<W2A(name)<<setw(33)<<W2A(lg0)<<setw(80)<<W2A(descr)<<right<<endl;
 
          // the rest of the loadgroups
-         for (CollectionIndexType ilg=1; ilg<lg_cnt; ilg++)
+         for (IndexType ilg=1; ilg<lg_cnt; ilg++)
          {
             CComBSTR lg;
             hr = LoadCase->GetLoadGroup(ilg, &lg);
@@ -325,7 +325,7 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
    CComPtr<ILoadCombinations> LoadCombinations;
    hr = model->get_LoadCombinations(&LoadCombinations);
 
-   CollectionIndexType cnt;
+   IndexType cnt;
    hr = LoadCombinations->get_Count(&cnt);
    if (cnt>0)
    {
@@ -333,7 +333,7 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
       os<<_T(" No.            Name                     Type             LoadCases                   Factor     Factor     Type       Factor                  Description")<<endl
         <<_T(" --- -------------------------------- ------------ -------------------------------- ---------- ---------- ---------- ---------- --------------------------------------------------------------------------------")<<endl;
 
-      for (CollectionIndexType i=0; i<cnt; i++)
+      for (IndexType i=0; i<cnt; i++)
       {
          CComPtr<ILoadCombination> LoadCombination;
          hr = LoadCombinations->get_Item(i,&LoadCombination);
@@ -347,20 +347,20 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
          double llf;
          hr = LoadCombination->get_LiveLoadFactor(&llf);
          
-         CollectionIndexType lc_cnt;
+         IndexType lc_cnt;
          hr = LoadCombination->get_LoadCaseFactorCount(&lc_cnt);
          // the first load case
          CComBSTR lc0(_T(" "));
-         double lc0_min, lc0_max;
+         double lc0_min(0), lc0_max(0);
          if (lc_cnt>0)
          {
             hr = LoadCombination->GetLoadCaseFactor(0,&lc0,&lc0_min,&lc0_max);
          }
 
 
-         CollectionIndexType nLiveLoadModels;
+         IndexType nLiveLoadModels;
          LoadCombination->GetLiveLoadModelCount(&nLiveLoadModels);
-         for ( CollectionIndexType i = 0; i < nLiveLoadModels; i++ )
+         for ( IndexType i = 0; i < nLiveLoadModels; i++ )
          {
             LiveLoadModelType llt;
             hr = LoadCombination->GetLiveLoadModel(i,&llt);
@@ -370,7 +370,7 @@ static void DumpLoadCombos(std::_tostream& os, ILBAMModel* model)
               <<right<<setw(11)<<llf<<_T(" ")<<left<<setw(80)<<W2A(descr)<<right<<endl;
 
             // the rest of the loadcases
-            for (CollectionIndexType ilc=1; ilc<lc_cnt; ilc++)
+            for (IndexType ilc=1; ilc<lc_cnt; ilc++)
             {
                CComBSTR lc;
                double minf, maxf;
@@ -435,13 +435,13 @@ void CModelDumper::DumpSegmentData(std::_tostream& os, IFilteredSegmentCollectio
          hr = segment->get_SegmentCrossSection(&cs);
          CComPtr<IStressPoints> sps;
          hr = cs->get_StressPoints(&sps);
-         CollectionIndexType sps_cnt;
+         IndexType sps_cnt;
          hr = sps->get_Count(&sps_cnt);
          if (sps_cnt>0)
          {
             os<<_T(" Point     Sa         Sm")<<endl;
             os<<_T(" ----- ---------- ----------")<<endl;
-            for (CollectionIndexType isp=0; isp<sps_cnt; isp++)
+            for (IndexType isp=0; isp<sps_cnt; isp++)
             {
                CComPtr<IStressPoint> sp;
                hr = sps->get_Item(isp, &sp);
@@ -510,7 +510,7 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
    CComPtr<ISuperstructureMembers> ssms;
    hr = model->get_SuperstructureMembers(&ssms);
 
-   CollectionIndexType ssm_cnt;
+   IndexType ssm_cnt;
    hr = ssms->get_Count(&ssm_cnt);
 
    if (ssm_cnt>0)
@@ -519,7 +519,7 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
       os<<_T(" SSM  Length    Left     Removal Stage      Right     Removal Stage     Symmetrical")<<endl;
       os<<_T(" --- --------- ------ --------------------  ------ -------------------- ----------- ")<<endl;
 
-      for (CollectionIndexType i=0; i<ssm_cnt; i++)
+      for (IndexType i=0; i<ssm_cnt; i++)
       {
          CComPtr<ISuperstructureMember> ssm;
          hr = ssms->get_Item(i, &ssm);
@@ -545,7 +545,7 @@ void CModelDumper::DumpSSMData(std::_tostream& os, ILBAMModel* model)
       hr = stages->get_Count(&stg_cnt);
 
       // segments
-      for (CollectionIndexType i=0; i<ssm_cnt; i++)
+      for (IndexType i=0; i<ssm_cnt; i++)
       {
          os<<_T(" Segment Information for SuperstructureMember ")<<i<<endl;
          os<<_T(" ------------------------------------------------")<<endl;
@@ -587,14 +587,14 @@ void CModelDumper::DumpPOIData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<IPOIs> pois;
    hr = model->get_POIs(&pois);
-   CollectionIndexType poi_cnt;
+   IndexType poi_cnt;
    hr = pois->get_Count(&poi_cnt);
 
    os<<_T("                                                   # of POI          X           Y")<<endl;
    os<<_T("  POI      Member Type       Member ID   Location  Stress Points  Location    Location")<<endl;
    os<<_T(" ----- --------------------- --------- ----------- ------------- ----------- -----------")<<endl;
 
-   for (CollectionIndexType ipoi=0; ipoi<poi_cnt; ipoi++)
+   for (IndexType ipoi=0; ipoi<poi_cnt; ipoi++)
    {
       CComPtr<IPOI> poi;
       hr = pois->get_Item(ipoi, &poi);
@@ -609,7 +609,7 @@ void CModelDumper::DumpPOIData(std::_tostream& os, ILBAMModel* model)
       hr = poi->get_MemberType(&mtype);
       CComPtr<IPOIStressPoints> psps;
       hr = poi->get_POIStressPoints(&psps);
-      CollectionIndexType nsps;
+      IndexType nsps;
       hr = psps->get_Count(&nsps);
 
       double xloc, yloc;
@@ -633,7 +633,7 @@ void CModelDumper::DumpPointLoadData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<IPointLoads> pls;
    hr = model->get_PointLoads(&pls);
-   CollectionIndexType pl_cnt;
+   IndexType pl_cnt;
    hr = pls->get_Count(&pl_cnt);
 
    if (pl_cnt>0)
@@ -641,7 +641,7 @@ void CModelDumper::DumpPointLoadData(std::_tostream& os, ILBAMModel* model)
       os<<_T("          Stage                  Load Group          Member Type        Member ID  Location       Fx          Fy           Mz")<<endl;
       os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- ----------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
+      for (IndexType ip=0; ip<pl_cnt; ip++)
       {
          CComPtr<IPointLoadItem> pli;
          hr = pls->get_Item(ip, &pli);
@@ -684,7 +684,7 @@ static void DumpTemperatureLoadData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<ITemperatureLoads> pls;
    hr = model->get_TemperatureLoads(&pls);
-   CollectionIndexType pl_cnt;
+   IndexType pl_cnt;
    hr = pls->get_Count(&pl_cnt);
 
    if (pl_cnt>0)
@@ -692,7 +692,7 @@ static void DumpTemperatureLoadData(std::_tostream& os, ILBAMModel* model)
       os<<_T("          Stage                  Load Group          Member Type        Member ID    TTop        TBot")<<endl;
       os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
+      for (IndexType ip=0; ip<pl_cnt; ip++)
       {
          CComPtr<ITemperatureLoadItem> pli;
          hr = pls->get_Item(ip, &pli);
@@ -735,7 +735,7 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<IStrainLoads> pls;
    hr = model->get_StrainLoads(&pls);
-   CollectionIndexType pl_cnt;
+   IndexType pl_cnt;
    hr = pls->get_Count(&pl_cnt);
 
    if (pl_cnt>0)
@@ -743,7 +743,7 @@ static void DumpStrainLoadData(std::_tostream& os, ILBAMModel* model)
       os<<_T("          Stage                  Load Group          Member Type        Member ID   Start        End      Axial Strain Curve Strain")<<endl;
       os<<_T(" ------------------------ ------------------------ -------------------- --------- ----------- ----------- ------------ ------------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
+      for (IndexType ip=0; ip<pl_cnt; ip++)
       {
          CComPtr<IStrainLoadItem> pli;
          hr = pls->get_Item(ip, &pli);
@@ -791,7 +791,7 @@ static void DumpSettlementLoadData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<ISettlementLoads> pls;
    hr = model->get_SettlementLoads(&pls);
-   CollectionIndexType pl_cnt;
+   IndexType pl_cnt;
    hr = pls->get_Count(&pl_cnt);
 
    if (pl_cnt>0)
@@ -799,7 +799,7 @@ static void DumpSettlementLoadData(std::_tostream& os, ILBAMModel* model)
       os<<_T("          Stage                  Load Group        Supprt ID     Dx          Dy           Rz")<<endl;
       os<<_T(" ------------------------ ------------------------ --------- ----------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<pl_cnt; ip++)
+      for (IndexType ip=0; ip<pl_cnt; ip++)
       {
          CComPtr<ISettlementLoadItem> pli;
          hr = pls->get_Item(ip, &pli);
@@ -841,7 +841,7 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
 
    CComPtr<IDistributedLoads> dls;
    hr = model->get_DistributedLoads(&dls);
-   CollectionIndexType dl_cnt;
+   IndexType dl_cnt;
    hr = dls->get_Count(&dl_cnt);
 
    if (dl_cnt>0)
@@ -850,7 +850,7 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
       os<<_T("          Stage                  Load Group          Member Type        Member ID Orient Dir  Location    Location     Start        End ")<<endl;
       os<<_T(" ------------------------ ------------------------ -------------------- --------- ------ --- ----------- ----------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType id=0; id<dl_cnt; id++)
+      for (IndexType id=0; id<dl_cnt; id++)
       {
          CComPtr<IDistributedLoadItem> dli;
          hr = dls->get_Item(id, &dli);
@@ -903,7 +903,7 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
    CComPtr<ISupports> sups;
    hr = model->get_Supports(&sups);
 
-   CollectionIndexType sup_cnt;
+   IndexType sup_cnt;
    hr = sups->get_Count(&sup_cnt);
 
    if (sup_cnt>0)
@@ -913,7 +913,7 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
       os<<_T(" SUP  Length      Offset     BC   Hinge  Symmetrical  Min   Max   Min   Max   Min   Max   Min   Max   Min   Max   Min   Max")<<endl;
       os<<_T(" --- ---------- ---------- ------ ------ ----------- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----")<<endl;
 
-      for (CollectionIndexType i=0; i<sup_cnt; i++)
+      for (IndexType i=0; i<sup_cnt; i++)
       {
          CComPtr<ISupport> sup;
          hr = sups->get_Item(i, &sup);
@@ -973,7 +973,7 @@ void CModelDumper::DumpSupportData(std::_tostream& os, ILBAMModel* model)
       hr = stages->get_Count(&stg_cnt);
 
       // segments
-      for (CollectionIndexType i=0; i<sup_cnt; i++)
+      for (IndexType i=0; i<sup_cnt; i++)
       {
          os<<_T(" Segment Information for Support ")<<i<<endl;
          os<<_T(" ------------------------------------")<<endl;

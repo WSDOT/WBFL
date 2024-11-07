@@ -57,9 +57,9 @@ void CDumperUtil::Compute()
       hr = cum_poi_ids.CoCreateInstance(CLSID_IDArray);
       hr = cum_poi_locs.CoCreateInstance(CLSID_DblArray);
 
-      CollectionIndexType npois;
+      IndexType npois;
       hr = poi_ids->get_Count(&npois);
-      for (CollectionIndexType ip=0; ip<npois; ip++)
+      for (IndexType ip=0; ip<npois; ip++)
       {
          IDType poi_id;
          hr = poi_ids->get_Item(ip, &poi_id);
@@ -92,10 +92,10 @@ void CDumperUtil::Compute()
       CComPtr<IIDArray> sptids;
       this->GetSupportIDs(is, &sptids);
 
-      CollectionIndexType poi_cnt;
+      IndexType poi_cnt;
       hr = pois->get_Count(&poi_cnt);
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          CComPtr<IPOI> poi;
          hr = pois->get_Item(ip,&poi);
@@ -108,7 +108,7 @@ void CDumperUtil::Compute()
             MemberIDType spt_id;
             hr = poi->get_MemberID(&spt_id);
 
-            CollectionIndexType idx;
+            IndexType idx;
             HRESULT hresult = sptids->Find(spt_id, &idx);
 
             if (FAILED(hresult))
@@ -226,10 +226,10 @@ void CDumperUtil::GetAllPOIs(StageIndexType iStage, ResultsSummationType summ, I
       // get substructure pois and append them to the list
       this->GetSupportPOIs(iStage, &spids);
 
-      CollectionIndexType sp_cnt;
+      IndexType sp_cnt;
       hr = spids->get_Count(&sp_cnt);
 
-      for (CollectionIndexType ip=0; ip<sp_cnt; ip++)
+      for (IndexType ip=0; ip<sp_cnt; ip++)
       {
          IDType id;
          hr = spids->get_Item(ip, &id);

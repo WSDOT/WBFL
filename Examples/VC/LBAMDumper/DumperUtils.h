@@ -229,9 +229,9 @@ public:
    m_Engine(engine),
    m_DoDumpDetails(doDumpDetails),
    m_Dirty(true),
-   m_Ff(sysNumericFormatTool::Fixed, 11, 3),
-   m_Fd(sysNumericFormatTool::Fixed, 11, 3),
-   m_Fl(sysNumericFormatTool::Fixed, 12, 4)
+   m_Ff(WBFL::System::NumericFormatTool::Format::Fixed, 11, 3),
+   m_Fd(WBFL::System::NumericFormatTool::Format::Fixed, 11, 3),
+   m_Fl(WBFL::System::NumericFormatTool::Format::Fixed, 12, 4)
    {
    }
 
@@ -294,9 +294,9 @@ private:
 
    CComPtr<ILBAMFactory> m_Factory;
 
-   sysNumericFormatTool m_Ff;
-   sysNumericFormatTool m_Fd;
-   sysNumericFormatTool m_Fl;
+   WBFL::System::NumericFormatTool m_Ff;
+   WBFL::System::NumericFormatTool m_Fd;
+   WBFL::System::NumericFormatTool m_Fl;
 
 };
 
@@ -370,11 +370,11 @@ static void DumpLiveLoadConfiguration(std::_tostream& os, ILiveLoadConfiguration
 
       // string showing axles up or down
       straxlcfg.assign(axleCnt, '|');
-      CollectionIndexType nax_cnt;
+      IndexType nax_cnt;
       hr = axle_cfg->get_Count(&nax_cnt);
-      for (CollectionIndexType ix=0; ix<nax_cnt; ix++)    // loop over inactive axles
+      for (IndexType ix=0; ix<nax_cnt; ix++)    // loop over inactive axles
       {
-         CollectionIndexType nax;
+         IndexType nax;
          hr = axle_cfg->get_Item(ix, &nax);
 
          straxlcfg.at(nax) = '0';
