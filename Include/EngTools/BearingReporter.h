@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// EngTools - Library of miscellaneous engineering tools
+// Stability
 // Copyright © 1999-2024  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -21,18 +21,28 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// This is a master include file for the Engineering Tools Package
-#if defined(BUILDGEOMMODELLIB)
-	#error Do not use this header file in the Engineering Tools Package
-   #error It is for external users only
-#endif
+#pragma once
+#include <EngTools\Bearing.h>
+#include <EngTools\BearingLoads.h>
+#include <EngTools\BearingCalculator.h>
+#include <Reporter\Chapter.h>
+#include <Units/IndirectMeasure.h>
 
-#include <EngTools/BiaxialBeamStrain.h>
-#include <EngTools/MohrCircle.h>
-#include <EngTools/Bearing.h>
-#include <EngTools/BearingLoads.h>
-#include <EngTools/BearingCalculator.h>
-#include <EngTools/BearingReporter.h>
-#include <EngTools/PrandtlMembraneSolution.h>
-#include <EngTools/PrandtlMembraneSolver.h>
-#include <EngTools/UniformFDMesh.h>
+
+namespace WBFL
+{
+   namespace EngTools
+   {
+      ///  Generates reports for lifting stability analysis
+      class ENGTOOLSCLASS BearingReporter
+      {
+      public:
+         BearingReporter();
+
+         /// Builds the specification check chapter
+         void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, 
+             rptParagraph* pPara, const Bearing& brg,
+             const BearingLoads& brg_loads, const BearingCalculator& brg_calc);
+      };
+   }
+}
