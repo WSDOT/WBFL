@@ -616,13 +616,14 @@ void rptHtmlRcVisitor::VisitRcEquation(rptRcEquation* pEqn)
         {
             rptRcImage pImage(pEqn->GetFileName());
             pImage.SetImageAlignment(rptRcImage::Align::Middle);
+            VisitRcImage(&pImage);
         }
         else
         {
             rptRcImage pImage(pEqn->GetFileName());
+            VisitRcImage(&pImage);
         }
 
-        VisitRcImage(&pImage);
     }
 }
 
