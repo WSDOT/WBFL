@@ -190,8 +190,18 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    }
 
    // table setup
-   *m_pOstream << _T("<TABLE BORDER=")<< out_pixels<<_T(" RULES=ALL CELLSPACING=")<<in_pixels
-               << _T(" CELLPADDING=")<<cell_pad_pixels;
+   if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge && pTable->GetOutsideBorderStyle() == rptRiStyle::NOBORDER)
+   {
+        *m_pOstream << _T("<TABLE CLASS = \"no-border\"") << _T(" RULES=ALL CELLSPACING=") << in_pixels
+            << _T(" CELLPADDING=") << cell_pad_pixels;
+   }
+   else
+   {
+       *m_pOstream << _T("<TABLE BORDER=") << out_pixels << _T(" RULES=ALL CELLSPACING=") << in_pixels
+           << _T(" CELLPADDING=") << cell_pad_pixels;
+   }
+   
+
 
    if ( 0 < table_width_px )
       *m_pOstream <<_T(" WIDTH=\"")<<table_width_px;
