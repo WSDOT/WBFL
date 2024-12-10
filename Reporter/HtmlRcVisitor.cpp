@@ -611,7 +611,19 @@ void rptHtmlRcVisitor::VisitRcEquation(rptRcEquation* pEqn)
     else
     {
         rptRcImage pImage(pEqn->GetFileName());
-        VisitRcImage(&pImage);
+
+        if (pEqn->GetMathDisplay() == rptRcEquation::DisplayType::InLine)
+        {
+            rptRcImage pImage(pEqn->GetFileName());
+            pImage.SetImageAlignment(rptRcImage::Align::Middle);
+            VisitRcImage(&pImage);
+        }
+        else
+        {
+            rptRcImage pImage(pEqn->GetFileName());
+            VisitRcImage(&pImage);
+        }
+
     }
 }
 
