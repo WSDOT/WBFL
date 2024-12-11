@@ -348,7 +348,6 @@ Direction Direction::IncrementBy(const Angle& increment) const
 Angle Direction::AngleBetween(const Direction& dir) const
 {
    Float64 angle = m_Direction - dir.GetValue();
-   if (IsZero(angle)) angle = 0.0;
 
    Angle a(angle);
    a.Normalize();
