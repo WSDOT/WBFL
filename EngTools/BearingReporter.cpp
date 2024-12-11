@@ -251,7 +251,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 l_min = brg_calc.GetMinimumAllowableLength(brg, brg_loads);
 	bool l_min_check = brg_calc.MinimumLengthCheck(brg, brg_loads);
 
-	Float64 EcA = brg_calc.GetConcreteElasticModulusMethodA(brg);
+	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg);
 
 	Float64 smax = brg_calc.GetMaximumAllowableStress();
 	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
@@ -888,7 +888,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 es_cyclic_rotx = brg_calc.GetCyclicRotationalPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_roty = brg_calc.GetCyclicRotationalSecondaryShearStrain(brg, brg_loads);
 
-	Float64 EcB = brg_calc.GetConcreteElasticModulusMethodB(brg);
+	Float64 EcB = brg_calc.GetElastomerElasticModulusMethodB(brg);
 
 	Float64 sigmaTLstabX = brg_calc.GetAllowableTotalLoadStressStabilityX(brg, brg_loads);
 	Float64 sigmaTLstabY = brg_calc.GetAllowableTotalLoadStressStabilityY(brg, brg_loads);

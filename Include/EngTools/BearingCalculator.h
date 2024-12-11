@@ -72,10 +72,10 @@ namespace WBFL
             Float64 GetAbsoluteMinimumShimThickness() const;
             /// @return Elastomer Bulk Modulus
             Float64 GetElastomerBulkModulus() const;
-            /// @return Method A Concrete Elastic Modulus
-            Float64 GetConcreteElasticModulusMethodA(const Bearing&) const;
-            /// @return Method B Concrete Elastic Modulus 
-            Float64 GetConcreteElasticModulusMethodB(const Bearing&) const;
+            /// @return Method A Elastomer Elastic Modulus
+            Float64 GetElastomerElasticModulusMethodA(const Bearing&) const;
+            /// @return Method B Elastomer Elastic Modulus 
+            Float64 GetElastomerElasticModulusMethodB(const Bearing&) const;
             /// @return Method A Initial Dead Load Deflection
             Float64 GetInitialDeadLoadDeflectionMethodA(const Bearing&, const BearingLoads&) const;
             /// @return Method B Initial Dead Load Deflection 
