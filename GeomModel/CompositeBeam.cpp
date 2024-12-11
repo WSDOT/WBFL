@@ -98,6 +98,7 @@ void CompositeBeam::SetBeam(const Shape& beam)
 void CompositeBeam::SetBeam(std::unique_ptr<Shape>&& beam)
 {
    m_Section.GetComponent(BEAM).SetShape(std::move(beam));
+   UpdateShapeLocations();
 }
 
 Shape& CompositeBeam::GetBeam()
@@ -134,6 +135,7 @@ void CompositeBeam::SetEffectiveSlabWidth(Float64 wEff)
       left_trib.SetWidth(overhang);
       right_trib.SetWidth(overhang);
    }
+   UpdateShapeLocations();
 }
 
 Float64 CompositeBeam::GetEffectiveSlabWidth() const
@@ -169,6 +171,7 @@ void CompositeBeam::SetTributarySlabWidth(Float64 wTrib)
       left_trib.SetWidth(overhang);
       right_trib.SetWidth(overhang);
    }
+   UpdateShapeLocations();
 }
 
 Float64 CompositeBeam::GetTributarySlabWidth() const
@@ -264,6 +267,7 @@ void CompositeBeam::SetHaunchWidth(Float64 wHaunch)
    auto& haunch_component = m_Section.GetComponent(HAUNCH);
    Rectangle& haunch = dynamic_cast<Rectangle&>(haunch_component.GetShape());
    haunch.SetWidth(wHaunch);
+   UpdateShapeLocations();
 }
 
 Float64 CompositeBeam::GetHaunchWidth() const
@@ -325,6 +329,7 @@ Float64 CompositeBeam::GetBeamDensity() const
 void CompositeBeam::SetHookPoint(std::shared_ptr<Point2d> hookPnt)
 {
    m_Section.SetHookPoint(hookPnt);
+   UpdateShapeLocations();
 }
 
 void CompositeBeam::SetHookPoint(const Point2d& hookPnt)
