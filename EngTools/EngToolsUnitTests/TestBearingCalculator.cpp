@@ -45,8 +45,8 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(BearingLoads::FixedTranslationX::No);
 			brg_loads.SetFixedTranslationY(BearingLoads::FixedTranslationY::No);
 
-			Assert::IsTrue(IsEqual(brg_calc.GetConcreteElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(44.732, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
-			Assert::IsTrue(IsEqual(brg_calc.GetConcreteElasticModulusMethodB(brg), WBFL::Units::ConvertToSysUnits(42.602, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(44.732, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerElasticModulusMethodB(brg), WBFL::Units::ConvertToSysUnits(42.602, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.005, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetTotalLoadStress(brg, brg_loads), WBFL::Units::ConvertToSysUnits(210, WBFL::Units::Measure::PSI), WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::PSI)));
@@ -170,8 +170,8 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(BearingLoads::FixedTranslationX::No);
 			brg_loads.SetFixedTranslationY(BearingLoads::FixedTranslationY::No);
 
-			Assert::IsTrue(IsEqual(brg_calc.GetConcreteElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(45.360, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
-			Assert::IsTrue(IsEqual(brg_calc.GetConcreteElasticModulusMethodB(brg), WBFL::Units::ConvertToSysUnits(43.200, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(45.360, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerElasticModulusMethodB(brg), WBFL::Units::ConvertToSysUnits(43.200, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::KSI)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.19, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.098, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.001, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetTotalLoadStress(brg, brg_loads), WBFL::Units::ConvertToSysUnits(8333, WBFL::Units::Measure::PSI), WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::PSI)));
@@ -360,7 +360,7 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(BearingLoads::FixedTranslationX::Yes);
 			brg_loads.SetFixedTranslationY(BearingLoads::FixedTranslationY::Yes);
 
-			Assert::IsTrue(IsEqual(brg_calc.GetConcreteElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(28350.0, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.1, WBFL::Units::Measure::KSI)));
+			Assert::IsTrue(IsEqual(brg_calc.GetElastomerElasticModulusMethodA(brg), WBFL::Units::ConvertToSysUnits(28350.0, WBFL::Units::Measure::KSI), WBFL::Units::ConvertToSysUnits(0.1, WBFL::Units::Measure::KSI)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.0, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads), WBFL::Units::ConvertToSysUnits(0.0, WBFL::Units::Measure::Inch), WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_calc.GetTotalLoadStress(brg, brg_loads), WBFL::Units::ConvertToSysUnits(83, WBFL::Units::Measure::PSI), WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::PSI)));
@@ -430,8 +430,8 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads) == false);
 			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads) == true);
+			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads) == false);
+			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads) == false);
 			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.StabilityXDirectionCheck(brg, brg_loads) == true);

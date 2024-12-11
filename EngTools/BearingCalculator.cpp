@@ -72,7 +72,7 @@ Float64 BearingCalculator::GetElastomerBulkModulus() const
 	return m_elastomer_bulk_modulus;
 }
 
-Float64 BearingCalculator::GetConcreteElasticModulusMethodA(const Bearing& brg) const
+Float64 BearingCalculator::GetElastomerElasticModulusMethodA(const Bearing& brg) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
@@ -86,7 +86,7 @@ Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodA(const Bearing& br
 	Float64 DL = brg_loads.GetDeadLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 A = brg.GetArea();
-	Float64 EcMethodA = GetConcreteElasticModulusMethodA(brg);
+	Float64 EcMethodA = GetElastomerElasticModulusMethodA(brg);
 	Float64 deltaDLi = DL * ttotal / A / EcMethodA;
     return  deltaDLi;
 }
@@ -96,7 +96,7 @@ Float64 BearingCalculator::GetInitialDeadLoadDeflectionMethodB(const Bearing& br
 	Float64 DL = brg_loads.GetDeadLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 A = brg.GetArea();
-	Float64 EcMethodB = GetConcreteElasticModulusMethodB(brg);
+	Float64 EcMethodB = GetElastomerElasticModulusMethodB(brg);
 	Float64 deltaDLi = DL * ttotal / A / EcMethodB;
 	return  deltaDLi;
 }
@@ -106,7 +106,7 @@ Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodA(const Beari
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 A = brg.GetArea();
-	Float64 EcMethodA = GetConcreteElasticModulusMethodA(brg);
+	Float64 EcMethodA = GetElastomerElasticModulusMethodA(brg);
 	Float64 deltaLL = LL * ttotal / A / EcMethodA;
     return deltaLL;
 }
@@ -116,7 +116,7 @@ Float64 BearingCalculator::GetInstantaneousLiveLoadDeflectionMethodB(const Beari
 	Float64 LL = brg_loads.GetLiveLoad();
 	Float64 ttotal = brg.GetTotalElastomerThickness();
 	Float64 A = brg.GetArea();
-	Float64 EcMethodB = GetConcreteElasticModulusMethodB(brg);
+	Float64 EcMethodB = GetElastomerElasticModulusMethodB(brg);
 	Float64 deltaLL = LL * ttotal / A / EcMethodB;
 	return deltaLL;
 }
@@ -571,7 +571,7 @@ Float64 BearingCalculator::GetSecondaryIntermediateCalculationB(const Bearing& b
 	return By;
 }
 
-Float64 BearingCalculator::GetConcreteElasticModulusMethodB(const Bearing& brg) const
+Float64 BearingCalculator::GetElastomerElasticModulusMethodB(const Bearing& brg) const
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
@@ -689,7 +689,7 @@ Float64 BearingCalculator::RestraintSystemCalc(const Bearing& brg, const Bearing
 	Float64 rot_static = brg_loads.GetStaticRotation();
 	Float64 rot_cyclic = brg_loads.GetCyclicRotation();
 	Float64 s = brg.GetShapeFactor();
-	Float64 Ec = GetConcreteElasticModulusMethodB(brg);
+	Float64 Ec = GetElastomerElasticModulusMethodB(brg);
 	IndexType n = brg.GetNumIntLayers();
 	Float64 m = GetNlayMultiplier(brg);
 	Float64 Sstatic = GetStaticStress(brg, brg_loads);
@@ -890,7 +890,7 @@ bool BearingCalculator::MinimumSteelShimThicknessFatigueCheck(const Bearing& brg
 
 bool BearingCalculator::MaximumCompressiveStrainCheck(const Bearing& brg, const BearingLoads& brg_loads) const
 {
-	if (GetTotalLoadStress(brg, brg_loads) / GetConcreteElasticModulusMethodA(brg) <= 0.07)
+	if (GetTotalLoadStress(brg, brg_loads) / GetElastomerElasticModulusMethodA(brg) <= 0.07)
 	{
 		return true;
 	}
