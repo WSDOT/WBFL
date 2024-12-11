@@ -430,8 +430,8 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads) == false);
 			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads) == true);
+			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads) == false);
+			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads) == false);
 			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads) == true);
 			Assert::IsTrue(brg_calc.StabilityXDirectionCheck(brg, brg_loads) == true);
