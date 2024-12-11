@@ -69,7 +69,12 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
     }
 
    // Use html helper to Write out style block
-   m_Helper.VisitFontLibrary(*m_pOstream);
+   m_Helper.VisitFontLibrary(*m_pOstream); 
+
+#pragma Reminder("UPDATE: implement on-border in VisitFontLibrary")
+   *m_pOstream << _T("<style>") << std::endl;
+   *m_pOstream << _T(".no-border td {border:none; outline:none; border-collapse:collapse;}") << std::endl;
+   *m_pOstream << _T("</style>") << std::endl;
 
    // Use MEDIA attribute of STYLE tag to handle differences between
    // printing and viewing.
