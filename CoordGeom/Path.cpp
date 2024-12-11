@@ -279,8 +279,8 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> Path::ProjectPoint(const WBFL
 {
    Float64 shortestDistance = Float64_Max;
    WBFL::Geometry::Point2d the_point;
-   Float64 the_distance;
-   bool the_projection;
+   Float64 the_distance = -99999.;
+   bool the_projection = false;
 
    const auto& vElements = GetConnectedPathElements();
 
@@ -328,6 +328,9 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> Path::ProjectPoint(const WBFL
          }
       }
    }
+
+   CHECK(the_distance != -99999.); // if this is true, there was not a valid projection.
+   // there should always be a valid projection.
 
    return std::make_tuple(the_point, the_distance, the_projection);
 }
