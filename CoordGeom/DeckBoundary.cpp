@@ -79,7 +79,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
    auto last_pier_id = last_pier_line->GetID();
 
    auto start_pier_line = bridge->FindPierLine(startPierID); // starting pier line where the perimeter is requested
-   auto end_pier_line = bridge->FindPierLine(endPierID); // ending pier line where the perimieter is requested
+   auto end_pier_line = bridge->FindPierLine(endPierID); // ending pier line where the perimeter is requested
 
    Float64 left_edge_start, right_edge_start; // distance along the edge path to the start of this DeckBoundary segment
 
@@ -100,7 +100,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
          boundary_points.emplace_back(m_EdgeBreakPoint[+EndType::Start][+SideType::Right]);
       }
 
-      boundary_points.emplace_back(m_EdgeBreakPoint[+EndType::Start][+SideType::Right]);
+      boundary_points.emplace_back(m_EdgePoint[+EndType::Start][+SideType::Right]);
 
       left_edge_start = 0;
       right_edge_start = 0;
