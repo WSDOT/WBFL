@@ -439,7 +439,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CubicSpline::ProjectPoint(con
 
       CHECK(distFromStart <= 0); // must be negative because it is before the curve
 
-      bOnProjection = true;
+      bOnProjection = IsZero(distFromStart) ? false : true; // not a project if at start
    }
    else if (0 < x1 && 0 < x2)
    {
@@ -529,7 +529,7 @@ std::tuple<WBFL::Geometry::Point2d, Float64, bool> CubicSpline::ProjectPoint(con
       auto Lt = GetLength();
       distFromStart += Lt;
 
-      bOnProjection = true;
+      bOnProjection = IsEqual(distFromStart, Lt) ? false : true; // not a projection if at the end
 
       CHECK(0 <= distFromStart && Lt <= distFromStart);
    }
