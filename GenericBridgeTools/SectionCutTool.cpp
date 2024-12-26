@@ -247,11 +247,11 @@ STDMETHODIMP CSectionCutTool::CreateLeftBarrierSection(IGenericBridge* bridge,Fl
    CComPtr<ISidewalkBarrier> barrier;
    left_barrier->Clone(&barrier);
 
-   // returns the whole railing system shape including sidewalk and interior railing
+   // This is for the entire bridge, so return the whole railing system shape including sidewalk and interior railing
    CComPtr<IShape> shape;
    if ( bStructuralOnly == VARIANT_TRUE )
    {
-      barrier->get_StructuralShape(&shape);
+      barrier->get_StructuralShape(VARIANT_TRUE, VARIANT_TRUE, VARIANT_TRUE,&shape);
    }
    else
    {
@@ -344,11 +344,11 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    CComPtr<ISidewalkBarrier> barrier;
    right_barrier->Clone(&barrier);
 
-   // returns the whole railing system shape including sidewalk and interior railing
+   // This is for the entire bridge, so return the whole railing system shape including sidewalk and interior railing
    CComPtr<IShape> shape;
    if ( bStructuralOnly == VARIANT_TRUE )
    {
-      barrier->get_StructuralShape(&shape);
+      barrier->get_StructuralShape(VARIANT_TRUE, VARIANT_TRUE, VARIANT_TRUE, &shape);
    }
    else
    {
@@ -1533,6 +1533,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
       // orientation of girder in radians... 0 = plumb, rotated CW is positive
       Float64 orientation;
       segment->get_Orientation(&orientation); // section view orientation
+      orientation *= -1.0;
 
       MatingSurfaceIndexType nMatingSurfaces;
       pGirderSection->get_MatingSurfaceCount(&nMatingSurfaces);
