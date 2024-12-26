@@ -91,7 +91,7 @@ public:
    STDMETHOD(get_InteriorBarrier)(/*[out,retval]*/ IBarrier** barr) override;
    STDMETHOD(get_SidewalkShape)(/*[out,retval]*/ IShape** shape) override;
    STDMETHOD(get_Shape)(/*[out,retval]*/ IShape** shape) override;
-   STDMETHOD(get_StructuralShape)(/*[out,retval]*/ IShape** shape) override;
+   STDMETHOD(get_StructuralShape)(/* [in] */ VARIANT_BOOL bincExterior,/* [in] */ VARIANT_BOOL bincSidewalk,/* [in] */ VARIANT_BOOL bincInterior,/* [retval][out] */ IShape** shape) override;
 	STDMETHOD(get_Path)(/*[out,retval]*/ IPath** path) override;
 	STDMETHOD(put_Path)(/*[in]*/ IPath* path) override;
    STDMETHOD(put_IsInteriorStructurallyContinuous)(/*[in]*/VARIANT_BOOL bContinuous) override;

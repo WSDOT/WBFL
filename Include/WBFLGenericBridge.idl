@@ -1124,7 +1124,9 @@ library WBFLGenericBridge
 	   [propget,helpstring("property HasInteriorBarrier")] HRESULT HasInteriorBarrier([out,retval]VARIANT_BOOL* pbHasBarrier);
 		[propget,helpstring("property SidewalkWidth")] HRESULT SidewalkWidth([out,retval]Float64* swWidth);
 		[propget,helpstring("property Shape")] HRESULT Shape([out,retval] IShape** shape);
-	   [propget,helpstring("property StructuralShape")] HRESULT StructuralShape([out,retval] IShape** shape);
+		// Get structural shape. Client can chose to get exterior, sidewalk, and interior. Note that these BOOL's are independent
+		// of those set by the "Is...StructurallyContinuous" properties set below. They are ANDed with them.
+	   [propget,helpstring("property StructuralShape")] HRESULT StructuralShape([in]VARIANT_BOOL bincExterior, [in]VARIANT_BOOL bincSidewalk, [in]VARIANT_BOOL bincInterior, [out, retval] IShape** shape);
 		[propget,helpstring("property ExteriorBarrier")] HRESULT ExteriorBarrier([out,retval] IBarrier** barr);
 		[propget,helpstring("property InteriorBarrier")] HRESULT InteriorBarrier([out,retval] IBarrier** barr);
 		[propget,helpstring("property SidewalkShape")] HRESULT SidewalkShape([out,retval] IShape** shape);

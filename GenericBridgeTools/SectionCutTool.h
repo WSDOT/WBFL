@@ -89,10 +89,6 @@ public:
    // creates a section for the entire bridge
    STDMETHOD(CreateBridgeSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 Xb,/*[in]*/SectionBias sectionBias,/*[in]*/ StageIndexType stageIdx, /*[in]*/ BarrierSectionCut bsc,/*[out,retval]*/ISection** section) override;
 
-   // creates section objects for the traffic barriers
-   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section) override;
-	STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section) override;
-
    //
    // The CreateXXXShape methods create a shape object that is intended to be used as for a 
    // graphical representation of the cross section.
@@ -119,6 +115,10 @@ public:
    STDMETHOD(CreateDeckAnalysisShape)(IGenericBridge* bridge,IGirderSection* pSection,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,StageIndexType stageIdx,IShape** shape) override;
 
 private:
+   // create section objects for the traffic barriers. This is only used for to total bridge section
+   STDMETHOD(CreateLeftBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
+   STDMETHOD(CreateRightBarrierSection)(/*[in]*/IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ VARIANT_BOOL bStructuralOnly,/*[out,retval]*/ISection** section);
+
    HRESULT CreateCompositeSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile, IndexType* beamIdx, IndexType* slabIdx,ISection** section);
    HRESULT CreateDeckSection(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod, HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,ISection** section);
    HRESULT CreateDeckShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, SectionBias sectionBias, Float64 haunchDepth, BOOL bFollowMatingSurfaceProfile,IGirderSection* pGirderSection,IShape** pShape);

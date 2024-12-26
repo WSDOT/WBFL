@@ -171,11 +171,14 @@ STDMETHODIMP CSidewalkBarrier::get_SidewalkShape(IShape** shape)
    return S_OK;
 }
 
-STDMETHODIMP CSidewalkBarrier::get_StructuralShape(IShape** shape)
+STDMETHODIMP CSidewalkBarrier::get_StructuralShape(VARIANT_BOOL bincExterior,VARIANT_BOOL bincSidewalk,VARIANT_BOOL bincInterior, IShape** shape)
 {
-   if ( m_bExteriorStructurallyContinuous == VARIANT_FALSE && 
-        m_bSidewalkStructurallyContinuous == VARIANT_FALSE &&
-        m_bInteriorStructurallyContinuous == VARIANT_FALSE )
+   // internal bool and passed flag must both be positive for elemment to be used
+   bool isExterior = m_bExteriorStructurallyContinuous == VARIANT_TRUE && bincExterior == VARIANT_TRUE;
+   bool isSidewalk = m_bSidewalkStructurallyContinuous == VARIANT_TRUE && bincSidewalk == VARIANT_TRUE;
+   bool isInterior = m_bInteriorStructurallyContinuous == VARIANT_TRUE && bincInterior == VARIANT_TRUE;
+
+   if (!isExterior && !isSidewalk && !isInterior)
    {
       (*shape) = nullptr;
       return S_OK;
@@ -184,20 +187,20 @@ STDMETHODIMP CSidewalkBarrier::get_StructuralShape(IShape** shape)
    CComPtr<ICompositeShape> compShape;
    compShape.CoCreateInstance(CLSID_CompositeShape);
 
-   if ( m_bExteriorStructurallyContinuous == VARIANT_TRUE )
+   if (isExterior)
    {
       CComPtr<IShape> extShape;
       m_ExtBarrier->get_Shape(&extShape);
       compShape->AddShape(extShape, VARIANT_FALSE);
    }
 
-   if (m_Configuration > 1 && m_bSidewalkStructurallyContinuous == VARIANT_TRUE )
+   if (m_Configuration > 1 && isSidewalk)
    {
       CComQIPtr<IShape> swshape(m_SidewalkShape);
       compShape->AddShape(swshape, VARIANT_FALSE);
    }
 
-   if (m_Configuration > 2 && m_bInteriorStructurallyContinuous == VARIANT_TRUE )
+   if (m_Configuration > 2 && isInterior )
    {
       CComPtr<IShape> intShape;
       m_IntBarrier->get_Shape(&intShape);
