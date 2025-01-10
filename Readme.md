@@ -66,8 +66,7 @@ WBFL forms the basis of the BridgeLink application suite. If your intent is to b
 you can still build the BridgeLink suite by following these steps:
 
 1. Open WBFL\Include\WBFLGrid.h and uncomment the #define _NOGRID macro
-2. Create a C:\Program Files\Preforce\Stingray Stuido 2021.1\Src folder
-3. Copy the dummy props file WBFL\SS-X64-PropSheet16.props into that folder.
+2. Define an environment variable named GRID_PROPS and set it to $(ARPDIR)\WBFL\Dummy_Grid_Props.props
 
 This will permit you to build the code. The substitute grid code does not simulate grid functionality. Dialogs and windows that use ObjectiveGrid are likely to crash the application when using the substitute code.
 
