@@ -1530,11 +1530,6 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
       Float64 ybslab   = ybhaunch + haunchDepth; // y location of bottom of slab
       Float64 ytslab   = ybhaunch + haunchDepth + structural_depth; // y location of top of slab
 
-      // orientation of girder in radians... 0 = plumb, rotated CW is positive
-      Float64 orientation;
-      segment->get_Orientation(&orientation); // section view orientation
-      orientation *= -1.0;
-
       MatingSurfaceIndexType nMatingSurfaces;
       pGirderSection->get_MatingSurfaceCount(&nMatingSurfaces);
 
@@ -1597,13 +1592,8 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
             matingSurfaceProfile->get__Enum(&enum_points);
             while (enum_points->Next(1, &msPoint, nullptr) != S_FALSE)
             {
-               // Tricky: The girder section and mating profile comes to us in bridge coordinates. 
-               //         We must rotate and translate the points to our local slab coord system.
+               // The girder section and mating profile comes to us in bridge coordinates. This is what we want
                Float64 x, y;
-               if (!IsZero(orientation))
-               {
-                  msPoint->RotateEx(pntTC, orientation);
-               }
                msPoint->Location(&x, &y);
 
                slab_shape->AddPoint(x, y);
@@ -1618,7 +1608,6 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
             slab_shape->AddPoint(x, y + haunchDepth);
             msPoint.Release();
          }
-
       }
 
       // Points 5-8
@@ -1638,13 +1627,7 @@ HRESULT CSectionCutTool::CreateDeckShape(IGenericBridge* bridge, GirderIDType ss
          CComPtr<IPoint2d> msPoint;
          while (enum_points->Next(1, &msPoint, nullptr) != S_FALSE)
          {
-            // Tricky: The girder section and mating profile comes to us in bridge coordinates. 
-            //         We must rotate and translate the points to our local slab coord system.
             Float64 x, y;
-            if (!IsZero(orientation))
-            {
-               msPoint->RotateEx(pntTC, orientation);
-            }
             msPoint->Location(&x, &y);
 
             slab_shape->AddPoint(x, y + haunchDepth + structural_depth);
