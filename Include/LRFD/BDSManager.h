@@ -66,6 +66,8 @@ namespace WBFL
                         EighthEdition2017              = 22,
                         // AASHTO changed to a 3 year publication cycle, no interims
                         NinthEdition2020               = 23,
+                        // Covid stretched out the 1st 3 year publication cycle to 4 years.
+                        TenthEdition2024,
                         LastEdition
          };
 
