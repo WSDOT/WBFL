@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileDescription", "Loading Module\0"
             VALUE "FileVersion", "8.1.0.1\0"
             VALUE "InternalName", "Loading\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OLESelfRegister", "\0"
             VALUE "OriginalFilename", "Loading.DLL\0"

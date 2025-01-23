@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // DManip - Direct Manipulation Framework
-// Copyright © 1999-2024  Washington State Department of Transportation
+// Copyright © 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -110,7 +110,7 @@ BEGIN
             VALUE "FileDescription", "DManip DLL\0"
             VALUE "FileVersion", "8.1.0.1\0"
             VALUE "InternalName", "DManip\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "DManip.DLL\0"
             VALUE "PrivateBuild", "\0"

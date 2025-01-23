@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileDescription", "Library Framework\0"
             VALUE "FileVersion", "8.1.0.1\0"
             VALUE "InternalName", "LibraryFw\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "LibraryFw30.dll\0"
             VALUE "PrivateBuild", "\0"
