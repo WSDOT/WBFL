@@ -85,7 +85,7 @@ BEGIN
             VALUE "FileDescription", "MfcTools DLL"
             VALUE "FileVersion", "8.0.6.0"
             VALUE "InternalName", "MfcTools"
-            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "MfcTools.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "8.0.6.0"

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2024  Washington State Department of Transportation
+// Copyright © 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries

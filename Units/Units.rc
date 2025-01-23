@@ -49,7 +49,7 @@ BEGIN
             VALUE "FileDescription", "Units\0"
             VALUE "FileVersion", "8.0.6.0\0"
             VALUE "InternalName", "Units\0"
-            VALUE "LegalCopyright", "Copyright © 1999-2024, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Units.dll\0"
             VALUE "PrivateBuild", "\0"
