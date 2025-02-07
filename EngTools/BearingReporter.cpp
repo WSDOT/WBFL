@@ -32,10 +32,18 @@ BearingReporter::BearingReporter()
 }
 
 
-void ReportIntroduction(rptParagraph* pPara)
+void ReportIntroduction(rptParagraph* pPara, const WBFL::EngTools::BearingCalculator& brg_calc)
 {
 	*pPara << color(Blue);
-	*pPara << Bold(_T("-Calculations are based on AASHTO LRFD Bridge Design Specifications, 9th Edition, 2020")) << rptNewLine;
+	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
+	{
+		*pPara << Bold(_T("-Calculations are based on AASHTO LRFD Bridge Design Specifications, 4th Edition, through Interim 2009 revisions")) << rptNewLine;
+	}
+	else
+	{
+		*pPara << Bold(_T("-Calculations are based on AASHTO LRFD Bridge Design Specifications, 9th Edition, 2020")) << rptNewLine;
+	}
+
 	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only")) << rptNewLine;
 	*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based upon 0.010 radian out - of - plumb tolerance")) << rptNewLine;
 	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates")) << rptNewLine;
@@ -1657,7 +1665,7 @@ void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* 
 	rptParagraph* pPara, const Bearing& brg,
 	const BearingLoads& brg_loads, const BearingCalculator& brg_calc)
 {
-	ReportIntroduction(pPara);
+	ReportIntroduction(pPara, brg_calc);
 	ReportBearingProperties(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
 
 	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
