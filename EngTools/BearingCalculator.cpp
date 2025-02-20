@@ -32,30 +32,27 @@ using namespace WBFL::EngTools;
 
 
 
-
-void BearingCalculator::SetMethodA(BearingCalculator::AnalysisMethodA method_a)
+void BearingCalculator::SetSpecification(BearingCalculator::SpecType spec)
 {
-	m_method_a = method_a;
+	m_specification = spec;
+}
+void BearingCalculator::SetAnalysisMethod(BearingCalculator::AnalysisMethod method)
+{
+	m_method = method;
 }
 void BearingCalculator::SetMaximumAllowableStress(Float64 sigma_max)
 {
 	m_maximum_allowable_stress = sigma_max;
-}
-void BearingCalculator::SetAbsoluteMinimumShimThickness(Float64 tmin)
-{
-	m_absolute_minimum_shim_thickness = tmin;
 }
 void BearingCalculator::SetElastomerBulkModulus(Float64 k)
 {
 	m_elastomer_bulk_modulus = k;
 }
 
-
-BearingCalculator::AnalysisMethodA BearingCalculator::GetAnalysisMethodA() const
+BearingCalculator::AnalysisMethod BearingCalculator::GetAnalysisMethod() const
 {
-	return m_method_a;
+	return m_method;
 }
-
 
 Float64 BearingCalculator::GetMaximumAllowableStress() const
 {
@@ -64,7 +61,38 @@ Float64 BearingCalculator::GetMaximumAllowableStress() const
 
 Float64 BearingCalculator::GetAbsoluteMinimumShimThickness() const
 {
-	return m_absolute_minimum_shim_thickness;
+	if (m_specification >= SpecType::TenthEdition2024)
+	{
+		return WBFL::Units::ConvertToSysUnits(0.0747, WBFL::Units::Measure::Inch);
+	}
+	else
+	{
+		return WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch);
+	}
+}
+
+Float64 BearingCalculator::GetMinimumElastomerCoverThickness() const
+{
+	if (m_specification >= SpecType::TenthEdition2024)
+	{
+		return WBFL::Units::ConvertToSysUnits(0.25, WBFL::Units::Measure::Inch);
+	}
+	else
+	{
+		return WBFL::Units::ConvertToSysUnits(0, WBFL::Units::Measure::Inch);
+	}
+}
+
+Float64 BearingCalculator::GetMaximumElastomerCoverThickness(const Bearing& brg) const
+{
+	Float64 max_cover = 0.7 * brg.GetIntermediateLayerThickness();
+
+	if (m_specification >= SpecType::TenthEdition2024)
+	{
+		max_cover = max(max_cover, WBFL::Units::ConvertToSysUnits(0.3125, WBFL::Units::Measure::Inch));
+	}
+
+	return max_cover;
 }
 
 Float64 BearingCalculator::GetElastomerBulkModulus() const
@@ -77,7 +105,8 @@ Float64 BearingCalculator::GetElastomerElasticModulusMethodA(const Bearing& brg)
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
 	Float64 S = brg.GetShapeFactor();
-	Float64 EcMethodA = 3 * (Gmin + Gmax) * pow(S, 2);
+	Float64 Ecoeff = GetElasticModulusCoefficient();
+	Float64 EcMethodA = Ecoeff * (Gmin + Gmax)/2 * pow(S, 2);
     return EcMethodA;
 }
 
@@ -562,6 +591,16 @@ Float64 BearingCalculator::GetPrimaryIntermediateCalculationB(const Bearing& brg
 	return Bx;
 }
 
+Float64 BearingCalculator::GetElasticModulusCoefficient() const
+{
+	Float64 C = 6;
+	if (m_specification >= SpecType::SixthEdition2012)
+	{
+		C = 4.8;
+	}
+	return C;
+}
+
 Float64 BearingCalculator::GetSecondaryIntermediateCalculationB(const Bearing& brg) const
 {
 	Float64 S = brg.GetShapeFactor();
@@ -575,7 +614,8 @@ Float64 BearingCalculator::GetElastomerElasticModulusMethodB(const Bearing& brg)
 {
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 S = brg.GetShapeFactor();
-	Float64 EcMethodB = 6 * Gmin * pow(S, 2);
+	Float64 Ecoeff = GetElasticModulusCoefficient();
+	Float64 EcMethodB = Ecoeff * Gmin * pow(S, 2);
 	return EcMethodB;
 }
 
@@ -852,9 +892,33 @@ bool BearingCalculator::MaximumNumLayersStabilityYCheck(const Bearing& brg, cons
 	}
 }
 
-bool BearingCalculator::MinimumSteelShimThicknessAbsoluteCheck(const Bearing& brg, const BearingLoads& brg_loads) const
+bool BearingCalculator::MinimumSteelShimThicknessAbsoluteCheck(const Bearing& brg) const
 {
 	if (brg.GetSteelShimThickness() >= GetAbsoluteMinimumShimThickness())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool BearingCalculator::MinimumElastomerCoverThicknessCheck(const Bearing& brg) const
+{
+	if (brg.GetCoverThickness() >= GetMinimumElastomerCoverThickness())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool BearingCalculator::MaximumElastomerCoverThicknessCheck(const Bearing& brg) const
+{
+	if (brg.GetCoverThickness() <= GetMaximumElastomerCoverThickness(brg))
 	{
 		return true;
 	}

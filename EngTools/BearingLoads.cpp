@@ -60,17 +60,14 @@ void BearingLoads::SetShearDeformation(Float64 shear_def)
 {
     m_shear_deformation = shear_def;
 }
-void BearingLoads::SetFixedTranslationX(BearingLoads::FixedTranslationX fx)
+void BearingLoads::SetFixedTranslationX(bool fx)
 {
     m_fixed_translation_x = fx;
 }
-void BearingLoads::SetFixedTranslationY(BearingLoads::FixedTranslationY fy)
+void BearingLoads::SetFixedTranslationY(bool fy)
 {
     m_fixed_translation_y = fy;
 }
-
-
-
 Float64 BearingLoads::GetDeadLoad() const
 {
     return m_dead_load;
@@ -104,18 +101,18 @@ Float64 BearingLoads::GetShearDeformation() const
     return m_shear_deformation;
 }
 
-BearingLoads::FixedTranslationX BearingLoads::GetFixedTranslationX() const
+bool BearingLoads::GetFixedTranslationX() const
 {
     return m_fixed_translation_x;
 }
-BearingLoads::FixedTranslationY BearingLoads::GetFixedTranslationY() const
+bool BearingLoads::GetFixedTranslationY() const
 {
     return m_fixed_translation_y;
 }
 
 Float64 BearingLoads::GetEffectiveKFactorX() const
 {
-    if (m_fixed_translation_x == FixedTranslationX::Yes)
+    if (m_fixed_translation_x == true)
     {
         return 1.0;
     }
@@ -126,7 +123,7 @@ Float64 BearingLoads::GetEffectiveKFactorX() const
 }
 Float64 BearingLoads::GetEffectiveKFactorY() const
 {
-    if (m_fixed_translation_y == FixedTranslationY::Yes)
+    if (m_fixed_translation_y == true)
     {
         return 1.0;
     }
