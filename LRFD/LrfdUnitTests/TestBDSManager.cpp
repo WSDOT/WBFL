@@ -42,18 +42,18 @@ namespace LrfdUnitTests
 
 		TEST_METHOD(Strings)
 		{
-			BDSAutoVersion av;
-
-			Assert::AreEqual(_T("AASHTO LRFD Bridge Design Specifications"), BDSManager::GetSpecificationName());
-
-			BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
-			Assert::AreEqual(_T("Second Edition 1998"), BDSManager::GetEditionAsString());
-			Assert::AreEqual(_T("AashtoLrfd1998"), BDSManager::GetEditionAsString(true));
-
-			Assert::AreEqual(_T("Customary U.S. Units"), BDSManager::GetUnitAsString());
-			BDSManager::SetUnits(BDSManager::Units::SI);
-			Assert::AreEqual(_T("SI Units"), BDSManager::GetUnitAsString());
-
+		 BDSAutoVersion av;
+         
+		 Assert::AreEqual(_T("AASHTO LRFD Bridge Design Specifications"), BDSManager::GetSpecificationName());
+         
+		 BDSManager::SetEdition(BDSManager::Edition::SecondEdition1998);
+		 Assert::AreEqual(_T("Second Edition 1998"), BDSManager::GetEditionAsString());
+		 Assert::AreEqual(_T("AashtoLrfd1998"), BDSManager::GetEditionAsString(true));
+         
+		 Assert::AreEqual(_T("Customary U.S. Units"), BDSManager::GetUnitAsString());
+		 BDSManager::SetUnits(BDSManager::Units::SI);
+		 Assert::AreEqual(_T("SI Units"), BDSManager::GetUnitAsString());
+         
          Assert::AreEqual(_T("AashtoLrfd1994"), BDSManager::GetEditionAsString(BDSManager::Edition::FirstEdition1994, true));
          Assert::AreEqual(_T("First Edition 1994"), BDSManager::GetEditionAsString(BDSManager::Edition::FirstEdition1994, false));
 
@@ -123,13 +123,16 @@ namespace LrfdUnitTests
          Assert::AreEqual(_T("AashtoLrfd2020"), BDSManager::GetEditionAsString(BDSManager::Edition::NinthEdition2020, true));
          Assert::AreEqual(_T("9th Edition 2020"), BDSManager::GetEditionAsString(BDSManager::Edition::NinthEdition2020, false));
 
+         Assert::AreEqual(_T("AashtoLrfd2024"), BDSManager::GetEditionAsString(BDSManager::Edition::TenthEdition2024, true));
+         Assert::AreEqual(_T("10th Edition 2024"), BDSManager::GetEditionAsString(BDSManager::Edition::TenthEdition2024, false));
+
          // these will fail when new editions are added
          // this means more tests are required for the new editions and this test needs to be updated
          // for the new last version. also update the tests below
-         Assert::AreEqual(_T("AashtoLrfd2020"), BDSManager::GetEditionAsString(BDSManager::Edition::LastEdition, true));
-         Assert::AreEqual(_T("9th Edition 2020"), BDSManager::GetEditionAsString(BDSManager::Edition::LastEdition, false));
+         Assert::AreEqual(_T("AashtoLrfd2024"), BDSManager::GetEditionAsString(BDSManager::Edition::LastEdition, true));
+         Assert::AreEqual(_T("10th Edition 2024"), BDSManager::GetEditionAsString(BDSManager::Edition::LastEdition, false));
 
-
+         Assert::IsTrue(BDSManager::GetEdition(_T("AashtoLrfd2024")) == BDSManager::Edition::TenthEdition2024);
          Assert::IsTrue(BDSManager::GetEdition(_T("AashtoLrfd2020")) == BDSManager::Edition::NinthEdition2020);
          Assert::IsTrue(BDSManager::GetEdition(_T("AashtoLrfd2017")) == BDSManager::Edition::EighthEdition2017);
          Assert::IsTrue(BDSManager::GetEdition(_T("AashtoLrfd2016")) == BDSManager::Edition::SeventhEditionWith2016Interims);
@@ -155,10 +158,13 @@ namespace LrfdUnitTests
          Assert::IsTrue(BDSManager::GetEdition(_T("AashtoLrfd1994")) == BDSManager::Edition::FirstEdition1994);
 
          Assert::ExpectException<std::invalid_argument>([]() {BDSManager::GetEdition(_T("BadVersion")); });
+
 		}
 
       TEST_METHOD(Listeners)
       {
+          BDSAutoVersion av;
+
          Assert::AreEqual((IndexType)0, BDSManager::ListenerCount());
 
          TestListener listener;

@@ -32,18 +32,12 @@ BearingReporter::BearingReporter()
 }
 
 
-void ReportIntroduction(rptParagraph* pPara, const WBFL::EngTools::BearingCalculator& brg_calc)
+void ReportIntroduction(rptParagraph* pPara, 
+	const WBFL::EngTools::BearingCalculator& brg_calc,
+	const WBFL::LRFD::BDSManager::Edition spec)
 {
 	*pPara << color(Blue);
-	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
-	{
-		*pPara << Bold(_T("-Calculations are based on AASHTO LRFD Bridge Design Specifications, 4th Edition, through Interim 2009 revisions")) << rptNewLine;
-	}
-	else
-	{
-		*pPara << Bold(_T("-Calculations are based on AASHTO LRFD Bridge Design Specifications, 9th Edition, 2020")) << rptNewLine;
-	}
-
+	*pPara << Bold(_T("-Calculations are based on ")) << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << rptNewLine;
 	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only")) << rptNewLine;
 	*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based upon 0.010 radian out - of - plumb tolerance")) << rptNewLine;
 	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates")) << rptNewLine;
@@ -157,7 +151,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable)(1, 7) << s;
 
 	IndexType i = 4;
-	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
+	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
 	{
 		i = 5;
 	}
@@ -173,7 +167,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable2)(0, 3) << COLHDR(Sub2(_T("G"), _T("min")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 3) << E.SetValue(Gmin);
 
-	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
+	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
 	{
 		(*pTable2)(0, 4) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
 		(*pTable2)(1, 4) << E.SetValue(Gmax);
@@ -196,7 +190,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable4)(0, 0) << COLHDR(Sub2(symbol(DELTA), _T("s")), rptLengthUnitTag, pDispUnits->ComponentDim);
 	(*pTable4)(1, 0) << length.SetValue(sdef);
 
-	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
+	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
 	{
 		(*pTable4)(0, 1) << COLHDR(Sub2(symbol(theta), _T("x")), rptAngleUnitTag, pDispUnits->RadAngle);
 		(*pTable4)(1, 1) << angle.SetValue(x_rotation);
@@ -214,185 +208,37 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 }
 
 
-void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
+void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::Bearing& brg,
 	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc)
-
-
+	const WBFL::EngTools::BearingCalculator& brg_calc,
+	const WBFL::LRFD::BDSManager::Edition spec)
 {
-	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
-	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
-	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
-	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
-	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
-	Float64 l = brg.GetLength();
-	Float64 w = brg.GetWidth();
-	Float64 a = brg.GetArea();
-	Float64 Gmin = brg.GetShearModulusMinimum();
-	Float64 Gmax = brg.GetShearModulusMaximum();
-	Float64 K = brg_calc.GetElastomerBulkModulus();
-	Float64 dl = brg_loads.GetDeadLoad();
-	Float64 ll = brg_loads.GetLiveLoad();
-	Float64 tl = brg_loads.GetTotalLoad();
-	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
-	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
-	Float64 fy = brg.GetYieldStrength();
-	Float64 fth = brg.GetFatigueThreshold();
+	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 
 	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
-	Float64 s = brg.GetShapeFactor();
-	IndexType n = brg.GetNumIntLayers();
+	Float64 t_min_shim_absolute = brg_calc.GetAbsoluteMinimumShimThickness();
 	Float64 tcover = brg.GetCoverThickness();
-	Float64 sdef = brg_loads.GetShearDeformation();
-
-	Float64 x_rotation = brg_loads.GetRotationX();
-	Float64 y_rotation = brg_loads.GetRotationY();
-	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
+	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
-
-	Float64 w_min = brg_calc.GetMinimumAllowableWidth(brg, brg_loads);
-	bool w_min_check = brg_calc.MinimumWidthCheck(brg, brg_loads);
-	Float64 l_min = brg_calc.GetMinimumAllowableLength(brg, brg_loads);
-	bool l_min_check = brg_calc.MinimumLengthCheck(brg, brg_loads);
-
-	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg);
-
-	Float64 smax = brg_calc.GetMaximumAllowableStress();
-	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
-
-	Float64 a_min = brg_calc.GetMinimumAllowableArea(brg, brg_loads);
-	bool a_min_check = brg_calc.MinimumAreaCheck(brg, brg_loads);
-
-	Float64 tlayer_max = brg_calc.GetMaximumAllowableIntermediateLayerThickness(brg, brg_loads);
-	bool tlayer_max_check = brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads);
-
-	Float64 t_min_shim_absolute = brg_calc.GetAbsoluteMinimumShimThickness();
-	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg, brg_loads);
-
-	Float64 s_min = brg_calc.GetMinimumAllowableShapeFactor(brg, brg_loads);
-	bool s_min_check = brg_calc.MinimumShapeFactorCheck(brg, brg_loads);
-	Float64 s_max = brg_calc.GetMaximumAllowableShapeFactor(brg, brg_loads);
-	bool s_max_check = brg_calc.MaximumShapeFactorCheck(brg, brg_loads);
-
-	Float64 n_min_shear_def = brg_calc.GetMinimumAllowableNumLayersShearDeformation(brg, brg_loads);
-	bool n_min_shear_def_check = brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads);
-	Float64 n_lay_r_x_calc = brg_calc.GetNumLayersRotationXCalc(brg, brg_loads);
-	Float64 n_min_rot_x = brg_calc.GetMinimumAllowableNumLayersRotationX(brg, brg_loads);
-	bool n_min_rot_x_check = brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads);
-	Float64 n_lay_r_y_calc = brg_calc.GetNumLayersRotationYCalc(brg, brg_loads);
-	Float64 n_min_rot_y = brg_calc.GetMinimumAllowableNumLayersRotationY(brg, brg_loads);
-	bool n_min_rot_y_check = brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads);
-	Float64 n_max_stab_x = brg_calc.GetMaximumAllowableNumLayersStabilityX(brg, brg_loads);
-	bool n_max_stab_x_check = brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads);
-	Float64 n_max_stab_y = brg_calc.GetMaximumAllowableNumLayersStabilityY(brg, brg_loads);
-	bool n_max_stab_y_check = brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads);
+	Float64 fy = brg.GetYieldStrength();
+	Float64 fth = brg.GetFatigueThreshold();
 	Float64 t_min_shim_service = brg_calc.GetMinimumAllowableSteelShimThicknessService(brg, brg_loads);
+	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
+	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
 	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
 	Float64 t_min_shim_fatigue = brg_calc.GetMinimumAllowableSteelShimThicknessFatigue(brg, brg_loads);
 	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
-	bool max_comp_strain_check = brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads);
-	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
-	bool max_stress_check = brg_calc.MaximumStressCheck(brg, brg_loads);
-	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads);
-	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads);
+	Float64 t_min_cover = brg_calc.GetMinimumElastomerCoverThickness();
+	Float64 t_max_cover = brg_calc.GetMaximumElastomerCoverThickness(brg);
+	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
+	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
 
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << rptNewPage;
-
-	rptHeading* pHeading = rptStyleManager::CreateHeading();
-	(*pChapter) << pHeading;
-	pHeading->SetName(_T("Specification Check Summary"));
-	*pHeading << _T("Specification Check Summary");
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !w_min_check || !l_min_check
-		|| !a_min_check || !tlayer_max_check || !s_min_check || !s_max_check || !n_min_shear_def_check || !n_min_rot_x_check
-		|| !n_min_rot_y_check || !n_max_stab_x_check || !n_max_stab_y_check || !max_comp_strain_check || !max_stress_check)
-	{
-		*pPara << color(Red);
-		if (!t_min_shim_absolute_check)
-		{
-			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
-		}
-		if (!t_min_shim_service_check)
-		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
-		}
-		if (!t_min_shim_fatigue_check)
-		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
-		}
-		if (!w_min_check)
-		{
-			*pPara << _T("Bearing width is not sufficient for design.") << rptNewLine;
-		}
-		if (!l_min_check)
-		{
-			*pPara << _T("Bearing length is not sufficient for design.") << rptNewLine;
-		}
-		if (!a_min_check)
-		{
-			*pPara << _T("Bearing area is not sufficient for design.") << rptNewLine;
-		}
-		if (!tlayer_max_check)
-		{
-			*pPara << _T("Elastomer exceeds the maximum thickness limit.") << rptNewLine;
-		}
-		if (!s_min_check)
-		{
-			*pPara << _T("Bearing shape factor is not sufficient for design.") << rptNewLine;
-		}
-		if (!s_max_check)
-		{
-			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
-		}
-		if (!n_min_shear_def_check)
-		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
-		}
-		if (!n_min_rot_x_check)
-		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate flexural rotation.") << rptNewLine;
-		}
-		if (!n_min_rot_y_check)
-		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate torsional rotation.") << rptNewLine;
-		}
-		if (!n_max_stab_x_check)
-		{
-			*pPara << _T("Number of elastomer layers exceeds the maximum number of layers for stability in the primary direction (longitudinal to the bridge).") << rptNewLine;
-		}
-		if (!n_max_stab_y_check)
-		{
-			*pPara << _T("Number of elastomer layers exceeds the maximum number of layers for stability in the secondary direction (transverse to the bridge).") << rptNewLine;
-		}
-		if (!max_comp_strain_check)
-		{
-			*pPara << _T("Elastomer exceeds maximum the compressive strain limit.") << rptNewLine;
-		}
-		if (!max_stress_check)
-		{
-			*pPara << _T("The maximum stress limit is exceeded.") << rptNewLine;
-		}
-
-		*pPara << _T("See below for more detail.");
-		*pPara << color(Red) << rptNewLine << rptNewLine;
-	}
-	else
-	{
-		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << color(Green) << rptNewLine << rptNewLine;
-	}
-
-
-	pHeading = rptStyleManager::CreateHeading();
+	rptHeading* pHeading = rptStyleManager::CreateHeading(1);
 	(*pChapter) << pHeading;
 	pHeading->SetName(_T("Details"));
 	*pHeading << _T("Details");
@@ -425,7 +271,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	*pPara << Sub2(_T("h"), _T("s,fab")) << _T(" = ") << length.SetValue(t_min_shim_absolute) << _T(" (Article 4.5, AASHTO M 251)") << rptNewLine;
 	if (t_min_shim_absolute_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << _T(" > ") << length.SetValue(t_min_shim_absolute);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << (IsEqual(tshim, t_min_shim_absolute) ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_shim_absolute);
 		*pPara << _T(" ") << RPT_PASS;
 	}
 	else
@@ -475,7 +321,262 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 
 	*pPara << rptNewLine;
 
-	pHeading = rptStyleManager::CreateHeading();;
+
+
+	if (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+	{
+		pSubHeading = rptStyleManager::CreateSubHeading();
+		(*pChapter) << pSubHeading;
+		*pSubHeading << _T("Minimum Allowable Elastomer Cover Thickness:");
+
+		pPara = new rptParagraph;
+		(*pChapter) << pPara;
+
+		if (t_min_cover_check)
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tcover) << (tcover == t_min_cover ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_cover);
+			*pPara << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tcover) << _T(" < ") << length.SetValue(t_min_cover);
+			*pPara << _T(" ") << RPT_FAIL;
+		}
+
+		*pPara << _T(" (14.7.5.1)") << rptNewLine << rptNewLine;
+	}
+
+
+
+
+	pSubHeading = rptStyleManager::CreateSubHeading();
+	(*pChapter) << pSubHeading;
+	*pSubHeading << _T("Maximum Allowable Elastomer Cover Thickness:");
+
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	if (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+	{
+		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = greater of 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("c")) << _T(" and ");
+		*pPara << length.SetValue(WBFL::Units::ConvertToSysUnits(0.3125, WBFL::Units::Measure::Inch)) << _T(" = ");
+		*pPara << length.SetValue(t_max_cover) << rptNewLine;
+	}
+	else
+	{
+		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("c")) << _T(" = ");
+		*pPara << length.SetValue(t_max_cover) << rptNewLine;
+	}
+
+	if (t_max_cover_check)
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tcover) << (tcover == t_max_cover ? _T(" = ") : _T(" < ")) << length.SetValue(t_max_cover);
+		*pPara << _T(" ") << RPT_PASS;
+	}
+	else
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tcover) << _T(" > ") << length.SetValue(t_max_cover);
+		*pPara << _T(" ") << RPT_FAIL;
+	}
+
+	*pPara << _T(" (14.7.5.1)") << rptNewLine << rptNewLine;
+
+}
+
+
+
+void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
+	rptChapter* pChapter, rptParagraph* pPara,
+	const WBFL::EngTools::Bearing& brg,
+	const WBFL::EngTools::BearingLoads& brg_loads,
+	const WBFL::EngTools::BearingCalculator& brg_calc,
+	const WBFL::LRFD::BDSManager::Edition spec)
+
+
+{
+	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
+	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
+	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
+
+	Float64 l = brg.GetLength();
+	Float64 w = brg.GetWidth();
+	Float64 a = brg.GetArea();
+	Float64 Gmin = brg.GetShearModulusMinimum();
+	Float64 Gmax = brg.GetShearModulusMaximum();
+	Float64 K = brg_calc.GetElastomerBulkModulus();
+	Float64 dl = brg_loads.GetDeadLoad();
+	Float64 ll = brg_loads.GetLiveLoad();
+	Float64 tl = brg_loads.GetTotalLoad();
+	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
+	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
+
+	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
+	Float64 s = brg.GetShapeFactor();
+	IndexType n = brg.GetNumIntLayers();
+	Float64 tcover = brg.GetCoverThickness();
+	Float64 sdef = brg_loads.GetShearDeformation();
+
+	Float64 x_rotation = brg_loads.GetRotationX();
+	Float64 y_rotation = brg_loads.GetRotationY();
+	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
+	Float64 tlayer = brg.GetIntermediateLayerThickness();
+	Float64 tshim = brg.GetSteelShimThickness();
+
+	Float64 w_min = brg_calc.GetMinimumAllowableWidth(brg, brg_loads);
+	bool w_min_check = brg_calc.MinimumWidthCheck(brg, brg_loads);
+	Float64 l_min = brg_calc.GetMinimumAllowableLength(brg, brg_loads);
+	bool l_min_check = brg_calc.MinimumLengthCheck(brg, brg_loads);
+
+	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg);
+	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient();
+
+	Float64 smax = brg_calc.GetMaximumAllowableStress();
+	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
+
+	Float64 a_min = brg_calc.GetMinimumAllowableArea(brg, brg_loads);
+	bool a_min_check = brg_calc.MinimumAreaCheck(brg, brg_loads);
+
+	Float64 tlayer_max = brg_calc.GetMaximumAllowableIntermediateLayerThickness(brg, brg_loads);
+	bool tlayer_max_check = brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads);
+
+	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
+	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
+	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
+
+	Float64 s_min = brg_calc.GetMinimumAllowableShapeFactor(brg, brg_loads);
+	bool s_min_check = brg_calc.MinimumShapeFactorCheck(brg, brg_loads);
+	Float64 s_max = brg_calc.GetMaximumAllowableShapeFactor(brg, brg_loads);
+	bool s_max_check = brg_calc.MaximumShapeFactorCheck(brg, brg_loads);
+
+	Float64 n_min_shear_def = brg_calc.GetMinimumAllowableNumLayersShearDeformation(brg, brg_loads);
+	bool n_min_shear_def_check = brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads);
+	Float64 n_lay_r_x_calc = brg_calc.GetNumLayersRotationXCalc(brg, brg_loads);
+	Float64 n_min_rot_x = brg_calc.GetMinimumAllowableNumLayersRotationX(brg, brg_loads);
+	bool n_min_rot_x_check = brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads);
+	Float64 n_lay_r_y_calc = brg_calc.GetNumLayersRotationYCalc(brg, brg_loads);
+	Float64 n_min_rot_y = brg_calc.GetMinimumAllowableNumLayersRotationY(brg, brg_loads);
+	bool n_min_rot_y_check = brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads);
+	Float64 n_max_stab_x = brg_calc.GetMaximumAllowableNumLayersStabilityX(brg, brg_loads);
+	bool n_max_stab_x_check = brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads);
+	Float64 n_max_stab_y = brg_calc.GetMaximumAllowableNumLayersStabilityY(brg, brg_loads);
+	bool n_max_stab_y_check = brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads);
+	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
+	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
+
+	bool max_comp_strain_check = brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads);
+	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
+	bool max_stress_check = brg_calc.MaximumStressCheck(brg, brg_loads);
+	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads);
+	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads);
+
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	*pPara << rptNewPage;
+
+	rptHeading* pHeading = rptStyleManager::CreateHeading();
+	(*pChapter) << pHeading;
+	pHeading->SetName(_T("Specification Check Summary"));
+	*pHeading << _T("Specification Check Summary");
+
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	if (!t_min_shim_absolute_check || !t_max_cover_check || !t_min_shim_service_check 
+		|| !t_min_shim_fatigue_check || !w_min_check || !l_min_check
+		|| !a_min_check || !tlayer_max_check || !s_min_check || !s_max_check || !n_min_shear_def_check
+		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
+		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_x_check : false)
+		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_y_check : false)
+		|| !n_max_stab_x_check || !n_max_stab_y_check || !max_comp_strain_check || !max_stress_check)
+	{
+		*pPara << color(Red);
+		if (!t_min_shim_absolute_check)
+		{
+			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
+		}
+		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+		{
+			*pPara << _T("Elastomer cover thickness is below the minimum thickness limit.") << rptNewLine;
+		}
+		if (!t_max_cover_check)
+		{
+			*pPara << _T("Elastomer cover thickness exceeds the maximum thickness limit.") << rptNewLine;
+		}
+		if (!t_min_shim_service_check)
+		{
+			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
+		}
+		if (!t_min_shim_fatigue_check)
+		{
+			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
+		}
+		if (!w_min_check)
+		{
+			*pPara << _T("Bearing width is not sufficient for design.") << rptNewLine;
+		}
+		if (!l_min_check)
+		{
+			*pPara << _T("Bearing length is not sufficient for design.") << rptNewLine;
+		}
+		if (!a_min_check)
+		{
+			*pPara << _T("Bearing area is not sufficient for design.") << rptNewLine;
+		}
+		if (!tlayer_max_check)
+		{
+			*pPara << _T("Elastomer exceeds the maximum thickness limit.") << rptNewLine;
+		}
+		if (!s_min_check)
+		{
+			*pPara << _T("Bearing shape factor is not sufficient for design.") << rptNewLine;
+		}
+		if (!s_max_check)
+		{
+			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
+		}
+		if (!n_min_shear_def_check)
+		{
+			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
+		}
+		if (!n_min_rot_x_check && spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
+		{
+			*pPara << _T("Number of elastomer layers is not sufficient to accommodate flexural rotation.") << rptNewLine;
+		}
+		if (!n_min_rot_y_check && spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
+		{
+			*pPara << _T("Number of elastomer layers is not sufficient to accommodate torsional rotation.") << rptNewLine;
+		}
+		if (!n_max_stab_x_check)
+		{
+			*pPara << _T("Number of elastomer layers exceeds the maximum number of layers for stability in the primary direction (longitudinal to the bridge).") << rptNewLine;
+		}
+		if (!n_max_stab_y_check)
+		{
+			*pPara << _T("Number of elastomer layers exceeds the maximum number of layers for stability in the secondary direction (transverse to the bridge).") << rptNewLine;
+		}
+		if (!max_comp_strain_check)
+		{
+			*pPara << _T("Elastomer exceeds maximum the compressive strain limit.") << rptNewLine;
+		}
+		if (!max_stress_check)
+		{
+			*pPara << _T("The maximum stress limit is exceeded.") << rptNewLine;
+		}
+
+		*pPara << _T("See below for more detail.");
+		*pPara << color(Red) << rptNewLine << rptNewLine;
+	}
+	else
+	{
+		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << color(Green) << rptNewLine << rptNewLine;
+	}
+
+	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
+
+	pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
 	pHeading->SetName(_T("Method A Analysis:"));
 	*pHeading << _T("Method A Analysis:");
@@ -483,7 +584,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	(*pChapter) << pPara;
 
 
-	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
+	rptHeading* pSubHeading = rptStyleManager::CreateSubHeading();
 	(*pChapter) << pSubHeading;
 	*pSubHeading << _T("Maximum Allowable Shape Factor, for applicability of Method A:");
 	pPara = new rptParagraph;
@@ -645,49 +746,50 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	(*pChapter) << pLevel3Heading;
 	*pLevel3Heading << _T("Primary Direction:");
 
-
 	rptHeading* pLevel4Heading = rptStyleManager::CreateHeading(4);
-	(*pChapter) << pLevel4Heading;
-	*pLevel4Heading << _T("Rotation:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
 
+	if (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
+	{
+		(*pChapter) << pLevel4Heading;
+		*pLevel4Heading << _T("Rotation:");
+		pPara = new rptParagraph;
+		(*pChapter) << pPara;
 
-
-	if (n_min_rot_x <= 0)
-	{
-		*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
-		*pPara << Sub2(symbol(theta), _T("x")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
-		*pPara << symbol(TIMES) << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / L)") << Super(_T("2")) << _T(" - ");
-		*pPara << symbol(eta) << _T(" = ");
-		*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << x_rotation << _T(" / ");
-		*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(l) << _T("/") << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
-		*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_x_calc << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_x_calc << _T(" < ") << _T(" 0 ") << symbol(RIGHT_SINGLE_ARROW);
-		*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("x")) << _T(") = 0") << rptNewLine;
+		if (n_min_rot_x <= 0)
+		{
+			*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
+			*pPara << Sub2(symbol(theta), _T("x")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
+			*pPara << symbol(TIMES) << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / L)") << Super(_T("2")) << _T(" - ");
+			*pPara << symbol(eta) << _T(" = ");
+			*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << x_rotation << _T(" / ");
+			*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(l) << _T("/") << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
+			*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_x_calc << rptNewLine;
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_x_calc << _T(" < ") << _T(" 0 ") << symbol(RIGHT_SINGLE_ARROW);
+			*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("x")) << _T(") = 0") << rptNewLine;
+		}
+		else
+		{
+			*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
+			*pPara << Sub2(symbol(theta), _T("x")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
+			*pPara << symbol(TIMES) << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / L)") << Super(_T("2")) << _T(" - ");
+			*pPara << symbol(eta) << _T(" = ");
+			*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << x_rotation << _T(" / ");
+			*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(l) << _T(" / ") << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
+			*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_x_calc << rptNewLine;
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_x_calc << _T(" > 0 ") << symbol(RIGHT_SINGLE_ARROW);
+			*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("x")) << _T(") = ") << n_min_rot_x << rptNewLine;
+		}
+		if (n_min_rot_x_check == true)
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n << (n == n_min_rot_x ? _T(" = ") : _T(" > ")) << n_min_rot_x << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n << _T(" < ") << n_min_rot_x << _T(" ") << RPT_FAIL;
+		}
+		*pPara << _T(" (SECTION 14.7.6.3.5)") << rptNewLine;
+		*pPara << rptNewLine;
 	}
-	else
-	{
-		*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
-		*pPara << Sub2(symbol(theta), _T("x")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
-		*pPara << symbol(TIMES) << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / L)") << Super(_T("2")) << _T(" - ");
-		*pPara << symbol(eta) << _T(" = ");
-		*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << x_rotation << _T(" / ");
-		*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(l) << _T(" / ") << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
-		*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_x_calc << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_x_calc << _T(" > 0 ") << symbol(RIGHT_SINGLE_ARROW);
-		*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("x")) << _T(") = ") << n_min_rot_x << rptNewLine;
-	}
-	if (n_min_rot_x_check == true)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n << (n == n_min_rot_x ? _T(" = ") : _T(" > ")) << n_min_rot_x << _T(" ") << RPT_PASS;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n << _T(" < ") << n_min_rot_x << _T(" ") << RPT_FAIL;
-	}
-	*pPara << _T(" (SECTION 14.7.6.3.5)") << rptNewLine;
-	*pPara << rptNewLine;
 
 	pLevel4Heading = rptStyleManager::CreateHeading(4);
 	(*pChapter) << pLevel4Heading;
@@ -710,55 +812,63 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	}
 	*pPara << _T(" (SECTION 14.7.6.3.6)") << rptNewLine;
 
+
+
+
 	*pPara << rptNewLine;
 
 	pLevel3Heading = rptStyleManager::CreateHeading(3);
 	(*pChapter) << pLevel3Heading;
 	*pLevel3Heading << _T("Secondary Direction:");
 
-	pLevel4Heading = rptStyleManager::CreateHeading(4);
-	(*pChapter) << pLevel4Heading;
-	*pLevel4Heading << _T("Rotation:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
+	if (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
+	{
 
-	if (n_min_rot_y <= 0)
-	{
-		*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
-		*pPara << Sub2(symbol(theta), _T("y")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
-		*pPara << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / W)") << Super(_T("2")) << _T(" - ");
-		*pPara << symbol(eta) << _T(" = ");
-		*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << y_rotation << _T(") / (");
-		*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T(" / ");
-		*pPara << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
-		*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_y_calc << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_y_calc << _T(" < 0 ") << symbol(RIGHT_SINGLE_ARROW);
-		*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("y")) << _T(") = 0") << rptNewLine;
-	}
-	else
-	{
-		*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES);
-		*pPara << _T(" ") << Sub2(symbol(theta), _T("y")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
-		*pPara << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / W)") << Super(_T("2")) << _T(" - ");
-		*pPara << symbol(eta) << _T(" = ");
-		*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(")") << symbol(TIMES) << _T(" (") << y_rotation << _T(") / (");
-		*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T("/");
-		*pPara << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
-		*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_y_calc << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_y_calc << _T(" > 0 ") << symbol(RIGHT_SINGLE_ARROW);
-		*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("y")) << _T(") = ") << n_min_rot_y << rptNewLine;
-	}
-	if (n_min_rot_y_check == true)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n << (n == n_min_rot_y ? _T(" = ") : _T(" > ")) << n_min_rot_y << _T(" ") << RPT_PASS;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << n << _T(" < ") << n_min_rot_y << _T(" ") << RPT_FAIL;
-	}
-	*pPara << _T(" (SECTION 14.7.6.3.5)") << rptNewLine;
+		pLevel4Heading = rptStyleManager::CreateHeading(4);
+		(*pChapter) << pLevel4Heading;
+		*pLevel4Heading << _T("Rotation:");
+		pPara = new rptParagraph;
+		(*pChapter) << pPara;
 
-	*pPara << rptNewLine;
+
+		if (n_min_rot_y <= 0)
+		{
+			*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES) << _T(" ");
+			*pPara << Sub2(symbol(theta), _T("y")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
+			*pPara << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / W)") << Super(_T("2")) << _T(" - ");
+			*pPara << symbol(eta) << _T(" = ");
+			*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(") ") << symbol(TIMES) << _T(" (") << y_rotation << _T(") / (");
+			*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T(" / ");
+			*pPara << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
+			*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_y_calc << rptNewLine;
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_y_calc << _T(" < 0 ") << symbol(RIGHT_SINGLE_ARROW);
+			*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("y")) << _T(") = 0") << rptNewLine;
+		}
+		else
+		{
+			*pPara << Sub2(_T("0.5G"), _T("max ")) << symbol(TIMES) << _T(" S ") << symbol(TIMES);
+			*pPara << _T(" ") << Sub2(symbol(theta), _T("y")) << _T(" / ") << Sub2(symbol(sigma), _T("s"));
+			*pPara << _T("(") << Sub2(_T("h"), _T("ri")) << _T(" / W)") << Super(_T("2")) << _T(" - ");
+			*pPara << symbol(eta) << _T(" = ");
+			*pPara << _T("0.5(") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" (") << s << _T(")") << symbol(TIMES) << _T(" (") << y_rotation << _T(") / (");
+			*pPara << stress.SetValue(tl_stress) << _T(") ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T("/");
+			*pPara << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
+			*pPara << _T(" - ") << n_multiplier << _T(" = ") << n_lay_r_y_calc << rptNewLine;
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n_lay_r_y_calc << _T(" > 0 ") << symbol(RIGHT_SINGLE_ARROW);
+			*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(theta), _T("y")) << _T(") = ") << n_min_rot_y << rptNewLine;
+		}
+		if (n_min_rot_y_check == true)
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n << (n == n_min_rot_y ? _T(" = ") : _T(" > ")) << n_min_rot_y << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << n << _T(" < ") << n_min_rot_y << _T(" ") << RPT_FAIL;
+		}
+		*pPara << _T(" (SECTION 14.7.6.3.5)") << rptNewLine;
+
+		*pPara << rptNewLine;
+	}
 
 	pLevel4Heading = rptStyleManager::CreateHeading(4);
 	(*pChapter) << pLevel4Heading;
@@ -788,10 +898,10 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	*pSubHeading << _T("Maximum Compressive Strain:");
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
-	*pPara << _T("Elastomer Elastic Modulus, ") << Sub2(_T("E"), _T("A")) << _T(" = 3 ");
-	*pPara << symbol(TIMES) << Sub2(_T(" (G"), _T("min")) << _T(" + ") << Sub2(_T("G"), _T("max")) << _T(") ");
-	*pPara << symbol(TIMES) << _T(" S") << Super(_T("2")) << _T(" = 3 ") << symbol(TIMES) << _T(" (");
-	*pPara << E.SetValue(Gmin) << _T(" + ") << E.SetValue(Gmax) << _T(") ") << symbol(TIMES) << _T(" ");
+	*pPara << _T("Elastomer Elastic Modulus, ") << Sub2(_T("E"), _T("A")) << _T(" = ") << Ecoeff;
+	*pPara << _T(" ") << symbol(TIMES) << Sub2(_T(" (G"), _T("min")) << _T(" + ") << Sub2(_T("G"), _T("max")) << _T(")/2 ");
+	*pPara << symbol(TIMES) << _T(" S") << Super(_T("2")) << _T(" = ") << Ecoeff << _T(" ") << symbol(TIMES) << _T(" (");
+	*pPara << E.SetValue(Gmin) << _T(" + ") << E.SetValue(Gmax) << _T(")/2 ") << symbol(TIMES) << _T(" ");
 	*pPara << s << Super(_T("2")) << _T(" = ") << E.SetValue(EcA) << rptNewLine;
 	if (max_comp_strain_check == true)
 	{
@@ -841,7 +951,8 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::Bearing& brg,
 	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc)
+	const WBFL::EngTools::BearingCalculator& brg_calc,
+	const WBFL::LRFD::BDSManager::Edition spec)
 
 {
 
@@ -861,22 +972,19 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 dl = brg_loads.GetDeadLoad();
 	Float64 ll = brg_loads.GetLiveLoad();
 	Float64 tl = brg_loads.GetTotalLoad();
-	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
 	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
-	Float64 fy = brg.GetYieldStrength();
-	Float64 fth = brg.GetFatigueThreshold();
+
 	Float64 Sstatic = brg_calc.GetStaticStress(brg, brg_loads);
 	Float64 Scyclic = brg_calc.GetCyclicStress(brg, brg_loads);
 	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
 	Float64 s = brg.GetShapeFactor();
 	IndexType n = brg.GetNumIntLayers();
-	Float64 tcover = brg.GetCoverThickness();
 	Float64 sdef = brg_loads.GetShearDeformation();
 	Float64 static_rotation = brg_loads.GetStaticRotation();
 	Float64 cyclic_rotation = brg_loads.GetCyclicRotation();
 	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
-	Float64 tshim = brg.GetSteelShimThickness();
+
 
 	Float64 da1 = brg_calc.Getda1(brg);
 	Float64 da2 = brg_calc.Getda2(brg);
@@ -897,25 +1005,25 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 es_cyclic_roty = brg_calc.GetCyclicRotationalSecondaryShearStrain(brg, brg_loads);
 
 	Float64 EcB = brg_calc.GetElastomerElasticModulusMethodB(brg);
+	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient();
 
 	Float64 sigmaTLstabX = brg_calc.GetAllowableTotalLoadStressStabilityX(brg, brg_loads);
 	Float64 sigmaTLstabY = brg_calc.GetAllowableTotalLoadStressStabilityY(brg, brg_loads);
 	Float64 smax = brg_calc.GetMaximumAllowableStress();
 	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
 
-	Float64 t_min_shim_absolute = brg_calc.GetAbsoluteMinimumShimThickness();
-	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg, brg_loads);
+	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
+	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
+	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
+
 
 	Float64 s_max = brg_calc.GetMaximumAllowableShapeFactor(brg, brg_loads);
 	bool s_max_check = brg_calc.MaximumShapeFactorCheck(brg, brg_loads);
 
-	Float64 n_min_shear_def = brg_calc.GetMinimumAllowableNumLayersShearDeformation(brg, brg_loads);
 	bool n_min_shear_def_check = brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads);
 
-
-	Float64 t_min_shim_service = brg_calc.GetMinimumAllowableSteelShimThicknessService(brg, brg_loads);
 	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
-	Float64 t_min_shim_fatigue = brg_calc.GetMinimumAllowableSteelShimThicknessFatigue(brg, brg_loads);
+
 	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
 
 	bool shear_def_check = brg_calc.ShearDeformationCheck(brg, brg_loads);
@@ -974,7 +1082,8 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !s_max_check || !n_min_shear_def_check
+	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !s_max_check || !n_min_shear_def_check || !t_max_cover_check 
+		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check) || (!use_ext_plates && !horiz_force_check))
 	{
@@ -982,6 +1091,14 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		if (!t_min_shim_absolute_check)
 		{
 			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
+		}
+		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+		{
+			*pPara << _T("Elastomer cover thickness is below the minimum thickness limit.") << rptNewLine;
+		}
+		if (!t_max_cover_check)
+		{
+			*pPara << _T("Elastomer cover thickness exceeds the maximum thickness limit.") << rptNewLine;
 		}
 		if (!t_min_shim_service_check)
 		{
@@ -1049,88 +1166,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	}
 
 
-	pHeading = rptStyleManager::CreateHeading();
-	(*pChapter) << pHeading;
-	pHeading->SetName(_T("Details"));
-	*pHeading << _T("Details");
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	if (n_multiplier == 1)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("0.5 ") << symbol(TIMES) << Sub2(_T(" h"), _T("ri"));
-		*pPara << _T(" = 0.5 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" = ") << length.SetValue(0.5 * tlayer) << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << Sub2(_T("h"), _T("c")) << _T(" = ") << length.SetValue(tcover) << (tcover == 0.5 * tlayer ? _T(" = ") : _T(" > ")) << length.SetValue(0.5 * tlayer);
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 1") << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("0.5 ") << symbol(TIMES) << Sub2(_T("h"), _T("ri"));
-		*pPara << _T(" = 0.5 ") << symbol(TIMES) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(0.5 * tlayer) << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << Sub2(_T("h"), _T("c")) << _T(" = ") << length.SetValue(tcover) << _T(" < ") << length.SetValue(0.5 * tlayer);
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 0") << rptNewLine;
-	}
-
-	rptHeading* pSubHeading = rptStyleManager::CreateSubHeading();
-	(*pChapter) << pSubHeading;
-	*pSubHeading << _T("Minimum Allowable Steel Shim Thickness Check:");
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << Sub2(_T("h"), _T("s,fab")) << _T(" = ") << length.SetValue(t_min_shim_absolute) << _T(" (Article 4.5, AASHTO M 251)") << rptNewLine;
-	if (t_min_shim_absolute_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << (tshim == t_min_shim_absolute ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_shim_absolute);
-		*pPara << _T(" ") << RPT_PASS;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << _T(" < ") << length.SetValue(t_min_shim_absolute);
-		*pPara << _T(" ") << RPT_FAIL;
-	}
-
-	*pPara << rptNewLine << rptNewLine;
-
-
-	*pPara << Sub2(_T("h"), _T("s,service")) << _T(" = ");
-
-	*pPara << _T("3 ") << symbol(TIMES) << Sub2(_T(" h"), _T("ri ")) << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("s")) << _T(" / ") Sub2(_T("f"), _T("y"));
-	*pPara << _T(" = 3 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" ") << symbol(TIMES) << _T(" ") << stress.SetValue(tl_stress);
-	*pPara << _T(" / ") << stress.SetValue(fy) << _T(" = ") << length.SetValue(t_min_shim_service) << rptNewLine;
-	if (t_min_shim_service_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << (tshim == t_min_shim_service ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_shim_service);
-		*pPara << _T(" ") << RPT_PASS;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << _T(" < ") << length.SetValue(t_min_shim_service);
-		*pPara << _T(" ") << RPT_FAIL;
-	}
-	*pPara << _T(" (14.7.5.3.5-1)");
-
-	*pPara << rptNewLine << rptNewLine;
-
-	*pPara << Sub2(_T("h"), _T("s,fatigue")) << _T(" = 2 ") << symbol(TIMES) << _T(" ") << Sub2(_T(" h"), _T("ri"));
-	*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("L")) << _T(" / ") Sub2(_T("f"), _T("th"));
-	*pPara << _T(" = 2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << symbol(TIMES) << stress.SetValue(ll_stress);
-	*pPara << _T(" / ") << stress.SetValue(fth) << _T(" = ") << length.SetValue(t_min_shim_fatigue) << rptNewLine;
-	if (t_min_shim_fatigue_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << (tshim == t_min_shim_fatigue ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_shim_fatigue);
-		*pPara << _T(" ") << RPT_PASS;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << _T(" < ") << length.SetValue(t_min_shim_fatigue);
-		*pPara << _T(" ") << RPT_FAIL;
-	}
-	*pPara << _T(" (14.7.5.3.5-2)") << rptNewLine;
-
-
-	*pPara << rptNewLine;
+	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
 
 
 	pHeading = rptStyleManager::CreateHeading();
@@ -1140,7 +1176,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	pSubHeading = rptStyleManager::CreateSubHeading();
+	rptHeading* pSubHeading = rptStyleManager::CreateSubHeading();
 	(*pChapter) << pSubHeading;
 	*pSubHeading << _T("Minimum Allowable Elastomer Thickness Check:");
 	pPara = new rptParagraph;
@@ -1385,7 +1421,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 
 
 	std::_tstring is_x_fixed;
-	if (fixed_x == WBFL::EngTools::BearingLoads::FixedTranslationX::Yes)
+	if (fixed_x)
 	{
 		is_x_fixed = _T("fixed");
 	}
@@ -1443,7 +1479,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 
 
 	std::_tstring is_y_fixed;
-	if (fixed_y == WBFL::EngTools::BearingLoads::FixedTranslationY::Yes)
+	if (fixed_y)
 	{
 		is_y_fixed = _T("fixed");
 	}
@@ -1500,8 +1536,8 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		(*pChapter) << pPara;
 
 		*pPara << _T("Elastomer Elastic Modulus Method B, ") << Sub2(_T("E"), _T("B"));
-		*pPara << _T(" = 6 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min ")) << symbol(TIMES) << _T(" ") << Super2(_T("S"), _T("2"));
-		*pPara << _T(" = 6 ") << symbol(TIMES) << _T(" ");
+		*pPara << _T(" = ") << Ecoeff << _T(" ") << symbol(TIMES) << Sub2(_T(" G"), _T("min ")) << symbol(TIMES) << _T(" ") << Super2(_T("S"), _T("2"));
+		*pPara << _T(" = ") << Ecoeff << _T(" ") << symbol(TIMES) << _T(" ");
 		*pPara << stress.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << s << Super(_T("2")) << _T(" = ") << stress.SetValue(EcB) << rptNewLine;
 
 		if (rest_system_req_check)
@@ -1663,18 +1699,19 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter,
 	rptParagraph* pPara, const Bearing& brg,
-	const BearingLoads& brg_loads, const BearingCalculator& brg_calc)
+	const BearingLoads& brg_loads, const BearingCalculator& brg_calc,
+	const WBFL::LRFD::BDSManager::Edition spec)
 {
-	ReportIntroduction(pPara, brg_calc);
+	ReportIntroduction(pPara, brg_calc, spec);
 	ReportBearingProperties(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
 
-	if (brg_calc.GetAnalysisMethodA() == WBFL::EngTools::BearingCalculator::AnalysisMethodA::Yes)
+	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
 	{
-		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
+		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
 	}
 	else
 	{
-		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
+		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
 	}
 }
 

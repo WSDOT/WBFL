@@ -25,6 +25,7 @@
 #include <EngTools\EngToolsExp.h>
 #include <EngTools\Bearing.h>
 #include <EngTools\BearingLoads.h>
+#include <LRFD/BDSManager.h>
 
 
 namespace WBFL
@@ -42,34 +43,50 @@ namespace WBFL
         class ENGTOOLSCLASS BearingCalculator
         {
 
-
         public:
-            /// @return Analysis Method A
-            enum class AnalysisMethodA
+            typedef WBFL::LRFD::BDSManager::Edition SpecType;
+
+            BearingCalculator() = default;
+            BearingCalculator(SpecType spec)
             {
-                Yes,
-                No,
+                m_specification = spec;
+            }
+            BearingCalculator(const BearingCalculator&) = default;
+            BearingCalculator(BearingCalculator&&) = default;
+            BearingCalculator& operator=(const BearingCalculator&) = default;
+            BearingCalculator& operator=(const BearingCalculator&&) = delete;
+            ~BearingCalculator() = default;
+
+
+            /// @return Analysis Method
+            enum class AnalysisMethod
+            {
+                MethodA = 0,
+                MethodB = 1,
             };
 
-            /// @brief Set Analysis Method A
-            void SetMethodA(AnalysisMethodA);
+            /// @brief Set Specification
+            void SetSpecification(SpecType spec);
+            /// @brief Set Analysis Method
+            void SetAnalysisMethod(AnalysisMethod method);
             /// @brief Set Maximum Alowable Bearing Stress
             /// @param sigma_max
             void SetMaximumAllowableStress(Float64 sigma_max);
-            /// @brief Set Minimum Shim Thickness
-            /// @param tmin
-            void SetAbsoluteMinimumShimThickness(Float64 tmin);
             /// @brief Set Elastic Bulk Modulus
             /// @param k
             void SetElastomerBulkModulus(Float64 k);
 
 
-            /// @return if Method A
-            AnalysisMethodA GetAnalysisMethodA() const;
+            /// @return analysis method
+            AnalysisMethod GetAnalysisMethod() const;
             /// @return Maximum Allowable Stress
             Float64 GetMaximumAllowableStress() const;
             /// @return Absolute Minimimum Shim Thickness
             Float64 GetAbsoluteMinimumShimThickness() const;
+            /// @return Minimum Elastomer Cover Thickness
+            Float64 GetMinimumElastomerCoverThickness() const;
+            /// @return Maximum Elastomer Cover Thickness
+            Float64 GetMaximumElastomerCoverThickness(const Bearing&) const;
             /// @return Elastomer Bulk Modulus
             Float64 GetElastomerBulkModulus() const;
             /// @return Method A Elastomer Elastic Modulus
@@ -126,6 +143,8 @@ namespace WBFL
             Float64 GetCyclicStress(const Bearing&, const BearingLoads&) const;
             /// @return Total stress 
             Float64 GetTotalStress(const Bearing&, const BearingLoads&) const;
+            /// @return elastic modulus coefficient
+            Float64 GetElasticModulusCoefficient() const;
             /// @return Primary Intermediate Calculation for parameter A 
             Float64 GetPrimaryIntermediateCalculationA(const Bearing&) const;
             /// @return Secondary Intermediate Calculation for parameter A 
@@ -227,13 +246,17 @@ namespace WBFL
             bool MinimumNumLayersRotationYCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable number of elastomer layers for stability in the X direction
             bool MaximumNumLayersStabilityXCheck(const Bearing&, const BearingLoads&) const;
-            /// @return Check for the maximum allowed number of elastomer layers for stability in the Y direction 
+            /// @return Check for the maximum allowed number of elastomer layers for stability in the Y direction
             bool MaximumNumLayersStabilityYCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the absolute minimum required steel shim thickness
-            bool MinimumSteelShimThicknessAbsoluteCheck(const Bearing&, const BearingLoads&) const;
+            bool MinimumSteelShimThicknessAbsoluteCheck(const Bearing&) const;
+            /// @return Check for the minimum allowable elastomer cover thickness
+            bool MinimumElastomerCoverThicknessCheck(const Bearing&) const;
+            /// @return Check for the maximum allowable elastomer cover thickness
+            bool MaximumElastomerCoverThicknessCheck(const Bearing&) const;
             /// @return Check for the minimum steel shim thickness for the service limit state 
             bool MinimumSteelShimThicknessServiceCheck(const Bearing&, const BearingLoads&) const;
-            /// @return Check for the minimum steel shim thickness for the fatigue limit state 
+            /// @return Check for the minimum steel shim thickness for the fatigue limit state
             bool MinimumSteelShimThicknessFatigueCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable compressive strain
             bool MaximumCompressiveStrainCheck(const Bearing&, const BearingLoads&) const;
@@ -261,10 +284,11 @@ namespace WBFL
             bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
 
         private:
-           AnalysisMethodA m_method_a{AnalysisMethodA::Yes};
+           AnalysisMethod m_method{AnalysisMethod::MethodA};
            Float64 m_maximum_allowable_stress{ WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI) };///< max allowable stress
-           Float64 m_absolute_minimum_shim_thickness{ WBFL::Units::ConvertToSysUnits(0.0625, WBFL::Units::Measure::Inch) };///< absolute minimum shim thickness
            Float64 m_elastomer_bulk_modulus{ WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI) };///< elastomer bulk modulus
+           SpecType m_specification{WBFL::LRFD::BDSManager::Edition::LastEdition};///< AASHTO BDS spec
+           Float64 m_Ecoeff{ 4.8 };///< coefficient used in elastic modulus calculation
         };
     }; // EngTools
 }; // WBFL
