@@ -391,7 +391,8 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	const WBFL::EngTools::Bearing& brg,
 	const WBFL::EngTools::BearingLoads& brg_loads,
 	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition spec)
+	const WBFL::LRFD::BDSManager::Edition& spec,
+	const WBFL::EngTools::BearingDesignCriteria& criteria)
 
 
 {
@@ -953,7 +954,8 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	const WBFL::EngTools::Bearing& brg,
 	const WBFL::EngTools::BearingLoads& brg_loads,
 	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition spec)
+	const WBFL::LRFD::BDSManager::Edition& spec,
+	const WBFL::EngTools::BearingDesignCriteria& criteria)
 
 {
 
@@ -1701,18 +1703,19 @@ void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* 
 	rptChapter* pChapter,
 	rptParagraph* pPara, const Bearing& brg,
 	const BearingLoads& brg_loads, const BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition spec)
+	const WBFL::LRFD::BDSManager::Edition& spec,
+	const WBFL::EngTools::BearingDesignCriteria& criteria)
 {
 	ReportIntroduction(pPara, brg_calc, spec);
 	ReportBearingProperties(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
 
 	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
 	{
-		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
+		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria);
 	}
 	else
 	{
-		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec);
+		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria);
 	}
 }
 
