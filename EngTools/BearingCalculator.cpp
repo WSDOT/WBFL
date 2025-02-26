@@ -54,6 +54,15 @@ BearingCalculator::AnalysisMethod BearingCalculator::GetAnalysisMethod() const
 	return m_method;
 }
 
+Float64 BearingCalculator::ComputeBearingHeight(const Bearing& brg) const
+{
+	int n = brg.GetNumIntLayers();
+	Float64 hrt = brg.GetTotalElastomerThickness();
+	Float64 hst = brg.GetSteelShimThickness();
+	Float64 totalHeight = hrt + (n + 1) * hst;
+	return totalHeight;
+}
+
 Float64 BearingCalculator::GetMaximumAllowableStress() const
 {
 	return m_maximum_allowable_stress;

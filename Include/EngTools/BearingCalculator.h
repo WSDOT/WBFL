@@ -76,6 +76,8 @@ namespace WBFL
             /// @param k
             void SetElastomerBulkModulus(Float64 k);
 
+            /// @return computes total bearing height
+            Float64 ComputeBearingHeight(const Bearing& brg) const;
 
             /// @return analysis method
             AnalysisMethod GetAnalysisMethod() const;
