@@ -81,6 +81,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	Float64 x_rotation = brg_loads.GetRotationX();
 	Float64 y_rotation = brg_loads.GetRotationY();
 	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
+	Float64 total_bearing_height = brg_calc.ComputeBearingHeight(brg);
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
 	Float64 weight = brg.GetBearingWeight();
@@ -111,7 +112,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	*pPara << color(Blue);
 	*pPara << _T("Summary:") << rptNewLine;
 	*pPara << _T("Dimensions: ") << length.SetValue(w) << _T(" ") << symbol(TIMES) << length.SetValue(l);
-	*pPara << _T(" ") << symbol(TIMES) << length.SetValue(total_elastomer_thickness);
+	*pPara << _T(" ") << symbol(TIMES) << length.SetValue(total_bearing_height);
 	*pPara << color(Blue) << rptNewLine;
 	*pPara << _T("Approx. Weight = ");
 	if (pDispUnits->Name == _T("English"))
@@ -601,7 +602,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	}
 	else
 	{
-		*pPara << color(Red) << symbol(RIGHT_SINGLE_ARROW) << s << _T(" > ") << s_max << _T(" ") << RPT_FAIL << color(Red) << _T(" (METHOD A CANNOT BE USED per SECTION 14.7.6.1) ") << color(Red) << rptNewLine;
+		*pPara << color(Red) << symbol(RIGHT_SINGLE_ARROW) << s << _T(" > ") << s_max << _T(" ") << RPT_FAIL << color(Red) << _T(" (METHOD A cannot be used per SECTION 14.7.6.1) ") << color(Red) << rptNewLine;
 	}
 	*pPara << rptNewLine;
 
