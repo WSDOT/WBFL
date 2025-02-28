@@ -67,15 +67,6 @@ BearingCalculator::AnalysisMethod BearingCalculator::GetAnalysisMethod() const
 	return m_method;
 }
 
-Float64 BearingCalculator::ComputeBearingHeight(const Bearing& brg) const
-{
-	int n = brg.GetNumIntLayers();
-	Float64 hrt = brg.GetTotalElastomerThickness();
-	Float64 hst = brg.GetSteelShimThickness();
-	Float64 totalHeight = hrt + (n + 1) * hst;
-	return totalHeight;
-}
-
 Float64 BearingCalculator::GetMaximumAllowableStress() const
 {
 	return m_maximum_allowable_stress;
@@ -1120,10 +1111,9 @@ bool BearingCalculator::HorizontalForceCheck(const Bearing& brg, const BearingLo
 	}
 }
 
-
 bool BearingCalculator::MinimumAllowableShearModulusCheck(const Bearing& brg, const Criteria& criteria) const
 {
-	if (brg.GetShearModulusMinimum() >= criteria.Gmin && brg.GetShearModulusMaximum() >= criteria.Gmin)
+	if (brg.GetShearModulusMinimum() >= criteria.Gmin)
 	{
 		return true;
 	}
@@ -1135,7 +1125,7 @@ bool BearingCalculator::MinimumAllowableShearModulusCheck(const Bearing& brg, co
 
 bool BearingCalculator::MaximumAllowableShearModulusCheck(const Bearing& brg, const Criteria& criteria) const
 {
-	if (brg.GetShearModulusMinimum() <= criteria.Gmax && brg.GetShearModulusMaximum() <= criteria.Gmax)
+	if (brg.GetShearModulusMaximum() <= criteria.Gmax)
 	{
 		return true;
 	}
@@ -1171,7 +1161,7 @@ bool BearingCalculator::MinimumTotalBearingHeightCheck(const Bearing& brg, const
 
 bool BearingCalculator::MinimumBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing& brg, const Criteria& criteria, Float64 gdrFlgDist) const
 {
-	if (gdrFlgDist - brg.GetWidth() / 2.0 >= criteria.minDistBrg2gBf)
+	if (gdrFlgDist >= criteria.minDistBrg2gBf)
 	{
 		return true;
 	}
@@ -1183,7 +1173,7 @@ bool BearingCalculator::MinimumBearingEdgeToBottomFlangeEdgeDistCheck(const Bear
 
 bool BearingCalculator::MaximumBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing& brg, const Criteria& criteria, Float64 gdrFlgDist) const
 {
-	if (gdrFlgDist - brg.GetWidth() / 2.0 <= criteria.maxDistBrg2gBf)
+	if (gdrFlgDist <= criteria.maxDistBrg2gBf)
 	{
 		return true;
 	}
@@ -1195,7 +1185,7 @@ bool BearingCalculator::MaximumBearingEdgeToBottomFlangeEdgeDistCheck(const Bear
 
 bool BearingCalculator::RequiredBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing& brg, const Criteria& criteria, Float64 gdrFlgDist) const
 {
-	if (gdrFlgDist - brg.GetWidth() / 2.0 <= criteria.distBrg2gBf)
+	if (gdrFlgDist == criteria.distBrg2gBf)
 	{
 		return true;
 	}
@@ -1205,7 +1195,19 @@ bool BearingCalculator::RequiredBearingEdgeToBottomFlangeEdgeDistCheck(const Bea
 	}
 }
 
-bool BearingCalculator::MaximumLiveLoadDeflectionCheck(const Bearing& brg, const BearingLoads& brg_loads, const Criteria& criteria) const
+bool BearingCalculator::MaximumLiveLoadDeflectionMethodACheck(const Bearing& brg, const BearingLoads& brg_loads, const Criteria& criteria) const
+{
+	if (GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads) <= criteria.maxLLdef)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool BearingCalculator::MaximumLiveLoadDeflectionMethodBCheck(const Bearing& brg, const BearingLoads& brg_loads, const Criteria& criteria) const
 {
 	if (GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads) <= criteria.maxLLdef)
 	{

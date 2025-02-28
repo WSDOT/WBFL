@@ -46,7 +46,7 @@ namespace WBFL
          void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, 
              rptParagraph* pPara, const Bearing& brg, const BearingLoads& brg_loads, 
              const BearingCalculator& brg_calc, const WBFL::LRFD::BDSManager::Edition& spec,
-             const WBFL::EngTools::BearingDesignCriteria& criteria);
+             const WBFL::EngTools::BearingDesignCriteria& criteria, Float64 gdrFlgDist = 0.0);
       };
    }
 }

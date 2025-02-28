@@ -292,7 +292,7 @@ namespace WBFL
             bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the minmimum allowable shear modulus
             bool MinimumAllowableShearModulusCheck(const Bearing&, const Criteria&) const;
-            /// @return Check for the maximum allowable shear modulus
+            /// @return Check for the maximum allowable shear modulus (method A)
             bool MaximumAllowableShearModulusCheck(const Bearing&, const Criteria&) const;
             /// @return Required intermediate elastomer layer thickness check
             bool RequiredIntermediateElastomerThicknessCheck(const Bearing&, const Criteria&) const;
@@ -304,8 +304,10 @@ namespace WBFL
             bool MaximumBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing&, const Criteria&, Float64) const;
             /// @return Required bearing edge to girder bottom flange distance Check
             bool RequiredBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing&, const Criteria&, Float64) const;
-            /// @return Maximum live load deflection check
-            bool MaximumLiveLoadDeflectionCheck(const Bearing&, const BearingLoads&, const Criteria&) const;
+            /// @return Maximum live load deflection (method A) check
+            bool MaximumLiveLoadDeflectionMethodACheck(const Bearing&, const BearingLoads&, const Criteria&) const;
+            /// @return Maximum live load deflection (method B) check
+            bool MaximumLiveLoadDeflectionMethodBCheck(const Bearing&, const BearingLoads&, const Criteria&) const;
             /// @return Maximum total vertical service load check
             bool MaximumTotalLoadCheck(const BearingLoads&, const Criteria&) const;
             

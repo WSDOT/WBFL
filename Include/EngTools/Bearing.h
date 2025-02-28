@@ -130,8 +130,8 @@ namespace WBFL
         private:
             Float64 m_length{ WBFL::Units::ConvertToSysUnits(11, WBFL::Units::Measure::Inch) }; ///< length
             Float64 m_width{ WBFL::Units::ConvertToSysUnits(27, WBFL::Units::Measure::Inch) };///< width
-            Float64 m_shear_modulus_min{ WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::PSI) };///< minimum shear modulus
-            Float64 m_shear_modulus_max{ WBFL::Units::ConvertToSysUnits(190, WBFL::Units::Measure::PSI) };///< maximum shear modulus
+            Float64 m_shear_modulus_min{ WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI) };///< minimum shear modulus
+            Float64 m_shear_modulus_max{ WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI) };///< maximum shear modulus
             Float64 m_intermediate_layer_thickness{ WBFL::Units::ConvertToSysUnits(0.5, WBFL::Units::Measure::Inch) };///< intermediate elastomer layer thickness
             Float64 m_cover_thickness{ WBFL::Units::ConvertToSysUnits(0.25, WBFL::Units::Measure::Inch) };///< steel cover thickness
             Float64 m_steel_shim_thickness{ WBFL::Units::ConvertToSysUnits(0.0747, WBFL::Units::Measure::Inch) };///< steel shim thickness
