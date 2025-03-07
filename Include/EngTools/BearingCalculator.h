@@ -25,6 +25,7 @@
 #include <EngTools\EngToolsExp.h>
 #include <EngTools\Bearing.h>
 #include <EngTools\BearingLoads.h>
+#include <EngTools\BearingDesignCriteria.h>
 #include <LRFD/BDSManager.h>
 
 
@@ -45,6 +46,7 @@ namespace WBFL
 
         public:
             typedef WBFL::LRFD::BDSManager::Edition SpecType;
+            typedef WBFL::EngTools::BearingDesignCriteria Criteria;
 
             BearingCalculator() = default;
             BearingCalculator(SpecType spec)
@@ -69,6 +71,8 @@ namespace WBFL
             void SetSpecification(SpecType spec);
             /// @brief Set Analysis Method
             void SetAnalysisMethod(AnalysisMethod method);
+            /// @brief Set Design Criteria
+            void SetDesignCriteria(const Criteria& criteria);
             /// @brief Set Maximum Alowable Bearing Stress
             /// @param sigma_max
             void SetMaximumAllowableStress(Float64 sigma_max);
@@ -76,7 +80,7 @@ namespace WBFL
             /// @param k
             void SetElastomerBulkModulus(Float64 k);
 
-            /// @return computes total bearing height
+            /// @return compute total bearing height
             Float64 ComputeBearingHeight(const Bearing& brg) const;
 
             /// @return analysis method
@@ -225,6 +229,8 @@ namespace WBFL
             Float64 RestraintSystemCalc(const Bearing&, const BearingLoads&) const;
             /// @return horizontal force
             Float64 GetHorizontalForce(const Bearing&, const BearingLoads&) const;
+            /// @return Minimum Allowable Shear Modulus
+
 
             /// @return Check for the minimum required bearing pad area
             bool MinimumAreaCheck(const Bearing&, const BearingLoads&) const;
@@ -284,13 +290,38 @@ namespace WBFL
             bool HorizontalForceCheck(const Bearing&, const BearingLoads&) const;
             /// @return Check for the maximum allowable hydrostatic stress
             bool HydrostaticStressCheck(const Bearing&, const BearingLoads&) const;
+            /// @return Check for the minmimum allowable shear modulus
+            bool MinimumAllowableShearModulusCheck(const Bearing&, const Criteria&) const;
+            /// @return Check for the maximum allowable shear modulus (method A)
+            bool MaximumAllowableShearModulusCheck(const Bearing&, const Criteria&) const;
+            /// @return Required intermediate elastomer layer thickness check
+            bool RequiredIntermediateElastomerThicknessCheck(const Bearing&, const Criteria&) const;
+            /// @return Minimum Total Bearing Height Check
+            bool MinimumTotalBearingHeightCheck(const Bearing&, const Criteria&) const;
+            /// @return Minimum bearing edge to girder bottom flange distance Check
+            bool MinimumBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing&, const Criteria&, Float64) const;
+            /// @return Maximum bearing edge to girder bottom flange distance Check
+            bool MaximumBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing&, const Criteria&, Float64) const;
+            /// @return Required bearing edge to girder bottom flange distance Check
+            bool RequiredBearingEdgeToBottomFlangeEdgeDistCheck(const Bearing&, const Criteria&, Float64) const;
+            /// @return Maximum live load deflection (method A) check
+            bool MaximumLiveLoadDeflectionMethodACheck(const Bearing&, const BearingLoads&, const Criteria&) const;
+            /// @return Maximum live load deflection (method B) check
+            bool MaximumLiveLoadDeflectionMethodBCheck(const Bearing&, const BearingLoads&, const Criteria&) const;
+            /// @return Maximum total vertical service load check
+            bool MaximumTotalLoadCheck(const BearingLoads&, const Criteria&) const;
+            
+
+
 
         private:
-           AnalysisMethod m_method{AnalysisMethod::MethodA};
+           AnalysisMethod m_method{AnalysisMethod::MethodA};///< design method
            Float64 m_maximum_allowable_stress{ WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI) };///< max allowable stress
            Float64 m_elastomer_bulk_modulus{ WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI) };///< elastomer bulk modulus
            SpecType m_specification{WBFL::LRFD::BDSManager::Edition::LastEdition};///< AASHTO BDS spec
+           Criteria m_criteria;///< Bearing design criteria
            Float64 m_Ecoeff{ 4.8 };///< coefficient used in elastic modulus calculation
+           Float64 m_girder_edge_dist{ 10.0 };///< girder edge distance from bearing center line
         };
     }; // EngTools
 }; // WBFL

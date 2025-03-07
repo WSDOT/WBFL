@@ -78,6 +78,9 @@
     <ClInclude Include="..\Include\EngTools\BearingReporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\EngTools\BearingDesignCriteria.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="EngTools.def" />

@@ -25,9 +25,11 @@
 #include <EngTools\Bearing.h>
 #include <EngTools\BearingLoads.h>
 #include <EngTools\BearingCalculator.h>
+#include <EngTools\BearingDesignCriteria.h>
 #include <Reporter\Chapter.h>
 #include <Units/IndirectMeasure.h>
 #include <LRFD/BDSManager.h>
+
 
 
 namespace WBFL
@@ -43,7 +45,8 @@ namespace WBFL
          /// Builds the specification check chapter
          void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, 
              rptParagraph* pPara, const Bearing& brg, const BearingLoads& brg_loads, 
-             const BearingCalculator& brg_calc, const WBFL::LRFD::BDSManager::Edition spec);
+             const BearingCalculator& brg_calc, const WBFL::LRFD::BDSManager::Edition& spec,
+             const WBFL::EngTools::BearingDesignCriteria& criteria, Float64 gdrFlgDist = 0.0);
       };
    }
 }
