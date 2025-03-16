@@ -26,7 +26,8 @@
 #include <Stability/StabilityExp.h>
 #include <Stability/AnalysisPoint.h>
 
-interface ISegment;
+interface IShape;
+interface IRebarSection;
 
 namespace WBFL
 {
@@ -42,6 +43,17 @@ namespace WBFL
 
    namespace Stability
    {
+      // Abstract class to provide girder section and rebar section data for computation of alternate tensile
+      // allowable stress. Previously this service was provided by a ISegment class which was like 
+      // providing a gorrilla when only a banana is needed.
+      class STABILITYCLASS IAlternateTensStressDataProvider
+      {
+      public:
+         // Note that both calls below return COM pointers that must be reference counted (via CComPtr)
+         virtual HRESULT GetGirderShape(Float64 Xs, IShape** ppShape) = 0;
+         virtual HRESULT CreateRebarSection(Float64 Xs, IRebarSection** pSection) = 0;
+      };
+
       ///  Abstract interface for defining a girder for stability analysis
       class STABILITYCLASS IGirder
       {
@@ -49,11 +61,10 @@ namespace WBFL
          /// Returns the overall length of the girder
          virtual Float64 GetGirderLength() const = 0;
 
-         /// Assigns an ISegment object to ppSegment. 
-         ///
+         /// Alterate tensile stress data
          /// If a value is not assigned, then the girder is modeled with basic properties only.
-         /// This section must be assigned to do the analysis for the alternative tensile stress limits (with rebar tension limit)
-         virtual void GetSegment(ISegment** ppSegment) const = 0;
+         /// This must be assigned to do the analysis for the alternative tensile stress limits (with rebar tension limit)
+         virtual std::shared_ptr<IAlternateTensStressDataProvider> GetAlternateTensStressDataProvider() const = 0;
 
          /// Returns the number of sections used to define the girder
          virtual IndexType GetSectionCount() const = 0;
@@ -138,6 +149,9 @@ namespace WBFL
 
          /// Returns the yield strength of rebar. Only used if the girder is modeled with an ISection object
          virtual Float64 GetRebarYieldStrength() const = 0;
+
+         // Bars must have at least this much cover to always be used in resisting tensile forces to compute higher tensile limit
+         virtual Float64 GetMaxCoverToUseHigherTensionStressLimit() const = 0;
 
          /// Returns the support locations. Support locations are measured from left and right ends of girder.
          virtual void GetSupportLocations(Float64* pLeft, Float64* pRight) const = 0;

@@ -191,10 +191,10 @@ namespace WBFL
          bool operator==(const Girder& other) const; ///< Returns true if the objects are equal
          bool operator!=(const Girder& other) const;  ///< Returns true if the objects are not equal
 
-         /// Associates this girder with a girder Segment model
-         void SetSegment(ISegment* pSegment);
+         /// Associates this girder with a girder Segment or other data provider
+         void SetAlternateTensStressDataProvider( std::shared_ptr<IAlternateTensStressDataProvider> ppATSProvider);
 
-         virtual void GetSegment(ISegment** ppSegment) const override;
+         virtual std::shared_ptr<IAlternateTensStressDataProvider> GetAlternateTensStressDataProvider() const override;
 
          /// Clears all sections and stress points
          void ClearSections();
@@ -250,7 +250,7 @@ namespace WBFL
          virtual Float64 GetPrecamber() const override;
 
       private:
-         ISegment* m_pSegment{ nullptr }; // weak reference
+         std::shared_ptr<IAlternateTensStressDataProvider> m_AlternateTensStressDataProvider;
          std::vector<SectionProperties> m_vSectionProperties;
 
          std::vector<std::pair<Float64, Float64>> m_vPointLoads; // additional point loads (used for items precast with the girder such as internal diaphragms)
@@ -369,6 +369,10 @@ namespace WBFL
          /// Reinforcing steel yield strength
          virtual Float64 GetRebarYieldStrength() const;
 
+         // Max cover to always be used in resisting tensile forces to compute higher tensile limit
+         void SetMaxCoverToUseHigherTensionStressLimit(Float64 cover);
+         virtual Float64 GetMaxCoverToUseHigherTensionStressLimit() const;
+
          /// Sets the support locations
          void SetSupportLocations(
             Float64 Ll, ///< Support location from left end of the girder
@@ -486,6 +490,8 @@ namespace WBFL
 
          Float64 m_fy{ 0.0 }; // reinforcement yield strength
 
+         Float64 m_MaxCoverToUseHigherTensionStressLimit{ 0.0 };
+
          Float64 m_Ll{ 0.0 }; // location of left support, measured from the left end of the girder
          Float64 m_Lr{ 0.0 }; // location of right support, measured from the right end of the girder
 
@@ -590,6 +596,10 @@ namespace WBFL
          virtual Float64 GetRebarYieldStrength() const override { return m_Imp.GetRebarYieldStrength(); }
          /// Reinforcing steel yield strength
          void SetRebarYieldStrength(Float64 fy) { m_Imp.SetRebarYieldStrength(fy); }
+
+         // Max cover to always be used in resisting tensile forces to compute higher tensile limit
+         void SetMaxCoverToUseHigherTensionStressLimit(Float64 cover) { m_Imp.SetMaxCoverToUseHigherTensionStressLimit(cover); }
+         virtual Float64 GetMaxCoverToUseHigherTensionStressLimit() const override { return m_Imp.GetMaxCoverToUseHigherTensionStressLimit(); }
 
          /// Sets the support locations
          void SetSupportLocations(
@@ -774,6 +784,10 @@ namespace WBFL
          virtual Float64 GetRebarYieldStrength() const  override { return m_Imp.GetRebarYieldStrength(); }
          /// Reinforcing steel yield strength
          void SetRebarYieldStrength(Float64 fy) { m_Imp.SetRebarYieldStrength(fy); }
+
+         // Max cover to always be used in resisting tensile forces to compute higher tensile limit
+         void SetMaxCoverToUseHigherTensionStressLimit(Float64 cover) { m_Imp.SetMaxCoverToUseHigherTensionStressLimit(cover); }
+         virtual Float64 GetMaxCoverToUseHigherTensionStressLimit() const override { return m_Imp.GetMaxCoverToUseHigherTensionStressLimit(); }
 
          /// Sets the support locations
          void SetSupportLocations(
@@ -1020,6 +1034,10 @@ namespace WBFL
 
          /// Reinforcing steel yield strength
          void SetRebarYieldStrength(Float64 fy) { m_Imp.SetRebarYieldStrength(fy); }
+
+         // Max cover to always be used in resisting tensile forces to compute higher tensile limit
+         void SetMaxCoverToUseHigherTensionStressLimit(Float64 cover) { m_Imp.SetMaxCoverToUseHigherTensionStressLimit(cover); }
+         virtual Float64 GetMaxCoverToUseHigherTensionStressLimit() const override { return m_Imp.GetMaxCoverToUseHigherTensionStressLimit(); }
 
          /// Sets the support locations
          void SetSupportLocations(

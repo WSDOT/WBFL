@@ -53,8 +53,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    const HaulingResults& results = pArtifact->GetHaulingResults();
    const HaulingCriteria& criteria = pArtifact->GetCriteria();
 
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    rptCDRatio cdRatio;
 
@@ -598,8 +597,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
 
 void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    std::array<std::_tstring, 4> strFlange = { _T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right") };
    std::array<std::_tstring, 2> strTiltRotation = { _T("counter clockwise"), _T("clockwise") };
@@ -2351,7 +2349,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
 
 #if defined REBAR_FOR_DIRECT_TENSION
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
+         if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             rptRcTable* pRebarTable = nullptr;
             std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(WBFL::LRFD::LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));

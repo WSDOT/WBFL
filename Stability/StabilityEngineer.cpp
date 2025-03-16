@@ -277,16 +277,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
    }
 
 
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
-
-   CComPtr<IRebarLayout> rebarLayout;
-   if ( segment )
-   {
-      // only need the rebar model if we are checking tension with rebar, and that can only happen
-      // if the girder is modeled with an ISegment object
-      GetRebarLayout(pGirder,&rebarLayout);
-   }
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    // Get deflection due to horizontal component of lifting cable force
    CComQIPtr<IFem2dModelResults> femResults(model);
@@ -374,10 +365,10 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
 
       CComPtr<IRebarSection> rebarSection;
       CComPtr<IShape> shape;
-      if ( segment )
+      if (pAlternateTensStressDataProvider)
       {
-         rebarLayout->CreateRebarSection(X,INVALID_INDEX,&rebarSection);
-         segment->get_GirderShape(X,sbLeft,cstGirder, &shape); // this is in girder section coordinates
+         pAlternateTensStressDataProvider->CreateRebarSection(X, &rebarSection);
+         pAlternateTensStressDataProvider->GetGirderShape(X, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
@@ -696,7 +687,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
          } // next corner
 
          // compute rebar requirements for tension stresses
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
+         if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -707,6 +698,7 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
             altTensionRequirements.shape = shape;
             altTensionRequirements.rebarSection = rebarSection;
             altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+            altTensionRequirements.MaxCoverToUseHigherTensionStressLimit = pStabilityProblem->GetMaxCoverToUseHigherTensionStressLimit();
             altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
             altTensionRequirements.bLimitBarStress = true;
             altTensionRequirements.concreteType = concrete.GetType();
@@ -807,16 +799,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
    CComPtr<IFem2dModel> model;
    Analyze(pGirder, pStabilityProblem, results, &model);
 
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
-
-   CComPtr<IRebarLayout> rebarLayout;
-   if (segment)
-   {
-      // only need the rebar model if we are checking tension with rebar, and that can only happen
-      // if the girder is modeled with an ISegment object
-      GetRebarLayout(pGirder, &rebarLayout);
-   }
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    results.vSectionResults.clear();
    results.vSectionResults.reserve(pStabilityProblem->GetAnalysisPoints().size());
@@ -959,10 +942,10 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
       CComPtr<IRebarSection> rebarSection;
       CComPtr<IShape> shape;
-      if (segment)
+      if (pAlternateTensStressDataProvider)
       {
-         rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
-         segment->get_GirderShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
+         pAlternateTensStressDataProvider->CreateRebarSection(X, &rebarSection);
+         pAlternateTensStressDataProvider->GetGirderShape(X, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
@@ -1220,7 +1203,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             } // next wind direction
          } // next corner
 
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
+         if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -1231,6 +1214,7 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
             altTensionRequirements.shape = shape;
             altTensionRequirements.rebarSection = rebarSection;
             altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+            altTensionRequirements.MaxCoverToUseHigherTensionStressLimit = pStabilityProblem->GetMaxCoverToUseHigherTensionStressLimit();
             altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
             altTensionRequirements.bLimitBarStress = true;
             altTensionRequirements.concreteType = concrete.GetType();
@@ -1404,16 +1388,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    CComPtr<IFem2dModel> model;
    Analyze(pGirder,pStabilityProblem,results,&model);
 
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
-
-   CComPtr<IRebarLayout> rebarLayout;
-   if ( segment )
-   {
-      // only need the rebar model if we are checking tension with rebar, and that can only happen
-      // if the girder is modeled with an ISegment object
-      GetRebarLayout(pGirder,&rebarLayout);
-   }
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    results.vSectionResults.clear();
    results.vSectionResults.reserve(pStabilityProblem->GetAnalysisPoints().size());
@@ -1525,10 +1500,10 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
 
       CComPtr<IRebarSection> rebarSection;
       CComPtr<IShape> shape;
-      if (segment)
+      if (pAlternateTensStressDataProvider)
       {
-         rebarLayout->CreateRebarSection(X, INVALID_INDEX, &rebarSection);
-         segment->get_GirderShape(X, sbLeft, cstGirder, &shape); // this is in girder section coordinates
+         pAlternateTensStressDataProvider->CreateRebarSection(X, &rebarSection);
+         pAlternateTensStressDataProvider->GetGirderShape(X, &shape); // this is in girder section coordinates
 
          // position the shape in centroidal/stress point coordinates
          CComPtr<IShapeProperties> props;
@@ -1813,7 +1788,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                } // next wind direction
             } // next corner
 
-            if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
+            if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
             {
                gbtAlternativeTensileStressRequirements altTensionRequirements;
 
@@ -1824,6 +1799,7 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
                altTensionRequirements.shape = shape;
                altTensionRequirements.rebarSection = rebarSection;
                altTensionRequirements.fy = pStabilityProblem->GetRebarYieldStrength();
+               altTensionRequirements.MaxCoverToUseHigherTensionStressLimit = pStabilityProblem->GetMaxCoverToUseHigherTensionStressLimit();
                altTensionRequirements.fsMax = WBFL::Units::ConvertToSysUnits(30.0, WBFL::Units::Measure::KSI);
                altTensionRequirements.bLimitBarStress = true;
                altTensionRequirements.concreteType = concrete.GetType();
@@ -2800,19 +2776,6 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
       Zo /= -Wg;
    }
    return Zo;
-}
-
-void StabilityEngineer::GetRebarLayout(const IGirder* pGirder,IRebarLayout** ppRebarLayout) const
-{
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
-   CHECK(segment);
-
-   CComQIPtr<IItemData> itemData(segment);
-   CComPtr<IUnknown> punk;
-   itemData->GetItemData(CComBSTR("Precast Girder"),&punk);
-   CComQIPtr<IPrecastGirder> gdr(punk);
-   gdr->get_RebarLayout(ppRebarLayout);
 }
 
 Float64 StabilityEngineer::ComputePz(Float64 velocity,Float64 Cd) const

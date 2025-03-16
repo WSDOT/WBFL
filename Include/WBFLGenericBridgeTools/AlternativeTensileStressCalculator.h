@@ -55,6 +55,8 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    Float64 Fct;
    Float64 density;
    bool bAdjustForDevelopmentLength;
+   Float64 MaxCoverToUseHigherTensionStressLimit; // Bars must have at least this much cover to always be used
+                                                  // in resisting tensile forces to compute higher tensile limit
 
    CComPtr<IShape> shape; // shape of girder (must be in Centroidal/Stress Point coordinates)
    CComPtr<IRebarSection> rebarSection; // longitudinal rebar in the girder (in Section coordinates)

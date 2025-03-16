@@ -46,6 +46,7 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
    bHasFct = false;
    Fct = 0;
    density = 0;
+   MaxCoverToUseHigherTensionStressLimit = 0.0; // zero cover means don't automatically use bars to resist tensile force
    bAdjustForDevelopmentLength = true;
    Ytg = 0;
 
@@ -293,6 +294,8 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
       CComPtr<IEnumRebarSectionItem> enumItems;
       pRequirements->rebarSection->get__EnumRebarSectionItem(&enumItems);
 
+      Float64 maxCover = pRequirements->MaxCoverToUseHigherTensionStressLimit;
+
       CComPtr<IRebarSectionItem> rebarSectionItem;
       while (enumItems->Next(1, &rebarSectionItem, nullptr) != S_FALSE)
       {
@@ -341,16 +344,25 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
 
             Float64 x, y;
             location->Location(&x, &y); // in girder section coordinates (0,0 at top center)
-                                        // put the bar into centroid coordinates
-            y += pRequirements->Ytg;
 
-            Float64 z;
-            stressPlane->GetZ(x, y, &z);
-
-            if (::IsLE(0.0, z))
+            // Determine if rebar is within max cover requirement
+            Float64 barCover = -1.0 * y - db / 2.0;
+            if (barCover <= maxCover)
             {
-               // if z is > 0 bar is on the tension side of neutral axis
                AsProvd += Ab;
+            }
+            else
+            {
+               y += pRequirements->Ytg;// put the bar into centroid coordinates
+
+               Float64 z;
+               stressPlane->GetZ(x, y, &z);
+
+               if (::IsLE(0.0, z))
+               {
+                  // if z is > 0 bar is on the tension side of neutral axis
+                  AsProvd += Ab;
+               }
             }
          }
 

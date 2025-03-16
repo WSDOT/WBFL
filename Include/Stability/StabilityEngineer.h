@@ -107,9 +107,6 @@ namespace WBFL
          // Computes Zo by either a closed form exact solution or by numerical integration
          Float64 ComputeZo(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, IFem2dModel* pModel, Results& results) const;
 
-         // Get a rebar layout model
-         void GetRebarLayout(const IGirder* pGirder, IRebarLayout** ppRebarLayout) const;
-
          Float64 ComputePz(Float64 velocity, Float64 Cd) const;
 
          void FindMember(IFem2dModel* pModel, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const;
