@@ -384,29 +384,33 @@ ShapeProperties& ShapeProperties::Join(const ShapeProperties& rOther, Float64 sc
    auto [cx1,cy1] = m_Properties.centroid.GetLocation();
    auto [cx2,cy2] = other.GetCentroid().GetLocation();
 
-   mxx = m_Properties.area * m_Properties.centroid.Y() + scale* other.m_Properties.area * other.m_Properties.centroid.Y();
-   myy = m_Properties.area * m_Properties.centroid.X() + scale * other.m_Properties.area * other.m_Properties.centroid.X();
+   // Check if other's area is zero. Need to avoid divide by zero. 
+   if (!IsZero(scale * rOther.m_Properties.area))
+   {
+      mxx = m_Properties.area * m_Properties.centroid.Y() + scale * other.m_Properties.area * other.m_Properties.centroid.Y();
+      myy = m_Properties.area * m_Properties.centroid.X() + scale * other.m_Properties.area * other.m_Properties.centroid.X();
 
-   // Get centroidal I for each shape and transform it to the global axes
-   ixx = (m_Properties.ixx + m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y() +
-      scale * other.m_Properties.ixx + scale * other.m_Properties.area * other.m_Properties.centroid.Y() * other.m_Properties.centroid.Y());
+      // Get centroidal I for each shape and transform it to the global axes
+      ixx = (m_Properties.ixx + m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y() +
+         scale * other.m_Properties.ixx + scale * other.m_Properties.area * other.m_Properties.centroid.Y() * other.m_Properties.centroid.Y());
 
-   iyy = (m_Properties.iyy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X() +
-      scale * other.m_Properties.iyy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.X());
+      iyy = (m_Properties.iyy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X() +
+         scale * other.m_Properties.iyy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.X());
 
-   ixy = (m_Properties.ixy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y() +
-      scale * other.m_Properties.ixy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.Y());
+      ixy = (m_Properties.ixy + m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y() +
+         scale * other.m_Properties.ixy + scale * other.m_Properties.area * other.m_Properties.centroid.X() * other.m_Properties.centroid.Y());
 
-   m_Properties.area += scale * other.m_Properties.area;
+      m_Properties.area += scale * other.m_Properties.area;
 
-   m_Properties.centroid.Y() = mxx / m_Properties.area;
-   m_Properties.centroid.X() = myy / m_Properties.area;
+      m_Properties.centroid.Y() = mxx / m_Properties.area;
+      m_Properties.centroid.X() = myy / m_Properties.area;
 
-   auto [cgx,cgy] = m_Properties.centroid.GetLocation();
+      m_Properties.ixx = ixx - m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y();
+      m_Properties.iyy = iyy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X();
+      m_Properties.ixy = ixy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y();
+   }
 
-   m_Properties.ixx = ixx - m_Properties.area * m_Properties.centroid.Y() * m_Properties.centroid.Y();
-   m_Properties.iyy = iyy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.X();
-   m_Properties.ixy = ixy - m_Properties.area * m_Properties.centroid.X() * m_Properties.centroid.Y();
+   auto [cgx, cgy] = m_Properties.centroid.GetLocation();
 
    // Update the distance from the edges to the centroid
    Float64 l2 = other.GetXleft();
