@@ -160,5 +160,22 @@ namespace WBFL
       {
          return (edition < BDSManager::Edition::EighthEdition2017) ? oldArticleNumber : newArticleNumber;
       }
+
+      // The terms "Temporary Stresses before losses" and "Service Limit State Stresses after losses" were changed in the 10th edition to
+      // "TemporaryStresses" and "Service Limit State Stresses". The function below is used to aid in the replacement.
+      enum LossTimeType { ltTemporary, ltService };
+
+      inline LPCTSTR LrfdLosses10th(LossTimeType lossType, BDSManager::Edition edition = BDSManager::GetEdition())
+      {
+         if (edition >= BDSManager::Edition::TenthEdition2024)
+         {
+            return _T(" ");
+         }
+         else
+         {
+            return ltTemporary==lossType ? _T(" before losses ") : _T(" after losses ");
+         }
+      }
+
    };
 };
