@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
-// Stability
-// Copyright © 1999-2025  Washington State Department of Transportation
+// EngTools - Library of miscellaneous engineering tools
+// Copyright Â© 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -20,31 +20,17 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
 #pragma once
-#include <EngTools\Bearing.h>
-#include <EngTools\BearingLoads.h>
-#include <EngTools\BearingCalculator.h>
-#include <EngTools\BearingDesignCriteria.h>
-#include <Reporter\Chapter.h>
-#include <Units/IndirectMeasure.h>
-#include <LRFD/BDSManager.h>
+
+#include <EngTools\EngToolsLib.h>
+#include <EngTools\BearingResults.h>
 
 
 
-namespace WBFL
+using namespace WBFL::EngTools;
+
+BearingResults::BearingResults()
 {
-   namespace EngTools
-   {
-      ///  Generates reports for lifting stability analysis
-      class ENGTOOLSCLASS BearingReporter
-      {
-      public:
-         BearingReporter();
-
-         /// Builds the specification check chapter
-         void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
-             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
-      };
-   }
 }
+
+

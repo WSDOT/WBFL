@@ -12,21 +12,24 @@ namespace EngToolsUnitTests
 
 		TEST_METHOD(TestAllPass)
 		{
-
+			BearingCalculator brg_calc;
 			Bearing brg;
 			BearingLoads brg_loads;
-			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			criteria.bHeight = true;
-			criteria.bDistBrg2gBf = true;
-			criteria.bMaxDistBrg2gBf = true;
-			criteria.bMinDistBrg2gBf = true;
-			criteria.bHri = true;
-			criteria.bMaxTL = true;
+			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
-			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
-			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));
+			const auto& artifact = 
+				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+
+
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bMaximumTotalLoad = true;
+
 			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI));
 			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI));
 			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(36, WBFL::Units::Measure::KSI));
@@ -49,42 +52,42 @@ namespace EngToolsUnitTests
 
 			Float64 gdrFlgDist = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch);
 
-			Assert::IsTrue(brg_calc.MinimumAreaCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumLengthCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumWidthCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumStressCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumShapeFactorCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumShapeFactorCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumElastomerCoverThicknessCheck(brg));
-			Assert::IsTrue(brg_calc.MaximumElastomerCoverThicknessCheck(brg));
-			Assert::IsTrue(brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads));
-			Assert::IsFalse(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads));
-			Assert::IsTrue(brg_calc.RestraintSystemRequirementCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.HydrostaticStressCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumLiveLoadDeflectionMethodBCheck(brg, brg_loads, criteria));
-			Assert::IsTrue(brg_calc.MinimumAllowableShearModulusCheck(brg, criteria));
-			Assert::IsTrue(brg_calc.MaximumAllowableShearModulusCheck(brg, criteria));
-			Assert::IsTrue(brg_calc.RequiredIntermediateElastomerThicknessCheck(brg, criteria));
-			Assert::IsTrue(brg_calc.MinimumTotalBearingHeightCheck(brg, criteria));
-			Assert::IsTrue(brg_calc.MinimumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsTrue(brg_calc.MaximumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsTrue(brg_calc.RequiredBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsTrue(brg_calc.MaximumTotalLoadCheck(brg_loads, criteria));
+			Assert::IsTrue(artifact.MinimumAreaCheck());
+			Assert::IsTrue(artifact.MinimumLengthCheck());
+			Assert::IsTrue(artifact.MinimumWidthCheck());
+			Assert::IsTrue(artifact.MaximumStressCheck());
+			Assert::IsTrue(artifact.MaximumIntermediateLayerThicknessCheck());
+			Assert::IsTrue(artifact.MinimumShapeFactorCheck());
+			Assert::IsTrue(artifact.MaximumShapeFactorCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersShearDeformationCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationXCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck());
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityXCheck());
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityYCheck());
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck());
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck());
+			Assert::IsTrue(artifact.MinimumElastomerCoverThicknessCheck());
+			Assert::IsTrue(artifact.MaximumElastomerCoverThicknessCheck());
+			Assert::IsTrue(artifact.MaximumCompressiveStrainCheck());
+			Assert::IsTrue(artifact.ShearDeformationCheck());
+			Assert::IsTrue(artifact.StaticAxialPrimaryShearStrainCheck());
+			Assert::IsTrue(artifact.StaticAxialSecondaryShearStrainCheck());
+			Assert::IsTrue(artifact.PrimaryShearStrainComboSumCheck());
+			Assert::IsTrue(artifact.SecondaryShearStrainComboSumCheck());
+			Assert::IsFalse(criteria.CheckApplicabilityTotalStressStabilityX());
+			Assert::IsFalse(criteria.CheckApplicabilityTotalStressStabilityY());
+			Assert::IsTrue(artifact.RestraintSystemRequirementCheck());
+			Assert::IsFalse(artifact.HydrostaticStressCheck());
+			Assert::IsTrue(artifact.HorizontalForceCheck());
+			Assert::IsTrue(artifact.MaximumLiveLoadDeflectionMethodBCheck());
+			Assert::IsTrue(artifact.MinimumAllowableShearModulusCheck());
+			Assert::IsTrue(artifact.MaximumAllowableShearModulusCheck());
+			Assert::IsTrue(artifact.RequiredIntermediateElastomerThicknessCheck());
+			Assert::IsTrue(artifact.MinimumTotalBearingHeightCheck());
+			Assert::IsTrue(artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsTrue(artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsTrue(artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsTrue(artifact.MaximumTotalLoadCheck());
 		}
 
 		TEST_METHOD(TestAllFail)
@@ -96,16 +99,18 @@ namespace EngToolsUnitTests
 			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			criteria.bHeight = true;
-			criteria.bDistBrg2gBf = true;
-			criteria.bMaxDistBrg2gBf = true;
-			criteria.bMinDistBrg2gBf = true;
-			criteria.bHri = true;
-			criteria.bMaxTL = true;
+			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
 
-			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
-			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bMaximumTotalLoad = true;
+
 			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(70, WBFL::Units::Measure::PSI));
 			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(220, WBFL::Units::Measure::PSI));
 			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(2, WBFL::Units::Measure::KSI));
@@ -128,55 +133,66 @@ namespace EngToolsUnitTests
 
 			Float64 gdrFlgDist = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::Inch);
 
-			Assert::IsFalse(brg_calc.MinimumAreaCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumLengthCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumWidthCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MaximumStressCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumShapeFactorCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MaximumShapeFactorCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg));
-			Assert::IsFalse(brg_calc.MinimumElastomerCoverThicknessCheck(brg));
-			Assert::IsTrue(brg_calc.MaximumElastomerCoverThicknessCheck(brg));
-			Assert::IsFalse(brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.ShearDeformationCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads));
-			Assert::IsFalse(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads));
-			Assert::IsTrue(brg_calc.RestraintSystemRequirementCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.HydrostaticStressCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumLiveLoadDeflectionMethodBCheck(brg, brg_loads, criteria));
-			Assert::IsFalse(brg_calc.MinimumAllowableShearModulusCheck(brg, criteria));
-			Assert::IsFalse(brg_calc.MaximumAllowableShearModulusCheck(brg, criteria));
-			Assert::IsFalse(brg_calc.RequiredIntermediateElastomerThicknessCheck(brg, criteria));
-			Assert::IsFalse(brg_calc.MinimumTotalBearingHeightCheck(brg, criteria));
-			Assert::IsTrue(brg_calc.MinimumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsFalse(brg_calc.MaximumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsFalse(brg_calc.RequiredBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist));
-			Assert::IsFalse(brg_calc.MaximumTotalLoadCheck(brg_loads, criteria));
+			Assert::IsFalse(artifact.MinimumAreaCheck());
+			Assert::IsFalse(artifact.MinimumLengthCheck());
+			Assert::IsFalse(artifact.MinimumWidthCheck());
+			Assert::IsFalse(artifact.MaximumStressCheck());
+			Assert::IsFalse(artifact.MaximumIntermediateLayerThicknessCheck());
+			Assert::IsFalse(artifact.MinimumShapeFactorCheck());
+			Assert::IsFalse(artifact.MaximumShapeFactorCheck());
+			Assert::IsFalse(artifact.MinimumNumLayersShearDeformationCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationXCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck());
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityXCheck());
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityYCheck());
+			Assert::IsFalse(artifact.MinimumSteelShimThicknessServiceCheck());
+			Assert::IsFalse(artifact.MinimumSteelShimThicknessFatigueCheck());
+			Assert::IsFalse(artifact.MinimumSteelShimThicknessAbsoluteCheck());
+			Assert::IsFalse(artifact.MinimumElastomerCoverThicknessCheck());
+			Assert::IsTrue(artifact.MaximumElastomerCoverThicknessCheck());
+			Assert::IsFalse(artifact.MaximumCompressiveStrainCheck());
+			Assert::IsFalse(artifact.ShearDeformationCheck());
+			Assert::IsFalse(artifact.StaticAxialPrimaryShearStrainCheck());
+			Assert::IsFalse(artifact.StaticAxialSecondaryShearStrainCheck());
+			Assert::IsFalse(artifact.PrimaryShearStrainComboSumCheck());
+			Assert::IsFalse(artifact.SecondaryShearStrainComboSumCheck());
+			Assert::IsFalse(criteria.CheckApplicabilityTotalStressStabilityX());
+			Assert::IsFalse(criteria.CheckApplicabilityTotalStressStabilityY());
+			Assert::IsTrue(artifact.RestraintSystemRequirementCheck());
+			Assert::IsFalse(artifact.HydrostaticStressCheck());
+			Assert::IsTrue(artifact.HorizontalForceCheck());
+			Assert::IsTrue(artifact.MaximumLiveLoadDeflectionMethodBCheck());
+			Assert::IsFalse(artifact.MinimumAllowableShearModulusCheck());
+			Assert::IsFalse(artifact.MaximumAllowableShearModulusCheck());
+			Assert::IsFalse(artifact.RequiredIntermediateElastomerThicknessCheck());
+			Assert::IsFalse(artifact.MinimumTotalBearingHeightCheck());
+			Assert::IsTrue(artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsFalse(artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsFalse(artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck());
+			Assert::IsFalse(artifact.MaximumTotalLoadCheck());
 		}
 
 
 		TEST_METHOD(TestPGExampleFail)
 		{
-
 			Bearing brg;
 			BearingLoads brg_loads;
 			BearingCalculator brg_calc;
+			BearingDesignCriteria criteria;
 
-			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
-			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));
+			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bMaximumTotalLoad = true;
+
+
 			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::PSI));
 			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(190, WBFL::Units::Measure::PSI));
 			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(36, WBFL::Units::Measure::KSI));
@@ -197,47 +213,57 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(false);
 			brg_loads.SetFixedTranslationY(true);
 
-			Assert::IsTrue(brg_calc.MinimumAreaCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumLengthCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumWidthCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumStressCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumShapeFactorCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MaximumShapeFactorCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg));
-			Assert::IsTrue(brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads));
-			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StabilityXDirectionCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.StabilityYDirectionCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.RestraintSystemRequirementCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.HydrostaticStressCheck(brg, brg_loads));
-			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads));
+			Assert::IsTrue(artifact.MinimumAreaCheck());
+			Assert::IsTrue(artifact.MinimumLengthCheck());
+			Assert::IsTrue(artifact.MinimumWidthCheck());
+			Assert::IsTrue(artifact.MaximumStressCheck());
+			Assert::IsTrue(artifact.MaximumIntermediateLayerThicknessCheck());
+			Assert::IsTrue(artifact.MinimumShapeFactorCheck());
+			Assert::IsTrue(artifact.MaximumShapeFactorCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersShearDeformationCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationXCheck());
+			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck());
+			Assert::IsFalse(artifact.MaximumNumLayersStabilityXCheck());
+			Assert::IsFalse(artifact.MaximumNumLayersStabilityYCheck());
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck());
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck());
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessAbsoluteCheck());
+			Assert::IsTrue(artifact.MaximumCompressiveStrainCheck());
+			Assert::IsTrue(artifact.ShearDeformationCheck());
+			Assert::IsTrue(artifact.StaticAxialPrimaryShearStrainCheck());
+			Assert::IsTrue(artifact.StaticAxialSecondaryShearStrainCheck());
+			Assert::IsTrue(artifact.PrimaryShearStrainComboSumCheck());
+			Assert::IsTrue(artifact.SecondaryShearStrainComboSumCheck());
+			Assert::IsTrue(criteria.CheckApplicabilityTotalStressStabilityX());
+			Assert::IsTrue(criteria.CheckApplicabilityTotalStressStabilityY());
+			Assert::IsTrue(artifact.StabilityXDirectionCheck());
+			Assert::IsTrue(artifact.StabilityYDirectionCheck());
+			Assert::IsTrue(artifact.RestraintSystemRequirementCheck());
+			Assert::IsFalse(artifact.HydrostaticStressCheck());
+			Assert::IsTrue(artifact.HorizontalForceCheck());
 
 
 		}
 
 		TEST_METHOD(TestEtc)
 		{
-
 			Bearing brg;
 			BearingLoads brg_loads;
 			BearingCalculator brg_calc;
+			BearingDesignCriteria criteria;
 
-			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
-			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));			
+			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bMaximumTotalLoad = true;
+		
 			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(200, WBFL::Units::Measure::PSI));
 			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(220, WBFL::Units::Measure::PSI));
 			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(2, WBFL::Units::Measure::KSI));
@@ -258,34 +284,34 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(true);
 			brg_loads.SetFixedTranslationY(true);
 
-			Assert::IsTrue(brg_calc.MinimumAreaCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MinimumLengthCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MinimumWidthCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MaximumStressCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MinimumShapeFactorCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MaximumShapeFactorCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg) == false);
-			Assert::IsTrue(brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.ShearDeformationCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.StabilityXDirectionCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.StabilityYDirectionCheck(brg, brg_loads) == true);
-			Assert::IsTrue(brg_calc.RestraintSystemRequirementCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.HydrostaticStressCheck(brg, brg_loads) == false);
-			Assert::IsTrue(brg_calc.HorizontalForceCheck(brg, brg_loads) == false);
+			Assert::IsTrue(artifact.MinimumAreaCheck() == true);
+			Assert::IsTrue(artifact.MinimumLengthCheck() == true);
+			Assert::IsTrue(artifact.MinimumWidthCheck() == true);
+			Assert::IsTrue(artifact.MaximumStressCheck() == true);
+			Assert::IsTrue(artifact.MaximumIntermediateLayerThicknessCheck() == true);
+			Assert::IsTrue(artifact.MinimumShapeFactorCheck() == true);
+			Assert::IsTrue(artifact.MaximumShapeFactorCheck() == false);
+			Assert::IsTrue(artifact.MinimumNumLayersShearDeformationCheck() == false);
+			Assert::IsTrue(artifact.MinimumNumLayersRotationXCheck() == false);
+			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck() == false);
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityXCheck() == true);
+			Assert::IsTrue(artifact.MaximumNumLayersStabilityYCheck() == true);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck() == false);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck() == true);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessAbsoluteCheck() == false);
+			Assert::IsTrue(artifact.MaximumCompressiveStrainCheck() == true);
+			Assert::IsTrue(artifact.ShearDeformationCheck() == false);
+			Assert::IsTrue(artifact.StaticAxialPrimaryShearStrainCheck() == true);
+			Assert::IsTrue(artifact.StaticAxialSecondaryShearStrainCheck() == true);
+			Assert::IsTrue(artifact.PrimaryShearStrainComboSumCheck() == false);
+			Assert::IsTrue(artifact.SecondaryShearStrainComboSumCheck() == false);
+			Assert::IsTrue(criteria.CheckApplicabilityTotalStressStabilityX() == true);
+			Assert::IsTrue(criteria.CheckApplicabilityTotalStressStabilityY() == true);
+			Assert::IsTrue(artifact.StabilityXDirectionCheck() == true);
+			Assert::IsTrue(artifact.StabilityYDirectionCheck() == true);
+			Assert::IsTrue(artifact.RestraintSystemRequirementCheck() == false);
+			Assert::IsTrue(artifact.HydrostaticStressCheck() == false);
+			Assert::IsTrue(artifact.HorizontalForceCheck() == false);
 
 		}
 
@@ -295,9 +321,20 @@ namespace EngToolsUnitTests
 			Bearing brg;
 			BearingLoads brg_loads;
 			BearingCalculator brg_calc;
+			BearingDesignCriteria criteria;
 
-			brg_calc.SetElastomerBulkModulus(WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI));
-			brg_calc.SetMaximumAllowableStress(WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI));
+			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumBearingEdgeToGirderEdgeDistance = true;
+			criteria.bMinimumTotalBearingHeight = true;
+			criteria.bMaximumTotalLoad = true;
+
 			brg.SetShearModulusMinimum(WBFL::Units::ConvertToSysUnits(140, WBFL::Units::Measure::PSI));
 			brg.SetShearModulusMaximum(WBFL::Units::ConvertToSysUnits(190, WBFL::Units::Measure::PSI));
 			brg.SetYieldStrength(WBFL::Units::ConvertToSysUnits(36, WBFL::Units::Measure::KSI));
@@ -320,10 +357,10 @@ namespace EngToolsUnitTests
 
 
 
-			Assert::IsTrue(IsEqual(brg_calc.GetMinimumAllowableNumLayersRotationX(brg, brg_loads), 10.2, 0.1));
-			Assert::IsTrue(IsEqual(brg_calc.GetMinimumAllowableNumLayersRotationY(brg, brg_loads), 23.2, 0.1));
-			Assert::IsFalse(brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads));
-			Assert::IsFalse(brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads));
+			Assert::IsTrue(IsEqual(criteria.GetMinimumAllowableNumLayersRotationX(), 10.2, 0.1));
+			Assert::IsTrue(IsEqual(criteria.GetMinimumAllowableNumLayersRotationY(), 23.2, 0.1));
+			Assert::IsFalse(artifact.MinimumNumLayersRotationXCheck());
+			Assert::IsFalse(artifact.MinimumNumLayersRotationYCheck());
 
 		};
 

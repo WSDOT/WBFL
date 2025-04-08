@@ -34,6 +34,15 @@
     <ClCompile Include="BearingReporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BearingCheckArtifact.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BearingDesignCriteria.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BearingResults.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\EngTools\AutoLib.h">

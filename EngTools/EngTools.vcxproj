@@ -187,8 +187,11 @@
   <ItemGroup>
     <ClCompile Include="Bearing.cpp" />
     <ClCompile Include="BearingCalculator.cpp" />
+    <ClCompile Include="BearingCheckArtifact.cpp" />
+    <ClCompile Include="BearingDesignCriteria.cpp" />
     <ClCompile Include="BearingLoads.cpp" />
     <ClCompile Include="BearingReporter.cpp" />
+    <ClCompile Include="BearingResults.cpp" />
     <ClCompile Include="BiaxialBeamStrain.cpp" />
     <ClCompile Include="FDMeshGenerator.cpp" />
     <ClCompile Include="main.cpp">

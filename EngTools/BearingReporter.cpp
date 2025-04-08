@@ -32,10 +32,10 @@ BearingReporter::BearingReporter()
 }
 
 
-void ReportIntroduction(rptParagraph* pPara, 
-	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition spec)
+void ReportIntroduction(rptParagraph* pPara)
 {
+	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
 	*pPara << color(Blue);
 	*pPara << Bold(_T("-Calculations are based on ")) << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << rptNewLine;
 	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only")) << rptNewLine;
@@ -48,40 +48,42 @@ void ReportIntroduction(rptParagraph* pPara,
 }
 
 void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits, 
-	rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::Bearing& brg,
-	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc)
-
-
+	rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact)
 {
+
+
+	const BearingCalculator calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& loads = artifact.GetBearingLoads();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+
 
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
 	Float64 a = brg.GetArea();
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
-	Float64 K = brg_calc.GetElastomerBulkModulus();
-	Float64 dl = brg_loads.GetDeadLoad();
-	Float64 ll = brg_loads.GetLiveLoad();
-	Float64 tl = brg_loads.GetTotalLoad();
-	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
-	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
+	Float64 K = brg.GetElastomerBulkModulus();
+	Float64 dl = loads.GetDeadLoad();
+	Float64 ll = loads.GetLiveLoad();
+	Float64 tl = loads.GetTotalLoad();
+	Float64 ll_stress = calc.GetLiveLoadStress(brg, loads);
+	Float64 tl_stress = calc.GetTotalLoadStress(brg, loads);
 	Float64 fy = brg.GetYieldStrength();
 	Float64 fth = brg.GetFatigueThreshold();
-	Float64 Sstatic = brg_calc.GetStaticStress(brg, brg_loads);
-	Float64 Scyclic = brg_calc.GetCyclicStress(brg, brg_loads);
-	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
+	Float64 Sstatic = calc.GetStaticStress(brg, loads);
+	Float64 Scyclic = calc.GetCyclicStress(brg, loads);
+	Float64 n_multiplier = calc.GetNlayMultiplier(brg);
 	Float64 s = brg.GetShapeFactor();
 	IndexType n = brg.GetNumIntLayers();
 	Float64 tcover = brg.GetCoverThickness();
-	Float64 sdef = brg_loads.GetShearDeformation();
-	Float64 static_rotation = brg_loads.GetStaticRotation();
-	Float64 cyclic_rotation = brg_loads.GetCyclicRotation();
-	Float64 x_rotation = brg_loads.GetRotationX();
-	Float64 y_rotation = brg_loads.GetRotationY();
+	Float64 sdef = loads.GetShearDeformation();
+	Float64 static_rotation = loads.GetStaticRotation();
+	Float64 cyclic_rotation = loads.GetCyclicRotation();
+	Float64 x_rotation = loads.GetRotationX();
+	Float64 y_rotation = loads.GetRotationY();
 	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
-	Float64 total_bearing_height = brg_calc.ComputeBearingHeight(brg);
+	Float64 total_bearing_height = calc.ComputeBearingHeight(brg);
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
 	Float64 weight = brg.GetBearingWeight();
@@ -152,7 +154,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable)(1, 7) << s;
 
 	IndexType i = 4;
-	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
+	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
 		i = 5;
 	}
@@ -168,7 +170,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable2)(0, 3) << COLHDR(Sub2(_T("G"), _T("min")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 3) << E.SetValue(Gmin);
 
-	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
+	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
 		(*pTable2)(0, 4) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
 		(*pTable2)(1, 4) << E.SetValue(Gmax);
@@ -191,7 +193,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	(*pTable4)(0, 0) << COLHDR(Sub2(symbol(DELTA), _T("s")), rptLengthUnitTag, pDispUnits->ComponentDim);
 	(*pTable4)(1, 0) << length.SetValue(sdef);
 
-	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
+	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
 		(*pTable4)(0, 1) << COLHDR(Sub2(symbol(theta), _T("x")), rptAngleUnitTag, pDispUnits->RadAngle);
 		(*pTable4)(1, 1) << angle.SetValue(x_rotation);
@@ -211,49 +213,49 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 
 void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::Bearing& brg,
-	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition spec,
-	const WBFL::EngTools::BearingDesignCriteria criteria,
-	Float64 gdrFlgDist)
+	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
+
+	const BearingCalculator brg_calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& brg_loads = artifact.GetBearingLoads();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
 
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
 
 	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
-	Float64 t_min_shim_absolute = brg_calc.GetAbsoluteMinimumShimThickness();
+	Float64 t_min_shim_absolute = criteria.GetAbsoluteMinimumShimThickness();
 	Float64 tcover = brg.GetCoverThickness();
-	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
+	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
 	Float64 fy = brg.GetYieldStrength();
 	Float64 fth = brg.GetFatigueThreshold();
-	Float64 t_min_shim_service = brg_calc.GetMinimumAllowableSteelShimThicknessService(brg, brg_loads);
+	Float64 t_min_shim_service = criteria.GetMinimumAllowableSteelShimThicknessService();
 	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
 	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
-	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
-	Float64 t_min_shim_fatigue = brg_calc.GetMinimumAllowableSteelShimThicknessFatigue(brg, brg_loads);
-	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
-	Float64 t_min_cover = brg_calc.GetMinimumElastomerCoverThickness();
-	Float64 t_max_cover = brg_calc.GetMaximumElastomerCoverThickness(brg);
-	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
-	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
-	bool gMin_check = brg_calc.MinimumAllowableShearModulusCheck(brg, criteria);
-	bool gMax_check = brg_calc.MaximumAllowableShearModulusCheck(brg, criteria);
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
+	Float64 t_min_shim_fatigue = criteria.GetMinimumAllowableSteelShimThicknessFatigue();
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
+	Float64 t_min_cover = criteria.GetMinimumElastomerCoverThickness();
+	Float64 t_max_cover = criteria.GetMaximumElastomerCoverThickness();
+	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
+	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	Float64 total_bearing_height = brg_calc.ComputeBearingHeight(brg);
-	bool hri_check = brg_calc.RequiredIntermediateElastomerThicknessCheck(brg, criteria);
-	bool height_check = brg_calc.MinimumTotalBearingHeightCheck(brg, criteria);
-	
+	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
+	bool height_check = artifact.MinimumTotalBearingHeightCheck();
+	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 
-	bool minDistBrg2gBfCheck = brg_calc.MinimumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool maxDistBrg2gBfCheck = brg_calc.MaximumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool distBrg2gBfCheck = brg_calc.RequiredBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
+	Float64 distBrg2gBf = brg.GetBearingToGirderFlangeDistance();
 
 	Float64 tl = brg_loads.GetTotalLoad();
-	bool maxTLcheck = brg_calc.MaximumTotalLoadCheck(brg_loads, criteria);
+	bool maxTLcheck = artifact.MaximumTotalLoadCheck();
 
 	rptHeading* pHeading = rptStyleManager::CreateHeading(1);
 	(*pChapter) << pHeading;
@@ -338,7 +340,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 	*pPara << rptNewLine;
 
-
+	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 	if (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
 	{
@@ -395,7 +397,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 	*pPara << _T(" (14.7.5.1)") << rptNewLine << rptNewLine;
 
-	if (criteria.bHri)
+	if (criteria.bRequiredIntermediateElastomerThickness)
 	{
 		pSubHeading = rptStyleManager::CreateSubHeading();
 		(*pChapter) << pSubHeading;
@@ -405,22 +407,22 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << Sub2(_T("h"), _T("ri,rqd")) << _T(" = ") << length.SetValue(criteria.hri);
+		*pPara << Sub2(_T("h"), _T("ri,rqd")) << _T(" = ") << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
 		if (hri_check)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(criteria.hri);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
 			*pPara << _T(" ") << RPT_PASS;
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << symbol(NE) << length.SetValue(criteria.hri);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << symbol(NE) << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
 		*pPara << rptNewLine << rptNewLine;
 	}
 
-	if (criteria.bHeight)
+	if (criteria.bMinimumTotalBearingHeight)
 	{
 		pSubHeading = rptStyleManager::CreateSubHeading();
 		(*pChapter) << pSubHeading;
@@ -430,15 +432,15 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << Sub2(_T("H"), _T("min")) << _T(" = ") << length.SetValue(criteria.minHeight);
+		*pPara << Sub2(_T("H"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 		if (height_check)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << symbol(GTE) << length.SetValue(criteria.minHeight);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << symbol(GTE) << length.SetValue(criteria.MinimumTotalBearingHeight);
 			*pPara << _T(" ") << RPT_PASS;
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" < ") << length.SetValue(criteria.minHeight);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" < ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
@@ -448,7 +450,9 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 
 
-	if (criteria.bDistBrg2gBf || criteria.bMinDistBrg2gBf || criteria.bMaxDistBrg2gBf)
+	if (criteria.bRequiredBearingEdgeToGirderEdgeDistance || 
+		criteria.bMinimumBearingEdgeToGirderEdgeDistance || 
+		criteria.bMaximumBearingEdgeToGirderEdgeDistance)
 	{
 		pSubHeading = rptStyleManager::CreateSubHeading();
 		(*pChapter) << pSubHeading;
@@ -459,18 +463,18 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 		*pPara << rptNewLine;
 
-		if (criteria.bDistBrg2gBf)
+		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.distBrg2gBf);
+			*pPara << _T("Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(distBrg2gBf);
 			if (distBrg2gBfCheck)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" = ") << length.SetValue(criteria.distBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(distBrg2gBf);
 				*pPara << _T(" ") << RPT_PASS;
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" ") << symbol(NE) << _T(" ") << length.SetValue(criteria.distBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << _T(" ") << length.SetValue(distBrg2gBf);
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
@@ -478,18 +482,18 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 		*pPara << rptNewLine;
 
-		if (criteria.bMinDistBrg2gBf)
+		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Minimum Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.minDistBrg2gBf);
+			*pPara << _T("Minimum Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 			if (minDistBrg2gBfCheck)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" ") << symbol(GTE) << _T(" ") << length.SetValue(criteria.minDistBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << _T(" ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 				*pPara << _T(" ") << RPT_PASS;
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" < ") << length.SetValue(criteria.minDistBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" < ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
@@ -497,18 +501,18 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 		*pPara << rptNewLine;
 
-		if (criteria.bMaxDistBrg2gBf)
+		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Maximum Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.maxDistBrg2gBf);
+			*pPara << _T("Maximum Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
 			if (maxDistBrg2gBfCheck)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" ") << symbol(LTE) << _T(" ") << length.SetValue(criteria.maxDistBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(LTE) << _T(" ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
 				*pPara << _T(" ") << RPT_PASS;
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(gdrFlgDist) << _T(" > ") << length.SetValue(criteria.maxDistBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" > ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
@@ -519,7 +523,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	}
 
 
-	if (criteria.bMaxTL)
+	if (criteria.bMaximumTotalLoad)
 	{
 		pSubHeading = rptStyleManager::CreateSubHeading();
 		(*pChapter) << pSubHeading;
@@ -529,15 +533,15 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << _T("Total Load Limit = ") << force.SetValue(criteria.maxTL);
+		*pPara << _T("Total Load Limit = ") << force.SetValue(criteria.MaximumTotalLoad);
 		if (maxTLcheck)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << symbol(LTE) << force.SetValue(criteria.maxTL);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << symbol(LTE) << force.SetValue(criteria.MaximumTotalLoad);
 			*pPara << _T(" ") << RPT_PASS;						   
 		}														   
 		else													   
 		{														   
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << _T(" > ") << force.SetValue(criteria.maxTL);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << _T(" > ") << force.SetValue(criteria.MaximumTotalLoad);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
@@ -552,14 +556,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::Bearing& brg,
-	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition& spec,
-	const WBFL::EngTools::BearingDesignCriteria& criteria,
-	Float64 gdrFlgDist)
-
-
+	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
 	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
@@ -567,12 +564,18 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
+	const BearingCalculator brg_calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& brg_loads = artifact.GetBearingLoads();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
 	Float64 a = brg.GetArea();
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
-	Float64 K = brg_calc.GetElastomerBulkModulus();
+	Float64 K = brg.GetElastomerBulkModulus();
 	Float64 dl = brg_loads.GetDeadLoad();
 	Float64 ll = brg_loads.GetLiveLoad();
 	Float64 tl = brg_loads.GetTotalLoad();
@@ -591,60 +594,60 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
 
-	Float64 w_min = brg_calc.GetMinimumAllowableWidth(brg, brg_loads);
-	bool w_min_check = brg_calc.MinimumWidthCheck(brg, brg_loads);
-	Float64 l_min = brg_calc.GetMinimumAllowableLength(brg, brg_loads);
-	bool l_min_check = brg_calc.MinimumLengthCheck(brg, brg_loads);
+	Float64 w_min = criteria.GetMinimumAllowableWidth();
+	bool w_min_check = artifact.MinimumWidthCheck();
+	Float64 l_min = criteria.GetMinimumAllowableLength();
+	bool l_min_check = artifact.MinimumLengthCheck();
 
-	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg);
-	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient();
+	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg, spec);
+	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient(spec);
 
-	Float64 smax = brg_calc.GetMaximumAllowableStress();
-	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
+	Float64 smax = criteria.MaximumAllowableStressMethodA;
+	Float64 smax_multiplier = criteria.GetSigmaMultiplier();
 
-	Float64 a_min = brg_calc.GetMinimumAllowableArea(brg, brg_loads);
-	bool a_min_check = brg_calc.MinimumAreaCheck(brg, brg_loads);
+	Float64 a_min = criteria.GetMinimumAllowableArea();
+	bool a_min_check = artifact.MinimumAreaCheck();
 
-	Float64 tlayer_max = brg_calc.GetMaximumAllowableIntermediateLayerThickness(brg, brg_loads);
-	bool tlayer_max_check = brg_calc.MaximumIntermediateLayerThicknessCheck(brg, brg_loads);
+	Float64 tlayer_max = criteria.GetMaximumAllowableIntermediateLayerThickness();
+	bool tlayer_max_check = artifact.MaximumIntermediateLayerThicknessCheck();
 
-	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
-	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
-	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
+	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
+	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
+	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 
-	Float64 s_min = brg_calc.GetMinimumAllowableShapeFactor(brg, brg_loads);
-	bool s_min_check = brg_calc.MinimumShapeFactorCheck(brg, brg_loads);
-	Float64 s_max = brg_calc.GetMaximumAllowableShapeFactor(brg, brg_loads);
-	bool s_max_check = brg_calc.MaximumShapeFactorCheck(brg, brg_loads);
+	Float64 s_min = criteria.GetMinimumAllowableShapeFactor();
+	bool s_min_check = artifact.MinimumShapeFactorCheck();
+	Float64 s_max = criteria.GetMaximumAllowableShapeFactor();
+	bool s_max_check = artifact.MaximumShapeFactorCheck();
 
-	Float64 n_min_shear_def = brg_calc.GetMinimumAllowableNumLayersShearDeformation(brg, brg_loads);
-	bool n_min_shear_def_check = brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads);
-	Float64 n_lay_r_x_calc = brg_calc.GetNumLayersRotationXCalc(brg, brg_loads);
-	Float64 n_min_rot_x = brg_calc.GetMinimumAllowableNumLayersRotationX(brg, brg_loads);
-	bool n_min_rot_x_check = brg_calc.MinimumNumLayersRotationXCheck(brg, brg_loads);
-	Float64 n_lay_r_y_calc = brg_calc.GetNumLayersRotationYCalc(brg, brg_loads);
-	Float64 n_min_rot_y = brg_calc.GetMinimumAllowableNumLayersRotationY(brg, brg_loads);
-	bool n_min_rot_y_check = brg_calc.MinimumNumLayersRotationYCheck(brg, brg_loads);
-	Float64 n_max_stab_x = brg_calc.GetMaximumAllowableNumLayersStabilityX(brg, brg_loads);
-	bool n_max_stab_x_check = brg_calc.MaximumNumLayersStabilityXCheck(brg, brg_loads);
-	Float64 n_max_stab_y = brg_calc.GetMaximumAllowableNumLayersStabilityY(brg, brg_loads);
-	bool n_max_stab_y_check = brg_calc.MaximumNumLayersStabilityYCheck(brg, brg_loads);
-	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
-	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
-	bool max_comp_strain_check = brg_calc.MaximumCompressiveStrainCheck(brg, brg_loads);
+	Float64 n_min_shear_def    = criteria.GetMinimumAllowableNumLayersShearDeformation();
+	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
+	Float64 n_lay_r_x_calc     = criteria.GetNumLayersRotationXCalc();
+	Float64 n_min_rot_x        = criteria.GetMinimumAllowableNumLayersRotationX();
+	bool n_min_rot_x_check     = artifact.MinimumNumLayersRotationXCheck();
+	Float64 n_lay_r_y_calc     = criteria.GetNumLayersRotationYCalc();
+	Float64 n_min_rot_y        = criteria.GetMinimumAllowableNumLayersRotationY();
+	bool n_min_rot_y_check     = artifact.MinimumNumLayersRotationYCheck();
+	Float64 n_max_stab_x       = criteria.GetMaximumAllowableNumLayersStabilityX();
+	bool n_max_stab_x_check    = artifact.MaximumNumLayersStabilityXCheck();
+	Float64 n_max_stab_y       = criteria.GetMaximumAllowableNumLayersStabilityY();
+	bool n_max_stab_y_check    = artifact.MaximumNumLayersStabilityYCheck();
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
+	bool max_comp_strain_check = artifact.MaximumCompressiveStrainCheck();
 	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
-	bool max_stress_check = brg_calc.MaximumStressCheck(brg, brg_loads);
-	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads);
-	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads);
-	auto deltaLLiACheck = brg_calc.MaximumLiveLoadDeflectionMethodACheck(brg, brg_loads, criteria);
-	bool gMin_check = brg_calc.MinimumAllowableShearModulusCheck(brg, criteria);
-	bool gMax_check = brg_calc.MaximumAllowableShearModulusCheck(brg, criteria);
-	bool hri_check = brg_calc.RequiredIntermediateElastomerThicknessCheck(brg, criteria);
-	bool height_check = brg_calc.MinimumTotalBearingHeightCheck(brg, criteria);
-	bool minDistBrg2gBfCheck = brg_calc.MinimumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool maxDistBrg2gBfCheck = brg_calc.MaximumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool distBrg2gBfCheck = brg_calc.RequiredBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool maxTLCheck = brg_calc.MaximumTotalLoadCheck(brg_loads, criteria);
+	bool max_stress_check = artifact.MaximumStressCheck();
+	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads, spec);
+	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads, spec);
+	auto deltaLLiACheck = artifact.MaximumLiveLoadDeflectionMethodACheck();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
+	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
+	bool height_check = artifact.MinimumTotalBearingHeightCheck();
+	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
@@ -666,12 +669,12 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_x_check : false)
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_y_check : false)
 		|| !n_max_stab_x_check || !n_max_stab_y_check || !max_comp_strain_check || !max_stress_check
-		|| !deltaLLiACheck || !gMin_check || !gMax_check || (criteria.bHri? !hri_check : false)
-		|| (criteria.bHeight ? !height_check : false)
-		|| (criteria.bMinDistBrg2gBf ? !minDistBrg2gBfCheck : false)
-		|| (criteria.bMaxDistBrg2gBf ? !maxDistBrg2gBfCheck : false)
-		|| (criteria.bDistBrg2gBf ? !distBrg2gBfCheck : false)
-		|| (criteria.bMaxTL ? !maxTLCheck : false))
+		|| !deltaLLiACheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness? !hri_check : false)
+		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
+		|| (criteria.bMinimumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
+		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
+		|| (criteria.bRequiredBearingEdgeToGirderEdgeDistance ? !distBrg2gBfCheck : false)
+		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false))
 
 	{
 		*pPara << color(Red);
@@ -759,27 +762,27 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 		{
 			*pPara << _T("Specifed elastomer shear modulus range exceeds the maximum limit.") << rptNewLine;
 		}
-		if (criteria.bHri && !hri_check)
+		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{
 			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
 		}
-		if (criteria.bHeight && !height_check)
+		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
 			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
 		}
-		if (criteria.bMinDistBrg2gBf && !minDistBrg2gBfCheck)
+		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange is less than the minimum limit.") << rptNewLine;
 		}
-		if (criteria.bMaxDistBrg2gBf && !maxDistBrg2gBfCheck)
+		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance && !maxDistBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange exceeds the maximum limit.") << rptNewLine;
 		}
-		if (criteria.bDistBrg2gBf && !distBrg2gBfCheck)
+		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance && !distBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange does not equal the required distance.") << rptNewLine;
 		}
-		if (criteria.bMaxTL && !maxTLCheck)
+		if (criteria.bMaximumTotalLoad && !maxTLCheck)
 		{
 			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
 		}
@@ -792,7 +795,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << color(Green) << rptNewLine << rptNewLine;
 	}
 
-	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria, gdrFlgDist);
+	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
 	pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
@@ -826,27 +829,27 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.Gmin) << _T(" (14.7.6.2)") << rptNewLine;
+	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
 	if (gMin_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.Gmin);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_PASS << rptNewLine;
 	}
 	else
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.Gmin);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
 	}
 
-	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.Gmax) << _T(" (14.7.6.2)") << rptNewLine;
+	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
 	if (gMax_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.Gmax);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_PASS << rptNewLine;
 	}
 	else
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" > ") << E.SetValue(criteria.Gmax);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
 	}
 
@@ -1204,15 +1207,8 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 
 void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::Bearing& brg,
-	const WBFL::EngTools::BearingLoads& brg_loads,
-	const WBFL::EngTools::BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition& spec,
-	const WBFL::EngTools::BearingDesignCriteria& criteria,
-	Float64 gdrFlgDist)
-
+	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
-
 
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
 	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
@@ -1220,12 +1216,18 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
+	const BearingCalculator brg_calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& brg_loads = artifact.GetBearingLoads();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
 	Float64 a = brg.GetArea();
 	Float64 Gmin = brg.GetShearModulusMinimum();
 
-	Float64 K = brg_calc.GetElastomerBulkModulus();
+	Float64 K = brg.GetElastomerBulkModulus();
 	Float64 dl = brg_loads.GetDeadLoad();
 	Float64 ll = brg_loads.GetLiveLoad();
 	Float64 tl = brg_loads.GetTotalLoad();
@@ -1261,79 +1263,78 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	Float64 es_cyclic_rotx = brg_calc.GetCyclicRotationalPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_roty = brg_calc.GetCyclicRotationalSecondaryShearStrain(brg, brg_loads);
 
-	Float64 EcB = brg_calc.GetElastomerElasticModulusMethodB(brg);
-	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient();
+	Float64 EcB = brg_calc.GetElastomerElasticModulusMethodB(brg, spec);
+	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient(spec);
 
-	Float64 sigmaTLstabX = brg_calc.GetAllowableTotalLoadStressStabilityX(brg, brg_loads);
-	Float64 sigmaTLstabY = brg_calc.GetAllowableTotalLoadStressStabilityY(brg, brg_loads);
-	Float64 smax = brg_calc.GetMaximumAllowableStress();
-	Float64 smax_multiplier = brg_calc.GetSigmaMultiplier(brg_loads);
+	Float64 sigmaTLstabX = criteria.GetAllowableTotalLoadStressStabilityX();
+	Float64 sigmaTLstabY = criteria.GetAllowableTotalLoadStressStabilityY();
+	Float64 smax_multiplier = criteria.GetSigmaMultiplier();
 
-	bool t_min_shim_absolute_check = brg_calc.MinimumSteelShimThicknessAbsoluteCheck(brg);
-	bool t_min_cover_check = brg_calc.MinimumElastomerCoverThicknessCheck(brg);
-	bool t_max_cover_check = brg_calc.MaximumElastomerCoverThicknessCheck(brg);
+	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
+	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
+	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 
 
-	Float64 s_max = brg_calc.GetMaximumAllowableShapeFactor(brg, brg_loads);
-	bool s_max_check = brg_calc.MaximumShapeFactorCheck(brg, brg_loads);
+	Float64 s_max = criteria.GetMaximumAllowableShapeFactor();
+	bool s_max_check = artifact.MaximumShapeFactorCheck();
 
-	bool n_min_shear_def_check = brg_calc.MinimumNumLayersShearDeformationCheck(brg, brg_loads);
+	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
 
-	bool t_min_shim_service_check = brg_calc.MinimumSteelShimThicknessServiceCheck(brg, brg_loads);
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
 
-	bool t_min_shim_fatigue_check = brg_calc.MinimumSteelShimThicknessFatigueCheck(brg, brg_loads);
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
 
-	bool shear_def_check = brg_calc.ShearDeformationCheck(brg, brg_loads);
+	bool shear_def_check = artifact.ShearDeformationCheck();
 	Float64 static_axial_X_ss = brg_calc.GetStaticAxialPrimaryShearStrain(brg, brg_loads);
-	bool static_axial_X_ss_check = brg_calc.StaticAxialPrimaryShearStrainCheck(brg, brg_loads);
+	bool static_axial_X_ss_check = artifact.StaticAxialPrimaryShearStrainCheck();
 	Float64 static_axial_Y_ss = brg_calc.GetStaticAxialSecondaryShearStrain(brg, brg_loads);
-	bool static_axial_Y_ss_check = brg_calc.StaticAxialSecondaryShearStrainCheck(brg, brg_loads);
+	bool static_axial_Y_ss_check = artifact.StaticAxialSecondaryShearStrainCheck();
 	Float64 ss_X_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(brg, brg_loads);
-	bool ss_X_combo_sum_check = brg_calc.PrimaryShearStrainComboSumCheck(brg, brg_loads);
+	bool ss_X_combo_sum_check = artifact.PrimaryShearStrainComboSumCheck();
 	Float64 ss_Y_combo_sum = brg_calc.GetSecondaryShearStrainComboSum(brg, brg_loads);
-	bool ss_Y_combo_sum_check = brg_calc.SecondaryShearStrainComboSumCheck(brg, brg_loads);
-	bool check_app_TL_stab_X = brg_calc.CheckApplicabilityTotalStressStabilityX(brg, brg_loads);
-	bool check_app_TL_stab_Y = brg_calc.CheckApplicabilityTotalStressStabilityY(brg, brg_loads);
+	bool ss_Y_combo_sum_check = artifact.SecondaryShearStrainComboSumCheck();
+	bool check_app_TL_stab_X = criteria.CheckApplicabilityTotalStressStabilityX();
+	bool check_app_TL_stab_Y = criteria.CheckApplicabilityTotalStressStabilityY();
 	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
-	Float64 allow_stab_X_dir = brg_calc.GetAllowableTotalLoadStressStabilityX(brg, brg_loads);
-	bool stab_X_dir_check = brg_calc.StabilityXDirectionCheck(brg, brg_loads);
-	Float64 allow_stab_Y_dir = brg_calc.GetAllowableTotalLoadStressStabilityY(brg, brg_loads);
-	bool stab_Y_dir_check = brg_calc.StabilityYDirectionCheck(brg, brg_loads);
+	Float64 allow_stab_X_dir = criteria.GetAllowableTotalLoadStressStabilityX();
+	bool stab_X_dir_check = artifact.StabilityXDirectionCheck();
+	Float64 allow_stab_Y_dir = criteria.GetAllowableTotalLoadStressStabilityY();
+	bool stab_Y_dir_check = artifact.StabilityYDirectionCheck();
 	bool use_ext_plates = brg.UseExternalPlates();
 
 	Float64 static_stress = brg_calc.GetStaticStress(brg, brg_loads);
 	Float64 cyclic_stress = brg_calc.GetCyclicStress(brg, brg_loads);
-	Float64 lambda = brg_calc.GetCompressibilityIndex(brg);
-	Float64 restraint_system_calc = brg_calc.RestraintSystemCalc(brg, brg_loads);
-	bool rest_system_req_check = brg_calc.RestraintSystemRequirementCheck(brg, brg_loads);
-	Float64 max_stress = brg_calc.GetMaximumStress(brg);
+	Float64 lambda = brg.GetCompressibilityIndex();
+	Float64 restraint_system_calc = brg_calc.RestraintSystemCDRatio(brg, brg_loads, spec);
+	bool rest_system_req_check = artifact.RestraintSystemRequirementCheck();
+	Float64 max_stress = criteria.GetMaximumAllowableHydrostaticStress();
 	Float64 hydrostatic_stress = brg_calc.GetHydrostaticStress(brg, brg_loads);
-	bool hydrostatic_check = brg_calc.HydrostaticStressCheck(brg, brg_loads);
+	bool hydrostatic_check = artifact.HydrostaticStressCheck();
 	Float64 KeffX = brg_loads.GetEffectiveKFactorX();
 	Float64 KeffY = brg_loads.GetEffectiveKFactorY();
 	auto fixed_x = brg_loads.GetFixedTranslationX();
 	auto fixed_y = brg_loads.GetFixedTranslationY();
-	Float64 Ax = brg_calc.GetPrimaryIntermediateCalculationA(brg);
-	Float64 Ay = brg_calc.GetSecondaryIntermediateCalculationA(brg);
-	Float64 Bx = brg_calc.GetPrimaryIntermediateCalculationB(brg);
-	Float64 By = brg_calc.GetSecondaryIntermediateCalculationB(brg);
+	Float64 Ax = criteria.GetPrimaryIntermediateCalculationA();
+	Float64 Ay = criteria.GetSecondaryIntermediateCalculationA();
+	Float64 Bx = criteria.GetPrimaryIntermediateCalculationB();
+	Float64 By = criteria.GetSecondaryIntermediateCalculationB();
 	Float64 peak_hyd = brg_calc.GetPeakHydrostaticStressCoefficient(brg);
 	Float64 total_axial_strain = brg_calc.GetTotalAxialStrain(brg, brg_loads);
 	Float64 alpha = brg_calc.GetAlphaCoefficient(brg, brg_loads);
 	Float64 Ca = brg_calc.GetCaCoefficient(brg, brg_loads);
 	auto horiz_force = brg_calc.GetHorizontalForce(brg, brg_loads);
-	auto horiz_force_check = brg_calc.HorizontalForceCheck(brg, brg_loads);
-	auto deltaDLiB = brg_calc.GetInitialDeadLoadDeflectionMethodB(brg, brg_loads);
-	auto deltaLLiB = brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads);
-	auto deltaLLiBCheck = brg_calc.MaximumLiveLoadDeflectionMethodBCheck(brg, brg_loads, criteria);
-	bool gMin_check = brg_calc.MinimumAllowableShearModulusCheck(brg, criteria);
-	bool gMax_check = brg_calc.MaximumAllowableShearModulusCheck(brg, criteria);
-	bool hri_check = brg_calc.RequiredIntermediateElastomerThicknessCheck(brg, criteria);
-	bool height_check = brg_calc.MinimumTotalBearingHeightCheck(brg, criteria);
-	bool minDistBrg2gBfCheck = brg_calc.MinimumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool maxDistBrg2gBfCheck = brg_calc.MaximumBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool distBrg2gBfCheck = brg_calc.RequiredBearingEdgeToBottomFlangeEdgeDistCheck(brg, criteria, gdrFlgDist);
-	bool maxTLCheck = brg_calc.MaximumTotalLoadCheck(brg_loads, criteria);
+	auto horiz_force_check = artifact.HorizontalForceCheck();
+	auto deltaDLiB = brg_calc.GetInitialDeadLoadDeflectionMethodB(brg, brg_loads, spec);
+	auto deltaLLiB = brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads, spec);
+	auto deltaLLiBCheck = artifact.MaximumLiveLoadDeflectionMethodBCheck();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
+	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
+	bool height_check = artifact.MinimumTotalBearingHeightCheck();
+	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
@@ -1352,12 +1353,12 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
-		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bHri ? !hri_check : false)
-		|| (criteria.bHeight ? !height_check : false)
-		|| (criteria.bMinDistBrg2gBf ? !minDistBrg2gBfCheck : false)
-		|| (criteria.bMaxDistBrg2gBf ? !maxDistBrg2gBfCheck : false)
-		|| (criteria.bDistBrg2gBf ? !distBrg2gBfCheck : false)
-		|| (criteria.bMaxTL ? !maxTLCheck : false))
+		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
+		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
+		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
+		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
+		|| (criteria.bRequiredBearingEdgeToGirderEdgeDistance ? !distBrg2gBfCheck : false)
+		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false))
 	{
 		*pPara << color(Red);
 		if (!t_min_shim_absolute_check)
@@ -1440,27 +1441,27 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		{
 			*pPara << _T("Specifed elastomer shear modulus exceeds the maximum limit.") << rptNewLine;
 		}
-		if (criteria.bHri && !hri_check)
+		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{
 			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
 		}
-		if (criteria.bHeight && !height_check)
+		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
 			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
 		}
-		if (criteria.bMinDistBrg2gBf && !minDistBrg2gBfCheck)
+		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange is less than the minimum limit.") << rptNewLine;
 		}
-		if (criteria.bMaxDistBrg2gBf && !maxDistBrg2gBfCheck)
+		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance && !maxDistBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange exceeds the maximum limit.") << rptNewLine;
 		}
-		if (criteria.bDistBrg2gBf && !distBrg2gBfCheck)
+		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance && !distBrg2gBfCheck)
 		{
 			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange does not equal the required distance.") << rptNewLine;
 		}
-		if (criteria.bMaxTL && !maxTLCheck)
+		if (criteria.bMaximumTotalLoad && !maxTLCheck)
 		{
 			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
 		}
@@ -1473,7 +1474,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << color(Green) << rptNewLine << rptNewLine;
 	}
 
-	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria, gdrFlgDist);
+	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
 
 	pHeading = rptStyleManager::CreateHeading();
@@ -1489,27 +1490,27 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.Gmin) << _T(" (14.7.5.2)") << rptNewLine;
+	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.5.2)") << rptNewLine;
 	if (gMin_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.Gmin);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_PASS << rptNewLine;
 	}
 	else
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.Gmin);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
 	}
 
-	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.Gmax) << _T(" (14.7.5.2)") << rptNewLine;
+	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.5.2)") << rptNewLine;
 	if (gMax_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.Gmax);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_PASS << rptNewLine;
 	}
 	else
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" > ") << E.SetValue(criteria.Gmax);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
 		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
 	}
 
@@ -2044,24 +2045,23 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 
 
 
-void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
-	rptChapter* pChapter,
-	rptParagraph* pPara, const Bearing& brg,
-	const BearingLoads& brg_loads, const BearingCalculator& brg_calc,
-	const WBFL::LRFD::BDSManager::Edition& spec,
-	const WBFL::EngTools::BearingDesignCriteria& criteria,
-	Float64 gdrFlgDist)
+void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, 
+	rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
-	ReportIntroduction(pPara, brg_calc, spec);
-	ReportBearingProperties(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc);
+	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
-	if (brg_calc.GetAnalysisMethod() == WBFL::EngTools::BearingCalculator::AnalysisMethod::MethodA)
+	ReportIntroduction(pPara);
+	ReportBearingProperties(pDispUnits, pChapter, pPara, artifact);
+
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+
+	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
-		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria, gdrFlgDist);
+		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, artifact);
 	}
 	else
 	{
-		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, brg, brg_loads, brg_calc, spec, criteria, gdrFlgDist);
+		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, artifact);
 	}
 }
 
