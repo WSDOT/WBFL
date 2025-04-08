@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////
-// Stability
+// EngTools - Library of miscellaneous engineering tools
 // Copyright © 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -20,31 +20,38 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-
 #pragma once
-#include <EngTools\Bearing.h>
-#include <EngTools\BearingLoads.h>
-#include <EngTools\BearingCalculator.h>
-#include <EngTools\BearingDesignCriteria.h>
-#include <Reporter\Chapter.h>
-#include <Units/IndirectMeasure.h>
-#include <LRFD/BDSManager.h>
+#include <EngTools\EngToolsExp.h>
 
 
 
 namespace WBFL
 {
-   namespace EngTools
-   {
-      ///  Generates reports for lifting stability analysis
-      class ENGTOOLSCLASS BearingReporter
-      {
-      public:
-         BearingReporter();
 
-         /// Builds the specification check chapter
-         void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
-             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
-      };
-   }
-}
+    namespace EngTools
+    {
+
+        class ENGTOOLSCLASS BearingResults
+        {
+
+        public:
+
+			BearingResults();
+
+            Float64 TotalLoadStress;
+            Float64 ElastomerElasticModulusMethodA;
+            Float64 StaticAxialPrimaryShearStrain;
+            Float64 StaticAxialSecondaryShearStrain;
+            Float64 PrimaryShearStrainComboSum;
+            Float64 SecondaryShearStrainComboSum;
+            Float64 TotalStress;
+            Float64 RestraintSystemDCRatio;
+            Float64 HydrostaticStress;
+            Float64 HorizontalForce;
+            Float64 TotalBearingHeight;
+            Float64 InstantaneousLiveLoadDeflectionMethodA;
+            Float64 InstantaneousLiveLoadDeflectionMethodB;
+
+        };
+    }; // EngTools
+}; // WBFL
