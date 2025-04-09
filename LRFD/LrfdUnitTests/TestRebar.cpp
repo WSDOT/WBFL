@@ -263,12 +263,87 @@ namespace LrfdUnitTests
 
 			auto density = WBFL::Units::ConvertToSysUnits(0.155, WBFL::Units::Measure::KipPerFeet3);
 
+			///////////////////// Test with current latest spec version (10th or later) /////////////////////////
 			// Standard bar
-			auto details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, false, false, true);
+			auto details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, false, true);
 			Assert::AreEqual(0.11, details.Ab);
 			Assert::AreEqual(0.375, details.db);
 			Assert::AreEqual(60.0, details.fy);
 			Assert::AreEqual(7.5, details.fc);
+			Assert::AreEqual(1.0, details.lambdaRl);
+			Assert::AreEqual(1.0, details.lambdaLw);
+			Assert::AreEqual(1.0, details.lambdaCf);
+			Assert::AreEqual(1.0, details.factor);
+			Assert::IsFalse(details.bRlCfLimit);
+			Assert::AreEqual(21.593329201452914, details.ldb1);
+			Assert::AreEqual(0.0, details.ldb2);
+			Assert::AreEqual(21.593329201452914, details.ldb);
+			Assert::AreEqual(21.593329201452914, details.ld);
+
+			// Epoxy coated, meeting cover
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, true, true);
+			Assert::AreEqual(1.0, details.lambdaRl);
+			Assert::AreEqual(1.0, details.lambdaLw);
+			Assert::AreEqual(1.2, details.lambdaCf);
+			Assert::AreEqual(1.2, details.factor);
+			Assert::IsFalse(details.bRlCfLimit);
+			Assert::AreEqual(21.593329201452914, details.ldb1);
+			Assert::AreEqual(0.0, details.ldb2);
+			Assert::AreEqual(21.593329201452914, details.ldb);
+			Assert::AreEqual(25.911995041743495, details.ld);
+
+			// Epoxy coated, not meeting cover
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, true, false);
+			Assert::AreEqual(1.0, details.lambdaRl);
+			Assert::AreEqual(1.0, details.lambdaLw);
+			Assert::AreEqual(1.5, details.lambdaCf);
+			Assert::AreEqual(1.5, details.factor);
+			Assert::IsFalse(details.bRlCfLimit);
+			Assert::AreEqual(21.593329201452914, details.ldb1);
+			Assert::AreEqual(0.0, details.ldb2);
+			Assert::AreEqual(21.593329201452914, details.ldb);
+			Assert::AreEqual(32.389993802179369, details.ld);
+
+			// top bar
+			auto distfrombottom = WBFL::Units::ConvertToSysUnits(14.0, WBFL::Units::Measure::Inch);
+
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, distfrombottom, false, true);
+			Assert::AreEqual(distfrombottom, details.distFromBottom);
+			Assert::AreEqual(1.3, details.lambdaRl);
+			Assert::AreEqual(1.0, details.lambdaLw);
+			Assert::AreEqual(1.0, details.lambdaCf);
+			Assert::AreEqual(1.3, details.factor);
+			Assert::IsFalse(details.bRlCfLimit);
+			Assert::AreEqual(21.593329201452914, details.ldb1);
+			Assert::AreEqual(0.0, details.ldb2);
+			Assert::AreEqual(21.593329201452914, details.ldb);
+			Assert::AreEqual(28.071327961888787, details.ld);
+
+			// not top bar, fc > 10 : this was taken out of 10th ed
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 15.0, false, 0.2, density, 0.0, false, true);
+			Assert::AreEqual(15.0, details.fc);
+			Assert::AreEqual(1.0, details.lambdaRl);
+			Assert::AreEqual(1.0, details.lambdaLw);
+			Assert::AreEqual(1.0, details.lambdaCf);
+			Assert::AreEqual(1.0, details.factor);
+			Assert::IsFalse(details.bRlCfLimit);
+			Assert::AreEqual(15.268789506740850, details.ldb1);
+			Assert::AreEqual(0.0, details.ldb2);
+			Assert::AreEqual(15.268789506740850, details.ldb);
+			Assert::AreEqual(15.268789506740850, details.ld);
+
+			///////////////////// Test with older spec version /////////////////////////
+
+			BDSAutoVersion av;
+			BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2016Interims);
+
+			// Standard bar
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, false, true);
+			Assert::AreEqual(0.11, details.Ab);
+			Assert::AreEqual(0.375, details.db);
+			Assert::AreEqual(60.0, details.fy);
+			Assert::AreEqual(7.5, details.fc);
+			Assert::AreEqual(0.0, details.distFromBottom);
 			Assert::AreEqual(1.0, details.lambdaRl);
 			Assert::AreEqual(1.0, details.lambdaLw);
 			Assert::AreEqual(1.0, details.lambdaCf);
@@ -281,7 +356,7 @@ namespace LrfdUnitTests
 
 
 			// Epoxy coated, meeting cover
-			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, false, true, true);
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, true, true);
 			Assert::AreEqual(1.0, details.lambdaRl);
 			Assert::AreEqual(1.0, details.lambdaLw);
 			Assert::AreEqual(1.2, details.lambdaCf);
@@ -293,7 +368,7 @@ namespace LrfdUnitTests
 			Assert::AreEqual(23.661614484188174, details.ld);
 
 			// Epoxy coated, not meeting cover
-			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, false, true, false);
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, 0.0, true, false);
 			Assert::AreEqual(1.0, details.lambdaRl);
 			Assert::AreEqual(1.0, details.lambdaLw);
 			Assert::AreEqual(1.5, details.lambdaCf);
@@ -305,7 +380,7 @@ namespace LrfdUnitTests
 			Assert::AreEqual(29.577018105235219, details.ld);
 
 			// top bar
-			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, true, false, true);
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 7.5, false, 0.2, density, distfrombottom, false, true);
 			Assert::AreEqual(1.3, details.lambdaRl);
 			Assert::AreEqual(1.0, details.lambdaLw);
 			Assert::AreEqual(1.0, details.lambdaCf);
@@ -317,7 +392,7 @@ namespace LrfdUnitTests
 			Assert::AreEqual(25.633415691203858, details.ld);
 
 			// not top bar, fc > 10
-			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 15.0, false, 0.2, density, false, false, true);
+			details = Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size::bs3, 0.11, 0.375, 60, WBFL::Materials::ConcreteType::Normal, 15.0, false, 0.2, density, 0.0, false, true);
 			Assert::AreEqual(15.0, details.fc);
 			Assert::AreEqual(1.3, details.lambdaRl);
 			Assert::AreEqual(1.0, details.lambdaLw);

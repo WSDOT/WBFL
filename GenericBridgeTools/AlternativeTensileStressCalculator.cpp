@@ -317,7 +317,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          if (pRequirements->bAdjustForDevelopmentLength)
          {
             // Adjust bar area for development
-            auto devLengthDetails = WBFL::LRFD::Rebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density,false,false,true);
+            auto devLengthDetails = WBFL::LRFD::Rebar::GetRebarDevelopmentLengthDetails(size, Ab, db, pRequirements->fy, pRequirements->concreteType, pRequirements->fc, pRequirements->bHasFct, pRequirements->Fct, pRequirements->density,0.0,false,true);
 
             // Get distances from section cut to ends of bar
             Float64 start, end;
