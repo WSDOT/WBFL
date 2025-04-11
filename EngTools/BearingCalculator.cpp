@@ -442,8 +442,11 @@ Float64 BearingCalculator::GetHorizontalForce(const Bearing& brg, const BearingL
 	return horizontal_force;
 }
 
-BearingResults BearingCalculator::AnalyzeBearing(const Bearing& bearing, const BearingLoads& loads, const WBFL::LRFD::BDSManager::Edition& spec) const
+BearingResults BearingCalculator::AnalyzeBearing(const Bearing& bearing, const BearingLoads& loads, 
+	const BearingDesignCriteria& criteria) const
 {
+	const auto& spec = criteria.GetSpecification();
+
 	BearingResults results;
 
 	results.TotalLoadStress = GetTotalLoadStress(bearing, loads);
@@ -466,11 +469,9 @@ BearingResults BearingCalculator::AnalyzeBearing(const Bearing& bearing, const B
 
 
 BearingCheckArtifact BearingCalculator::CheckBearing(const Bearing& bearing, const BearingLoads& loads, 
-	const WBFL::LRFD::BDSManager::Edition& spec, const BearingDesignCriteria& criteria) const
+	const BearingDesignCriteria& criteria) const
 {
-	BearingResults results = AnalyzeBearing(bearing, loads, spec);
-
-	////BearingDesignCriteria criteria(bearing, loads, spec);
+	BearingResults results = AnalyzeBearing(bearing, loads, criteria);
 
 	BearingCheckArtifact artifact(bearing, loads, results, criteria);
 

@@ -145,10 +145,11 @@ namespace WBFL
             Float64 GetHorizontalForce(const Bearing&, const BearingLoads&) const;
             /// @return Minimum Allowable Shear Modulus
 
-            BearingResults AnalyzeBearing(const Bearing& bearing, const BearingLoads& loads, const WBFL::LRFD::BDSManager::Edition& spec) const;
+            BearingResults AnalyzeBearing(const Bearing& bearing, const BearingLoads& loads, 
+                const BearingDesignCriteria& criteria) const;
             
             BearingCheckArtifact CheckBearing(const Bearing& bearing, const BearingLoads& loads, 
-                const WBFL::LRFD::BDSManager::Edition& spec, const BearingDesignCriteria& criteria) const;
+                const BearingDesignCriteria& criteria) const;
 
         };
     }; // EngTools

@@ -207,9 +207,11 @@
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
     <ClInclude Include="..\Include\EngTools\Bearing.h" />
     <ClInclude Include="..\Include\EngTools\BearingCalculator.h" />
+    <ClInclude Include="..\Include\EngTools\BearingCheckArtifact.h" />
     <ClInclude Include="..\Include\EngTools\BearingDesignCriteria.h" />
     <ClInclude Include="..\Include\EngTools\BearingLoads.h" />
     <ClInclude Include="..\Include\EngTools\BearingReporter.h" />
+    <ClInclude Include="..\Include\EngTools\BearingResults.h" />
     <ClInclude Include="..\Include\EngTools\BiaxialBeamStrain.h" />
     <ClInclude Include="..\Include\EngTools\EngTools.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsExp.h" />

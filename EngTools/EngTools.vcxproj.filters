@@ -90,6 +90,12 @@
     <ClInclude Include="..\Include\EngTools\BearingDesignCriteria.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\EngTools\BearingResults.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EngTools\BearingCheckArtifact.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="EngTools.def" />
