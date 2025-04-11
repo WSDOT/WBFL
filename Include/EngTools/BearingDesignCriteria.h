@@ -92,6 +92,7 @@ namespace WBFL
 
             const WBFL::LRFD::BDSManager::Edition& GetSpecification() const;
 
+            void SetSpecification(const WBFL::LRFD::BDSManager::Edition& spec);
 
             Float64 MaximumAllowableStressMethodA = WBFL::Units::ConvertToSysUnits(1.25, WBFL::Units::Measure::KSI);
             Float64 MaximumStaticAxialShearStrain = 3.0;

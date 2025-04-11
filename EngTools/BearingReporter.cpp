@@ -32,9 +32,11 @@ BearingReporter::BearingReporter()
 }
 
 
-void ReportIntroduction(rptParagraph* pPara)
+void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact)
 {
-	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = criteria.GetSpecification();
 
 	*pPara << color(Blue);
 	*pPara << Bold(_T("-Calculations are based on ")) << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << rptNewLine;
@@ -56,6 +58,7 @@ void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	const auto& brg = artifact.GetBearing();
 	const auto& loads = artifact.GetBearingLoads();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = criteria.GetSpecification();
 
 
 	Float64 l = brg.GetLength();
@@ -220,6 +223,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	const auto& brg = artifact.GetBearing();
 	const auto& brg_loads = artifact.GetBearingLoads();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = criteria.GetSpecification();
 
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
@@ -339,8 +343,6 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 
 	*pPara << rptNewLine;
-
-	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 	if (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
 	{
@@ -568,7 +570,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	const auto& brg = artifact.GetBearing();
 	const auto& brg_loads = artifact.GetBearingLoads();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
-	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+	const auto& spec = criteria.GetSpecification();
 
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
@@ -1220,7 +1222,7 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	const auto& brg = artifact.GetBearing();
 	const auto& brg_loads = artifact.GetBearingLoads();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
-	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
+	const auto& spec = criteria.GetSpecification();
 
 	Float64 l = brg.GetLength();
 	Float64 w = brg.GetWidth();
@@ -2048,9 +2050,8 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, 
 	rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
-	const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
-	ReportIntroduction(pPara);
+	ReportIntroduction(pPara, artifact);
 	ReportBearingProperties(pDispUnits, pChapter, pPara, artifact);
 
 	const auto& criteria = artifact.GetBearingDesignCriteria();

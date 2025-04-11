@@ -73,6 +73,12 @@ const WBFL::LRFD::BDSManager::Edition& BearingDesignCriteria::GetSpecification()
 	return m_spec;
 }
 
+void BearingDesignCriteria::SetSpecification(const WBFL::LRFD::BDSManager::Edition& spec)
+{
+	m_spec = spec;
+}
+
+
 Float64 BearingDesignCriteria::GetSigmaMultiplier() const
 {
 	Float64 shear_def = m_loads.GetShearDeformation();

@@ -17,10 +17,8 @@ namespace EngToolsUnitTests
 			BearingLoads brg_loads;
 			BearingDesignCriteria criteria;
 
-			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
-
 			const auto& artifact = 
-				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 
 			criteria.bMinimumTotalBearingHeight = true;
@@ -102,7 +100,7 @@ namespace EngToolsUnitTests
 			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
@@ -183,7 +181,7 @@ namespace EngToolsUnitTests
 			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
@@ -255,7 +253,7 @@ namespace EngToolsUnitTests
 			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
@@ -326,7 +324,7 @@ namespace EngToolsUnitTests
 			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
 
 			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, spec, criteria);
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
