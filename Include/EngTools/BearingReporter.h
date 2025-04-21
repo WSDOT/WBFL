@@ -45,6 +45,21 @@ namespace WBFL
          /// Builds the specification check chapter
          void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
              rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact);
+
+         void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
       };
    }
 }

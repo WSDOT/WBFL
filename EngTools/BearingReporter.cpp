@@ -32,7 +32,7 @@ BearingReporter::BearingReporter()
 }
 
 
-void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact)
+void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact)
 {
 
 	const auto& criteria = artifact.GetBearingDesignCriteria();
@@ -49,7 +49,7 @@ void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifac
 	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L")) << rptNewLine << rptNewLine << rptNewLine;
 }
 
-void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits, 
+void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact)
 {
 
@@ -554,93 +554,31 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 }
 
-
-
-void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
-	rptChapter* pChapter, rptParagraph* pPara,
+void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
-	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
-	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
-	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
-	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
-	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
-	const BearingCalculator brg_calc;
-	const auto& brg = artifact.GetBearing();
-	const auto& brg_loads = artifact.GetBearingLoads();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
 
-	Float64 l = brg.GetLength();
-	Float64 w = brg.GetWidth();
-	Float64 a = brg.GetArea();
-	Float64 Gmin = brg.GetShearModulusMinimum();
-	Float64 Gmax = brg.GetShearModulusMaximum();
-	Float64 K = brg.GetElastomerBulkModulus();
-	Float64 dl = brg_loads.GetDeadLoad();
-	Float64 ll = brg_loads.GetLiveLoad();
-	Float64 tl = brg_loads.GetTotalLoad();
-	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
-	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
-
-	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
-	Float64 s = brg.GetShapeFactor();
-	IndexType n = brg.GetNumIntLayers();
-	Float64 tcover = brg.GetCoverThickness();
-	Float64 sdef = brg_loads.GetShearDeformation();
-
-	Float64 x_rotation = brg_loads.GetRotationX();
-	Float64 y_rotation = brg_loads.GetRotationY();
-	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
-	Float64 tlayer = brg.GetIntermediateLayerThickness();
-	Float64 tshim = brg.GetSteelShimThickness();
-
-	Float64 w_min = criteria.GetMinimumAllowableWidth();
 	bool w_min_check = artifact.MinimumWidthCheck();
-	Float64 l_min = criteria.GetMinimumAllowableLength();
 	bool l_min_check = artifact.MinimumLengthCheck();
-
-	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg, spec);
-	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient(spec);
-
-	Float64 smax = criteria.MaximumAllowableStressMethodA;
-	Float64 smax_multiplier = criteria.GetSigmaMultiplier();
-
-	Float64 a_min = criteria.GetMinimumAllowableArea();
 	bool a_min_check = artifact.MinimumAreaCheck();
-
-	Float64 tlayer_max = criteria.GetMaximumAllowableIntermediateLayerThickness();
 	bool tlayer_max_check = artifact.MaximumIntermediateLayerThicknessCheck();
-
 	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
 	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
 	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
-
-	Float64 s_min = criteria.GetMinimumAllowableShapeFactor();
 	bool s_min_check = artifact.MinimumShapeFactorCheck();
-	Float64 s_max = criteria.GetMaximumAllowableShapeFactor();
 	bool s_max_check = artifact.MaximumShapeFactorCheck();
-
-	Float64 n_min_shear_def    = criteria.GetMinimumAllowableNumLayersShearDeformation();
 	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
-	Float64 n_lay_r_x_calc     = criteria.GetNumLayersRotationXCalc();
-	Float64 n_min_rot_x        = criteria.GetMinimumAllowableNumLayersRotationX();
-	bool n_min_rot_x_check     = artifact.MinimumNumLayersRotationXCheck();
-	Float64 n_lay_r_y_calc     = criteria.GetNumLayersRotationYCalc();
-	Float64 n_min_rot_y        = criteria.GetMinimumAllowableNumLayersRotationY();
-	bool n_min_rot_y_check     = artifact.MinimumNumLayersRotationYCheck();
-	Float64 n_max_stab_x       = criteria.GetMaximumAllowableNumLayersStabilityX();
-	bool n_max_stab_x_check    = artifact.MaximumNumLayersStabilityXCheck();
-	Float64 n_max_stab_y       = criteria.GetMaximumAllowableNumLayersStabilityY();
-	bool n_max_stab_y_check    = artifact.MaximumNumLayersStabilityYCheck();
+	bool n_min_rot_x_check = artifact.MinimumNumLayersRotationXCheck();
+	bool n_min_rot_y_check = artifact.MinimumNumLayersRotationYCheck();
+	bool n_max_stab_x_check = artifact.MaximumNumLayersStabilityXCheck();
+	bool n_max_stab_y_check = artifact.MaximumNumLayersStabilityYCheck();
 	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
 	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
 	bool max_comp_strain_check = artifact.MaximumCompressiveStrainCheck();
-	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
 	bool max_stress_check = artifact.MaximumStressCheck();
-	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads, spec);
-	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads, spec);
 	auto deltaLLiACheck = artifact.MaximumLiveLoadDeflectionMethodACheck();
 	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
 	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
@@ -654,13 +592,6 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	*pPara << rptNewPage;
-
-	rptHeading* pHeading = rptStyleManager::CreateHeading();
-	(*pChapter) << pHeading;
-	pHeading->SetName(_T("Specification Check Summary"));
-	*pHeading << _T("Specification Check Summary");
-
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
@@ -671,7 +602,7 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_x_check : false)
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_y_check : false)
 		|| !n_max_stab_x_check || !n_max_stab_y_check || !max_comp_strain_check || !max_stress_check
-		|| !deltaLLiACheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness? !hri_check : false)
+		|| !deltaLLiACheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
 		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
 		|| (criteria.bMinimumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
@@ -789,17 +720,113 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
 		}
 
-		*pPara << _T("See below for more detail.");
 		*pPara << color(Red) << rptNewLine << rptNewLine;
+
 	}
 	else
 	{
 		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << color(Green) << rptNewLine << rptNewLine;
 	}
+}
+
+void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
+	rptChapter* pChapter, rptParagraph* pPara,
+	const WBFL::EngTools::BearingCheckArtifact& artifact)
+{
+	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
+	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
+	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
+
+	const BearingCalculator brg_calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& brg_loads = artifact.GetBearingLoads();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = criteria.GetSpecification();
+
+	Float64 l = brg.GetLength();
+	Float64 w = brg.GetWidth();
+	Float64 a = brg.GetArea();
+	Float64 Gmin = brg.GetShearModulusMinimum();
+	Float64 Gmax = brg.GetShearModulusMaximum();
+	Float64 K = brg.GetElastomerBulkModulus();
+	Float64 dl = brg_loads.GetDeadLoad();
+	Float64 ll = brg_loads.GetLiveLoad();
+	Float64 tl = brg_loads.GetTotalLoad();
+	Float64 ll_stress = brg_calc.GetLiveLoadStress(brg, brg_loads);
+	Float64 tl_stress = brg_calc.GetTotalLoadStress(brg, brg_loads);
+
+	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
+	Float64 s = brg.GetShapeFactor();
+	IndexType n = brg.GetNumIntLayers();
+	Float64 tcover = brg.GetCoverThickness();
+	Float64 sdef = brg_loads.GetShearDeformation();
+
+	Float64 x_rotation = brg_loads.GetRotationX();
+	Float64 y_rotation = brg_loads.GetRotationY();
+	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
+	Float64 tlayer = brg.GetIntermediateLayerThickness();
+	Float64 tshim = brg.GetSteelShimThickness();
+
+	Float64 w_min = criteria.GetMinimumAllowableWidth();
+	bool w_min_check = artifact.MinimumWidthCheck();
+	Float64 l_min = criteria.GetMinimumAllowableLength();
+	bool l_min_check = artifact.MinimumLengthCheck();
+
+	Float64 EcA = brg_calc.GetElastomerElasticModulusMethodA(brg, spec);
+	Float64 Ecoeff = brg_calc.GetElasticModulusCoefficient(spec);
+
+	Float64 smax = criteria.MaximumAllowableStressMethodA;
+	Float64 smax_multiplier = criteria.GetSigmaMultiplier();
+
+	Float64 a_min = criteria.GetMinimumAllowableArea();
+	bool a_min_check = artifact.MinimumAreaCheck();
+
+	Float64 tlayer_max = criteria.GetMaximumAllowableIntermediateLayerThickness();
+	bool tlayer_max_check = artifact.MaximumIntermediateLayerThicknessCheck();
+
+	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
+	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
+	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
+
+	Float64 s_min = criteria.GetMinimumAllowableShapeFactor();
+	bool s_min_check = artifact.MinimumShapeFactorCheck();
+	Float64 s_max = criteria.GetMaximumAllowableShapeFactor();
+	bool s_max_check = artifact.MaximumShapeFactorCheck();
+
+	Float64 n_min_shear_def    = criteria.GetMinimumAllowableNumLayersShearDeformation();
+	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
+	Float64 n_lay_r_x_calc     = criteria.GetNumLayersRotationXCalc();
+	Float64 n_min_rot_x        = criteria.GetMinimumAllowableNumLayersRotationX();
+	bool n_min_rot_x_check     = artifact.MinimumNumLayersRotationXCheck();
+	Float64 n_lay_r_y_calc     = criteria.GetNumLayersRotationYCalc();
+	Float64 n_min_rot_y        = criteria.GetMinimumAllowableNumLayersRotationY();
+	bool n_min_rot_y_check     = artifact.MinimumNumLayersRotationYCheck();
+	Float64 n_max_stab_x       = criteria.GetMaximumAllowableNumLayersStabilityX();
+	bool n_max_stab_x_check    = artifact.MaximumNumLayersStabilityXCheck();
+	Float64 n_max_stab_y       = criteria.GetMaximumAllowableNumLayersStabilityY();
+	bool n_max_stab_y_check    = artifact.MaximumNumLayersStabilityYCheck();
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
+	bool max_comp_strain_check = artifact.MaximumCompressiveStrainCheck();
+	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
+	bool max_stress_check = artifact.MaximumStressCheck();
+	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads, spec);
+	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads, spec);
+	auto deltaLLiACheck = artifact.MaximumLiveLoadDeflectionMethodACheck();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
+	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
+	bool height_check = artifact.MinimumTotalBearingHeightCheck();
+	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxTLCheck = artifact.MaximumTotalLoadCheck();	
 
 	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
-	pHeading = rptStyleManager::CreateHeading();
+	rptHeading* pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
 	pHeading->SetName(_T("Method A Analysis:"));
 	*pHeading << _T("Method A Analysis:");
@@ -1207,7 +1234,184 @@ void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispU
 
 }
 
-void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
+void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara,
+	const WBFL::EngTools::BearingCheckArtifact& artifact)
+{
+	const BearingCalculator brg_calc;
+	const auto& brg = artifact.GetBearing();
+	const auto& criteria = artifact.GetBearingDesignCriteria();
+	const auto& spec = criteria.GetSpecification();
+
+
+	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
+	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
+	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
+	bool s_max_check = artifact.MaximumShapeFactorCheck();
+	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
+	bool shear_def_check = artifact.ShearDeformationCheck();
+	bool static_axial_X_ss_check = artifact.StaticAxialPrimaryShearStrainCheck();
+	bool static_axial_Y_ss_check = artifact.StaticAxialSecondaryShearStrainCheck();
+	bool ss_X_combo_sum_check = artifact.PrimaryShearStrainComboSumCheck();
+	bool ss_Y_combo_sum_check = artifact.SecondaryShearStrainComboSumCheck();
+	bool check_app_TL_stab_X = criteria.CheckApplicabilityTotalStressStabilityX();
+	bool check_app_TL_stab_Y = criteria.CheckApplicabilityTotalStressStabilityY();
+	bool stab_X_dir_check = artifact.StabilityXDirectionCheck();
+	bool stab_Y_dir_check = artifact.StabilityYDirectionCheck();
+	bool use_ext_plates = brg.UseExternalPlates();
+	bool rest_system_req_check = artifact.RestraintSystemRequirementCheck();
+	bool hydrostatic_check = artifact.HydrostaticStressCheck();
+	auto horiz_force_check = artifact.HorizontalForceCheck();
+	auto deltaLLiBCheck = artifact.MaximumLiveLoadDeflectionMethodBCheck();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
+	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
+	bool height_check = artifact.MinimumTotalBearingHeightCheck();
+	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
+	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
+
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	*pPara << rptNewPage;
+
+	rptHeading* pHeading = rptStyleManager::CreateHeading();
+	(*pChapter) << pHeading;
+	pHeading->SetName(_T("Specification Check Summary"));
+	*pHeading << _T("Specification Check Summary");
+
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !s_max_check || !n_min_shear_def_check || !t_max_cover_check
+		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
+		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
+		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
+		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
+		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
+		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
+		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
+		|| (criteria.bRequiredBearingEdgeToGirderEdgeDistance ? !distBrg2gBfCheck : false)
+		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false))
+	{
+		*pPara << color(Red);
+		if (!t_min_shim_absolute_check)
+		{
+			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
+		}
+		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+		{
+			*pPara << _T("Elastomer cover thickness is below the minimum thickness limit.") << rptNewLine;
+		}
+		if (!t_max_cover_check)
+		{
+			*pPara << _T("Elastomer cover thickness exceeds the maximum thickness limit.") << rptNewLine;
+		}
+		if (!t_min_shim_service_check)
+		{
+			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
+		}
+		if (!t_min_shim_fatigue_check)
+		{
+			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
+		}
+		if (!s_max_check)
+		{
+			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
+		}
+		if (!n_min_shear_def_check)
+		{
+			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
+		}
+		if (!shear_def_check)
+		{
+			*pPara << _T("Total elastomer thickness is not sufficient to accommodate shear deformation.") << rptNewLine;
+		}
+		if (!static_axial_X_ss_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to static axial load.") << rptNewLine;
+		}
+		if (!static_axial_X_ss_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to static axial load.") << rptNewLine;
+		}
+		if (!ss_X_combo_sum_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to axial service loads.") << rptNewLine;
+		}
+		if (!ss_Y_combo_sum_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to axial service loads.") << rptNewLine;
+		}
+		if (check_app_TL_stab_X && !stab_X_dir_check)
+		{
+			*pPara << _T("Bearing is unstable in the primary direction (longitudinal to the bridge) due to axial load.") << rptNewLine;
+		}
+		if (check_app_TL_stab_Y && !stab_Y_dir_check)
+		{
+			*pPara << _T("Bearing is unstable in the secondary direction (transverse to the bridge) due to axial load.") << rptNewLine;
+		}
+		if (!use_ext_plates && !rest_system_req_check)
+		{
+			*pPara << _T("Bearing restraint system is required.") << rptNewLine;
+		}
+		if (use_ext_plates && !hydrostatic_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to resist tension due to hydrostatic stress (Applicable if externally bonded plates are used).") << rptNewLine;
+		}
+		if (!use_ext_plates && !horiz_force_check)
+		{
+			*pPara << _T("Elastomer is not sufficient to resist horizontal force effects due to shear deformation.") << rptNewLine;
+		}
+		if (!deltaLLiBCheck)
+		{
+			*pPara << _T("Instantaneous live load deflection exceeds the recommended limit.") << rptNewLine;
+		}
+		if (!gMin_check)
+		{
+			*pPara << _T("Specifed elastomer shear modulus is below the minimum limit.") << rptNewLine;
+		}
+		if (!gMax_check)
+		{
+			*pPara << _T("Specifed elastomer shear modulus exceeds the maximum limit.") << rptNewLine;
+		}
+		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
+		{
+			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
+		}
+		if (criteria.bMinimumTotalBearingHeight && !height_check)
+		{
+			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
+		}
+		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
+		{
+			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange is less than the minimum limit.") << rptNewLine;
+		}
+		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance && !maxDistBrg2gBfCheck)
+		{
+			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange exceeds the maximum limit.") << rptNewLine;
+		}
+		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance && !distBrg2gBfCheck)
+		{
+			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange does not equal the required distance.") << rptNewLine;
+		}
+		if (criteria.bMaximumTotalLoad && !maxTLCheck)
+		{
+			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
+		}
+
+		*pPara << color(Red) << rptNewLine << rptNewLine;
+	}
+	else
+	{
+		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << color(Green) << rptNewLine << rptNewLine;
+	}
+}
+
+void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
@@ -1338,148 +1542,9 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << rptNewPage;
-
-	rptHeading* pHeading = rptStyleManager::CreateHeading();
-	(*pChapter) << pHeading;
-	pHeading->SetName(_T("Specification Check Summary"));
-	*pHeading << _T("Specification Check Summary");
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !s_max_check || !n_min_shear_def_check || !t_max_cover_check 
-		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
-		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
-		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
-		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
-		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
-		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
-		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
-		|| (criteria.bRequiredBearingEdgeToGirderEdgeDistance ? !distBrg2gBfCheck : false)
-		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false))
-	{
-		*pPara << color(Red);
-		if (!t_min_shim_absolute_check)
-		{
-			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
-		}
-		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
-		{
-			*pPara << _T("Elastomer cover thickness is below the minimum thickness limit.") << rptNewLine;
-		}
-		if (!t_max_cover_check)
-		{
-			*pPara << _T("Elastomer cover thickness exceeds the maximum thickness limit.") << rptNewLine;
-		}
-		if (!t_min_shim_service_check)
-		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
-		}
-		if (!t_min_shim_fatigue_check)
-		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
-		}
-		if (!s_max_check)
-		{
-			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
-		}
-		if (!n_min_shear_def_check)
-		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
-		}
-		if (!shear_def_check)
-		{
-			*pPara << _T("Total elastomer thickness is not sufficient to accommodate shear deformation.") << rptNewLine;
-		}
-		if (!static_axial_X_ss_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to static axial load.") << rptNewLine;
-		}
-		if (!static_axial_X_ss_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to static axial load.") << rptNewLine;
-		}
-		if (!ss_X_combo_sum_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to axial service loads.") << rptNewLine;
-		}
-		if (!ss_Y_combo_sum_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to axial service loads.") << rptNewLine;
-		}
-		if (check_app_TL_stab_X && !stab_X_dir_check)
-		{
-			*pPara << _T("Bearing is unstable in the primary direction (longitudinal to the bridge) due to axial load.") << rptNewLine;
-		}
-		if (check_app_TL_stab_Y && !stab_Y_dir_check)
-		{
-			*pPara << _T("Bearing is unstable in the secondary direction (transverse to the bridge) due to axial load.") << rptNewLine;
-		}
-		if (!use_ext_plates && !rest_system_req_check)
-		{
-			*pPara << _T("Bearing restraint system is required.") << rptNewLine;
-		}
-		if (use_ext_plates && !hydrostatic_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to resist tension due to hydrostatic stress (Applicable if externally bonded plates are used).") << rptNewLine;
-		}
-		if (!use_ext_plates && !horiz_force_check)
-		{
-			*pPara << _T("Elastomer is not sufficient to resist horizontal force effects due to shear deformation.") << rptNewLine;
-		}
-		if (!deltaLLiBCheck)
-		{
-			*pPara << _T("Instantaneous live load deflection exceeds the recommended limit.") << rptNewLine;
-		}
-		if (!gMin_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus is below the minimum limit.") << rptNewLine;
-		}
-		if (!gMax_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus exceeds the maximum limit.") << rptNewLine;
-		}
-		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
-		{
-			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
-		}
-		if (criteria.bMinimumTotalBearingHeight && !height_check)
-		{
-			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
-		}
-		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
-		{
-			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange is less than the minimum limit.") << rptNewLine;
-		}
-		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance && !maxDistBrg2gBfCheck)
-		{
-			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange exceeds the maximum limit.") << rptNewLine;
-		}
-		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance && !distBrg2gBfCheck)
-		{
-			*pPara << _T("Distance from edge of bearing to edge of girder bottom flange does not equal the required distance.") << rptNewLine;
-		}
-		if (criteria.bMaximumTotalLoad && !maxTLCheck)
-		{
-			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
-		}
-
-		*pPara << _T("See below for more detail.");
-		*pPara << color(Red) << rptNewLine << rptNewLine;
-	}
-	else
-	{
-		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << color(Green) << rptNewLine << rptNewLine;
-	}
-
 	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
-
-	pHeading = rptStyleManager::CreateHeading();
+	rptHeading* pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
 	pHeading->SetName(_T("Method B Analysis:"));
 	*pHeading << _T("Method B Analysis:");
@@ -2058,10 +2123,14 @@ void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* 
 
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
+		ReportBearingSpecCheckSummaryA(pChapter, pPara, artifact);
+
 		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, artifact);
 	}
 	else
 	{
+		ReportBearingSpecCheckSummaryB(pChapter, pPara, artifact);
+
 		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, artifact);
 	}
 }
