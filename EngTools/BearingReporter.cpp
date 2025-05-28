@@ -417,7 +417,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << symbol(NE) << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << _T(" ") << symbol(NE) << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
@@ -437,12 +437,12 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << Sub2(_T("H"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 		if (height_check)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << symbol(GTE) << length.SetValue(criteria.MinimumTotalBearingHeight);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumTotalBearingHeight);
 			*pPara << _T(" ") << RPT_PASS;
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" < ") << length.SetValue(criteria.MinimumTotalBearingHeight);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
@@ -463,8 +463,6 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
 
-		*pPara << rptNewLine;
-
 		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance)
 		{
 
@@ -476,13 +474,13 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << _T(" ") << length.SetValue(distBrg2gBf);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << length.SetValue(distBrg2gBf);
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
-		}
+			*pPara << rptNewLine;
 
-		*pPara << rptNewLine;
+		}
 
 		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance)
 		{
@@ -490,7 +488,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 			*pPara << _T("Minimum Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 			if (minDistBrg2gBfCheck)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << _T(" ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 				*pPara << _T(" ") << RPT_PASS;
 			}
 			else
@@ -499,9 +497,9 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
-		}
+			*pPara << rptNewLine;
 
-		*pPara << rptNewLine;
+		}
 
 		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance)
 		{
@@ -518,9 +516,11 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 				*pPara << _T(" ") << RPT_FAIL;
 			}
 
+			*pPara << rptNewLine;
+
 		}
 
-		*pPara << rptNewLine << rptNewLine;
+		*pPara  << rptNewLine;
 
 	}
 
@@ -538,7 +538,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << _T("Total Load Limit = ") << force.SetValue(criteria.MaximumTotalLoad);
 		if (maxTLcheck)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << symbol(LTE) << force.SetValue(criteria.MaximumTotalLoad);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << _T(" ") << symbol(LTE) << force.SetValue(criteria.MaximumTotalLoad);
 			*pPara << _T(" ") << RPT_PASS;						   
 		}														   
 		else													   
@@ -588,9 +588,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptPa
 	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
 
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
@@ -701,7 +698,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptPa
 		}
 		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
-			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
+			*pPara << _T("Total bearing height is below the minimum limit.") << rptNewLine;
 		}
 		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
 		{
@@ -1273,10 +1270,10 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
+	//pPara = new rptParagraph;
+	//(*pChapter) << pPara;
 
-	*pPara << rptNewPage;
+	//*pPara << rptNewPage;
 
 	rptHeading* pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
@@ -1286,7 +1283,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !s_max_check || !n_min_shear_def_check || !t_max_cover_check
+	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !n_min_shear_def_check || !t_max_cover_check
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || !ss_Y_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
@@ -1317,10 +1314,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		if (!t_min_shim_fatigue_check)
 		{
 			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
-		}
-		if (!s_max_check)
-		{
-			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
 		}
 		if (!n_min_shear_def_check)
 		{
@@ -1384,7 +1377,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		}
 		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
-			*pPara << _T("Total bearing height is below the minimum liimit.") << rptNewLine;
+			*pPara << _T("Total bearing height is below the minimum limit.") << rptNewLine;
 		}
 		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance && !minDistBrg2gBfCheck)
 		{
@@ -1511,7 +1504,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 static_stress = brg_calc.GetStaticStress(brg, brg_loads);
 	Float64 cyclic_stress = brg_calc.GetCyclicStress(brg, brg_loads);
 	Float64 lambda = brg.GetCompressibilityIndex();
-	Float64 restraint_system_calc = brg_calc.RestraintSystemCDRatio(brg, brg_loads, spec);
+	Float64 restraint_system_calc = brg_calc.GetRestraintSystemCDRatio(brg, brg_loads, spec);
 	bool rest_system_req_check = artifact.RestraintSystemRequirementCheck();
 	Float64 max_stress = criteria.GetMaximumAllowableHydrostaticStress();
 	Float64 hydrostatic_stress = brg_calc.GetHydrostaticStress(brg, brg_loads);

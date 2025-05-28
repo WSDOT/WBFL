@@ -85,6 +85,9 @@ namespace WBFL
             /// @brief Sets the elastomer bulk modulus
             /// @param use
             void SetElastomerBulkModulus(Float64 k);
+            /// @brief Sets the bearing to girder flange distance
+            /// @param use
+            void SetBearingToGirderFlangeDistance(Float64 dist);
 
 
 

@@ -138,9 +138,8 @@ namespace WBFL
             Float64 GetCaCoefficient(const Bearing&, const BearingLoads&) const;
             /// @return Hydrostatic stress 
             Float64 GetHydrostaticStress(const Bearing&, const BearingLoads&) const;
-            /// @return Maximum stress 
             /// @return Restraint system applicability calculation 
-            Float64 RestraintSystemCDRatio(const Bearing&, const BearingLoads&, const WBFL::LRFD::BDSManager::Edition& spec) const;
+            Float64 GetRestraintSystemCDRatio(const Bearing&, const BearingLoads&, const WBFL::LRFD::BDSManager::Edition& spec) const;
             /// @return horizontal force
             Float64 GetHorizontalForce(const Bearing&, const BearingLoads&) const;
             /// @return Minimum Allowable Shear Modulus

@@ -418,7 +418,7 @@ Float64 BearingCalculator::GetHydrostaticStress(const Bearing& brg, const Bearin
 	return sigma_hydrostatic;
 }
 
-Float64 BearingCalculator::RestraintSystemCDRatio(const Bearing& brg, const BearingLoads& brg_loads, const WBFL::LRFD::BDSManager::Edition& spec) const
+Float64 BearingCalculator::GetRestraintSystemCDRatio(const Bearing& brg, const BearingLoads& brg_loads, const WBFL::LRFD::BDSManager::Edition& spec) const
 {
 	Float64 rot_static = brg_loads.GetStaticRotation();
 	Float64 rot_cyclic = brg_loads.GetCyclicRotation();
@@ -450,18 +450,18 @@ BearingResults BearingCalculator::AnalyzeBearing(const Bearing& bearing, const B
 	BearingResults results;
 
 	results.TotalLoadStress = GetTotalLoadStress(bearing, loads);
-	results.ElastomerElasticModulusMethodA = GetElastomerElasticModulusMethodA(bearing, spec);;
-	results.StaticAxialPrimaryShearStrain;
-	results.StaticAxialSecondaryShearStrain;
-	results.PrimaryShearStrainComboSum;
-	results.SecondaryShearStrainComboSum;
-	results.TotalStress;
-	results.RestraintSystemDCRatio;
-	results.HydrostaticStress;
-	results.HorizontalForce;
+	results.ElastomerElasticModulusMethodA = GetElastomerElasticModulusMethodA(bearing, spec);
+	results.StaticAxialPrimaryShearStrain = GetStaticAxialPrimaryShearStrain(bearing, loads);
+	results.StaticAxialSecondaryShearStrain = GetStaticAxialSecondaryShearStrain(bearing, loads);
+	results.PrimaryShearStrainComboSum = GetPrimaryShearStrainComboSum(bearing, loads);
+	results.SecondaryShearStrainComboSum = GetSecondaryShearStrainComboSum(bearing, loads);
+	results.TotalStress = GetTotalStress(bearing, loads);
+	results.RestraintSystemDCRatio = GetRestraintSystemCDRatio(bearing, loads, spec);
+	results.HydrostaticStress = GetHydrostaticStress(bearing, loads);
+	results.HorizontalForce = GetHorizontalForce(bearing, loads);
 	results.TotalBearingHeight = ComputeBearingHeight(bearing);
-	results.InstantaneousLiveLoadDeflectionMethodA;
-	results.InstantaneousLiveLoadDeflectionMethodB;
+	results.InstantaneousLiveLoadDeflectionMethodA = GetInstantaneousLiveLoadDeflectionMethodA(bearing, loads, spec);
+	results.InstantaneousLiveLoadDeflectionMethodB = GetInstantaneousLiveLoadDeflectionMethodB(bearing, loads, spec);
 
 	return results;
 };
