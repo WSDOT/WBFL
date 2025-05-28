@@ -32,9 +32,6 @@
 using namespace WBFL::EngTools;
 
 
-BearingCheckArtifact::BearingCheckArtifact()
-{
-}
 
 BearingCheckArtifact::BearingCheckArtifact(const Bearing& bearing, const BearingLoads& loads, const BearingResults& results, const BearingDesignCriteria& criteria)
 	:m_bearing(bearing),

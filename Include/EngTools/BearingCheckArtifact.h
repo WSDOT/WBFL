@@ -40,7 +40,7 @@ namespace WBFL
         {
         public:
 
-            BearingCheckArtifact();
+            BearingCheckArtifact() = delete;
 
             BearingCheckArtifact(
                 const Bearing& bearing,
@@ -143,7 +143,6 @@ namespace WBFL
 
             Bearing m_bearing;
             BearingLoads m_loads;
-            WBFL::LRFD::BDSManager::Edition m_spec;
             BearingResults m_results;
             BearingDesignCriteria m_criteria;
 

@@ -86,6 +86,10 @@ void Bearing::SetElastomerBulkModulus(Float64 k)
 {
     m_elastomer_bulk_modulus = k;
 }
+void Bearing::SetBearingToGirderFlangeDistance(Float64 dist)
+{
+    m_girder_flange_dist = dist;
+}
 
 
 Float64 Bearing::GetLength() const
