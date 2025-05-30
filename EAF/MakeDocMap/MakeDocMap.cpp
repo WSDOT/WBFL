@@ -9,11 +9,6 @@
 
 #include <boost/algorithm/string/trim.hpp>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-
 // The one and only application object
 
 CWinApp theApp;

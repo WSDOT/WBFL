@@ -27,25 +27,25 @@
 testUndoableTxn::testUndoableTxn() {}
 bool testUndoableTxn::Execute() { WATCH(_T("testUndoableTxn::Execute()")); return true; }
 void testUndoableTxn::Undo() { WATCH(_T("Undoing testUndoableTxn")); }
-std::unique_ptr<CEAFTransaction> testUndoableTxn::CreateClone() const { return std::make_unique<testUndoableTxn>(); }
+std::unique_ptr<WBFL::EAF::Transaction> testUndoableTxn::CreateClone() const { return std::make_unique<testUndoableTxn>(); }
 void testUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testUndoableTxn::Name() const { return _T("Undoable Txn"); }
 bool testUndoableTxn::IsUndoable() const { return true; }
 bool testUndoableTxn::IsRepeatable() const { return true; }
 
 
-testNotUndoableTxn::testNotUndoableTxn() : CEAFTransaction() {}
+testNotUndoableTxn::testNotUndoableTxn() : WBFL::EAF::Transaction() {}
 bool testNotUndoableTxn::Execute() { WATCH(_T("testNotUndoableTxn::Execute()")); return true;}
-std::unique_ptr<CEAFTransaction> testNotUndoableTxn::CreateClone() const { return std::make_unique<testNotUndoableTxn>(); }
+std::unique_ptr<WBFL::EAF::Transaction> testNotUndoableTxn::CreateClone() const { return std::make_unique<testNotUndoableTxn>(); }
 void testNotUndoableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotUndoableTxn::Name() const { return _T("Not Undoable Txn"); }
 bool testNotUndoableTxn::IsUndoable() const { return false; }
 bool testNotUndoableTxn::IsRepeatable() const { return true; }
 
-testNotRepeatableTxn::testNotRepeatableTxn() : CEAFTransaction() {}
+testNotRepeatableTxn::testNotRepeatableTxn() : WBFL::EAF::Transaction() {}
 bool testNotRepeatableTxn::Execute() { WATCH(_T("testNotRepeatableTxn::Execute()")); return true; }
 void testNotRepeatableTxn::Undo() { WATCH(_T("Undoing testNotRepeatableTxn")); }
-std::unique_ptr<CEAFTransaction> testNotRepeatableTxn::CreateClone() const { return std::make_unique<testNotRepeatableTxn>(); }
+std::unique_ptr<WBFL::EAF::Transaction> testNotRepeatableTxn::CreateClone() const { return std::make_unique<testNotRepeatableTxn>(); }
 void testNotRepeatableTxn::Log(std::_tostream& os) const { os << Name() << std::endl; }
 std::_tstring testNotRepeatableTxn::Name() const { return _T("Not Repeatable Txn"); }
 bool testNotRepeatableTxn::IsUndoable() const { return true; }

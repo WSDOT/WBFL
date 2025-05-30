@@ -34,47 +34,19 @@
 
 // TODO: Fix the unit mode events
 // The App class needs to have a generic connection point for firing unit mode events
-// this Agent needs to sink the event and fire it throught the IDisplayUnitEventSink interface
+// this Agent needs to sink the event and fire it through the IDisplayUnitEventSink interface
 //
-// Need persistance of unit mode
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+// Need persistence of unit mode
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CEAFDocProxyAgent::CEAFDocProxyAgent()
+CEAFDocProxyAgent::CEAFDocProxyAgent(CEAFBrokerDocument* pDoc, CEAFMainFrame* pFrame) :
+   m_pDoc(pDoc), m_pMainFrame(pFrame)
 {
-   m_pBroker = 0;
-   m_pDoc = 0;
-   m_pMainFrame = 0;
-
    CEAFApp* pApp = EAFGetApp();
    pApp->AddUnitModeListener(this);
-
-   // Log File
-   m_LogFileName = "";
-   m_dwLogFileCookie = 0;
-}
-
-CEAFDocProxyAgent::~CEAFDocProxyAgent()
-{
-
-}
-
-void CEAFDocProxyAgent::SetDocument(CEAFBrokerDocument* pDoc)
-{
-   m_pDoc = pDoc;
-}
-
-void CEAFDocProxyAgent::SetMainFrame(CEAFMainFrame* pFrame)
-{
-   m_pMainFrame = pFrame;
 }
 
 CEAFMainFrame* CEAFDocProxyAgent::GetMainFrame()
@@ -83,73 +55,88 @@ CEAFMainFrame* CEAFDocProxyAgent::GetMainFrame()
 }
 
 //////////////////////////////////////////
-// IAgentEx
-STDMETHODIMP CEAFDocProxyAgent::SetBroker(IBroker* pBroker)
-{
-   EAF_AGENT_SET_BROKER(pBroker);
-   return S_OK;
-}
-
-STDMETHODIMP CEAFDocProxyAgent::RegInterfaces()
-{
-   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-
-   pBrokerInit->RegInterface( IID_IEAFViewRegistrar,    this );
-   pBrokerInit->RegInterface( IID_IEAFMainMenu,         this );
-   pBrokerInit->RegInterface( IID_IEAFToolbars,         this );
-   pBrokerInit->RegInterface( IID_IEAFDocument,         this );
-   pBrokerInit->RegInterface( IID_IEAFAcceleratorTable, this );
-   pBrokerInit->RegInterface( IID_IEAFDisplayUnits,     this );
-   pBrokerInit->RegInterface( IID_IEAFStatusCenter,     this );
-   pBrokerInit->RegInterface( IID_IEAFTransactions,     this );
-   pBrokerInit->RegInterface( IID_IEAFProjectLog,       this );
-
-   return S_OK;
-}
-
-STDMETHODIMP CEAFDocProxyAgent::Init()
+// Agent
+bool CEAFDocProxyAgent::Init()
 {
    EAF_AGENT_INIT;
-   return S_OK;
+
+   // An attempt was made to implement IEAFProgress in DocProxyAgent so the WBFLCore DLL could be eliminated. There were problems with resources.
+   // The progress window dialog could not be created because the resource handle was invalid. I suspect this is because EAF is an MFC Extension DLL.
+   // All the code related to IEAFProgress is still in DocProxyAgent, but commented out.
+   // Try again later, but for now IEAFProgress is implemented in WBFLCore.DLL SysAgent
+   //m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
+   //return SUCCEEDED(ValidateThread());
+
+   return true;
+}
+//
+//HRESULT CEAFDocProxyAgent::ValidateThread()
+//{
+//   if (m_pThread == nullptr)
+//   {
+//      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+//
+//      // Run the progress window in a UI thread
+//      m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
+//      ATLASSERT(m_pThread != nullptr);
+//   }
+//   return S_OK;
+//}
+
+bool CEAFDocProxyAgent::RegisterInterfaces()
+{
+   EAF_AGENT_REGISTER_INTERFACES;
+
+   REGISTER_INTERFACE(IEAFViewRegistrar);
+   REGISTER_INTERFACE(IEAFMainMenu);
+   REGISTER_INTERFACE(IEAFToolbars);
+   REGISTER_INTERFACE(IEAFDocument);
+   REGISTER_INTERFACE(IEAFAcceleratorTable);
+   REGISTER_INTERFACE(IEAFDisplayUnits);
+   REGISTER_INTERFACE(IEAFStatusCenter);
+   REGISTER_INTERFACE(IEAFTransactions);
+   REGISTER_INTERFACE(IEAFProjectLog);
+   //REGISTER_INTERFACE(IEAFProgress);
+
+   return true;
 }
 
-STDMETHODIMP CEAFDocProxyAgent::Init2()
+
+bool CEAFDocProxyAgent::ShutDown()
 {
-   return S_OK;
-}
-
-STDMETHODIMP CEAFDocProxyAgent::Reset()
-{
-   return S_OK;
-}
-
-STDMETHODIMP CEAFDocProxyAgent::ShutDown()
-{
-   if ( IsLogFileOpen() )
-   {
-      m_pDoc->OnLogFileClosing();
-
-      GET_IFACE( ILogFile, pLogFile );
-      pLogFile->Close( m_dwLogFileCookie );
-   }
-
-   EAF_AGENT_CLEAR_INTERFACE_CACHE;
+   EAF_AGENT_SHUTDOWN;
 
    CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
 
-   return S_OK;
+   //if (m_pThread != nullptr)
+   //{
+   //   m_pThread->PostThreadMessage(WM_KILLTHREAD, 0, 0);
+   //   DWORD result = ::WaitForSingleObject(m_pThread->m_hThread, 10000/*INFINITE*/); // wait for thread to terminate
+   //   if (result == WAIT_TIMEOUT || result == WAIT_FAILED)
+   //   {
+   //      ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
+   //      m_pThread->OnKillThread(0, 0);
+   //   }
+   //}
+   //m_pThread = nullptr;
+
+   //if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+   //{
+   //   // echo message when app is finished
+   //   std::cout << "Finished." << std::endl;
+   //}
+   return true;
 }
 
-STDMETHODIMP CEAFDocProxyAgent::GetClassID(CLSID* pCLSID)
+CLSID CEAFDocProxyAgent::GetCLSID() const
 {
-   *pCLSID = CLSID_EAFDocProxyAgent;
-   return S_OK;
+   return CLSID_EAFDocProxyAgent;
 }
 
 ///////////////////////////////////////////////////////
 // IEAFViewRegistrar
-long CEAFDocProxyAgent::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
+long CEAFDocProxyAgent::RegisterView(UINT nResourceID, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
 {
    return m_pDoc->RegisterView(nResourceID,pCallback,pFrameClass,pViewClass,hSharedMenu,maxViewCount);
 }
@@ -176,14 +163,14 @@ std::vector<CView*> CEAFDocProxyAgent::GetRegisteredView(long key)
 
 ///////////////////////////////////////////////////////
 // IEAFMainMenu
-CEAFMenu* CEAFDocProxyAgent::GetMainMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFDocProxyAgent::GetMainMenu()
 {
    return m_pDoc->GetMainMenu();
 }
 
-CEAFMenu* CEAFDocProxyAgent::CreateContextMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFDocProxyAgent::CreateContextMenu()
 {
-   return CEAFMenu::CreateContextMenu(m_pDoc->GetPluginCommandManager());
+   return WBFL::EAF::Menu::CreateContextMenu(m_pDoc->GetPluginCommandManager());
 }
 
 ///////////////////////////////////////////////////////
@@ -193,14 +180,9 @@ UINT CEAFDocProxyAgent::CreateToolBar(LPCTSTR lpszName)
    return m_pDoc->CreateToolBar(lpszName);
 }
 
-CEAFToolBar* CEAFDocProxyAgent::GetToolBar(UINT toolbarID)
+std::shared_ptr<WBFL::EAF::ToolBar> CEAFDocProxyAgent::GetToolBar(UINT toolbarID)
 {
    return m_pDoc->GetToolBar(toolbarID);
-}
-
-void CEAFDocProxyAgent::DestroyToolBar(CEAFToolBar* pToolBar)
-{
-   m_pDoc->DestroyToolBar(pToolBar);
 }
 
 void CEAFDocProxyAgent::DestroyToolBar(UINT toolbarID)
@@ -210,17 +192,17 @@ void CEAFDocProxyAgent::DestroyToolBar(UINT toolbarID)
 
 ///////////////////////////////////////////////////////
 // IEAFAcceleratorTable
-BOOL CEAFDocProxyAgent::AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback)
+BOOL CEAFDocProxyAgent::AddAccelTable(HACCEL hAccel, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback)
 {
    return m_pDoc->GetAcceleratorTable()->AddAccelTable(hAccel,pCallback);
 }
 
-BOOL CEAFDocProxyAgent::AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback)
+BOOL CEAFDocProxyAgent::AddAccelKey(BYTE fVirt,WORD key,WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback)
 {
    return m_pDoc->GetAcceleratorTable()->AddAccelKey(fVirt,key,cmd,pCallback);
 }
 
-BOOL CEAFDocProxyAgent::RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback)
+BOOL CEAFDocProxyAgent::RemoveAccelKey(WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback)
 {
    return m_pDoc->GetAcceleratorTable()->RemoveAccelKey(cmd,pCallback);
 }
@@ -321,13 +303,13 @@ void CEAFDocProxyAgent::UpdateAllViews(CView* pSender,LPARAM lHint,CObject* pHin
 ////////////////////////////////////////////////////////////////////////
 // IEAFDisplayUnits
 //
-void CEAFDocProxyAgent::SetUnitMode(eafTypes::UnitMode unitMode)
+void CEAFDocProxyAgent::SetUnitMode(WBFL::EAF::UnitMode unitMode)
 {
    CEAFApp* pApp = EAFGetApp();
    pApp->SetUnitsMode(unitMode);
 }
 
-eafTypes::UnitMode CEAFDocProxyAgent::GetUnitMode()
+WBFL::EAF::UnitMode CEAFDocProxyAgent::GetUnitMode()
 {
    CEAFApp* pApp = EAFGetApp();
    return pApp->GetUnitsMode();
@@ -557,7 +539,7 @@ const WBFL::Units::VelocityData& CEAFDocProxyAgent::GetVelocityUnit()
 
 //////////////////////////////////////////////////////////////
 // IEAFStatusCenter
-StatusCallbackIDType CEAFDocProxyAgent::RegisterCallback(iStatusCallback* pCallback)
+StatusCallbackIDType CEAFDocProxyAgent::RegisterCallback(std::shared_ptr<WBFL::EAF::StatusCallback> pCallback)
 {
    return m_pDoc->GetStatusCenter().RegisterCallbackItem(pCallback);
 }
@@ -567,7 +549,7 @@ StatusGroupIDType CEAFDocProxyAgent::CreateStatusGroupID()
    return m_pDoc->GetStatusCenter().CreateStatusGroupID();
 }
 
-StatusItemIDType CEAFDocProxyAgent::Add(CEAFStatusItem* pItem)
+StatusItemIDType CEAFDocProxyAgent::Add(std::shared_ptr<WBFL::EAF::StatusItem> pItem)
 {
    return m_pDoc->GetStatusCenter().Add(pItem);
 }
@@ -587,22 +569,22 @@ bool CEAFDocProxyAgent::RemoveByStatusGroupID(StatusGroupIDType id)
    return m_pDoc->GetStatusCenter().RemoveByStatusGroupID(id);
 }
 
-CEAFStatusItem* CEAFDocProxyAgent::GetByID(StatusItemIDType id)
+std::shared_ptr<WBFL::EAF::StatusItem> CEAFDocProxyAgent::GetByID(StatusItemIDType id)
 {
    return m_pDoc->GetStatusCenter().GetByID(id);
 }
 
-CEAFStatusItem* CEAFDocProxyAgent::GetByIndex(IndexType index)
+std::shared_ptr<WBFL::EAF::StatusItem> CEAFDocProxyAgent::GetByIndex(IndexType index)
 {
    return m_pDoc->GetStatusCenter().GetByIndex(index);
 }
 
-eafTypes::StatusSeverityType CEAFDocProxyAgent::GetSeverity(const CEAFStatusItem* pItem)
+WBFL::EAF::StatusSeverityType CEAFDocProxyAgent::GetSeverity(std::shared_ptr<const WBFL::EAF::StatusItem> pItem)
 {
    return m_pDoc->GetStatusCenter().GetSeverity(pItem->GetCallbackID());
 }
 
-eafTypes::StatusSeverityType CEAFDocProxyAgent::GetSeverity()
+WBFL::EAF::StatusSeverityType CEAFDocProxyAgent::GetSeverity()
 {
    return m_pDoc->GetStatusCenter().GetSeverity();
 }
@@ -614,12 +596,12 @@ IndexType CEAFDocProxyAgent::Count()
 
 ///////////////////////////////////////////////////////////////////////////////////
 // IEAFTransactions
-void CEAFDocProxyAgent::Execute(const CEAFTransaction& rTxn)
+void CEAFDocProxyAgent::Execute(const WBFL::EAF::Transaction& rTxn)
 {
    m_pDoc->Execute(rTxn);
 }
 
-void CEAFDocProxyAgent::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
+void CEAFDocProxyAgent::Execute(std::unique_ptr<WBFL::EAF::Transaction>&& pTxn)
 {
    m_pDoc->Execute(std::move(pTxn));
 }
@@ -682,51 +664,190 @@ IndexType CEAFDocProxyAgent::GetUndoCount() const
 
 //////////////////////////////////////////////////////////////////////////////////
 // IEAFProjectLog implementation
-CString CEAFDocProxyAgent::GetName()
-{
-   if ( !IsLogFileOpen() )
-      OpenLogFile();
-
-   return m_LogFileName;
-}
-
 void CEAFDocProxyAgent::LogMessage( LPCTSTR lpszMsg )
 {
-   if ( !IsLogFileOpen() )
-      OpenLogFile();
-
-   if ( IsLogFileOpen() )
-   {
-      GET_IFACE(ILogFile,pLogFile);
-      pLogFile->LogMessage( m_dwLogFileCookie, lpszMsg );
-   }
+   WBFL::System::Logger::Info(lpszMsg);
 }
 
-void CEAFDocProxyAgent::Destroy()
-{
-   if ( !IsLogFileOpen() )
-      return;
-
-   GET_IFACE(ILogFile,pLogFile);
-   pLogFile->Close( m_dwLogFileCookie );
-   m_LogFileName = "";
-   ::DeleteFile( m_LogFileName );
-}
-
-bool CEAFDocProxyAgent::IsLogFileOpen()
-{
-   return m_dwLogFileCookie == 0 ? false : true;
-}
-
-void CEAFDocProxyAgent::OpenLogFile()
-{
-   m_LogFileName = m_pDoc->GetLogFileName();
-
-   GET_IFACE(ILogFile,pLogFile);
-   HRESULT hr = pLogFile->Open( m_LogFileName, &m_dwLogFileCookie );
-   if ( SUCCEEDED(hr) )
-   {
-      m_pDoc->OnLogFileOpened();
-   }
-}
-
+//STDMETHODIMP CEAFDocProxyAgent::CreateProgressWindow(DWORD dwMask, UINT nDelay)
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      // do nothing if UI is not to be shown
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return PROGRESS_E_CREATE;
+//      }
+//
+//      m_cProgressRef++;
+//
+//      if (1 == m_cProgressRef)
+//      {
+//         CWnd* pMainWnd = nullptr;
+//         {
+//            AFX_MANAGE_STATE(AfxGetAppModuleState());
+//            pMainWnd = AfxGetMainWnd();
+//         }
+//
+//         HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd, dwMask, nDelay);
+//         ATLASSERT(SUCCEEDED(hr));
+//         if (FAILED(hr))
+//         {
+//            m_cProgressRef--;
+//            return PROGRESS_E_CREATE;
+//         }
+//      }
+//
+//      // Save last message that was issued by the previous window
+//      if (0 < m_LastMessage.size())
+//      {
+//         m_MessageStack.push_back(m_LastMessage);
+//      }
+//      else
+//      {
+//         UpdateMessage(_T("Working..."));
+//      }
+//
+//      return S_OK;
+//   }
+//}
+//
+//STDMETHODIMP CEAFDocProxyAgent::Init(short begin, short end, short inc)
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      // do nothing if UI is not to be shown
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return E_FAIL;
+//      }
+//      m_pThread->Init(begin, end, inc);
+//      return S_OK;
+//   }
+//}
+//
+//STDMETHODIMP CEAFDocProxyAgent::Increment()
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      // do nothing if UI is not to be shown
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return E_FAIL;
+//      }
+//      m_pThread->Increment();
+//      return S_OK;
+//   }
+//}
+//
+//STDMETHODIMP CEAFDocProxyAgent::UpdateMessage(LPCTSTR msg)
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+//      {
+//         // Don't show "Working...". There are 10's of thousands
+//         int result = lstrcmp(msg, _T("Wor"));
+//         if (result != 0)
+//         {
+//            std::cout << CStringA(msg) << std::endl;
+//         }
+//      }
+//
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return E_FAIL;
+//      }
+//
+//      m_LastMessage = msg;
+//      m_pThread->UpdateMessage(msg);
+//
+//      return S_OK;
+//   }
+//}
+//
+//STDMETHODIMP CEAFDocProxyAgent::Continue()
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      // do nothing if UI is not to be shown
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return E_FAIL;
+//      }
+//
+//      return m_pThread->Continue() ? S_OK : S_FALSE;
+//   }
+//}
+//
+//STDMETHODIMP CEAFDocProxyAgent::DestroyProgressWindow()
+//{
+//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+//   {
+//      // do nothing if UI is not to be shown
+//      return S_OK;
+//   }
+//   else
+//   {
+//      // must have a valid thread before we can do anything else
+//      if (FAILED(ValidateThread()))
+//      {
+//         return E_FAIL;
+//      }
+//
+//#if defined _DEBUG
+//      if (0 < m_cProgressRef)
+//      {
+//         // if there is at least one creater of the progress window
+//         // the thread had better still be alive
+//         ATLASSERT(m_pThread != nullptr);
+//      }
+//#endif
+//
+//      m_cProgressRef--;
+//      ATLASSERT(0 <= m_cProgressRef);
+//
+//      if (m_cProgressRef == 0)
+//      {
+//         m_pThread->ResetContinueState();
+//         m_pThread->DestroyProgressWindow();
+//      }
+//      else
+//      {
+//         // restore message from previous window in stack
+//         if (!m_MessageStack.empty())
+//         {
+//            m_LastMessage = m_MessageStack.back();
+//            m_MessageStack.pop_back();
+//            m_pThread->UpdateMessage(m_LastMessage.c_str());
+//         }
+//      }
+//
+//      return S_OK;
+//   }
+//}

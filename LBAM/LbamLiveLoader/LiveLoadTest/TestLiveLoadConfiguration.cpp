@@ -34,11 +34,6 @@
 #include <fstream>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define TEST_FIRED() TRY_TEST(pMe->m_csChangedFired, true); pMe->m_csChangedFired=false;
 //////////////////////////////////////////////////////////////////////

@@ -29,14 +29,13 @@
 #include "resource.h"
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFDocManager.h>
-#include <EAF\EAFPluginManagerBase.h>
+#include <EAF\PluginManagerBase.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFProjectLog.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFDataRecoveryHandler.h>
 #include <AgentTools.h>
-#include <System\ComCatMgr.h>
 
 #include <MFCTools\Exceptions.h>
 #include <MFCTools\VersionInfo.h>
@@ -53,12 +52,7 @@
 #include "EAFHelpWindowThread.h"
 
 #include <iostream>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <filesystem>
 
 // Error handling helpers
 void save_doc(CDocument* pDoc,void* pStuff);
@@ -106,6 +100,10 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
    m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
    //m_nAutosaveInterval = 5/*minutes*/ * 60/*60seconds per minute*/ * 1000/*1000 milliseconds per second*/; // default is autosave every 5 minutes this is how you would change it
 
+   m_PluginCommandMgr = std::make_shared<WBFL::EAF::PluginCommandManager>();
+   m_PluginAppManager = std::make_shared<WBFL::EAF::PluginAppManager>();
+   m_ComponentInfoManager = std::make_shared<WBFL::EAF::ComponentInfoManager>();
+
    // if this assert fires, we've used more than commands then are
    // reserved for EAF standard processing
    ATLASSERT(EAF_TOOLBAR_MENU_LAST < EAF_FIRST_USER_COMMAND);
@@ -113,6 +111,10 @@ m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
 
 CEAFApp::~CEAFApp()
 {
+   m_pDocTemplateRegistrar = nullptr;
+   m_PluginCommandMgr = nullptr;
+   m_PluginAppManager = nullptr;
+   m_ComponentInfoManager = nullptr;
 }
 
 int CEAFApp::Run() 
@@ -133,12 +135,64 @@ int CEAFApp::Run()
    return retval;
 }
 
+CString CEAFApp::GetLogFilePath() const
+{
+   LPWSTR path;
+   HRESULT hr = ::SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DEFAULT, NULL, &path); // alternatively, could use FOLDERID_Desktop
+   CString logfilepath;
+   logfilepath.Format(_T("%s\\%s"), path, m_pszAppName);
+   ::CoTaskMemFree((void*)path);
+   return logfilepath;
+}
+
+CString CEAFApp::GetLogFileName() const
+{
+   CString logfilename;
+   logfilename.Format(_T("%s\\%s.log"), GetLogFilePath(), m_pszAppName);
+   return logfilename;
+}
+
 BOOL CEAFApp::InitInstance()
 {
    if (!CWinApp::InitInstance())
    {
       return FALSE;
    }
+
+   // Open application log
+   CString logfilepath = GetLogFilePath();
+   if (!std::filesystem::exists((LPCTSTR)logfilepath))
+   {
+      std::filesystem::create_directory((LPCTSTR)logfilepath);
+   }
+
+   CString logfilename = GetLogFileName();
+
+   m_LogFile.open((LPCTSTR)logfilename);
+   if (m_LogFile.is_open() && !m_LogFile.bad())
+   {
+      WBFL::System::Logger::SetOutput(&m_LogFile);
+   }
+
+   // Log product and version number
+   CString strExe = m_pszAppName;
+   strExe += _T(".exe");
+
+   CVersionInfo verInfo;
+   if (verInfo.Load(strExe))
+   {
+      CString strProduct = verInfo.GetProductName();
+      CString strVersion = verInfo.GetProductVersionAsString();
+
+      CString str;
+      str.Format(_T("%s Version %s"), strProduct, strVersion);
+      WBFL::System::Logger::Info((LPCTSTR)str);
+   }
+   else
+   {
+      WBFL::System::Logger::Info(_T("Product Version Information not available"));
+   }
+
 
    // Initialize OLE libraries
 	if (!SUCCEEDED(OleInitialize(nullptr)))
@@ -147,7 +201,18 @@ BOOL CEAFApp::InitInstance()
 		return FALSE;
 	}
 
-   m_pCommandLineInfo = new CEAFCommandLineInfo();
+   m_pCommandLineInfo = std::make_unique<CEAFCommandLineInfo>();
+
+   // Parse command line for standard shell commands, DDE, file open
+   CEAFCommandLineInfo& cmdInfo = GetCommandLineInfo();
+   ParseCommandLine(cmdInfo);
+
+   // Sets the logging verbosity based on command line options
+   WBFL::System::Logger::Verbosity(cmdInfo.m_LoggingVerbosity);
+
+   CString manifest;
+   manifest.Format(_T("Manifest.%s"), m_pszAppName);
+   LoadManifest(manifest);
 
    // Get the units system set up 
    InitDisplayUnits();
@@ -157,7 +222,7 @@ BOOL CEAFApp::InitInstance()
    RegistryInit();
 
    // more initialization before we can do any work
-   GetAppPluginManager()->SetParent(this);
+   GetPluginAppManager()->SetParent(this);
    GetComponentInfoManager()->SetParent(this);
    GetComponentInfoManager()->SetCATID(GetComponentInfoCategoryID());
    m_pDocManager = CreateDocumentManager();
@@ -165,11 +230,6 @@ BOOL CEAFApp::InitInstance()
 
    CCustomOccManager *pMgr = new CCustomOccManager;
    AfxEnableControlContainer(pMgr); // for CEAFReportView / IE Web Browser plug-in
-
-   // Parse command line for standard shell commands, DDE, file open
-	CEAFCommandLineInfo& cmdInfo = GetCommandLineInfo();
-	ParseCommandLine(cmdInfo);
-
 
    // Don't display a new window on startup (Q141725)
    if ( cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew )
@@ -222,7 +282,7 @@ BOOL CEAFApp::InitInstance()
       return FALSE;
    }
 
-   // Give app plugins an opporunity to integrate with the UI
+   // Give app plugins an opportunity to integrate with the UI
    if ( !AppPluginUIIntegration(true) )
    {
       return FALSE;	
@@ -248,7 +308,7 @@ BOOL CEAFApp::InitInstance()
       {
          // Enable writing to cout via iostream
          EnableCoutForMFC();
-         std::cout << "Starting BridgeLink from command line." << std::endl;
+         std::_tcout << _T("Starting ") << m_pszAppName << _T(" from command line.") << std::endl;
       }
    }
    else
@@ -262,7 +322,7 @@ BOOL CEAFApp::InitInstance()
    m_pMainWnd->SetWindowPos(&CWnd::wndTop, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOREDRAW);
    m_pMainWnd->UpdateWindow();
 
-   if ( 0 < cmdInfo.m_nParams )
+   if ( 0 < cmdInfo.m_nParams && cmdInfo.m_bCommandLineMode )
    {
       ProcessCommandLineOptions(cmdInfo);
    }
@@ -301,8 +361,6 @@ int CEAFApp::ExitInstance()
 
 	int result = CWinApp::ExitInstance(); // must call before UnloadPlugins
 
-   delete m_pCommandLineInfo;
-
    // the document manager is usually deleted in CWinApp::~CWinApp, however,
    // when the plug in manager unloads the plug-ins, the DLLs from where the
    // document templates were created are unloaded from memory. this causes
@@ -317,16 +375,13 @@ int CEAFApp::ExitInstance()
 
    m_pDocManager = nullptr;
    
-   GetAppPluginManager()->UnloadPlugins();
-   m_PluginCommandMgr.Clear();
+   GetPluginAppManager()->UnloadPlugins();
+   m_PluginCommandMgr->Clear();
    GetComponentInfoManager()->UnloadPlugins();
 
-   if ( m_pDocTemplateRegistrar )
-   {
-      delete m_pDocTemplateRegistrar;
-   }
-
    RegistryExit();
+
+   WBFL::EAF::ComponentManager::Terminate(); // causes all of the plug-in DLLs to be unloaded
 
    ::OleUninitialize();
 
@@ -405,7 +460,7 @@ CString CEAFApp::GetDocumentationURL()
    return strURL;
 }
 
-eafTypes::HelpResult CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+std::pair<WBFL::EAF::HelpResult,CString> CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID)
 {
    CString strDocSetName(lpszDocSetName);
    if ( GetDocumentationSetName() == strDocSetName )
@@ -414,12 +469,13 @@ eafTypes::HelpResult CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nH
       std::map<UINT,CString>::iterator found(m_HelpTopics.find(nHID));
       if ( found == m_HelpTopics.end() )
       {
-         return eafTypes::hrTopicNotFound;
+         return { WBFL::EAF::HelpResult::TopicNotFound,CString() };
       }
 
       CString strBaseURL = GetDocumentationURL();
-      strURL.Format(_T("%s%s"),strBaseURL,found->second);
-      return eafTypes::hrOK;
+      CString strURL;
+      strURL.Format(_T("%s%s"), strBaseURL, found->second);
+      return { WBFL::EAF::HelpResult::OK,strURL };
    }
    else
    {
@@ -428,16 +484,15 @@ eafTypes::HelpResult CEAFApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nH
       while ( pos != nullptr )
       {
          CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)m_pDocManager->GetNextDocTemplate( pos );
-         CComPtr<IEAFAppPlugin> pAppPlugin;
-         pTemplate->GetPlugin(&pAppPlugin);
-         if ( pAppPlugin->GetDocumentationSetName() == strDocSetName )
+         auto pluginApp = pTemplate->GetPluginApp();
+         if (pluginApp->GetDocumentationSetName() == strDocSetName )
          {
-            return pAppPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+            return pluginApp->GetDocumentLocation(lpszDocSetName,nHID);
          }
       }
    }
 
-   return eafTypes::hrDocSetNotFound;
+   return { WBFL::EAF::HelpResult::DocSetNotFound,CString() };
 }
 
 void CEAFApp::UseOnlineDocumentation(BOOL bUseOnLine)
@@ -485,18 +540,17 @@ void CEAFApp::ShowUsageMessage()
    CString strUsage;
    strUsage.Format(_T("%s"),cmdInfo.GetUsageMessage());
    
-   IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+   IndexType nPlugins = GetPluginAppManager()->GetPluginCount();
    for ( IndexType idx = 0; idx < nPlugins; idx++ )
    {
-      CComPtr<IEAFAppPlugin> appPlugin;
-      GetAppPluginManager()->GetPlugin(idx,&appPlugin);
+      auto pluginApp = GetPluginAppManager()->GetPlugin(idx);
 
-      CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+      auto appCmdLine = std::dynamic_pointer_cast<WBFL::EAF::IAppCommandLine>(pluginApp);
       if ( appCmdLine )
       {
          strUsage += _T("\n\n");
 
-         CString strAppName = appPlugin->GetName();
+         CString strAppName = pluginApp->GetName();
          CString strAppOptions;
          strAppOptions.Format(_T("%s <app options>\n"),strAppName);
          strUsage += strAppOptions;
@@ -533,12 +587,12 @@ CDocManager* CEAFApp::CreateDocumentManager()
    return new CEAFDocManager;
 }
 
-CEAFDocTemplateRegistrar* CEAFApp::CreateDocTemplateRegistrar()
+std::shared_ptr<WBFL::EAF::DocTemplateRegistrar> CEAFApp::CreateDocTemplateRegistrar()
 {
-   return new CEAFDocTemplateRegistrar;
+   return std::make_shared<WBFL::EAF::DocTemplateRegistrar>();
 }
 
-CString CEAFApp::GetAppLocation()
+CString CEAFApp::GetAppLocation() const
 {
    TCHAR szBuff[_MAX_PATH];
    ::GetModuleFileName(AfxGetInstanceHandle(), szBuff, _MAX_PATH);
@@ -552,6 +606,52 @@ CString CEAFApp::GetAppLocation()
    filePath.Replace( finder.GetFileName(), _T("") );
 
    return filePath;
+}
+
+void CEAFApp::LoadManifest(LPCTSTR manifest)
+{
+   std::_tostringstream os;
+   os << _T("Loading manifests of type ") << manifest;
+   WBFL::System::Logger::Debug(os.str());
+
+   std::_tstring extension(manifest);
+
+   auto search_directories = GetSearchDirectories();
+
+   try
+   {
+      for (const auto& directory : search_directories)
+      {
+         for (const auto& entry : std::filesystem::directory_iterator((LPCTSTR)directory)) {
+            if (entry.is_regular_file())
+            {
+               auto filename = entry.path().filename()._tstring();
+               if (extension.size() < filename.size() && filename.substr(filename.size() - extension.size()) == extension)
+               {
+                  WATCH(_T("Loading Manifest: ") << entry.path()._tstring());
+                  WBFL::EAF::ComponentManager::GetInstance().Load(entry.path()._tstring());
+               }
+            }
+         }
+      }
+   }
+   catch (const std::filesystem::filesystem_error& e)
+   {
+      WBFL::System::Logger::Error(e.what());
+   }
+   catch (const std::exception& e)
+   {
+      WBFL::System::Logger::Error(e.what());
+   }
+}
+
+void CEAFApp::OnLogging()
+{
+   int result = AfxRBChoose(_T("Logging"), _T("Select logging verbosity"), _T("Minimal\nVerbose"),WBFL::System::Logger::Verbosity() == WBFL::System::Logger::Severity::Info ? 0 : 1);
+   if (result == 0)
+      WBFL::System::Logger::Verbosity(WBFL::System::Logger::Severity::Info); // logs Info, Warning, Error
+   else
+      WBFL::System::Logger::Verbosity(WBFL::System::Logger::Severity::Debug); // logs Debug, Info, Warning, Error
 }
 
 void CEAFApp::EnableTipOfTheDay(LPCTSTR lpszTipFile)
@@ -612,7 +712,8 @@ BEGIN_MESSAGE_MAP(CEAFApp, CWinApp)
 	//{{AFX_MSG_MAP(CEAFApp)
 		// NOTE - the ClassWizard will add and remove mapping macros here.
 	//}}AFX_MSG_MAP
-	ON_COMMAND(EAFID_TIPOFTHEDAY, ShowTipOfTheDay)
+   ON_COMMAND(EAFID_LOGGING, OnLogging)
+   ON_COMMAND(EAFID_TIPOFTHEDAY, ShowTipOfTheDay)
 	ON_COMMAND(EAFID_APP_LEGAL, OnAppLegal)
    ON_COMMAND(EAFID_HELP_SOURCE,OnHelpSource)
    ON_UPDATE_COMMAND_UI(EAFID_HELP_SOURCE,OnUpdateHelpSource)
@@ -647,6 +748,7 @@ BOOL CEAFApp::RegisterDocTemplates()
       return FALSE;
    }
 
+   WBFL::System::Logger::Info(_T("Initializing Application Information Components"));
    if ( !GetComponentInfoManager()->InitPlugins() )
    {
       return FALSE;
@@ -657,12 +759,14 @@ BOOL CEAFApp::RegisterDocTemplates()
       return FALSE;
    }
 
-   if ( !GetAppPluginManager()->InitPlugins() )
+   WBFL::System::Logger::Info(_T("Initializing Plugin Applications"));
+   if ( !GetPluginAppManager()->InitPlugins() )
    {
       return FALSE;
    }
    
-   if ( !GetAppPluginManager()->RegisterDocTemplates(this) )
+   WBFL::System::Logger::Info(_T("Registering Document Templates"));
+   if ( !GetPluginAppManager()->RegisterDocTemplates(this) )
    {
       return FALSE;
    }
@@ -677,7 +781,7 @@ BOOL CEAFApp::AppPluginUIIntegration(BOOL bIntegrate)
       CEAFSplashScreen::SetText(_T("Integrating components into the user interface"));
    }
 
-   GetAppPluginManager()->IntegrateWithUI(bIntegrate);
+   GetPluginAppManager()->IntegrateWithUI(bIntegrate);
    return TRUE;
 }
 
@@ -708,7 +812,7 @@ void CEAFApp::OnUpdateHelpSource(CCmdUI* pCmdUI)
 void CEAFApp::OnFileNew()
 {
    // Before creating a new document, save the open document
-   // if it is modifed and then close it.
+   // if it is modified and then close it.
    if ( SaveAllModified() )
    {
       CloseAllDocuments( FALSE );
@@ -719,7 +823,7 @@ void CEAFApp::OnFileNew()
 void CEAFApp::OnFileOpen()
 {
    // Before creating a new document, save the open document
-   // if it is modifed and then close it.
+   // if it is modified and then close it.
    if ( SaveAllModified() )
    {
       CloseAllDocuments( FALSE );
@@ -731,10 +835,10 @@ void CEAFApp::OnEditUnits()
 {
    CUnitsDlg dlg;
 
-   dlg.m_Units = (m_Units == eafTypes::umUS ? 0 : 1);
+   dlg.m_Units = (m_Units == WBFL::EAF::UnitMode::US ? 0 : 1);
    if ( dlg.DoModal() )
    {
-      eafTypes::UnitMode newunits = dlg.m_Units == 0 ? eafTypes::umUS : eafTypes::umSI;
+      WBFL::EAF::UnitMode newunits = dlg.m_Units == 0 ? WBFL::EAF::UnitMode::US : WBFL::EAF::UnitMode::SI;
       SetUnitsMode( newunits );
    }
 	
@@ -742,22 +846,22 @@ void CEAFApp::OnEditUnits()
 
 void CEAFApp::OnSIUnits()
 {
-   SetUnitsMode( eafTypes::umSI );
+   SetUnitsMode( WBFL::EAF::UnitMode::SI );
 }
 
 void CEAFApp::OnUpdateSIUnits(CCmdUI* pCmdUI)
 {
-   pCmdUI->SetRadio( m_Units == eafTypes::umSI );
+   pCmdUI->SetRadio( m_Units == WBFL::EAF::UnitMode::SI );
 }
 
 void CEAFApp::OnUSUnits()
 {
-   SetUnitsMode( eafTypes::umUS );
+   SetUnitsMode( WBFL::EAF::UnitMode::US );
 }
 
 void CEAFApp::OnUpdateUSUnits(CCmdUI* pCmdUI)
 {
-   pCmdUI->SetRadio( m_Units == eafTypes::umUS );
+   pCmdUI->SetRadio( m_Units == WBFL::EAF::UnitMode::US );
 }
 
 void CEAFApp::OnAutoSave()
@@ -785,7 +889,7 @@ CDocument* CEAFApp::OpenDocumentFile(LPCTSTR lpszFileName)
    }
 
    bool bExtensionMatched = false;
-   int templateIdx = 0; // keep track of which template is assocated with the file that got opened. we'll need to record this in the registry so that the File > Open dialog uses this type next time
+   int templateIdx = 0; // keep track of which template is associated with the file that got opened. we'll need to record this in the registry so that the File > Open dialog uses this type next time
    POSITION pos = m_pDocManager->GetFirstDocTemplatePosition();
    while ( pos != nullptr )
    {
@@ -943,9 +1047,8 @@ BOOL CEAFApp::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pH
       return bResult; // message was handled
    }
 
-   CComPtr<IEAFCommandCallback> pCallback;
-   UINT nPluginCmdID;
-   if ( m_PluginCommandMgr.GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+   auto [bSuccess, nPluginCmdID, pCallback] = m_PluginCommandMgr->GetCommandCallback(nID);
+   if ( bSuccess && pCallback )
    {
       // process the callback command
       bResult = pCallback->OnCommandMessage((UINT)nPluginCmdID,nCode,pExtra,pHandlerInfo);
@@ -988,24 +1091,24 @@ CRecentFileList* CEAFApp::GetRecentFileList()
    return m_pRecentFileList;
 }
 
-CEAFDocTemplateRegistrar* CEAFApp::GetDocTemplateRegistrar()
+std::shared_ptr<WBFL::EAF::DocTemplateRegistrar> CEAFApp::GetDocTemplateRegistrar()
 {
    return m_pDocTemplateRegistrar;
 }
 
-CEAFAppPluginManager* CEAFApp::GetAppPluginManager()
+std::shared_ptr<WBFL::EAF::PluginAppManager> CEAFApp::GetPluginAppManager()
 {
-   return &m_AppPluginManager;
+   return m_PluginAppManager;
 }
 
-CEAFPluginCommandManager* CEAFApp::GetPluginCommandManager()
+std::shared_ptr<WBFL::EAF::PluginCommandManager> CEAFApp::GetPluginCommandManager()
 {
-   return &m_PluginCommandMgr;
+   return m_PluginCommandMgr;
 }
 
-CEAFComponentInfoManager* CEAFApp::GetComponentInfoManager()
+std::shared_ptr<WBFL::EAF::ComponentInfoManager> CEAFApp::GetComponentInfoManager()
 {
-   return &m_ComponentInfoManager;
+   return m_ComponentInfoManager;
 }
 
 void CEAFApp::InitDisplayUnits()
@@ -1018,12 +1121,12 @@ void CEAFApp::InitDisplayUnits()
 
    m_UnitLibrary.AddEntry(_T("SI"),      init_si_units());
    m_UnitLibrary.AddEntry(_T("English"), init_english_units() );
-   SetUnitsMode(eafTypes::umUS);
+   SetUnitsMode(WBFL::EAF::UnitMode::US);
 }
 
 void CEAFApp::UpdateDisplayUnits()
 {
-   std::_tstring units = (m_Units == eafTypes::umUS ? _T("English") : _T("SI"));
+   std::_tstring units = (m_Units == WBFL::EAF::UnitMode::US ? _T("English") : _T("SI"));
    m_pDisplayUnits = &m_UnitLibrary.GetEntry(units);
 }
 
@@ -1032,12 +1135,12 @@ const WBFL::Units::IndirectMeasure* CEAFApp::GetDisplayUnits() const
    return m_pDisplayUnits;
 }
 
-eafTypes::UnitMode CEAFApp::GetUnitsMode() const
+WBFL::EAF::UnitMode CEAFApp::GetUnitsMode() const
 {
    return m_Units;
 }
 
-void CEAFApp::SetUnitsMode(eafTypes::UnitMode newVal)
+void CEAFApp::SetUnitsMode(WBFL::EAF::UnitMode newVal)
 {
    if ( m_Units != newVal )
    {
@@ -1186,7 +1289,7 @@ void CEAFApp::Fire_UnitsChanged()
 
 void CEAFApp::OnMainFrameClosing()
 {
-   m_PluginCommandMgr.Clear(); // make sure all the plugin commands are cleared
+   m_PluginCommandMgr->Clear(); // make sure all the plugin commands are cleared
 }
 
 void CEAFApp::OnAppAbout()
@@ -1241,10 +1344,8 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
 
          // get the plugin
-         CComPtr<IEAFAppPlugin> appPlugin;
-         pTemplate->GetPlugin(&appPlugin);
-
-         CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+         auto pluginApp = pTemplate->GetPluginApp();
+         auto appCmdLine = std::dynamic_pointer_cast<WBFL::EAF::IAppCommandLine>(pluginApp);
          if ( appCmdLine )
          {
             // let the plugin to deal with the command line
@@ -1263,11 +1364,10 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          {
             // the target app plugin was specified on the command line... find the plugin and
             // let it process the command line...
-            CComPtr<IEAFAppPlugin> appPlugin;
-            bool bFound = GetAppPluginManager()->FindPlugin(cmdInfo.GetTargetApp(),&appPlugin);
-            if ( bFound )
+            auto pluginApp = GetPluginAppManager()->FindPlugin(cmdInfo.GetTargetApp());
+            if ( pluginApp )
             {
-               CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+               auto appCmdLine = std::dynamic_pointer_cast<WBFL::EAF::IAppCommandLine>(pluginApp);
                if ( appCmdLine )
                {
                   bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
@@ -1287,13 +1387,12 @@ void CEAFApp::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
          
          if ( !bHandled && !cmdInfo.m_bError )
          {
-            IndexType nPlugins = GetAppPluginManager()->GetPluginCount();
+            IndexType nPlugins = GetPluginAppManager()->GetPluginCount();
             for ( IndexType idx = 0; idx < nPlugins; idx++ )
             {
-               CComPtr<IEAFAppPlugin> appPlugin;
-               GetAppPluginManager()->GetPlugin(idx,&appPlugin);
+               auto pluginApp = GetPluginAppManager()->GetPlugin(idx);
 
-               CComQIPtr<IEAFAppCommandLine> appCmdLine(appPlugin);
+               auto appCmdLine = std::dynamic_pointer_cast<WBFL::EAF::IAppCommandLine>(pluginApp);
                if ( appCmdLine )
                {
                   bHandled = appCmdLine->ProcessCommandLineOptions(cmdInfo);
@@ -1421,7 +1520,7 @@ HKEY CEAFApp::GetAppLocalMachineRegistryKey(REGSAM samDesired)
 }
 
 // returns key for:
-//      HKEY_LOCAL_MACHINE\"Software"\Washington State Deparment of Transportation\PGSuper\lpszSection
+//      HKEY_LOCAL_MACHINE\"Software"\Washington State Department of Transportation\PGSuper\lpszSection
 // responsibility of the caller to call RegCloseKey() on the returned HKEY
 HKEY CEAFApp::GetLocalMachineSectionKey(LPCTSTR lpszSection,REGSAM samDesired)
 {
@@ -1640,9 +1739,42 @@ void CEAFApp::LoadDocumentationMap()
    VERIFY(EAFLoadDocumentationMap(mapFileName,m_HelpTopics));
 }
 
+std::vector<CString> CEAFApp::GetSearchDirectories() const
+{
+   std::vector<CString> search_directories;
+
+   // Always look in the application folder first
+   CString app_location = GetAppLocation();
+   search_directories.emplace_back(app_location);
+
+   // Also look in the directories defined in the application path environment variable
+   CString env_variable(m_pszAppName);
+   env_variable += _T("_PATH");
+   env_variable.MakeUpper();
+
+   TCHAR directories[MAX_PATH];
+   DWORD result = GetEnvironmentVariable(env_variable, directories, MAX_PATH);
+   if (result != 0)
+   {
+      TCHAR* next_token = nullptr;;
+      TCHAR* token = _tcstok_s(directories, _T(";"),&next_token);
+      while (token != nullptr)
+      {
+         search_directories.emplace_back(token);
+         token = _tcstok_s(nullptr, _T(";"),&next_token);
+      }
+   }
+
+   return search_directories;
+}
 
 ////////////////////////////////////////////////////
 IMPLEMENT_DYNAMIC(CEAFPluginApp, CEAFApp)
+
+CEAFPluginApp::~CEAFPluginApp()
+{
+   m_PluginManager = nullptr;
+}
 
 BOOL CEAFPluginApp::InitInstance()
 {
@@ -1653,10 +1785,13 @@ BOOL CEAFPluginApp::InitInstance()
       return FALSE;
    }
 
-   // The installer should do this, but just in case it doesn't we'll do it here
-   WBFL::System::ComCatMgr::CreateCategory(GetAppPluginCategoryName(),GetAppPluginCategoryID());
-
    return TRUE;
+}
+
+int CEAFPluginApp::ExitInstance()
+{
+   GetPluginManager()->UnloadPlugins();
+   return CEAFApp::ExitInstance();
 }
 
 BEGIN_MESSAGE_MAP(CEAFPluginApp, CEAFApp)
@@ -1668,9 +1803,9 @@ BEGIN_MESSAGE_MAP(CEAFPluginApp, CEAFApp)
 END_MESSAGE_MAP()
 
 
-CEAFPluginManager* CEAFPluginApp::GetPluginManager()
+std::shared_ptr<WBFL::EAF::PluginManager> CEAFPluginApp::GetPluginManager()
 {
-   return &m_PluginManager;
+   return m_PluginManager;
 }
 
 void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
@@ -1680,19 +1815,18 @@ void CEAFPluginApp::OnUpdateManageApplicationPlugins(CCmdUI* pCmdUI)
 
 void CEAFPluginApp::OnManageApplicationPlugins()
 {
-   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),nullptr,GetAppPluginCategoryID(),EAFGetMainFrame());
+   std::vector<CEAFPluginState> pluginStates = EAFManageApplicationPlugins(_T("Manage Project Types"),nullptr,GetPluginAppCategoryID(),EAFGetMainFrame());
    for ( const auto& state : pluginStates)
    {
-      CEAFAppPluginManager* pPluginMgr = GetAppPluginManager();
+      auto pPluginMgr = GetPluginAppManager();
 
       if ( state.StateChanged() )
       {
          if ( state.InitiallyEnabled() )
          {
             // was initially enabled, now it is disabled
-            CComPtr<IEAFAppPlugin> plugin;
-            pPluginMgr->GetPlugin( state.GetCLSID(), &plugin);
-            plugin->IntegrateWithUI(FALSE);
+            auto pluginApp = pPluginMgr->GetPlugin( state.GetCLSID());
+            pluginApp->IntegrateWithUI(FALSE);
             
             pPluginMgr->RemovePlugin(state.GetCLSID());
 
@@ -1702,9 +1836,8 @@ void CEAFPluginApp::OnManageApplicationPlugins()
             {
                POSITION current_pos = pos;
                CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)(m_pDocManager->GetNextDocTemplate( pos ));
-               CComPtr<IEAFAppPlugin> my_plugin;
-               pTemplate->GetPlugin(&my_plugin);
-               if ( my_plugin.IsEqualObject(plugin) )
+               auto my_plugin_app = pTemplate->GetPluginApp();
+               if ( my_plugin_app == pluginApp )
                {
                   ((CEAFDocManager*)m_pDocManager)->RemoveDocTemplate(current_pos);
                }
@@ -1715,18 +1848,18 @@ void CEAFPluginApp::OnManageApplicationPlugins()
          else
          {
             // was not initially enabled, but it is now enabled
-            CComPtr<IEAFAppPlugin> plugin;
-            if ( SUCCEEDED(plugin.CoCreateInstance(state.GetCLSID())) )
+            auto pluginApp = WBFL::EAF::ComponentManager::GetInstance().CreateComponent<WBFL::EAF::IPluginApp>(state.GetCLSID());
+            if ( pluginApp )
             {
-               pPluginMgr->AddPlugin( state.GetCLSID(), plugin );
-               plugin->IntegrateWithUI(TRUE); // must come after AddPlugin
+               pPluginMgr->AddPlugin( state.GetCLSID(), pluginApp );
+               pluginApp->IntegrateWithUI(TRUE); // must come after AddPlugin
 
-               std::vector<CEAFDocTemplate*> vDocTemplates = plugin->CreateDocTemplates();
+               std::vector<CEAFDocTemplate*> vDocTemplates = pluginApp->CreateDocTemplates();
                for ( const auto& pDocTemplate : vDocTemplates)
                {
                   if ( pDocTemplate )
                   {
-                     pDocTemplate->SetPlugin(plugin);
+                     pDocTemplate->SetPluginApp(pluginApp);
                      m_pDocManager->AddDocTemplate( pDocTemplate );
                   }
                }
@@ -1746,8 +1879,8 @@ BOOL CEAFPluginApp::CreateApplicationPlugins()
 {
    // Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views.
-   GetAppPluginManager()->SetCATID(GetAppPluginCategoryID());
-   if ( !GetAppPluginManager()->LoadPlugins() )
+   GetPluginAppManager()->SetCATID(GetPluginAppCategoryID());
+   if ( !GetPluginAppManager()->LoadPlugins() )
    {
       return FALSE;
    }
@@ -1795,12 +1928,12 @@ void CEAFPluginApp::LoadDocumentationMap()
    GetPluginManager()->LoadDocumentationMaps();
 }
 
-eafTypes::HelpResult CEAFPluginApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+std::pair<WBFL::EAF::HelpResult,CString> CEAFPluginApp::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID)
 {
-   eafTypes::HelpResult result = CEAFApp::GetDocumentLocation(lpszDocSetName,nHID,strURL);
-   if ( result == eafTypes::hrDocSetNotFound )
+   auto result = CEAFApp::GetDocumentLocation(lpszDocSetName,nHID);
+   if ( result.first == WBFL::EAF::HelpResult::DocSetNotFound )
    {
-      result = GetPluginManager()->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+      result = GetPluginManager()->GetDocumentLocation(lpszDocSetName,nHID);
    }
    return result;
 }
@@ -1829,9 +1962,10 @@ void log_error(CDocument* pDoc,void* pStuff)
    {
       CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
 
-      CComPtr<IBroker> pBroker;
-      pBrokerDoc->GetBroker(&pBroker);
+      //CComPtr<IBroker> pBroker;
+      //pBrokerDoc->GetBroker(&pBroker);
 
+      auto pBroker = pBrokerDoc->GetBroker();
       GET_IFACE2(pBroker,IEAFProjectLog,pLog);
 
       std::_tstring error_message;

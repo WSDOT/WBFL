@@ -52,6 +52,7 @@
 #define EAFID_HELPWND_FORWARD              (EAF_RESERVED_COMMAND_BASE+16)
 #define EAFID_OPTIONS_AUTOSAVE             (EAF_RESERVED_COMMAND_BASE+17)
 #define EAFID_HELP_VIEWER                  (EAF_RESERVED_COMMAND_BASE+18)
+#define EAFID_LOGGING                      (EAF_RESERVED_COMMAND_BASE+19)
 
 // reserve commands IDs for the report popup menus (first ID must be one more than the EAFID_xxx above)
 #define EAF_REPORT_MENU_BASE (EAF_RESERVED_COMMAND_BASE+19)

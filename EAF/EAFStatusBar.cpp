@@ -30,11 +30,6 @@
 #include <EAF\EAFDocument.h>
 #include <EAF\StatusCenter.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // AFX_STATUSPANE, SBPF_UPDATE, and StatusBar::_GetPanePtr
 // are copy/paste from barstat.cpp (an MFC file) to support
@@ -334,12 +329,12 @@ void CEAFStatusBar::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
    CEAFDocument* pEAFDoc = GetDocument();
    if ( pEAFDoc )
    {
-      CEAFStatusCenter& status_center = pEAFDoc->GetStatusCenter();
+      auto& status_center = pEAFDoc->GetStatusCenter();
       if ( status_center.IsEnabled() )
       {
-         eafTypes::StatusSeverityType severity = status_center.GetSeverity();
-         color = (severity == eafTypes::statusInformation ? STATUS_INFORMATION_COLOR :
-                  severity == eafTypes::statusWarning ? STATUS_WARNING_COLOR : STATUS_ERROR_COLOR);
+         WBFL::EAF::StatusSeverityType severity = status_center.GetSeverity();
+         color = (severity == WBFL::EAF::StatusSeverityType::Information ? STATUS_INFORMATION_COLOR :
+                  severity == WBFL::EAF::StatusSeverityType::Warning ? STATUS_WARNING_COLOR : STATUS_ERROR_COLOR);
 
          status_count = status_center.Count();
 
@@ -385,7 +380,7 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
    if ( pDoc )
    {
       // Status Center
-      CEAFStatusCenter& status_center = pDoc->GetStatusCenter();
+      auto& status_center = pDoc->GetStatusCenter();
       if ( status_center.IsEnabled() )
       {
          GetStatusBarCtrl().GetRect(GetStatusPaneIndex(),&rect);

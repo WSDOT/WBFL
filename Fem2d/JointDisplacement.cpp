@@ -28,11 +28,6 @@
 #include "ModelEvents.h"
 #include "Loading.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define ON_LOAD_CHANGED() ATLASSERT(m_pModel!=0); \
                           ATLASSERT(m_pLoading!=0);\

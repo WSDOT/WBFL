@@ -21,21 +21,16 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EAFBrokerDocument_H__94649CAC_01E1_467D_9445_9E8CAA727538__INCLUDED_)
-#define AFX_EAFBrokerDocument_H__94649CAC_01E1_467D_9445_9E8CAA727538__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// EAFBrokerDocument.h : header file
-//
-#include <EAF\EAFExp.h>
-#include <EAF\EAFDocument.h>
-#include <EAF\EAFCustomReport.h>
+
+#include <EAF/EAFExp.h>
+#include <EAF/EAFDocument.h>
+#include <EAF/Broker.h>
+#include <EAF/EAFCustomReport.h>
 #include <comcat.h>
 
-#include <IReportManager.h>
-#include <IGraphManager.h>
+#include <EAF/EAFReportManager.h>
+#include <EAF/EAFGraphManager.h>
 
 
 class CEAFDocProxyAgent;
@@ -61,7 +56,9 @@ public:
 
 // Operations
 public:
-   HRESULT GetBroker(IBroker** ppBroker);
+   std::shared_ptr<WBFL::EAF::Broker> GetBroker();
+
+   void LogAgentError(const WBFL::EAF::AgentError& error);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -85,8 +82,8 @@ public:
 	virtual void Dump(CDumpContext& dc) const override;
 #endif
 
-   void BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport);
-   void BuildGraphMenu(CEAFMenu* pMenu);
+   void BuildReportMenu(std::shared_ptr<WBFL::EAF::Menu> pMenu,BOOL bQuickReport);
+   void BuildGraphMenu(std::shared_ptr<WBFL::EAF::Menu> pMenu);
 
    // Determine whether to display favorite reports or all reports in menu dropdowns
    BOOL DisplayFavoriteReports() const;
@@ -101,24 +98,24 @@ public:
    const CEAFCustomReports& GetCustomReports() const;
    void SetCustomReports(const CEAFCustomReports& reports);
 
-   // this must still be pure virtual methods... see note in base calss
+   // this must still be pure virtual methods... see note in base class
    virtual BOOL GetStatusBarMessageString(UINT nID,CString& rMessage) const = 0;
    virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
 
-   // called when help on the custom reporting feature is to be activiated
+   // called when help on the custom reporting feature is to be activated
    // Help topic IDs are set with SetCustomReportHelpID
    // Call AFX_MANAGE_STATE(AfxGetStaticModuleState()) in the derived class
    // before calling this method
-   virtual void ShowCustomReportHelp(eafTypes::CustomReportHelp helpType) = 0;
+   virtual void ShowCustomReportHelp(WBFL::EAF::CustomReportHelp helpType) = 0;
 
    // called when help on the Custom Report Definition dialog is activated.
    virtual void ShowCustomReportDefinitionHelp() = 0;
 
    // Causes the documentation map file to be loaded
-   virtual void LoadDocumentationMap() override;
+   void LoadDocumentationMap() override;
 
    // Returns the full documentation URL for the given URL
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL) override;
+   std::pair<WBFL::EAF::HelpResult,CString> GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID) override;
 
    // Returns TRUE if the command id (nID) is for a report.
    BOOL IsReportCommand(UINT nID,BOOL bQuickReport);
@@ -128,7 +125,8 @@ public:
 
 // Generated message map functions
 protected:
-   IBroker* m_pBroker;
+   std::shared_ptr<WBFL::EAF::Broker> m_pBroker;
+   std::shared_ptr<WBFL::EAF::BrokerChecker> m_pBrokerChecker;
 
    bool m_bIsGraphMenuPopulated;
 
@@ -160,10 +158,10 @@ protected:
 
    // called during initialization. Load agents such as the WBFL Report Manager and Sys Agents
    // This method creates the EAFDocProxyAgent
-   virtual BOOL LoadSpecialAgents(IBrokerInitEx2* pBrokerInit); 
+   virtual std::pair<bool,WBFL::EAF::AgentErrors> LoadSpecialAgents(); 
 
    // helper function for loading an agent
-   virtual BOOL LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent = true);  
+   //virtual BOOL LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent = true);  
    
    // called when an error occurs loading an agent
    virtual void OnLoadAgentsError(); 
@@ -185,18 +183,13 @@ protected:
    // called by the framework when the it is time to shutdown the broker
    virtual void BrokerShutDown();
 
-   // Called by the base-class when thte document is to be loaded
+   // Called by the base-class when the document is to be loaded
    // and saved. Calls Load and Save on the IBrokerPersist interface
    virtual HRESULT LoadTheDocument(IStructuredLoad* pStrLoad) override;
    virtual HRESULT WriteTheDocument(IStructuredSave* pStrSave) override;
 
-   // Application logging
-   virtual CString GetLogFileName(); // returns the log file name (AppName.log is default)
-   virtual void OnLogFileOpened(); // called when the log file is first opened
-   virtual void OnLogFileClosing(); // called when the log file is about to close
-
    /// populates a menu with the names of the reports
-   void PopulateReportMenu(CEAFMenu* pReportMenu);
+   void PopulateReportMenu(std::shared_ptr<WBFL::EAF::Menu> pReportMenu);
    UINT GetReportCommand(IndexType rptIdx,BOOL bQuickReport) const;
    IndexType GetReportIndex(UINT nID,BOOL bQuickReport) const;
    virtual void CreateReportView(IndexType rptIdx,BOOL bPrompt); // does nothing by default
@@ -207,15 +200,15 @@ protected:
    // Custom Reporting
    void FavoriteReports(BOOL bEnable); // Enables/Disables the Favorites Report feature
    BOOL FavoriteReports() const;
-   void SetCustomReportHelpID(eafTypes::CustomReportHelp helpType,UINT nHelpID);
-   UINT GetCustomReportHelpID(eafTypes::CustomReportHelp helpType) const;
+   void SetCustomReportHelpID(WBFL::EAF::CustomReportHelp helpType,UINT nHelpID);
+   UINT GetCustomReportHelpID(WBFL::EAF::CustomReportHelp helpType) const;
    void SetCustomReportDefinitionHelpID(UINT nHelpID);
    UINT GetCustomReportDefinitionHelpID() const;
    virtual void OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromMenu);
-   virtual void OnCustomReportError(eafTypes::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName);
+   virtual void OnCustomReportError(WBFL::EAF::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName);
    void IntegrateCustomReports(bool bFirst=false);
 
-   void PopulateGraphMenu(CEAFMenu* pGraphMenu);
+   void PopulateGraphMenu(std::shared_ptr<WBFL::EAF::Menu> pGraphMenu);
    UINT GetGraphCommand(IndexType graphIdx) const;
    IndexType GetGraphIndex(UINT nID) const;
    void OnGraph(UINT nID);
@@ -237,12 +230,10 @@ private:
    // since the broker has no way of returning a registered agent
    // we need to keep a pointer to the doc proxy agent so it
    // can be initialized for menu and toolbar integration functionality
-   CEAFDocProxyAgent* m_pDocProxyAgent;
+   std::shared_ptr<CEAFDocProxyAgent> m_pDocProxyAgent = nullptr;
 
    bool m_bUseReportManager = false;
    bool m_bUseGraphManager = false;
-   IReportManager* m_pReportManager = nullptr; // weak pointers
-   IGraphManager* m_pGraphManager = nullptr; // weak pointers
 
    UINT m_helpIDCustom;
    UINT m_helpIDFavorite;
@@ -256,8 +247,3 @@ private:
    friend CEAFDocProxyAgent;
    friend CEAFDocTemplate;
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_EAFBrokerDocument_H__94649CAC_01E1_467D_9445_9E8CAA727538__INCLUDED_)

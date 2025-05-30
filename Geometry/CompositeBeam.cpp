@@ -27,11 +27,6 @@
 #include "CompositeBeam.h"
 #include "CompositeSectionEx.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // NOTE: Ideally this object would be implemented by delegating implementation details to WBFL::Geometry::CompositeBeam.
 // This is very difficult and would require breaking encapsulation and ruining extensibility.

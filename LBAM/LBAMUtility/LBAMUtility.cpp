@@ -39,11 +39,6 @@
 #include "WBFLLBAM_i.c"
 #include "WBFLLBAMUtility_i.c"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 CComModule _Module;

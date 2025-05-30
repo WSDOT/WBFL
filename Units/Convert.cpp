@@ -24,11 +24,6 @@
 #include <Units\UnitsLib.h>
 #include <Units\Convert.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void WBFL::Units::convert_from(Float64* pValue, Float64 cf, Float64 dim)
 {

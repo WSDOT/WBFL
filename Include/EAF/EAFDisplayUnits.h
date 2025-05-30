@@ -23,7 +23,6 @@
 
 #pragma once
 #include <EAF\EAFTypes.h>
-#include <WbflTypes.h>
 #include <Units\Units.h>
 
 /*****************************************************************************
@@ -38,10 +37,11 @@ DESCRIPTION
 // {8438FE92-68ED-11d2-883C-006097C68A9C}
 DEFINE_GUID(IID_IEAFDisplayUnits, 
 0x8438fe92, 0x68ed, 0x11d2, 0x88, 0x3c, 0x0, 0x60, 0x97, 0xc6, 0x8a, 0x9c);
-interface IEAFDisplayUnits : IUnknown
+class IEAFDisplayUnits
 {
-   virtual void                             SetUnitMode(eafTypes::UnitMode unitMode) = 0;
-	virtual eafTypes::UnitMode               GetUnitMode() = 0;
+public:
+   virtual void                             SetUnitMode(WBFL::EAF::UnitMode unitMode) = 0;
+	virtual WBFL::EAF::UnitMode               GetUnitMode() = 0;
 	virtual const WBFL::Units::StationFormat& GetStationFormat() = 0;
    virtual const WBFL::Units::ScalarData&         GetScalarFormat() = 0;
    virtual const WBFL::Units::ScalarData&         GetPercentageFormat() = 0;
@@ -93,11 +93,12 @@ DESCRIPTION
 // {015A4130-272C-11d2-8EB0-006097DF3C68}
 DEFINE_GUID(IID_IEAFDisplayUnitsEventSink,
 0x015A4130, 0x272C, 0x11d2, 0x8E, 0xB0, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface __declspec(uuid("{015A4130-272C-11d2-8EB0-006097DF3C68}")) IEAFDisplayUnitsEventSink : IUnknown
+class /*__declspec(uuid("{015A4130-272C-11d2-8EB0-006097DF3C68}"))*/ IEAFDisplayUnitsEventSink
 {
+public:
    virtual HRESULT OnUnitsChanging() = 0;
-   virtual HRESULT OnUnitsChanged(eafTypes::UnitMode newUnitsMode) = 0;
+   virtual HRESULT OnUnitsChanged(WBFL::EAF::UnitMode newUnitsMode) = 0;
 };
 
-#define IS_US_UNITS(p) (p->GetUnitMode() == eafTypes::umUS ? true : false)
+#define IS_US_UNITS(p) (p->GetUnitMode() == WBFL::EAF::UnitMode::US ? true : false)
 #define IS_SI_UNITS(p) !IS_US_UNITS(p)

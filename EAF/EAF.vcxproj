@@ -111,6 +111,7 @@
       <AllowIsolation>true</AllowIsolation>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <OptimizeReferences>false</OptimizeReferences>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -140,7 +141,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolsInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;_ATL_NO_UUIDOF;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;BUILDEAFLIB;_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -178,6 +179,7 @@
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -196,18 +198,10 @@
     <ProjectReference Include="..\Graphing\Graphing.vcxproj">
       <Project>{753feb16-ebca-4e67-9c3b-d0b9c4ec23f1}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\GraphManagerAgent\GraphManagerAgent.vcxproj">
-      <Project>{d6cd1a2c-0027-4ed4-b892-fda3852d47ee}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
     <ProjectReference Include="..\Mfctools\Mfctools.vcxproj">
       <Project>{6c1d3a4b-a35e-48d2-97a3-d49f38e41e64}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\ReportManagerAgent\ReportManagerAgent.vcxproj">
-      <Project>{f2ced43e-a418-4c63-a705-a599123758e6}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\ReportManager\ReportManager.vcxproj">
       <Project>{46e8a2d3-73e4-4300-a27c-f186444b198e}</Project>
@@ -219,52 +213,57 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="AutoSaveDlg.cpp" />
-    <ClCompile Include="ChangeUnits.cpp" />
+    <ClCompile Include="Broker.cpp" />
+    <ClCompile Include="ChangeUnitsTxn.cpp" />
+    <ClCompile Include="ComponentManager.cpp" />
+    <ClCompile Include="ComponentModule.cpp" />
     <ClCompile Include="ConfigureReportsDlg.cpp" />
     <ClCompile Include="CustomReportsPage.cpp" />
     <ClCompile Include="custsite.cpp" />
     <ClCompile Include="EAF.cpp" />
     <ClCompile Include="EAFAboutDlg.cpp" />
-    <ClCompile Include="EAFAcceleratorTable.cpp" />
+    <ClCompile Include="AcceleratorTable.cpp" />
     <ClCompile Include="EAFApp.cpp" />
-    <ClCompile Include="EAFAppPluginDocumentationImpl.cpp" />
+    <ClCompile Include="EAFStrings.cpp" />
+    <ClCompile Include="GraphManagerAgent.cpp" />
+    <ClCompile Include="PluginAppDocumentationImpl.cpp" />
     <ClCompile Include="EAFAutoCalcDoc.cpp" />
     <ClCompile Include="EAFAutoCalcGraphBuilder.cpp" />
     <ClCompile Include="EAFAutoCalcGraphView.cpp" />
     <ClCompile Include="EAFAutoCalcReportView.cpp" />
     <ClCompile Include="EAFAutoCalcStatusBar.cpp" />
     <ClCompile Include="EAFAutoCalcView.cpp" />
-    <ClCompile Include="EAFAutoProgress.cpp" />
+    <ClCompile Include="AutoProgress.cpp" />
     <ClCompile Include="EAFBrokerDocument.cpp" />
-    <ClCompile Include="EAFBrokerReportSpecification.cpp" />
-    <ClCompile Include="EAFBrokerReportSpecificationBuilder.cpp" />
+    <ClCompile Include="BrokerReportSpecification.cpp" />
+    <ClCompile Include="BrokerReportSpecificationBuilder.cpp" />
     <ClCompile Include="EAFChildFrame.cpp" />
     <ClCompile Include="EAFCommandLineInfo.cpp" />
     <ClCompile Include="EAFCustomReport.cpp" />
     <ClCompile Include="EAFCustomReportConflictDlg.cpp" />
     <ClCompile Include="EAFDocManager.cpp" />
-    <ClCompile Include="EAFDocPluginManager.cpp" />
+    <ClCompile Include="DocPluginManager.cpp" />
     <ClCompile Include="EAFDocProxyAgent.cpp" />
     <ClCompile Include="EAFDocTemplate.cpp" />
-    <ClCompile Include="EAFDocTemplateRegistrar.cpp" />
+    <ClCompile Include="DocTemplateRegistrar.cpp" />
     <ClCompile Include="EAFDocument.cpp" />
     <ClCompile Include="EAFExportCustomReports.cpp" />
     <ClCompile Include="EAFGraphBuilderBase.cpp" />
     <ClCompile Include="EAFGraphChildFrame.cpp" />
     <ClCompile Include="EAFGraphControlWindow.cpp" />
     <ClCompile Include="EAFGraphView.cpp" />
-    <ClCompile Include="EAFHelp.cpp" />
+    <ClCompile Include="Help.cpp" />
     <ClCompile Include="EAFHelpWindow.cpp" />
     <ClCompile Include="EAFHelpWindowThread.cpp" />
-    <ClCompile Include="EAFInterfaceCache.cpp" />
     <ClCompile Include="EAFLicensePlateChildFrame.cpp" />
-    <ClCompile Include="EAFMacroTxn.cpp" />
+    <ClCompile Include="MacroTxn.cpp" />
     <ClCompile Include="EAFMainFrame.cpp" />
     <ClCompile Include="EAFMDISnapper.cpp" />
-    <ClCompile Include="EAFMenu.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="EAFOutputChildFrame.cpp" />
-    <ClCompile Include="EAFPluginCommandManager.cpp" />
+    <ClCompile Include="PluginCommandManager.cpp" />
     <ClCompile Include="EAFPluginState.cpp" />
     <ClCompile Include="EAFRenameReportDlg.cpp" />
     <ClCompile Include="EAFReportView.cpp" />
@@ -272,11 +271,14 @@
     <ClCompile Include="EAFSplashScreen.cpp" />
     <ClCompile Include="EAFStartPageWnd.cpp" />
     <ClCompile Include="EAFStatusBar.cpp" />
-    <ClCompile Include="EAFStatusItem.cpp" />
+    <ClCompile Include="StatusItem.cpp" />
     <ClCompile Include="EAFTemplateGroup.cpp" />
-    <ClCompile Include="EAFToolBar.cpp" />
-    <ClCompile Include="EAFTransaction.cpp" />
-    <ClCompile Include="EAFTxnManager.cpp" />
+    <ClCompile Include="ProgressDlg.cpp" />
+    <ClCompile Include="ProgressThread.cpp" />
+    <ClCompile Include="ReportManagerAgent.cpp" />
+    <ClCompile Include="ToolBar.cpp" />
+    <ClCompile Include="Transaction.cpp" />
+    <ClCompile Include="TxnManager.cpp" />
     <ClCompile Include="EAFUnits.cpp" />
     <ClCompile Include="EAFUtilities.cpp" />
     <ClCompile Include="EAFView.cpp" />
@@ -310,56 +312,64 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\AgentTools.h" />
+    <ClInclude Include="..\Include\EAF\Agent.h" />
     <ClInclude Include="..\Include\EAF\AutoLib.h" />
+    <ClInclude Include="..\Include\EAF\Broker.h" />
+    <ClInclude Include="..\Include\EAF\ComponentManager.h" />
+    <ClInclude Include="..\Include\EAF\ComponentModule.h" />
+    <ClInclude Include="..\Include\EAF\EAFGraphManager.h" />
+    <ClInclude Include="..\Include\EAF\EAFProgress.h" />
+    <ClInclude Include="..\Include\EAF\EAFReportManager.h" />
+    <ClInclude Include="..\Include\EAF\EAFStrings.h" />
+    <ClInclude Include="..\Include\EAF\EventSinkManager.h" />
     <ClInclude Include="..\Include\EAF\EAF.h" />
     <ClInclude Include="..\Include\EAF\EAFAboutDlg.h" />
-    <ClInclude Include="..\Include\EAF\EAFAcceleratorTable.h" />
+    <ClInclude Include="..\Include\EAF\AcceleratorTable.h" />
     <ClInclude Include="..\Include\EAF\EAFApp.h" />
-    <ClInclude Include="..\Include\EAF\EAFAppPlugin.h" />
-    <ClInclude Include="..\Include\EAF\EAFAppPluginDocumentationImpl.h" />
-    <ClInclude Include="..\Include\EAF\EAFAppPluginManager.h" />
+    <ClInclude Include="..\Include\EAF\PluginApp.h" />
+    <ClInclude Include="..\Include\EAF\PluginAppDocumentationImpl.h" />
+    <ClInclude Include="..\Include\EAF\PluginAppManager.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcDoc.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcGraphBuilder.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcGraphView.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcReportView.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcStatusBar.h" />
     <ClInclude Include="..\Include\EAF\EAFAutoCalcView.h" />
-    <ClInclude Include="..\Include\EAF\EAFAutoProgress.h" />
+    <ClInclude Include="..\Include\EAF\AutoProgress.h" />
     <ClInclude Include="..\Include\EAF\EAFBrokerDocument.h" />
-    <ClInclude Include="..\Include\EAF\EAFBrokerReportSpecification.h" />
-    <ClInclude Include="..\Include\EAF\EAFBrokerReportSpecificationBuilder.h" />
+    <ClInclude Include="..\Include\EAF\BrokerReportSpecification.h" />
+    <ClInclude Include="..\Include\EAF\BrokerReportSpecificationBuilder.h" />
     <ClInclude Include="..\Include\EAF\EAFChildFrame.h" />
     <ClInclude Include="..\Include\EAF\EAFCommandLineInfo.h" />
-    <ClInclude Include="..\Include\EAF\EAFComponentInfo.h" />
+    <ClInclude Include="..\Include\EAF\ApplicationComponentInfo.h" />
     <ClInclude Include="..\Include\EAF\EAFCustomReport.h" />
     <ClInclude Include="..\Include\EAF\EAFCustSiteVars.h" />
     <ClInclude Include="..\Include\EAF\EAFDataRecoveryHandler.h" />
     <ClInclude Include="..\Include\EAF\EAFDisplayUnits.h" />
     <ClInclude Include="..\Include\EAF\EAFDocManager.h" />
-    <ClInclude Include="..\Include\EAF\EAFDocPluginManager.h" />
+    <ClInclude Include="..\Include\EAF\DocPluginManager.h" />
     <ClInclude Include="..\Include\EAF\EAFDocTemplate.h" />
-    <ClInclude Include="..\Include\EAF\EAFDocTemplateRegistrar.h" />
+    <ClInclude Include="..\Include\EAF\DocTemplateRegistrar.h" />
     <ClInclude Include="..\Include\EAF\EAFDocument.h" />
-    <ClInclude Include="..\Include\EAF\EAFMacroTxn.h" />
+    <ClInclude Include="..\Include\EAF\MacroTxn.h" />
     <ClInclude Include="..\Include\EAF\EAFPluginDocumentationIntegration.h" />
-    <ClInclude Include="..\Include\EAF\EAFDocumentPlugin.h" />
+    <ClInclude Include="..\Include\EAF\DocumentPlugin.h" />
     <ClInclude Include="..\Include\EAF\EAFExp.h" />
     <ClInclude Include="..\Include\EAF\EAFGraphBuilderBase.h" />
     <ClInclude Include="..\Include\EAF\EAFGraphChildFrame.h" />
     <ClInclude Include="..\Include\EAF\EAFGraphControlWindow.h" />
     <ClInclude Include="..\Include\EAF\EAFGraphView.h" />
-    <ClInclude Include="..\Include\EAF\EAFHelp.h" />
+    <ClInclude Include="..\Include\EAF\Help.h" />
     <ClInclude Include="..\Include\EAF\EAFHints.h" />
-    <ClInclude Include="..\Include\EAF\EAFInterfaceCache.h" />
     <ClInclude Include="..\Include\EAF\EAFLicensePlateChildFrame.h" />
     <ClInclude Include="..\Include\EAF\EAFMainFrame.h" />
     <ClInclude Include="..\Include\EAF\EAFMDISnapper.h" />
-    <ClInclude Include="..\Include\EAF\EAFMenu.h" />
+    <ClInclude Include="..\Include\EAF\Menu.h" />
     <ClInclude Include="..\Include\EAF\EAFOutputChildFrame.h" />
-    <ClInclude Include="..\Include\EAF\EAFPlugin.h" />
-    <ClInclude Include="..\Include\EAF\EAFPluginCommandManager.h" />
-    <ClInclude Include="..\Include\EAF\EAFPluginManager.h" />
-    <ClInclude Include="..\Include\EAF\EAFPluginManagerBase.h" />
+    <ClInclude Include="..\Include\EAF\AppPlugin.h" />
+    <ClInclude Include="..\Include\EAF\PluginCommandManager.h" />
+    <ClInclude Include="..\Include\EAF\PluginManager.h" />
+    <ClInclude Include="..\Include\EAF\PluginManagerBase.h" />
     <ClInclude Include="..\Include\EAF\EAFPluginPersist.h" />
     <ClInclude Include="..\Include\EAF\EAFPluginState.h" />
     <ClInclude Include="..\Include\EAF\EAFProjectLog.h" />
@@ -369,15 +379,16 @@
     <ClInclude Include="..\Include\EAF\EAFStartPageWnd.h" />
     <ClInclude Include="..\Include\EAF\EAFStatusBar.h" />
     <ClInclude Include="..\Include\EAF\EAFStatusCenter.h" />
-    <ClInclude Include="..\Include\EAF\EAFStatusItem.h" />
+    <ClInclude Include="..\Include\EAF\StatusItem.h" />
     <ClInclude Include="..\Include\EAF\EAFTemplateGroup.h" />
-    <ClInclude Include="..\Include\EAF\EAFToolBar.h" />
-    <ClInclude Include="..\Include\EAF\EAFTransaction.h" />
+    <ClInclude Include="..\Include\EAF\ToolBar.h" />
+    <ClInclude Include="..\Include\EAF\Transaction.h" />
     <ClInclude Include="..\Include\EAF\EAFTransactions.h" />
-    <ClInclude Include="..\Include\EAF\EAFTxnManager.h" />
+    <ClInclude Include="..\Include\EAF\TxnManager.h" />
     <ClInclude Include="..\Include\EAF\EAFTypes.h" />
     <ClInclude Include="..\Include\EAF\EAFUIIntegration.h" />
     <ClInclude Include="..\Include\EAF\EAFUnits.h" />
+    <ClInclude Include="..\Include\EAF\ComponentObject.h" />
     <ClInclude Include="..\Include\EAF\EAFUtilities.h" />
     <ClInclude Include="..\Include\EAF\EAFView.h" />
     <ClInclude Include="..\Include\EAF\EAFViewController.h" />
@@ -385,7 +396,7 @@
     <ClInclude Include="..\Include\EAF\StatusCenter.h" />
     <ClInclude Include="AutoSaveDlg.h" />
     <ClInclude Include="BackDoor.h" />
-    <ClInclude Include="ChangeUnits.h" />
+    <ClInclude Include="ChangeUnitsTxn.h" />
     <ClInclude Include="ConfigureReportsDlg.h" />
     <ClInclude Include="CustomReportsPage.h" />
     <ClInclude Include="custsite.h" />
@@ -399,10 +410,14 @@
     <ClInclude Include="EAFViewController.h" />
     <ClInclude Include="EditCustomReportDlg.h" />
     <ClInclude Include="FavoriteReportsPage.h" />
+    <ClInclude Include="GraphManagerAgent.h" />
     <ClInclude Include="ManagePluginsDlg.h" />
     <ClInclude Include="MFCToolBar.h" />
     <ClInclude Include="NewProjectDlg.h" />
+    <ClInclude Include="ProgressDlg.h" />
+    <ClInclude Include="ProgressThread.h" />
     <ClInclude Include="ReportButton.h" />
+    <ClInclude Include="ReportManagerAgent.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StatusCenterDlg.h" />
     <ClInclude Include="StatusMessageDialog.h" />

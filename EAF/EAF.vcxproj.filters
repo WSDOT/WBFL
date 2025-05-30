@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="ChangeUnits.cpp">
+    <ClCompile Include="ChangeUnitsTxn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConfigureReportsDlg.cpp">
@@ -19,13 +19,13 @@
     <ClCompile Include="EAFAboutDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFAcceleratorTable.cpp">
+    <ClCompile Include="AcceleratorTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFAppPluginDocumentationImpl.cpp">
+    <ClCompile Include="PluginAppDocumentationImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFAutoCalcDoc.cpp">
@@ -46,16 +46,16 @@
     <ClCompile Include="EAFAutoCalcView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFAutoProgress.cpp">
+    <ClCompile Include="AutoProgress.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFBrokerDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFBrokerReportSpecification.cpp">
+    <ClCompile Include="BrokerReportSpecification.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFBrokerReportSpecificationBuilder.cpp">
+    <ClCompile Include="BrokerReportSpecificationBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFChildFrame.cpp">
@@ -73,7 +73,7 @@
     <ClCompile Include="EAFDocManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFDocPluginManager.cpp">
+    <ClCompile Include="DocPluginManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFDocProxyAgent.cpp">
@@ -82,7 +82,7 @@
     <ClCompile Include="EAFDocTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFDocTemplateRegistrar.cpp">
+    <ClCompile Include="DocTemplateRegistrar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFDocument.cpp">
@@ -103,16 +103,13 @@
     <ClCompile Include="EAFGraphView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFHelp.cpp">
+    <ClCompile Include="Help.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFHelpWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFHelpWindowThread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EAFInterfaceCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFLicensePlateChildFrame.cpp">
@@ -124,13 +121,13 @@
     <ClCompile Include="EAFMDISnapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFMenu.cpp">
+    <ClCompile Include="Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFOutputChildFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFPluginCommandManager.cpp">
+    <ClCompile Include="PluginCommandManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFPluginState.cpp">
@@ -154,13 +151,13 @@
     <ClCompile Include="EAFStatusBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFStatusItem.cpp">
+    <ClCompile Include="StatusItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFTemplateGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFToolBar.cpp">
+    <ClCompile Include="ToolBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EAFUnits.cpp">
@@ -226,13 +223,40 @@
     <ClCompile Include="AutoSaveDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFMacroTxn.cpp">
+    <ClCompile Include="MacroTxn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFTransaction.cpp">
+    <ClCompile Include="Transaction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EAFTxnManager.cpp">
+    <ClCompile Include="TxnManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Broker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Agent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReportManagerAgent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphManagerAgent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EAFStrings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -246,7 +270,7 @@
     <ClInclude Include="BackDoor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChangeUnits.h">
+    <ClInclude Include="ChangeUnitsTxn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConfigureReportsDlg.h">
@@ -264,19 +288,19 @@
     <ClInclude Include="..\Include\EAF\EAFAboutDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFAcceleratorTable.h">
+    <ClInclude Include="..\Include\EAF\AcceleratorTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFAppPlugin.h">
+    <ClInclude Include="..\Include\EAF\PluginApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFAppPluginDocumentationImpl.h">
+    <ClInclude Include="..\Include\EAF\PluginAppDocumentationImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFAppPluginManager.h">
+    <ClInclude Include="..\Include\EAF\PluginAppManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFAutoCalcDoc.h">
@@ -297,16 +321,16 @@
     <ClInclude Include="..\Include\EAF\EAFAutoCalcView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFAutoProgress.h">
+    <ClInclude Include="..\Include\EAF\AutoProgress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFBrokerDocument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFBrokerReportSpecification.h">
+    <ClInclude Include="..\Include\EAF\BrokerReportSpecification.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFBrokerReportSpecificationBuilder.h">
+    <ClInclude Include="..\Include\EAF\BrokerReportSpecificationBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFChildFrame.h">
@@ -315,7 +339,7 @@
     <ClInclude Include="..\Include\EAF\EAFCommandLineInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFComponentInfo.h">
+    <ClInclude Include="..\Include\EAF\ApplicationComponentInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFCustomReport.h">
@@ -333,7 +357,7 @@
     <ClInclude Include="..\Include\EAF\EAFDocManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFDocPluginManager.h">
+    <ClInclude Include="..\Include\EAF\DocPluginManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EAFDocProxyAgent.h">
@@ -342,13 +366,13 @@
     <ClInclude Include="..\Include\EAF\EAFDocTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFDocTemplateRegistrar.h">
+    <ClInclude Include="..\Include\EAF\DocTemplateRegistrar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFDocument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFDocumentPlugin.h">
+    <ClInclude Include="..\Include\EAF\DocumentPlugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFExp.h">
@@ -369,7 +393,7 @@
     <ClInclude Include="..\Include\EAF\EAFGraphView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFHelp.h">
+    <ClInclude Include="..\Include\EAF\Help.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EAFHelpWindow.h">
@@ -381,9 +405,6 @@
     <ClInclude Include="..\Include\EAF\EAFHints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFInterfaceCache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFLicensePlateChildFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -393,22 +414,22 @@
     <ClInclude Include="..\Include\EAF\EAFMDISnapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFMenu.h">
+    <ClInclude Include="..\Include\EAF\Menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFOutputChildFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFPlugin.h">
+    <ClInclude Include="..\Include\EAF\AppPlugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFPluginCommandManager.h">
+    <ClInclude Include="..\Include\EAF\PluginCommandManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFPluginManager.h">
+    <ClInclude Include="..\Include\EAF\PluginManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFPluginManagerBase.h">
+    <ClInclude Include="..\Include\EAF\PluginManagerBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFPluginPersist.h">
@@ -444,13 +465,13 @@
     <ClInclude Include="..\Include\EAF\EAFStatusCenter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFStatusItem.h">
+    <ClInclude Include="..\Include\EAF\StatusItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFTemplateGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFToolBar.h">
+    <ClInclude Include="..\Include\EAF\ToolBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFTransactions.h">
@@ -540,13 +561,55 @@
     <ClInclude Include="..\Include\EAF\EAFPluginDocumentationIntegration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFMacroTxn.h">
+    <ClInclude Include="..\Include\EAF\MacroTxn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFTransaction.h">
+    <ClInclude Include="..\Include\EAF\Transaction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\EAF\EAFTxnManager.h">
+    <ClInclude Include="..\Include\EAF\TxnManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\ComponentObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\ComponentModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\Broker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\Agent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFProgress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFReportManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReportManagerAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFGraphManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphManagerAgent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EventSinkManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\ComponentManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFStrings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

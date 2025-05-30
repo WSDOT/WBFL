@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFBrokerDocument.h>
-#include <EAF\EAFStatusItem.h>
+#include <EAF\StatusItem.h>
 
 #include "ManagePluginsDlg.h"
 #include "StatusMessageDialog.h"
@@ -33,11 +33,6 @@
 #include <AfxInet.h>
 #include <psapi.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 EAFFUNC CEAFApp* EAFGetApp()
@@ -47,16 +42,16 @@ EAFFUNC CEAFApp* EAFGetApp()
 }
 
 // Global function for getting the broker from the current document
-HRESULT EAFGetBroker(IBroker** ppBroker)
+std::shared_ptr<WBFL::EAF::Broker> EAFGetBroker()
 {
    // let's try it the easy way first
    CEAFMainFrame* pFrame = EAFGetMainFrame();
    CEAFDocument* pDoc = pFrame->GetDocument();
 
-   if ( pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+   if (pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)))
    {
       CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
-      return pBrokerDoc->GetBroker(ppBroker);
+      return pBrokerDoc->GetBroker();
    }
    else
    {
@@ -65,16 +60,16 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
       CDocument* pDocument = nullptr;
       bool bDone = false;
       POSITION doc_template_pos = pApp->GetFirstDocTemplatePosition();
-      
-      while ( doc_template_pos != nullptr && !bDone )
+
+      while (doc_template_pos != nullptr && !bDone)
       {
          CDocTemplate* pTemplate = pApp->GetNextDocTemplate(doc_template_pos);
 
          POSITION doc_pos = pTemplate->GetFirstDocPosition();
-         while ( doc_pos != nullptr )
+         while (doc_pos != nullptr)
          {
             pDocument = pTemplate->GetNextDoc(doc_pos);
-            if ( pDocument )
+            if (pDocument)
             {
                bDone = true;
                break;
@@ -82,16 +77,14 @@ HRESULT EAFGetBroker(IBroker** ppBroker)
          }
       }
 
-      if ( pDocument && pDocument->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)) )
+      if (pDocument && pDocument->IsKindOf(RUNTIME_CLASS(CEAFBrokerDocument)))
       {
          CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDocument;
-         return pBrokerDoc->GetBroker(ppBroker);
+         return pBrokerDoc->GetBroker();
       }
    }
 
-   (*ppBroker) = nullptr;
-
-   return E_FAIL;
+   return nullptr;
 }
 
 std::vector<CEAFPluginState> EAFManageApplicationPlugins(LPCTSTR lpszTitle,LPCTSTR lpszText,const CATID& catid,CWnd* pParent, CWinApp* pApp,UINT nHID,LPCTSTR lpszAppName)
@@ -140,17 +133,17 @@ CView* EAFGetActiveView()
    return nullptr;
 }
 
-eafTypes::StatusItemDisplayReturn EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID)
+WBFL::EAF::StatusItemDisplayReturn EAFShowStatusMessage(std::shared_ptr<WBFL::EAF::StatusItem> pStatusItem,WBFL::EAF::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
    CStatusMessageDialog dlg(pStatusItem,severity,bRemoveableOnError,bEnableEdit,lpszDocSetName,helpID);
 
-   eafTypes::StatusItemDisplayReturn retVal(eafTypes::eafsiClose);
+   WBFL::EAF::StatusItemDisplayReturn retVal(WBFL::EAF::StatusItemDisplayReturn::Close);
    if (dlg.DoModal() == IDOK)
    {
       retVal = dlg.GetReturnValue();
 
-      if ( retVal==eafTypes::eafsiRemove && ( bRemoveableOnError || severity != eafTypes::statusError ))
+      if ( retVal==WBFL::EAF::StatusItemDisplayReturn::Remove && ( bRemoveableOnError || severity != WBFL::EAF::StatusSeverityType::Error ))
       {
          pStatusItem->RemoveAfterEdit(TRUE);
       }
@@ -209,7 +202,7 @@ bool operator<(REFIID a,REFIID b)
     return false;
 }
 
-eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, const CString& strLocalTargetFile)
+WBFL::EAF::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, const CString& strLocalTargetFile)
 {
 	DWORD dwAccessType = PRE_CONFIG_INTERNET_ACCESS;
 	DWORD dwHttpRequestFlags = /*INTERNET_FLAG_EXISTING_CONNECT |*/ INTERNET_FLAG_DONT_CACHE;
@@ -251,7 +244,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
    BOOL bSuccess = AfxParseURL(strFileURL,dwServiceType,strServer,strObject,nPort);
    if (!bSuccess || (dwServiceType != AFX_INET_SERVICE_HTTP && dwServiceType != AFX_INET_SERVICE_HTTPS))
    {
-      return eafTypes::hgrInvalidUrl;
+      return WBFL::EAF::HttpGetResult::InvalidUrl;
    }
 
    if (dwServiceType == AFX_INET_SERVICE_HTTPS)
@@ -270,7 +263,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 
 	//Enable or disable status callbacks
 	//session.EnableStatusCallback(FALSE);
-   eafTypes::HttpGetResult retVal = eafTypes::hgrConnectionError;
+   WBFL::EAF::HttpGetResult retVal = WBFL::EAF::HttpGetResult::ConnectionError;
 
 	CHttpConnection*	pServer = nullptr;   
 	CHttpFile* pFile = nullptr;
@@ -294,7 +287,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 
 		if (dwRet == HTTP_STATUS_DENIED)
 		{
-         return eafTypes::hgrConnectionError;
+         return WBFL::EAF::HttpGetResult::ConnectionError;
 		}
 
 		if (dwRet == HTTP_STATUS_MOVED ||
@@ -309,7 +302,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 			int nPos = strNewAddress.Find(_T("Location: "));
 			if (nPos == -1)
 			{
-            return eafTypes::hgrNotFound;
+            return WBFL::EAF::HttpGetResult::NotFound;
 			}
 
 			strNewAddress = strNewAddress.Mid(nPos + 10);
@@ -331,7 +324,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 
 			if (!AfxParseURL(strNewAddress, dwServiceType, strServerName, strObject, nNewPort))
 			{
-            return eafTypes::hgrInvalidUrl;
+            return WBFL::EAF::HttpGetResult::InvalidUrl;
 			}
 
 			pServer = session.GetHttpConnection(strServerName, nNewPort, 
@@ -344,7 +337,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 			pFile->QueryInfoStatusCode(dwRet);
 			if (dwRet != HTTP_STATUS_OK)
 			{
-            return eafTypes::hgrNotFound;
+            return WBFL::EAF::HttpGetResult::NotFound;
 			}
 		}
 
@@ -364,11 +357,11 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
 		   }
 		   myfile.Close();
 
-         retVal = eafTypes::hgrOk; // only good exit
+         retVal = WBFL::EAF::HttpGetResult::Ok; // only good exit
 		}
       else
       {
-         retVal = eafTypes::hgrNotFound;
+         retVal = WBFL::EAF::HttpGetResult::NotFound;
       }
 
 		pFile->Close();      
@@ -399,7 +392,7 @@ eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, cons
       }
 		session.Close(); 
 
-      retVal = eafTypes::hgrNotFound;
+      retVal = WBFL::EAF::HttpGetResult::NotFound;
 	}
 
 	return retVal;
@@ -451,7 +444,7 @@ CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentat
       CString strFileURL;
       strFileURL.Format(_T("%s%s.dm"),lpszDocumentationURL,lpszDocSetName);
 
-      eafTypes::HttpGetResult result;
+      WBFL::EAF::HttpGetResult result;
       bool bDone = false;
       do
       {
@@ -463,7 +456,7 @@ CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentat
 
             // NOTE: This is a total HACK... WSDOT's web servers won't let "unknown" file types be downloaded throught HTTP
             // .dm is an unknown type. On WSDOT servers, we'll add .html to the filename so that we can get the file downloaded.
-            if ( result == eafTypes::hgrNotFound )
+            if ( result == WBFL::EAF::HttpGetResult::NotFound )
             {
                strFileURL += _T(".html");
                result = EAFGetFileFromHTTPServer(strFileURL, strLocalFile);

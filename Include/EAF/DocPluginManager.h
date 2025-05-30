@@ -1,0 +1,65 @@
+///////////////////////////////////////////////////////////////////////
+// EAF - Extensible Application Framework
+// Copyright © 1999-2025  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the Alternate Route Library Open Source License as published by 
+// the Washington State Department of Transportation, Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful, but is distributed 
+// AS IS, WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE. See the Alternate Route Library Open Source 
+// License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License 
+// along with this program; if not, write to the Washington State Department of 
+// Transportation, Bridge and Structures Office, P.O. Box  47340, 
+// Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+
+#pragma once
+
+#include <EAF\EAFExp.h>
+#include <EAF\EAFApp.h>
+#include <EAF\PluginManagerBase.h>
+#include <EAF\DocumentPlugin.h>
+#include <vector>
+
+interface IStructuredSave;
+interface IStructuredLoad;
+
+// Plugin manager for CEAFDocument plugins
+
+namespace WBFL
+{
+   namespace EAF
+   {
+      class EAFCLASS DocPluginManager : public PluginManagerBase<IDocumentPlugin, CEAFDocument>
+      {
+      public:
+         DocPluginManager() = default;
+
+         // Sets/Gets the SaveMissingPluginDataFlag
+         // When reading a document file, if it contains data from a plugin that is not
+         // currently installed, the data for that plugin is saved in a temporary cache.
+         // If this flag is set, the data for the missing plugin is saved in the file,
+         // otherwise the data is not saved and it is lost forever.
+         void SetSaveMissingPluginDataFlag(BOOL bSaveDataForMissingPlugins = TRUE);
+         BOOL GetSaveMissingPluginDataFlag();
+
+         HRESULT SavePluginData(IStructuredSave* pStrSave);
+         HRESULT LoadPluginData(IStructuredLoad* pStrLoad);
+
+      private:
+         std::vector<std::_tstring> m_MissingPluginData; // holds the entire unit data block
+         // for plugin data that is in the file, but
+         // the plugin wasn't created
+
+         BOOL m_bSaveMissingPluginData = TRUE;
+      };
+   };
+};

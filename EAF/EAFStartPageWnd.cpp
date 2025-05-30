@@ -28,24 +28,6 @@
 #include <EAF\EAFStartPageWnd.h>
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CEAFStartPageWnd
-
-IMPLEMENT_DYNCREATE(CEAFStartPageWnd, CMDIChildWnd)
-
-CEAFStartPageWnd::CEAFStartPageWnd()
-{
-}
-
-CEAFStartPageWnd::~CEAFStartPageWnd()
-{
-}
-#ifdef _DEBUG
 void CEAFStartPageWnd::AssertValid() const
 {
    // Make sure the module state is that for the CWinApp class

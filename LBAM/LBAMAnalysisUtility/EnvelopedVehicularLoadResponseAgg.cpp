@@ -27,11 +27,6 @@
 #include "..\LBAMUtils.h"
 #include "LBAMAnalysisUtility.hh"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // handle dealing with cancel from progress monitor
 #define HANDLE_CANCEL_PROGRESS() if (m_pEnveloper->CheckForCancel()) throw S_FALSE;

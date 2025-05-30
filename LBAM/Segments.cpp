@@ -29,11 +29,6 @@
 #include "SegmentItem.h"
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // Fraction of member length where a location along the member is assumed to be at a
 // junction of two segments

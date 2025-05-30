@@ -28,11 +28,6 @@
 #include "WBFLTools.h"
 #include "ErrorLog.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 static bool is_valid_cookie( DWORD dwCookie, IndexType size );
 static int idx_from_cookie( DWORD dwCookie );

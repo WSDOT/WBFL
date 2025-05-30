@@ -43,11 +43,6 @@
 #include <map>
 #endif
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 template <class T>
 HRESULT GetMaterial(T* pSlab, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, IMaterial** ppMaterial)

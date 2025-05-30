@@ -26,7 +26,7 @@
 #include "resource.h"
 #include <EAF\EAFGraphChildFrame.h>
 #include <EAF\EAFGraphView.h>
-#include <EAF\EAFHelp.h>
+#include <EAF\Help.h>
 #include <EAF\EAFGraphBuilderBase.h>
 
 // include files needed to get the RecalcLayout override working
@@ -34,11 +34,6 @@
 #include <afximpl.h>
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 /////////////////////////////////////////////////////////////////////////////

@@ -27,16 +27,11 @@
 
 #include "stdafx.h"
 #include "StatusCenterDlg.h"
-#include <EAF\EAFStatusItem.h>
+#include <EAF\StatusItem.h>
 #include <EAF\EAFUtilities.h>
 #include <EAF\EAFStatusBar.h> // for colors
 #include <EAF\EAFApp.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 COLORREF CStatusItemListCtrl::OnGetCellBkColor(int nRow,int nColumn)
 {
@@ -46,18 +41,18 @@ COLORREF CStatusItemListCtrl::OnGetCellBkColor(int nRow,int nColumn)
    }
 
    DWORD_PTR dw = GetItemData(nRow);
-   eafTypes::StatusSeverityType severity = (eafTypes::StatusSeverityType)HIWORD(dw); 
+   WBFL::EAF::StatusSeverityType severity = (WBFL::EAF::StatusSeverityType)HIWORD(dw); 
 
    COLORREF color;
    switch(severity)
    {
-   case eafTypes::statusInformation:
+   case WBFL::EAF::StatusSeverityType::Information:
       color = STATUS_INFORMATION_COLOR;
       break;
-   case eafTypes::statusWarning:
+   case WBFL::EAF::StatusSeverityType::Warning:
       color = STATUS_WARNING_COLOR;
       break;
-   case eafTypes::statusError:
+   case WBFL::EAF::StatusSeverityType::Error:
       color = STATUS_ERROR_COLOR;
       break;
    default:
@@ -78,8 +73,8 @@ bool SortObject::m_bSortAscending = false; // want to start with errors at the t
 
 int CALLBACK SortObject::SortFunc(LPARAM lParam1,LPARAM lParam2,LPARAM lParamSort)
 {
-   eafTypes::StatusSeverityType severity1 = (eafTypes::StatusSeverityType)HIWORD(lParam1);
-   eafTypes::StatusSeverityType severity2 = (eafTypes::StatusSeverityType)HIWORD(lParam2);
+   WBFL::EAF::StatusSeverityType severity1 = (WBFL::EAF::StatusSeverityType)HIWORD(lParam1);
+   WBFL::EAF::StatusSeverityType severity2 = (WBFL::EAF::StatusSeverityType)HIWORD(lParam2);
    int result =  severity1 < severity2;
    if ( !SortObject::m_bSortAscending )
    {
@@ -93,7 +88,7 @@ int CALLBACK SortObject::SortFunc(LPARAM lParam1,LPARAM lParam2,LPARAM lParamSor
 // CStatusCenterDlg dialog
 
 
-CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
+CStatusCenterDlg::CStatusCenterDlg(WBFL::EAF::StatusCenter& statusCenter)
 	: CDialog(_T("")),
    m_StatusCenter(statusCenter)
 {
@@ -107,14 +102,15 @@ CStatusCenterDlg::CStatusCenterDlg(CEAFStatusCenter& statusCenter)
 
    Create(CStatusCenterDlg::IDD,EAFGetMainFrame());
 
-   m_StatusCenter.SinkEvents(this);
+   m_EventSink = std::make_shared<MyStatusCenterEventSink>(*this);
+   m_EventSinkCookie = m_StatusCenter.RegisterEventSink(m_EventSink);
 
    m_bSortAscending = SortObject::m_bSortAscending;
 }
 
 CStatusCenterDlg::~CStatusCenterDlg()
 {
-   m_StatusCenter.UnSinkEvents(this);
+   m_StatusCenter.UnregisterEventSink(m_EventSinkCookie);
 }
 
 void CStatusCenterDlg::DoDataExchange(CDataExchange* pDX)
@@ -170,22 +166,22 @@ BOOL CStatusCenterDlg::OnInitDialog()
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CStatusCenterDlg::OnStatusItemAdded(CEAFStatusItem* pNewItem)
+void CStatusCenterDlg::OnStatusItemAdded(std::shared_ptr<const WBFL::EAF::StatusItem> pNewItem)
 {
-   eafTypes::StatusSeverityType severity = m_StatusCenter.GetSeverity(pNewItem->GetCallbackID());
+   WBFL::EAF::StatusSeverityType severity = m_StatusCenter.GetSeverity(pNewItem->GetCallbackID());
 
    CString strSeverityType[] = { _T("Info"), _T("Warn"), _T("Error") };
    CString strSeverity;
-   strSeverity.Format(_T("%s"),strSeverityType[severity]);
+   strSeverity.Format(_T("%s"),strSeverityType[+severity]);
    int idx = m_ctrlList.InsertItem((int)pNewItem->GetID(),strSeverity);
    VERIFY( m_ctrlList.SetItemText(idx,1,pNewItem->GetDescription()) );
    VERIFY( m_ctrlList.SetItemData(idx,MAKELONG(pNewItem->GetID(),severity)) );
 
-   if ( severity == eafTypes::statusInformation )
+   if ( severity == WBFL::EAF::StatusSeverityType::Information )
    {
       m_nInfo++;
    }
-   else if ( severity == eafTypes::statusWarning )
+   else if ( severity == WBFL::EAF::StatusSeverityType::Warning )
    {
       m_nWarn++;
    }
@@ -203,24 +199,24 @@ void CStatusCenterDlg::OnStatusItemRemoved(StatusItemIDType id)
    if ( GetSafeHwnd() == nullptr )
       return;
 
-   eafTypes::StatusSeverityType severity;
+   WBFL::EAF::StatusSeverityType severity;
 
    LVFINDINFO info;
-   severity = eafTypes::statusInformation;
+   severity = WBFL::EAF::StatusSeverityType::Information;
    info.flags = LVFI_PARAM;
    info.lParam = MAKELONG(id,severity);
 
    int idx = m_ctrlList.FindItem(&info);
    if ( idx == -1 )
    {
-      severity = eafTypes::statusWarning;
+      severity = WBFL::EAF::StatusSeverityType::Warning;
       info.lParam = MAKELONG(id,severity);
       idx = m_ctrlList.FindItem(&info);
    }
 
    if ( idx == -1 )
    {
-      severity = eafTypes::statusError;
+      severity = WBFL::EAF::StatusSeverityType::Error;
       info.lParam = MAKELONG(id,severity);
       idx = m_ctrlList.FindItem(&info);
    }
@@ -229,11 +225,11 @@ void CStatusCenterDlg::OnStatusItemRemoved(StatusItemIDType id)
    {
       m_ctrlList.DeleteItem(idx);
 
-      if ( severity == eafTypes::statusInformation )
+      if ( severity == WBFL::EAF::StatusSeverityType::Information )
       {
          m_nInfo--;
       }
-      else if ( severity == eafTypes::statusWarning )
+      else if ( severity == WBFL::EAF::StatusSeverityType::Warning )
       {
          m_nWarn--;
       }

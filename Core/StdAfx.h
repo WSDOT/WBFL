@@ -34,9 +34,6 @@
 #include <WBFLMFC.h>
 #include <WBFLAll.h>
 
-#define _ATL_APARTMENT_THREADED
-#define _ATL_NO_AUTOMATIC_NAMESPACE
-
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// some CString constructors will be explicit
 
 #include <afxwin.h>
@@ -45,9 +42,6 @@
 #endif // _AFX_NO_OLE_SUPPORT
 
 #include "resource.h"
-#include <atlbase.h>
-#include <atlcom.h>
-#include <atlctl.h>
 
 #include <afxcmn.h> // for Animation control
 
@@ -55,5 +49,3 @@
 
 
 bool operator<(REFIID a,REFIID b);
-
-using namespace ATL;

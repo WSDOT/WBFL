@@ -44,11 +44,6 @@
 #include "CompositeSectionItemEx.h"
 #include "CompositeSectionEx.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #pragma Reminder("WORKING HERE - Geometry - move all of this functionality into WBFLGeometry and kill this DLL")
 // Remember to update the manifest

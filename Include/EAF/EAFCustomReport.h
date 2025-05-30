@@ -66,7 +66,7 @@ public:
  };
 
 // A mix-in class to add custom reporting
-// capabilities to an IEAFAppPlugin object
+// capabilities to an IPluginApp object
 class EAFCLASS CEAFCustomReportMixin
 {
 public:
@@ -88,7 +88,7 @@ public:
    void SetCustomReports(const CEAFCustomReports& reports);
 
    // Loads and saves the custom report information in the registry.
-   // Call these methods from IEAFAppPlugin::Init() and IEAFAppPlugin::Terminate().
+   // Call these methods from IPluginApp::Init() and IPluginApp::Terminate().
    // Base class must call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before
    // calling into these methods.
    virtual void LoadCustomReportInformation() = 0;

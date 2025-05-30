@@ -135,7 +135,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDENGTOOLSLIB;_DEBUG;_WINDOWS;WIN32;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDENGTOOLSLIB;_DEBUG;_WINDOWS;WIN32;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -226,6 +226,9 @@
   <ItemGroup>
     <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
       <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LRFD\LRFD.vcxproj">
+      <Project>{262ce7a1-072b-4578-b45c-75546fa4c384}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{9c7b0108-aa89-413c-9d75-5d700f0aece1}</Project>

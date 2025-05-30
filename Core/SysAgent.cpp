@@ -25,78 +25,28 @@
 //
 
 #include "stdafx.h"
-#include <WBFLCore.h>
-//#include "Core.h"
 #include "SysAgent.h"
+#include "CLSID.h"
+#include <AgentTools.h>
+#include <EAF\EAFApp.h>
 #include <System\Time.h>
-#include <memory>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CSysAgent
-
-CSysAgent::CSysAgent()
+bool CSysAgent::Init()
 {
+   EAF_AGENT_INIT;
+
+   m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
+
+   return SUCCEEDED(ValidateThread());
 }
 
-CSysAgent::~CSysAgent()
+bool CSysAgent::RegisterInterfaces()
 {
-}
+   EAF_AGENT_REGISTER_INTERFACES;
 
-HRESULT CSysAgent::FinalConstruct()
-{
-   m_pBroker = 0;
-   m_cProgressRef = 0;
-   m_pThread = nullptr;
-   return S_OK;
-}
+   REGISTER_INTERFACE(IEAFProgress);
 
-void CSysAgent::FinalRelease()
-{
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CSysAgent message handlers
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// IAgent
-//
-STDMETHODIMP CSysAgent::SetBroker(IBroker* pBroker)
-{
-   m_pBroker = pBroker;
-
-   return S_OK;
-}
-
-STDMETHODIMP CSysAgent::RegInterfaces()
-{
-   IBrokerInit* pInit;
-   IBrokerInitEx* pInitEx;
-   if ( SUCCEEDED(m_pBroker->QueryInterface( IID_IBrokerInit, (void**)&pInit) ) )
-   {
-      pInit->RegInterface(IID_IProgress,this);
-      pInit->RegInterface(IID_ILogFile,this);
-
-      pInit->Release();
-
-      return S_OK;
-   }
-   else if ( SUCCEEDED(m_pBroker->QueryInterface( IID_IBrokerInitEx, (void**)&pInitEx) ) )
-   {
-      pInitEx->RegInterface(IID_IProgress,this);
-      pInitEx->RegInterface(IID_ILogFile,this);
-
-      pInitEx->Release();
-
-      return S_OK;
-   }
-
-   return E_FAIL;
+   return true;
 }
 
 HRESULT CSysAgent::ValidateThread()
@@ -112,29 +62,10 @@ HRESULT CSysAgent::ValidateThread()
    return S_OK;
 }
 
-STDMETHODIMP CSysAgent::Init()
+bool CSysAgent::ShutDown()
 {
-   m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
+   EAF_AGENT_SHUTDOWN;
 
-   return ValidateThread();
-}
-
-STDMETHODIMP CSysAgent::Init2()
-{
-   // No special initialization
-
-   return S_OK;
-}
-
-STDMETHODIMP CSysAgent::Reset()
-{
-   // No data to reset
-
-   return S_OK;
-}
-
-STDMETHODIMP CSysAgent::ShutDown()
-{
    // we are done with the UI thread, kill it
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
@@ -156,14 +87,12 @@ STDMETHODIMP CSysAgent::ShutDown()
       std::cout << "Finished." << std::endl;
    }
 
-   return S_OK;
+   return true;
 }
 
-STDMETHODIMP CSysAgent::GetClassID(CLSID* pCLSID)
+CLSID CSysAgent::GetCLSID() const
 {
-   *pCLSID = CLSID_SysAgent;
-
-   return S_OK;
+   return CLSID_SysAgent;
 }
 
 
@@ -351,38 +280,4 @@ STDMETHODIMP CSysAgent::DestroyProgressWindow()
 
       return S_OK;
    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// ILogFile
-//
-STDMETHODIMP CSysAgent::Open(LPCTSTR name,DWORD* pdwCookie)
-{
-   if (m_LogFile == nullptr)
-   {
-      m_LogFile.CoCreateInstance(CLSID_LogFile);
-   }
-
-   return m_LogFile->Open(name, pdwCookie);
-}
-
-STDMETHODIMP CSysAgent::put_EndLines(BOOL bEndLines)
-{
-   return m_LogFile->put_EndLines(bEndLines);
-}
-
-STDMETHODIMP CSysAgent::get_EndLines(BOOL* pbEndLines)
-{
-   return m_LogFile->get_EndLines(pbEndLines);
-}
-
-STDMETHODIMP CSysAgent::LogMessage(DWORD dwCookie,LPCTSTR msg)
-{
-   return m_LogFile->LogMessage(dwCookie, msg);
-}
-
-STDMETHODIMP CSysAgent::Close(DWORD dwCookie)
-{
-   return m_LogFile->Close(dwCookie);
 }

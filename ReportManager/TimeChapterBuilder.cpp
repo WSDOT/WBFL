@@ -27,11 +27,6 @@
 #include <Reporter\Chapter.h>
 #include <Reporter\RcFlowModifier.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
 
 using namespace WBFL::Reporting;
 
@@ -67,9 +62,4 @@ rptChapter* TimeChapterBuilder::Build(WBFL::System::Time& start, WBFL::System::T
    *pChapter << pPara;
    *pPara << _T("Elapsed Time = ") << elapsedTime << _T(" sec") << rptNewLine;
    return pChapter;
-}
-
-std::unique_ptr<ChapterBuilder> TimeChapterBuilder::Clone() const
-{
-   return std::make_unique<TimeChapterBuilder>();
 }

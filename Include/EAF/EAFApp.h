@@ -29,16 +29,13 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTypes.h>
-#include <EAF\EAFAppPluginManager.h>
-#include <EAF\EAFPluginManager.h>
-#include <EAF\EAFDocTemplateRegistrar.h>
-#include <EAF\EAFPluginCommandManager.h>
+#include <EAF\PluginAppManager.h>
+#include <EAF\PluginManager.h>
+#include <EAF\PluginCommandManager.h>
+#include <EAF\DocTemplateRegistrar.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFCommandLineInfo.h>
-#include <EAF\EAFPluginCommandManager.h>
 #include <EAF\EAFMDISnapper.h>
-
-#include <comcat.h>
 
 #include <WBFLTools.h>
 
@@ -50,11 +47,17 @@ class iUnitModeListener
 {
 public:
    virtual void OnUnitsModeChanging() = 0;
-   virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode) = 0;
+   virtual void OnUnitsModeChanged(WBFL::EAF::UnitMode newUnitMode) = 0;
 };
 
-#include <EAF\EAFComponentInfo.h>
-using CEAFComponentInfoManager = CEAFPluginManagerBase<IEAFComponentInfo, CEAFApp>;
+#include <EAF\ApplicationComponentInfo.h>
+namespace WBFL
+{
+   namespace EAF
+   {
+	  using ComponentInfoManager = PluginManagerBase<ApplicationComponentInfo, CEAFApp>;
+   };
+};
 
 
 class CEAFHelpWindowThread;
@@ -91,10 +94,10 @@ public:
    virtual CDataRecoveryHandler *GetDataRecoveryHandler();
 
    CRecentFileList* GetRecentFileList();
-   CEAFDocTemplateRegistrar* GetDocTemplateRegistrar();
-   CEAFAppPluginManager* GetAppPluginManager();
-   CEAFPluginCommandManager* GetPluginCommandManager();
-   CEAFComponentInfoManager* GetComponentInfoManager();
+   std::shared_ptr<WBFL::EAF::DocTemplateRegistrar> GetDocTemplateRegistrar();
+   std::shared_ptr<WBFL::EAF::PluginAppManager> GetPluginAppManager();
+   std::shared_ptr<WBFL::EAF::PluginCommandManager> GetPluginCommandManager();
+   std::shared_ptr<WBFL::EAF::ComponentInfoManager> GetComponentInfoManager();
 
    BOOL ReadWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
    void WriteWindowPlacement(const CString& strSection,const CString& strKey,LPWINDOWPLACEMENT pwp);
@@ -104,7 +107,18 @@ public:
    CString GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
 
    AcceptanceType ShowLegalNoticeAtStartup(void);
-   CString GetAppLocation();
+   CString GetAppLocation() const;
+
+   std::vector<CString> GetSearchDirectories() const;
+
+   /// @brief Loads all manifests with the specified manifest extension.
+   /// The manifest extension is in the format <Type>.Manifest.<Application>
+   /// For example, Application.Manifest.BridgeLink is the application manifest for BridgeLink.
+   /// Manifests are searched by first looking in the application folder then all of the folders
+   /// specified in the application directory path environment variable. The application directory path 
+   /// environment variable is the m_pszApp variable with _PATH appended (e.g BRIDGELINK_PATH)
+   /// @param manifest_extension 
+   void LoadManifest(LPCTSTR manifest_extension);
 
    BOOL IsDocLoaded();
 
@@ -134,7 +148,7 @@ public:
    virtual CString GetDocumentationURL();
 
    // Gets the full URL for the document associated with help id nHID
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+   virtual std::pair<WBFL::EAF::HelpResult,CString> GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID);
 
    // Toggles between online and local sources for documentation
    void UseOnlineDocumentation(BOOL bUseOnLine);
@@ -156,7 +170,7 @@ protected:
    virtual CMDIFrameWnd* CreateMainFrame();
 
    virtual CDocManager* CreateDocumentManager();
-   virtual CEAFDocTemplateRegistrar* CreateDocTemplateRegistrar();
+   virtual std::shared_ptr<WBFL::EAF::DocTemplateRegistrar> CreateDocTemplateRegistrar();
 
    // Calls CreateDocPlugins and then completes the document template
    // registration process
@@ -170,6 +184,7 @@ protected:
 
    // called by the framework during ExitInstance() when registry settings need to be saved
    virtual void RegistryExit();
+
 
    void EnableTipOfTheDay(LPCTSTR lpszTipFile);
    void EnableTipOfTheDay(const std::vector<CString>& vTipFiles);
@@ -195,6 +210,7 @@ protected:
    afx_msg void OnUSUnits();
    afx_msg void OnUpdateUSUnits(CCmdUI* pCmdUI);
    afx_msg void OnAutoSave();
+   afx_msg void OnLogging();
 	//}}AFX_MSG
    afx_msg void OnReplaceFile();
    CString m_ReplacementFileName;
@@ -202,8 +218,8 @@ protected:
    virtual void OnAbout();
 
 public:
-   eafTypes::UnitMode GetUnitsMode() const;
-   void SetUnitsMode(eafTypes::UnitMode newVal);
+   WBFL::EAF::UnitMode GetUnitsMode() const;
+   void SetUnitsMode(WBFL::EAF::UnitMode newVal);
    const WBFL::Units::IndirectMeasure* GetDisplayUnits() const;
 
    void AddUnitModeListener(iUnitModeListener* pListener);
@@ -225,6 +241,9 @@ public:
    virtual void SaveAutoSaveInfo(BOOL bAutosave, int AutosaveInterval);
 
    CEAFMDISnapper& GetMDIWndSnapper();
+
+   CString GetLogFilePath() const;
+   CString GetLogFileName() const;
 
 protected:
    // Called during InitInstance when command line parameters need to be handled
@@ -254,8 +273,6 @@ protected:
    // this is because I could never get the viewer thread to start properly after InitInstance was called.
 
 private:
-   CEAFDocTemplateRegistrar* m_pDocTemplateRegistrar;
-
    friend CEAFHelpWindowThread;
    CEAFHelpWindowThread* m_pHelpWindowThread;
 
@@ -285,20 +302,23 @@ private:
    void UpdateDisplayUnits();
    WBFL::Units::Library m_UnitLibrary;
    const WBFL::Units::IndirectMeasure* m_pDisplayUnits; // current setting
-   eafTypes::UnitMode m_Units;
+   WBFL::EAF::UnitMode m_Units;
    std::set<iUnitModeListener*> m_UnitModeListeners;
    void Fire_UnitsChanging();
    void Fire_UnitsChanged();
 
-   CEAFPluginCommandManager m_PluginCommandMgr;
-   CEAFAppPluginManager m_AppPluginManager;
-   CEAFComponentInfoManager m_ComponentInfoManager;
+   std::shared_ptr<WBFL::EAF::DocTemplateRegistrar> m_pDocTemplateRegistrar;
+   std::shared_ptr<WBFL::EAF::PluginCommandManager> m_PluginCommandMgr;
+   std::shared_ptr<WBFL::EAF::PluginAppManager> m_PluginAppManager;
+   std::shared_ptr<WBFL::EAF::ComponentInfoManager> m_ComponentInfoManager;
 
    CString m_strWindowPlacementFormat;
 
-   CEAFCommandLineInfo* m_pCommandLineInfo;
+   std::unique_ptr<CEAFCommandLineInfo> m_pCommandLineInfo;
 
    CEAFMDISnapper m_MDISnapper;
+
+   std::ofstream m_LogFile;
 
 	DECLARE_MESSAGE_MAP()
 
@@ -314,11 +334,14 @@ class EAFCLASS CEAFPluginApp : public CEAFApp
 {
 	DECLARE_DYNAMIC(CEAFPluginApp)
 public:
-   BOOL InitInstance();
+   ~CEAFPluginApp();
+
+   BOOL InitInstance() override;
+   int ExitInstance() override;
 
    // Category information for plug-in applications
-   virtual LPCTSTR GetAppPluginCategoryName() = 0;
-   virtual CATID GetAppPluginCategoryID() = 0;
+   virtual LPCTSTR GetPluginAppCategoryName() = 0;
+   virtual CATID GetPluginAppCategoryID() = 0;
 
    // Category information for plug-ins to the main application
    virtual LPCTSTR GetPluginCategoryName() = 0;
@@ -329,16 +352,16 @@ public:
 
 	DECLARE_MESSAGE_MAP()
 
-   CEAFPluginManager* GetPluginManager();
+   std::shared_ptr<WBFL::EAF::PluginManager> GetPluginManager();
 
 protected:
 
-   CEAFPluginManager m_PluginManager;
+   std::shared_ptr<WBFL::EAF::PluginManager> m_PluginManager = std::make_shared<WBFL::EAF::PluginManager>();;
 
    BOOL RegisterDocTemplates();
    BOOL AppPluginUIIntegration(BOOL bIntegrate);
-   virtual BOOL CreateApplicationPlugins() override;
    virtual BOOL CreatePlugins();
-   virtual void LoadDocumentationMap() override;
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL) override;
+   BOOL CreateApplicationPlugins() override;
+   void LoadDocumentationMap() override;
+   std::pair<WBFL::EAF::HelpResult,CString> GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID) override;
 };

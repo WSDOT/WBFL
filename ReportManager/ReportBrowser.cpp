@@ -35,12 +35,6 @@
 #include "IEReportView.h"
 #include "EdgeReportView.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 using namespace WBFL::Reporting;
 
 void to_upper( std::_tstring::iterator begin,std::_tstring::iterator end)

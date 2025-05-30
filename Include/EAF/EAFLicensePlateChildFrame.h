@@ -86,11 +86,11 @@ public:
 
    //------------------------------------------------------------------------
    // Set frame window into or out of license plate mode
-   void SetLicensePlateMode(eafTypes::LpFrameMode mode);
+   void SetLicensePlateMode(WBFL::EAF::LpFrameMode mode);
 
    //------------------------------------------------------------------------
    // See which mode frame is in.
-	eafTypes::LpFrameMode GetLicensePlateMode();
+	WBFL::EAF::LpFrameMode GetLicensePlateMode();
 
    //------------------------------------------------------------------------
    // Toggles the mode between on and off
@@ -142,7 +142,7 @@ private:
 	CString m_LpMessage;
    CBitmap m_bmBackground;
    CSize   m_szBackground;
-   eafTypes::LpFrameMode m_Mode;
+   WBFL::EAF::LpFrameMode m_Mode;
    CWnd*  m_pWnd;
    CRect   m_OuterRect;
 

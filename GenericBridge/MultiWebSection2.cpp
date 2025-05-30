@@ -30,11 +30,6 @@
 #include <math.h>
 #include <xutility> // for Min
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CMultiWebSection2

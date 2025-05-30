@@ -21,83 +21,42 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SYSAGENT_H__99C34AA5_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_)
-#define AFX_SYSAGENT_H__99C34AA5_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_
-
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
-// SysAgent.h : header file
-//
 
+#include <EAF/Agent.h>
+#include <EAF/EAFProgress.h>
+#include <EAF/EAFCommandLineInfo.h>
 #include "ProgressThread.h"
 
-
-#include <vector>
-#include <iostream>
-#include <fstream>
-
-#include <memory>
-#include <EAF\EAFApp.h>
-
-/////////////////////////////////////////////////////////////////////////////
-// CSysAgent command target
-class ATL_NO_VTABLE CSysAgent : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CSysAgent, &CLSID_SysAgent>,
-   public IAgentEx,
-   public IProgress,
-   public ILogFile
+class CSysAgent : public WBFL::EAF::Agent,
+   public IEAFProgress
 {
 public:
-	CSysAgent();
-	virtual ~CSysAgent();
+	CSysAgent() = default;
+	virtual ~CSysAgent() = default;
 
-   HRESULT FinalConstruct();
-   void FinalRelease();
-
-DECLARE_REGISTRY_RESOURCEID(IDR_SYSAGENT)
-
-DECLARE_PROTECT_FINAL_CONSTRUCT()
-
-BEGIN_COM_MAP(CSysAgent)
-	COM_INTERFACE_ENTRY(IAgent)
-	COM_INTERFACE_ENTRY(IAgentEx)
-	COM_INTERFACE_ENTRY(IProgress)
-	COM_INTERFACE_ENTRY(ILogFile)
-END_COM_MAP()
-
-// IAgentEx
+// Agent
 public:
-	STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
-   STDMETHOD(RegInterfaces)() override;
-	STDMETHOD(Init)() override;
-	STDMETHOD(Init2)() override;
-	STDMETHOD(Reset)() override;
-	STDMETHOD(ShutDown)() override;
-   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
+   std::_tstring GetName() const override { return _T("SysAgent"); }
+   bool RegisterInterfaces() override;
+   bool Init() override;
+   bool ShutDown() override;
+   CLSID GetCLSID() const override;
 
-// IProgress
+   // IEAFProgress
 public:
-   STDMETHOD(CreateProgressWindow)(/*[in]*/ DWORD dwMask,/*[in]*/ UINT nDelay) override;
-	STDMETHOD(Init)(/*[in]*/ short begin, /*[in]*/ short end, /*[in]*/ short inc) override;
-	STDMETHOD(Increment)() override;
-	STDMETHOD(UpdateMessage)(/*[in]*/ LPCTSTR msg) override;
-	STDMETHOD(Continue)() override;
-	STDMETHOD(DestroyProgressWindow)() override;
-
-// ILogFile
-public:
-   STDMETHOD(Open)(/*[in]*/ LPCTSTR name,/*[out]*/ DWORD* pdwCookie) override;
-   STDMETHOD(put_EndLines)(/*[in]*/ BOOL bEndLines) override;
-   STDMETHOD(get_EndLines)(/*[out,retval]*/ BOOL* pbEndLines) override;
-   STDMETHOD(LogMessage)(/*[in]*/ DWORD dwCookie,/*[in]*/ LPCTSTR msg) override;
-   STDMETHOD(Close)(/*[in]*/ DWORD dwCookie) override;
+   HRESULT CreateProgressWindow(DWORD dwMask, UINT nDelay) override;
+   HRESULT Init(short begin, short end, short inc) override;
+   HRESULT Increment() override;
+   HRESULT UpdateMessage(LPCTSTR msg) override;
+   HRESULT Continue() override;
+   HRESULT DestroyProgressWindow() override;
 
 private:
-   IBroker* m_pBroker; // weak reference
-   CProgressThread* m_pThread;
-   Int16 m_cProgressRef; // progress thread ref count
+   EAF_DECLARE_AGENT_DATA;
+
+   CProgressThread* m_pThread = nullptr;
+   Int16 m_cProgressRef = 0; // progress thread ref count
                                             // a progress window instance begins
 
    HRESULT ValidateThread();
@@ -105,16 +64,5 @@ private:
    std::vector<std::_tstring> m_MessageStack;
    std::_tstring m_LastMessage; // most recent message
 
-   CComPtr<ILogFile> m_LogFile;
-
    CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
 };
-
-OBJECT_ENTRY_AUTO(CLSID_SysAgent,CSysAgent)
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_SYSAGENT_H__99C34AA5_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_)

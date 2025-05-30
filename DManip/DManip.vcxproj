@@ -58,7 +58,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;WBFL_DEBUG;BUILDDMANIPLIB;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;BUILDDMANIPLIB;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -265,6 +265,11 @@
     <ClInclude Include="ZoomRectFSM.h" />
     <ClInclude Include="ZoomRectTask.h" />
     <ClInclude Include="ZoomRectTaskImpl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoordGeom\CoordGeom.vcxproj">
+      <Project>{7ea2e3a4-a83a-412c-831a-057e9ec9e73c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

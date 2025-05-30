@@ -26,11 +26,6 @@
 #include "MathEx.h"
 #include "LiveLoaderUtils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 void FixedTruck::Initialize(IVehicularLoad* pVehicularLoad, bool applyImpact, ILiveLoadConfiguration* config)

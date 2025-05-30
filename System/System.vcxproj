@@ -136,7 +136,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDSYSLIB;_WINDOWS;_AFXDLL;_DEBUG;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -201,7 +201,8 @@
     <ClCompile Include="EngNotation.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="FileLogContext.cpp" />
-    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="UnitTestLog.cpp" />
     <ClCompile Include="main.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -242,7 +243,8 @@
     <ClInclude Include="..\Include\System\INumericFormatTool.h" />
     <ClInclude Include="..\Include\System\IStructuredLoad.h" />
     <ClInclude Include="..\Include\System\IStructuredSave.h" />
-    <ClInclude Include="..\Include\System\Log.h" />
+    <ClInclude Include="..\Include\System\Logger.h" />
+    <ClInclude Include="..\Include\System\UnitTestLog.h" />
     <ClInclude Include="..\Include\System\NumericFormatTool.h" />
     <ClInclude Include="..\Include\System\SectionValue.h" />
     <ClInclude Include="..\Include\System\SingletonKiller.h" />

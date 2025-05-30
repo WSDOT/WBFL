@@ -32,7 +32,13 @@
 
 #include "resource.h"
 
-class CEAFStatusItem;
+namespace WBFL
+{
+   namespace EAF
+   {
+	  class StatusItem;
+   };
+};
 
 /////////////////////////////////////////////////////////////////////////////
 // CStatusMessageDialog dialog
@@ -41,7 +47,7 @@ class CStatusMessageDialog : public CDialog
 {
 // Construction
 public:
-	CStatusMessageDialog(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent = nullptr);   // standard constructor
+	CStatusMessageDialog(std::shared_ptr<const WBFL::EAF::StatusItem> pStatusItem,WBFL::EAF::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName,UINT helpID,CWnd* pParent = nullptr);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CStatusMessageDialog)
@@ -50,7 +56,7 @@ public:
 
 // Data
    // Return value from dialog closure
-   eafTypes::StatusItemDisplayReturn GetReturnValue() const;
+   WBFL::EAF::StatusItemDisplayReturn GetReturnValue() const;
 
 
 // Overrides
@@ -65,11 +71,11 @@ protected:
    CString m_strDocSetName;
    UINT m_HelpID;
 
-   eafTypes::StatusSeverityType m_Severity;
+   WBFL::EAF::StatusSeverityType m_Severity;
    BOOL m_bRemoveableOnError;
    BOOL m_bEnableEdit;
 	CString	m_Message;
-   eafTypes::StatusItemDisplayReturn m_StatusItemDisplayReturn;
+   WBFL::EAF::StatusItemDisplayReturn m_StatusItemDisplayReturn;
 
 	// Generated message map functions
 	//{{AFX_MSG(CStatusMessageDialog)

@@ -38,12 +38,6 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
-BEGIN
-    "1 TYPELIB ""WBFLCore.tlb""\r\n"
-    "\0"
-END
-
 #endif    // APSTUDIO_INVOKED
 
 
@@ -132,16 +126,6 @@ IDR_ANIMATE             AVI                     "res\\Working.avi"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// REGISTRY
-//
-
-IDR_CORE                REGISTRY                "Core.rgs"
-IDR_BROKER              REGISTRY                "Broker.rgs"
-IDR_BROKER2             REGISTRY                "Broker2.rgs"
-IDR_SYSAGENT            REGISTRY                "SysAgent.rgs"
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // String Table
 //
 
@@ -152,16 +136,3 @@ END
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-1 TYPELIB "WBFLCore.tlb"
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
-

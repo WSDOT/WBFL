@@ -26,12 +26,9 @@
 
 #include "stdafx.h"
 #include "ReportManager.h"
+#include <initguid.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include "WBCmdGroup.h"
 
 //
 //	Note!

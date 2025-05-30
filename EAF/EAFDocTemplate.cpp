@@ -28,41 +28,38 @@
 
 #include <afximpl.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 IMPLEMENT_DYNAMIC(CEAFDocTemplate,CMultiDocTemplate)
 
+
 CEAFDocTemplate::CEAFDocTemplate(UINT nIDResource,
-                                 IEAFCommandCallback* pCallback,
-                                 CRuntimeClass* pDocClass,
-                                 CRuntimeClass* pFrameClass,
-                                 CRuntimeClass* pViewClass,
-                                 HMENU hSharedMenu,
-                                 int maxViewCount) :
-CMultiDocTemplate(nIDResource,pDocClass,pFrameClass,pViewClass)
+   std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,
+   CRuntimeClass* pDocClass,
+   CRuntimeClass* pFrameClass,
+   CRuntimeClass* pViewClass,
+   HMENU hSharedMenu,
+   int maxViewCount) :
+   CMultiDocTemplate(nIDResource, pDocClass, pFrameClass, pViewClass)
 {
-   m_pPlugin = nullptr;
    m_pCommandCallback = pCallback;
 
    m_pCreateData = nullptr;
 
    m_bSharedMenu = FALSE;
-   if ( hSharedMenu != nullptr )
+   if (hSharedMenu != nullptr)
    {
-      m_bSharedMenu = TRUE;
-      m_hMenuShared = hSharedMenu;
+	  m_bSharedMenu = TRUE;
+	  m_hMenuShared = hSharedMenu;
    }
    m_MaxViewCount = maxViewCount;
 
    m_pTemplateItem = nullptr;
 
    CString strFileNewName;
-   GetDocString(strFileNewName,CDocTemplate::fileNewName);
+   GetDocString(strFileNewName, CDocTemplate::fileNewName);
    m_TemplateGroup.SetGroupName(strFileNewName);
+
+   m_AccelTable = std::make_shared<WBFL::EAF::AcceleratorTable>();
 }
 
 CEAFDocTemplate::~CEAFDocTemplate()
@@ -83,8 +80,9 @@ void CEAFDocTemplate::LoadTemplate()
 {
    CMultiDocTemplate::LoadTemplate();
 
-   m_AccelTable.Init(EAFGetApp()->GetPluginCommandManager());
-   m_AccelTable.AddAccelTable(m_hAccelTable,GetCommandCallback());
+   m_AccelTable->Init(EAFGetApp()->GetPluginCommandManager());
+   m_AccelTable->AddAccelTable(m_hAccelTable, GetCommandCallback());
+
    m_hAccelTable = nullptr;
 }
 
@@ -241,6 +239,11 @@ void CEAFDocTemplate::SetTemplateItem(const CEAFTemplateItem* pItem)
    m_pTemplateItem = pItem;
 }
 
+const CEAFTemplateItem* CEAFDocTemplate::GetTemplateItem() const
+{
+   return m_pTemplateItem;
+}
+
 const CEAFTemplateGroup* CEAFDocTemplate::GetTemplateGroup() const
 {
    return &m_TemplateGroup;
@@ -251,23 +254,19 @@ UINT CEAFDocTemplate::GetResourceID() const
    return m_nIDResource;
 }
 
-IEAFCommandCallback* CEAFDocTemplate::GetCommandCallback()
+std::shared_ptr<WBFL::EAF::ICommandCallback> CEAFDocTemplate::GetCommandCallback()
 {
    return m_pCommandCallback;
 }
 
-void CEAFDocTemplate::SetPlugin(IEAFAppPlugin* pPlugin)
+void CEAFDocTemplate::SetPluginApp(std::weak_ptr<WBFL::EAF::IPluginApp> plugin)
 {
-   m_pPlugin = pPlugin;
+   m_pPlugin = plugin;
 }
 
-void CEAFDocTemplate::GetPlugin(IEAFAppPlugin** ppPlugin)
+std::shared_ptr<WBFL::EAF::IPluginApp> CEAFDocTemplate::GetPluginApp()
 {
-   (*ppPlugin) = m_pPlugin;
-   if ( *ppPlugin )
-   {
-      (*ppPlugin)->AddRef();
-   }
+   return m_pPlugin.lock();
 }
 
 CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDocument*& rpDocMatch)
@@ -324,9 +323,9 @@ CDocTemplate::Confidence CEAFDocTemplate::MatchDocType(LPCTSTR lpszPathName,CDoc
 	return yesAttemptForeign;
 }
 
-CEAFAcceleratorTable* CEAFDocTemplate::GetAcceleratorTable()
+std::shared_ptr<WBFL::EAF::AcceleratorTable> CEAFDocTemplate::GetAcceleratorTable()
 {
-   return &m_AccelTable;
+   return m_AccelTable;
 }
 
 int CEAFDocTemplate::GetMaxViewCount() const

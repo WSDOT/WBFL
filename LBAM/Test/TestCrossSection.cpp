@@ -32,11 +32,6 @@
 #include <string>
 #include <fstream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define TEST_STIFFNESS_FIRED() TRY_TEST(pMe->m_csStiffnessFired, true); pMe->m_csStiffnessFired=false; pMe->m_csStressPointsFired=false;
 #define TEST_STRESS_FIRED() TRY_TEST(pMe->m_csStressPointsFired, true);  pMe->m_csStiffnessFired=false; pMe->m_csStressPointsFired=false;

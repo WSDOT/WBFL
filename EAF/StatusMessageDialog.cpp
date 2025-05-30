@@ -25,23 +25,18 @@
 
 #include "stdafx.h"
 #include "StatusMessageDialog.h"
-#include <EAF\EAFStatusItem.h>
-#include <EAF\EAFHelp.h>
+#include <EAF\StatusItem.h>
+#include <EAF\Help.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CStatusMessageDialog dialog
-CStatusMessageDialog::CStatusMessageDialog(CEAFStatusItem* pStatusItem, eafTypes::StatusSeverityType severity, BOOL bRemoveableOnError, BOOL bEnableEdit, LPCTSTR lpszDocSetName, UINT helpID, CWnd* pParent /*=nullptr*/)
+CStatusMessageDialog::CStatusMessageDialog(std::shared_ptr<const WBFL::EAF::StatusItem> pStatusItem, WBFL::EAF::StatusSeverityType severity, BOOL bRemoveableOnError, BOOL bEnableEdit, LPCTSTR lpszDocSetName, UINT helpID, CWnd* pParent /*=nullptr*/)
    : CDialog(CStatusMessageDialog::IDD, pParent),
    m_Message(pStatusItem->GetDescription()), m_strDocSetName(lpszDocSetName), m_HelpID(helpID), m_Severity(severity), m_bRemoveableOnError(bRemoveableOnError),
    m_bEnableEdit(bEnableEdit)
 {
-	//{{AFX_DATA_INIT(CStatusMessageDialog)
+   //{{AFX_DATA_INIT(CStatusMessageDialog)
 	//}}AFX_DATA_INIT
 }
 
@@ -80,7 +75,7 @@ BOOL CStatusMessageDialog::OnInitDialog()
    }
 
    // can we remove the status item?
-   bool bHideRemove = m_bRemoveableOnError ? false : (m_Severity == eafTypes::statusError ? true : false);
+   bool bHideRemove = m_bRemoveableOnError ? false : (m_Severity == WBFL::EAF::StatusSeverityType::Error ? true : false);
 
    if (!bHideRemove)
    {
@@ -140,17 +135,17 @@ BOOL CStatusMessageDialog::OnInitDialog()
    HICON hIcon;
    switch(m_Severity)
    {
-   case eafTypes::statusInformation:
+   case WBFL::EAF::StatusSeverityType::Information:
       strGroupLabel = _T("Information");
       hIcon = ::LoadIcon(nullptr,IDI_INFORMATION);
       break;
    
-   case eafTypes::statusWarning:
+   case WBFL::EAF::StatusSeverityType::Warning:
       strGroupLabel = _T("Warning");
       hIcon = ::LoadIcon(nullptr,IDI_WARNING);
       break;
 
-   case eafTypes::statusError:
+   case WBFL::EAF::StatusSeverityType::Error:
       strGroupLabel = _T("Error");
       hIcon = ::LoadIcon(nullptr,IDI_ERROR);
       break;
@@ -170,25 +165,25 @@ BOOL CStatusMessageDialog::OnInitDialog()
 
 void CStatusMessageDialog::OnBnClickedEdit()
 {
-   m_StatusItemDisplayReturn = eafTypes::eafsiEdit;
+   m_StatusItemDisplayReturn = WBFL::EAF::StatusItemDisplayReturn::Edit;
    OnOK();
 }
 
 
 void CStatusMessageDialog::OnBnClickedRemove()
 {
-   m_StatusItemDisplayReturn = eafTypes::eafsiRemove;
+   m_StatusItemDisplayReturn = WBFL::EAF::StatusItemDisplayReturn::Remove;
    OnOK();
 }
 
 
 void CStatusMessageDialog::OnBnClickedClose()
 {
-   m_StatusItemDisplayReturn = eafTypes::eafsiClose;
+   m_StatusItemDisplayReturn = WBFL::EAF::StatusItemDisplayReturn::Close;
    OnOK();
 }
 
-eafTypes::StatusItemDisplayReturn CStatusMessageDialog::GetReturnValue() const
+WBFL::EAF::StatusItemDisplayReturn CStatusMessageDialog::GetReturnValue() const
 {
    return m_StatusItemDisplayReturn;
 }

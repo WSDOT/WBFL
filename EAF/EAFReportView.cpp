@@ -27,7 +27,7 @@
 #include "resource.h"
 #include <EAF\EAFReportView.h>
 #include <EAF\EAFUtilities.h>
-#include <EAF\EAFAutoProgress.h>
+#include <EAF\AutoProgress.h>
 #include <EAF\EAFStatusCenter.h>
 #include "AgentTools.h"
 #include "EAFSelectReportDlg.h"
@@ -38,18 +38,13 @@
 #include <EAF\EAFCustSiteVars.h>
 
 #include <ReportManager\ReportBuilderManager.h>
-#include <IReportManager.h>
+#include <EAF/EAFReportManager.h>
 
 #include <MfcTools\XUnwind.h>
 #include <MfcTools\Text.h>
 #include "ReportButton.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView
@@ -473,9 +468,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    }
 
    CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
-   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+   auto& statusCenter = pDoc->GetStatusCenter();
 
-   if ( statusCenter.GetSeverity() == eafTypes::statusError )
+   if ( statusCenter.GetSeverity() == WBFL::EAF::StatusSeverityType::Error )
    {
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");

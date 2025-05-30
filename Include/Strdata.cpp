@@ -1,7 +1,8 @@
 #include <StrData.h>
-#include <WBFLCore.h>
 #include <tchar.h>
 #include <comdef.h>
+
+#include <EAF/EAFProgress.h>
 
 static const VARTYPE vartype[] = { VT_I2,
                                    VT_UI2,
@@ -90,7 +91,7 @@ double StrStorageDataMap<T>::GetVersion()
 }
 
 template <class T>
-HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave,IProgress* pProgress)
+HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, std::shared_ptr<IEAFProgress> pProgress)
 {
    CHECK( m_pCurrent = &m_Root );
    CHECK( m_Prev.empty() );
@@ -98,7 +99,7 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave,IProgress* pProgress)
 }
 
 template <class T>
-HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* pData, IProgress* pProgress)
+HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* pData, std::shared_ptr<IEAFProgress> pProgress)
 {
    HRESULT hr;
 
@@ -211,7 +212,7 @@ HRESULT StrStorageDataMap<T>::Save( IStructuredSave* pSave, StrStorageData<T>* p
 
 
 template <class T>
-HRESULT StrStorageDataMap<T>::Load(IStructuredLoad* pLoad,IProgress* pProgress)
+HRESULT StrStorageDataMap<T>::Load(IStructuredLoad* pLoad,std::shared_ptr<IEAFProgress> pProgress)
 {
    CHECK( m_pCurrent = &m_Root );
    CHECK( m_Prev.empty() );
@@ -219,7 +220,7 @@ HRESULT StrStorageDataMap<T>::Load(IStructuredLoad* pLoad,IProgress* pProgress)
 }
 
 template <class T>
-HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* pData,IProgress* pProgress)
+HRESULT StrStorageDataMap<T>::Load( IStructuredLoad* pLoad, StrStorageData<T>* pData, std::shared_ptr<IEAFProgress> pProgress)
 {
    HRESULT hr=S_OK;
    if ( pData->m_DataType == StrStorageData<T>::Prop )

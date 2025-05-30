@@ -27,11 +27,6 @@
 #include "stdafx.h"
 #include <MfcTools\StaticSplitter.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // http://www.codeproject.com/Articles/256/CUsefulSplitterWnd-an-extension-to-CSplitterWnd
 

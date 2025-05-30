@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <EAF\EAFMenu.h>
-#include <EAF\EAFToolBar.h>
+#include <EAF\Menu.h>
+#include <EAF\ToolBar.h>
 #include <EAF\EAFCommandLineInfo.h>
 
 // The interfaces defined in this file are used by plug-ins that are integrating themselves into
@@ -38,10 +38,10 @@
 // {2ED5504D-7D5B-4d39-BCE0-9F4A1DDCA481}
 DEFINE_GUID(IID_IEAFViewRegistrar, 
 0x2ed5504d, 0x7d5b, 0x4d39, 0xbc, 0xe0, 0x9f, 0x4a, 0x1d, 0xdc, 0xa4, 0x81);
-interface IEAFViewRegistrar : IUnknown
+interface IEAFViewRegistrar
 {
    // Registers a view class and its associated frame class. Returns the view key
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount = -1) = 0;
+   virtual long RegisterView(UINT nResourceID,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount = -1) = 0;
 
    // Removes a previously registered view
    virtual void RemoveView(long key) = 0;
@@ -57,29 +57,6 @@ interface IEAFViewRegistrar : IUnknown
    virtual std::vector<CView*> GetRegisteredView(long key) = 0;
 };
 
-///////////////////////////////////////////////////////////////
-// IEAFCommandCallback
-//
-// Plug-in objects that provide commands on the menus or toolbars must
-// implement this interface to receive command notifications
-
-// {FF33AA7F-3FA8-4f24-80F1-07F2A345D6D3}
-DEFINE_GUID(IID_IEAFCommandCallback, 
-0xff33aa7f, 0x3fa8, 0x4f24, 0x80, 0xf1, 0x7, 0xf2, 0xa3, 0x45, 0xd6, 0xd3);
-struct __declspec(uuid("{FF33AA7F-3FA8-4f24-80F1-07F2A345D6D3}")) IEAFCommandCallback;
-interface IEAFCommandCallback : IUnknown
-{
-   // Called by the framework when a command is selected. Pass the parameters into a CCmdTarget object
-   // OnCmdMsg function
-   virtual BOOL OnCommandMessage(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) = 0;
-
-   // Called by the framework to get the status bar message when the user slides the mouse over a menu item
-   virtual BOOL GetStatusBarMessageString(UINT nID, CString& rMessage) const = 0;
-
-   // Called by the framework to get the toolbar tip
-   virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
-};
-
 //////////////////////////////////////////////////////////////////////////
 // IEAFMainMenu
 //
@@ -89,11 +66,11 @@ interface IEAFCommandCallback : IUnknown
 DEFINE_GUID(IID_IEAFMainMenu, 
 0x35a2295c, 0xc062, 0x4bfe, 0xb8, 0x6f, 0x86, 0xa6, 0x33, 0x3c, 0x2d, 0x7b);
 struct __declspec(uuid("{35A2295C-C062-4bfe-B86F-86A6333C2D7B}")) IEAFMainMenu;
-interface IEAFMainMenu : IUnknown
+interface IEAFMainMenu
 {
    // returns the applications main menu
-   virtual CEAFMenu* GetMainMenu() = 0;
-   virtual CEAFMenu* CreateContextMenu() = 0;
+   virtual std::shared_ptr<WBFL::EAF::Menu> GetMainMenu() = 0;
+   virtual std::shared_ptr<WBFL::EAF::Menu> CreateContextMenu() = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -105,16 +82,13 @@ interface IEAFMainMenu : IUnknown
 DEFINE_GUID(IID_IEAFToolbars, 
 0xf8d84c5e, 0xdee9, 0x4bfb, 0x9c, 0x97, 0xd4, 0xee, 0xea, 0xd6, 0x10, 0xa6);
 struct __declspec(uuid("{F8D84C5E-DEE9-4bfb-9C97-D4EEEAD610A6}")) IEAFToolbars;
-interface IEAFToolbars : IUnknown
+interface IEAFToolbars
 {
    // Creates a new, empty toolbar. Returns the Toolbar ID
    virtual UINT CreateToolBar(LPCTSTR lpszName) = 0;
 
    // Returns a previously created toolbar
-   virtual CEAFToolBar* GetToolBar(UINT toolbarID) = 0;
-
-   // Destroys a toolbar
-   virtual void DestroyToolBar(CEAFToolBar* pToolBar) = 0;
+   virtual std::shared_ptr<WBFL::EAF::ToolBar> GetToolBar(UINT toolbarID) = 0;
 
    // Destroys a toolbar by ID
    virtual void DestroyToolBar(UINT toolbarID) = 0;
@@ -129,16 +103,16 @@ interface IEAFToolbars : IUnknown
 DEFINE_GUID(IID_IEAFAcceleratorTable, 
 0x2d663f88, 0x1b17, 0x4d1b, 0x9d, 0xe8, 0x8c, 0xd0, 0x60, 0x50, 0xe2, 0xc2);
 struct __declspec(uuid("{2D663F88-1B17-4d1b-9DE8-8CD06050E2C2}")) IEAFAcceleratorTable;
-interface IEAFAcceleratorTable : IUnknown
+interface IEAFAcceleratorTable
 {
    // Adds an accelerator table
-   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback) = 0;
+   virtual BOOL AddAccelTable(HACCEL hAccel,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
    // Adds an accelerator key
-   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback) = 0;
+   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
    // Removes an accelerator key by command
-   virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback) = 0;
+   virtual BOOL RemoveAccelKey(WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
    // Removes an accelerator key by key combination
    virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key) = 0;
@@ -153,7 +127,7 @@ interface IEAFAcceleratorTable : IUnknown
 DEFINE_GUID(IID_IEAFDocument, 
 0x37322672, 0xefa0, 0x4823, 0x95, 0xae, 0xef, 0xcd, 0xc8, 0x81, 0x24, 0x50);
 struct __declspec(uuid("{37322672-EFA0-4823-95AE-EFCDC8812450}")) IEAFDocument;
-interface IEAFDocument : IUnknown
+interface IEAFDocument
 {
    // Returns TRUE if the document is modified
    virtual BOOL IsModified() = 0;
@@ -185,9 +159,9 @@ interface IEAFDocument : IUnknown
 // {D39456A3-33CD-4ea0-91EE-D15BBEA574B8}
 DEFINE_GUID(IID_IEAFProcessCommandLine, 
 0xd39456a3, 0x33cd, 0x4ea0, 0x91, 0xee, 0xd1, 0x5b, 0xbe, 0xa5, 0x74, 0xb8);
-struct __declspec(uuid("{D39456A3-33CD-4ea0-91EE-D15BBEA574B8}")) IEAFProcessCommandLine;
-interface IEAFProcessCommandLine : IUnknown
+class __declspec(uuid("{D39456A3-33CD-4ea0-91EE-D15BBEA574B8}")) IEAFProcessCommandLine
 {
+public:
    // Processes command line options. Return TRUE if they were handled, otherwise FALSE.
    // cmdInfo is the basic command line information from the application class. You may
    // need to re-parse the command line parameters to get your parameters. The following
@@ -203,6 +177,28 @@ interface IEAFProcessCommandLine : IUnknown
    // }
    // return FALSE;
    virtual BOOL ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo) = 0;
+};
+
+namespace WBFL
+{
+   namespace EAF
+   {
+      /// @brief Plug-in objects that provide commands on the menus or toolbars must
+      /// implement this interface to receive command notifications
+      class ICommandCallback
+      {
+      public:
+         /// Called by the framework when a command is selected. Pass the parameters into a CCmdTarget object
+         /// OnCmdMsg function
+         virtual BOOL OnCommandMessage(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO * pHandlerInfo) = 0;
+
+         /// Called by the framework to get the status bar message when the user slides the mouse over a menu item
+         virtual BOOL GetStatusBarMessageString(UINT nID, CString& rMessage) const = 0;
+
+         /// Called by the framework to get the toolbar tip
+         virtual BOOL GetToolTipMessageString(UINT nID, CString& rMessage) const = 0;
+      };
+   };
 };
 
 // Virtual key codes not defined by Windows API

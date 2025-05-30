@@ -65,7 +65,6 @@
 #include <Reporter\PageLayout.h>
 #include <Reporter\HtmlReportVisitor.h>
 #include <Reporter\FormattedLengthUnitValue.h>
-#include <Reporter\ReportingUtils.h>
 #include <Reporter\RiStyle.h>
 #include <Reporter\StyleManager.h>
 #include <Reporter\StyleLibrary.h>

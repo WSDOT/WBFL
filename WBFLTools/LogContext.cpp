@@ -32,11 +32,6 @@ CLASS
 #include <System\SectionValue.h>
 #include <TCHAR.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define BUFSIZE 256
 

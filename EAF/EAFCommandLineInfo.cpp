@@ -24,11 +24,6 @@
 #include <EAF\EAFCommandLineInfo.h>
 #include <EAF\EAFApp.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 CEAFCommandLineInfo::CEAFCommandLineInfo() :
 CCommandLineInfo(),
@@ -37,7 +32,8 @@ m_bCommandLineMode(FALSE),
 m_CommandLineDisplayMode(CEAFCommandLineInfo::cldDefault),
 m_bError(FALSE),
 m_bTargetApp(FALSE),
-m_nParams(0)
+m_nParams(0),
+m_LoggingVerbosity(WBFL::System::Logger::Severity::Info)
 {
 }
 
@@ -63,7 +59,7 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
    m_nParams++;
 
    // if this is the last parameter and there is only one parameter and it isn't a filename, then go into command line mode.
-   // if this is the last parameter and there more than one paramenter and one of the parameters is a filename, go into command line mode
+   // if this is the last parameter and there more than one parameter and one of the parameters is a filename, go into command line mode
    if ( bLast && (1 == m_nParams && m_nShellCommand != CCommandLineInfo::FileOpen) 
               || (1 <  m_nParams && m_nShellCommand == CCommandLineInfo::FileOpen) 
       )
@@ -91,21 +87,28 @@ void CEAFCommandLineInfo::ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast)
    {
       m_CommandLineDisplayMode = cldSilent;
    }
+
+   if (strParam.CompareNoCase(_T("v")) == 0)
+   {
+      // application start with verbose logging
+      m_LoggingVerbosity = WBFL::System::Logger::Severity::Debug;
+      m_bCommandLineMode = FALSE; // this is not command line mode, but rather a startup option
+   }
 }
 
 CEAFCommandLineInfo& CEAFCommandLineInfo::operator=(const CEAFCommandLineInfo& other)
 {
-   m_bUsageMessage    = other.m_bUsageMessage;
+   m_bUsageMessage = other.m_bUsageMessage;
    m_bCommandLineMode = other.m_bCommandLineMode;
-   m_bError           = other.m_bError;
-   m_bShowSplash      = other.m_bShowSplash;
-   m_strErrorMsg      = other.m_strErrorMsg;
-   m_bTargetApp       = other.m_bTargetApp;
-   m_strTargetApp     = other.m_strTargetApp;
+   m_bError = other.m_bError;
+   m_bShowSplash = other.m_bShowSplash;
+   m_strErrorMsg = other.m_strErrorMsg;
+   m_bTargetApp = other.m_bTargetApp;
+   m_strTargetApp = other.m_strTargetApp;
+   m_LoggingVerbosity = other.m_LoggingVerbosity;
 
    return *this;
 }
-
 void CEAFCommandLineInfo::SetErrorInfo(LPCTSTR strError)
 {
    m_strErrorMsg = strError;
@@ -125,10 +128,11 @@ CString CEAFCommandLineInfo::GetUsageMessage()
    CString strOption2(_T("/help - Get command line options"));
    CString strOption3(_T("/<app options> filename - Opens the specified file and passes <app options> to the application associated with the file"));
    CString strOption4(_T("/App=<appname> <app options> - Passes <app options> to the application specified with <appname> for processing"));
+   CString strOption5(_T("/v - Enables verbose logging"));
 
    CString strMsg;
-   strMsg.Format(_T("Usage:\n%s\n%s\n\nwhere <options> are:\n%s\n%s\n%s\n%s"),
-      strCommand1,strCommand2,strOption1,strOption2,strOption3,strOption4);
+   strMsg.Format(_T("Usage:\n%s\n%s\n\nwhere <options> are:\n%s\n%s\n%s\n%s\n%s"),
+      strCommand1,strCommand2,strOption1,strOption2,strOption3,strOption4,strOption5);
 
    return strMsg;
 }

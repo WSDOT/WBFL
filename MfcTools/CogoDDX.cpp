@@ -30,11 +30,6 @@
 #include <cctype>
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void DDX_Direction(CDataExchange* pDX,int nIDC,IDirection* pDirection,IDisplayUnitFormatter* formatter)
 {

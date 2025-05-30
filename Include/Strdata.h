@@ -28,12 +28,12 @@ enum StrDataType
 
 
 template <class T>
-HRESULT CallbackProc(IStructuredSave*,IStructuredLoad*,IProgress*,T* obj);
+HRESULT CallbackProc(IStructuredSave*,IStructuredLoad*, std::shared_ptr<IEAFProgress>,T* obj);
 
 template <class T>
    struct StrStorageData
    {
-      typedef typename HRESULT (*CallbackProc)(IStructuredSave*,IStructuredLoad*,IProgress*,T*);
+      typedef typename HRESULT (*CallbackProc)(IStructuredSave*,IStructuredLoad*, std::shared_ptr<IEAFProgress>,T*);
 
       StrStorageData():
       m_Version(-1),
@@ -100,8 +100,8 @@ public:
    void EndUnit();
    double GetVersion();
 
-   HRESULT Save(IStructuredSave* pSave,IProgress* pProgress);
-   HRESULT Load(IStructuredLoad* pLoad,IProgress* pProgress);
+   HRESULT Save(IStructuredSave* pSave, std::shared_ptr<IEAFProgress> pProgress);
+   HRESULT Load(IStructuredLoad* pLoad, std::shared_ptr<IEAFProgress> pProgress);
 
 private:
 
@@ -109,8 +109,8 @@ private:
    StrStorageData<T>* m_pCurrent;
    std::stack<StrStorageData<T>*> m_Prev;
 
-   HRESULT Save( IStructuredSave* pSave, StrStorageData<T>* pData, IProgress* pProgress);
-   HRESULT Load( IStructuredLoad* pSave, StrStorageData<T>* pData, IProgress* pProgress);
+   HRESULT Save( IStructuredSave* pSave, StrStorageData<T>* pData, std::shared_ptr<IEAFProgress> pProgress);
+   HRESULT Load(IStructuredLoad* pSave, StrStorageData<T>* pData, std::shared_ptr<IEAFProgress> pProgress);
 };
 
 #define DECLARE_STRSTORAGEMAP(cls) \

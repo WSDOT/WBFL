@@ -464,6 +464,17 @@ BEGIN
     LTEXT           "minutes",IDC_INTERVAL_UNITS,98,26,26,8
 END
 
+IDD_PROGRESSDLG DIALOGEX 0, 0, 214, 107
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Progress"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,82,86,50,14
+    LTEXT           "Working...",IDC_MESSAGE,7,7,200,19
+    CONTROL         "Progress1",IDC_PROGRESS,"msctls_progress32",0x0,7,31,200,14
+    CONTROL         "Animate1",IDC_ANIMATE,"SysAnimate32",ACS_CENTER | ACS_TRANSPARENT | ACS_AUTOPLAY | WS_TABSTOP,7,50,200,30
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -473,6 +484,14 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
+    IDD_PROGRESSDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 207
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 100
+    END
+
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -598,6 +617,14 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AVI
+//
+
+IDR_ANIMATE             AVI                     "res\\Working.avi"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -676,6 +703,7 @@ BEGIN
                             "Update all views, reports, and graphs\nUpdate Now (F5)"
     EAFID_HELP_SOURCE       "Change help documentation between online and offline sources"
     EAFID_HELPWND_BACK      "Browse Back\nBrowse Back"
+    EAFID_LOGGING       "Application logging options\n"
 END
 
 STRINGTABLE

@@ -26,24 +26,19 @@
 
 #include "stdafx.h"
 #include <EAF\EAFBrokerDocument.h>
-#include <EAF\EAFHelp.h>
+#include <EAF\Help.h>
 #include <EAF\EAFHints.h>
-#include <EAF\EAFAutoProgress.h>
+#include <EAF\AutoProgress.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
+#include <../Core/CLSID.h>
+
+#include "GraphManagerAgent.h"
+#include "ReportManagerAgent.h"
 
 #include "ConfigureReportsDlg.h"
 
-#include "WBFLReportManagerAgent.h"
-#include "WBFLGraphManagerAgent.h"
-
 #include <sstream> // for ostringstream
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -99,9 +94,8 @@ void CEAFBrokerDocument::OnCloseDocument()
 {
    // Put report favorites options back into CPGSuperBaseAppPlugin
    CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   CComPtr<IEAFAppPlugin> pAppPlugin;
-   pTemplate->GetPlugin(&pAppPlugin);
-   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+   auto pluginApp = pTemplate->GetPluginApp();
+   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pluginApp.get());
    if ( pCustomReportMixin )
    {
       BOOL bDisplayFavorites = DisplayFavoriteReports();
@@ -129,15 +123,14 @@ void CEAFBrokerDocument::OnCreateFinalize()
    CEAFDocument::OnCreateFinalize();
 
    GET_IFACE(IEAFStatusCenter,pStatusCenter);
-   m_scidCustomReportWarning = pStatusCenter->RegisterCallback(new CEAFStatusItemCallback(eafTypes::statusWarning)); 
+   m_scidCustomReportWarning = pStatusCenter->RegisterCallback(std::make_shared<WBFL::EAF::StatusItemCallback>(WBFL::EAF::StatusSeverityType::Warning)); 
    m_StatusGroupID = pStatusCenter->CreateStatusGroupID();
 
 
    // Transfer report favorites and custom reports data from CXBeamRateAppPlugin to CEAFBrokerDocument (this)
    CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   CComPtr<IEAFAppPlugin> pAppPlugin;
-   pTemplate->GetPlugin(&pAppPlugin);
-   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pAppPlugin.p);
+   auto pluginApp = pTemplate->GetPluginApp();
+   CEAFCustomReportMixin* pCustomReportMixin = dynamic_cast<CEAFCustomReportMixin*>(pluginApp.get());
    if ( pCustomReportMixin )
    {
       pCustomReportMixin->SaveCustomReports(TRUE);
@@ -176,16 +169,9 @@ void CEAFBrokerDocument::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFBrokerDocument commands
-HRESULT CEAFBrokerDocument::GetBroker(IBroker** ppBroker)
+std::shared_ptr<WBFL::EAF::Broker> CEAFBrokerDocument::GetBroker()
 {
-   if ( m_pBroker )
-   {
-      (*ppBroker) = m_pBroker;
-      (*ppBroker)->AddRef();
-      return S_OK;
-   }
-
-   return E_FAIL;
+   return m_pBroker;
 }
 
 CATID CEAFBrokerDocument::GetExtensionAgentCategoryID()
@@ -195,313 +181,210 @@ CATID CEAFBrokerDocument::GetExtensionAgentCategoryID()
 
 BOOL CEAFBrokerDocument::Init()
 {
+   // Hard code the system agent component information here instead of having a manifest
+   // that implementers need to remember to load. This is not idea, but it works. The root
+   // cause problem is the Progress Window doesn't work in this DLL so it didn't get moved
+   // from the WBFLCore.DLL (we wanted to eliminate WBFLCore.DLL all together when removing
+   // COM Component Categories, but it didn't work).
+   WBFL::EAF::ComponentInfo info;
+   info.clsid = CLSID_SysAgent;
+   info.dll = _T("WBFLCore.dll");
+   info.name = _T("System Agent");
+   WBFL::EAF::ComponentManager::GetInstance().RegisterComponent(info);
+
    if ( !CreateBroker() )
    {
       InitFailMessage();
       return FALSE;
    }
 
-   if ( !CEAFDocument::Init() )
-   {
-      return FALSE;
-   }
-
-   // tell the broker to wait on calling the IAgent::Init function until
-   // pBrokerInit->InitAgents() is called
-   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-   pBrokerInit->DelayInit();
-
-   BOOL bAgentsLoaded = LoadAgents();
-   if ( !bAgentsLoaded )
+   if ( !LoadAgents())
    {
       OnLoadAgentsError();
       return FALSE;
    }
 
    InitAgents();
-   
+
+   if (!CEAFDocument::Init())
+   {
+      return FALSE;
+   }
+
    return TRUE;
 }
 
 BOOL CEAFBrokerDocument::CreateBroker()
 {
-   // create the broker object
-   HRESULT hr;
-   hr = ::CoCreateInstance( CLSID_Broker2, nullptr, CLSCTX_INPROC_SERVER, IID_IBroker, (void**)&m_pBroker );
-   if ( FAILED(hr) )
-   {
-      std::_tostringstream msg;
-      msg << _T("Failed to create broker. hr = ") << hr << std::endl << std::ends;
-      FailSafeLogMessage( msg.str().c_str() );
-      return FALSE;
-   }
-
-   // get the IBrokerInitEx2 interface
-   // the broker we want to be using implements this interface so
-   // generate an error if it doesn't have it
-   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-   if ( pBrokerInit == nullptr )
-   {
-      FailSafeLogMessage(_T("Wrong version of Broker installed\nRe-install"));
-      return FALSE;
-   }
-
-   // tell the broker to wait on calling the IAgent::Init function until
-   // pBrokerInit->InitAgents() is called
-   pBrokerInit->DelayInit();
+   m_pBrokerChecker = std::make_shared<WBFL::EAF::BrokerChecker>();
+   m_pBroker = std::make_shared<WBFL::EAF::Broker>(m_pBrokerChecker);
 
    return TRUE;
 }
 
 void CEAFBrokerDocument::BrokerShutDown()
 {
-   // if we are done with the broker, we must also be done with
-   // all of our cached interfaces
-   m_pReportManager = nullptr;
-   m_pGraphManager = nullptr;
+   m_pDocProxyAgent = nullptr; // get ride of the doc proxy agent so it doesn't have a scope beyond that of the broker
 
-   if ( m_pBroker )
+   if (m_pBroker)
    {
       m_pBroker->ShutDown();
-      ULONG cRef = m_pBroker->Release();
-      ASSERT( cRef == 0 );
-      
       m_pBroker = nullptr;
 
-      m_pDocProxyAgent = nullptr;
+      // This assert fires when the broker or some of the agents have not been destroyed.
+      // They should all be destroyed at this point. If they have not been destroyed,
+      // something has a circular reference keeping the broker or agents alive.
+      ASSERT(m_pBrokerChecker->CheckFinal() == true);
    }
+}
+
+void CEAFBrokerDocument::LogAgentError(const WBFL::EAF::AgentError& error)
+{
+   std::_tostringstream os;
+   os << _T("Failed to load agent: ") << error.component.name << _T(" - ") << error.reason << std::endl;
+   os << _T("CLSID: ") << EAFStringFromCLSID(error.component.clsid);
+   os << _T("DLL: ") << error.component.dll;
+   WBFL::System::Logger::Error(os.str());
 }
 
 BOOL CEAFBrokerDocument::LoadAgents()
 {
-   // get the correct interface from the broker
-   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-
-   // create component category manager
-   CComPtr<ICatRegister> pICatReg;
-   HRESULT hr;
-   hr = ::CoCreateInstance( CLSID_StdComponentCategoriesMgr,
-                            nullptr,
-                            CLSCTX_INPROC_SERVER,
-                            IID_ICatRegister,
-                            (void**)&pICatReg );
-
-   // deal with failure
-   if ( FAILED(hr) )
+   auto result = m_pBroker->LoadAgents(GetAgentCategoryID());
+   if (result.first == false) // primary agents are required so if there is a failure, exit with FALSE
    {
-      std::_tostringstream msg;
-      msg << "Failed to create Component Category Manager. hr = " << hr << std::endl;
-      msg << "Is the correct version of Internet Explorer installed?" << std::endl << std::ends;
-      FailSafeLogMessage( msg.str().c_str() );
-      return FALSE;
-   }
-
-   // get the necessary interfaces from the component category manager
-   CComQIPtr<ICatInformation> pICatInfo(pICatReg);
-
-   CComPtr<IEnumCLSID> pIEnumCLSID;
-
-   // get the agent category identifier
-   const int nID = 1;
-   CATID ID[nID];
-   ID[0] = GetAgentCategoryID();
-
-   // enum agents
-   pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
-
-   // load up to 10 agents at a time
-   const int nMaxAgents = 10;
-   CLSID clsid[nMaxAgents];
-
-   ULONG nAgentsLoaded = 0;
-   while (SUCCEEDED(pIEnumCLSID->Next(nMaxAgents,clsid,&nAgentsLoaded)) && 0 < nAgentsLoaded )
-   {
-      // load the agents
-      if ( !LoadAgents(pBrokerInit, clsid, nAgentsLoaded) )
+      for (auto& agent_error : result.second)
       {
-         return FALSE;
+         LogAgentError(agent_error);
       }
-   }
-
-   // load the special agents
-   if ( !LoadSpecialAgents(pBrokerInit) )
-   {
       return FALSE;
    }
 
-   //
-   // Load extension agents
-   //
-
-   ID[0] = GetExtensionAgentCategoryID();
-   if ( ID[0] != CLSID_NULL )
+   result = LoadSpecialAgents();
+   if (result.first == false)
    {
-      // enum agents
-      pIEnumCLSID.Release();
-      pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
-
-      CWinApp* pApp = AfxGetApp();
-
-      nAgentsLoaded = 0;
-      while (SUCCEEDED(pIEnumCLSID->Next(nMaxAgents,clsid,&nAgentsLoaded)) && 0 < nAgentsLoaded )
+      for (auto& agent_error : result.second)
       {
-         // load the extension agents - do it one at a time so that disabled ones can be skipped
-         for (ULONG i = 0; i < nAgentsLoaded; i++ )
+         LogAgentError(agent_error);
+      }
+      return FALSE;
+   }
+
+   result = m_pBroker->LoadExtensionAgents(GetExtensionAgentCategoryID());
+   if (result.first == false)
+   {
+      // there was an error loading one or more optional agents
+      // prompt the user if they want to disable the extension agent
+      // so it doesn't load next time
+      for (auto& agent_error : result.second)
+      {
+         LogAgentError(agent_error);
+
+         CString strMsg;
+         strMsg.Format(_T("Failed to load %s.\n\nWould you like to disable this component?"), agent_error.component.name.c_str());
+         if (AfxMessageBox(strMsg, MB_YESNO | MB_ICONQUESTION) == IDYES)
          {
-            USES_CONVERSION;
-
-            LPOLESTR pszCLSID;
-            ::StringFromCLSID(clsid[i],&pszCLSID);
-
-            CString strState = pApp->GetProfileString(_T("Extensions"),OLE2T(pszCLSID),_T("Enabled"));
-            if ( strState.CompareNoCase(_T("Enabled")) == 0 )
-            {
-               CLSID* pCLSID = &clsid[i];
-               LoadAgents(pBrokerInit,pCLSID,1,false); // false = not required
-            }
-
-            ::CoTaskMemFree((void*)pszCLSID);
+            CString strCLSID(EAFStringFromCLSID(agent_error.component.clsid).c_str());
+            CEAFApp* pApp = EAFGetApp();
+            pApp->WriteProfileString(_T("Extensions"), strCLSID, _T("Disabled"));
          }
       }
+      // Extension agents are optional so don't return FALSE here
+      //return FALSE;
    }
 
    return TRUE;
 }
 
-BOOL CEAFBrokerDocument::LoadAgents(IBrokerInitEx2* pBrokerInit, CLSID* pClsid, long nClsid,bool bRequiredAgent)
-{
-   // this function does the actual work of loading an agent
-   CComPtr<IIndexArray> lErrArray;
-   HRESULT hr;
-   if ( bRequiredAgent )
-   {
-      hr = pBrokerInit->LoadAgents( pClsid, nClsid, &lErrArray );
-   }
-   else
-   {
-      hr = pBrokerInit->LoadExtensionAgents( pClsid, nClsid, &lErrArray );
-   }
-
-   if ( FAILED(hr) )
-   {
-      IndexType nErrors;
-      lErrArray->get_Count(&nErrors);
-      for ( IndexType errIdx = 0; errIdx < nErrors; errIdx++ )
-      {
-         IndexType agentIdx;
-         lErrArray->get_Item(errIdx,&agentIdx);
-         LPOLESTR pszCLSID;
-         StringFromCLSID( pClsid[agentIdx], &pszCLSID );
-         CString strCLSID(pszCLSID);
-         ::CoTaskMemFree( (LPVOID)pszCLSID );
-
-         LPOLESTR pszProgID;
-         ProgIDFromCLSID( pClsid[agentIdx], &pszProgID );
-         CString strProgID(pszProgID);
-         ::CoTaskMemFree( (LPVOID)pszProgID );
-
-         std::_tostringstream msg;
-         msg << "Failed to load agent. hr = " << hr << std::endl;
-         msg << "CLSID = " << strCLSID.LockBuffer() << std::endl;
-         msg << "ProgID = " << strProgID.LockBuffer() << std::endl << std::ends;
-         FailSafeLogMessage( msg.str().c_str() );
-
-         if ( !bRequiredAgent )
-         {
-            // there was an error and this agent isn't required, prompt user
-            // to disable it so it doesn't get loaded next time
-            USES_CONVERSION;
-
-            LPOLESTR pszUserType;
-            OleRegGetUserType(pClsid[agentIdx],USERCLASSTYPE_SHORT,&pszUserType);
-
-            CString strMsg;
-            strMsg.Format(_T("Failed to load %s.\n\nWould you like to disable this component?"),OLE2T(pszUserType));
-            if ( AfxMessageBox(strMsg,MB_YESNO | MB_ICONQUESTION) == IDYES )
-            {
-               CEAFApp* pApp = EAFGetApp();
-               pApp->WriteProfileString(_T("Extensions"),strCLSID,_T("Disabled"));
-            }
-         }
-
-         strCLSID.UnlockBuffer();
-         strProgID.UnlockBuffer();
-      }
-
-      return FALSE;
-   }
-   return TRUE;
-}
-
-BOOL CEAFBrokerDocument::LoadSpecialAgents(IBrokerInitEx2* pBrokerInit)
+std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
 {
    // Load up the proxy agent -> This guy implements several interfaces
-   // required for Agent Plug in integration as well as
+   // required for Agent Plug-in integration as well as
    // provides the bridge between the MFC Doc/View architecture
    // and the WBFL Agent/Broker architecture.
 
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
-   CComObject<CEAFDocProxyAgent>* pDocProxyAgent;
-   CComObject<CEAFDocProxyAgent>::CreateInstance(&pDocProxyAgent);
-   CComPtr<IAgentEx> pAgent(pDocProxyAgent);
+   WBFL::EAF::AgentErrors errors;
 
-   m_pDocProxyAgent = dynamic_cast<CEAFDocProxyAgent*>(pDocProxyAgent);
-
-   m_pDocProxyAgent->SetDocument( this );
-   m_pDocProxyAgent->SetBroker( m_pBroker );
-   m_pDocProxyAgent->SetMainFrame(pMainFrame);
-   
-   HRESULT hr = pBrokerInit->AddAgent( pAgent );
-
-   // Since we use the ILogFile and IProgress interfaces, we required the SysAgent
-   int n = 1 + m_bUseReportManager + m_bUseGraphManager;
-   std::unique_ptr<CLSID[]> clsid(new CLSID[n]);
-   int i = 0;
-   clsid[i++] = CLSID_SysAgent;
-   if (m_bUseReportManager) clsid[i++] = CLSID_ReportManagerAgent;
-   if (m_bUseGraphManager) clsid[i++] = CLSID_GraphManagerAgent;
-   if ( !CEAFBrokerDocument::LoadAgents(pBrokerInit, clsid.get(), i) )
+   m_pDocProxyAgent = std::make_shared<CEAFDocProxyAgent>(this, pMainFrame);
+   auto result = m_pBroker->AddAgent(m_pDocProxyAgent);
+   if (result.first == false)
    {
-      return FALSE;
+      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+      result.second.component.dll = AfxGetApp()->m_pszExeName;
+      result.second.reason += _T(" - could not add EAFDocProxyAgent to broker");
+      errors.push_back(result.second);
    }
 
-   return SUCCEEDED(hr);
+   result = m_pBroker->LoadAgent(CLSID_SysAgent);
+   if (result.first == false)
+   {
+      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+      result.second.component.dll = AfxGetApp()->m_pszExeName;
+      result.second.reason += _T(" - could not add System Agent to broker");
+      errors.push_back(result.second);
+   }
+
+   // if the document is using the graph manager, add it
+   if (m_bUseGraphManager)
+   {
+      auto graph_manager_agent = std::make_shared<WBFL::EAF::GraphManagerAgent>();
+      auto result = m_pBroker->AddAgent(graph_manager_agent);
+      if(result.first == false)
+      {
+         AFX_MANAGE_STATE(AfxGetStaticModuleState());
+         result.second.component.dll = AfxGetApp()->m_pszExeName;
+         result.second.reason += _T(" - could not add GraphManagerAgent to broker");
+         errors.push_back(result.second);
+      }
+   }
+
+   // if the document is using the report manager, add it
+   if (m_bUseReportManager)
+   {
+      auto report_manager_agent = std::make_shared<WBFL::EAF::ReportManagerAgent>();
+      auto result = m_pBroker->AddAgent(report_manager_agent);
+      if (result.first == false)
+      {
+         AFX_MANAGE_STATE(AfxGetStaticModuleState());
+         result.second.component.dll = AfxGetApp()->m_pszExeName;
+         result.second.reason += _T(" - could not add ReportManagerAgent to broker");
+         errors.push_back(result.second);
+      }
+   }
+
+   return { errors.empty(), errors };
 }
 
 void CEAFBrokerDocument::InitAgents()
 {
    // and finally, initialize all the agents
-   CComQIPtr<IBrokerInitEx2> pBrokerInit(m_pBroker);
-   pBrokerInit->InitAgents();
+   m_pBroker->InitAgents();
 
-
-   // OnCmdMsg uses these interfaces tens of thousands of time. Get them once
-   m_pBroker->GetInterface(IID_IReportManager, (IUnknown**)&m_pReportManager);
-   m_pBroker->GetInterface(IID_IGraphManager, (IUnknown**)&m_pGraphManager);
-
-   if (m_pReportManager)
+   if (m_bUseReportManager)
    {
+      GET_IFACE(IEAFReportManager, reportManager);
       CEAFApp* pApp = EAFGetApp();
       auto strBrowserType = pApp->GetProfileString(_T("Settings"), _T("ReportBrowser"), _T("Edge"));
       WBFL::Reporting::ReportBrowser::Type browserType = (strBrowserType.CompareNoCase(_T("IE")) == 0 ? WBFL::Reporting::ReportBrowser::Type::IE : WBFL::Reporting::ReportBrowser::Type::Edge);
-      m_pReportManager->SetReportBrowserType(browserType);
+      reportManager->SetReportBrowserType(browserType);
    }
+
+   // Checks to confirm all agents are initialized
+   ASSERT(m_pBrokerChecker->CheckInitial() == true);
 }
 
 void CEAFBrokerDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
    CEAFDocument::DoIntegrateWithUI(bIntegrate);
 
-   CComQIPtr<IBrokerInitEx3> pBrokerInit(m_pBroker);
-
    if ( bIntegrate )
    {
-      pBrokerInit->Integrate(TRUE,m_pReportManager == nullptr ? FALSE : TRUE,m_pGraphManager == nullptr ? FALSE : TRUE,TRUE);
+      m_pBroker->Integrate(true, m_bUseReportManager, m_bUseGraphManager, true);
    }
    else
    {
-      pBrokerInit->RemoveIntegration();
+      m_pBroker->RemoveIntegration();
    }
 }
 
@@ -512,15 +395,12 @@ BOOL CEAFBrokerDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       return TRUE; // handled
    }
 
-   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
-   IndexType nAgents;
-   manageAgents->get_AgentCount(&nAgents);
+   auto nAgents = m_pBroker->GetAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_Agent(agentIdx,&agent);
+      auto agent = m_pBroker->GetAgent(agentIdx);
 
-      CComQIPtr<IEAFProcessCommandLine,&IID_IEAFProcessCommandLine> processCommandLine(agent);
+      auto processCommandLine = std::dynamic_pointer_cast<IEAFProcessCommandLine>(agent);
       if ( processCommandLine )
       {
          if ( processCommandLine->ProcessCommandLineOptions(cmdInfo) )
@@ -530,13 +410,12 @@ BOOL CEAFBrokerDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
       }
    }
 
-   manageAgents->get_ExtensionAgentCount(&nAgents);
+   nAgents = m_pBroker->GetExtensionAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_ExtensionAgent(agentIdx,&agent);
+      auto agent = m_pBroker->GetExtensionAgent(agentIdx);
 
-      CComQIPtr<IEAFProcessCommandLine,&IID_IEAFProcessCommandLine> processCommandLine(agent);
+      auto processCommandLine = std::dynamic_pointer_cast<IEAFProcessCommandLine>(agent);
       if ( processCommandLine )
       {
          if ( processCommandLine->ProcessCommandLineOptions(cmdInfo) )
@@ -557,87 +436,48 @@ void CEAFBrokerDocument::OnLoadAgentsError()
 
 HRESULT CEAFBrokerDocument::LoadTheDocument(IStructuredLoad* pStrLoad)
 {
-   CComQIPtr<IBrokerPersist> pPersist(m_pBroker);
-   return pPersist->Load( pStrLoad );
+   auto result = m_pBroker->Load(pStrLoad);
+   HRESULT hr = S_OK;
+   switch (result)
+   {
+   case WBFL::EAF::Broker::LoadResult::Error:
+      hr = E_FAIL;
+      break;
+
+   case WBFL::EAF::Broker::LoadResult::Success:
+      hr = S_OK;
+      break;
+
+   case WBFL::EAF::Broker::LoadResult::Modified:
+      hr = S_FALSE;
+      break;
+
+   default:
+      ASSERT(false); // is there a new result type?
+   }
+
+   return hr;
 }
 
 HRESULT CEAFBrokerDocument::WriteTheDocument(IStructuredSave* pStrSave)
 {
-   CComQIPtr<IBrokerPersist> pPersist(m_pBroker);
-   return pPersist->Save( pStrSave );
-}
-
-CString CEAFBrokerDocument::GetLogFileName()
-{
-   // Creates the log file on the User's desktop so that it is easy to find
-   CString strFileName;
-   strFileName.Format(_T("%s.log"),EAFGetApp()->m_pszExeName);
-
-   PWSTR strDesktop;
-   ::SHGetKnownFolderPath(FOLDERID_Desktop,0,nullptr,&strDesktop);
-
-   CString strFilePath;
-   strFilePath.Format(_T("%s\\%s"),strDesktop,strFileName);
-
-   ::CoTaskMemFree((void*)strDesktop);
-
-   return strFilePath;
-}
-
-void CEAFBrokerDocument::OnLogFileOpened()
-{
-   // Does nothing by default
-}
-
-void CEAFBrokerDocument::OnLogFileClosing()
-{
-   // Does nothing by default
+   return m_pBroker->Save(pStrSave) ? S_OK : E_FAIL;
 }
 
 BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo) 
 {
-   if ( m_pBroker )
+   if ( m_pBroker && m_pBroker->IsInitialized() )
    {
       // Interrupt the normal command processing to handle reports and graphs
       // The report and graph menu items are dynamically generated and so are their IDs
-      // If the command code is in the range of the report/graphg commands a specific
+      // If the command code is in the range of the report/graphing commands a specific
       // report/graph name was selected from a menu. Send the message on to the OnReport/OnGraph handler
       // and tell MFC that this message has been handled (return TRUE)
 
-      if ( m_pReportManager )
+      if ( m_bUseGraphManager )
       {
-         IndexType nReports = m_pReportManager->GetReportBuilderCount();
-         BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
-         BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
-
-         if ( bIsReport || bIsQuickReport )
-         {
-            if ( nCode == CN_UPDATE_COMMAND_UI )
-            {
-               CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
-               pCmdUI->Enable(TRUE);
-               return TRUE;
-            }
-            else if ( nCode == CN_COMMAND )
-            {
-               if ( bIsQuickReport )
-               {
-                  OnQuickReport(nID);
-               }
-               else
-               {
-                  OnReport(nID);
-               }
-
-               return TRUE;
-            }
-         }
-      }
-
-      // Don't use GET_IFACE because the ASSERTs will fire if the interface is missing (which is valid in this case)
-      if ( m_pGraphManager )
-      {
-         IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+         GET_IFACE(IEAFGraphManager, graphManager);
+         IndexType nGraphs = graphManager->GetGraphBuilderCount();
          BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
          if ( bIsGraph )
          {
@@ -654,12 +494,43 @@ BOOL CEAFBrokerDocument::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHAND
             }
          }
       }
+
+      if (m_bUseReportManager)
+      {
+         GET_IFACE(IEAFReportManager, reportManager);
+         IndexType nReports = reportManager->GetReportBuilderCount();
+         BOOL bIsReport = (GetReportCommand(0, false) <= nID && nID <= GetReportCommand(nReports - 1, false));
+         BOOL bIsQuickReport = (GetReportCommand(0, true) <= nID && nID <= GetReportCommand(nReports - 1, true));
+
+         if (bIsReport || bIsQuickReport)
+         {
+            if (nCode == CN_UPDATE_COMMAND_UI)
+            {
+               CCmdUI* pCmdUI = (CCmdUI*)(pExtra);
+               pCmdUI->Enable(TRUE);
+               return TRUE;
+            }
+            else if (nCode == CN_COMMAND)
+            {
+               if (bIsQuickReport)
+               {
+                  OnQuickReport(nID);
+               }
+               else
+               {
+                  OnReport(nID);
+               }
+
+               return TRUE;
+            }
+         }
+      }
    }
 	
 	return CEAFDocument::OnCmdMsg(nID, nCode, pExtra, pHandlerInfo);
 }
 
-void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
+void CEAFBrokerDocument::PopulateReportMenu(std::shared_ptr<WBFL::EAF::Menu> pReportMenu)
 {
    // remove any old reports and placeholders
    UINT nItems = pReportMenu->GetMenuItemCount();
@@ -672,17 +543,17 @@ void CEAFBrokerDocument::PopulateReportMenu(CEAFMenu* pReportMenu)
    {
       // Add favorites option at top
       CString msg = m_bDisplayFavoriteReports==FALSE ? _T("Show only favorites") : _T("Show all reports");
-      pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg,nullptr);
+      pReportMenu->AppendMenu(EAFID_REPORT_MENU_DISPLAY_MODE,msg, nullptr);
       pReportMenu->AppendSeparator();
    }
 
    BuildReportMenu(pReportMenu,false);
 }
 
-void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
+void CEAFBrokerDocument::BuildReportMenu(std::shared_ptr<WBFL::EAF::Menu> pMenu,BOOL bQuickReport)
 {
-   GET_IFACE(IReportManager,pReportMgr);
-   std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
+   GET_IFACE(IEAFReportManager, reportManager);
+   std::vector<std::_tstring> rptNames = reportManager->GetReportNames();
 
    // if this assert fires, there are more reports than can be put into the menus
    // EAF only reserves enough room for EAF_REPORT_MENU_COUNT reports
@@ -706,10 +577,10 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
       if (dolist)
       {
          UINT nCmd = GetReportCommand(i,bQuickReport);
-         pMenu->AppendMenu(nCmd,rptName.c_str(),nullptr);
+         pMenu->AppendMenu(nCmd,rptName.c_str(), nullptr);
 
-         const CBitmap* pBmp = pReportMgr->GetMenuBitmap(rptName);
-         pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr,nullptr);
+         const CBitmap* pBmp = reportManager->GetMenuBitmap(rptName);
+         pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr, nullptr);
 
          didlist = true;
       }
@@ -721,7 +592,7 @@ void CEAFBrokerDocument::BuildReportMenu(CEAFMenu* pMenu,BOOL bQuickReport)
    // Deal with case where there are no favorites
    if ( m_bFavoriteReports && !didlist )
    {
-      pMenu->AppendMenu(EAFID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."),nullptr);
+      pMenu->AppendMenu(EAFID_OPTIONS_REPORTING,_T("No favorite reports exist. You can add some by clicking here."), nullptr);
    }
 }
 
@@ -731,8 +602,8 @@ UINT CEAFBrokerDocument::GetReportCommand(IndexType rptIdx,BOOL bQuickReport) co
 
    if ( !bQuickReport )
    {
-      GET_IFACE(IReportManager,pReportMgr);
-      IndexType nReports = pReportMgr->GetReportBuilderCount();
+      GET_IFACE(IEAFReportManager, reportManager);
+      IndexType nReports = reportManager->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }
@@ -751,8 +622,8 @@ IndexType CEAFBrokerDocument::GetReportIndex(UINT nID,BOOL bQuickReport) const
    IndexType baseID = EAF_REPORT_MENU_BASE;
    if ( !bQuickReport )
    {
-      GET_IFACE(IReportManager,pReportMgr);
-      IndexType nReports = pReportMgr->GetReportBuilderCount();
+      GET_IFACE(IEAFReportManager, reportManager);
+      IndexType nReports = reportManager->GetReportBuilderCount();
 
       baseID += nReports + 1;
    }
@@ -782,7 +653,7 @@ void CEAFBrokerDocument::CreateReportView(IndexType rptIdx,BOOL bPrompt)
    AfxMessageBox(_T("Override CEAFBrokerDocument::CreateReportView to create the specific report view you want"));
 }
 
-void CEAFBrokerDocument::PopulateGraphMenu(CEAFMenu* pGraphMenu)
+void CEAFBrokerDocument::PopulateGraphMenu(std::shared_ptr<WBFL::EAF::Menu> pGraphMenu)
 {
    if (m_bIsGraphMenuPopulated)
    {
@@ -793,7 +664,7 @@ void CEAFBrokerDocument::PopulateGraphMenu(CEAFMenu* pGraphMenu)
    UINT nItems = pGraphMenu->GetMenuItemCount();
    for ( UINT idx = 0; idx < nItems; idx++ )
    {
-      pGraphMenu->RemoveMenu(0,MF_BYPOSITION,nullptr);
+      pGraphMenu->RemoveMenu(0,MF_BYPOSITION, nullptr);
    }
 
    BuildGraphMenu(pGraphMenu);
@@ -801,10 +672,10 @@ void CEAFBrokerDocument::PopulateGraphMenu(CEAFMenu* pGraphMenu)
    m_bIsGraphMenuPopulated = true;
 }
 
-void CEAFBrokerDocument::BuildGraphMenu(CEAFMenu* pMenu)
+void CEAFBrokerDocument::BuildGraphMenu(std::shared_ptr<WBFL::EAF::Menu> pMenu)
 {
-   GET_IFACE(IGraphManager,pGraphMgr);
-   std::vector<std::_tstring> graphNames = pGraphMgr->GetGraphNames();
+   GET_IFACE(IEAFGraphManager, graphManager);
+   std::vector<std::_tstring> graphNames = graphManager->GetGraphNames();
 
    // if this assert fires, there are more graphs than can be put into the menus
    // EAF only reserves enough room for EAF_GRAPH_MENU_COUNT graphs
@@ -817,10 +688,10 @@ void CEAFBrokerDocument::BuildGraphMenu(CEAFMenu* pMenu)
    {
       std::_tstring graphName = *iter;
       UINT nCmd = GetGraphCommand(i);
-      pMenu->AppendMenu(nCmd,graphName.c_str(),nullptr);
+      pMenu->AppendMenu(nCmd,graphName.c_str(), nullptr);
 
-      const CBitmap* pBmp = pGraphMgr->GetMenuBitmap(graphName);
-      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr,nullptr);
+      const CBitmap* pBmp = graphManager->GetMenuBitmap(graphName);
+      pMenu->SetMenuItemBitmaps(nCmd,MF_BYCOMMAND,pBmp,nullptr, nullptr);
 
       i++;
 
@@ -862,8 +733,8 @@ void CEAFBrokerDocument::CreateGraphView(IndexType graphIdx)
 
 void CEAFBrokerDocument::OnUpdateAllViews(CView* pSender, LPARAM lHint,CObject* pHint)
 {
-   GET_IFACE(IProgress,pProgress);
-   CEAFAutoProgress progress(pProgress);
+   GET_IFACE(IEAFProgress,pProgress);
+   WBFL::EAF::AutoProgress progress(pProgress);
    pProgress->UpdateMessage(_T("Updating views"));
    CEAFDocument::OnUpdateAllViews(pSender,lHint,pHint);
 }
@@ -912,16 +783,12 @@ void CEAFBrokerDocument::LoadDocumentationMap()
 {
    CEAFDocument::LoadDocumentationMap();
 
-   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
-
-   IndexType nAgents;
-   manageAgents->get_AgentCount(&nAgents);
+   auto nAgents = m_pBroker->GetAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_Agent(agentIdx,&agent);
+      auto agent = m_pBroker->GetAgent(agentIdx);
 
-      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      auto pDocIntegration = std::dynamic_pointer_cast<WBFL::EAF::IAgentDocumentationIntegration>(agent);
       if ( pDocIntegration )
       {
          HRESULT hr = pDocIntegration->LoadDocumentationMap();
@@ -929,13 +796,12 @@ void CEAFBrokerDocument::LoadDocumentationMap()
       }
    }
 
-   manageAgents->get_ExtensionAgentCount(&nAgents);
+   nAgents = m_pBroker->GetExtensionAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_ExtensionAgent(agentIdx,&agent);
+      auto agent = m_pBroker->GetExtensionAgent(agentIdx);
 
-      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      auto pDocIntegration = std::dynamic_pointer_cast<WBFL::EAF::IAgentDocumentationIntegration>(agent);
       if ( pDocIntegration )
       {
          HRESULT hr = pDocIntegration->LoadDocumentationMap();
@@ -944,11 +810,11 @@ void CEAFBrokerDocument::LoadDocumentationMap()
    }
 }
 
-eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+std::pair<WBFL::EAF::HelpResult,CString> CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID)
 {
    // let the base class do its thing first
-   eafTypes::HelpResult helpResult = CEAFDocument::GetDocumentLocation(lpszDocSetName,nHID,strURL);
-   if ( helpResult == eafTypes::hrOK || helpResult== eafTypes::hrTopicNotFound )
+   auto helpResult = CEAFDocument::GetDocumentLocation(lpszDocSetName,nHID);
+   if ( helpResult.first == WBFL::EAF::HelpResult::OK || helpResult.first == WBFL::EAF::HelpResult::TopicNotFound )
    {
       // if we have a good help document location or if the doc set was found but the HID was bad,
       // we are done... return the result
@@ -958,83 +824,51 @@ eafTypes::HelpResult CEAFBrokerDocument::GetDocumentLocation(LPCTSTR lpszDocSetN
    // Search through the agents and extension agents for anyone implementing the IAgentDocumentationIntegration interface
 
    USES_CONVERSION;
-   CComQIPtr<IManageAgents> manageAgents(m_pBroker);
+   CString strDocSetName(lpszDocSetName);
 
-   CComBSTR bstrDocSetName(lpszDocSetName);
-
-   IndexType nAgents;
-   manageAgents->get_AgentCount(&nAgents);
+   auto nAgents = m_pBroker->GetAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_Agent(agentIdx,&agent);
-
-      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      auto agent = m_pBroker->GetAgent(agentIdx);
+      auto pDocIntegration = std::dynamic_pointer_cast<WBFL::EAF::IAgentDocumentationIntegration>(agent);
       if ( pDocIntegration )
       {
-         CComBSTR bstrMyDocSetName;
-         pDocIntegration->GetDocumentationSetName(&bstrMyDocSetName);
-         if ( bstrMyDocSetName == bstrDocSetName )
+         auto strMyDocSetName = pDocIntegration->GetDocumentationSetName();
+         if ( strMyDocSetName == strDocSetName )
          {
             // matched the target document set...
 
-            CComBSTR bstrURL;
-            HRESULT hr = pDocIntegration->GetDocumentLocation(nHID,&bstrURL);
-            if ( SUCCEEDED(hr) )
-            {
-               // found the help topic
-               strURL = OLE2T(bstrURL);
-               return eafTypes::hrOK;
-            }
-            else
-            {
-               // did not find the help topic
-               return eafTypes::hrTopicNotFound;
-            }
+            return pDocIntegration->GetDocumentLocation(nHID);
          }
       }
    }
 
-   manageAgents->get_ExtensionAgentCount(&nAgents);
+   nAgents = m_pBroker->GetExtensionAgentCount();
    for ( IndexType agentIdx = 0; agentIdx < nAgents; agentIdx++ )
    {
-      CComPtr<IAgent> agent;
-      manageAgents->get_ExtensionAgent(agentIdx,&agent);
-
-      CComQIPtr<IAgentDocumentationIntegration,&IID_IAgentDocumentationIntegration> pDocIntegration(agent);
+      auto agent = m_pBroker->GetExtensionAgent(agentIdx);
+      auto pDocIntegration = std::dynamic_pointer_cast<WBFL::EAF::IAgentDocumentationIntegration>(agent);
       if ( pDocIntegration )
       {
-         CComBSTR bstrMyDocSetName;
-         pDocIntegration->GetDocumentationSetName(&bstrMyDocSetName);
-         if ( bstrMyDocSetName == bstrDocSetName )
+         auto strMyDocSetName = pDocIntegration->GetDocumentationSetName();
+         if ( strMyDocSetName == strDocSetName )
          {
             // matched the target document set...
 
-            CComBSTR bstrURL;
-            HRESULT hr = pDocIntegration->GetDocumentLocation(nHID,&bstrURL);
-            if ( SUCCEEDED(hr) )
-            {
-               // found the help topic
-               strURL = OLE2T(bstrURL);
-               return eafTypes::hrOK;
-            }
-            else
-            {
-               // did not find the help topic
-               return eafTypes::hrTopicNotFound;
-            }
+            return pDocIntegration->GetDocumentLocation(nHID);
          }
       }
    }
 
-   return eafTypes::hrDocSetNotFound;
+   return { WBFL::EAF::HelpResult::DocSetNotFound,CString() };
 }
 
 BOOL CEAFBrokerDocument::IsReportCommand(UINT nID,BOOL bQuickReport)
 {
-   if ( m_pReportManager )
+   if ( m_bUseReportManager )
    {
-      IndexType nReports = m_pReportManager->GetReportBuilderCount();
+      GET_IFACE(IEAFReportManager, reportManager);
+      IndexType nReports = reportManager->GetReportBuilderCount();
       BOOL bIsReport      = (GetReportCommand(0,false) <= nID && nID <= GetReportCommand(nReports-1,false));
       BOOL bIsQuickReport = (GetReportCommand(0,true)  <= nID && nID <= GetReportCommand(nReports-1,true));
       if ( bQuickReport )
@@ -1054,9 +888,10 @@ BOOL CEAFBrokerDocument::IsReportCommand(UINT nID,BOOL bQuickReport)
 
 BOOL CEAFBrokerDocument::IsGraphCommand(UINT nID)
 {
-   if ( m_pGraphManager )
+   if ( m_bUseGraphManager )
    {
-      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      GET_IFACE(IEAFGraphManager, graphManager);
+      IndexType nGraphs = graphManager->GetGraphBuilderCount();
       BOOL bIsGraph = (GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1));
       return bIsGraph;
    }
@@ -1069,9 +904,10 @@ BOOL CEAFBrokerDocument::IsGraphCommand(UINT nID)
 BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) const
 {
    BOOL bHandled = FALSE;
-   if ( m_pReportManager )
+   if ( m_bUseReportManager )
    {
-      IndexType nReports = m_pReportManager->GetReportBuilderCount();
+      GET_IFACE(IEAFReportManager, reportManager);
+      IndexType nReports = reportManager->GetReportBuilderCount();
       if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
            (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
@@ -1080,9 +916,10 @@ BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) c
       }
    }
 
-   if ( m_pGraphManager )
+   if ( m_bUseGraphManager )
    {
-      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      GET_IFACE(IEAFGraphManager, graphManager);
+      IndexType nGraphs = graphManager->GetGraphBuilderCount();
       if ( GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1) )
       {
          rMessage.Format(_T("Creates a graph"));
@@ -1101,9 +938,10 @@ BOOL CEAFBrokerDocument::GetStatusBarMessageString(UINT nID,CString& rMessage) c
 BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) const
 {
    BOOL bHandled = FALSE;
-   if ( m_pReportManager )
+   if ( m_bUseReportManager)
    {
-      IndexType nReports = m_pReportManager->GetReportBuilderCount();
+      GET_IFACE(IEAFReportManager, reportManager);
+      IndexType nReports = reportManager->GetReportBuilderCount();
       if ( (GetReportCommand(0,FALSE) <= nID && nID <= GetReportCommand(nReports-1,FALSE)) ||
            (GetReportCommand(0,TRUE)  <= nID && nID <= GetReportCommand(nReports-1,TRUE)) )
       {
@@ -1112,9 +950,10 @@ BOOL CEAFBrokerDocument::GetToolTipMessageString(UINT nID, CString& rMessage) co
       }
    }
 
-   if ( m_pGraphManager )
+   if ( m_bUseGraphManager )
    {
-      IndexType nGraphs = m_pGraphManager->GetGraphBuilderCount();
+      GET_IFACE(IEAFGraphManager, graphManager);
+      IndexType nGraphs = graphManager->GetGraphBuilderCount();
       if ( GetGraphCommand(0) <= nID && nID <= GetGraphCommand(nGraphs-1) )
       {
          rMessage.Format(_T("Creates a graph"));
@@ -1144,8 +983,8 @@ void CEAFBrokerDocument::OnUpdateReportMenuDisplayMode(CCmdUI* pCmdUI)
 
 void CEAFBrokerDocument::OnConfigureReports()
 {
-   GET_IFACE(IReportManager,pReportMgr);
-   std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
+   GET_IFACE(IEAFReportManager, reportManager);
+   std::vector<std::_tstring> rptNames = reportManager->GetReportNames();
 
    CConfigureReportsDlg dlg(m_bFavoriteReports);
 
@@ -1175,9 +1014,9 @@ BOOL CEAFBrokerDocument::FavoriteReports() const
    return m_bFavoriteReports;
 }
 
-void CEAFBrokerDocument::SetCustomReportHelpID(eafTypes::CustomReportHelp helpType,UINT nHelpID)
+void CEAFBrokerDocument::SetCustomReportHelpID(WBFL::EAF::CustomReportHelp helpType,UINT nHelpID)
 {
-   if ( helpType == eafTypes::crhCustomReport )
+   if ( helpType == WBFL::EAF::CustomReportHelp::CustomReport )
    {
       m_helpIDCustom = nHelpID;
    }
@@ -1187,9 +1026,9 @@ void CEAFBrokerDocument::SetCustomReportHelpID(eafTypes::CustomReportHelp helpTy
    }
 }
 
-UINT CEAFBrokerDocument::GetCustomReportHelpID(eafTypes::CustomReportHelp helpType) const
+UINT CEAFBrokerDocument::GetCustomReportHelpID(WBFL::EAF::CustomReportHelp helpType) const
 {
-   if ( helpType == eafTypes::crhCustomReport )
+   if ( helpType == WBFL::EAF::CustomReportHelp::CustomReport )
    {
       return m_helpIDCustom;
    }
@@ -1227,20 +1066,20 @@ void CEAFBrokerDocument::OnChangedFavoriteReports(BOOL bIsFavorites, BOOL bFromM
    }
 }
 
-void CEAFBrokerDocument::OnCustomReportError(eafTypes::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName)
+void CEAFBrokerDocument::OnCustomReportError(WBFL::EAF::CustomReportError error, LPCTSTR lpszReportName, LPCTSTR lpszOtherName)
 {
    CString strError;
 
    switch(error)
    {
-   case eafTypes::creParentMissingAtLoad:
+   case WBFL::EAF::CustomReportError::ParentMissingAtLoad:
          strError.Format(_T("For custom report \"%s\": the parent report %s could not be found at program load time. The custom report was deleted."),lpszReportName,lpszOtherName);
          break;
-      case eafTypes::creParentMissingAtImport:
+      case WBFL::EAF::CustomReportError::ParentMissingAtImport:
          strError.Format(_T("For custom report \"%s\": the parent report %s could not be found. The report may have depended on an application extension. The custom report was deleted."), lpszReportName, lpszOtherName);
          break;
-      case eafTypes::creChapterMissingAtLoad:
-      case eafTypes::creChapterMissingAtImport:
+      case WBFL::EAF::CustomReportError::ChapterMissingAtLoad:
+      case WBFL::EAF::CustomReportError::ChapterMissingAtImport:
          strError.Format(_T("For custom report \"%s\": the following chapter %s does not exist in the parent report. The chapter was removed. Perhaps the chapter name changed? You may want to edit the report."), lpszReportName, lpszOtherName);
          break;
       default:
@@ -1248,14 +1087,13 @@ void CEAFBrokerDocument::OnCustomReportError(eafTypes::CustomReportError error, 
    };
 
    GET_IFACE(IEAFStatusCenter,pStatusCenter);
-   CEAFStatusItem* pStatusItem = new CEAFDefaultStatusItem(m_StatusGroupID,m_scidCustomReportWarning,strError);
-   pStatusCenter->Add(pStatusItem);
+   pStatusCenter->Add(std::make_shared<WBFL::EAF::DefaultStatusItem>(m_StatusGroupID, m_scidCustomReportWarning, strError));
 }
 
-void CEAFBrokerDocument::ShowCustomReportHelp(eafTypes::CustomReportHelp helpType)
+void CEAFBrokerDocument::ShowCustomReportHelp(WBFL::EAF::CustomReportHelp helpType)
 {
    // Base class must call AFX_MANAGE_STATE(AfxGetStaticModuleState()) before calling this method
-   UINT helpID = helpType==eafTypes::crhCustomReport ? m_helpIDCustom : m_helpIDFavorite;
+   UINT helpID = helpType==WBFL::EAF::CustomReportHelp::CustomReport ? m_helpIDCustom : m_helpIDFavorite;
    if ( 0 < helpID )
    {
       EAFHelp(GetDocumentationSetName(),helpID);
@@ -1273,23 +1111,22 @@ void CEAFBrokerDocument::ShowCustomReportDefinitionHelp()
 
 void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
 {
-   CComPtr<IReportManager> pReportMgr;
-   HRESULT hr = m_pBroker->GetInterface(IID_IReportManager,(IUnknown**)&pReportMgr);
-   if ( FAILED(hr) )
+   if ( !m_bUseReportManager )
    {
       // reporting isn't supported
       return;
    }
 
+   GET_IFACE(IEAFReportManager, reportManager);
    if (bFirst)
    {
       // First time through. Store names of built-in reports
-      m_BuiltInReportNames = pReportMgr->GetReportNames();
+      m_BuiltInReportNames = reportManager->GetReportNames();
    }
    else
    {
       // Subsequent times through we need to remove custom reports before reloading them
-      std::vector<std::_tstring> strNames = pReportMgr->GetReportNames();
+      std::vector<std::_tstring> strNames = reportManager->GetReportNames();
       std::vector<std::_tstring>::const_iterator itn = strNames.begin();
       while(itn != strNames.end())
       {
@@ -1298,7 +1135,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          if (itfnd == m_BuiltInReportNames.end())
          {
             // Remove report if it's not built in. ptr release should delete it.
-            std::shared_ptr<WBFL::Reporting::ReportBuilder> ptr = pReportMgr->RemoveReportBuilder(rName.c_str());
+            std::shared_ptr<WBFL::Reporting::ReportBuilder> ptr = reportManager->RemoveReportBuilder(rName.c_str());
          }
 
          itn++;
@@ -1316,7 +1153,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
       if ( itfnd == m_BuiltInReportNames.end() )
       {
          // get parent report
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> pParentBuilder = pReportMgr->GetReportBuilder(rCustom.m_ParentReportName);
+         std::shared_ptr<WBFL::Reporting::ReportBuilder> pParentBuilder = reportManager->GetReportBuilder(rCustom.m_ParentReportName);
          if (pParentBuilder)
          {
             // found parent. Now we can create new builder for custom
@@ -1350,7 +1187,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
                else
                {
                   // Chapter referenced from custom does not exist in parent report. 
-                  OnCustomReportError(bFirst?eafTypes::creChapterMissingAtLoad:eafTypes::creChapterMissingAtImport,rCustom.m_ReportName.c_str(),(*itChapName).c_str());
+                  OnCustomReportError(bFirst?WBFL::EAF::CustomReportError::ChapterMissingAtLoad:WBFL::EAF::CustomReportError::ChapterMissingAtImport,rCustom.m_ReportName.c_str(),(*itChapName).c_str());
                   itChapName = rCustom.m_Chapters.erase(itChapName);
                   ATLASSERT(false);
                }
@@ -1359,7 +1196,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             // 
             if(didAddChapter)
             {
-               pReportMgr->AddReportBuilder(newBuilder);
+               reportManager->AddReportBuilder(newBuilder);
                itcr++;
             }
             else
@@ -1371,7 +1208,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          else
          {
             // parent report does not exist for custom report. remove report and post
-            OnCustomReportError(bFirst?eafTypes::creParentMissingAtLoad:eafTypes::creParentMissingAtImport,rCustom.m_ReportName.c_str(),rCustom.m_ParentReportName.c_str());
+            OnCustomReportError(bFirst?WBFL::EAF::CustomReportError::ParentMissingAtLoad:WBFL::EAF::CustomReportError::ParentMissingAtImport,rCustom.m_ReportName.c_str(),rCustom.m_ParentReportName.c_str());
             itcr = m_CustomReports.m_Reports.erase(itcr);
             ATLASSERT(false);
          }

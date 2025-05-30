@@ -32,12 +32,6 @@
 #include "matrix.h"
 #include <iomanip>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 Matrix::Matrix(LONG nr,LONG nc)
 {
    m_NRows = 0;

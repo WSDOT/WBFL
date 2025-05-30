@@ -21,22 +21,10 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ProgressDlg.cpp : implementation file
-//
 
 #include "stdafx.h"
 #include "ProgressDlg.h"
-#include "WBFLCore.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CProgressDlg dialog
-
+#include <EAF/EAFProgress.h>
 
 CProgressDlg::CProgressDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(CProgressDlg::IDD, pParent)

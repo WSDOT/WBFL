@@ -26,80 +26,43 @@
 
 #include "stdafx.h"
 #include "resource.h"
-#include "WBFLCore.h"
-#include "dllmain.h"
-
 #include <initguid.h>
-#include <WBFLCore_i.c>
+
 #include <WBFLTools_i.c>
+#include "CLSID.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include "SysAgent.h"
 
+#include <EAF\ComponentModule.h>
+WBFL::EAF::ComponentModule Module_;
+EAF_BEGIN_OBJECT_MAP(ObjectMap)
+   EAF_OBJECT_ENTRY(CLSID_SysAgent,CSysAgent)
+EAF_END_OBJECT_MAP()
 
-// Used to determine whether the DLL can be unloaded by OLE
-STDAPI DllCanUnloadNow(void)
+class CCoreApp : public CWinApp
 {
-    AFX_MANAGE_STATE(AfxGetStaticModuleState());
-    return (AfxDllCanUnloadNow()==S_OK && _AtlModule.GetLockCount()==0) ? S_OK : S_FALSE;
+public:
+
+   // Overrides
+   virtual BOOL InitInstance() override;
+   virtual int ExitInstance() override;
+
+   DECLARE_MESSAGE_MAP()
+};
+
+BEGIN_MESSAGE_MAP(CCoreApp, CWinApp)
+END_MESSAGE_MAP()
+
+CCoreApp theApp;
+
+BOOL CCoreApp::InitInstance()
+{
+   Module_.Init(ObjectMap);
+   return CWinApp::InitInstance();
 }
 
-
-// Returns a class factory to create an object of the requested type
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
+int CCoreApp::ExitInstance()
 {
-    return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
+   Module_.Term();
+   return CWinApp::ExitInstance();
 }
-
-
-// DllRegisterServer - Adds entries to the system registry
-STDAPI DllRegisterServer(void)
-{
-    // registers object, typelib and all interfaces in typelib
-    HRESULT hr = _AtlModule.DllRegisterServer();
-	return hr;
-}
-
-
-// DllUnregisterServer - Removes entries from the system registry
-STDAPI DllUnregisterServer(void)
-{
-	HRESULT hr = _AtlModule.DllUnregisterServer();
-	return hr;
-}
-
-#if defined _UNICODE
-// DllInstall - Adds/Removes entries to the system registry per user
-//              per machine.	
-STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
-{
-    HRESULT hr = E_FAIL;
-    static const wchar_t szUserSwitch[] = _T("user");
-
-    if (pszCmdLine != nullptr)
-    {
-    	if (_wcsnicmp(pszCmdLine, szUserSwitch, _countof(szUserSwitch)) == 0)
-    	{
-    		AtlSetPerUserRegistration(true);
-    	}
-    }
-
-    if (bInstall)
-    {	
-    	hr = DllRegisterServer();
-    	if (FAILED(hr))
-    	{	
-    		DllUnregisterServer();
-    	}
-    }
-    else
-    {
-    	hr = DllUnregisterServer();
-    }
-
-    return hr;
-}
-#endif

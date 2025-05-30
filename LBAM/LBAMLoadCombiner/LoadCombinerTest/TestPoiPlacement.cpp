@@ -33,11 +33,6 @@
 
 #include "..\..\LBAMTestUtils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void SetupSegment(ISegment* pseg, Float64 A, Float64 I, Float64 E, Float64 depth);
 static const long TS_ID=12;

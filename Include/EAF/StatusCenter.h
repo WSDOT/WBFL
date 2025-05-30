@@ -24,73 +24,84 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-#include <EAF\EAFStatusItem.h>
+#include <EAF\StatusItem.h>
 #include <set>
 #include <map>
 
-
-class IEAFStatusCenterEventSink
+namespace WBFL
 {
-public:
-   virtual void OnStatusItemAdded(CEAFStatusItem* pItem) = 0;
-   virtual void OnStatusItemRemoved(StatusItemIDType id) = 0;
-};
+   namespace EAF
+   {
+      class StatusCenterEventSink
+      {
+      public:
+         virtual void OnStatusItemAdded(std::shared_ptr<const StatusItem> pItem) = 0;
+         virtual void OnStatusItemRemoved(StatusItemIDType id) = 0;
+      };
 
-class StatusItemCompare
-{
-public:
-   bool operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b) const;
-};
+      class StatusItemCompare
+      {
+      public:
+         bool operator()(const std::shared_ptr<StatusItem>& a, const std::shared_ptr<StatusItem>& b) const;
+      };
 
-class EAFCLASS CEAFStatusCenter
-{
-public:
-   CEAFStatusCenter();
-   ~CEAFStatusCenter();
+      class EAFCLASS StatusCenter
+      {
+      public:
+         StatusCenter();
+         ~StatusCenter();
 
-   bool IsEnabled() const;
-   void Enable(bool bEnable);
+         bool IsEnabled() const;
+         void Enable(bool bEnable);
 
-   StatusGroupIDType CreateStatusGroupID();
-   StatusItemIDType Add(CEAFStatusItem* pItem);
-   bool RemoveByID(StatusItemIDType id);
-   bool RemoveByIndex(IndexType index);
-   bool RemoveByStatusGroupID(StatusGroupIDType id);
-   CEAFStatusItem* GetByID(StatusItemIDType id);
-   const CEAFStatusItem* GetByID(StatusItemIDType id) const;
-   CEAFStatusItem* GetByIndex(IndexType index);
-   const CEAFStatusItem* GetByIndex(IndexType index) const;
-   IndexType Count() const;
+         StatusGroupIDType CreateStatusGroupID();
+         StatusItemIDType Add(std::shared_ptr<StatusItem> pItem);
+         bool RemoveByID(StatusItemIDType id);
+         bool RemoveByIndex(IndexType index);
+         bool RemoveByStatusGroupID(StatusGroupIDType id);
+         std::shared_ptr<StatusItem> GetByID(StatusItemIDType id);
+         std::shared_ptr<const StatusItem> GetByID(StatusItemIDType id) const;
+         std::shared_ptr<StatusItem> GetByIndex(IndexType index);
+         std::shared_ptr<const StatusItem> GetByIndex(IndexType index) const;
+         IndexType Count() const;
 
-   eafTypes::StatusSeverityType GetSeverity() const;
+         WBFL::EAF::StatusSeverityType GetSeverity() const;
 
-   StatusCallbackIDType RegisterCallbackItem(iStatusCallback* pCallback);
-   eafTypes::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID) const;
+         /// @brief Registers a callback object that is called upon when a status item needs to provide its severity or execute a remidation action
+         /// @param pCallback 
+         /// @return 
+         StatusCallbackIDType RegisterCallbackItem(std::shared_ptr<StatusCallback> pCallback);
+         WBFL::EAF::StatusSeverityType GetSeverity(StatusCallbackIDType callbackID) const;
 
-   void EditItem(StatusItemIDType id);
+         void EditItem(StatusItemIDType id);
 
-   void SinkEvents(IEAFStatusCenterEventSink* pSink);
-   void UnSinkEvents(IEAFStatusCenterEventSink* pSink);
+         /// @brief Registers an event sink that is notified of status center events
+         /// @param pSink 
+         IDType RegisterEventSink(std::shared_ptr<StatusCenterEventSink> pSink);
+         void UnregisterEventSink(IDType cookie);
 
-private:
-   bool m_bIsEnabled;
-   StatusGroupIDType m_NextStatusGroupID;
-   StatusItemIDType m_NextID;
-   StatusCallbackIDType m_NextCallbackID;
-   CEAFStatusItem* m_pCurrentItem;
+      private:
+         bool m_bIsEnabled;
+         StatusGroupIDType m_NextStatusGroupID;
+         StatusItemIDType m_NextID;
+         StatusCallbackIDType m_NextCallbackID;
+         std::shared_ptr<StatusItem> m_pCurrentItem;
 
-   using Container = std::set<std::shared_ptr<CEAFStatusItem>,StatusItemCompare>;
-   Container m_Items;
+         using Container = std::set<std::shared_ptr<StatusItem>,StatusItemCompare>;
+         Container m_Items;
 
-   using Sinks = std::set<IEAFStatusCenterEventSink*>;
-   Sinks m_Sinks;
+         IDType m_EventSinkCookie = 0;
+         using Sinks = std::map<IDType,std::shared_ptr<StatusCenterEventSink>>;
+         Sinks m_Sinks;
 
-   using Callbacks = std::map<StatusCallbackIDType,std::shared_ptr<iStatusCallback>>;
-   Callbacks m_Callbacks;
+         using Callbacks = std::map<StatusCallbackIDType,std::shared_ptr<StatusCallback>>;
+         Callbacks m_Callbacks;
 
-   std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID);
-   const std::shared_ptr<iStatusCallback> GetCallback(StatusCallbackIDType callbackID) const;
+         std::shared_ptr<StatusCallback> GetCallback(StatusCallbackIDType callbackID);
+         const std::shared_ptr<StatusCallback> GetCallback(StatusCallbackIDType callbackID) const;
 
-   void NotifyAdded(CEAFStatusItem* pNewItem);
-   void NotifyRemoved(StatusItemIDType id);
+         void NotifyAdded(std::shared_ptr<const StatusItem> pNewItem);
+         void NotifyRemoved(StatusItemIDType id);
+      };
+   };
 };

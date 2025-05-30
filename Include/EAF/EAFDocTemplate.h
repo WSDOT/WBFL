@@ -25,22 +25,29 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFTemplateGroup.h>
-#include <EAF\EAFAcceleratorTable.h>
+#include <EAF\AcceleratorTable.h>
 
-interface IEAFAppPlugin;
-interface IEAFCommandCallback;
 class CEAFDocument;
+
+namespace WBFL
+{
+   namespace EAF
+   {
+      class ICommandCallback;
+      class IPluginApp;
+   };
+};
 
 class EAFCLASS CEAFDocTemplate : public CMultiDocTemplate
 {
 public:
    CEAFDocTemplate(UINT nIDResource,
-                   IEAFCommandCallback* pCallback,
-                   CRuntimeClass* pDocClass,
-                   CRuntimeClass* pFrameClass,
-                   CRuntimeClass* pViewClass,
-                   HMENU hSharedMenu = nullptr,
-                   int maxViewCount = -1);
+      std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,
+      CRuntimeClass* pDocClass,
+      CRuntimeClass* pFrameClass,
+      CRuntimeClass* pViewClass,
+      HMENU hSharedMenu = nullptr,
+      int maxViewCount = -1);
    virtual ~CEAFDocTemplate();
 
    virtual void LoadTemplate();
@@ -61,6 +68,7 @@ public:
 
    // Sets the template item for which a new document will be created
    void SetTemplateItem(const CEAFTemplateItem* pItem);
+   const CEAFTemplateItem* GetTemplateItem() const;
 
    // returns the maximum number of views that can be created for this template
    int GetMaxViewCount() const;
@@ -72,29 +80,29 @@ public:
    void SetViewCreationData(LPVOID pCreateData);
    LPVOID GetViewCreationData();
 
-   // Returns the resource ID associated with this tempalte
+   // Returns the resource ID associated with this template
    UINT GetResourceID() const;
 
-   IEAFCommandCallback* GetCommandCallback();
+   std::shared_ptr<WBFL::EAF::ICommandCallback> GetCommandCallback();
 
    // Associates the application plugin that created this document template
-   virtual void SetPlugin(IEAFAppPlugin* pPlugin);
-   virtual void GetPlugin(IEAFAppPlugin** ppPlugin);
+   virtual void SetPluginApp(std::weak_ptr<WBFL::EAF::IPluginApp> plugin);
+   virtual std::shared_ptr<WBFL::EAF::IPluginApp> GetPluginApp();
 
    virtual CDocTemplate::Confidence MatchDocType(LPCTSTR lpszPathName,CDocument*& rpDocMatch);
 
-   virtual CEAFAcceleratorTable* GetAcceleratorTable();
+   virtual std::shared_ptr<WBFL::EAF::AcceleratorTable> GetAcceleratorTable();
 
    DECLARE_DYNAMIC(CEAFDocTemplate)
 
 protected:
    // weak reference to plugin that created this doc template
-   IEAFAppPlugin* m_pPlugin;
-   IEAFCommandCallback* m_pCommandCallback;
+   std::weak_ptr<WBFL::EAF::IPluginApp> m_pPlugin;
+   std::shared_ptr<WBFL::EAF::ICommandCallback> m_pCommandCallback;
 
    mutable CEAFTemplateGroup m_TemplateGroup;
 
-   CEAFAcceleratorTable m_AccelTable;
+   std::shared_ptr<WBFL::EAF::AcceleratorTable> m_AccelTable;
 
    const CEAFTemplateItem* m_pTemplateItem; // the selected template item from New Project dialog
 

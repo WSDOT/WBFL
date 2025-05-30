@@ -35,17 +35,7 @@ DESCRIPTION
 // {95DE8B60-2D53-11d2-8EB4-006097DF3C68}
 DEFINE_GUID(IID_IEAFProjectLog,
 0x95DE8B60, 0x2D53, 0x11d2, 0x8E, 0xB4, 0x00, 0x60, 0x97, 0xDF, 0x3C, 0x68);
-interface IEAFProjectLog : IUnknown
+interface IEAFProjectLog
 {
-   //------------------------------------------------------------------------
-   // Returns the name of the log file
-   virtual CString GetName() = 0;
-
-   //------------------------------------------------------------------------
-   // Writes a message to the log file
    virtual void LogMessage( LPCTSTR lpszMsg ) = 0;
-
-   //------------------------------------------------------------------------
-   // Destroys the log file.
-   virtual void Destroy() = 0;
 };

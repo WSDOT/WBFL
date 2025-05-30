@@ -23,7 +23,7 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-
+#include <System/Logger.h>
 
 
 class EAFCLASS CEAFCommandLineInfo : public CCommandLineInfo
@@ -46,6 +46,8 @@ public:
    BOOL  m_bError; // set this to TRUE if there is a problem with the command line and the application
                    // needs to display the command line usage message and exit
    BOOL m_bTargetApp;
+
+   WBFL::System::Logger::Severity m_LoggingVerbosity;
 
    virtual void ParseParam(LPCTSTR lpszParam,BOOL bFlag,BOOL bLast);
 

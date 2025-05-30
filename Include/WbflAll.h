@@ -42,6 +42,11 @@
 #include <tchar.h>
 #include <WBFLTypes.h>
 #include <WBFLVersion.h>
+
+#if defined _DEBUG
+#define WBFL_DEBUG
+#endif
+
 #if !defined BUILDSYSLIB
 #include <WBFLDebug.h>
 #endif

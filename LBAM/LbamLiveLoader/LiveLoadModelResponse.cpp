@@ -35,11 +35,6 @@
 
 #include "BasicVehicularResponse.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // handle dealing with cancel from progress monitor
 #define HANDLE_CANCEL_PROGRESS() if (this->CheckForCancel()) throw S_FALSE;

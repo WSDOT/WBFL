@@ -37,11 +37,6 @@
 #include <atlconv.h>
 #include <boost\scoped_array.hpp>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // handle dealing with cancel from progress monitor
 #define LGR_HANDLE_CANCEL_PROGRESS() if (this->CheckForCancel()) throw S_FALSE;

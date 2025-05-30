@@ -31,11 +31,6 @@
 #include <EAF\EAFDocTemplate.h>
 #include <EAF\EAFHints.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFAutoCalcReportView
@@ -186,7 +181,7 @@ void CEAFAutoCalcReportView::RefreshReport()
    CEAFLicensePlateChildFrame* pParent = GetLpFrame();
    if (m_pReportSpec != nullptr && !m_pReportSpec->IsValid())
    {
-      pParent->SetLicensePlateMode(eafTypes::lpfOn);
+      pParent->SetLicensePlateMode(WBFL::EAF::LpFrameMode::On);
       pParent->SetLicensePlateText(m_ErrorMsg.c_str());
    }
    else
@@ -194,11 +189,11 @@ void CEAFAutoCalcReportView::RefreshReport()
       CDocument* pDoc = GetDocument();
       CEAFAutoCalcDocMixin* pAutoCalcDoc = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
       ATLASSERT(pAutoCalcDoc); // your document must use the autocalc mix in
-      if (pAutoCalcDoc->IsAutoCalcEnabled() && pParent->GetLicensePlateMode() == eafTypes::lpfOn)
+      if (pAutoCalcDoc->IsAutoCalcEnabled() && pParent->GetLicensePlateMode() == WBFL::EAF::LpFrameMode::On)
       {
          // if auto calc is enable and there was no error updating the view,
          // make sure the license plate frame is off
-         pParent->SetLicensePlateMode(eafTypes::lpfOff);
+         pParent->SetLicensePlateMode(WBFL::EAF::LpFrameMode::Off);
       }
    }
 }
@@ -210,7 +205,7 @@ HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const 
    CEAFLicensePlateChildFrame* pParent = GetLpFrame();
    if ( FAILED(hr) )
    {
-      pParent->SetLicensePlateMode(eafTypes::lpfOn);
+      pParent->SetLicensePlateMode(WBFL::EAF::LpFrameMode::On);
       pParent->SetLicensePlateText(m_ErrorMsg.c_str());
    }
    else
@@ -218,11 +213,11 @@ HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const 
       CDocument* pDoc = GetDocument();
       CEAFAutoCalcDocMixin* pAutoCalcDoc = dynamic_cast<CEAFAutoCalcDocMixin*>(pDoc);
       ATLASSERT(pAutoCalcDoc); // your document must use the autocalc mix in
-      if ( pAutoCalcDoc->IsAutoCalcEnabled() && pParent->GetLicensePlateMode() == eafTypes::lpfOn )
+      if ( pAutoCalcDoc->IsAutoCalcEnabled() && pParent->GetLicensePlateMode() == WBFL::EAF::LpFrameMode::On )
       {
          // if auto calc is enable and there was no error updating the view,
          // make sure the license plate frame is off
-         pParent->SetLicensePlateMode(eafTypes::lpfOff);
+         pParent->SetLicensePlateMode(WBFL::EAF::LpFrameMode::Off);
       }
    }
 

@@ -27,13 +27,7 @@
 
 #include "stdafx.h"
 #include "ProgressThread.h"
-#include <WBFLCore.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include <EAF/EAFProgress.h>
 
 
 const UINT g_ShowProgressWndTimerID = 1;

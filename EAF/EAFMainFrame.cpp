@@ -27,11 +27,11 @@
 #include "stdafx.h"
 #include "resource.h"
 #include <EAF\EAFMainFrame.h>
-#include <EAF\EAFToolBar.h>
+#include <EAF\ToolBar.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFApp.h>
-#include <EAF\EAFPluginCommandManager.h>
+#include <EAF\PluginCommandManager.h>
 #include <EAF\EAFChildFrame.h>
 #include "ToolBarDlg.h"
 
@@ -39,11 +39,6 @@
 
 #include <ShellScalingApi.h> // needed for Per Monitor DPI information
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame
@@ -109,11 +104,6 @@ CEAFMainFrame::~CEAFMainFrame()
       delete m_pMainFrameToolBar;
    }
 
-   if (m_pMainMenu)
-   {
-      delete m_pMainMenu;
-   }
-
    m_wndMDIClient.Detach();
 }
 
@@ -158,9 +148,18 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
    return pToolBar;
 }
 
-CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
+std::shared_ptr<CEAFStartPageWnd> CEAFMainFrame::CreateStartPage()
 {
    return nullptr;
+}
+
+void CEAFMainFrame::DestroyStartPage()
+{
+   if (m_pStartPageWnd)
+   {
+      m_pStartPageWnd->PostMessage(WM_CLOSE, 0, 0);
+      m_pStartPageWnd = nullptr;
+   }
 }
 
 void CEAFMainFrame::OnSize(UINT nType, int cx, int cy)
@@ -285,6 +284,8 @@ void CEAFMainFrame::OnClose()
 
    pApp->OnMainFrameClosing();
 
+   DestroyStartPage();
+
    CMDIFrameWnd::OnClose();
 }
 
@@ -369,7 +370,7 @@ BOOL CEAFMainFrame::PreTranslateMessage(MSG* pMsg)
             return TRUE;
          }
 
-         if ( pDoc->GetDocPluginManager()->GetAcceleratorTable()->TranslateMessage(this,pMsg) )
+         if (pDoc->GetDocPluginMgr()->GetAcceleratorTable()->TranslateMessage(this, pMsg))
          {
             return TRUE;
          }
@@ -393,11 +394,10 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    if ( pActiveDoc && pActiveDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
-      UINT nPluginCmdID;
-      CComPtr<IEAFCommandCallback> pCallback;
-      if ( pDoc->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) )
+      auto [bSuccess,nPluginCmdID, pCallback] = pDoc->GetPluginCommandManager()->GetCommandCallback(nID);
+      if ( bSuccess )
       {
-         // this command belogs to one of the plug-ins
+         // this command belongs to one of the plug-ins
          bHandledByPlugin = TRUE;
          if ( pCallback )
          {
@@ -413,11 +413,10 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    if ( !bHandledByPlugin )
    {
       CEAFApp* pApp = EAFGetApp();
-      UINT nPluginCmdID;
-      CComPtr<IEAFCommandCallback> pCallback;
-      if ( pApp->GetPluginCommandManager()->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+      auto [bSuccess, nPluginCmdID, pCallback] = pApp->GetPluginCommandManager()->GetCommandCallback(nID);
+      if ( bSuccess && pCallback )
       {
-         // this command belogs to one application of the plug-ins
+         // this command belongs to one application of the plug-ins
          bHandledByPlugin = TRUE;
          pCallback->GetStatusBarMessageString(nPluginCmdID,rMessage);
       }
@@ -427,7 +426,7 @@ void CEAFMainFrame::GetMessageString(UINT nID, CString& rMessage) const
    {
       CEAFDocument* pDoc = (CEAFDocument*)pActiveDoc;
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
-      if (pTemplate && pTemplate->GetCommandCallback())
+      if (pTemplate && (pTemplate->GetCommandCallback()))
       {
          bHandledByPlugin = pTemplate->GetCommandCallback()->GetStatusBarMessageString(nID, rMessage);
       }
@@ -463,11 +462,10 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
 
    if ( nID != 0 && pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
-      UINT nPluginCmdID;
-      IEAFCommandCallback* pCallback;
-      if ( pDoc->GetPluginCommandManager()->GetCommandCallback((UINT)nID,&nPluginCmdID,&pCallback) )
+      auto [bSuccess, nPluginCmdID, pCallback] = pDoc->GetPluginCommandManager()->GetCommandCallback((UINT)nID);
+      if ( bSuccess )
       {
-         // this command belogs to one of the plug-ins
+         // this command belongs to one of the plug-ins
          if ( pCallback )
          {
             bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
@@ -482,11 +480,10 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    if ( !bHandledByPlugin )
    {
       CEAFApp* pApp = EAFGetApp();
-      UINT nPluginCmdID;
-      IEAFCommandCallback* pCallback;
-      if ( pApp->GetPluginCommandManager()->GetCommandCallback((UINT)nID,&nPluginCmdID,&pCallback) && pCallback )
+      auto [bSuccess, nPluginCmdID, pCallback] = pApp->GetPluginCommandManager()->GetCommandCallback((UINT)nID);
+      if ( bSuccess && pCallback )
       {
-         // this command belogs to one of the application plug-ins
+         // this command belongs to one of the application plug-ins
          bHandledByPlugin = pCallback->GetToolTipMessageString(nPluginCmdID,strTipText);
       }
    }
@@ -494,7 +491,7 @@ BOOL CEAFMainFrame::OnToolTipText(UINT ,NMHDR* pTTTStruct,LRESULT* pResult)
    if (!bHandledByPlugin && pDoc && pDoc->IsKindOf(RUNTIME_CLASS(CEAFDocument)) )
    {
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
-      if ( pTemplate->GetCommandCallback() )
+      if ( pTemplate->GetCommandCallback())
       {
          bHandledByPlugin = pTemplate->GetCommandCallback()->GetToolTipMessageString((UINT)nID,strTipText);
       }
@@ -581,7 +578,7 @@ LRESULT CEAFMainFrame::OnDpiChanged(WPARAM wParam, LPARAM lParam)
    ResizeToolBarButtons(m_pMainFrameToolBar, Xdpi, Ydpi);
    for (auto& toolbarInfo : m_ToolBarInfo)
    {
-      ResizeToolBarButtons(toolbarInfo.m_pEAFToolBar->m_pToolBar,Xdpi,Ydpi);
+      ResizeToolBarButtons(toolbarInfo.m_ToolBar->m_pToolBar,Xdpi,Ydpi);
    }
    RecalcLayout();
 
@@ -642,12 +639,8 @@ void CEAFMainFrame::UpdateFrameTitleForDocument(LPCTSTR lpszDocName)
    if (pDoc)
    {
       CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)pDoc->GetDocTemplate();
-
-      // get the plugin
-      CComPtr<IEAFAppPlugin> appPlugin;
-      pTemplate->GetPlugin(&appPlugin);
-
-      strTitle = appPlugin->GetName();
+      auto pluginApp = pTemplate->GetPluginApp();
+      strTitle = pluginApp->GetName();
    }
 
 
@@ -788,7 +781,7 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
 
       if (max_view_count <= view_count)
       {
-         // This attempt would cause the maximim view count to be
+         // This attempt would cause the maximum view count to be
          // exceeded. Activate the last view of this type.
          CFrameWnd* pFrame = pLastView->GetParentFrame();
          if (pFrame->IsKindOf(RUNTIME_CLASS(CEAFChildFrame)))
@@ -852,15 +845,15 @@ CView* CEAFMainFrame::CreateOrActivateFrame(CEAFDocTemplate* pTemplate)
    return pNewView;
 }
 
-CEAFMenu* CEAFMainFrame::GetMainMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFMainFrame::GetMainMenu()
 {
    return m_pMainMenu;
 }
 
-CEAFAcceleratorTable* CEAFMainFrame::GetAcceleratorTable()
+std::shared_ptr<WBFL::EAF::AcceleratorTable> CEAFMainFrame::GetAcceleratorTable()
 {
    CEAFApp* pApp = EAFGetApp();
-   return pApp->GetAppPluginManager()->GetAcceleratorTable();
+   return pApp->GetPluginAppManager()->GetAcceleratorTable();
 }
 
 CEAFStatusBar* CEAFMainFrame::GetStatusBar()
@@ -917,10 +910,9 @@ BOOL CEAFMainFrame::KeepStartPageOpen(BOOL bKeepOpen)
 
 void CEAFMainFrame::HideStartPage()
 {
-   if ( m_pStartPageWnd && !m_bKeepStartPageOpen )
+   if (!m_bKeepStartPageOpen && m_pStartPageWnd)
    {
-      m_pStartPageWnd->PostMessage(WM_CLOSE, 0, 0);
-      m_pStartPageWnd = nullptr;
+      m_pStartPageWnd->ShowWindow(SW_HIDE);
    }
 }
 
@@ -934,6 +926,10 @@ void CEAFMainFrame::ShowStartPage()
          m_pStartPageWnd->Create(nullptr, _T("Start Page"), WS_CHILD | WS_VISIBLE, rectDefault, this);
          ResizeStartPage();
       }
+   }
+   else
+   {
+      m_pStartPageWnd->ShowWindow(SW_SHOW);
    }
 }
 
@@ -979,7 +975,7 @@ void CEAFMainFrame::RecycleToolBarID(UINT id)
    ATLASSERT(false); // should never get here... id wasn't in the vector
 }
 
-UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr)
+UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName, std::shared_ptr<WBFL::EAF::PluginCommandManager> pCmdMgr)
 {
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
@@ -995,16 +991,10 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
       return -1; // must have a command manager
    }
 
-   CEAFToolBar* pEAFToolBar = new CEAFToolBar();
-
    UINT tbID = GetNextToolBarID(); // this is a unique child window ID
 
-   CEAFToolBarInfo tbInfo;
-   tbInfo.m_pEAFToolBar  = pEAFToolBar;
-   tbInfo.m_ToolBarID    = tbID;
 
-   CToolBar* pToolBar = new CMyToolBar;
-
+   auto pToolBar = std::make_unique<CMyToolBar>();
    DWORD dwToolBarStyle = WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_SIZE_DYNAMIC | CBRS_GRIPPER;
    if ( m_bShowToolTips )
    {
@@ -1015,37 +1005,40 @@ UINT CEAFMainFrame::CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCm
    pToolBar->EnableDocking(CBRS_ALIGN_ANY);
    pToolBar->SetWindowText(lpszName);
 
-   pEAFToolBar->m_ToolBarID  = tbID;
-   pEAFToolBar->m_pCmdMgr    = pCmdMgr;
-   pEAFToolBar->m_pToolBar   = pToolBar;
-   pEAFToolBar->bOwnsToolBar = true;
+   ToolBarRecord tbRecord;
+   tbRecord.m_ToolBar = std::make_shared<WBFL::EAF::ToolBar>();
+   tbRecord.m_ToolBarID = tbID;
+   tbRecord.m_ToolBar->m_ToolBarID  = tbID;
+   tbRecord.m_ToolBar->m_pCmdMgr    = pCmdMgr;
+   tbRecord.m_ToolBar->m_pToolBar = pToolBar.release();;
+   tbRecord.m_ToolBar->bOwnsToolBar = true;
 
    if ( m_ToolBarInfo.size() == 0 )
    {
-      DockControlBar(pToolBar);
+      DockControlBar(tbRecord.m_ToolBar->m_pToolBar);
    }
    else
    {
-      CToolBar* pPrevToolBar = m_ToolBarInfo.back().m_pEAFToolBar->m_pToolBar;
-      DockControlBarLeftOf(pToolBar,pPrevToolBar);
+      CToolBar* pPrevToolBar = m_ToolBarInfo.back().m_ToolBar->m_pToolBar;
+      DockControlBarLeftOf(tbRecord.m_ToolBar->m_pToolBar,pPrevToolBar);
    }
 
    // Scale toolbars as they are created
-   ResizeToolBarButtons(tbInfo.m_pEAFToolBar->m_pToolBar);
+   ResizeToolBarButtons(tbRecord.m_ToolBar->m_pToolBar);
 
-   m_ToolBarInfo.push_back(tbInfo);
+   m_ToolBarInfo.push_back(tbRecord);
 
    return tbID;
 }
 
-CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
+std::shared_ptr<WBFL::EAF::ToolBar> CEAFMainFrame::GetToolBar(UINT toolbarID)
 {
    if ( m_ToolBarInfo.size() == 0 )
    {
       return nullptr;
    }
 
-   CEAFToolBarInfo key;
+   ToolBarRecord key;
    key.m_ToolBarID = toolbarID;
    ToolBarInfo::iterator found = std::find(m_ToolBarInfo.begin(),m_ToolBarInfo.end(),key);
    if ( found == m_ToolBarInfo.end() )
@@ -1054,13 +1047,13 @@ CEAFToolBar* CEAFMainFrame::GetToolBar(UINT toolbarID)
       return nullptr;
    }
 
-   CEAFToolBarInfo tbInfo = *found;
-   return tbInfo.m_pEAFToolBar;
+   ToolBarRecord tbRecord = *found;
+   return tbRecord.m_ToolBar;
 }
 
 void CEAFMainFrame::DestroyToolBar(UINT tbID)
 {
-   CEAFToolBarInfo key;
+   ToolBarRecord key;
    key.m_ToolBarID = tbID;
    ToolBarInfo::iterator found = std::find(m_ToolBarInfo.begin(),m_ToolBarInfo.end(),key);
    if ( found == m_ToolBarInfo.end() )
@@ -1069,21 +1062,13 @@ void CEAFMainFrame::DestroyToolBar(UINT tbID)
       return;
    }
 
-   CEAFToolBarInfo& tbInfo = *found;
-
-   delete tbInfo.m_pEAFToolBar;
+   ToolBarRecord& tbRecord = *found;
 
    m_ToolBarInfo.erase(found);
 
    RecycleToolBarID(tbID);
 
    RecalcLayout();
-}
-
-void CEAFMainFrame::DestroyToolBar(CEAFToolBar* pToolBar)
-{
-   DestroyToolBar(pToolBar->GetToolBarID());
-   pToolBar = nullptr;
 }
 
 void CEAFMainFrame::EnableModifiedFlag(BOOL bEnable)
@@ -1164,7 +1149,7 @@ void CEAFMainFrame::DockControlBarLeftOf(CToolBar* Bar,CToolBar* LeftOf)
    n = (dw&CBRS_ALIGN_RIGHT && n==0) ? AFX_IDW_DOCKBAR_RIGHT : n;
 
    // When we take the default parameters on rect, DockControlBar will dock
-   // each Toolbar on a seperate line.  By calculating a rectangle, we in effect
+   // each Toolbar on a separate line.  By calculating a rectangle, we in effect
    // are simulating a Toolbar being dragged to that location and docked.
    DockControlBar(Bar,n,&rect);
 }
@@ -1177,7 +1162,7 @@ std::vector<CString> CEAFMainFrame::GetToolBarNames()
    for ( auto& info : m_ToolBarInfo )
    {
       CString strName;
-      info.m_pEAFToolBar->GetWindowText(strName);
+      info.m_ToolBar->GetWindowText(strName);
       vNames.push_back( strName );
    }
 
@@ -1199,11 +1184,9 @@ std::vector<BOOL> CEAFMainFrame::GetToolBarStates()
 {
    std::vector<BOOL> vStates;
 
-   ToolBarInfo::iterator iter;
-   for ( iter = m_ToolBarInfo.begin(); iter < m_ToolBarInfo.end(); iter++ )
+   for(auto& tbRecord : m_ToolBarInfo)
    {
-      CEAFToolBarInfo& tbInfo = *iter;
-      vStates.push_back( tbInfo.m_pEAFToolBar->IsWindowVisible() ? TRUE : FALSE );
+      vStates.push_back( tbRecord.m_ToolBar->IsWindowVisible() ? TRUE : FALSE );
    }
 
 
@@ -1236,9 +1219,9 @@ void CEAFMainFrame::SetToolBarStates(const std::vector<BOOL>& vStates)
       std::vector<BOOL>::const_iterator state_iter = vStates.begin();
       for ( ; tb_iter < m_ToolBarInfo.end() && state_iter < vStates.end(); tb_iter++, state_iter++ )
       {
-         CEAFToolBarInfo& tbInfo = *tb_iter;
+         auto& tbRecord = *tb_iter;
          BOOL bShow = *state_iter;
-         SetToolBarState(tbInfo.m_pEAFToolBar->m_pToolBar,bShow);
+         SetToolBarState(tbRecord.m_ToolBar->m_pToolBar,bShow);
       }
    }
 }
@@ -1278,9 +1261,9 @@ void CEAFMainFrame::ToggleToolBarState(UINT idx)
    }
    else
    {
-      CEAFToolBarInfo& tbInfo = m_ToolBarInfo[idx];
-      BOOL bIsVisible = tbInfo.m_pEAFToolBar->IsWindowVisible();
-      ShowControlBar( tbInfo.m_pEAFToolBar->m_pToolBar, !bIsVisible, FALSE );
+      auto& tbRecord = m_ToolBarInfo[idx];
+      BOOL bIsVisible = tbRecord.m_ToolBar->IsWindowVisible();
+      ShowControlBar( tbRecord.m_ToolBar->m_pToolBar, !bIsVisible, FALSE );
    }
 }
 
@@ -1336,10 +1319,10 @@ void CEAFMainFrame::ResizeToolBarButtons(CToolBar* pToolBar, UINT Xdpi, UINT Ydp
    pToolBar->Invalidate();
 }
 
-CEAFMenu* CEAFMainFrame::CreateMainMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFMainFrame::CreateMainMenu()
 {
    CEAFApp* pApp = EAFGetApp();
-   return new CEAFMenu(this,pApp->GetPluginCommandManager());
+   return WBFL::EAF::Menu::CreateMenu(this,pApp->GetPluginCommandManager());
 }
 
 //----------------------------------------------------------------

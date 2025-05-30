@@ -41,31 +41,31 @@ namespace SystemUnitTest
 		TEST_METHOD(Test)
 		{
          TestLogContextType context;
-         Log log(context);
+         UnitTestLog log(context);
 
-         log.LogTestResult(_T("Passed"), Log::TestResult::Passed);
-         log.LogTestResult(_T("Failed"), Log::TestResult::Failed);
-         log.LogTestResult(_T("NotImplemented"), Log::TestResult::NotImplemented);
+         log.LogTestResult(_T("Passed"), UnitTestLog::TestResult::Passed);
+         log.LogTestResult(_T("Failed"), UnitTestLog::TestResult::Failed);
+         log.LogTestResult(_T("NotImplemented"), UnitTestLog::TestResult::NotImplemented);
 
          Assert::AreEqual((size_t)3, log.GetNumEntries());
          Assert::AreEqual((size_t)1, log.GetNumErrors());
-         Assert::AreEqual((size_t)1, log.GetTestCount(Log::TestResult::Passed));
-         Assert::AreEqual((size_t)1, log.GetTestCount(Log::TestResult::Failed));
-         Assert::AreEqual((size_t)1, log.GetTestCount(Log::TestResult::NotImplemented));
+         Assert::AreEqual((size_t)1, log.GetTestCount(UnitTestLog::TestResult::Passed));
+         Assert::AreEqual((size_t)1, log.GetTestCount(UnitTestLog::TestResult::Failed));
+         Assert::AreEqual((size_t)1, log.GetTestCount(UnitTestLog::TestResult::NotImplemented));
 
          log.DumpEntireLog();
          Assert::AreEqual(_T("Passed\nFailed\nNotImplemented\n"), context.m_os.str().c_str());
 
          context.m_os.str(_T("")); context.m_os.clear();
-         log.DumpFilteredLog(Log::TestResult::Passed);
+         log.DumpFilteredLog(UnitTestLog::TestResult::Passed);
          Assert::AreEqual(_T("Passed\n"), context.m_os.str().c_str());
 
          context.m_os.str(_T("")); context.m_os.clear();
-         log.DumpFilteredLog(Log::TestResult::Failed);
+         log.DumpFilteredLog(UnitTestLog::TestResult::Failed);
          Assert::AreEqual(_T("Failed\n"), context.m_os.str().c_str());
 
          context.m_os.str(_T("")); context.m_os.clear();
-         log.DumpFilteredLog(Log::TestResult::NotImplemented);
+         log.DumpFilteredLog(UnitTestLog::TestResult::NotImplemented);
          Assert::AreEqual(_T("NotImplemented\n"), context.m_os.str().c_str());
       }
 	};

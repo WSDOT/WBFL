@@ -31,11 +31,6 @@
 #define IDC_HAND            MAKEINTRESOURCE(32649) // from winuser.h
 #endif /* WINVER >= 0x0500 */
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define TOOLTIP_ID 1
 

@@ -1,12 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="BrokerImp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BrokerImp2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,18 +21,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\AgentTools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BrokerImp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BrokerImp2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dllmain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ProgressDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,27 +36,15 @@
     <ClInclude Include="SysAgent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CLSID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Core.def" />
-    <None Include="Broker.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Broker2.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Core.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SysAgent.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\Working.avi">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -94,10 +64,5 @@
     <ResourceCompile Include="Core.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="..\Include\WBFLCore.idl">
-      <Filter>Source Files</Filter>
-    </Midl>
   </ItemGroup>
 </Project>

@@ -27,13 +27,13 @@
 // EAFGraphChildFrame.h : header file
 //
 
-#include <EAF\EAFExp.h>
-#include <EAF\EAFOutputChildFrame.h>
+#include <EAF/EAFExp.h>
+#include <EAF/EAFOutputChildFrame.h>
 #include <Graphing/GraphManager.h>
 #include <Graphing/GraphBuilder.h>
-#include <IGraphManager.h>
+#include <EAF/EAFGraphManager.h>
 
-#include <EAF\EAFViewControllerFactory.h>
+#include <EAF/EAFViewControllerFactory.h>
 
 #include <map>
 
@@ -90,7 +90,7 @@ protected:
    // pointer to the graph manager
    // one of these is nullptr, the other is not
    WBFL::Graphing::GraphManager* m_pGraphMgr;  // for use with regular MFC Doc/View
-   IGraphManager* m_pIGraphMgr; // for use with Agent/Broker
+   std::shared_ptr<IEAFGraphManager> m_pIGraphMgr; // for use with Agent/Broker
 
    std::unique_ptr<WBFL::Graphing::GraphBuilder> m_pMyGraphBuilder;
 

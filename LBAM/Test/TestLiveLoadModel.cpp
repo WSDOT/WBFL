@@ -32,11 +32,6 @@
 #include <string>
 #include <fstream>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define TEST_LIVELOAD_FIRED() TRY_TEST(pMe->m_csLiveLoadFired, true); pMe->m_csLiveLoadFired=false;
 #define TEST_VEHICULAR_FIRED() TEST_LIVELOAD_FIRED()

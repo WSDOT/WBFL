@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2025  Washington State Department of Transportation
+// Copyright Â© 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,20 +24,26 @@
 #pragma once
 
 #include <EAF\EAFExp.h>
-#include <EAF\EAFMenu.h>
-#include <EAF\EAFToolBar.h>
-#include <EAF\EAFDocPluginManager.h>
+#include <EAF\Menu.h>
+#include <EAF\ToolBar.h>
+#include <EAF\DocPluginManager.h>
 #include <EAF\EAFApp.h>
 #include <EAF\StatusCenter.h>
-#include <WBFLCore.h> // IStructuredSave, IStructuredLoad, et. al.
 
 class CEAFDocTemplate;
 class CEAFMainFrame;
-class CEAFPluginCommandManager;
 class CStatusCenterDlg;
 class IEAFStatusCenterEventSink;
-class CEAFTransaction;
 class CMyStatusCenterEventSink;
+
+namespace WBFL
+{
+   namespace EAF
+   {
+	  class PluginCommandManager;
+     class Transaction;
+   };
+};
 
 /////////////////////////////////////////////////////////////
 // CEAFDocument
@@ -67,15 +73,15 @@ public:
    virtual void Serialize(CArchive& ar);
 #endif
 
-   CEAFStatusCenter& GetStatusCenter();
+   WBFL::EAF::StatusCenter& GetStatusCenter();
 
    // iUnitModeListener
    virtual void OnUnitsModeChanging();
-   virtual void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode);
+   virtual void OnUnitsModeChanged(WBFL::EAF::UnitMode newUnitMode);
 
    // Transactions
-   virtual void Execute(const CEAFTransaction& rTxn);
-   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn);
+   virtual void Execute(const WBFL::EAF::Transaction& rTxn);
+   virtual void Execute(std::unique_ptr<WBFL::EAF::Transaction>&& pTxn);
    virtual void Undo();
    virtual void Redo();
    virtual void Repeat();
@@ -112,13 +118,14 @@ protected:
 	//{{AFX_VIRTUAL(CEAFDocument)
 
 public:
-   virtual BOOL SaveModified() override;
-   virtual BOOL OnNewDocument() override;
+   BOOL SaveModified() override;
+   BOOL OnNewDocument() override;
+   BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
+   BOOL OnSaveDocument(LPCTSTR lpszPathName) override;
+   void OnCloseDocument() override;
+   BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) override;
+
    virtual BOOL OnNewDocumentFromTemplate(LPCTSTR lpszPathName);
-   virtual BOOL OnOpenDocument(LPCTSTR lpszPathName) override;
-   virtual BOOL OnSaveDocument(LPCTSTR lpszPathName) override;
-   virtual void OnCloseDocument() override;
-   virtual BOOL OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* pHandlerInfo) override;
 
 
 	//}}AFX_VIRTUAL
@@ -138,22 +145,17 @@ public:
    // before calling into this method
    virtual void SaveDocumentSettings() = 0;
 
-   // Use this method to log a message
-   // during application start-up.
-   // Writes message to file named ("AppName.log")
-   virtual void FailSafeLogMessage(LPCTSTR msg);
-
    // returns the main menu object
-   CEAFMenu* GetMainMenu();
+   std::shared_ptr<WBFL::EAF::Menu> GetMainMenu();
 
    // returns the accelerator table
-   CEAFAcceleratorTable* GetAcceleratorTable();
+   std::shared_ptr<WBFL::EAF::AcceleratorTable> GetAcceleratorTable();
 
    // returns the plug-in command manager
-   virtual CEAFPluginCommandManager* GetPluginCommandManager();
+   virtual std::shared_ptr<WBFL::EAF::PluginCommandManager> GetPluginCommandManager();
 
    // returns the document plugin manager
-   virtual CEAFDocPluginManager* GetDocPluginManager();
+   virtual WBFL::EAF::DocPluginManager* GetDocPluginMgr();
 
    // Called by the framework to give plug-ins an opportunity to integrated with the
    // user interface of the application. Plug-ins can add toolbars, menu items, and keyboard accelerators
@@ -170,11 +172,7 @@ public:
    UINT CreateToolBar(LPCTSTR lpszName);
 
    // returns a toolbar for with an ID of toolbarID
-   CEAFToolBar* GetToolBar(UINT toolbarID);
-
-   // destroys a previously created toolbar. the toolbar must have been created with CreateToolBar for this document
-   // the pointer can't be used after the toolbar is destroyed
-   void DestroyToolBar(CEAFToolBar* pToolBar);
+   std::shared_ptr<WBFL::EAF::ToolBar> GetToolBar(UINT toolbarID);
 
    // destroys a toolbar by id
    void DestroyToolBar(UINT toolbarID);
@@ -186,7 +184,7 @@ public:
    // Views
 
    // registers a view with the doc/view model. returns a key value that is used to identify the view
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount=-1);
+   virtual long RegisterView(UINT nResourceID, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback, CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass, HMENU hSharedMenu = nullptr, int maxViewCount = -1);
 
    // removes a previously registered view
    virtual void RemoveView(long key);
@@ -290,7 +288,7 @@ public:
    virtual void DocumentationSourceChanged();
 
    // Returns the documentation set name for this document
-   // The default implementation returns the IEAFAppPlugin's documentation
+   // The default implementation returns the IPluginApp's documentation
    // set name
    virtual CString GetDocumentationSetName();
 
@@ -317,7 +315,7 @@ public:
    virtual void LoadDocumentationMap();
 
    // Returns the full documentation URL for the given URL
-   virtual eafTypes::HelpResult GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL);
+   virtual std::pair<WBFL::EAF::HelpResult,CString> GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID);
 
 
 protected:
@@ -336,7 +334,7 @@ protected:
    virtual void ResetApplicationIcon();
 
    /// called by the framework to create the main menu object
-   virtual CEAFMenu* CreateMainMenu();
+   virtual std::shared_ptr<WBFL::EAF::Menu> CreateMainMenu();
    /// Called to initialize the main menu
    virtual BOOL InitMainMenu();
 
@@ -367,16 +365,17 @@ protected:
    UINT m_UIHintSettings;
 
 private:
-   CEAFMenu* m_pMainMenu;
-   CEAFPluginCommandManager* m_pPluginCommandMgr;
-   CEAFDocPluginManager m_DocPluginMgr;
+   std::shared_ptr<WBFL::EAF::Menu> m_MainMenu;
+   std::shared_ptr<WBFL::EAF::PluginCommandManager> m_PluginCommandMgr;
+   WBFL::EAF::DocPluginManager m_DocPluginMgr;
 
    HICON m_hMainFrameBigIcon;
    HICON m_hMainFrameSmallIcon;
 
-   CEAFStatusCenter*    m_pStatusCenter;
-   CStatusCenterDlg* m_pStatusCenterDlg;
-   IEAFStatusCenterEventSink* m_pStatusCenterEventSink;
+   std::unique_ptr<WBFL::EAF::StatusCenter> m_pStatusCenter;
+   std::unique_ptr<CStatusCenterDlg> m_pStatusCenterDlg;
+   std::shared_ptr<WBFL::EAF::StatusCenterEventSink> m_pStatusCenterEventSink;
+   IDType m_StatusCenterEventSinkCookie;
 
    BOOL m_bUIIntegrated; // true if UI integration happened
 

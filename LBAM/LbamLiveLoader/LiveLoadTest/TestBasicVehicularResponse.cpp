@@ -36,11 +36,6 @@
 #include "..\..\LBAMTestUtils.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 static HRESULT CreateASimpleLBAM(ILBAMModel** model);
 void GenerateLoadGroups(ILBAMModel* model, Float64 overhang);

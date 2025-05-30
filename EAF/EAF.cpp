@@ -31,27 +31,21 @@
 #include <WBFLUnitServer.h>
 
 #include <initguid.h>
-#include <EAF\EAFAppPlugin.h>
+#include <EAF\PluginApp.h>
 #include <EAF\EAFUIIntegration.h>
 #include <EAF\EAFDisplayUnits.h>
 #include <EAF\EAFStatusCenter.h>
 #include <EAF\EAFViewController.h>
-#include <IReportManager.h>
-#include <IGraphManager.h>
-#include <WBFLReportManagerAgent_i.c>
-#include <WBFLGraphManagerAgent_i.c>
 
 #include "EAFDocProxyAgent.h"
+#include "GraphManagerAgent.h"
+#include "ReportManagerAgent.h"
+#include <../Core/CLSID.h>
 
-#include <WBFLCore_i.c>
 #include <WBFLTools_i.c>
 #include <WBFLUnitServer_i.c>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include "WBCmdGroup.h"
 
 
 static AFX_EXTENSION_MODULE EAFDLL = { FALSE, 0, 0, nullptr, nullptr };

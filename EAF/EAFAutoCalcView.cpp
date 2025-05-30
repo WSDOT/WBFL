@@ -31,11 +31,6 @@
 #include <EAF\EAFLicensePlateChildFrame.h>
 #include <EAF\EAFAutoCalcDoc.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFAutoCalcViewMixin
@@ -69,7 +64,7 @@ void CEAFAutoCalcViewMixin::EnableLpFrame(bool bEnable)
    {
       // We are switching modes
       CEAFLicensePlateChildFrame* pLpFrame = GetLpFrame();
-      pLpFrame->SetLicensePlateMode( bEnable ? eafTypes::lpfOn : eafTypes::lpfOff );
+      pLpFrame->SetLicensePlateMode( bEnable ? WBFL::EAF::LpFrameMode::On : WBFL::EAF::LpFrameMode::Off );
       m_bLpFrameEnabled = bEnable;
    }
 }

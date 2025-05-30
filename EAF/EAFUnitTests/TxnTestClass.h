@@ -22,40 +22,40 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <EAF\EAFTransaction.h>
+#include <EAF\Transaction.h>
 
-class testUndoableTxn : public CEAFTransaction
+class testUndoableTxn : public WBFL::EAF::Transaction
 {
 public:
    testUndoableTxn();
    virtual bool Execute() override;
    virtual void Undo() override;
-   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual std::unique_ptr<WBFL::EAF::Transaction> CreateClone() const override;
    virtual void Log(std::_tostream& os) const override;
    virtual std::_tstring Name() const override;
    virtual bool IsUndoable() const override;
    virtual bool IsRepeatable() const override;
 };
 
-class testNotUndoableTxn : public CEAFTransaction
+class testNotUndoableTxn : public WBFL::EAF::Transaction
 {
 public:
    testNotUndoableTxn();
    virtual bool Execute() override;
-   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual std::unique_ptr<WBFL::EAF::Transaction> CreateClone() const override;
    virtual void Log(std::_tostream& os) const override;
    virtual std::_tstring Name() const override;
    virtual bool IsUndoable() const override;
    virtual bool IsRepeatable() const override;
 };
 
-class testNotRepeatableTxn : public CEAFTransaction
+class testNotRepeatableTxn : public WBFL::EAF::Transaction
 {
 public:
    testNotRepeatableTxn();
    virtual bool Execute() override;
    virtual void Undo() override;
-   virtual std::unique_ptr<CEAFTransaction> CreateClone() const override;
+   virtual std::unique_ptr<WBFL::EAF::Transaction> CreateClone() const override;
    virtual void Log(std::_tostream& os) const override;
    virtual std::_tstring Name() const override;
    virtual bool IsUndoable() const override;

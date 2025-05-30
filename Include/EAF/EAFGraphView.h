@@ -28,8 +28,9 @@
 //
 
 #include <EAF\EAFExp.h>
-#include <IGraphManager.h>
+#include <EAF/EAFGraphManager.h>
 #include <EAF\EAFView.h>
+#include <Graphing/GraphManager.h>
 
 class CEAFGraphChildFrame;
 
@@ -37,8 +38,8 @@ class CEAFGraphChildFrame;
 struct EAFCLASS CEAFGraphViewCreationData
 {
    // The graph manager
-	WBFL::Graphing::GraphManager* m_pGraphMgr;  // Use this when for regular Doc/View
-   IGraphManager* m_pIGraphMgr; // Use this when for the Agent/Broker architecture
+   WBFL::Graphing::GraphManager* m_pGraphMgr;  // Use this when for regular Doc/View
+   std::shared_ptr<IEAFGraphManager> m_pIGraphMgr; // Use this when for the Agent/Broker architecture
 
    IndexType m_GraphIndex; // Index of the graph to initialize the view with
 
@@ -46,7 +47,6 @@ struct EAFCLASS CEAFGraphViewCreationData
    {
       m_GraphIndex = 0;
       m_pGraphMgr  = nullptr;
-      m_pIGraphMgr = nullptr;
    }
 };
 

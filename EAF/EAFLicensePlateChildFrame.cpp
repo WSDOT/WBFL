@@ -26,11 +26,6 @@
 #include <EAF\EAFLicensePlateChildFrame.h>
 #include <Colors.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFLicensePlateChildFrame
@@ -53,7 +48,7 @@ CEAFLicensePlateChildFrame::CEAFLicensePlateChildFrame()
    m_LpBorderWidth = GetSystemMetrics(SM_CYMENU);
 
    // don't show license plate frame by default
-   m_Mode = eafTypes::lpfOff;
+   m_Mode = WBFL::EAF::LpFrameMode::Off;
 
    // no bitmap for background at load
    m_IsBitmap = false;
@@ -211,7 +206,7 @@ BOOL CEAFLicensePlateChildFrame::OnEraseBkgnd(CDC* pDC)
 }
 
 
-void CEAFLicensePlateChildFrame::SetLicensePlateMode(eafTypes::LpFrameMode mode)
+void CEAFLicensePlateChildFrame::SetLicensePlateMode(WBFL::EAF::LpFrameMode mode)
 {
    if ( mode != m_Mode )
    {
@@ -225,22 +220,22 @@ void CEAFLicensePlateChildFrame::SetLicensePlateMode(eafTypes::LpFrameMode mode)
    }
 }
 
-eafTypes::LpFrameMode CEAFLicensePlateChildFrame::GetLicensePlateMode()
+WBFL::EAF::LpFrameMode CEAFLicensePlateChildFrame::GetLicensePlateMode()
 {
    return m_Mode;
 }
 
 void CEAFLicensePlateChildFrame::ToggleLPFrame()
 {
-   if ( m_Mode == eafTypes::lpfOn )
-      SetLicensePlateMode( eafTypes::lpfOff );
+   if ( m_Mode == WBFL::EAF::LpFrameMode::On )
+      SetLicensePlateMode( WBFL::EAF::LpFrameMode::Off );
    else
-      SetLicensePlateMode( eafTypes::lpfOn );
+      SetLicensePlateMode( WBFL::EAF::LpFrameMode::On );
 }
 
 bool CEAFLicensePlateChildFrame::IsLicensePlateModeEnabled() const
 {
-   return m_Mode == eafTypes::lpfOn;
+   return m_Mode == WBFL::EAF::LpFrameMode::On;
 }
 
 void CEAFLicensePlateChildFrame::SetLicensePlateText(const CString& Message)

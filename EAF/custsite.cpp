@@ -52,11 +52,6 @@
 #include <system\tokenizer.h>
 #include <Reporter\HtmlHelper.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // ------- free functions
 enum anchorType {atChapter, atParagraph, atNone};

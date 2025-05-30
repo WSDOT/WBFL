@@ -27,7 +27,7 @@
 #include <Stability/HaulingResults.h>
 
 class rptParagraph;
-interface IEAFDisplayUnits;
+class IEAFDisplayUnits;
 
 namespace WBFL
 {

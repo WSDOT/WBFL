@@ -16,7 +16,7 @@ namespace EAFUnitTests
          testNotRepeatableTxn txn2;
          testNotUndoableTxn txn3;
 
-         auto& txn_mgr = CEAFTxnManager::GetInstance();
+         auto& txn_mgr = WBFL::EAF::TxnManager::GetInstance();
 
          // Test the start up state
          Assert::IsFalse(txn_mgr.CanUndo());

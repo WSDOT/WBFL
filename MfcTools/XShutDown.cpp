@@ -24,11 +24,6 @@
 #include "StdAfx.h"
 #include <MfcTools\XShutDown.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 IMPLEMENT_DYNAMIC(CXShutDown,CException)
 /****************************************************************************

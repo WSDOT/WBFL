@@ -28,7 +28,7 @@
 
 #include "ConfigureReportsDlg.h"
 #include <AgentTools.h>
-#include <IReportManager.h>
+#include <EAF/EAFReportManager.h>
 
 #include <EAF\EAFBrokerDocument.h>
 
@@ -180,7 +180,7 @@ void CEditCustomReportDlg::FillChapterData(bool initial)
       CString rptname;
       m_ParentReportCombo.GetLBText(sel, rptname);
 
-      GET_IFACE2(m_pConfigureReportsDlg->m_pBroker,IReportManager,pReportMgr);
+      GET_IFACE2(m_pConfigureReportsDlg->m_pBroker,IEAFReportManager,pReportMgr);
       std::shared_ptr<WBFL::Reporting::ReportBuilder> pBuilder = pReportMgr->GetReportBuilder(rptname);
       IndexType nc = pBuilder->GetChapterBuilderCount();
       for (IndexType ic = 0; ic<nc; ic++)

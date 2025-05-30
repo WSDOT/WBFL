@@ -27,16 +27,11 @@
 #include "ConfigureReportsDlg.h"
 
 #include <AgentTools.h>
-#include <IReportManager.h>
-#include <EAF\EAFBrokerDocument.h>
+#include <EAF/EAFReportManager.h>
+#include <EAF/EAFBrokerDocument.h>
 
 #include <iterator>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 // CConfigureReportsDlg
@@ -83,7 +78,7 @@ void CConfigureReportsDlg::Init(BOOL bFavoriteReports)
 BOOL CConfigureReportsDlg::OnInitDialog()
 {
    // Build list of built-in reports
-   GET_IFACE(IReportManager,pReportMgr);
+   GET_IFACE(IEAFReportManager,pReportMgr);
    std::vector<std::_tstring> rptNames = pReportMgr->GetReportNames();
 
    CEAFCustomReport stub;
@@ -170,7 +165,7 @@ void CConfigureReportsDlg::OnHelp()
    {
       CEAFBrokerDocument* pBrokerDoc = (CEAFBrokerDocument*)pDoc;
 
-      eafTypes::CustomReportHelp helpType = (0 == GetActiveIndex()) ? eafTypes::crhFavoriteReport : eafTypes::crhCustomReport;
+      WBFL::EAF::CustomReportHelp helpType = (0 == GetActiveIndex()) ? WBFL::EAF::CustomReportHelp::FavoriteReport : WBFL::EAF::CustomReportHelp::CustomReport;
 
       pBrokerDoc->ShowCustomReportHelp(helpType);
    }

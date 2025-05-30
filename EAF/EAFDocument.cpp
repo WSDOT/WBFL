@@ -30,8 +30,8 @@
 #include <EAF\EAFDocument.h>
 #include <EAF\EAFApp.h>
 #include <EAF\EAFMainFrame.h>
-#include <EAF\EAFAppPlugin.h>
-#include <EAF\EAFDocTemplateRegistrar.h>
+#include <EAF\PluginApp.h>
+#include <EAF\DocTemplateRegistrar.h>
 #include <EAF\EAFHints.h>
 #include <EAF\EAFView.h>
 #include <EAF\EAFDataRecoveryHandler.h>
@@ -42,20 +42,13 @@
 #include <System\Time.h>
 #include <MFCTools\VersionInfo.h>
 
-#include <EAF\EAFTxnManager.h>
+#include <EAF\TxnManager.h>
 
-#include <EAF\EAFPluginCommandManager.h>
+#include <EAF\PluginCommandManager.h>
 
 #include "StatusCenterDlg.h"
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-class CMyStatusCenterEventSink : public IEAFStatusCenterEventSink
+class CMyStatusCenterEventSink : public WBFL::EAF::StatusCenterEventSink
 {
 public:
    CMyStatusCenterEventSink(CEAFDocument* pDoc)
@@ -63,7 +56,7 @@ public:
       m_pDoc = pDoc;
    }
 
-   virtual void OnStatusItemAdded(CEAFStatusItem* pItem)
+   virtual void OnStatusItemAdded(std::shared_ptr<const WBFL::EAF::StatusItem> pItem)
    {
       m_pDoc->OnStatusChanged();
    }
@@ -83,15 +76,14 @@ IMPLEMENT_DYNAMIC(CEAFDocument, CDocument)
 
 CEAFDocument::CEAFDocument()
 {
-   m_pMainMenu = nullptr;
-   m_pPluginCommandMgr = new CEAFPluginCommandManager();
+   m_PluginCommandMgr = std::make_shared<WBFL::EAF::PluginCommandManager>();
 
-   m_pStatusCenterEventSink = new CMyStatusCenterEventSink(this);
+   m_pStatusCenterEventSink = std::make_shared<CMyStatusCenterEventSink>(this);
 
-   m_pStatusCenter = new CEAFStatusCenter;
-   m_pStatusCenter->SinkEvents(m_pStatusCenterEventSink);
+   m_pStatusCenter = std::make_unique<WBFL::EAF::StatusCenter>();
+   m_StatusCenterEventSinkCookie = m_pStatusCenter->RegisterEventSink(m_pStatusCenterEventSink);
 
-   m_pStatusCenterDlg = new CStatusCenterDlg(*m_pStatusCenter);
+   m_pStatusCenterDlg = std::make_unique<CStatusCenterDlg>(*m_pStatusCenter);
 
    m_DocPluginMgr.SetParent(this);
 
@@ -107,34 +99,12 @@ CEAFDocument::CEAFDocument()
 
 CEAFDocument::~CEAFDocument()
 {
-   ATLASSERT( m_pMainMenu == nullptr ); // this should have been deleted by now!
-
-   if ( m_pPluginCommandMgr )
-   {
-      delete m_pPluginCommandMgr;
-      m_pPluginCommandMgr = nullptr;
-   }
-
-   if ( m_pStatusCenterDlg )
-   {
-      delete m_pStatusCenterDlg;
-      m_pStatusCenterDlg = nullptr;
-   }
-
-   if ( m_pStatusCenter )
-   {
-      delete m_pStatusCenter;
-      m_pStatusCenter = nullptr;
-   }
-
-   if ( m_pStatusCenterEventSink )
-   {
-      delete m_pStatusCenterEventSink;
-      m_pStatusCenterEventSink = nullptr;
-   }
+   CHECK( m_MainMenu == nullptr ); // this should have been deleted by now!
 
    CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
+
+   m_pStatusCenter->UnregisterEventSink(m_StatusCenterEventSinkCookie);
 }
 
 
@@ -159,9 +129,8 @@ BOOL CEAFDocument::OnCmdMsg(UINT nID,int nCode,void* pExtra,AFX_CMDHANDLERINFO* 
    }
 
    // Next, see if anyone registered callback commands
-   CComPtr<IEAFCommandCallback> pCallback;
-   UINT nPluginCmdID;
-   if ( m_pPluginCommandMgr->GetCommandCallback(nID,&nPluginCmdID,&pCallback) && pCallback )
+   auto [bSuccess, nPluginCmdID, pCallback] = m_PluginCommandMgr->GetCommandCallback(nID);
+   if ( bSuccess && pCallback )
    {
       // process the callback command
       bResult = pCallback->OnCommandMessage(nPluginCmdID,nCode,pExtra,pHandlerInfo);
@@ -205,18 +174,18 @@ void CEAFDocument::Dump(CDumpContext& dc) const
 
 void CEAFDocument::Serialize(CArchive& ar)
 {
-   ASSERT(FALSE); // should never get here... we aren't using CArcive serialization
+   ASSERT(FALSE); // should never get here... we aren't using CArchive serialization
 }
 #endif //_DEBUG
 
 // CEAFDocument message handlers
 
-CEAFMenu* CEAFDocument::GetMainMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFDocument::GetMainMenu()
 {
-   return m_pMainMenu;
+   return m_MainMenu;
 }
 
-CEAFAcceleratorTable* CEAFDocument::GetAcceleratorTable()
+std::shared_ptr<WBFL::EAF::AcceleratorTable> CEAFDocument::GetAcceleratorTable()
 {
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    return pMainFrame->GetAcceleratorTable();
@@ -251,17 +220,17 @@ void CEAFDocument::ResetApplicationIcon()
    pMainFrame->SetIcon(m_hMainFrameSmallIcon,FALSE);
 }
 
-CEAFMenu* CEAFDocument::CreateMainMenu()
+std::shared_ptr<WBFL::EAF::Menu> CEAFDocument::CreateMainMenu()
 {
-   return new CEAFMenu(EAFGetMainFrame(),GetPluginCommandManager());
+   return WBFL::EAF::Menu::CreateMenu(EAFGetMainFrame(),GetPluginCommandManager());
 }
 
-CEAFPluginCommandManager* CEAFDocument::GetPluginCommandManager()
+std::shared_ptr<WBFL::EAF::PluginCommandManager> CEAFDocument::GetPluginCommandManager()
 {
-   return m_pPluginCommandMgr;
+   return m_PluginCommandMgr;
 }
 
-CEAFDocPluginManager* CEAFDocument::GetDocPluginManager()
+WBFL::EAF::DocPluginManager* CEAFDocument::GetDocPluginMgr()
 {
    return &m_DocPluginMgr;
 }
@@ -269,12 +238,7 @@ CEAFDocPluginManager* CEAFDocument::GetDocPluginManager()
 BOOL CEAFDocument::InitMainMenu()
 {
    // Set up the menu mapping stuff before initializing agents
-   if (m_pMainMenu)
-   {
-      delete m_pMainMenu;
-   }
-
-   m_pMainMenu = CreateMainMenu();
+   m_MainMenu = CreateMainMenu();
    return TRUE;
 }
 
@@ -308,29 +272,27 @@ void CEAFDocument::IntegrateWithUI(BOOL bIntegrate)
 
 void CEAFDocument::DoIntegrateWithUI(BOOL bIntegrate)
 {
-   CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   IndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (IndexType idx = 0; idx < nPlugins; idx++ )
+   auto* pPluginMgr = GetDocPluginMgr();
+   auto nPlugins = pPluginMgr->GetPluginCount();
+   for (auto idx = 0; idx < nPlugins; idx++)
    {
-      CComPtr<IEAFDocumentPlugin> plugin;
-      pPluginMgr->GetPlugin(idx,&plugin);
-      plugin->IntagrateWithUI(bIntegrate);
+      auto plugin = pPluginMgr->GetPlugin(idx);
+      plugin->IntegrateWithUI(bIntegrate);
    }
 }
 
 BOOL CEAFDocument::ProcessCommandLineOptions(CEAFCommandLineInfo& cmdInfo)
 {
-   CEAFDocPluginManager* pPluginMgr = GetDocPluginManager();
-   IndexType nPlugins = pPluginMgr->GetPluginCount();
-   for (IndexType idx = 0; idx < nPlugins; idx++ )
+   auto* pPluginMgr = GetDocPluginMgr();
+   auto nPlugins = pPluginMgr->GetPluginCount();
+   for (auto idx = 0; idx < nPlugins; idx++)
    {
-      CComPtr<IEAFDocumentPlugin> plugin;
-      pPluginMgr->GetPlugin(idx,&plugin);
+      auto plugin = pPluginMgr->GetPlugin(idx);
 
-      CComQIPtr<IEAFDocCommandLine> cmdLinePlugin(plugin);
-      if ( cmdLinePlugin )
+      auto cmdLinePlugin = std::dynamic_pointer_cast<WBFL::EAF::IDocCommandLine>(plugin);
+      if (cmdLinePlugin)
       {
-         if ( cmdLinePlugin->ProcessCommandLineOptions(cmdInfo) )
+         if (cmdLinePlugin->ProcessCommandLineOptions(cmdInfo))
          {
             return TRUE; // handled
          }
@@ -346,16 +308,10 @@ UINT CEAFDocument::CreateToolBar(LPCTSTR lpszName)
    return pMainFrame->CreateToolBar(lpszName,GetPluginCommandManager());
 }
 
-CEAFToolBar* CEAFDocument::GetToolBar(UINT toolbarID)
+std::shared_ptr<WBFL::EAF::ToolBar> CEAFDocument::GetToolBar(UINT toolbarID)
 {
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
    return pMainFrame->GetToolBar(toolbarID);
-}
-
-void CEAFDocument::DestroyToolBar(CEAFToolBar* pToolBar)
-{
-   CEAFMainFrame* pMainFrame = EAFGetMainFrame();
-   pMainFrame->DestroyToolBar(pToolBar);
 }
 
 void CEAFDocument::DestroyToolBar(UINT toolbarID)
@@ -377,18 +333,18 @@ void CEAFDocument::SaveToolbarState()
    pMainFrame->SaveBarState(CString("Toolbars\\")+GetToolbarSectionName());
 }
 
-long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu,int maxViewCount)
+long CEAFDocument::RegisterView(UINT nResourceID, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback, CRuntimeClass* pFrameClass, CRuntimeClass* pViewClass, HMENU hSharedMenu, int maxViewCount)
 {
-   if ( hSharedMenu == nullptr )
+   if (hSharedMenu == nullptr)
    {
       CEAFMainFrame* pMainFrame = EAFGetMainFrame();
       hSharedMenu = pMainFrame->GetMenu()->GetSafeHmenu();
    }
 
-   CEAFDocTemplate* pNewDocTemplate = new CEAFDocTemplate(nResourceID,pCallback,GetRuntimeClass(),pFrameClass,pViewClass,hSharedMenu,maxViewCount);
+   CEAFDocTemplate* pNewDocTemplate = new CEAFDocTemplate(nResourceID, pCallback, GetRuntimeClass(), pFrameClass, pViewClass, hSharedMenu, maxViewCount);
 
    CEAFApp* pApp = EAFGetApp();
-   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   auto pRegistrar = pApp->GetDocTemplateRegistrar();
 
    long key = pRegistrar->AddDocTemplate(pNewDocTemplate);
    return key;
@@ -397,7 +353,7 @@ long CEAFDocument::RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,
 void CEAFDocument::RemoveView(long key)
 {
    CEAFApp* pApp = EAFGetApp();
-   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   auto pRegistrar = pApp->GetDocTemplateRegistrar();
    pRegistrar->RemoveDocTemplate(key);
 }
 
@@ -420,7 +376,7 @@ CView* CEAFDocument::CreateView(long key,LPVOID pData)
 
    CEAFMainFrame* pMainFrame = EAFGetMainFrame();
 
-   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   auto pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
    pTemplate->SetViewCreationData(pData);
    CView*                    pView      = pMainFrame->CreateOrActivateFrame(pTemplate);
@@ -441,7 +397,7 @@ void CEAFDocument::UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,COb
    // Try removing AFX_MANAGE_STATE or re-scoping it
    ASSERT(pApp->IsKindOf(RUNTIME_CLASS(CEAFApp)));
 
-   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   auto pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
    if ( pTemplate == nullptr )
    {
@@ -487,7 +443,7 @@ std::vector<CView*> CEAFDocument::GetRegisteredView(long key)
    // Try removing AFX_MANAGE_STATE or re-scoping it
    ASSERT(pApp->IsKindOf(RUNTIME_CLASS(CEAFApp)));
 
-   CEAFDocTemplateRegistrar* pRegistrar = pApp->GetDocTemplateRegistrar();
+   auto pRegistrar = pApp->GetDocTemplateRegistrar();
    CEAFDocTemplate*          pTemplate  = pRegistrar->GetDocTemplate(key);
    if ( pTemplate == nullptr )
    {
@@ -512,68 +468,6 @@ std::vector<CView*> CEAFDocument::GetRegisteredView(long key)
    return vViews;
 }
 
-void CEAFDocument::FailSafeLogMessage(LPCTSTR msg)
-{
-   CEAFApp* pApp = EAFGetApp();
-   CString strLogFile;
-   strLogFile.Format(_T("%s\\%s.log"),pApp->GetAppLocation(),pApp->m_pszExeName);
-
-   std::vector<CString> strings;
-   WBFL::System::Time now;
-   now.PrintDate(true);
-   CString strTime;
-   strTime.Format(_T("Log Opened %s"),now.AsString().c_str());
-   strings.push_back(strTime);
-
-
-   CString strExe = pApp->m_pszAppName;
-   strExe += _T(".exe");
-   
-   CVersionInfo verInfo;
-   if ( verInfo.Load(strExe) )
-   {
-      CString strProduct = verInfo.GetProductName();
-      CString strVersion = verInfo.GetProductVersionAsString();
-
-      CString str;
-      str.Format(_T("%s Version %s"),strProduct,strVersion);
-      strings.push_back(str);
-   }
-   else
-   {
-      strings.emplace_back(_T("Product Version Information not available"));
-   }
-
-   strings.push_back(CString(msg));
-
-   now.PrintDate(true);
-   CString strTime2;
-   strTime2.Format(_T("Log Closed %s"),now.AsString().c_str());
-   strings.push_back(strTime2);
-
-   std::_tofstream ofile(strLogFile);
-   if ( ofile.is_open() )
-   {
-      std::vector<CString>::iterator iter(strings.begin());
-      std::vector<CString>::iterator end(strings.end());
-      for ( ; iter != end; iter++ )
-      {
-         ofile << (*iter).LockBuffer() << std::endl;
-      }
-   }
-   else
-   {
-      CString strMsg(_T("An error occurred and the log file could not be created.\n\n"));
-      std::vector<CString>::iterator iter(strings.begin());
-      std::vector<CString>::iterator end(strings.end());
-      for ( ; iter != end; iter++ )
-      {
-         strMsg += (*iter) + CString(_T("\n"));
-      }
-      AfxMessageBox(strMsg,MB_ICONEXCLAMATION | MB_OK);
-   }
-}
-
 void CEAFDocument::SetModifiedFlag(BOOL bModified)
 {
    CDocument::SetModifiedFlag(bModified);
@@ -585,12 +479,12 @@ void CEAFDocument::SetModifiedFlag(BOOL bModified)
 
 void CEAFDocument::SetSaveMissingPluginDataFlag(BOOL bSaveDataFromMissingPlugins)
 {
-   GetDocPluginManager()->SetSaveMissingPluginDataFlag(bSaveDataFromMissingPlugins);
+   GetDocPluginMgr()->SetSaveMissingPluginDataFlag(bSaveDataFromMissingPlugins);
 }
 
 BOOL CEAFDocument::GetSaveMissingPluginDataFlag()
 {
-   return GetDocPluginManager()->GetSaveMissingPluginDataFlag();
+   return GetDocPluginMgr()->GetSaveMissingPluginDataFlag();
 }
 
 void CEAFDocument::InitFailMessage()
@@ -659,11 +553,10 @@ BOOL CEAFDocument::LoadDocumentPlugins()
       return TRUE; // no plugins for this document type
    }
 
-   GetDocPluginManager()->SetCATID(catid);
-
-   if ( GetDocPluginManager()->LoadPlugins() )
+   GetDocPluginMgr()->SetCATID(catid);
+   if (GetDocPluginMgr()->LoadPlugins())
    {
-      GetDocPluginManager()->InitPlugins();
+      GetDocPluginMgr()->InitPlugins();
    }
 
    return TRUE;
@@ -671,7 +564,7 @@ BOOL CEAFDocument::LoadDocumentPlugins()
 
 void CEAFDocument::UnloadDocumentPlugins()
 {
-   GetDocPluginManager()->UnloadPlugins();
+   GetDocPluginMgr()->UnloadPlugins();
 }
 
 void CEAFDocument::OnUpdateViewStatusCenter(CCmdUI* pCmdUI)
@@ -724,6 +617,10 @@ BOOL CEAFDocument::OnNewDocument()
 
 BOOL CEAFDocument::OnNewDocumentFromTemplate(LPCTSTR lpszPathName)
 {
+   CString msg;
+   msg.Format(_T("New document from template: %s"), lpszPathName);
+   WBFL::System::Logger::Info((LPCTSTR)msg);
+
    if ( !OnNewDocument() )
    {
       return FALSE;
@@ -750,11 +647,16 @@ BOOL CEAFDocument::EnableBackupOnSave() const
 
 BOOL CEAFDocument::OnOpenDocument(LPCTSTR lpszPathName)
 {
+   CString msg;
+   msg.Format(_T("Opening document: %s"), lpszPathName);
+   WBFL::System::Logger::Info((LPCTSTR)msg);
+
    CWaitCursor cursor;
 
+   // don't call the base class method
    // we want to totally replace the default functionality
-	//if (!CDocument::OnOpenDocument(lpszPathName))
-	//	return FALSE;
+   //if (!CDocument::OnOpenDocument(lpszPathName))
+   //	return FALSE;
 	
    // Initialize the document
    if ( !Init() ) // init menus and toolbars... subclasses do more initialization
@@ -795,7 +697,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
       hFile = ::FindFirstFile( lpszPathName, &find_file_data );
       if ( hFile != INVALID_HANDLE_VALUE )
       {
-         ::FindClose(hFile); // don't want no stinkin resource leaks.
+         ::FindClose(hFile); // don't want no stinking resource leaks.
         
          // OK, The file exists.
          // check to make sure it's not read-only
@@ -809,7 +711,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
          }
 
          // Create a backup copy of the last good save.
-         // Backup filename is orginial filename, except the first
+         // Backup filename is original filename, except the first
          // letter is a ~.
          int idx = strBackupFile.ReverseFind( _T('\\') ); // look for last '\'. 
                                                   // This is one character before the 
@@ -835,7 +737,7 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
       BOOL bDidDelete = ::DeleteFile( lpszPathName );
       if ( !bDidDelete )
       {
-         // Opps... Couldn't delete it.
+         // Oops... Couldn't delete it.
          // Alter the user so he's not screwed.
          OnErrorDeletingBadSave(lpszPathName,strBackupFile);
       }
@@ -847,8 +749,8 @@ BOOL CEAFDocument::OnSaveDocument(LPCTSTR lpszPathName)
          BOOL bDidMove = ::MoveFile( strBackupFile, lpszPathName ); // Rename the file
          if ( !bDidMove )
          {
-            // Opps... A file with the original name is gone, and we can't
-            // rename the backup to the file with the orignal name.
+            // Oops... A file with the original name is gone, and we can't
+            // rename the backup to the file with the original name.
             // Alert the user so he's not screwed.
             OnErrorRenamingSaveBackup(lpszPathName,strBackupFile);
          }
@@ -960,10 +862,10 @@ BOOL CEAFDocument::OpenTheDocument(LPCTSTR lpszPathName)
       // If this document type supports plugins, load the plug in data
       if ( GetDocumentPluginCATID() != CLSID_NULL )
       {
-         hr = GetDocPluginManager()->LoadPluginData( pStrLoad );
-         if ( FAILED(hr) )
+         hr = GetDocPluginMgr()->LoadPluginData(pStrLoad);
+         if (FAILED(hr))
          {
-            HandleOpenDocumentError( hr, lpszPathName );
+            HandleOpenDocumentError(hr, lpszPathName);
             return FALSE;
          }
       }
@@ -1124,10 +1026,10 @@ BOOL CEAFDocument::SaveTheDocument(LPCTSTR lpszPathName)
    // If this document type supports plugins, save the plug in data
    if ( GetDocumentPluginCATID() != CLSID_NULL )
    {
-      hr = GetDocPluginManager()->SavePluginData( pStrSave );
-      if ( FAILED(hr) )
+      hr = GetDocPluginMgr()->SavePluginData(pStrSave);
+      if (FAILED(hr))
       {
-         HandleSaveDocumentError( hr, lpszPathName );
+         HandleSaveDocumentError(hr, lpszPathName);
          return FALSE;
       }
    }
@@ -1242,17 +1144,15 @@ void CEAFDocument::DocumentationSourceChanged()
 CString CEAFDocument::GetDocumentationSetName()
 {
    CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   CComPtr<IEAFAppPlugin> pAppPlugin;
-   pTemplate->GetPlugin(&pAppPlugin);
-   return pAppPlugin->GetDocumentationSetName();
+   auto pluginApp = pTemplate->GetPluginApp();
+   return pluginApp->GetDocumentationSetName();
 }
 
 CString CEAFDocument::GetDocumentationURL()
 {
    CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   CComPtr<IEAFAppPlugin> pAppPlugin;
-   pTemplate->GetPlugin(&pAppPlugin);
-   return pAppPlugin->GetDocumentationURL();
+   auto pluginApp = pTemplate->GetPluginApp();
+   return pluginApp->GetDocumentationURL();
 }
 
 CString CEAFDocument::GetDocumentationMapFile()
@@ -1270,7 +1170,7 @@ void CEAFDocument::LoadDocumentationMap()
    VERIFY(EAFLoadDocumentationMap(mapFileName,m_HelpTopics));
 }
 
-eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID,CString& strURL)
+std::pair<WBFL::EAF::HelpResult,CString> CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UINT nHID)
 {
    CString strDocSetName(lpszDocSetName);
    if ( GetDocumentationSetName() == strDocSetName )
@@ -1281,28 +1181,26 @@ eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UI
       std::map<UINT,CString>::iterator found(m_HelpTopics.find(nHID));
       if ( found == m_HelpTopics.end() )
       {
-         strURL = strBaseURL;
-         return eafTypes::hrTopicNotFound;
+         return { WBFL::EAF::HelpResult::TopicNotFound,CString() };
       }
 
-
+      CString strURL;
       strURL.Format(_T("%s%s"),strBaseURL,found->second);
-      return eafTypes::hrOK;
+      return { WBFL::EAF::HelpResult::OK,strURL };
    }
    else
    {
       // check to see of the help topic and documentation set belongs to one of our plug-ins
-      CEAFDocPluginManager* pDocPluginMgr = GetDocPluginManager();
-      IndexType nPlugins = pDocPluginMgr->GetPluginCount();
-      for ( IndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
+      auto* pDocPluginMgr = GetDocPluginMgr();
+      auto nPlugins = pDocPluginMgr->GetPluginCount();
+      for (auto pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++)
       {
-         CComPtr<IEAFDocumentPlugin> pDocPlugin;
-         HRESULT hr = pDocPluginMgr->GetPlugin(pluginIdx,&pDocPlugin);
-         ATLASSERT(SUCCEEDED(hr));
+         auto pDocPlugin = pDocPluginMgr->GetPlugin(pluginIdx);
+         CHECK(pDocPlugin != nullptr);
 
-         if ( pDocPlugin->GetDocumentationSetName() == strDocSetName )
+         if (pDocPlugin->GetDocumentationSetName() == strDocSetName)
          {
-            return pDocPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+            return pDocPlugin->GetDocumentLocation(lpszDocSetName, nHID);
          }
       }
    }
@@ -1310,10 +1208,8 @@ eafTypes::HelpResult CEAFDocument::GetDocumentLocation(LPCTSTR lpszDocSetName,UI
    // if we got this far, the help topic still wasn't found... kick it up to our
    // parent app plug-in
    CEAFDocTemplate* pTemplate = (CEAFDocTemplate*)GetDocTemplate();
-   CComPtr<IEAFAppPlugin> pAppPlugin;
-   pTemplate->GetPlugin(&pAppPlugin);
-
-   return pAppPlugin->GetDocumentLocation(lpszDocSetName,nHID,strURL);
+   auto pluginApp = pTemplate->GetPluginApp();
+   return pluginApp->GetDocumentLocation(lpszDocSetName,nHID);
 }
 
 void CEAFDocument::OnCloseDocument()
@@ -1324,7 +1220,7 @@ void CEAFDocument::OnCloseDocument()
    // remove ui elements that plug-ins provided
    if ( m_bUIIntegrated )
    {
-      ATLASSERT(m_pMainMenu != nullptr);
+      CHECK(m_MainMenu != nullptr);
       IntegrateWithUI(FALSE);
       GetPluginCommandManager()->Clear();
    }
@@ -1356,7 +1252,7 @@ void CEAFDocument::OnCloseDocument()
    }
 }
 
-CEAFStatusCenter& CEAFDocument::GetStatusCenter()
+WBFL::EAF::StatusCenter& CEAFDocument::GetStatusCenter()
 {
    return *m_pStatusCenter;
 }
@@ -1366,79 +1262,79 @@ void CEAFDocument::OnUnitsModeChanging()
    OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGING,0);
 }
 
-void CEAFDocument::OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
+void CEAFDocument::OnUnitsModeChanged(WBFL::EAF::UnitMode newUnitMode)
 {
    OnUpdateAllViews(nullptr,EAF_HINT_UNITS_CHANGED,0);
 }
 
-void CEAFDocument::Execute(const CEAFTransaction& rTxn)
+void CEAFDocument::Execute(const WBFL::EAF::Transaction& rTxn)
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance().Execute(rTxn);
+   WBFL::EAF::TxnManager::GetInstance().Execute(rTxn);
 }
 
-void CEAFDocument::Execute(std::unique_ptr<CEAFTransaction>&& pTxn)
+void CEAFDocument::Execute(std::unique_ptr<WBFL::EAF::Transaction>&& pTxn)
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance().Execute(std::move(pTxn));
+   WBFL::EAF::TxnManager::GetInstance().Execute(std::move(pTxn));
 }
 
 void CEAFDocument::Undo()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance().Undo();
+   WBFL::EAF::TxnManager::GetInstance().Undo();
 }
 
 void CEAFDocument::Redo()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance().Redo();
+   WBFL::EAF::TxnManager::GetInstance().Redo();
 }
 
 void CEAFDocument::Repeat()
 {
    CWaitCursor wait;
-   CEAFTxnManager::GetInstance().Repeat();
+   WBFL::EAF::TxnManager::GetInstance().Repeat();
 }
 
 bool CEAFDocument::CanUndo() const
 {
-   return CEAFTxnManager::GetInstance().CanUndo();
+   return WBFL::EAF::TxnManager::GetInstance().CanUndo();
 }
 
 bool CEAFDocument::CanRedo() const
 {
-   return CEAFTxnManager::GetInstance().CanRedo();
+   return WBFL::EAF::TxnManager::GetInstance().CanRedo();
 }
 
 bool CEAFDocument::CanRepeat() const
 {
-   return CEAFTxnManager::GetInstance().CanRepeat();
+   return WBFL::EAF::TxnManager::GetInstance().CanRepeat();
 }
 
 std::_tstring CEAFDocument::UndoName() const
 {
-   return CEAFTxnManager::GetInstance().UndoName();
+   return WBFL::EAF::TxnManager::GetInstance().UndoName();
 }
 
 std::_tstring CEAFDocument::RedoName() const
 {
-   return CEAFTxnManager::GetInstance().RedoName();
+   return WBFL::EAF::TxnManager::GetInstance().RedoName();
 }
 
 std::_tstring CEAFDocument::RepeatName() const
 {
-   return CEAFTxnManager::GetInstance().RepeatName();
+   return WBFL::EAF::TxnManager::GetInstance().RepeatName();
 }
 
 IndexType CEAFDocument::GetTxnCount() const
 {
-   return CEAFTxnManager::GetInstance().GetTxnCount();
+   return WBFL::EAF::TxnManager::GetInstance().GetTxnCount();
 }
 
 IndexType CEAFDocument::GetUndoCount() const
 {
-   return CEAFTxnManager::GetInstance().GetUndoCount();
+   return WBFL::EAF::TxnManager::GetInstance().GetUndoCount();
 }
 
 void CEAFDocument::OnUndo() 
@@ -1516,12 +1412,8 @@ void CEAFDocument::OnStatusChanged()
 void CEAFDocument::DeleteContents()
 {
    CDocument::DeleteContents();
-
-   if ( m_pMainMenu )
-   {
-      delete m_pMainMenu;
-      m_pMainMenu = nullptr;
-   }
+   m_MainMenu = nullptr;
+   WBFL::EAF::TxnManager::ShutDown();
 }
 
 void CEAFDocument::OnCreateInitialize()
@@ -1533,7 +1425,7 @@ void CEAFDocument::OnCreateFinalize()
 {
    IntegrateWithUI(TRUE);
    // If the document is in an error state, present the status center to the user
-   if (m_pStatusCenter && m_pStatusCenter->GetSeverity() == eafTypes::statusError)
+   if (m_pStatusCenter && m_pStatusCenter->GetSeverity() == WBFL::EAF::StatusSeverityType::Error)
    {
       OnViewStatusCenter();
    }
