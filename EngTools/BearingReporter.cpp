@@ -32,7 +32,7 @@ BearingReporter::BearingReporter()
 }
 
 
-void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact)
+void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact, const BearingCheckArtifact* tArtifact)
 {
 
 	const auto& criteria = artifact.GetBearingDesignCriteria();
@@ -41,8 +41,21 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	*pPara << color(Blue);
 	*pPara << Bold(_T("-Calculations are based on ")) << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << rptNewLine;
 	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only")) << rptNewLine;
-	*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based upon 0.010 radian out - of - plumb tolerance")) << rptNewLine;
+
+	if (tArtifact != nullptr)
+	{
+		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on the greater of torsional rotation ")) << rptNewLine;
+		*pPara << Bold(_T("due skew at pier, where "));
+		*pPara << Sub2(symbol(theta), _T("t")) << _T(" = ") << Sub2(symbol(theta), _T("f")) << _T("tan(") << Sub2(symbol(theta), _T("skew")) << _T(")");
+		*pPara << _T(" and 0.010 rad out-of-plumb tolerance");
+	}
+	else
+	{
+		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance"));
+	}
+
 	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates")) << rptNewLine;
+
 	*pPara << Bold(_T("Bearing Orientation:")) << rptNewLine;
 	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine;
 	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge")) << rptNewLine;
@@ -50,7 +63,7 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 }
 
 void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
-	rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact)
+	rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact)
 {
 
 
@@ -81,8 +94,19 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	IndexType n = brg.GetNumIntLayers();
 	Float64 tcover = brg.GetCoverThickness();
 	Float64 sdef = loads.GetShearDeformation();
+
 	Float64 static_rotation = loads.GetStaticRotation();
 	Float64 cyclic_rotation = loads.GetCyclicRotation();
+
+	BearingLoads t_loads;
+	Float64 t_static_rotation, t_cyclic_rotation;
+	if (tArtifact != nullptr)
+	{
+		t_loads = tArtifact->GetBearingLoads();
+		t_static_rotation = t_loads.GetStaticRotation();
+		t_cyclic_rotation = t_loads.GetCyclicRotation();
+	}
+
 	Float64 x_rotation = loads.GetRotationX();
 	Float64 y_rotation = loads.GetRotationY();
 	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
@@ -156,12 +180,10 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable)(0, 7) << _T("S");
 	(*pTable)(1, 7) << s;
 
-	IndexType i = 4;
+	IndexType nCol = 4;
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
-	{
-		i = 5;
-	}
-	rptRcTable* pTable2 = rptStyleManager::CreateDefaultTable(i, _T("Design Properties"));
+		nCol = 5;
+	rptRcTable* pTable2 = rptStyleManager::CreateDefaultTable(nCol, _T("Design Properties"));
 
 	*pPara << pTable2 << rptNewLine;
 	(*pTable2)(0, 0) << COLHDR(_T("K"), rptStressUnitTag, pDispUnits->ModE);
@@ -191,7 +213,10 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable3)(0, 3) << COLHDR(Sub2(symbol(sigma), _T("s")), rptStressUnitTag, pDispUnits->Stress);
 	(*pTable3)(1, 3) << stress.SetValue(tl_stress);
 
-	rptRcTable* pTable4 = rptStyleManager::CreateDefaultTable(3, _T("Movements"));
+	nCol = 3;
+	if (tArtifact != nullptr && criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodB)
+		nCol = 5;
+	rptRcTable* pTable4 = rptStyleManager::CreateDefaultTable(nCol, _T("Movements"));
 	*pPara << pTable4 << rptNewLine;
 	(*pTable4)(0, 0) << COLHDR(Sub2(symbol(DELTA), _T("s")), rptLengthUnitTag, pDispUnits->ComponentDim);
 	(*pTable4)(1, 0) << length.SetValue(sdef);
@@ -205,10 +230,17 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	}
 	else
 	{
-		(*pTable4)(0, 1) << COLHDR(Sub2(symbol(theta), _T("st")), rptAngleUnitTag, pDispUnits->RadAngle);
+		(*pTable4)(0, 1) << COLHDR(Sub2(symbol(theta), (tArtifact != nullptr ? _T("f,st") : _T("st"))), rptAngleUnitTag, pDispUnits->RadAngle);
 		(*pTable4)(1, 1) << angle.SetValue(static_rotation);
-		(*pTable4)(0, 2) << COLHDR(Sub2(symbol(theta), _T("cy")), rptAngleUnitTag, pDispUnits->RadAngle);
+		(*pTable4)(0, 2) << COLHDR(Sub2(symbol(theta), (tArtifact != nullptr ? _T("f,cy") : _T("cy"))), rptAngleUnitTag, pDispUnits->RadAngle);
 		(*pTable4)(1, 2) << angle.SetValue(cyclic_rotation);
+		if (tArtifact != nullptr)
+		{
+			(*pTable4)(0, 3) << COLHDR(Sub2(symbol(theta), _T("t,st")), rptAngleUnitTag, pDispUnits->RadAngle);
+			(*pTable4)(1, 3) << angle.SetValue(t_static_rotation);
+			(*pTable4)(0, 4) << COLHDR(Sub2(symbol(theta), _T("t,cy")), rptAngleUnitTag, pDispUnits->RadAngle);
+			(*pTable4)(1, 4) << angle.SetValue(t_cyclic_rotation);
+		}
 	}
 
 }
@@ -1232,9 +1264,9 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 }
 
 void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::BearingCheckArtifact& artifact)
+	const WBFL::EngTools::BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact)
 {
-	const BearingCalculator brg_calc;
+
 	const auto& brg = artifact.GetBearing();
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
@@ -1270,10 +1302,18 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
-	//pPara = new rptParagraph;
-	//(*pChapter) << pPara;
+	/// torsional rotation calculations
+	bool secondary_rest_system_req_check, secondary_hydrostatic_check;
+	if (tArtifact != nullptr)
+	{
 
-	//*pPara << rptNewPage;
+		ss_Y_combo_sum_check = tArtifact->PrimaryShearStrainComboSumCheck();
+
+		secondary_rest_system_req_check = tArtifact->RestraintSystemRequirementCheck();
+
+		secondary_hydrostatic_check = tArtifact->HydrostaticStressCheck();
+
+	}
 
 	rptHeading* pHeading = rptStyleManager::CreateHeading();
 	(*pChapter) << pHeading;
@@ -1285,14 +1325,16 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 
 	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !n_min_shear_def_check || !t_max_cover_check
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
-		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
-		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
+		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || !ss_Y_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
+		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || (!use_ext_plates && !rest_system_req_check) || (use_ext_plates && !hydrostatic_check)
 		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
 		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
 		|| (criteria.bRequiredBearingEdgeToGirderEdgeDistance ? !distBrg2gBfCheck : false)
-		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false))
+		|| (criteria.bMaximumTotalLoad ? !maxTLCheck : false)
+		|| (!use_ext_plates && tArtifact != nullptr && !secondary_rest_system_req_check)
+		|| (use_ext_plates && tArtifact != nullptr && !secondary_hydrostatic_check))
 	{
 		*pPara << color(Red);
 		if (!t_min_shim_absolute_check)
@@ -1347,11 +1389,11 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		{
 			*pPara << _T("Bearing is unstable in the secondary direction (transverse to the bridge) due to axial load.") << rptNewLine;
 		}
-		if (!use_ext_plates && !rest_system_req_check)
+		if ((!use_ext_plates && !rest_system_req_check) || (tArtifact != nullptr && !secondary_rest_system_req_check))
 		{
 			*pPara << _T("Bearing restraint system is required.") << rptNewLine;
 		}
-		if (use_ext_plates && !hydrostatic_check)
+		if ((use_ext_plates && !hydrostatic_check) || (use_ext_plates && tArtifact != nullptr && !secondary_hydrostatic_check))
 		{
 			*pPara << _T("Elastomer is not sufficient to resist tension due to hydrostatic stress (Applicable if externally bonded plates are used).") << rptNewLine;
 		}
@@ -1396,6 +1438,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
 		}
 
+
 		*pPara << color(Red) << rptNewLine << rptNewLine;
 	}
 	else
@@ -1406,7 +1449,8 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 
 void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
 	rptChapter* pChapter, rptParagraph* pPara,
-	const WBFL::EngTools::BearingCheckArtifact& artifact)
+	const WBFL::EngTools::BearingCheckArtifact& artifact,
+	const WBFL::EngTools::BearingCheckArtifact* tArtifact)
 {
 
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
@@ -1440,6 +1484,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 sdef = brg_loads.GetShearDeformation();
 	Float64 static_rotation = brg_loads.GetStaticRotation();
 	Float64 cyclic_rotation = brg_loads.GetCyclicRotation();
+
 	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 
@@ -1449,16 +1494,20 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 da3 = brg_calc.Getda3(brg);
 	Float64 Dax = brg_calc.GetPrimaryShearStrainAxialCoefficient(brg);
 	Float64 Day = brg_calc.GetSecondaryShearStrainAxialCoefficient(brg);
+
 	Float64 Drx = brg_calc.GetPrimaryShearStrainRotationCoefficient(brg);
 	Float64 Dry = brg_calc.GetSecondaryShearStrainRotationCoefficient(brg);
+
 	Float64 es_rotx = brg_calc.GetStaticRotationalPrimaryShearStrain(brg, brg_loads);
 	Float64 es_roty = brg_calc.GetStaticRotationalSecondaryShearStrain(brg, brg_loads);
+
 	Float64 Dsx = brg_calc.GetStaticDisplacementPrimaryShearStrain(brg, brg_loads);
 	Float64 Dsy = brg_calc.GetStaticDisplacementSecondaryShearStrain();
 	Float64 es_cyclic_dispx = brg_calc.GetCyclicDisplacementPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_dispy = brg_calc.GetCyclicDisplacementSecondaryShearStrain();
 	Float64 es_cyclic_axialx = brg_calc.GetCyclicAxialPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_axialy = brg_calc.GetCyclicAxialSecondaryShearStrain(brg, brg_loads);
+
 	Float64 es_cyclic_rotx = brg_calc.GetCyclicRotationalPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_roty = brg_calc.GetCyclicRotationalSecondaryShearStrain(brg, brg_loads);
 
@@ -1488,10 +1537,12 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	bool static_axial_X_ss_check = artifact.StaticAxialPrimaryShearStrainCheck();
 	Float64 static_axial_Y_ss = brg_calc.GetStaticAxialSecondaryShearStrain(brg, brg_loads);
 	bool static_axial_Y_ss_check = artifact.StaticAxialSecondaryShearStrainCheck();
+
 	Float64 ss_X_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(brg, brg_loads);
 	bool ss_X_combo_sum_check = artifact.PrimaryShearStrainComboSumCheck();
 	Float64 ss_Y_combo_sum = brg_calc.GetSecondaryShearStrainComboSum(brg, brg_loads);
 	bool ss_Y_combo_sum_check = artifact.SecondaryShearStrainComboSumCheck();
+
 	bool check_app_TL_stab_X = criteria.CheckApplicabilityTotalStressStabilityX();
 	bool check_app_TL_stab_Y = criteria.CheckApplicabilityTotalStressStabilityY();
 	Float64 total_stress = brg_calc.GetTotalStress(brg, brg_loads);
@@ -1504,8 +1555,10 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 static_stress = brg_calc.GetStaticStress(brg, brg_loads);
 	Float64 cyclic_stress = brg_calc.GetCyclicStress(brg, brg_loads);
 	Float64 lambda = brg.GetCompressibilityIndex();
+
 	Float64 restraint_system_calc = brg_calc.GetRestraintSystemCDRatio(brg, brg_loads, spec);
 	bool rest_system_req_check = artifact.RestraintSystemRequirementCheck();
+
 	Float64 max_stress = criteria.GetMaximumAllowableHydrostaticStress();
 	Float64 hydrostatic_stress = brg_calc.GetHydrostaticStress(brg, brg_loads);
 	bool hydrostatic_check = artifact.HydrostaticStressCheck();
@@ -1519,8 +1572,11 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 By = criteria.GetSecondaryIntermediateCalculationB();
 	Float64 peak_hyd = brg_calc.GetPeakHydrostaticStressCoefficient(brg);
 	Float64 total_axial_strain = brg_calc.GetTotalAxialStrain(brg, brg_loads);
+
+
 	Float64 alpha = brg_calc.GetAlphaCoefficient(brg, brg_loads);
 	Float64 Ca = brg_calc.GetCaCoefficient(brg, brg_loads);
+
 	auto horiz_force = brg_calc.GetHorizontalForce(brg, brg_loads);
 	auto horiz_force_check = artifact.HorizontalForceCheck();
 	auto deltaDLiB = brg_calc.GetInitialDeadLoadDeflectionMethodB(brg, brg_loads, spec);
@@ -1534,6 +1590,41 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
+
+
+	/// torsional rotation calculations
+	Bearing secondary_brg;
+	BearingLoads secondary_brg_loads;
+	Float64 secondary_static_rotation, secondary_cyclic_rotation, secondary_hydrostatic_stress, secondary_peak_hyd, secondary_total_axial_strain,
+		secondary_restraint_system_calc, secondary_alpha, secondary_Ca;
+	bool secondary_rest_system_req_check, secondary_hydrostatic_check;
+	if (tArtifact != nullptr)
+	{
+		secondary_brg = tArtifact->GetBearing();
+
+		secondary_brg_loads = tArtifact->GetBearingLoads();
+
+		secondary_static_rotation = secondary_brg_loads.GetStaticRotation();
+
+		secondary_cyclic_rotation = secondary_brg_loads.GetCyclicRotation();
+
+		es_roty = brg_calc.GetStaticRotationalPrimaryShearStrain(secondary_brg, secondary_brg_loads);
+
+		es_cyclic_roty = brg_calc.GetCyclicRotationalPrimaryShearStrain(secondary_brg, secondary_brg_loads);
+
+		ss_Y_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(secondary_brg, secondary_brg_loads);
+		ss_Y_combo_sum_check = tArtifact->PrimaryShearStrainComboSumCheck();
+
+		secondary_restraint_system_calc = brg_calc.GetRestraintSystemCDRatio(secondary_brg, secondary_brg_loads, spec);
+		secondary_rest_system_req_check = tArtifact->RestraintSystemRequirementCheck();
+
+		secondary_peak_hyd = brg_calc.GetPeakHydrostaticStressCoefficient(brg);
+		secondary_total_axial_strain = brg_calc.GetTotalAxialStrain(brg, brg_loads);
+		secondary_alpha = brg_calc.GetAlphaCoefficient(secondary_brg, secondary_brg_loads);
+		secondary_Ca = brg_calc.GetCaCoefficient(secondary_brg, secondary_brg_loads);
+		secondary_hydrostatic_stress = brg_calc.GetHydrostaticStress(secondary_brg, secondary_brg_loads);
+		secondary_hydrostatic_check = tArtifact->HydrostaticStressCheck();
+	}
 
 	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
@@ -1771,10 +1862,11 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	}
 	*pPara << _T(" (14.7.5.3.3-2)") << rptNewLine;
 	*pPara << _T("Static Rotational Shear Strain, ") << Sub2(symbol(gamma), _T("r,st")) << _T(" = ") << Sub2(_T("D"), _T("r "));
-	*pPara << symbol(TIMES) << _T(" (W / ") << Sub2(_T("h"), _T("ri")) << _T(")") << Super(_T("2 ")) << symbol(TIMES) << _T(" ") << _T("0.01");
+	*pPara << symbol(TIMES) << _T(" (W / ") << Sub2(_T("h"), _T("ri")) << _T(")") << Super(_T("2 ")) << symbol(TIMES) << _T(" ");
+	*pPara <<  Sub2(symbol(theta), _T("cy"));
 	*pPara << _T(" / (n + ") << symbol(eta) << _T(") = ");
 	*pPara << Dry << _T(" ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T(" / ") << length.SetValue(tlayer) << _T(")") << Super(_T("2 "));
-	*pPara << symbol(TIMES) << _T(" 0.01") << _T(" / (") << n << _T(" + ") << n_multiplier << _T(") = ") << es_roty << rptNewLine;
+	*pPara << symbol(TIMES) << secondary_cyclic_rotation << _T(" / (") << n << _T(" + ") << n_multiplier << _T(") = ") << es_roty << rptNewLine;
 	*pPara << _T("Static Displacement Shear Strain, ") << Sub2(symbol(gamma), _T("s,st")) << _T(" = ") << Dsy << rptNewLine;
 	*pPara << _T("Cyclic Axial Shear Strain, ") << Sub2(symbol(gamma), _T("a,cy")) << _T(" = ") << Sub2(_T("D"), _T("a")) << _T(" ");
 	*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("cy")) << _T(" / ") << Sub2(_T("G"), _T("min")) << _T(" / S = ") << Dax << _T(" ");
@@ -1940,6 +2032,15 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pPara << _T(" = ") << Ecoeff << _T(" ") << symbol(TIMES) << _T(" ");
 		*pPara << stress.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << s << Super(_T("2")) << _T(" = ") << stress.SetValue(EcB) << rptNewLine;
 
+		if (tArtifact != nullptr)
+		{
+			pLevel3Heading = rptStyleManager::CreateHeading(3);
+			(*pChapter) << pLevel3Heading;
+			*pLevel3Heading << _T("Primary Direction:");
+			pPara = new rptParagraph;
+			(*pChapter) << pPara;
+		}
+
 		if (rest_system_req_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
@@ -1949,7 +2050,8 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
 			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
 			*pPara << (restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Green);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
+
 		}
 		else
 		{
@@ -1965,6 +2067,42 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pPara << _T(" (SECTION 14.7.5.4)");
 
 		*pPara << rptNewLine << rptNewLine;
+
+		if (tArtifact != nullptr)
+		{
+			pLevel3Heading = rptStyleManager::CreateHeading(3);
+			(*pChapter) << pLevel3Heading;
+			*pLevel3Heading << _T("Secondary Direction:");
+			pPara = new rptParagraph;
+			(*pChapter) << pPara;
+
+			if (secondary_rest_system_req_check)
+			{
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
+				*pPara << (secondary_restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
+
+			}
+			else
+			{
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
+				*pPara << _T(" > 1 ") << rptNewLine;
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
+			}
+			*pPara << _T(" (SECTION 14.7.5.4)");
+
+			*pPara << rptNewLine << rptNewLine;
+		}
 	}
 
 	if (use_ext_plates)
@@ -1975,6 +2113,15 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pSubHeading << _T("Hydrostatic Stress:");
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
+
+		if (tArtifact != nullptr)
+		{
+			pLevel3Heading = rptStyleManager::CreateHeading(3);
+			(*pChapter) << pLevel3Heading;
+			*pLevel3Heading << _T("Primary Direction:");
+			pPara = new rptParagraph;
+			(*pChapter) << pPara;
+		}
 
 		*pPara << _T("Total axial strain, ") << Sub2(symbol(epsilon), _T("a"));
 		*pPara << _T(" = (") << Sub2(symbol(sigma), _T("st")) << _T(" + 1.75 ");
@@ -2014,6 +2161,54 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pPara << _T(" (14.7.5.3.3-11)");
 
 		*pPara << rptNewLine << rptNewLine;
+
+		if (tArtifact != nullptr)
+		{
+			pLevel3Heading = rptStyleManager::CreateHeading(3);
+			(*pChapter) << pLevel3Heading;
+			*pLevel3Heading << _T("Secondary Direction:");
+			pPara = new rptParagraph;
+			(*pChapter) << pPara;
+
+			*pPara << _T("Total axial strain, ") << Sub2(symbol(epsilon), _T("a"));
+			*pPara << _T(" = (") << Sub2(symbol(sigma), _T("st")) << _T(" + 1.75 ");
+			*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("cy")) << _T(") / 3 / ");
+			*pPara << Sub2(_T("B"), _T("a")) << _T(" / ") << Sub2(_T("G"), _T("min")) << _T(" / ") << Super2(_T("S"), _T("2")) << _T(" = (");
+			*pPara << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << stress.SetValue(cyclic_stress) << _T(") / 3 / ");
+			*pPara << secondary_peak_hyd << _T(" / ") << stress.SetValue(Gmin) << _T(" / ") << Super2(s, _T("2")) << _T(" = ");
+			*pPara << secondary_total_axial_strain << rptNewLine;
+
+			*pPara << symbol(alpha) << _T(" = ") << Sub2(symbol(epsilon), _T("a ")) << symbol(TIMES) << _T(" (n + ");
+			*pPara << symbol(eta) << _T(") / S / (") << Sub2(symbol(theta), _T("st")) << _T(" + 1.75 ");
+			*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(theta), _T("cy")) << _T(") = ") << secondary_total_axial_strain << _T(" ") << symbol(TIMES);
+			*pPara << _T(" (") << n << _T(" + ") << n_multiplier << _T(") / ") << s << _T(" / (") << secondary_static_rotation << _T(" + 1.75 ");
+			*pPara << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") = ") << secondary_alpha << rptNewLine;
+
+			*pPara << _T("Ca = 4 / 3 ") << symbol(TIMES) << _T(" ((") << secondary_alpha << Super(_T("2")) << _T(" + 1 / 3 )") << Super(_T("1.5")) << _T(" - ") << secondary_alpha;
+			*pPara << _T(" ") << symbol(TIMES) << _T(" (1 - ") << Super2(secondary_alpha, _T("2")) << _T(")) = ") << Ca << rptNewLine;
+
+			*pPara << Sub2(symbol(sigma), _T("hyd")) << _T(" = 3 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min "));
+			*pPara << symbol(TIMES) << _T(" S") << Super(_T("3")) << _T(" (") << Sub2(symbol(theta), _T("st")) << _T(" + 1.75 ") << symbol(TIMES);
+			*pPara << _T(" ") << Sub2(symbol(theta), _T("cy")) << _T(") / (n + ") << symbol(eta) << _T(") ") << symbol(TIMES);
+			*pPara << _T(" Ca = 3 ") << symbol(TIMES) << _T(" ") << stress.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << Super2(s, _T("3"));
+			*pPara << _T(" ") << symbol(TIMES) << _T(" (") << secondary_static_rotation;
+			*pPara << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") / (") << n << _T(" + ") << n_multiplier << _T(")");
+			*pPara << _T(" ") << symbol(TIMES) << _T(" ") << Ca << _T(" = ") << stress.SetValue(secondary_hydrostatic_stress) << rptNewLine;
+
+			if (secondary_hydrostatic_check)
+			{
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << (max_stress == secondary_hydrostatic_stress ? _T(" = ") : _T(" > ")) << stress.SetValue(secondary_hydrostatic_stress) << _T(" ");
+				*pPara << RPT_PASS;
+			}
+			else
+			{
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << _T(" < ") << stress.SetValue(secondary_hydrostatic_stress) << _T(" ");
+				*pPara << RPT_FAIL;
+			}
+			*pPara << _T(" (14.7.5.3.3-11)");
+
+			*pPara << rptNewLine << rptNewLine;
+		}
 	}
 
 	if (!use_ext_plates)
@@ -2106,11 +2301,12 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 
 
 void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, 
-	rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact)
+	rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact, 
+	const WBFL::EngTools::BearingCheckArtifact* tArtifact)
 {
 
-	ReportIntroduction(pPara, artifact);
-	ReportBearingProperties(pDispUnits, pChapter, pPara, artifact);
+	ReportIntroduction(pPara, artifact, tArtifact);
+	ReportBearingProperties(pDispUnits, pChapter, pPara, artifact, tArtifact);
 
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 
@@ -2122,9 +2318,9 @@ void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* 
 	}
 	else
 	{
-		ReportBearingSpecCheckSummaryB(pChapter, pPara, artifact);
+		ReportBearingSpecCheckSummaryB(pChapter, pPara, artifact, tArtifact);
 
-		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, artifact);
+		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, artifact, tArtifact);
 	}
 }
 

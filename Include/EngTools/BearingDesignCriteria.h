@@ -86,10 +86,6 @@ namespace WBFL
 
             ~BearingDesignCriteria();
 
-            const Bearing& GetBearing() const;
-
-            const BearingLoads& GetBearingLoads() const;
-
             const WBFL::LRFD::BDSManager::Edition& GetSpecification() const;
 
             void SetSpecification(const WBFL::LRFD::BDSManager::Edition& spec);

@@ -44,22 +44,26 @@ namespace WBFL
 
          /// Builds the specification check chapter
          void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
-             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+             rptChapter* pChapter, rptParagraph* pPara,
+             const WBFL::EngTools::BearingCheckArtifact& artifact,
+             const WBFL::EngTools::BearingCheckArtifact* tArtifact = nullptr);
 
-         void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact);
+         void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact, const BearingCheckArtifact* tArtifact);
 
          void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
-             rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact);
+             rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
 
          void ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
 
          void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
              rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
 
-         void ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+         void ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara, 
+             const WBFL::EngTools::BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
 
          void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
-             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact, 
+             const WBFL::EngTools::BearingCheckArtifact* tArtifact);
       };
    }
 }
