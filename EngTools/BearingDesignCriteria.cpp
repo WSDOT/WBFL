@@ -58,16 +58,6 @@ BearingDesignCriteria::~BearingDesignCriteria()
 {
 }
 
-const Bearing& BearingDesignCriteria::GetBearing() const
-{
-	return m_bearing;
-}
-
-const BearingLoads& BearingDesignCriteria::GetBearingLoads() const
-{
-	return m_loads;
-}
-
 const WBFL::LRFD::BDSManager::Edition& BearingDesignCriteria::GetSpecification() const
 {
 	return m_spec;
