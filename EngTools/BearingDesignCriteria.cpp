@@ -134,7 +134,7 @@ Float64 BearingDesignCriteria::GetMinimumAllowableNumLayersShearDeformation() co
 	Float64 shear_delta = m_loads.GetShearDeformation();
 	Float64 tcover = m_bearing.GetCoverThickness();
 	Float64 tlay = m_bearing.GetIntermediateLayerThickness();
-	Float64 Nlay_delta_shear = 2 * (shear_delta - tcover) / tlay;
+	Float64 Nlay_delta_shear = 2 * (abs(shear_delta) - tcover) / tlay;
 	return Nlay_delta_shear;
 }
 

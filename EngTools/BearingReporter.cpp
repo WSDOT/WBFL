@@ -1037,8 +1037,8 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 
 
 	*pPara << Sub2(_T("n"), _T("min")) << _T("(") << Sub2(symbol(DELTA), _T("s")) << _T(") = 2 ") << symbol(TIMES);
-	*pPara << _T(" (") << Sub2(symbol(DELTA), _T("s")) << _T(" - ") << Sub2(_T("h"), _T("c")) << _T(") / ") Sub2(_T("h"), _T("ri")) << _T(" = 2 ") << symbol(TIMES) << _T(" (");
-	*pPara << length.SetValue(sdef) << _T(" - ") << length.SetValue(tcover) << _T(") / ") << length.SetValue(tlayer) << _T(" = ") << n_min_shear_def << rptNewLine;
+	*pPara << _T(" (|") << Sub2(symbol(DELTA), _T("s")) << _T("| - ") << Sub2(_T("h"), _T("c")) << _T(") / ") Sub2(_T("h"), _T("ri")) << _T(" = 2 ") << symbol(TIMES) << _T(" (");
+	*pPara << length.SetValue(abs(sdef)) << _T(" - ") << length.SetValue(tcover) << _T(") / ") << length.SetValue(tlayer) << _T(" = ") << n_min_shear_def << rptNewLine;
 	*pPara << symbol(RIGHT_SINGLE_ARROW);
 	if (n_min_shear_def_check)
 	{
@@ -1392,7 +1392,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		{
 			*pPara << _T("Bearing is unstable in the secondary direction (transverse to the bridge) due to axial load.") << rptNewLine;
 		}
-		if ((!use_ext_plates && !rest_system_req_check) || (tArtifact != nullptr && !secondary_rest_system_req_check))
+		if ((!use_ext_plates && !rest_system_req_check) || (!use_ext_plates && tArtifact != nullptr && !secondary_rest_system_req_check))
 		{
 			*pPara << _T("Bearing restraint system is required.") << rptNewLine;
 		}
@@ -1676,17 +1676,17 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	*pPara << _T("2 ") << symbol(TIMES) << _T(" ") << Sub2(symbol(DELTA), _T("s-st")) << _T(" = 2 (") << length.SetValue(sdef);
-	*pPara << _T(") = ") << length.SetValue(2 * sdef) << rptNewLine;
+	*pPara << _T("2 ") << symbol(TIMES) << _T(" |") << Sub2(symbol(DELTA), _T("s-st")) << _T("| = 2 (") << length.SetValue(abs(sdef));
+	*pPara << _T(") = ") << length.SetValue(2 * abs(sdef)) << rptNewLine;
 
 	if (shear_def_check)
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_elastomer_thickness) << (total_elastomer_thickness == sdef ? _T(" = ") : _T(" > ")) << length.SetValue(2 * sdef) << _T(" ");
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_elastomer_thickness) << (total_elastomer_thickness == abs(sdef) ? _T(" = ") : _T(" > ")) << length.SetValue(2 * abs(sdef)) << _T(" ");
 		*pPara << RPT_PASS;
 	}
 	else
 	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_elastomer_thickness) << _T(" < ") << length.SetValue(2 * sdef) << _T(" ");
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_elastomer_thickness) << _T(" < ") << length.SetValue(2 * abs(sdef)) << _T(" ");
 		*pPara << RPT_FAIL;
 	}
 	*pPara << _T(" (14.7.5.3.2-1)");
@@ -2059,24 +2059,24 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 
 		if (rest_system_req_check)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
 			*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
 			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
-			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
-			*pPara << (restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
+			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << abs(restraint_system_calc);
+			*pPara << (abs(restraint_system_calc) == 1.0 ? _T(" = 1") : _T("| < 1 ")) << rptNewLine;
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
 
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
 			*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
 			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
-			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
+			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(restraint_system_calc);
 			*pPara << _T(" > 1 ") << rptNewLine;
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
 		}
@@ -2094,24 +2094,24 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 
 			if (secondary_rest_system_req_check)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
 				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
 				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
-				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
-				*pPara << (secondary_restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(secondary_restraint_system_calc);
+				*pPara << (abs(secondary_restraint_system_calc) == 1.0 ? _T(" = 1") : _T("| < 1 ")) << rptNewLine;
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
 
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
 				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = (");
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
 				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
-				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(secondary_restraint_system_calc);
 				*pPara << _T(" > 1 ") << rptNewLine;
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
 			}
@@ -2156,22 +2156,22 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pPara << _T("Ca = 4 / 3 ") << symbol(TIMES) << _T(" ((") << alpha << Super(_T("2")) << _T(" + 1 / 3 )") << Super(_T("1.5")) << _T(" - ") << alpha;
 		*pPara << _T(" ") << symbol(TIMES) << _T(" (1 - ") << Super2(alpha, _T("2")) << _T(")) = ") << Ca << rptNewLine;
 
-		*pPara << Sub2(symbol(sigma), _T("hyd")) << _T(" = 3 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min "));
+		*pPara << Sub2(symbol(sigma), _T("hyd")) << _T(" = |3 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min "));
 		*pPara << symbol(TIMES) << _T(" S") << Super(_T("3")) << _T(" (") << Sub2(symbol(theta), _T("st")) << _T(" + 1.75 ") << symbol(TIMES);
 		*pPara << _T(" ") << Sub2(symbol(theta), _T("cy")) << _T(") / (n + ") << symbol(eta) << _T(") ") << symbol(TIMES);
 		*pPara << _T(" Ca = 3 ") << symbol(TIMES) << _T(" ") << stress.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << Super2(s, _T("3"));
 		*pPara << _T(" ") << symbol(TIMES) << _T(" (") << static_rotation;
 		*pPara << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(") / (") << n << _T(" + ") << n_multiplier << _T(")");
-		*pPara << _T(" ") << symbol(TIMES) << _T(" ") << Ca << _T(" = ") << stress.SetValue(hydrostatic_stress) << rptNewLine;
+		*pPara << _T(" ") << symbol(TIMES) << _T(" ") << Ca << _T("| = ") << stress.SetValue(abs(hydrostatic_stress)) << rptNewLine;
 
 		if (hydrostatic_check)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << (max_stress == hydrostatic_stress ? _T(" = ") : _T(" > ")) << stress.SetValue(hydrostatic_stress) << _T(" ");
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << (max_stress == abs(hydrostatic_stress) ? _T(" = ") : _T(" > ")) << stress.SetValue(abs(hydrostatic_stress)) << _T(" ");
 			*pPara << RPT_PASS;
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << _T(" < ") << stress.SetValue(hydrostatic_stress) << _T(" ");
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << _T(" < ") << stress.SetValue(abs(hydrostatic_stress)) << _T(" ");
 			*pPara << RPT_FAIL;
 		}
 		*pPara << _T(" (14.7.5.3.3-11)");
@@ -2203,22 +2203,22 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 			*pPara << _T("Ca = 4 / 3 ") << symbol(TIMES) << _T(" ((") << secondary_alpha << Super(_T("2")) << _T(" + 1 / 3 )") << Super(_T("1.5")) << _T(" - ") << secondary_alpha;
 			*pPara << _T(" ") << symbol(TIMES) << _T(" (1 - ") << Super2(secondary_alpha, _T("2")) << _T(")) = ") << Ca << rptNewLine;
 
-			*pPara << Sub2(symbol(sigma), _T("hyd")) << _T(" = 3 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min "));
+			*pPara << Sub2(symbol(sigma), _T("hyd")) << _T(" = |3 ") << symbol(TIMES) << Sub2(_T(" G"), _T("min "));
 			*pPara << symbol(TIMES) << _T(" S") << Super(_T("3")) << _T(" (") << Sub2(symbol(theta), _T("st")) << _T(" + 1.75 ") << symbol(TIMES);
 			*pPara << _T(" ") << Sub2(symbol(theta), _T("cy")) << _T(") / (n + ") << symbol(eta) << _T(") ") << symbol(TIMES);
 			*pPara << _T(" Ca = 3 ") << symbol(TIMES) << _T(" ") << stress.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << Super2(s, _T("3"));
 			*pPara << _T(" ") << symbol(TIMES) << _T(" (") << secondary_static_rotation;
 			*pPara << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") / (") << n << _T(" + ") << n_multiplier << _T(")");
-			*pPara << _T(" ") << symbol(TIMES) << _T(" ") << Ca << _T(" = ") << stress.SetValue(secondary_hydrostatic_stress) << rptNewLine;
+			*pPara << _T(" ") << symbol(TIMES) << _T(" ") << Ca << _T("| = ") << stress.SetValue(abs(secondary_hydrostatic_stress)) << rptNewLine;
 
 			if (secondary_hydrostatic_check)
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << (max_stress == secondary_hydrostatic_stress ? _T(" = ") : _T(" > ")) << stress.SetValue(secondary_hydrostatic_stress) << _T(" ");
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << (max_stress == abs(secondary_hydrostatic_stress) ? _T(" = ") : _T(" > ")) << stress.SetValue(abs(secondary_hydrostatic_stress)) << _T(" ");
 				*pPara << RPT_PASS;
 			}
 			else
 			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << _T(" < ") << stress.SetValue(secondary_hydrostatic_stress) << _T(" ");
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << stress.SetValue(max_stress) << _T(" < ") << stress.SetValue(abs(secondary_hydrostatic_stress)) << _T(" ");
 				*pPara << RPT_FAIL;
 			}
 			*pPara << _T(" (14.7.5.3.3-11)");
@@ -2235,22 +2235,22 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
 
-		*pPara << _T("Horizontal Force, ") << Sub2(_T("F"), _T("horiz")) << _T(" = ") << Sub2(_T("G"), _T("min ")) << symbol(TIMES);
-		*pPara << _T(" A ") << symbol(TIMES) << _T(" ") << Sub2(symbol(DELTA), _T("s")) << _T(" / ") << Sub2(_T("h"), _T("rt")) << _T(" = ");
+		*pPara << _T("Horizontal Force, ") << Sub2(_T("F"), _T("horiz")) << _T(" = |") << Sub2(_T("G"), _T("min ")) << symbol(TIMES);
+		*pPara << _T(" A ") << symbol(TIMES) << _T(" ") << Sub2(symbol(DELTA), _T("s")) << _T(" / ") << Sub2(_T("h"), _T("rt")) << _T("| = |");
 		*pPara << E.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << area.SetValue(a) << _T(" ") << symbol(TIMES) << _T(" ") << length.SetValue(sdef);
-		*pPara << _T(" / ") << length.SetValue(total_elastomer_thickness) << _T(" = ");
-		*pPara << force.SetValue(horiz_force) << rptNewLine;
+		*pPara << _T(" / ") << length.SetValue(total_elastomer_thickness) << _T("| = ");
+		*pPara << force.SetValue(abs(horiz_force)) << rptNewLine;
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(mu) << Sub2(_T("P"), _T("D")) << _T(" = 0.20") << force.SetValue(dl);
 		*pPara << force.SetValue(dl / 5) << rptNewLine;
 		*pPara << symbol(RIGHT_SINGLE_ARROW);
 		if (horiz_force_check)
 		{
-			*pPara << force.SetValue(horiz_force) << (horiz_force == dl / 5.0 ? _T(" = ") : _T(" < ")) << force.SetValue(dl / 5.0);
+			*pPara << force.SetValue(abs(horiz_force)) << (abs(horiz_force) == dl / 5.0 ? _T(" = ") : _T(" < ")) << force.SetValue(dl / 5.0);
 			*pPara << _T(" ") << RPT_PASS;
 		}
 		else
 		{
-			*pPara << force.SetValue(horiz_force) << _T(" > ") << force.SetValue(dl / 5.0);
+			*pPara << force.SetValue(abs(horiz_force)) << _T(" > ") << force.SetValue(dl / 5.0);
 			*pPara << _T(" ") << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
 		}
 
