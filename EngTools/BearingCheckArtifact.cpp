@@ -173,12 +173,6 @@ bool BearingCheckArtifact::MaximumCompressiveStrainCheck() const
 	return check;
 }
 
-bool BearingCheckArtifact::StaticRotationalPrimaryShearStrainCheck() const
-{
-	bool check = 1.552 - 0.627 * m_bearing.GetCompressibilityIndex() / (2.233 + 0.156 * m_bearing.GetCompressibilityIndex() * m_bearing.GetLength()) >= 0.5;
-	return check;
-}
-
 bool BearingCheckArtifact::ShearDeformationCheck() const
 {
 	bool check = m_bearing.GetTotalElastomerThickness() >= 2 * m_loads.GetShearDeformation();
