@@ -94,8 +94,6 @@ namespace WBFL
             bool MinimumSteelShimThicknessFatigueCheck() const;
             /// @return Check for the maximum allowable compressive strain
             bool MaximumCompressiveStrainCheck() const;
-            /// @return Check for static rotational primary shear strain
-            bool StaticRotationalPrimaryShearStrainCheck() const;
             /// @return Check for the maximum allowable shear deformation
             bool ShearDeformationCheck() const;
             /// @return Check for the maximum allowable shear strain in the primary direction due to static axial load 
