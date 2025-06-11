@@ -39,27 +39,30 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	const auto& spec = criteria.GetSpecification();
 
 	*pPara << color(Blue);
-	*pPara << Bold(_T("-Calculations are based on ")) << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << rptNewLine;
-	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only")) << rptNewLine;
+	*pPara << Bold(_T("-Calculations are based on ") << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << _T(" AASHTO BDS.")) << rptNewLine;
+	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only.")) << rptNewLine;
 
 	if (tArtifact != nullptr)
 	{
-		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on the greater of torsional rotation ")) << rptNewLine;
-		*pPara << Bold(_T("due skew at pier, where "));
-		*pPara << Sub2(symbol(theta), _T("t")) << _T(" = ") << Sub2(symbol(theta), _T("f")) << _T("tan(") << Sub2(symbol(theta), _T("skew")) << _T(")");
-		*pPara << _T(" and 0.010 rad out-of-plumb tolerance");
+		*pPara << Bold(_T("-Shear strain due to static rotation in secondary direction is based on the greater of torsional rotation ")) << rptNewLine;
+		*pPara << Bold(_T("due skew at pier, "));
+		*pPara << Bold(Sub2(symbol(theta), _T("t")) << _T(" = ") << Sub2(symbol(theta), _T("f")) << _T(" ") << symbol(TIMES) << _T(" tan(") << Sub2(symbol(theta), _T("skew"))) << _T("),");
+		*pPara << Bold(_T(" and 0.010 rad out-of-plumb tolerance.")) << rptNewLine;
 	}
 	else
 	{
-		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance"));
+		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance."));
+		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0.")) << rptNewLine;
 	}
 
-	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates")) << rptNewLine;
+	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0.")) << rptNewLine;
+
+	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates.")) << rptNewLine << rptNewLine;
 
 	*pPara << Bold(_T("Bearing Orientation:")) << rptNewLine;
 	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine;
-	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge")) << rptNewLine;
-	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L")) << rptNewLine << rptNewLine << rptNewLine;
+	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge.")) << rptNewLine;
+	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine << rptNewLine;
 }
 
 void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -466,7 +469,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << Sub2(_T("H"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight);
+		*pPara << Sub2(_T("h"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 		if (height_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumTotalBearingHeight);
@@ -498,7 +501,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(distBrg2gBf);
+			*pPara << Sub2(_T("d"),_T("rqd")) << _T(" = ") << length.SetValue(distBrg2gBf);
 			if (distBrg2gBfCheck)
 			{
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(distBrg2gBf);
@@ -517,7 +520,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Minimum Required Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
+			*pPara << Sub2(_T("d"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
 			if (minDistBrg2gBfCheck)
 			{
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
@@ -536,7 +539,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance)
 		{
 
-			*pPara << _T("Maximum Distance from Edge of Bearing to Edge of Girder Bottome Flange = ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
+			*pPara << Sub2(_T("d"), _T("max")) << _T(" = ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
 			if (maxDistBrg2gBfCheck)
 			{
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(LTE) << _T(" ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
@@ -1867,16 +1870,29 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	*pPara << _T(" (14.7.5.3.3-2)") << rptNewLine;
 	*pPara << _T("Static Rotational Shear Strain, ") << Sub2(symbol(gamma), _T("r,st")) << _T(" = ") << Sub2(_T("D"), _T("r "));
 	*pPara << symbol(TIMES) << _T(" (W / ") << Sub2(_T("h"), _T("ri")) << _T(")") << Super(_T("2 ")) << symbol(TIMES) << _T(" ");
-	*pPara <<  Sub2(symbol(theta), _T("cy"));
+	*pPara <<  Sub2(symbol(theta), _T("st"));
 	*pPara << _T(" / (n + ") << symbol(eta) << _T(") = ");
 	*pPara << Dry << _T(" ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T(" / ") << length.SetValue(tlayer) << _T(")") << Super(_T("2 "));
-	*pPara << symbol(TIMES) << secondary_cyclic_rotation << _T(" / (") << n << _T(" + ") << n_multiplier << _T(") = ") << es_roty << rptNewLine;
+	*pPara << symbol(TIMES) << secondary_static_rotation << _T(" / (") << n << _T(" + ") << n_multiplier << _T(") = ") << es_roty << rptNewLine;
 	*pPara << _T("Static Displacement Shear Strain, ") << Sub2(symbol(gamma), _T("s,st")) << _T(" = ") << Dsy << rptNewLine;
 	*pPara << _T("Cyclic Axial Shear Strain, ") << Sub2(symbol(gamma), _T("a,cy")) << _T(" = ") << Sub2(_T("D"), _T("a")) << _T(" ");
 	*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("cy")) << _T(" / ") << Sub2(_T("G"), _T("min")) << _T(" / S = ") << Dax << _T(" ");
 	*pPara << symbol(TIMES) << _T(" ") << stress.SetValue(Scyclic) << _T(" / ");
 	*pPara << stress.SetValue(Gmin) << _T(" / ") << s << _T(" = ") << es_cyclic_axialy << rptNewLine;
-	*pPara << _T("Cyclic Rotational Shear Strain, ") << Sub2(symbol(gamma), _T("r,cy")) << _T(" = ") << es_cyclic_roty << rptNewLine;
+
+	if (tArtifact != nullptr)
+	{
+		*pPara << _T("Cyclic Rotational Shear Strain, ") << Sub2(symbol(gamma), _T("r,cy")) << _T(" = ") << Sub2(_T("D"), _T("r "));
+		*pPara << symbol(TIMES) << _T(" (W / ") << Sub2(_T("h"), _T("ri")) << _T(")") << Super(_T("2 ")) << symbol(TIMES) << _T(" ") << Sub2(symbol(theta), _T("cy"));
+		*pPara << _T(" / (n + ") << symbol(eta) << _T(") = ");
+		*pPara << Dry << _T(" ") << symbol(TIMES) << _T(" (") << length.SetValue(w) << _T(" / ") << length.SetValue(tlayer) << _T(")") << Super(_T("2"));
+		*pPara << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(" / (") << n << _T(" + ") << n_multiplier << _T(") = ") << es_cyclic_roty << rptNewLine;
+	}
+	else
+	{
+		*pPara << _T("Cyclic Rotational Shear Strain, ") << Sub2(symbol(gamma), _T("r,cy")) << _T(" = ") << es_cyclic_roty << rptNewLine;
+	}
+
 	*pPara << _T("Cyclic Displacement Shear Strain, ") << Sub2(symbol(gamma), _T("s,cy")) << _T(" = ") << es_cyclic_dispy << rptNewLine;
 
 
