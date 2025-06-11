@@ -1402,11 +1402,11 @@ void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispU
 		}
 		if (!ss_X_combo_sum_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to axial service loads.") << rptNewLine;
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to combined service loads.") << rptNewLine;
 		}
 		if (!ss_Y_combo_sum_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to axial service loads.") << rptNewLine;
+			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to combined service loads.") << rptNewLine;
 		}
 		if (check_app_TL_stab_X && !stab_X_dir_check)
 		{
