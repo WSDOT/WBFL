@@ -175,7 +175,7 @@ bool BearingCheckArtifact::MaximumCompressiveStrainCheck() const
 
 bool BearingCheckArtifact::ShearDeformationCheck() const
 {
-	bool check = m_bearing.GetTotalElastomerThickness() >= 2 * m_loads.GetShearDeformation();
+	bool check = m_bearing.GetTotalElastomerThickness() >= 2 * abs(m_loads.GetShearDeformation());
 	return check;
 }
 
@@ -217,19 +217,19 @@ bool BearingCheckArtifact::StabilityYDirectionCheck() const
 
 bool BearingCheckArtifact::RestraintSystemRequirementCheck() const
 {
-	bool check = m_results.RestraintSystemDCRatio <= 1.0;
+	bool check = abs(m_results.RestraintSystemDCRatio) <= 1.0;
 	return check;
 }
 
 bool BearingCheckArtifact::HydrostaticStressCheck() const
 {
-	bool check = m_criteria.GetMaximumAllowableHydrostaticStress() >= m_results.HydrostaticStress;
+	bool check = m_criteria.GetMaximumAllowableHydrostaticStress() >= abs(m_results.HydrostaticStress);
 	return check;
 }
 
 bool BearingCheckArtifact::HorizontalForceCheck() const
 {
-	bool check = m_results.HorizontalForce <= m_loads.GetDeadLoad() / 5.0;
+	bool check = abs(m_results.HorizontalForce) <= m_loads.GetDeadLoad() / 5.0;
 	return check;
 }
 
