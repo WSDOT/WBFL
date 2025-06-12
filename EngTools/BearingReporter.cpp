@@ -263,6 +263,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
+	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
 	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
 	Float64 t_min_shim_absolute = criteria.GetAbsoluteMinimumShimThickness();
@@ -282,6 +283,8 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	Float64 t_max_cover = criteria.GetMaximumElastomerCoverThickness();
 	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
 	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
+	Float64 Gmin = brg.GetShearModulusMinimum();
+	Float64 Gmax = brg.GetShearModulusMaximum();
 	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
 	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	Float64 total_bearing_height = brg_calc.ComputeBearingHeight(brg);
@@ -309,14 +312,14 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("0.5 ") << symbol(TIMES) << Sub2(_T(" h"), _T("ri"));
 		*pPara << _T(" = 0.5 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" = ") << length.SetValue(0.5 * tlayer) << rptNewLine;
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << Sub2(_T("h"), _T("c")) << _T(" = ") << length.SetValue(tcover) << (tcover == 0.5 * tlayer ? _T(" = ") : _T(" > ")) << length.SetValue(0.5 * tlayer);
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 1") << rptNewLine;
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 1 (n-adjustment factor, 14.7.5.3.3)") << rptNewLine;
 	}
 	else
 	{
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("0.5 ") << symbol(TIMES) << Sub2(_T("h"), _T("ri"));
 		*pPara << _T(" = 0.5 ") << symbol(TIMES) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(0.5 * tlayer) << rptNewLine;
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << Sub2(_T("h"), _T("c")) << _T(" = ") << length.SetValue(tcover) << _T(" < ") << length.SetValue(0.5 * tlayer);
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 0") << rptNewLine;
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(eta) << _T(" = 0 (n-adjustment factor, 14.7.5.3.3)") << rptNewLine;
 	}
 
 	rptHeading* pSubHeading = rptStyleManager::CreateSubHeading();
@@ -388,6 +391,8 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
 
+		*pPara << Sub2(_T("h"), _T("c,min")) << _T(" = ") << length.SetValue(t_min_cover) << rptNewLine;
+
 		if (t_min_cover_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tcover) << (tcover == t_min_cover ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_cover);
@@ -444,7 +449,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << Sub2(_T("h"), _T("ri,rqd")) << _T(" = ") << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
+		*pPara << Sub2(_T("h"), _T("ri,rqd")) << _T(" = ") << length.SetValue(criteria.RequiredIntermediateElastomerThickness) << rptNewLine;
 		if (hri_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(criteria.RequiredIntermediateElastomerThickness);
@@ -469,7 +474,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		(*pChapter) << pPara;
 
 
-		*pPara << Sub2(_T("h"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight);
+		*pPara << Sub2(_T("h"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumTotalBearingHeight) << rptNewLine;
 		if (height_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumTotalBearingHeight);
@@ -487,78 +492,81 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 
 
-	if (criteria.bRequiredBearingEdgeToGirderEdgeDistance || 
-		criteria.bMinimumBearingEdgeToGirderEdgeDistance || 
-		criteria.bMaximumBearingEdgeToGirderEdgeDistance)
+	if (criteria.bRequiredBearingEdgeToGirderEdgeDistance)
 	{
+
 		pSubHeading = rptStyleManager::CreateSubHeading();
 		(*pChapter) << pSubHeading;
-		*pSubHeading << _T("Girder Edge to Bearing Edge Distance Check:");
-
+		*pSubHeading << _T("Required Girder Edge to Bearing Edge Distance Check:");
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
 
-		if (criteria.bRequiredBearingEdgeToGirderEdgeDistance)
+		*pPara << Sub2(_T("d"), _T("rqd")) << _T(" = ") << length.SetValue(distBrg2gBf) << rptNewLine;
+		if (distBrg2gBfCheck)
 		{
-
-			*pPara << Sub2(_T("d"),_T("rqd")) << _T(" = ") << length.SetValue(distBrg2gBf);
-			if (distBrg2gBfCheck)
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(distBrg2gBf);
-				*pPara << _T(" ") << RPT_PASS;
-			}
-			else
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << length.SetValue(distBrg2gBf);
-				*pPara << _T(" ") << RPT_FAIL;
-			}
-
-			*pPara << rptNewLine;
-
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(distBrg2gBf);
+			*pPara << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << length.SetValue(distBrg2gBf);
+			*pPara << _T(" ") << RPT_FAIL;
 		}
 
-		if (criteria.bMinimumBearingEdgeToGirderEdgeDistance)
+		*pPara << rptNewLine << rptNewLine;
+
+	}
+	
+
+	if (criteria.bMinimumBearingEdgeToGirderEdgeDistance)
+	{
+		pSubHeading = rptStyleManager::CreateSubHeading();
+		(*pChapter) << pSubHeading;
+		*pSubHeading << _T("Minimum Girder Edge to Bearing Edge Distance Check:");
+		pPara = new rptParagraph;
+		(*pChapter) << pPara;
+
+		*pPara << Sub2(_T("d"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance) << rptNewLine;
+		if (minDistBrg2gBfCheck)
 		{
-
-			*pPara << Sub2(_T("d"), _T("min")) << _T(" = ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
-			if (minDistBrg2gBfCheck)
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
-				*pPara << _T(" ") << RPT_PASS;
-			}
-			else
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" < ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
-				*pPara << _T(" ") << RPT_FAIL;
-			}
-
-			*pPara << rptNewLine;
-
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(GTE) << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
+			*pPara << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" < ") << length.SetValue(criteria.MinimumBearingEdgeToGirderEdgeDistance);
+			*pPara << _T(" ") << RPT_FAIL;
 		}
 
-		if (criteria.bMaximumBearingEdgeToGirderEdgeDistance)
-		{
-
-			*pPara << Sub2(_T("d"), _T("max")) << _T(" = ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
-			if (maxDistBrg2gBfCheck)
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(LTE) << _T(" ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
-				*pPara << _T(" ") << RPT_PASS;
-			}
-			else
-			{
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" > ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
-				*pPara << _T(" ") << RPT_FAIL;
-			}
-
-			*pPara << rptNewLine;
-
-		}
-
-		*pPara  << rptNewLine;
+		*pPara << rptNewLine << rptNewLine;
 
 	}
 
+
+	if (criteria.bMaximumBearingEdgeToGirderEdgeDistance)
+	{
+
+		pSubHeading = rptStyleManager::CreateSubHeading();
+		(*pChapter) << pSubHeading;
+		*pSubHeading << _T("Maximum Girder Edge to Bearing Edge Distance Check:");
+		pPara = new rptParagraph;
+		(*pChapter) << pPara;
+
+		*pPara << Sub2(_T("d"), _T("max")) << _T(" = ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance) << rptNewLine;
+		if (maxDistBrg2gBfCheck)
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(LTE) << _T(" ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
+			*pPara << _T(" ") << RPT_PASS;
+		}
+		else
+		{
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" > ") << length.SetValue(criteria.MaximumBearingEdgeToGirderEdgeDistance);
+			*pPara << _T(" ") << RPT_FAIL;
+		}
+
+		*pPara << rptNewLine << rptNewLine;
+
+	}
 
 	if (criteria.bMaximumTotalLoad)
 	{
@@ -585,6 +593,45 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << rptNewLine << rptNewLine;
 
 	}
+
+
+	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
+	(*pChapter) << pSubHeading;
+	*pSubHeading << _T("Minimum Shear Modulus Check:");
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	*pPara << Sub2(_T("G"), _T("min")) << _T(" = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
+	if (gMin_check)
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
+		*pPara << _T(" ") << RPT_PASS << rptNewLine;
+	}
+	else
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
+		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
+	}
+
+	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
+	(*pChapter) << pSubHeading;
+	*pSubHeading << _T("Maximum Shear Modulus Check:");
+	pPara = new rptParagraph;
+	(*pChapter) << pPara;
+
+	*pPara << Sub2(_T("G"), _T("max")) << _T(" = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
+	if (gMax_check)
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
+		*pPara << _T(" ") << RPT_PASS << rptNewLine;
+	}
+	else
+	{
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
+		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
+	}
+
+	*pPara << rptNewLine;
 	
 
 }
@@ -624,8 +671,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptPa
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
 
 	if (!t_min_shim_absolute_check || !t_max_cover_check || !t_min_shim_service_check
 		|| !t_min_shim_fatigue_check || !w_min_check || !l_min_check
@@ -757,8 +802,11 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptPa
 	}
 	else
 	{
-		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << color(Green) << rptNewLine << rptNewLine;
+		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << rptNewLine << rptNewLine;
 	}
+
+	*pPara << color(Black);
+
 }
 
 void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -882,38 +930,6 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 	{
 		*pPara << color(Red) << symbol(RIGHT_SINGLE_ARROW) << s << _T(" > ") << s_max << _T(" ") << RPT_FAIL << color(Red) << _T(" (METHOD A cannot be used per SECTION 14.7.6.1) ") << color(Red) << rptNewLine;
 	}
-	*pPara << rptNewLine;
-
-	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
-	(*pChapter) << pSubHeading;
-	*pSubHeading << _T("Shear Modulus Range Checks:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
-	if (gMin_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
-
-	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
-	if (gMax_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
-
 	*pPara << rptNewLine;
 
 	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
@@ -1318,13 +1334,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 
 	}
 
-	rptHeading* pHeading = rptStyleManager::CreateHeading();
-	(*pChapter) << pHeading;
-	pHeading->SetName(_T("Specification Check Summary"));
-	*pHeading << _T("Specification Check Summary");
-
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
 
 	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !n_min_shear_def_check || !t_max_cover_check
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
@@ -1446,12 +1455,14 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		}
 
 
-		*pPara << color(Red) << rptNewLine << rptNewLine;
+		*pPara << rptNewLine << rptNewLine;
 	}
 	else
 	{
-		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << color(Green) << rptNewLine << rptNewLine;
+		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << rptNewLine << rptNewLine;
 	}
+
+	*pPara << color(Black);
 }
 
 void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -1642,35 +1653,10 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
+
 	rptHeading*  pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
 	(*pChapter) << pSubHeading;
-	*pSubHeading << _T("Shear Modulus Range Checks:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << _T("Minimum limit for G = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.5.2)") << rptNewLine;
-	if (gMin_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
-
-	*pPara << _T("Maximum limit for G = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.5.2)") << rptNewLine;
-	if (gMax_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
+//
 
 	*pPara << rptNewLine;
 
