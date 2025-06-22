@@ -710,5 +710,13 @@ bool LRFDConcrete::Use90DayConcrete(Float64 t) const
    // if 90 concrete is enabled
    // and we have normal strength concrete (LRFD only gives 115%f'c for normal weight and is silent on LWC), and age is more than 90 days
    Float64 age = GetAge(t);
-   return (m_bUse90DayConcrete && m_Type == WBFL::Materials::ConcreteType::Normal && 90 < age) ? true : false;
+
+   // Starting with LRFD 10th Edition, 2024, the slow curing increase applies to NWC and LWC.
+   bool bApplicableType = false;
+   if (WBFL::LRFD::BDSManager::GetEdition() < WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
+      bApplicableType = m_Type == WBFL::Materials::ConcreteType::Normal ? true : false;
+   else
+      bApplicableType = m_Type == WBFL::Materials::ConcreteType::Normal || m_Type == WBFL::Materials::ConcreteType::AllLightweight || m_Type == WBFL::Materials::ConcreteType::SandLightweight ? true : false;
+
+   return (m_bUse90DayConcrete && bApplicableType && 90 < age) ? true : false;
 }
