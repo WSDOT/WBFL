@@ -22,7 +22,7 @@ auto create_object_fn = []()->std::shared_ptr<WBFL::EAF::ComponentObject>
 template <typename T>
 auto create_singleton_fn = []()->std::shared_ptr<WBFL::EAF::ComponentObject>
    {
-      auto obj = T::CreateInstance();
+      auto obj = T::GetInstance();
       auto com = std::dynamic_pointer_cast<WBFL::EAF::ComponentObject>(obj);
       if (!com) WBFL::System::Logger::Error(_T("Class is not a ComponentObject"));
       return com;
