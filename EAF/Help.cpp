@@ -31,17 +31,16 @@
 
 void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID)
 {
-   CString strURL;
-   std::pair<WBFL::EAF::HelpResult, CString> hr = { WBFL::EAF::HelpResult::DocSetNotFound,CString() }; // TRICKY... this default is important, see below
+   std::pair<WBFL::EAF::HelpResult, CString> result = { WBFL::EAF::HelpResult::DocSetNotFound,CString() }; // TRICKY... this default is important, see below
 
    CEAFDocument* pDoc = EAFGetDocument();
    if ( pDoc )
    {
       // there is an open document so it gets first priority
-      hr = pDoc->GetDocumentLocation(lpszDocSetName,nHID);
+      result = pDoc->GetDocumentLocation(lpszDocSetName,nHID);
    }
 
-   if ( hr.first == WBFL::EAF::HelpResult::DocSetNotFound )
+   if ( result.first == WBFL::EAF::HelpResult::DocSetNotFound )
    {
       // hr == WBFL::EAF::HelpResult::OK... the document returned a valid URL
       // hr == WBFL::EAF::HelpResult::TopicNotFound... the document handles the specified documentation set, but the help id was bad
@@ -49,24 +48,24 @@ void EAFHelp(LPCTSTR lpszDocSetName,UINT nHID)
       // hr == WBFL::EAF::HelpResult::DocSetNotFound is the only reason to continue
 
       CEAFApp* pApp = EAFGetApp();
-      hr = pApp->GetDocumentLocation(lpszDocSetName,nHID);
+      result = pApp->GetDocumentLocation(lpszDocSetName,nHID);
    }
 
-   if ( hr.first == WBFL::EAF::HelpResult::OK )
+   if ( result.first == WBFL::EAF::HelpResult::OK )
    {
       CEAFApp* pApp = EAFGetApp();
-      pApp->HelpWindowNavigate(strURL);
+      pApp->HelpWindowNavigate(result.second);
    }
    else
    {
       CString strMessage;
-      if ( hr.first == WBFL::EAF::HelpResult::DocSetNotFound )
+      if ( result.first == WBFL::EAF::HelpResult::DocSetNotFound )
       {
          strMessage.Format(_T("The documentation set %s was not found."),lpszDocSetName);
       }
       else
       {
-         strMessage.Format(_T("Help topic %d not found in the %s documentation set at %s."),nHID,lpszDocSetName,strURL);
+         strMessage.Format(_T("Help topic %d not found in the %s documentation set at %s."),nHID,lpszDocSetName,result.second);
       }
       AfxMessageBox(strMessage,MB_ICONEXCLAMATION | MB_OK);
    }
