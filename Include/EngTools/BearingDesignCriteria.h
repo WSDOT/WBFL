@@ -27,7 +27,6 @@
 #include "BearingLoads.h"
 #include <LRFD\BDSManager.h>
 #include <LibraryFw\LibraryEntry.h>
-#include <psgLib/SpecLibraryEntry.h>
 
 
 namespace WBFL
