@@ -2192,49 +2192,59 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          if (Xs < 0.0)
          {
             // Closure is left of this segment - We must get CJ from previous segment and convert location to its coords
+            //
+            // Note: for continuous precast girder structures, we'll get POI in the continuity pier area. Those POI will
+            // map to this point. Since it's not a spliced girder, there are no prev/next segments and we get crashes here
+            // For this reason, do this code if there is a previous segment
             CComPtr<ISegment> prevSegment;
             segment->get_PrevSegment(&prevSegment);
-            CComQIPtr<ISuperstructureMemberSegment> prevSsmSegment(prevSegment);
+            if (prevSegment)
+            {
+               CComQIPtr<ISuperstructureMemberSegment> prevSsmSegment(prevSegment);
 
-            CComQIPtr<IItemData> item_data(prevSegment);
-            ATLASSERT(item_data);
-            CComPtr<IUnknown> punk;
-            item_data->GetItemData(CComBSTR("Precast Girder"), &punk);
-            ATLASSERT(punk != nullptr);
-            CComQIPtr<IPrecastGirder> prevGirder(punk);
-            ATLASSERT(prevGirder != nullptr);
+               CComQIPtr<IItemData> item_data(prevSegment);
+               ATLASSERT(item_data);
+               CComPtr<IUnknown> punk;
+               item_data->GetItemData(CComBSTR("Precast Girder"), &punk);
+               ATLASSERT(punk != nullptr);
+               CComQIPtr<IPrecastGirder> prevGirder(punk);
+               ATLASSERT(prevGirder != nullptr);
 
-            // Want distance from left end of previous segment to left end of current. This is coord for CJ rebar layout
-            Float64 prevLayoutLength;
-            prevSsmSegment->get_LayoutLength(&prevLayoutLength);
+               // Want distance from left end of previous segment to left end of current. This is coord for CJ rebar layout
+               Float64 prevLayoutLength;
+               prevSsmSegment->get_LayoutLength(&prevLayoutLength);
 
-            Float64 prevLeftBrgOffset, prevLeftEndDist;
-            prevGirder->get_LeftBearingOffset(&prevLeftBrgOffset);
-            prevGirder->get_LeftEndDistance(&prevLeftEndDist);
+               Float64 prevLeftBrgOffset, prevLeftEndDist;
+               prevGirder->get_LeftBearingOffset(&prevLeftBrgOffset);
+               prevGirder->get_LeftEndDistance(&prevLeftEndDist);
 
-            Float64 leftBrgOffset, leftEndDist;
-            girder->get_LeftBearingOffset(&leftBrgOffset);
-            girder->get_LeftEndDistance(&leftEndDist);
-         
-            Float64 leftToLeft = prevLayoutLength - prevLeftBrgOffset + prevLeftEndDist + leftBrgOffset - leftEndDist;
+               Float64 leftBrgOffset, leftEndDist;
+               girder->get_LeftBearingOffset(&leftBrgOffset);
+               girder->get_LeftEndDistance(&leftEndDist);
 
-            Float64 prevXs = leftToLeft + Xs;
+               Float64 leftToLeft = prevLayoutLength - prevLeftBrgOffset + prevLeftEndDist + leftBrgOffset - leftEndDist;
 
-            CComPtr<IRebarLayout> prevRebarLayout;
-            prevGirder->get_ClosureJointRebarLayout(&prevRebarLayout);
+               Float64 prevXs = leftToLeft + Xs;
 
-            prevRebarLayout->CreateRebarSection(prevXs, stageIdx, &rebarSection);
+               CComPtr<IRebarLayout> prevRebarLayout;
+               prevGirder->get_ClosureJointRebarLayout(&prevRebarLayout);
+
+               prevRebarLayout->CreateRebarSection(prevXs, stageIdx, &rebarSection);
+            }
          }
          else
          {
             // Closure is at right end of current segment
-         CComPtr<IRebarLayout> rebarLayout;
-         girder->get_ClosureJointRebarLayout(&rebarLayout);
+            CComPtr<IRebarLayout> rebarLayout;
+            girder->get_ClosureJointRebarLayout(&rebarLayout);
 
             rebarLayout->CreateRebarSection(Xs, stageIdx, &rebarSection);
          }
 
-         LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
+         if (rebarSection)
+         {
+            LayoutRebar(compositeSection, Econc, Dconc, rebarSection, xTop, yTop, stageIdx, sectionPropMethod);
+         }
       } 
 
       // add holes for tendons/ducts if the stage is before the grouting stage
