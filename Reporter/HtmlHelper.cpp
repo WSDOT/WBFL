@@ -262,6 +262,7 @@ void rptHtmlHelper::VisitFontLibrary(std::_tostream& os)
    os << _T("   ") << _T("P.tableCaptionToolTip{ text-decoration-line:none; }") << std::endl;
    os << _T("   ") << _T("P.tableCaptionToolTip .tableCaptionToolTiptext{ visibility: hidden; }") << std::endl;
    os << _T("   ") << _T("P.tableCaptionToolTip:hover .tableCaptionToolTiptext{ visibility: hidden; }") << std::endl;
+   os << osPrint.str() << std::endl;
    os << _T("</style>") << std::endl;
    os << std::endl;
 
