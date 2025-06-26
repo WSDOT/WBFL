@@ -1592,6 +1592,17 @@
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
    </file>
+   
+      <file name="PGSuperBeams.dll"
+         hashalg="SHA1">
+      <comClass clsid="{6E0E1094-075A-4cad-80C1-0D423B6162BD}"
+                description="Age Adjusted Material">
+      </comClass>
+      <comClass clsid="{5D6AFD91-84F4-4755-9AF7-B760114A4551}"
+                description="StrandMoverImpl Class">
+      </comClass>
+   </file>
+   
    <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
       <security>
          <requestedPrivileges>
