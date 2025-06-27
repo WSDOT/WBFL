@@ -1338,11 +1338,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !n_min_shear_def_check || !t_max_cover_check
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || !ss_Y_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
-<<<<<<< HEAD
-		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || !use_ext_plates && !rest_system_req_check || (use_ext_plates && !hydrostatic_check)
-=======
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || (!use_ext_plates && !rest_system_req_check) || (use_ext_plates && !hydrostatic_check)
->>>>>>> bfd75e1b1 (accounts for torsional effects)
 		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
 		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
