@@ -68,6 +68,12 @@ void BearingDesignCriteria::SetSpecification(const WBFL::LRFD::BDSManager::Editi
 	m_spec = spec;
 }
 
+void BearingDesignCriteria::SetBearing(const Bearing& bearing, const BearingLoads& loads)
+{
+	m_bearing = bearing;
+	m_loads = loads;
+}
+
 
 Float64 BearingDesignCriteria::GetSigmaMultiplier() const
 {

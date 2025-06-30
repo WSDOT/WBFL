@@ -17,10 +17,6 @@ namespace EngToolsUnitTests
 			BearingLoads brg_loads;
 			BearingDesignCriteria criteria;
 
-			const auto& artifact = 
-				brg_calc.CheckBearing(brg, brg_loads, criteria);
-
-
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
 			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
@@ -48,7 +44,12 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(true);
 			brg_loads.SetFixedTranslationY(true);
 
-			Float64 gdrFlgDist = WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch);
+			brg.SetBearingToGirderFlangeDistance(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
+			criteria.SetBearing(brg, brg_loads);
+				criteria.SetSpecification(WBFL::LRFD::BDSManager::Edition::TenthEdition2024);
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			Assert::IsTrue(artifact.MinimumAreaCheck());
 			Assert::IsTrue(artifact.MinimumLengthCheck());
@@ -97,11 +98,6 @@ namespace EngToolsUnitTests
 			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
-
-			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, criteria);
-
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
 			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
@@ -129,7 +125,12 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(false);
 			brg_loads.SetFixedTranslationY(false);
 
-			Float64 gdrFlgDist = WBFL::Units::ConvertToSysUnits(10.0, WBFL::Units::Measure::Inch);
+			brg.SetBearingToGirderFlangeDistance(WBFL::Units::ConvertToSysUnits(100.0, WBFL::Units::Measure::Inch));
+			criteria.SetBearing(brg, brg_loads);
+			criteria.SetSpecification(WBFL::LRFD::BDSManager::Edition::TenthEdition2024);
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			Assert::IsFalse(artifact.MinimumAreaCheck());
 			Assert::IsFalse(artifact.MinimumLengthCheck());
@@ -178,11 +179,6 @@ namespace EngToolsUnitTests
 			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
-
-			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, criteria);
-
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
 			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
@@ -210,6 +206,13 @@ namespace EngToolsUnitTests
 			brg_loads.SetLiveLoad(WBFL::Units::ConvertToSysUnits(51, WBFL::Units::Measure::Kip));
 			brg_loads.SetFixedTranslationX(false);
 			brg_loads.SetFixedTranslationY(true);
+
+			brg.SetBearingToGirderFlangeDistance(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
+			criteria.SetBearing(brg, brg_loads);
+			criteria.SetSpecification(WBFL::LRFD::BDSManager::Edition::TenthEdition2024);
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			Assert::IsTrue(artifact.MinimumAreaCheck());
 			Assert::IsTrue(artifact.MinimumLengthCheck());
@@ -250,11 +253,6 @@ namespace EngToolsUnitTests
 			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
-
-			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, criteria);
-
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
 			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
@@ -281,6 +279,13 @@ namespace EngToolsUnitTests
 			brg_loads.SetLiveLoad(WBFL::Units::ConvertToSysUnits(1, WBFL::Units::Measure::Kip));
 			brg_loads.SetFixedTranslationX(true);
 			brg_loads.SetFixedTranslationY(true);
+
+			brg.SetBearingToGirderFlangeDistance(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
+			criteria.SetBearing(brg, brg_loads);
+			criteria.SetSpecification(WBFL::LRFD::BDSManager::Edition::TenthEdition2024);
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 			Assert::IsTrue(artifact.MinimumAreaCheck() == true);
 			Assert::IsTrue(artifact.MinimumLengthCheck() == true);
@@ -321,11 +326,6 @@ namespace EngToolsUnitTests
 			BearingCalculator brg_calc;
 			BearingDesignCriteria criteria;
 
-			const auto& spec = WBFL::LRFD::BDSManager::GetEdition();
-
-			const auto& artifact =
-				brg_calc.CheckBearing(brg, brg_loads, criteria);
-
 			criteria.bMinimumTotalBearingHeight = true;
 			criteria.bRequiredBearingEdgeToGirderEdgeDistance = true;
 			criteria.bMaximumBearingEdgeToGirderEdgeDistance = true;
@@ -353,6 +353,12 @@ namespace EngToolsUnitTests
 			brg_loads.SetFixedTranslationX(true);
 			brg_loads.SetFixedTranslationY(false);
 
+			brg.SetBearingToGirderFlangeDistance(WBFL::Units::ConvertToSysUnits(1.0, WBFL::Units::Measure::Inch));
+			criteria.SetBearing(brg, brg_loads);
+			criteria.SetSpecification(WBFL::LRFD::BDSManager::Edition::TenthEdition2024);
+
+			const auto& artifact =
+				brg_calc.CheckBearing(brg, brg_loads, criteria);
 
 
 			Assert::IsTrue(IsEqual(criteria.GetMinimumAllowableNumLayersRotationX(), 10.2, 0.1));
