@@ -458,8 +458,10 @@ void compute_theta_and_beta1(ShearData* pData)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -467,6 +469,7 @@ void compute_theta_and_beta1(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -569,8 +572,10 @@ void compute_theta_and_beta2(ShearData* pData)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -578,6 +583,7 @@ void compute_theta_and_beta2(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -689,7 +695,7 @@ void compute_theta_and_beta2(ShearData* pData)
    // Back out Fe... If ex > 0, use a code value of -1
    if ( ex < 0 )
    {
-      pData->Fe = (pData->Es*pData->As + pData->Eps*pData->Aps + pData->EptSegment*pData->AptSegment + pData->EptGirder*pData->AptGirder)/(pData->Ec*pData->Ac + pData->Es*pData->As + pData->Eps*pData->Aps + pData->EptSegment*pData->AptSegment + pData->EptGirder*pData->AptGirder);
+      pData->Fe = (pData->Kdb * pData->Es*pData->As + pData->Eps * pData->Kds * pData->Aps + pData->EptSegment*pData->AptSegment + pData->EptGirder*pData->AptGirder)/(pData->Ec*pData->Ac + pData->Es* pData->Kdb * pData->As + pData->Eps * pData->Kds *pData->Aps + pData->EptSegment*pData->AptSegment + pData->EptGirder*pData->AptGirder);
    }
    else
    {
@@ -745,8 +751,10 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -754,6 +762,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -810,7 +819,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
       if ( eqn == 1 )
       {
          // Eqn 5.8.3.4.2-1
-         if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+         if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
          {
             ex_calc = 0.0;
          }
@@ -818,11 +827,11 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
          {
             if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
 
@@ -840,7 +849,7 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
       else
       {
          // Eqn 5.8.3.4.2-2
-         if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+         if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
          {
             ex_calc = 0.0;
          }
@@ -848,11 +857,11 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
          {
             if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
 
@@ -873,11 +882,11 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
 
             if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
-               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
       }
@@ -940,8 +949,10 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -949,6 +960,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -997,7 +1009,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
       if ( eqn == 1 )
       {
          // Eqn 5.8.3.4.2-1
-         if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+         if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
          {
             ex_calc = 0.0;
          }
@@ -1005,11 +1017,11 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
          {
             if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
 
@@ -1027,7 +1039,7 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
       else
       {
          // Eqn 5.8.3.4.2-2
-         if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+         if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
          {
             ex_calc = 0.0;
          }
@@ -1035,11 +1047,11 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
          {
             if ( BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition() )
             {
-               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu)/dv + 0.5*Nu + 0.5*fabs(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu/dv + 0.5*Nu + 0.5*(Vu-Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
 
@@ -1060,11 +1072,11 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
 
             if (BDSManager::Edition::ThirdEditionWith2005Interims <= BDSManager::GetEdition())
             {
-               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (fabs(Mu) / dv + 0.5*Nu + 0.5*fabs(Vu - Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
             else
             {
-               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+               ex_calc = (Mu / dv + 0.5*Nu + 0.5*(Vu - Vp)*cot - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
             }
          }
       }
@@ -1130,8 +1142,10 @@ void compute_theta_and_beta4(ShearData* pData)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -1139,6 +1153,7 @@ void compute_theta_and_beta4(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1200,13 +1215,13 @@ void compute_theta_and_beta4(ShearData* pData)
    Float64 ex_calc;
    if ( eqn == 1 )
    {
-      if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+      if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
       {
          ex_calc = 0.0;
       }
       else
       {
-         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(2*(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
 
       if ( BDSManager::GetEdition() < BDSManager::Edition::SecondEditionWith2003Interims )
@@ -1223,13 +1238,13 @@ void compute_theta_and_beta4(ShearData* pData)
    else
    {
       // Eqn 5.8.3.4.2-2
-      if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+      if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
       {
          ex_calc = 0.0;
       }
       else
       {
-         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+         ex_calc = (Mu/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/((Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
 
       ex_calc = (ex_calc > 0.002) ? 0.002 : ex_calc;
@@ -1247,8 +1262,8 @@ void compute_theta_and_beta4(ShearData* pData)
          // Eqn 5.8.3.4.2-3
          pData->Eqn = (pData->Eqn == 1 ? 31 : 32);
 
-         CHECK(!IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
-         ex_calc = (Mu / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
+         CHECK(!IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder)); // should be able to get here if zero
+         ex_calc = (Mu / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (2 * (Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder));
       }
    }
 
@@ -1359,8 +1374,10 @@ void compute_theta_and_beta5(ShearData* pData)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb  = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -1368,6 +1385,7 @@ void compute_theta_and_beta5(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1383,13 +1401,13 @@ void compute_theta_and_beta5(ShearData* pData)
 
    // Compute strain 
    Float64 ex_calc;
-   if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+   if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
    {
       ex_calc = ex_max; // no tension tie so use maximum strain
    }
    else
    {
-      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder);
+      ex_calc = (fabs(Mu)/dv + 0.5*Nu + fabs(Vu-Vp) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder)/(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder);
    }
 
    if ( ex_calc < 0 )
@@ -1400,7 +1418,7 @@ void compute_theta_and_beta5(ShearData* pData)
       }
       else
       {
-         ex_calc = (fabs(Mu) / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder + Ec*Ac);
+         ex_calc = (fabs(Mu) / dv + 0.5*Nu + fabs(Vu - Vp) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder) / (Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder + Ec*Ac);
       }
    }
 
@@ -1458,8 +1476,10 @@ Float64 compute_strain(ShearData* pData,Float64 theta)
    Float64 dv  = pData->dv;
    Float64 bv  = pData->bv;
    Float64 Es  = pData->Es;
+   Float64 Kdb = pData->Kdb;
    Float64 As  = pData->As;
    Float64 Eps = pData->Eps;
+   Float64 Kds = pData->Kds;
    Float64 Aps = pData->Aps;
    Float64 EptSegment = pData->EptSegment;
    Float64 AptSegment = pData->AptSegment;
@@ -1467,6 +1487,7 @@ Float64 compute_strain(ShearData* pData,Float64 theta)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
+   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1475,14 +1496,14 @@ Float64 compute_strain(ShearData* pData,Float64 theta)
    Float64 ex;
 
    theta = WBFL::Units::Convert(theta, WBFL::Units::Measure::Degree, WBFL::Units::Measure::Radian);
-   if ( IsZero(Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
+   if ( IsZero(Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder) )
    {
       ex = 0;
    }
    else
    {
-      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder;
-      ex /= Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
+      ex = Mu/dv + 0.5*Nu + 0.5*Vu/tan(theta) - Aps*Kdt*fpops - AptSegment*fpoptSegment - AptGirder*fpoptGirder;
+      ex /= Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
    }
 
    if ( ex < 0.0 )
@@ -1494,14 +1515,14 @@ Float64 compute_strain(ShearData* pData,Float64 theta)
       else
       {
          Float64 Fe;
-         if (IsZero(Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder))
+         if (IsZero(Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder))
          {
             Fe = 0;
          }
          else
          {
-            Fe = Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
-            Fe /= Ec*Ac + Es*As + Eps*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
+            Fe = Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
+            Fe /= Ec*Ac + Es*Kdb*As + Eps*Kds*Aps + EptSegment*AptSegment + EptGirder*AptGirder;
          }
 
          ex *= Fe; // See "Design of Highway Bridges", Barker and Puckett, pg 641
