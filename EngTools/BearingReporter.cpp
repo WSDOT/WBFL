@@ -295,6 +295,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
 
 	Float64 distBrg2gBf = brg.GetBearingToGirderFlangeDistance();
+	Float64 reqDistBrg2gBf = criteria.RequiredBearingEdgeToGirderEdgeDistance;
 
 	Float64 tl = brg_loads.GetTotalLoad();
 	bool maxTLcheck = artifact.MaximumTotalLoadCheck();
@@ -504,12 +505,12 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << Sub2(_T("d"), _T("rqd")) << _T(" = ") << length.SetValue(distBrg2gBf) << rptNewLine;
 		if (distBrg2gBfCheck)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(distBrg2gBf);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(reqDistBrg2gBf);
 			*pPara << _T(" ") << RPT_PASS;
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << length.SetValue(distBrg2gBf);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" ") << symbol(NE) << length.SetValue(reqDistBrg2gBf);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
