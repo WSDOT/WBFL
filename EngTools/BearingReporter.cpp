@@ -193,7 +193,7 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable2)(1, 0) << E.SetValue(K);
 	(*pTable2)(0, 1) << COLHDR(Sub2(_T("F"), _T("y")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 1) << E.SetValue(fy);
-	(*pTable2)(0, 2) << COLHDR(Sub2(_T("F"), _T("th")), rptStressUnitTag, pDispUnits->ModE);
+	(*pTable2)(0, 2) << COLHDR(Sub2(symbol(DELTA) << _T("F"), _T("TH")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 2) << E.SetValue(fth);
 	(*pTable2)(0, 3) << COLHDR(Sub2(_T("G"), _T("min")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 3) << E.SetValue(Gmin);
@@ -365,7 +365,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	*pPara << rptNewLine << rptNewLine;
 
 	*pPara << Sub2(_T("h"), _T("s,fatigue")) << _T(" = 2 ") << symbol(TIMES) << _T(" ") << Sub2(_T(" h"), _T("ri"));
-	*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("L")) << _T(" / ") << Sub2(_T("f"), _T("th"));
+	*pPara << symbol(TIMES) << _T(" ") << Sub2(symbol(sigma), _T("L")) << _T(" / ") << Sub2(_T(symbol(DELTA) << _T("F"), _T("TH"));
 	*pPara << _T(" = 2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << symbol(TIMES) << stress.SetValue(ll_stress);
 	*pPara << _T(" / ") << stress.SetValue(fth) << _T(" = ") << length.SetValue(t_min_shim_fatigue) << rptNewLine;
 	if (t_min_shim_fatigue_check)
