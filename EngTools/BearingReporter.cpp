@@ -502,7 +502,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		pPara = new rptParagraph;
 		(*pChapter) << pPara;
 
-		*pPara << Sub2(_T("d"), _T("rqd")) << _T(" = ") << length.SetValue(distBrg2gBf) << rptNewLine;
+		*pPara << Sub2(_T("d"), _T("rqd")) << _T(" = ") << length.SetValue(reqDistBrg2gBf) << rptNewLine;
 		if (distBrg2gBfCheck)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(distBrg2gBf) << _T(" = ") << length.SetValue(reqDistBrg2gBf);
