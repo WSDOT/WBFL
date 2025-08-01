@@ -38,9 +38,7 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
 
-	*pPara << color(Blue);
 	*pPara << Bold(_T("-Calculations are based on ") << WBFL::LRFD::BDSManager::GetEditionAsString(spec) << _T(" AASHTO BDS.")) << rptNewLine;
-	*pPara << Bold(_T("-This Program is for rectangular-shaped bearings only.")) << rptNewLine;
 
 	if (tArtifact != nullptr)
 	{
@@ -55,12 +53,12 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0.")) << rptNewLine;
 	}
 
-	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0.")) << rptNewLine;
+	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0 radians.")) << rptNewLine;
 
 	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates.")) << rptNewLine << rptNewLine;
 
 	*pPara << Bold(_T("Bearing Orientation:")) << rptNewLine;
-	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine;
+	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine << rptNewLine;
 	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge.")) << rptNewLine;
 	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine << rptNewLine;
 }
@@ -141,11 +139,10 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	*pPara << _T("Shape Factor, S = A / (2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("ri")) << _T(" ") << symbol(TIMES) << _T(" (L + W)) = ");
 	*pPara << area.SetValue(a) << _T(" / (2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" ") << symbol(TIMES) << _T(" (");
 	*pPara << length.SetValue(l) << _T(" + ") << length.SetValue(w) << _T(")) = ") << s << rptNewLine;
-	*pPara << color(Blue);
-	*pPara << _T("Summary:") << rptNewLine;
+	*pPara << rptNewLine;
 	*pPara << _T("Dimensions: ") << length.SetValue(w) << _T(" ") << symbol(TIMES) << length.SetValue(l);
 	*pPara << _T(" ") << symbol(TIMES) << length.SetValue(total_bearing_height);
-	*pPara << color(Blue) << rptNewLine;
+	*pPara << rptNewLine;
 	*pPara << _T("Approx. Weight = ");
 	if (pDispUnits->Name == _T("English"))
 	{
@@ -155,7 +152,7 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	{
 		*pPara << weight << _T(" N");
 	}
-	*pPara << color(Blue) << rptNewLine << rptNewLine;
+	*pPara << rptNewLine << rptNewLine;
 
 	length.ShowUnitTag(false);
 	angle.ShowUnitTag(false);
@@ -1650,14 +1647,9 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-
-	rptHeading*  pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
-	(*pChapter) << pSubHeading;
-//
-
 	*pPara << rptNewLine;
 
-	pSubHeading = rptStyleManager::CreateSubHeading();
+	rptHeading* pSubHeading = rptStyleManager::CreateSubHeading();
 	(*pChapter) << pSubHeading;
 	*pSubHeading << _T("Minimum Allowable Total Elastomer Thickness Check:");
 	pPara = new rptParagraph;
