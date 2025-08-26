@@ -82,6 +82,12 @@ namespace WBFL
             /// @brief Sets the use of externally bonded plates
             /// @param use
             void SetUseExternalPlates(bool use);
+            /// @brief Sets the elastomer bulk modulus
+            /// @param use
+            void SetElastomerBulkModulus(Float64 k);
+            /// @brief Sets the bearing to girder flange distance
+            /// @param use
+            void SetBearingToGirderFlangeDistance(Float64 dist);
 
 
 
@@ -120,16 +126,23 @@ namespace WBFL
             IndexType GetTotalSteelShims() const;
             /// @return bearing pad shape factor
             Float64 GetShapeFactor() const;
+            /// @return Compressibility Index
+            Float64 GetCompressibilityIndex() const;
             /// @return bearing weight
             Float64 GetBearingWeight() const;
             /// @return uses externally bonded plates
             bool UseExternalPlates() const;
+            /// @return elastomer bulk modulus
+            Float64 GetElastomerBulkModulus() const;
+            /// @return Distance from edge of bearing to edge of girder bottom flange
+            Float64 GetBearingToGirderFlangeDistance() const;
 
 
 
         private:
             Float64 m_length{ WBFL::Units::ConvertToSysUnits(11, WBFL::Units::Measure::Inch) }; ///< length
             Float64 m_width{ WBFL::Units::ConvertToSysUnits(27, WBFL::Units::Measure::Inch) };///< width
+            Float64 m_elastomer_bulk_modulus = WBFL::Units::ConvertToSysUnits(450, WBFL::Units::Measure::KSI);
             Float64 m_shear_modulus_min{ WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI) };///< minimum shear modulus
             Float64 m_shear_modulus_max{ WBFL::Units::ConvertToSysUnits(165, WBFL::Units::Measure::PSI) };///< maximum shear modulus
             Float64 m_intermediate_layer_thickness{ WBFL::Units::ConvertToSysUnits(0.5, WBFL::Units::Measure::Inch) };///< intermediate elastomer layer thickness
@@ -141,6 +154,8 @@ namespace WBFL
             Float64 m_density_steel{ WBFL::Units::ConvertToSysUnits(490.0, WBFL::Units::Measure::LbfPerFeet3) }; ///< steel density
             Float64 m_density_elastomer{ WBFL::Units::ConvertToSysUnits(74.93, WBFL::Units::Measure::LbfPerFeet3) }; ///< elastomer density
             bool m_ext_plates{false}; ///< uses externally bonded plates
+            Float64 m_girder_flange_dist{ WBFL::Units::ConvertToSysUnits(10, WBFL::Units::Measure::Inch) };
+
 
         };
     }; // EngTools

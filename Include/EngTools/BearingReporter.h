@@ -43,10 +43,27 @@ namespace WBFL
          BearingReporter();
 
          /// Builds the specification check chapter
-         void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, 
-             rptParagraph* pPara, const Bearing& brg, const BearingLoads& brg_loads, 
-             const BearingCalculator& brg_calc, const WBFL::LRFD::BDSManager::Edition& spec,
-             const WBFL::EngTools::BearingDesignCriteria& criteria, Float64 gdrFlgDist = 0.0);
+         void BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara,
+             const WBFL::EngTools::BearingCheckArtifact& artifact,
+             const WBFL::EngTools::BearingCheckArtifact* tArtifact = nullptr);
+
+         void ReportIntroduction(rptParagraph* pPara, const BearingCheckArtifact& artifact, const BearingCheckArtifact* tArtifact);
+
+         void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
+
+         void ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+
+         void ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara, 
+             const WBFL::EngTools::BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
+
+         void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact, 
+             const WBFL::EngTools::BearingCheckArtifact* tArtifact);
       };
    }
 }

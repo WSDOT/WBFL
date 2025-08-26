@@ -82,7 +82,14 @@ void Bearing::SetUseExternalPlates(bool use)
 {
     m_ext_plates = use;
 }
-
+void Bearing::SetElastomerBulkModulus(Float64 k)
+{
+    m_elastomer_bulk_modulus = k;
+}
+void Bearing::SetBearingToGirderFlangeDistance(Float64 dist)
+{
+    m_girder_flange_dist = dist;
+}
 
 
 Float64 Bearing::GetLength() const
@@ -138,7 +145,15 @@ bool Bearing::UseExternalPlates() const
 {
     return m_ext_plates;
 }
+Float64 Bearing::GetElastomerBulkModulus() const
+{
+    return m_elastomer_bulk_modulus;
+}
 
+Float64 WBFL::EngTools::Bearing::GetBearingToGirderFlangeDistance() const
+{
+    return m_girder_flange_dist;
+}
 
 //Calculated Bearing properties
 Float64 Bearing::GetArea() const
@@ -149,6 +164,16 @@ Float64 Bearing::GetShapeFactor() const
 {
     return GetArea() / (2 * m_intermediate_layer_thickness * (m_length + m_width));
 }
+
+Float64 Bearing::GetCompressibilityIndex() const
+{
+    Float64 K = GetElastomerBulkModulus();
+    Float64 S = GetShapeFactor();
+    Float64 Gmin = GetShearModulusMinimum();
+    Float64 lambda = S * sqrt(3 * Gmin / K);
+    return lambda;
+}
+
 Float64 WBFL::EngTools::Bearing::GetBearingWeight() const
 {
     Float64 mass = GetArea() * (GetTotalElastomerThickness() * m_density_elastomer + GetTotalSteelShimThickness() * m_density_steel);
@@ -159,6 +184,7 @@ Float64 WBFL::EngTools::Bearing::GetBearingWeight() const
 
     return weight;
 }
+
 Float64 Bearing::GetTotalElastomerThickness() const
 {
     Float64 ttotal = m_cover_thickness * 2 + m_number_intermediate_layers * m_intermediate_layer_thickness;
@@ -172,6 +198,5 @@ IndexType Bearing::GetTotalSteelShims() const
 {
     return m_number_intermediate_layers + 1;
 }
-
 
 
