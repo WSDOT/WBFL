@@ -490,7 +490,7 @@ std::tuple<UINT,UINT,std::shared_ptr<WBFL::EAF::ICommandCallback>> Menu::GetMenu
    CMenu* pMenu = GetMenu();
    UINT nMappedID = pMenu->GetMenuItemID(nPosition);
    auto [bSuccess,nCmdID,callback] = m_pCmdMgr->GetCommandCallback(nMappedID);
-   CHECK(bSuccess);
+   //CHECK(bSuccess); // this does not need to be true. FALSE means nMappedID was not mapped to a unique command ID by the command manager.
    return std::make_tuple(nMappedID,nCmdID,callback);
 }
 

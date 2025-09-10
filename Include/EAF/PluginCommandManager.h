@@ -76,7 +76,8 @@ namespace WBFL
          std::pair<BOOL,UINT> AddCommandCallback(UINT nPluginCmdID, std::shared_ptr<WBFL::EAF::ICommandCallback>& pCallback);
 
          // Translates the unique ID back into the original command ID gets the callback object
-         // associated with the command
+         // associated with the command. Returns TRUE if the command was mapped along with the original command ID
+         // and the callback object. Returns FALSE if the command is not mapped, therefore nMappedID is the command ID.
          std::tuple<BOOL,UINT,std::shared_ptr<WBFL::EAF::ICommandCallback>> GetCommandCallback(UINT nMappedID);
 
          // Removes a callback based on the mapped command id
