@@ -494,7 +494,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		}
 		else
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" ") << length.SetValue(criteria.MinimumTotalBearingHeight);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(total_bearing_height) << _T(" < ") << length.SetValue(criteria.MinimumTotalBearingHeight);
 			*pPara << _T(" ") << RPT_FAIL;
 		}
 
@@ -593,7 +593,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << _T("Total Load Limit = ") << force.SetValue(criteria.MaximumTotalLoad);
 		if (maxTLcheck)
 		{
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << _T(" ") << symbol(LTE) << force.SetValue(criteria.MaximumTotalLoad);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << force.SetValue(tl) << _T(" ") << symbol(LTE) << _T(" ") << force.SetValue(criteria.MaximumTotalLoad);
 			*pPara << _T(" ") << RPT_PASS;						   
 		}														   
 		else													   
