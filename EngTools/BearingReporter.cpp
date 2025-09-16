@@ -49,7 +49,7 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	}
 	else
 	{
-		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance."));
+		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance.")) << rptNewLine;
 		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0.")) << rptNewLine;
 	}
 
@@ -139,19 +139,7 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	*pPara << _T("Shape Factor, S = A / (2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("ri")) << _T(" ") << symbol(TIMES) << _T(" (L + W)) = ");
 	*pPara << area.SetValue(a) << _T(" / (2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" ") << symbol(TIMES) << _T(" (");
 	*pPara << length.SetValue(l) << _T(" + ") << length.SetValue(w) << _T(")) = ") << s << rptNewLine;
-	*pPara << rptNewLine;
-	*pPara << _T("Dimensions: ") << length.SetValue(w) << _T(" ") << symbol(TIMES) << length.SetValue(l);
-	*pPara << _T(" ") << symbol(TIMES) << length.SetValue(total_bearing_height);
-	*pPara << rptNewLine;
-	*pPara << _T("Approx. Weight = ");
-	if (pDispUnits->Name == _T("English"))
-	{
-		*pPara << weight * 0.225 << _T(" lbs");
-	}
-	else
-	{
-		*pPara << weight << _T(" N");
-	}
+
 	*pPara << rptNewLine << rptNewLine;
 
 	length.ShowUnitTag(false);
@@ -161,29 +149,44 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	stress.ShowUnitTag(false);
 	E.ShowUnitTag(false);
 
-	rptRcTable* pTable = rptStyleManager::CreateDefaultTable(8, _T("Geometric Properties"));
+	rptRcTable* pTable = rptStyleManager::CreateDefaultTable(10, _T("Geometric Properties"));
 	*pPara << pTable << rptNewLine;
-	(*pTable)(0, 0) << COLHDR(_T("L"), rptLengthUnitTag, pDispUnits->ComponentDim);
-	(*pTable)(1, 0) << length.SetValue(l);
-	(*pTable)(0, 1) << COLHDR(_T("W"), rptLengthUnitTag, pDispUnits->ComponentDim);
-	(*pTable)(1, 1) << length.SetValue(w);
-	(*pTable)(0, 2) << COLHDR(_T("A"), rptAreaUnitTag, pDispUnits->Area);
-	(*pTable)(1, 2) << area.SetValue(a);
-	(*pTable)(0, 3) << Sub2(_T("N"), _T("lay"));
-	(*pTable)(1, 3) << n;
-	(*pTable)(0, 4) << COLHDR(Sub2(_T("h"), _T("ri")), rptLengthUnitTag, pDispUnits->ComponentDim);
-	(*pTable)(1, 4) << length.SetValue(tlayer);
-	(*pTable)(0, 5) << COLHDR(Sub2(_T("h"), _T("c")), rptLengthUnitTag, pDispUnits->ComponentDim);
-	(*pTable)(1, 5) << length.SetValue(tcover);
-	(*pTable)(0, 6) << COLHDR(Sub2(_T("h"), _T("rt")), rptLengthUnitTag, pDispUnits->ComponentDim);
-	(*pTable)(1, 6) << length.SetValue(total_elastomer_thickness);
-	(*pTable)(0, 7) << _T("S");
-	(*pTable)(1, 7) << s;
 
-	IndexType nCol = 4;
+
+	(*pTable)(0, 0) << COLHDR(_T("H"), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 0) << length.SetValue(total_bearing_height);
+
+	(*pTable)(0, 1) << COLHDR(_T("L"), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 1) << length.SetValue(l);
+
+	(*pTable)(0, 2) << COLHDR(_T("W"), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 2) << length.SetValue(w);
+
+	(*pTable)(0, 3) << COLHDR(_T("A"), rptAreaUnitTag, pDispUnits->Area);
+	(*pTable)(1, 3) << area.SetValue(a);
+
+	(*pTable)(0, 4) << Sub2(_T("N"), _T("shim"));
+	(*pTable)(1, 4) << n + 1;
+
+	(*pTable)(0, 5) << Sub2(_T("N"), _T("lay"));
+	(*pTable)(1, 5) << n;
+
+	(*pTable)(0, 6) << COLHDR(Sub2(_T("h"), _T("ri")), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 6) << length.SetValue(tlayer);
+
+	(*pTable)(0, 7) << COLHDR(Sub2(_T("h"), _T("c")), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 7) << length.SetValue(tcover);
+
+	(*pTable)(0, 8) << COLHDR(Sub2(_T("h"), _T("rt")), rptLengthUnitTag, pDispUnits->ComponentDim);
+	(*pTable)(1, 8) << length.SetValue(total_elastomer_thickness);
+
+	(*pTable)(0, 9) << _T("S");
+	(*pTable)(1, 9) << s;
+
+	IndexType nCol = 5;
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
-		nCol = 5;
-	rptRcTable* pTable2 = rptStyleManager::CreateDefaultTable(nCol, _T("Design Properties"));
+		nCol = 6;
+	rptRcTable* pTable2 = rptStyleManager::CreateDefaultTable(nCol, _T("Material Properties"));
 
 	*pPara << pTable2 << rptNewLine;
 	(*pTable2)(0, 0) << COLHDR(_T("K"), rptStressUnitTag, pDispUnits->ModE);
@@ -194,13 +197,24 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable2)(1, 2) << E.SetValue(fth);
 	(*pTable2)(0, 3) << COLHDR(Sub2(_T("G"), _T("min")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 3) << E.SetValue(Gmin);
+	(*pTable2)(0, 4) << _T("Weight") << rptNewLine;
+
+	if (pDispUnits->Name == _T("English"))
+	{
+		(*pTable2)(0, 4) << _T("(lbs)");
+		(*pTable2)(1, 4) << weight * 0.225;
+	}
+	else
+	{
+		(*pTable2)(0, 4) << _T("(N)");
+		(*pTable2)(1, 4) << weight;
+	}
 
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
-		(*pTable2)(0, 4) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
-		(*pTable2)(1, 4) << E.SetValue(Gmax);
+		(*pTable2)(0, 5) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
+		(*pTable2)(1, 5) << E.SetValue(Gmax);
 	}
-
 
 	rptRcTable* pTable3 = rptStyleManager::CreateDefaultTable(4, _T("Loads"));
 	*pPara << pTable3 << rptNewLine;
