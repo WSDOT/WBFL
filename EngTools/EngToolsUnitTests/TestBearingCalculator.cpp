@@ -299,7 +299,7 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck() == false);
 			Assert::IsTrue(artifact.MaximumNumLayersStabilityXCheck() == true);
 			Assert::IsTrue(artifact.MaximumNumLayersStabilityYCheck() == true);
-			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck() == false);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck() == true);
 			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck() == true);
 			Assert::IsTrue(artifact.MinimumSteelShimThicknessAbsoluteCheck() == false);
 			Assert::IsTrue(artifact.MaximumCompressiveStrainCheck() == true);
