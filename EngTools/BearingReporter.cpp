@@ -1,5 +1,4 @@
 ///////////////////////////////////////////////////////////////////////
-// Stability
 // Copyright © 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -60,7 +59,7 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	*pPara << Bold(_T("Bearing Orientation:")) << rptNewLine;
 	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine << rptNewLine;
 	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge.")) << rptNewLine;
-	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine << rptNewLine;
+	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine;
 }
 
 void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -114,7 +113,6 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	Float64 total_bearing_height = calc.ComputeBearingHeight(brg);
 	Float64 tlayer = brg.GetIntermediateLayerThickness();
 	Float64 tshim = brg.GetSteelShimThickness();
-	Float64 weight = brg.GetBearingWeight();
 
 	rptHeading* pHeading = rptStyleManager::CreateHeading(1);
 
@@ -131,16 +129,6 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
-
-	*pPara << _T("Area, A = ") << length.SetValue(l) << _T(" ") << symbol(TIMES) << length.SetValue(w) << _T(" = ") << area.SetValue(a) << rptNewLine;
-	*pPara << _T("Total Elastomer Thickness, ") << Sub2(_T("h"), _T("rt")) << _T(" = 2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("c")) << _T(" + n ");
-	*pPara << symbol(TIMES) << Sub2(_T(" h"), _T("ri")) << _T(" = 2 ") << symbol(TIMES) << length.SetValue(tcover) << _T(" + ");
-	*pPara << n << _T(" ") << symbol(TIMES) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(total_elastomer_thickness) << rptNewLine;
-	*pPara << _T("Shape Factor, S = A / (2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("ri")) << _T(" ") << symbol(TIMES) << _T(" (L + W)) = ");
-	*pPara << area.SetValue(a) << _T(" / (2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" ") << symbol(TIMES) << _T(" (");
-	*pPara << length.SetValue(l) << _T(" + ") << length.SetValue(w) << _T(")) = ") << s << rptNewLine;
-
-	*pPara << rptNewLine << rptNewLine;
 
 	length.ShowUnitTag(false);
 	angle.ShowUnitTag(false);
@@ -183,9 +171,9 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable)(0, 9) << _T("S");
 	(*pTable)(1, 9) << s;
 
-	IndexType nCol = 5;
+	IndexType nCol = 4;
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
-		nCol = 6;
+		nCol = 5;
 	rptRcTable* pTable2 = rptStyleManager::CreateDefaultTable(nCol, _T("Material Properties"));
 
 	*pPara << pTable2 << rptNewLine;
@@ -197,23 +185,11 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	(*pTable2)(1, 2) << E.SetValue(fth);
 	(*pTable2)(0, 3) << COLHDR(Sub2(_T("G"), _T("min")), rptStressUnitTag, pDispUnits->ModE);
 	(*pTable2)(1, 3) << E.SetValue(Gmin);
-	(*pTable2)(0, 4) << _T("Weight") << rptNewLine;
-
-	if (pDispUnits->Name == _T("English"))
-	{
-		(*pTable2)(0, 4) << _T("(lbs)");
-		(*pTable2)(1, 4) << weight * 0.225;
-	}
-	else
-	{
-		(*pTable2)(0, 4) << _T("(N)");
-		(*pTable2)(1, 4) << weight;
-	}
 
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
-		(*pTable2)(0, 5) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
-		(*pTable2)(1, 5) << E.SetValue(Gmax);
+		(*pTable2)(0, 4) << COLHDR(Sub2(_T("G"), _T("max")), rptStressUnitTag, pDispUnits->ModE);
+		(*pTable2)(1, 4) << E.SetValue(Gmax);
 	}
 
 	rptRcTable* pTable3 = rptStyleManager::CreateDefaultTable(4, _T("Loads"));
@@ -276,6 +252,13 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
 
+	Float64 l = brg.GetLength();
+	Float64 w = brg.GetWidth();
+	Float64 a = brg.GetArea();
+	IndexType n = brg.GetNumIntLayers();
+	Float64 s = brg.GetShapeFactor();
+	Float64 total_elastomer_thickness = brg.GetTotalElastomerThickness();
+
 	Float64 n_multiplier = brg_calc.GetNlayMultiplier(brg);
 	Float64 t_min_shim_absolute = criteria.GetAbsoluteMinimumShimThickness();
 	Float64 tcover = brg.GetCoverThickness();
@@ -311,6 +294,8 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	Float64 tl = brg_loads.GetTotalLoad();
 	bool maxTLcheck = artifact.MaximumTotalLoadCheck();
 
+	INIT_UV_PROTOTYPE(rptAreaUnitValue, area, pDispUnits->Area, true);
+
 	rptHeading* pHeading = rptStyleManager::CreateHeading(1);
 	(*pChapter) << pHeading;
 	pHeading->SetName(_T("Details"));
@@ -318,6 +303,14 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
+
+	*pPara << _T("Area, A = ") << length.SetValue(l) << _T(" ") << symbol(TIMES) << length.SetValue(w) << _T(" = ") << area.SetValue(a) << rptNewLine;
+	*pPara << _T("Total Elastomer Thickness, ") << Sub2(_T("h"), _T("rt")) << _T(" = 2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("c")) << _T(" + n ");
+	*pPara << symbol(TIMES) << Sub2(_T(" h"), _T("ri")) << _T(" = 2 ") << symbol(TIMES) << length.SetValue(tcover) << _T(" + ");
+	*pPara << n << _T(" ") << symbol(TIMES) << length.SetValue(tlayer) << _T(" = ") << length.SetValue(total_elastomer_thickness) << rptNewLine;
+	*pPara << _T("Shape Factor, S = A / (2 ") << symbol(TIMES) << _T(" ") << Sub2(_T("h"), _T("ri")) << _T(" ") << symbol(TIMES) << _T(" (L + W)) = ");
+	*pPara << area.SetValue(a) << _T(" / (2 ") << symbol(TIMES) << _T(" ") << length.SetValue(tlayer) << _T(" ") << symbol(TIMES) << _T(" (");
+	*pPara << length.SetValue(l) << _T(" + ") << length.SetValue(w) << _T(")) = ") << s << rptNewLine;
 
 	if (n_multiplier == 1)
 	{
@@ -428,13 +421,13 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 	if (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
 	{
-		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = greater of 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("c")) << _T(" and ");
+		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = greater of 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("ri")) << _T(" and ");
 		*pPara << length.SetValue(WBFL::Units::ConvertToSysUnits(0.3125, WBFL::Units::Measure::Inch)) << _T(" = ");
 		*pPara << length.SetValue(t_max_cover) << rptNewLine;
 	}
 	else
 	{
-		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("c")) << _T(" = ");
+		*pPara << Sub2(_T("h"), _T("c,max")) << _T(" = 0.7") << symbol(TIMES) << Sub2(_T("h"), _T("ri")) << _T(" = ");
 		*pPara << length.SetValue(t_max_cover) << rptNewLine;
 	}
 
@@ -648,13 +641,15 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 }
 
-void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara,
+void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::BearingCheckArtifact& artifact)
 {
 
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
+	const auto& brg = artifact.GetBearing();
 
+	Float64 weight = brg.GetBearingWeight();
 	bool w_min_check = artifact.MinimumWidthCheck();
 	bool l_min_check = artifact.MinimumLengthCheck();
 	bool a_min_check = artifact.MinimumAreaCheck();
@@ -809,15 +804,26 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptPa
 			*pPara << _T("The total vertical load exceeds the maximum limit.") << rptNewLine;
 		}
 
-		*pPara << color(Red) << rptNewLine << rptNewLine;
+		*pPara << color(Red) << rptNewLine;
 
 	}
 	else
 	{
-		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << rptNewLine << rptNewLine;
+		*pPara << color(Green) << _T("Bearing design per Method A was successful.") << rptNewLine;
 	}
 
 	*pPara << color(Black);
+
+	*pPara << _T("Approx. Weight:") << rptNewLine;
+
+	if (pDispUnits->Name == _T("English"))
+	{
+		*pPara << weight * 0.225 << _T(" lbs");
+	}
+	else
+	{
+		*pPara << weight << _T(" N");
+	}
 
 }
 
@@ -1294,7 +1300,7 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 
 }
 
-void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara,
+void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, rptParagraph* pPara,
 	const WBFL::EngTools::BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact)
 {
 
@@ -1302,6 +1308,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
 
+	Float64 weight = brg.GetBearingWeight();
 
 	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
 	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
@@ -1463,14 +1470,25 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptPa
 		}
 
 
-		*pPara << rptNewLine << rptNewLine;
+		*pPara << rptNewLine;
 	}
 	else
 	{
-		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << rptNewLine << rptNewLine;
+		*pPara << color(Green) << _T("Bearing design per Method B was successful.") << rptNewLine;
 	}
 
 	*pPara << color(Black);
+
+	*pPara << _T("Approx. Weight:") << rptNewLine;
+
+	if (pDispUnits->Name == _T("English"))
+	{
+		*pPara << weight * 0.225 << _T(" lbs");
+	}
+	else
+	{
+		*pPara << weight << _T(" N");
+	}
 }
 
 void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -2053,23 +2071,23 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		if (rest_system_req_check)
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
-			*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
-			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+			*pPara << _T(")| ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = |(");
+			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(")| ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
-			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << abs(restraint_system_calc);
-			*pPara << (abs(restraint_system_calc) == 1.0 ? _T(" = 1") : _T("| < 1 ")) << rptNewLine;
+			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
+			*pPara << (restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
 
 		}
 		else
 		{
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
-			*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
-			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+			*pPara << _T(")| ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+			*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = |(");
+			*pPara << static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << cyclic_rotation << _T(")| ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
-			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(restraint_system_calc);
+			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
 			*pPara << _T(" > 1 ") << rptNewLine;
 			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
 		}
@@ -2088,23 +2106,23 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 			if (secondary_rest_system_req_check)
 			{
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
-				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
-				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+				*pPara << _T(")| ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = |(");
+				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(")| ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
-				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(secondary_restraint_system_calc);
-				*pPara << (abs(secondary_restraint_system_calc) == 1.0 ? _T(" = 1") : _T("| < 1 ")) << rptNewLine;
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
+				*pPara << (secondary_restraint_system_calc == 1.0 ? _T(" = 1") : _T(" < 1 ")) << rptNewLine;
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Green) << _T("NO RESTRAINT SYSTEM REQUIRED") << color(Black);
 
 			}
 			else
 			{
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|(") << Sub2(symbol(theta), _T("s,st")) << _T(" + 1.75") << Sub2(symbol(theta), _T("s,cy"));
-				*pPara << _T(") ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
-				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T("| = |(");
-				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(") ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
+				*pPara << _T(")| ") << symbol(TIMES) << _T(" S / 3 / (n + ") << symbol(eta) << _T(") / (") << Sub2(symbol(sigma), _T("st"));
+				*pPara << _T(" + 1.75") << Sub2(symbol(sigma), _T("cy")) << _T(") ") << symbol(TIMES) << Sub2(_T(" E"), _T("B")) << _T(" = |(");
+				*pPara << secondary_static_rotation << _T(" + 1.75 ") << symbol(TIMES) << _T(" ") << secondary_cyclic_rotation << _T(")| ") << symbol(TIMES) << _T(" ") << s << _T(" / 3 / (");
 				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
-				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T("| = ") << abs(secondary_restraint_system_calc);
+				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
 				*pPara << _T(" > 1 ") << rptNewLine;
 				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
 			}
@@ -2321,13 +2339,13 @@ void BearingReporter::BuildSpecCheckChapter(const WBFL::Units::IndirectMeasure* 
 
 	if (criteria.AnalysisMethod == WBFL::EngTools::BearingAnalysisMethod::MethodA)
 	{
-		ReportBearingSpecCheckSummaryA(pChapter, pPara, artifact);
+		ReportBearingSpecCheckSummaryA(pDispUnits, pChapter, pPara, artifact);
 
 		ReportBearingSpecificationCheckA(pDispUnits, pChapter, pPara, artifact);
 	}
 	else
 	{
-		ReportBearingSpecCheckSummaryB(pChapter, pPara, artifact, tArtifact);
+		ReportBearingSpecCheckSummaryB(pDispUnits, pChapter, pPara, artifact, tArtifact);
 
 		ReportBearingSpecificationCheckB(pDispUnits, pChapter, pPara, artifact, tArtifact);
 	}

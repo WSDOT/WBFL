@@ -1,5 +1,4 @@
 ///////////////////////////////////////////////////////////////////////
-// Stability
 // Copyright © 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
@@ -53,12 +52,13 @@ namespace WBFL
          void ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
              rptChapter* pChapter, rptParagraph* pPara, const BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
 
-         void ReportBearingSpecCheckSummaryA(rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
+         void ReportBearingSpecCheckSummaryA(const WBFL::Units::IndirectMeasure* pDispUnits, 
+             rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
 
          void ReportBearingSpecificationCheckA(const WBFL::Units::IndirectMeasure* pDispUnits,
              rptChapter* pChapter, rptParagraph* pPara, const WBFL::EngTools::BearingCheckArtifact& artifact);
 
-         void ReportBearingSpecCheckSummaryB(rptChapter* pChapter, rptParagraph* pPara, 
+         void ReportBearingSpecCheckSummaryB(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, rptParagraph* pPara,
              const WBFL::EngTools::BearingCheckArtifact& artifact, const WBFL::EngTools::BearingCheckArtifact* tArtifact);
 
          void ReportBearingSpecificationCheckB(const WBFL::Units::IndirectMeasure* pDispUnits,
