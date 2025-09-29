@@ -73,13 +73,13 @@ bool BearingCheckArtifact::MinimumAreaCheck() const
 
 bool BearingCheckArtifact::MinimumLengthCheck() const
 {
-	bool check = m_bearing.GetLength() >= m_criteria.GetMinimumAllowableLength();
+	bool check = IsGE(m_criteria.GetMinimumAllowableLength(), m_bearing.GetLength(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumWidthCheck() const
 {
-	bool check = m_bearing.GetWidth() >= m_criteria.GetMinimumAllowableWidth();
+	bool check = IsGE(m_criteria.GetMinimumAllowableWidth(), m_bearing.GetWidth(), 0.001);
 	return check;
 }
 
@@ -91,7 +91,7 @@ bool BearingCheckArtifact::MaximumStressCheck() const
 
 bool BearingCheckArtifact::MaximumIntermediateLayerThicknessCheck() const
 {
-	bool check = m_bearing.GetIntermediateLayerThickness() <= m_criteria.GetMaximumAllowableIntermediateLayerThickness();
+	bool check = IsLE(m_bearing.GetIntermediateLayerThickness(), m_criteria.GetMaximumAllowableIntermediateLayerThickness(), 0.001);
 	return check;
 }
 
@@ -139,31 +139,31 @@ bool BearingCheckArtifact::MaximumNumLayersStabilityYCheck() const
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessAbsoluteCheck() const
 {
-	bool check = m_bearing.GetSteelShimThickness() >= m_criteria.GetAbsoluteMinimumShimThickness();
+	bool check = IsGE(m_criteria.GetAbsoluteMinimumShimThickness(), m_bearing.GetSteelShimThickness(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumElastomerCoverThicknessCheck() const
 {
-	bool check = m_bearing.GetCoverThickness() >= m_criteria.GetMinimumElastomerCoverThickness();
+	bool check = IsGE(m_criteria.GetMinimumElastomerCoverThickness(), m_bearing.GetCoverThickness(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MaximumElastomerCoverThicknessCheck() const
 {
-	bool check = m_bearing.GetCoverThickness() <= m_criteria.GetMaximumElastomerCoverThickness();
+	bool check = IsLE(m_bearing.GetCoverThickness(), m_criteria.GetMaximumElastomerCoverThickness(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessServiceCheck() const
 {
-	bool check = m_bearing.GetSteelShimThickness() >= m_criteria.GetMinimumAllowableSteelShimThicknessService();
+	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessService(), m_bearing.GetSteelShimThickness(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessFatigueCheck() const
 {
-	bool check = m_bearing.GetSteelShimThickness() >= m_criteria.GetMinimumAllowableSteelShimThicknessFatigue();
+	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessFatigue(), m_bearing.GetSteelShimThickness(), 0.001);
 	return check;
 }
 
@@ -247,31 +247,31 @@ bool BearingCheckArtifact::MaximumAllowableShearModulusCheck() const
 
 bool BearingCheckArtifact::RequiredIntermediateElastomerThicknessCheck() const
 {
-	bool check = m_bearing.GetIntermediateLayerThickness() == m_criteria.RequiredIntermediateElastomerThickness;
+	bool check = IsEqual(m_bearing.GetIntermediateLayerThickness(), m_criteria.RequiredIntermediateElastomerThickness, 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumTotalBearingHeightCheck() const
 {
-	bool check = m_results.TotalBearingHeight >= m_criteria.MinimumTotalBearingHeight;
+	bool check = IsGE(m_criteria.MinimumTotalBearingHeight, m_results.TotalBearingHeight, 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumBearingEdgeToBottomFlangeEdgeDistCheck() const
 {
-	bool check = m_bearing.GetBearingToGirderFlangeDistance() >= m_criteria.MinimumBearingEdgeToGirderEdgeDistance;
+	bool check = IsGE(m_criteria.MinimumBearingEdgeToGirderEdgeDistance, m_bearing.GetBearingToGirderFlangeDistance(), 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::MaximumBearingEdgeToBottomFlangeEdgeDistCheck() const
 {
-	bool check = m_bearing.GetBearingToGirderFlangeDistance() <= m_criteria.MaximumBearingEdgeToGirderEdgeDistance;
+	bool check = IsLE(m_bearing.GetBearingToGirderFlangeDistance(), m_criteria.MaximumBearingEdgeToGirderEdgeDistance, 0.001);
 	return check;
 }
 
 bool BearingCheckArtifact::RequiredBearingEdgeToBottomFlangeEdgeDistCheck() const
 {
-	bool check = m_bearing.GetBearingToGirderFlangeDistance() == m_criteria.RequiredBearingEdgeToGirderEdgeDistance;
+	bool check = IsEqual(m_bearing.GetBearingToGirderFlangeDistance(), m_criteria.RequiredBearingEdgeToGirderEdgeDistance, 0.001);
 	return check;
 }
 

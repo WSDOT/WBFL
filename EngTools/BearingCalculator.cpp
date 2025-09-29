@@ -428,7 +428,7 @@ Float64 BearingCalculator::GetRestraintSystemCDRatio(const Bearing& brg, const B
 	Float64 m = GetNlayMultiplier(brg);
 	Float64 Sstatic = GetStaticStress(brg, brg_loads);
 	Float64 Scyclic = GetCyclicStress(brg, brg_loads);
-	Float64 restraint_system_calc = (rot_static + 1.75 * rot_cyclic) * s * Ec / 3.0 / (n + m)/(Sstatic + 1.75 * Scyclic);
+	Float64 restraint_system_calc = abs(rot_static + 1.75 * rot_cyclic) * s * Ec / 3.0 / (n + m)/(Sstatic + 1.75 * Scyclic);
 	return restraint_system_calc;
 }
 
