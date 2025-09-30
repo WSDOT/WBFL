@@ -422,7 +422,6 @@ STDMETHODIMP CStrandGridModel::put_HarpedStrandAdjustmentEnd(EndType endType,Flo
    HRESULT hr;
    if (increment<0.0 && !IsZero(offset))
    {
-      ATLASSERT(false); // cannot adjust if increment<0.0
       m_HarpGridEnd[endType]->SetStrandAdjustment(dx,0.0);
       hr = E_INVALIDARG;
    }
