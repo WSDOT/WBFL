@@ -750,7 +750,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		}
 		if (!n_min_rot_y_check && spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
 		{
-			*pPara << _T("Number of elastomer layers is inadequate torsional rotation.") << rptNewLine;
+			*pPara << _T("Number of elastomer layers is inadequate for torsional rotation.") << rptNewLine;
 		}
 		if (!n_max_stab_x_check)
 		{
