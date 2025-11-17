@@ -437,3 +437,22 @@ void CEAFStatusBar::AutoSaveEnabled(BOOL bEnable)
       SetPaneText(idx, status_text, TRUE);
    }
 }
+
+void CEAFStatusBar::AutoSaveSaving(BOOL bSaving)
+{
+   auto idx = GetAutoSavePaneIndex();
+
+   if (bSaving)
+   {
+      m_strStatusText = GetPaneText(idx);
+      SetPaneText(idx, _T("Saving..."), TRUE);
+   }
+   else
+   {
+      SetPaneText(idx, m_strStatusText, TRUE);
+   }
+
+
+
+}
+

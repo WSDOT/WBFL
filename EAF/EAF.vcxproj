@@ -226,6 +226,7 @@
     <ClCompile Include="EAFAboutDlg.cpp" />
     <ClCompile Include="AcceleratorTable.cpp" />
     <ClCompile Include="EAFApp.cpp" />
+    <ClCompile Include="EAFDataRecoveryHandler.cpp" />
     <ClCompile Include="EAFStrings.cpp" />
     <ClCompile Include="GraphManagerAgent.cpp" />
     <ClCompile Include="PluginAppDocumentationImpl.cpp" />
