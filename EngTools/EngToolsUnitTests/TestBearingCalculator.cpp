@@ -269,7 +269,7 @@ namespace EngToolsUnitTests
 			brg.SetWidth(WBFL::Units::ConvertToSysUnits(6, WBFL::Units::Measure::Inch));
 			brg.SetIntermediateLayerThickness(WBFL::Units::ConvertToSysUnits(0.01, WBFL::Units::Measure::Inch));
 			brg.SetNumIntLayers(12);
-			brg.SetSteelShimThickness(WBFL::Units::ConvertToSysUnits(0.0005, WBFL::Units::Measure::Inch));
+			brg.SetSteelShimThickness(WBFL::Units::ConvertToSysUnits(0.0001, WBFL::Units::Measure::Inch));
 			brg_loads.SetStaticRotation(0.5);
 			brg_loads.SetCyclicRotation(0.5);
 			brg_loads.SetRotationX(0.5);
@@ -299,8 +299,8 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(artifact.MinimumNumLayersRotationYCheck() == false);
 			Assert::IsTrue(artifact.MaximumNumLayersStabilityXCheck() == true);
 			Assert::IsTrue(artifact.MaximumNumLayersStabilityYCheck() == true);
-			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck() == true);
-			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck() == true);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessServiceCheck() == false);
+			Assert::IsTrue(artifact.MinimumSteelShimThicknessFatigueCheck() == false);
 			Assert::IsTrue(artifact.MinimumSteelShimThicknessAbsoluteCheck() == false);
 			Assert::IsTrue(artifact.MaximumCompressiveStrainCheck() == true);
 			Assert::IsTrue(artifact.ShearDeformationCheck() == false);

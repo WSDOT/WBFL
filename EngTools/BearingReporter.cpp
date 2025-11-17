@@ -48,8 +48,8 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	}
 	else
 	{
-		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 rad out-of-plumb tolerance.")) << rptNewLine;
-		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0.")) << rptNewLine;
+		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 radians out-of-plumb tolerance.")) << rptNewLine;
+		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0 radians.")) << rptNewLine;
 	}
 
 	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0 radians.")) << rptNewLine;
@@ -59,7 +59,7 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 	*pPara << Bold(_T("Bearing Orientation:")) << rptNewLine;
 	*pPara << rptRcImage(std::_tstring(rptStyleManager::GetImagePath()) + _T("BearingOrientation.png")) << rptNewLine << rptNewLine;
 	*pPara << Bold(_T("-The primary rotation axis is about the axis parallel to the tranverse axis of the bridge.")) << rptNewLine;
-	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine;
+	*pPara << Bold(_T("-x, L are perpendicular; y,W are parallel, to the primary rotation axis. Usually W>L.")) << rptNewLine << rptNewLine; 
 }
 
 void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure* pDispUnits,
@@ -247,7 +247,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	const auto& criteria = artifact.GetBearingDesignCriteria();
 	const auto& spec = criteria.GetSpecification();
 
-	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true);
+	INIT_UV_PROTOTYPE(rptLengthUnitValue, length, pDispUnits->ComponentDim, true); length.SetPrecision(4);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, stress, pDispUnits->Stress, true);
 	INIT_UV_PROTOTYPE(rptForceUnitValue, force, pDispUnits->GeneralForce, true);
 	INIT_UV_PROTOTYPE(rptStressUnitValue, E, pDispUnits->ModE, true);
@@ -334,7 +334,7 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	pPara = new rptParagraph;
 	(*pChapter) << pPara;
 
-	*pPara << Sub2(_T("h"), _T("s,fab")) << _T(" = ") << length.SetValue(t_min_shim_absolute) << _T(" (Article 4.5, AASHTO M 251)") << rptNewLine;
+	*pPara << Sub2(_T("h"), _T("s,minimum")) << _T(" = ") << length.SetValue(t_min_shim_absolute) << _T(" (Article 4.5, AASHTO M 251)") << rptNewLine;
 	if (t_min_shim_absolute_check)
 	{
 		*pPara << symbol(RIGHT_SINGLE_ARROW) << length.SetValue(tshim) << (IsEqual(tshim, t_min_shim_absolute) ? _T(" = ") : _T(" > ")) << length.SetValue(t_min_shim_absolute);
@@ -618,6 +618,8 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
 	}
 
+	*pPara << rptNewLine;
+
 	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
 	(*pChapter) << pSubHeading;
 	*pSubHeading << _T("Maximum Shear Modulus Check:");
@@ -637,7 +639,6 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	}
 
 	*pPara << rptNewLine;
-	
 
 }
 
@@ -650,11 +651,15 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 	const auto& brg = artifact.GetBearing();
 
 	Float64 weight = brg.GetBearingWeight();
+	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
+	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	bool w_min_check = artifact.MinimumWidthCheck();
 	bool l_min_check = artifact.MinimumLengthCheck();
 	bool a_min_check = artifact.MinimumAreaCheck();
 	bool tlayer_max_check = artifact.MaximumIntermediateLayerThicknessCheck();
 	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
+	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
+	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
 	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
 	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 	bool s_min_check = artifact.MinimumShapeFactorCheck();
@@ -664,13 +669,9 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 	bool n_min_rot_y_check = artifact.MinimumNumLayersRotationYCheck();
 	bool n_max_stab_x_check = artifact.MaximumNumLayersStabilityXCheck();
 	bool n_max_stab_y_check = artifact.MaximumNumLayersStabilityYCheck();
-	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
-	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
 	bool max_comp_strain_check = artifact.MaximumCompressiveStrainCheck();
 	bool max_stress_check = artifact.MaximumStressCheck();
 	auto deltaLLiACheck = artifact.MaximumLiveLoadDeflectionMethodACheck();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
 	bool height_check = artifact.MinimumTotalBearingHeightCheck();
 	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
@@ -697,7 +698,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		*pPara << color(Red);
 		if (!t_min_shim_absolute_check)
 		{
-			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
+			*pPara << _T("Steel shim thickness is less than required per Article 4.5, AASHTO M 251") << rptNewLine;
 		}
 		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
 		{
@@ -709,23 +710,23 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		}
 		if (!t_min_shim_service_check)
 		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
+			*pPara << _T("The steel shim thickness does not satisfy Service limit state requirements.") << rptNewLine;
 		}
 		if (!t_min_shim_fatigue_check)
 		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
+			*pPara << _T("The steel shim thickness does not satisfy Fatigue limit state requirements.") << rptNewLine;
 		}
 		if (!w_min_check)
 		{
-			*pPara << _T("Bearing width is not sufficient for design.") << rptNewLine;
+			*pPara << _T("Inadequate bearing width.") << rptNewLine;
 		}
 		if (!l_min_check)
 		{
-			*pPara << _T("Bearing length is not sufficient for design.") << rptNewLine;
+			*pPara << _T("Inadequate bearing length.") << rptNewLine;
 		}
 		if (!a_min_check)
 		{
-			*pPara << _T("Bearing area is not sufficient for design.") << rptNewLine;
+			*pPara << _T("Inadequate bearing area.") << rptNewLine;
 		}
 		if (!tlayer_max_check)
 		{
@@ -733,23 +734,23 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		}
 		if (!s_min_check)
 		{
-			*pPara << _T("Bearing shape factor is not sufficient for design.") << rptNewLine;
+			*pPara << _T("Inadequate shape factor.") << rptNewLine;
 		}
 		if (!s_max_check)
 		{
-			*pPara << _T("Bearing exceeds the maximum shape factor.") << rptNewLine;
+			*pPara << _T("Excessive shape factor.") << rptNewLine;
 		}
 		if (!n_min_shear_def_check)
 		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
+			*pPara << _T("Number of elastomer layers is inadequate for shear deformation.") << rptNewLine;
 		}
 		if (!n_min_rot_x_check && spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
 		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate flexural rotation.") << rptNewLine;
+			*pPara << _T("Number of elastomer layers is inadequate for flexural rotation.") << rptNewLine;
 		}
 		if (!n_min_rot_y_check && spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012)
 		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate torsional rotation.") << rptNewLine;
+			*pPara << _T("Number of elastomer layers is inadequate torsional rotation.") << rptNewLine;
 		}
 		if (!n_max_stab_x_check)
 		{
@@ -781,7 +782,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		}
 		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{
-			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
+			*pPara << _T("Intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
 		}
 		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
@@ -884,9 +885,6 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 	Float64 tlayer_max = criteria.GetMaximumAllowableIntermediateLayerThickness();
 	bool tlayer_max_check = artifact.MaximumIntermediateLayerThicknessCheck();
 
-	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
-	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
-	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 
 	Float64 s_min = criteria.GetMinimumAllowableShapeFactor();
 	bool s_min_check = artifact.MinimumShapeFactorCheck();
@@ -913,14 +911,6 @@ void BearingReporter::ReportBearingSpecificationCheckA(const WBFL::Units::Indire
 	auto deltaDLiA = brg_calc.GetInitialDeadLoadDeflectionMethodA(brg, brg_loads, spec);
 	auto deltaLLiA = brg_calc.GetInstantaneousLiveLoadDeflectionMethodA(brg, brg_loads, spec);
 	auto deltaLLiACheck = artifact.MaximumLiveLoadDeflectionMethodACheck();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
-	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
-	bool height_check = artifact.MinimumTotalBearingHeightCheck();
-	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool maxTLCheck = artifact.MaximumTotalLoadCheck();	
 
 	CommonReportBearingSpecificationCheck(pDispUnits, pChapter, pPara, artifact);
 
@@ -1314,7 +1304,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
 	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 	bool s_max_check = artifact.MaximumShapeFactorCheck();
-	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
 	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
 	bool t_min_shim_fatigue_check = artifact.MinimumSteelShimThicknessFatigueCheck();
 	bool shear_def_check = artifact.ShearDeformationCheck();
@@ -1354,7 +1343,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 	}
 
 
-	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !n_min_shear_def_check || !t_max_cover_check
+	if (!t_min_shim_absolute_check || !t_min_shim_service_check || !t_min_shim_fatigue_check || !t_max_cover_check
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || !ss_Y_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || (!use_ext_plates && !rest_system_req_check) || (use_ext_plates && !hydrostatic_check)
@@ -1370,7 +1359,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		*pPara << color(Red);
 		if (!t_min_shim_absolute_check)
 		{
-			*pPara << _T("Steel shim thickness is less than required for fabrication.") << rptNewLine;
+			*pPara << _T("Steel shim thickness is less than required per Article 4.5, AASHTO M 251") << rptNewLine;
 		}
 		if (!t_min_cover_check && spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024)
 		{
@@ -1382,35 +1371,31 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		}
 		if (!t_min_shim_service_check)
 		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist service loads.") << rptNewLine;
+			*pPara << _T("The steel shim thickness does not satisfy Service limit state requirements.") << rptNewLine;
 		}
 		if (!t_min_shim_fatigue_check)
 		{
-			*pPara << _T("Steel shim thickness is not sufficient to resist fatigue loads.") << rptNewLine;
-		}
-		if (!n_min_shear_def_check)
-		{
-			*pPara << _T("Number of elastomer layers is not sufficient to accommodate shear deformation.") << rptNewLine;
+			*pPara << _T("The steel shim thickness does not satisfy Fatigue limit state requirements.") << rptNewLine;
 		}
 		if (!shear_def_check)
 		{
-			*pPara << _T("Total elastomer thickness is not sufficient to accommodate shear deformation.") << rptNewLine;
+			*pPara << _T("Total elastomer thickness inadequate for shear deformation.") << rptNewLine;
 		}
 		if (!static_axial_X_ss_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to static axial load.") << rptNewLine;
+			*pPara << _T("Elastomer fails due to static axial load shear strain in the primary direction (longitudinal to the bridge).") << rptNewLine;
 		}
 		if (!static_axial_X_ss_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to static axial load.") << rptNewLine;
+			*pPara << _T("Elastomer fails due to static axial load shear strain in the secondary direction (transverse to the bridge).") << rptNewLine;
 		}
 		if (!ss_X_combo_sum_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the primary direction (longitudinal to the bridge) due to combined service loads.") << rptNewLine;
+			*pPara << _T("Bearing fails to satisfy Service limit state requirements due to combined shear strain in the primary direction (longitudinal to the bridge).") << rptNewLine;
 		}
 		if (!ss_Y_combo_sum_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to accommodate shear strain in the secondary direction (transverse to the bridge) due to combined service loads.") << rptNewLine;
+			*pPara << _T("Bearing fails to satisfy Service limit state requirements due to combined shear strain in the secondary direction (transverse to the bridge).") << rptNewLine;
 		}
 		if (check_app_TL_stab_X && !stab_X_dir_check)
 		{
@@ -1426,11 +1411,11 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		}
 		if ((use_ext_plates && !hydrostatic_check) || (use_ext_plates && tArtifact != nullptr && !secondary_hydrostatic_check))
 		{
-			*pPara << _T("Elastomer is not sufficient to resist tension due to hydrostatic stress (Applicable if externally bonded plates are used).") << rptNewLine;
+			*pPara << _T("Elastomer fails to resist tension due to hydrostatic stress (Applicable if externally bonded plates are used).") << rptNewLine;
 		}
 		if (!use_ext_plates && !horiz_force_check)
 		{
-			*pPara << _T("Elastomer is not sufficient to resist horizontal force effects due to shear deformation.") << rptNewLine;
+			*pPara << _T("Elastomer fails to resist horizontal force effects due to shear deformation.") << rptNewLine;
 		}
 		if (!deltaLLiBCheck)
 		{
@@ -1446,7 +1431,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		}
 		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{
-			*pPara << _T("Input for intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
+			*pPara << _T("Intermediate elastomer thickness does not equal the required thickness.") << rptNewLine;
 		}
 		if (criteria.bMinimumTotalBearingHeight && !height_check)
 		{
@@ -1562,15 +1547,8 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 sigmaTLstabY = criteria.GetAllowableTotalLoadStressStabilityY();
 	Float64 smax_multiplier = criteria.GetSigmaMultiplier();
 
-	bool t_min_shim_absolute_check = artifact.MinimumSteelShimThicknessAbsoluteCheck();
-	bool t_min_cover_check = artifact.MinimumElastomerCoverThicknessCheck();
-	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
-
-
 	Float64 s_max = criteria.GetMaximumAllowableShapeFactor();
 	bool s_max_check = artifact.MaximumShapeFactorCheck();
-
-	bool n_min_shear_def_check = artifact.MinimumNumLayersShearDeformationCheck();
 
 	bool t_min_shim_service_check = artifact.MinimumSteelShimThicknessServiceCheck();
 
@@ -1626,14 +1604,6 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	auto deltaDLiB = brg_calc.GetInitialDeadLoadDeflectionMethodB(brg, brg_loads, spec);
 	auto deltaLLiB = brg_calc.GetInstantaneousLiveLoadDeflectionMethodB(brg, brg_loads, spec);
 	auto deltaLLiBCheck = artifact.MaximumLiveLoadDeflectionMethodBCheck();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
-	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
-	bool height_check = artifact.MinimumTotalBearingHeightCheck();
-	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool maxDistBrg2gBfCheck = artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool distBrg2gBfCheck = artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck();
-	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
 
 	/// torsional rotation calculations

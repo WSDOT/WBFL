@@ -73,13 +73,13 @@ bool BearingCheckArtifact::MinimumAreaCheck() const
 
 bool BearingCheckArtifact::MinimumLengthCheck() const
 {
-	bool check = IsGE(m_criteria.GetMinimumAllowableLength(), m_bearing.GetLength(), 0.001);
+	bool check = IsGE(m_criteria.GetMinimumAllowableLength(), m_bearing.GetLength(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumWidthCheck() const
 {
-	bool check = IsGE(m_criteria.GetMinimumAllowableWidth(), m_bearing.GetWidth(), 0.001);
+	bool check = IsGE(m_criteria.GetMinimumAllowableWidth(), m_bearing.GetWidth(), 0.000001);
 	return check;
 }
 
@@ -139,31 +139,31 @@ bool BearingCheckArtifact::MaximumNumLayersStabilityYCheck() const
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessAbsoluteCheck() const
 {
-	bool check = IsGE(m_criteria.GetAbsoluteMinimumShimThickness(), m_bearing.GetSteelShimThickness(), 0.001);
+	bool check = IsGE(m_criteria.GetAbsoluteMinimumShimThickness(), m_bearing.GetSteelShimThickness(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumElastomerCoverThicknessCheck() const
 {
-	bool check = IsGE(m_criteria.GetMinimumElastomerCoverThickness(), m_bearing.GetCoverThickness(), 0.001);
+	bool check = IsGE(m_criteria.GetMinimumElastomerCoverThickness(), m_bearing.GetCoverThickness(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MaximumElastomerCoverThicknessCheck() const
 {
-	bool check = IsLE(m_bearing.GetCoverThickness(), m_criteria.GetMaximumElastomerCoverThickness(), 0.001);
+	bool check = IsLE(m_bearing.GetCoverThickness(), m_criteria.GetMaximumElastomerCoverThickness(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessServiceCheck() const
 {
-	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessService(), m_bearing.GetSteelShimThickness(), 0.001);
+	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessService(), m_bearing.GetSteelShimThickness(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumSteelShimThicknessFatigueCheck() const
 {
-	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessFatigue(), m_bearing.GetSteelShimThickness(), 0.001);
+	bool check = IsGE(m_criteria.GetMinimumAllowableSteelShimThicknessFatigue(), m_bearing.GetSteelShimThickness(), 0.000001);
 	return check;
 }
 
@@ -253,19 +253,19 @@ bool BearingCheckArtifact::RequiredIntermediateElastomerThicknessCheck() const
 
 bool BearingCheckArtifact::MinimumTotalBearingHeightCheck() const
 {
-	bool check = IsGE(m_criteria.MinimumTotalBearingHeight, m_results.TotalBearingHeight, 0.001);
+	bool check = IsGE(m_criteria.MinimumTotalBearingHeight, m_results.TotalBearingHeight, 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MinimumBearingEdgeToBottomFlangeEdgeDistCheck() const
 {
-	bool check = IsGE(m_criteria.MinimumBearingEdgeToGirderEdgeDistance, m_bearing.GetBearingToGirderFlangeDistance(), 0.001);
+	bool check = IsGE(m_criteria.MinimumBearingEdgeToGirderEdgeDistance, m_bearing.GetBearingToGirderFlangeDistance(), 0.000001);
 	return check;
 }
 
 bool BearingCheckArtifact::MaximumBearingEdgeToBottomFlangeEdgeDistCheck() const
 {
-	bool check = IsLE(m_bearing.GetBearingToGirderFlangeDistance(), m_criteria.MaximumBearingEdgeToGirderEdgeDistance, 0.001);
+	bool check = IsLE(m_bearing.GetBearingToGirderFlangeDistance(), m_criteria.MaximumBearingEdgeToGirderEdgeDistance, 0.000001);
 	return check;
 }
 
