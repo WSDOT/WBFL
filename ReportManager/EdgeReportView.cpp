@@ -63,6 +63,14 @@ BOOL EdgeReportView::Create(
    // Code below taken from MSFT's sample and modified
 	// Create a single WebView within the parent window
 	// Locate the browser and set up the environment for WebView
+
+    // User data folder should be a custom location - the default is the location of the EXE
+    // which generally isn't a write-able location at runtime
+    // See https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/user-data-folder
+    TCHAR temp_path[_MAX_PATH];
+    if (::GetTempPath(_MAX_PATH, temp_path) == 0)
+       _tcscpy_s(temp_path, _MAX_PATH, _T("C:\\")); // Couldn't establish a temp path, just use the root drive.
+
 	CreateCoreWebView2EnvironmentWithOptions(nullptr, nullptr, nullptr,
 		Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
 			[&, hwndParent](HRESULT result, ICoreWebView2Environment* env) -> HRESULT {
@@ -74,11 +82,11 @@ BOOL EdgeReportView::Create(
 							m_webviewController = controller;
 							m_webviewController->get_CoreWebView2(&m_webview);
 						}
-                  else
-                  {
-                     ASSERT(0);
-                     return E_FAIL;
-                  }
+                        else
+                        {
+                           ASSERT(0);
+                           return E_FAIL;
+                        }
 
 						// Settings for the webview
 						wil::com_ptr<ICoreWebView2Settings> settings2;
@@ -100,12 +108,11 @@ BOOL EdgeReportView::Create(
 						m_webview->Navigate(m_strRawURI.c_str());
 
                   LPCWSTR subFolder = nullptr;
-                  std::wstring userDataFolder;
                   // Use default options from constructor
                   auto options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
 
                   HRESULT hr = CreateCoreWebView2EnvironmentWithOptions(
-                     subFolder, userDataFolder.c_str(), options.Get(),
+                     subFolder, temp_path, options.Get(),
                      Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
                         this, &EdgeReportView::OnCreateEnvironmentCompleted)
                      .Get());
