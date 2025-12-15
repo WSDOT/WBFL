@@ -1028,12 +1028,22 @@ protected:
    {
       Float64 XgpStart, XgpEnd;
       GetSegmentRange(&XgpStart,&XgpEnd);
-      Float64 Xsp = Xgp - XgpStart;
+      CComPtr<ISegment> prev_segment;
+      get_PrevSegment(&prev_segment);
+      Float64 Xsp;
+      if (prev_segment)
+      {
+           Xsp = Xgp - XgpStart;
+      }
+      else
+      {
+          Xsp = Xgp;
+      }
       CComPtr<IGirderLine> girderLine;
       get_GirderLine(&girderLine);
       Float64 brgOffset, endDist;
-      girderLine->get_BearingOffset(etStart,&brgOffset);
-      girderLine->get_EndDistance(etStart,&endDist);
+      girderLine->get_BearingOffset(etStart, &brgOffset);
+      girderLine->get_EndDistance(etStart, &endDist);
       Float64 offset = brgOffset - endDist;
       Float64 Xs = Xsp - offset;
       return Xs;

@@ -83,14 +83,21 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias se
       CComPtr<IPrecastBeam> newBeam;
       newFlangedBeam->get_Beam(&newBeam);
 
-      Float64 Hg = GetSectionDepth(Xs);
-      Float64 Htf = GetBottomFlangeHeight(Xs);
+      Float64 xgpStart;
+      Float64 xgpEnd;
+      GetSegmentRange(&xgpStart, &xgpEnd);
+      Float64 Xgp = ConvertToGirderPathCoordinate(Xs);
+      Float64 Xgp_clamp = std::clamp(Xgp, xgpStart, xgpEnd);
+      Float64 xs = ConvertToSegmentCoordinate(Xgp_clamp);
+
+      Float64 Hg = GetSectionDepth(xs);
+      Float64 Htf = GetBottomFlangeHeight(xs);
       AdjustForVariableDepth(newBeam, Hg, Htf);
 
       // Get the end block dimensions
       // and adjust dimensions based on end block size
       Float64 Wt, Wb;
-      GetEndBlockWidth(Xs, sectionBias, &Wt, &Wb);
+      GetEndBlockWidth(xs, sectionBias, &Wt, &Wb);
       AdjustForEndBlocks(newBeam, Wt, Wb);
 
       CComPtr<IPoint2d> pnt;
