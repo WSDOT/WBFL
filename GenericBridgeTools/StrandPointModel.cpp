@@ -993,7 +993,7 @@ HRESULT CStrandPointModel::AddStrand(StrandType strandType,Float64 X, Float64 Ys
    m_pGirder->get_GirderLength(&gdrLength);
    m_Strands[strandType].emplace_back(X, Ys, Yhp1, Yhp2, Ye, vbExtendedLeft, vbExtendedRight, debondLeft, gdrLength-debondRight);
 
-   StrandIndexType strandIdx = (StrandIndexType)(m_Strands[strandType].size());
+   StrandIndexType strandIdx = (StrandIndexType)(m_Strands[strandType].size() - 1);
 
    // create debond section records... these are actually the sections
    // where bonding begins
