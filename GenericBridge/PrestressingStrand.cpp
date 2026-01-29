@@ -222,7 +222,7 @@ STDMETHODIMP CPrestressingStrand::get_E(StageIndexType stageIdx,Float64* E)
    if (
          (stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX) // stage is before installation or there isn't an installation stage
       || // -OR-
-         (m_RemovalStageIdx < stageIdx && m_RemovalStageIdx != INVALID_INDEX) // stage is after removal and there is a removal stage
+         (m_RemovalStageIdx <= stageIdx && m_RemovalStageIdx != INVALID_INDEX) // stage is after removal and there is a removal stage
       )
    {
       *E = 0;
