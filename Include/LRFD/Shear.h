@@ -54,7 +54,6 @@ namespace WBFL
          Float64 AptGirder = 0.0;
          Float64 Ec = 0.0;
          Float64 Ac = 0.0;
-         Float64 Kdt = 1.0;
          Float64 fpops = 0.0;
          Float64 fpoptSegment = 0.0;
          Float64 fpoptGirder = 0.0;
