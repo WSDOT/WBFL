@@ -469,7 +469,6 @@ void compute_theta_and_beta1(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -583,7 +582,6 @@ void compute_theta_and_beta2(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -762,7 +760,6 @@ void compute_theta_and_beta3_tbl1(ShearData* pData, bool bWSDOT)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -960,7 +957,6 @@ void compute_theta_and_beta3_tbl2(ShearData* pData, bool bWSDOT)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1153,7 +1149,6 @@ void compute_theta_and_beta4(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1385,7 +1380,6 @@ void compute_theta_and_beta5(ShearData* pData)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
@@ -1487,7 +1481,6 @@ Float64 compute_strain(ShearData* pData,Float64 theta)
    Float64 AptGirder = pData->AptGirder;
    Float64 Ec  = pData->Ec;
    Float64 Ac  = pData->Ac;
-   Float64 Kdt = pData->Kdt;
    Float64 fpops = pData->fpops;
    Float64 fpoptSegment = pData->fpoptSegment;
    Float64 fpoptGirder = pData->fpoptGirder;
