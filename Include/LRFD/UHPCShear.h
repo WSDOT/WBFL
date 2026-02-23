@@ -51,6 +51,7 @@ namespace WBFL
          Float64 Aps{ 0.0 };
          Float64 Ec{ 0.0 };
          Float64 Ac{ 0.0 };
+         Float64 Kdt{ 1.0 };
          Float64 fpo{ 0.0 };
          Float64 ft{ 0.0 };
          Float64 ftloc{ 0.0 };
