@@ -142,7 +142,9 @@ CDocument* CEAFDocTemplate::OpenDocumentFile(LPCTSTR lpszPathName, BOOL bAddToMR
 
       if ( !DoOpenDocumentFile(lpszPathName,bMakeVisible,pEAFDoc,pFrame) )
       {
-         return nullptr;
+		 pDocument->m_bAutoDelete = TRUE; // pDocument will be deleted when the frame window is destroyed
+		 pFrame->DestroyWindow();
+		 return nullptr;
       }
    }
    catch(WBFL::System::XStructuredLoad& e)
