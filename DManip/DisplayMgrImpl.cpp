@@ -38,6 +38,8 @@
 
 #include "Helpers.h"
 
+#include <unordered_set>
+
 using namespace WBFL::DManip;
 
 DisplayMgr::~DisplayMgr()
@@ -1163,6 +1165,24 @@ std::shared_ptr<const iDisplayObject> DisplayMgr::FindDisplayObject(IDType id, I
    return pDL ? pDL->FindDisplayObject(id) : nullptr;
 }
 
+
+template<typename SharedPtr>
+void RemoveDuplicatesPreserveOrder(std::vector<SharedPtr>& vec)
+{
+    // element_type is T or const T
+    using Element = typename SharedPtr::element_type;
+    std::unordered_set<Element*> seen;
+
+    vec.erase(
+        std::remove_if(vec.begin(), vec.end(),
+            [&](const SharedPtr& obj)
+            {
+                return !seen.insert(obj.get()).second; // remove if already seen
+            }),
+        vec.end());
+}
+
+
 std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(const POINT& point)
 {
    std::vector<std::shared_ptr<iDisplayObject>> display_objects;
@@ -1173,8 +1193,8 @@ std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(cons
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1188,8 +1208,8 @@ std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObject
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1203,8 +1223,8 @@ std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(cons
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1218,8 +1238,8 @@ std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObject
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1233,8 +1253,8 @@ std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(cons
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1248,8 +1268,8 @@ std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObject
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1263,8 +1283,8 @@ std::vector<std::shared_ptr<iDisplayObject>> DisplayMgr::FindDisplayObjects(cons
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
@@ -1278,8 +1298,8 @@ std::vector<std::shared_ptr<const iDisplayObject>> DisplayMgr::FindDisplayObject
    }
 
    // remove duplicates
-   std::sort(display_objects.begin(), display_objects.end());
-   display_objects.erase(std::unique(display_objects.begin(), display_objects.end()), display_objects.end());
+   RemoveDuplicatesPreserveOrder(display_objects);
+
    return display_objects;
 }
 
