@@ -523,6 +523,8 @@ void Broker::ClearAgents()
 
 std::pair<bool, AgentErrors> Broker::LoadAgents(const CATID& catid, Agents& agents, bool bRequired)
 {
+   CWinApp* pApp = AfxGetApp();
+
    if (m_bAgentsInitialized)
    {
       USES_CONVERSION;
@@ -536,51 +538,64 @@ std::pair<bool, AgentErrors> Broker::LoadAgents(const CATID& catid, Agents& agen
    auto components = WBFL::EAF::ComponentManager::GetInstance().GetComponents(catid);
    for (auto& component : components)
    {
-      auto agent = WBFL::EAF::ComponentManager::GetInstance().CreateComponent<Agent>(component);
-      if (agent)
+      LPOLESTR pszCLSID;
+      ::StringFromCLSID(component.clsid, &pszCLSID);
+      CString strState = pApp->GetProfileString(_T("Extensions"), OLE2T(pszCLSID), _T("Enabled"));
+
+      if (strState.CompareNoCase(_T("Enabled")) == 0)
       {
-         IndexType priority_index = 999;
-         auto priority = std::dynamic_pointer_cast<IAgentPriority>(agent);
-         if (priority)
-            priority_index = priority->GetPriority();
-
-         auto result = agents.insert(std::make_pair(Key(priority_index, component.clsid), agent));
-         if (result.second == false)
+         auto agent = WBFL::EAF::ComponentManager::GetInstance().CreateComponent<Agent>(component);
+         if (agent)
          {
-            std::_tostringstream os;
-            os << _T("Loading agent ") << agent->GetName() << _T(" multiple times");
-            WBFL::System::Logger::Error(os.str());
-            errors.push_back({ component, os.str()});
-            
-            if ( bRequired ) return { false, errors };
+            IndexType priority_index = 999;
+            auto priority = std::dynamic_pointer_cast<IAgentPriority>(agent);
+            if (priority)
+               priority_index = priority->GetPriority();
+
+            auto result = agents.insert(std::make_pair(Key(priority_index, component.clsid), agent));
+            if (result.second == false)
+            {
+               std::_tostringstream os;
+               os << _T("Loading agent ") << agent->GetName() << _T(" multiple times");
+               WBFL::System::Logger::Error(os.str());
+               errors.push_back({ component, os.str() });
+
+               if (bRequired) return { false, errors };
+            }
+
+            if (!agent->SetBroker(std::dynamic_pointer_cast<Broker>(shared_from_this())))
+            {
+               std::_tostringstream os;
+               os << _T("Error setting broker on agent: ") << agent->GetName();
+               WBFL::System::Logger::Error(os.str());
+               errors.push_back({ component,os.str() });
+
+               if (bRequired) return { false, errors };
+            }
+
+            if (!agent->RegisterInterfaces())
+            {
+               std::_tostringstream os;
+               os << _T("Error registering interfaces: Agent ") << agent->GetName();
+               WBFL::System::Logger::Error(os.str());
+               errors.push_back({ component,os.str() });
+
+               if (bRequired) return { false, errors };
+            }
          }
-
-         if (!agent->SetBroker(std::dynamic_pointer_cast<Broker>(shared_from_this())))
+         else
          {
-            std::_tostringstream os;
-            os << _T("Error setting broker on agent: ") << agent->GetName();
-            WBFL::System::Logger::Error(os.str());
-            errors.push_back({ component,os.str()});
-
-            if (bRequired) return { false, errors };
-         }
-
-         if (!agent->RegisterInterfaces())
-         {
-            std::_tostringstream os;
-            os << _T("Error registering interfaces: Agent ") << agent->GetName();
-            WBFL::System::Logger::Error(os.str());
-            errors.push_back({ component,os.str()});
+            WBFL::System::Logger::Error(_T("Could not create agent"));
+            errors.push_back({ component,_T("Broker::LoadAgents - Could not create agent") });
 
             if (bRequired) return { false, errors };
          }
       }
       else
       {
-         WBFL::System::Logger::Error(_T("Could not create agent"));
-         errors.push_back({ component,_T("Broker::LoadAgents - Could not create agent") });
-
-         if (bRequired) return { false, errors };
+         std::_tostringstream os;
+         os << _T("Skipping agent because it is disabled: ") << component.name << _T(" ") << OLE2T(pszCLSID);
+         WBFL::System::Logger::Debug(os.str());
       }
    }
 
@@ -589,6 +604,8 @@ std::pair<bool, AgentErrors> Broker::LoadAgents(const CATID& catid, Agents& agen
 
 std::pair<bool, AgentError> Broker::LoadAgent(const CLSID& clsid, Agents& agents, bool bRequired)
 {
+   CWinApp* pApp = AfxGetApp();
+
    if (m_bAgentsInitialized)
    {
       USES_CONVERSION;
@@ -598,45 +615,58 @@ std::pair<bool, AgentError> Broker::LoadAgent(const CLSID& clsid, Agents& agents
       throw e;
    }
 
-   auto agent = WBFL::EAF::ComponentManager::GetInstance().CreateComponent<Agent>(clsid);
-   if (agent)
+   LPOLESTR pszCLSID;
+   ::StringFromCLSID(clsid, &pszCLSID);
+   CString strState = pApp->GetProfileString(_T("Extensions"), OLE2T(pszCLSID), _T("Enabled"));
+
+   if (strState.CompareNoCase(_T("Enabled")) == 0)
    {
-      IndexType priority_index = 999;
-      auto priority = std::dynamic_pointer_cast<IAgentPriority>(agent);
-      if (priority)
-         priority_index = priority->GetPriority();
-
-      const auto& component = WBFL::EAF::ComponentManager::GetInstance().GetComponent(clsid);
-      auto result = agents.insert(std::make_pair(Key(priority_index, clsid), agent));
-      if (result.second == false && bRequired)
+      auto agent = WBFL::EAF::ComponentManager::GetInstance().CreateComponent<Agent>(clsid);
+      if (agent)
       {
-         std::_tostringstream os;
-         os << _T("Loading agent ") << agent->GetName() << _T(" multiple times");
-         WBFL::System::Logger::Error(os.str());
+         IndexType priority_index = 999;
+         auto priority = std::dynamic_pointer_cast<IAgentPriority>(agent);
+         if (priority)
+            priority_index = priority->GetPriority();
 
-         return { false, { component,os.str()}};
+         const auto& component = WBFL::EAF::ComponentManager::GetInstance().GetComponent(clsid);
+         auto result = agents.insert(std::make_pair(Key(priority_index, clsid), agent));
+         if (result.second == false && bRequired)
+         {
+            std::_tostringstream os;
+            os << _T("Loading agent ") << agent->GetName() << _T(" multiple times");
+            WBFL::System::Logger::Error(os.str());
+
+            return { false, { component,os.str()} };
+         }
+
+         if (!agent->SetBroker(std::dynamic_pointer_cast<Broker>(shared_from_this())) && bRequired)
+         {
+            std::_tostringstream os;
+            os << _T("Error setting broker on agent: ") << agent->GetName();
+            WBFL::System::Logger::Error(os.str());
+            return { false, { component, os.str()} };
+         }
+
+         if (!agent->RegisterInterfaces() && bRequired)
+         {
+            std::_tostringstream os;
+            os << _T("Error registering interfaces: Agent ") << agent->GetName();
+            WBFL::System::Logger::Error(os.str());
+            return { false, { component,os.str()} };
+         }
       }
-
-      if (!agent->SetBroker(std::dynamic_pointer_cast<Broker>(shared_from_this())) && bRequired)
+      else
       {
-         std::_tostringstream os;
-         os << _T("Error setting broker on agent: ") << agent->GetName();
-         WBFL::System::Logger::Error(os.str());
-         return { false, { component, os.str()}};
-      }
-
-      if (!agent->RegisterInterfaces() && bRequired)
-      {
-         std::_tostringstream os;
-         os << _T("Error registering interfaces: Agent ") << agent->GetName();
-         WBFL::System::Logger::Error(os.str());
-         return { false, { component,os.str()}};
+         WBFL::System::Logger::Error(_T("Could not create agent"));
+         return { false,{ComponentInfo(),_T("Broker::LoadAgent - Could not create agent")} };
       }
    }
    else
    {
-      WBFL::System::Logger::Error(_T("Could not create agent"));
-      return { false,{ComponentInfo(),_T("Broker::LoadAgent - Could not create agent")} };
+      std::_tostringstream os;
+      os << _T("Skipping agent because it is disabled: ") << OLE2T(pszCLSID);
+      WBFL::System::Logger::Debug(os.str());
    }
 
    return { true,{ComponentInfo(),_T("")} };
