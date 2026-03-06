@@ -430,7 +430,7 @@ bool Broker::Save(IStructuredSave* pStrSave)
    {
       for (const auto& data : m_MissingAgentData)
       {
-         if (!pStrSave->SaveRawUnit(data.c_str()))
+         if (FAILED(pStrSave->SaveRawUnit(data.c_str())))
             return false;
       }
    }
