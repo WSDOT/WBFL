@@ -21,24 +21,52 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_POINTDISPLAYOBJECT_H_
-#define INCLUDED_POINTDISPLAYOBJECT_H_
 #pragma once
 
-#include <DManip\DisplayObject.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayObjectDefaultImpl.h>
 
-interface iDrawPointStrategy;
-
-interface iPointDisplayObject : public iDisplayObject
+namespace WBFL
 {
-   STDMETHOD_(void,SetPosition)(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent) PURE;
-   STDMETHOD_(void,GetPosition)(IPoint2d* *pos) PURE;
-   STDMETHOD_(CPoint,GetPosition)() PURE;
-   STDMETHOD_(void,Offset)(ISize2d* offset,BOOL bRedraw,BOOL bFireEvent) PURE;
-   STDMETHOD_(void,SetDrawingStrategy)(iDrawPointStrategy* pStrategy) PURE;
-   STDMETHOD_(void,GetDrawingStrategy)(iDrawPointStrategy** pStrategy) PURE;
-   STDMETHOD_(void,EnableAutoUpdate)(BOOL bEnable) PURE;
-   STDMETHOD_(BOOL,IsAutoUpdateEnabled)() PURE;
-};
+   namespace DManip
+   {
+      class iDrawPointStrategy;
 
-#endif // INCLUDED_POINTDISPLAYOBJECT_H_
+      /// @brief Interface defining a display object located by a single point
+      /// Point display objects can represent a single point, or they can locate more
+      /// complex objects like shapes. The drawing strategy defines the visual
+      /// representation of the point.
+      class DMANIPCLASS iPointDisplayObject : public DisplayObjectDefaultImpl
+      {
+      public:
+         using DisplayObjectDefaultImpl::DisplayObjectDefaultImpl;
+
+         /// @brief Position of the display object in model space
+         /// @param pos 
+         /// @param bRedraw 
+         /// @param bFireEvent 
+         virtual void SetPosition(const WBFL::Geometry::Point2d& pos,bool bRedraw, bool bFireEvent) = 0;
+         virtual const WBFL::Geometry::Point2d& GetPosition() const = 0;
+
+         /// @brief Position in logical space
+         /// @return 
+         virtual CPoint GetLogicalPosition() const = 0;
+
+         /// @brief Offsets the display object
+         /// @param offset 
+         /// @param bRedraw 
+         /// @param bFireEvent 
+         virtual void Offset(const WBFL::Geometry::Size2d& offset, bool bRedraw, bool bFireEvent) = 0;
+
+         /// @brief Sets tne drawing strategy
+         /// @param pStrategy 
+         virtual void SetDrawingStrategy(std::shared_ptr<iDrawPointStrategy> pStrategy) = 0;
+         virtual std::shared_ptr<iDrawPointStrategy> GetDrawingStrategy() = 0;
+
+         /// @brief If enabled, the visual representation is automatically updated when the display object changes
+         /// @param bEnable 
+         virtual void EnableAutoUpdate(bool bEnable) = 0;
+         virtual bool IsAutoUpdateEnabled() const = 0;
+      };
+   };
+};

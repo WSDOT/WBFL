@@ -28,7 +28,7 @@
 //
 
 #include <EAF\EAFExp.h>
-#include <IReportManager.h>
+#include <EAF/EAFReportManager.h>
 #include <EAF\EAFView.h>
 
 class CReportButton;
@@ -48,7 +48,7 @@ struct EAFCLASS CEAFReportViewCreationData
    
    // The report manager
    std::shared_ptr<const WBFL::Reporting::ReportBuilderManager> m_pReportBuilderMgr; // Use this when using regular Doc/View
-   IReportManager* m_pRptMgr; // Use this when using the Agent/Broker architecture
+   std::shared_ptr<IEAFReportManager> m_pRptMgr; // Use this when using the Agent/Broker architecture
 
    CEAFReportViewCreationData()
    {
@@ -73,7 +73,7 @@ public:
 
    // one of these is nullptr, the other is not
    std::shared_ptr<const WBFL::Reporting::ReportBuilderManager> m_pReportBuilderMgr;
-   IReportManager* m_pRptMgr; // for use with Agent/Broker
+   std::shared_ptr<IEAFReportManager> m_pRptMgr; // for use with Agent/Broker
 
 // Operations
 public:
@@ -169,5 +169,5 @@ private:
 
    std::vector<std::_tstring> GetReportNames();
    std::shared_ptr<const WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strRptName) const;
-   std::shared_ptr<WBFL::Reporting::ReportBrowser> CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder);
+   std::shared_ptr<WBFL::Reporting::ReportBrowser> CreateReportBrowser(HWND hwndParent, DWORD dwStyle,const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder);
 };

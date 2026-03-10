@@ -56,11 +56,6 @@ DEFINE_GUID(CLSID_Fem2dModel,0x807A6236,0xAE89,0x11D4,0xAF,0x38,0x00,0x10,0x5A,0
 #include "SectionStressResult.h"
 #include "SectionStressResults.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 CComModule _Module;
 

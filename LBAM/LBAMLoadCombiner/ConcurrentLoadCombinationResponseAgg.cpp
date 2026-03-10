@@ -27,11 +27,6 @@
 #include "ConcurrentLoadCombinationResponseAgg.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 static void FactorAndSumStressResults(ISectionStressResults* results, ISectionStressResults* lc_results, IndexType numPOIs, Float64 Factor)

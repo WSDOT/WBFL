@@ -3,12 +3,8 @@
 // Used by Core.rc
 //
 #define IDS_PROJNAME                    100
-#define IDR_CORE                        101
 #define IDD_PROGRESSDLG                 129
 #define IDR_ANIMATE                     130
-#define IDR_BROKER                      136
-#define IDR_BROKER2                     137
-#define IDR_SYSAGENT                    140
 #define IDC_MESSAGE                     1000
 #define IDC_PROGRESS                    1001
 #define IDC_ANIMATE                     1003

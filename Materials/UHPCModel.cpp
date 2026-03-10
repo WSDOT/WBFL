@@ -188,16 +188,15 @@ std::pair<Float64, bool> UHPCModel::ComputeStress(Float64 strain) const
    return std::make_pair(stress, bWithinStrainLimits);
 }
 
-void UHPCModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> UHPCModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
-   *pMaxStrain = m_gamma_u*m_etloc;
+   auto max = m_gamma_u*m_etloc;
 
    Float64 Ec = GetEc();
    Float64 e_cp = -1.0 * m_alpha * m_fc / Ec;
-   *pMinStrain = Min(e_cp, m_ecu); // using Min because compression strain is negative. we want value that is furthest from zero on a number line. smaller negative values are further from zero.
+   auto min = Min(e_cp, m_ecu); // using Min because compression strain is negative. we want value that is furthest from zero on a number line. smaller negative values are further from zero.
+
+   return { min,max };
 }
 
 Float64 UHPCModel::GetStrainAtPeakStress() const

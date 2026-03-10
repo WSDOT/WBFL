@@ -21,15 +21,23 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GRAVITYWELLSTRATEGY_H_
-#define INCLUDED_GRAVITYWELLSTRATEGY_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDisplayObject;
-
-interface iGravityWellStrategy : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,GetGravityWell)(iDisplayObject* pDO,CRgn* pRgn) PURE;
-};
+   namespace DManip
+   {
+      class iDisplayObject;
 
-#endif // INCLUDED_GRAVITYWELLSTRATEGY_H_
+      /// @brief Interface defining a gravity well. A gravity well is used in hit testing.
+      /// From a display object, a region can be defined. Screen points are tested for
+      /// inclusion within the region
+      class DMANIPCLASS iGravityWellStrategy
+      {
+      public:
+         /// @brief Creates a CRgn object based on a display object
+         virtual void GetGravityWell(std::shared_ptr<const iDisplayObject> pDO,CRgn* pRgn) = 0;
+      };
+   };
+};

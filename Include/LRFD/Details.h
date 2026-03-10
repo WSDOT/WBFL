@@ -37,6 +37,7 @@ namespace WBFL
          Float64 db; ///< diameter of bar
          Float64 fy; ///< yield strength
          Float64 fc; ///< concrete strength
+         Float64 distFromBottom; ///< distance from bottom of member
          Float64 lambdaRl;  ///< Reinforcement location factor
          Float64 lambdaLw;  ///< Lightweight concrete modification factor or density modification factor
          Float64 lambdaCf; ///< Coating factor

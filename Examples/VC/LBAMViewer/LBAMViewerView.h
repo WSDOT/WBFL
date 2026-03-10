@@ -11,6 +11,8 @@
 #endif // _MSC_VER > 1000
 
 #include "LBAMViewerDoc.h"
+#include "GraphXyDisplayObjectImpl.h"
+#include "LegendDisplayObject.h"
 #include "ColorMapper.h"
 #include "ChildFrm.h"
 
@@ -49,24 +51,24 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point);
-   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point);
+   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject, DWORD dwKeyState, const WBFL::Geometry::Point2d& point) override;
+   virtual void OnDropped(COleDataObject* pDataObject, DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point) override;
 
 
 private:
    StageIndexType m_CurrentStageIndex; // temporary used in building display lists
-   CComPtr<iGraphXyDisplayObject> m_Graph;
-   CComPtr<iLegendDisplayObject>  m_Legend;
+   std::shared_ptr<CGraphXyDisplayObject> m_Graph;
+   std::shared_ptr<CLegendDisplayObject>  m_Legend;
 
    double m_RoadwayElevation; // top of our 'deck'
 
-   void ClearTruckData(iDisplayMgr* dispMgr);
+   void ClearTruckData(std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
 
-   bool BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr);
-   bool BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr);
-   void BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr);
-   void BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr);
-   void BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, iDisplayMgr* dispMgr);
+   bool BuildSupportDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
+   bool BuildTempSupportDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
+   void BuildSpanDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
+   void BuildSSMDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
+   void BuildGraphDisplayObjects(CLBAMViewerDoc* pDoc, std::shared_ptr<WBFL::DManip::iDisplayMgr> dispMgr);
    void GetVehicularLoad(ILBAMModel* model, LiveLoadModelType modelType, long vehicleIndex, IVehicularLoad** vehicularLoad);
 
 

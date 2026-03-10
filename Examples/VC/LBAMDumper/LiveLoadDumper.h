@@ -178,7 +178,7 @@ private:
    CComPtr<IBasicVehicularResponse>     m_BVR;
    CDumperUtil*                 m_Util;
    CComBSTR                     m_Stage;
-   CollectionIndexType          m_StageId;
+   IndexType          m_StageId;
 
    CLlmParameterStack            m_LlmParams; // stack of max/min live load parameters
    CEvrParameterStack            m_EvrParams; // stack of max/min live load parameters

@@ -29,11 +29,6 @@
 #include "DisplayUnitFormatter.h"
 #include "engnotation.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 // A macro called "max" is defined in this compilation unit

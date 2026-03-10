@@ -27,7 +27,13 @@
 #include "FavoriteReportsPage.h"
 #include "CustomReportsPage.h"
 
-interface IBroker;
+namespace WBFL
+{
+   namespace EAF
+   {
+      class Broker;
+   };
+};
 
 class CConfigureReportsDlg : public CPropertySheet
 {
@@ -59,7 +65,7 @@ public:
 
    CFavoriteReportsPage m_FavoriteReportsPage;
    CCustomReportsPage m_CustomReportsPage;
-   IBroker* m_pBroker;
+   std::shared_ptr<WBFL::EAF::Broker> m_pBroker;
 
    CEAFCustomReports m_CustomReports;
 

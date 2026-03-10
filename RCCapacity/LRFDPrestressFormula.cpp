@@ -29,11 +29,6 @@
 #include "LRFDPrestressFormula.h"
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CLRFDPrestressFormula
@@ -124,7 +119,9 @@ STDMETHODIMP CLRFDPrestressFormula::StrainLimits(Float64* minStrain,Float64* max
    CHECK_RETVAL(minStrain);
    CHECK_RETVAL(maxStrain);
 
-   m_Model.GetStrainLimits(minStrain, maxStrain);
+   auto [min, max] = m_Model.GetStrainLimits();
+   *minStrain = min;
+   *maxStrain = max;
 
    return S_OK;
 }

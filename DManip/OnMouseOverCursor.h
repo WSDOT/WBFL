@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ONMOUSEOVERCURSOR_H_
-#define INCLUDED_ONMOUSEOVERCURSOR_H_
 #pragma once
 
 class COnMouseOverCursor
@@ -59,5 +57,3 @@ private:
    static void VerifyCursor();
    static void Done();
 };
-
-#endif // INCLUDED_ONMOUSEOVERCURSOR_H_

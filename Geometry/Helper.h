@@ -129,6 +129,7 @@ HRESULT Subtract(IVector3d* pResult,IVector3d* pA,IVector3d* pB);
 HRESULT CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints);
 HRESULT CreatePointCollection(IPoint2dCollection** ppPoints);
 HRESULT CreatePointCollection(IPoint2dCollection** ppPoints,IPoint2dCollection* pCopyFrom);
+std::vector<WBFL::Geometry::Point2d> CreatePointCollection(IPoint2dCollection* pPoints);
 
 HRESULT CreateLine(const WBFL::Geometry::Line2d& line, ILine2d** ppLine);
 HRESULT CreateLine(ILine2d* pLine,ILine2d** ppLine);
@@ -159,6 +160,7 @@ bool IsEqualPoint(IPoint2d* p1,IPoint2d* p2);
 bool IsEqualVector(IVector2d* p1,IVector2d* p2);
 
 HRESULT ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape);
+std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape);
 
 // function to compute a point along a line given an offset
 // the line is defined by P1 and P2

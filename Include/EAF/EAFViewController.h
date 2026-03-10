@@ -27,10 +27,10 @@
 INTERFACE
 IEAFViewController
 
-Interface for programitically controlling a view.
+Interface for programmatically controlling a view.
 
 DESCRIPTION
-Interface for programitically controlling a view. This interface provides
+Interface for programmatically controlling a view. This interface provides
 the basic functionality such as moving and sizing. Objects with extended
 versions of this interface can provide additional functionality.
 *****************************************************************************/

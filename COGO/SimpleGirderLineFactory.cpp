@@ -30,11 +30,6 @@
 #include "SimpleGirderLineFactory.h"
 #include <WBFLCogo\CogoHelpers.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 STDMETHODIMP CSimpleGirderLineFactory::get_GirderLineID(IDType* pVal)
 {

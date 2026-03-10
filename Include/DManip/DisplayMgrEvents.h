@@ -22,20 +22,30 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
+#include <DManip/DManipExp.h>
 
-#include <DManip\DisplayMgr.h>
-
-interface iDisplayMgrEvents : public IUnknown
+namespace WBFL
 {
-   // UI Events that are directed towards the display object
-   STDMETHOD_(bool,OnLButtonDblClk)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonDown)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnLButtonUp)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDblClk)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonDown)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnRButtonUp)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseMove)(iDisplayMgr* pDO,UINT nFlags,CPoint point) PURE;
-   STDMETHOD_(bool,OnMouseWheel)(iDisplayMgr* pDO,UINT nFlags,short zDelta,CPoint point) PURE;
-   STDMETHOD_(bool,OnKeyDown)(iDisplayMgr* pDO,UINT nChar, UINT nRepCnt, UINT nFlags) PURE;
-   STDMETHOD_(bool,OnContextMenu)(iDisplayMgr* pDO,CWnd* pWnd,CPoint point) PURE;
+   namespace DManip
+   {
+      class iDisplayMgr;
+
+      /// @brief This interface is implemented by objects wanting to intercept events going to the canvas. This allows you to
+      /// catch events if they are not handled by any DisplayObjects on the canvas.
+      class DMANIPCLASS iDisplayMgrEvents
+      {
+      public:
+         // UI Events that are directed towards the display object
+         virtual bool OnLButtonDblClk(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags,const POINT& point) = 0;
+         virtual bool OnLButtonDown(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnLButtonUp(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDblClk(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonDown(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnRButtonUp(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseMove(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags, const POINT& point) = 0;
+         virtual bool OnMouseWheel(std::shared_ptr<iDisplayMgr> pDO,UINT nFlags,short zDelta, const POINT& point) = 0;
+         virtual bool OnKeyDown(std::shared_ptr<iDisplayMgr> pDO,UINT nChar, UINT nRepCnt, UINT nFlags) = 0;
+         virtual bool OnContextMenu(std::shared_ptr<iDisplayMgr> pDO,CWnd* pWnd, const POINT& point) = 0;
+      };
+   };
 };

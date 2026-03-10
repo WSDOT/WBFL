@@ -27,40 +27,22 @@ CEditMbrLength::~CEditMbrLength()
 {
 }
 
-
-BEGIN_MESSAGE_MAP(CEditMbrLength, CCmdTarget)
-	//{{AFX_MSG_MAP(CEditMbrLength)
-		// NOTE - the ClassWizard will add and remove mapping macros here.
-	//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CEditMbrLength message handlers
-
-BEGIN_INTERFACE_MAP(CEditMbrLength,CCmdTarget)
-   INTERFACE_PART(CEditMbrLength,IID_iDisplayObjectEvents,DisplayObjectEvents)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CEditMbrLength,DisplayObjectEvents);
-
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CEditMbrLength::OnChanged(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    // The member length was in-place edited
 
    // Get the new length
-   CComQIPtr<iDimensionLine,&IID_iDimensionLine> dimLine(pDO);
-   CComPtr<iTextBlock> textBlock;
-   dimLine->GetTextBlock(&textBlock);
+   auto dimLine = std::dynamic_pointer_cast<DimensionLine>(pDO);
+   auto textBlock = dimLine->GetTextBlock();
 
-   CComQIPtr<iEditableTextBlock,&IID_iEditableTextBlock> edTextBlock(textBlock);
+   auto edTextBlock = std::dynamic_pointer_cast<EditableTextBlock>(textBlock);
    CString strText = edTextBlock->GetEditedText();
 
    double length = _tstof(strText);
 
    // Compute the new coordinates of the member end joint.
    MemberIDType mbrID = pDO->GetID();
-   CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
+   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dMemberCollection> members;
    model->get_Members(&members);
 
@@ -97,87 +79,72 @@ STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnChanged(iDisplayObje
    endJnt->put_Y(endY);
 }
 
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
+void CEditMbrLength::OnDragMoved(std::shared_ptr<iDisplayObject> pDO,const WBFL::Geometry::Size2d& offset)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
 }
 
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
+void CEditMbrLength::OnMoved(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
 }
 
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CEditMbrLength::OnCopied(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnLButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnRButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnRButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnLButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CEditMbrLength::OnMouseMove(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CEditMbrLength::OnMouseWheel(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CEditMbrLength::OnSelect(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
 }
 
-STDMETHODIMP_(void) CEditMbrLength::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CEditMbrLength::OnUnselect(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CEditMbrLength::OnKeyDown(std::shared_ptr<iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CEditMbrLength::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CEditMbrLength::OnContextMenu(std::shared_ptr<iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CEditMbrLength,DisplayObjectEvents);
    return false;
 }

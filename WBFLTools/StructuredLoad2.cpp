@@ -36,11 +36,6 @@
 #include <sstream>
 #include "StrStorage2.hh"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void CheckLoad(MSXML::IXMLDOMDocument* pDoc);
 _bstr_t GetParseError(MSXML::IXMLDOMParseErrorPtr pXMLError);

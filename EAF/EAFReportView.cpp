@@ -27,7 +27,7 @@
 #include "resource.h"
 #include <EAF\EAFReportView.h>
 #include <EAF\EAFUtilities.h>
-#include <EAF\EAFAutoProgress.h>
+#include <EAF\AutoProgress.h>
 #include <EAF\EAFStatusCenter.h>
 #include "AgentTools.h"
 #include "EAFSelectReportDlg.h"
@@ -38,18 +38,13 @@
 #include <EAF\EAFCustSiteVars.h>
 
 #include <ReportManager\ReportBuilderManager.h>
-#include <IReportManager.h>
+#include <EAF/EAFReportManager.h>
 
 #include <MfcTools\XUnwind.h>
 #include <MfcTools\Text.h>
 #include "ReportButton.h"
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFReportView
@@ -329,7 +324,7 @@ HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Re
          // create the report and browser
          {
             CWaitCursor wait;
-            m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), m_pReportSpec, m_pRptSpecBuilder);
+            m_pReportBrowser = CreateReportBrowser(GetSafeHwnd(), 0, m_pReportSpec, m_pRptSpecBuilder);
          }
 
          if (m_pReportBrowser && 0 < m_pReportSpec->GetChapterCount() && CanEditReport() && m_pwndEdit == nullptr )
@@ -473,9 +468,9 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    }
 
    CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
-   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+   auto& statusCenter = pDoc->GetStatusCenter();
 
-   if ( statusCenter.GetSeverity() == eafTypes::statusError )
+   if ( statusCenter.GetSeverity() == WBFL::EAF::StatusSeverityType::Error )
    {
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
@@ -732,11 +727,13 @@ CWnd* CEAFReportView::CreateEditButton()
    m_pBtnEdit = new CReportButton();
    m_pBtnEdit->Register(this);
 
-   CWnd* pWeb = m_pReportBrowser->GetBrowserWnd();
-
    CRect rect(0,0,50,21);
-   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, pWeb, IDC_EDIT);
+   m_pBtnEdit->Create(_T("Edit"),WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_TEXT, rect, this, IDC_EDIT);
    m_pBtnEdit->SetFont(&m_fnEdit);
+
+   // put the edit button on top of the browser window
+   CWnd* pReportBrowser = GetTopWindow(); // GetWindow(GW_CHILD);
+   m_pBtnEdit->SetWindowPos(pReportBrowser, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
    return m_pBtnEdit;
 }
@@ -765,15 +762,15 @@ std::shared_ptr<const WBFL::Reporting::ReportBuilder> CEAFReportView::GetReportB
    }
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, DWORD dwStyle,const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
    {
-      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+      return m_pReportBuilderMgr->CreateReportBrowser(hwndParent, dwStyle, pRptSpec, pRptSpecBuilder);
    }
    else
    {
-      return m_pRptMgr->CreateReportBrowser(hwndParent,pRptSpec,pRptSpecBuilder);
+      return m_pRptMgr->CreateReportBrowser(hwndParent,dwStyle,pRptSpec,pRptSpecBuilder);
    }
 }
 

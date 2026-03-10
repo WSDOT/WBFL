@@ -28,85 +28,69 @@ CPointLoadEventsImpl::~CPointLoadEventsImpl()
 {
 }
 
-BEGIN_INTERFACE_MAP(CPointLoadEventsImpl,CCmdTarget)
-   INTERFACE_PART(CPointLoadEventsImpl,IID_iPointLoadEvents,Events)
-   INTERFACE_PART(CPointLoadEventsImpl,IID_iDisplayObjectEvents,DisplayObjectEvents)
-   INTERFACE_PART(CPointLoadEventsImpl,IID_iDragData,DragData)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CPointLoadEventsImpl,Events);
-DELEGATE_CUSTOM_INTERFACE(CPointLoadEventsImpl,DisplayObjectEvents);
-DELEGATE_CUSTOM_INTERFACE(CPointLoadEventsImpl,DragData);
-
-STDMETHODIMP_(void) CPointLoadEventsImpl::XEvents::InitFromLoad(IFem2dPointLoad* load)
+void CPointLoadEventsImpl::InitFromLoad(IFem2dPointLoad* load)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,Events);
    if ( load )
    {
-      load->get_ID(&pThis->m_ID);
-      load->get_MemberID(&pThis->m_MemberID);
-      load->get_Location(&pThis->m_Location);
-      load->get_Orientation(&pThis->m_Orientation);
-      load->get_Loading(&pThis->m_Loading);
-      load->get_Fx(&pThis->m_Fx);
-      load->get_Fy(&pThis->m_Fy);
-      load->get_Mz(&pThis->m_Mz);
+      load->get_ID(&m_ID);
+      load->get_MemberID(&m_MemberID);
+      load->get_Location(&m_Location);
+      load->get_Orientation(&m_Orientation);
+      load->get_Loading(&m_Loading);
+      load->get_Fx(&m_Fx);
+      load->get_Fy(&m_Fy);
+      load->get_Mz(&m_Mz);
    }
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CPointLoadEventsImpl::OnChanged(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
+void CPointLoadEventsImpl::OnDragMoved(std::shared_ptr<iDisplayObject> pDO,const WBFL::Geometry::Size2d& offset)
 {
    ASSERT(FALSE); // Points must be dropped on a member. This event should never occur
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
+void CPointLoadEventsImpl::OnMoved(std::shared_ptr<iDisplayObject> pDO)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
-
    // Remove the load from the model...
    // The display object representation of the model will automatically
    // rebuild when the model is changes so we don't need to worry about
    // deleting the display object that represents the load that was moved.
-   ASSERT( pThis->m_ID == pDO->GetID() );
+   ASSERT( m_ID == pDO->GetID() );
 
-   CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
+   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dLoadingCollection> loadings;
    model->get_Loadings(&loadings);
 
    CComPtr<IFem2dLoading> loading;
-   loadings->Find(pThis->m_Loading,&loading);
+   loadings->Find(m_Loading,&loading);
 
    CComPtr<IFem2dPointLoadCollection> ptLoads;
    loading->get_PointLoads(&ptLoads);
    
    LoadIDType removedID;
-   ptLoads->Remove(pThis->m_ID,atID,&removedID);
+   ptLoads->Remove(m_ID,atID,&removedID);
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CPointLoadEventsImpl::OnCopied(std::shared_ptr<iDisplayObject> pDO)
 {
    // No big deal...
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
-   pThis->EditLoad(pThis->m_Loading,pThis->m_ID);
+   EditLoad(m_Loading,m_ID);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnLButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
+   auto list = pDO->GetDisplayList();
 
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto dispMgr = list->GetDisplayMgr();
 
    // If control key is pressed, don't clear current selection
    // (i.e. we want multi-select)
@@ -115,173 +99,159 @@ STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnLButtonDown(iD
    if ( bMultiSelect )
    {
       // clear all selected objects that aren't part of the load list
-      dispMgr->ClearSelectedObjectsByList(LOAD_LIST,atByID,FALSE);
+      dispMgr->ClearSelectedObjectsByList(LOAD_LIST,AccessType::ByID,FALSE);
    }
 
    dispMgr->SelectObject(pDO,!bMultiSelect);
 
    // d&d task
-   CComPtr<iTaskFactory> factory;
-   dispMgr->GetTaskFactory(&factory);
-   CComPtr<iTask> task;
-   factory->CreateLocalDragDropTask(dispMgr,point,&task);
+   auto factory = dispMgr->GetTaskFactory();
+   auto task = factory->CreateLocalDragDropTask(dispMgr,point);
    dispMgr->SetTask(task);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnRButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnRButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnLButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CPointLoadEventsImpl::OnMouseMove(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CPointLoadEventsImpl::OnMouseWheel(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CPointLoadEventsImpl::OnKeyDown(std::shared_ptr<iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    switch(nChar)
    {
    case VK_RETURN:
-         pThis->EditLoad(pThis->m_Loading,pThis->m_ID);
+         EditLoad(m_Loading,m_ID);
          break;
 
    case VK_DELETE:
-         pThis->DeleteLoad(pThis->m_Loading,pThis->m_ID);
+         DeleteLoad(m_Loading,m_ID);
          break;
    }
    return false;
 }
 
-STDMETHODIMP_(bool) CPointLoadEventsImpl::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CPointLoadEventsImpl::OnContextMenu(std::shared_ptr<iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CPointLoadEventsImpl::OnSelect(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CPointLoadEventsImpl::OnUnselect(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(UINT) CPointLoadEventsImpl::XDragData::Format()
+UINT CPointLoadEventsImpl::Format()
 {
    return ms_Format;
 }
 
-STDMETHODIMP_(BOOL) CPointLoadEventsImpl::XDragData::PrepareForDrag(iDisplayObject* pDO,iDragDataSink* pSink)
+bool CPointLoadEventsImpl::PrepareForDrag(std::shared_ptr<iDisplayObject> pDO,std::shared_ptr<iDragDataSink> pSink)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DragData);
-
    // Create a place to store the drag data for this object
    pSink->CreateFormat(ms_Format);
 
    // Load ID
-   IDType id = pThis->m_ID;
+   IDType id = m_ID;
    pSink->Write(ms_Format,&id,sizeof(id));
 
    // loading
-   id = pThis->m_Loading;
+   id = m_Loading;
    pSink->Write(ms_Format,&id,sizeof(id));
 
    // member id
-   id = pThis->m_MemberID;
+   id = m_MemberID;
    pSink->Write(ms_Format,&id,sizeof(id));
 
    // location
-   double location = pThis->m_Location;
+   double location = m_Location;
    pSink->Write(ms_Format,&location,sizeof(location));
 
    // orientation
-   Fem2dLoadOrientation orient = pThis->m_Orientation;
+   Fem2dLoadOrientation orient = m_Orientation;
    pSink->Write(ms_Format,&orient,sizeof(Fem2dLoadOrientation));
 
    // fx, fy, mz;
    double val;
-   val = pThis->m_Fx;
+   val = m_Fx;
    pSink->Write(ms_Format,&val,sizeof(val));
 
-   val = pThis->m_Fy;
+   val = m_Fy;
    pSink->Write(ms_Format,&val,sizeof(val));
    
-   val = pThis->m_Mz;
+   val = m_Mz;
    pSink->Write(ms_Format,&val,sizeof(val));
 
    return TRUE;
 }
 
-STDMETHODIMP_(void) CPointLoadEventsImpl::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
+void CPointLoadEventsImpl::OnDrop(std::shared_ptr<iDisplayObject> pDO,std::shared_ptr<iDragDataSource> pSource)
 {
-   METHOD_PROLOGUE(CPointLoadEventsImpl,DragData);
-
    // Tell the source we are about to read from our format
    pSource->PrepareFormat(ms_Format);
 
    // Load ID
    long id;
    pSource->Read(ms_Format,&id,sizeof(id));
-   pThis->m_ID = id;
+   m_ID = id;
 
    // loading
    pSource->Read(ms_Format,&id,sizeof(id));
-   pThis->m_Loading = id;
+   m_Loading = id;
 
    // member id
    pSource->Read(ms_Format,&id,sizeof(id));
-   pThis->m_MemberID = id;
+   m_MemberID = id;
 
    // location
    double location;
    pSource->Read(ms_Format,&location,sizeof(location));
-   pThis->m_Location = location;
+   m_Location = location;
 
    // orientation
    Fem2dLoadOrientation orient;
    pSource->Read(ms_Format,&orient,sizeof(Fem2dLoadOrientation));
-   pThis->m_Orientation = orient;
+   m_Orientation = orient;
 
    // fx, fy, mz;
    double val;
    pSource->Read(ms_Format,&val,sizeof(val));
-   pThis->m_Fx = val;
+   m_Fx = val;
 
    pSource->Read(ms_Format,&val,sizeof(val));
-   pThis->m_Fy = val;
+   m_Fy = val;
 
    pSource->Read(ms_Format,&val,sizeof(val));
-   pThis->m_Mz = val;
+   m_Mz = val;
 }
 
 void CPointLoadEventsImpl::EditLoad(IDType loadingID,IDType loadID)

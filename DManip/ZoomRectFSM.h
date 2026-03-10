@@ -21,109 +21,103 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ZoomRectFSM.h: interface for the CZoomRectFSM class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_ZOOMRECTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_ZOOMRECTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include <DManip\DManipExp.h>
-#include <DManip\ZoomRectTask.h>
+#include "ZoomRectTask.h"
 
-class CZoomRectFSM;
-
-//----------------------------------------------
-// CZoomRectFSMState: The base state class
-//
-class DMANIPCLASS CZoomRectFSMState  
+namespace WBFL
 {
-public:
-	CZoomRectFSMState();
-	virtual ~CZoomRectFSMState();
+   namespace DManip
+   {
+      class ZoomRectFSM;
 
-	virtual LPCTSTR StateName() const = 0;
-	virtual void Do(CZoomRectFSM& fsm);
-	virtual void DoubleClick(CZoomRectFSM& fsm);
-	virtual void MouseDown(CZoomRectFSM& fsm);
-	virtual void MouseUp(CZoomRectFSM& fsm);
-	virtual void MouseMove(CZoomRectFSM& fsm);
-   virtual void EscKey(CZoomRectFSM& fsm);
+      //----------------------------------------------
+      // ZoomRectFSMState: The base state class
+      //
+      class ZoomRectFSMState  
+      {
+      public:
+	      ZoomRectFSMState();
+	      virtual ~ZoomRectFSMState();
+
+	      virtual LPCTSTR StateName() const = 0;
+	      virtual void Do(ZoomRectFSM& fsm);
+	      virtual void DoubleClick(ZoomRectFSM& fsm);
+	      virtual void MouseDown(ZoomRectFSM& fsm);
+	      virtual void MouseUp(ZoomRectFSM& fsm);
+	      virtual void MouseMove(ZoomRectFSM& fsm);
+         virtual void EscKey(ZoomRectFSM& fsm);
+      };
+
+      //----------------------------------------------
+      // State: Done
+      //
+      class ZoomRectFSMDoneState : public ZoomRectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const  override { return _T("Done"); }
+      };
+
+      //----------------------------------------------
+      // State: WaitingForFirstPoint
+      //
+      class ZoomRectFSMWaitingForFirstPointState : public ZoomRectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const  override { return _T("WaitingForFirstPoint"); }
+         virtual void MouseMove(ZoomRectFSM& fsm) override;
+         virtual void MouseDown(ZoomRectFSM& fsm) override;
+         virtual void DoubleClick(ZoomRectFSM& fsm) override;
+         virtual void EscKey(ZoomRectFSM& fsm) override;
+      };
+
+      //----------------------------------------------
+      // State: WaitingForSecondPoint
+      //
+      class ZoomRectFSMWaitingForSecondPointState : public ZoomRectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
+         virtual void MouseMove(ZoomRectFSM& fsm) override;
+         virtual void MouseUp(ZoomRectFSM& fsm) override;
+         virtual void DoubleClick(ZoomRectFSM& fsm) override;
+         virtual void EscKey(ZoomRectFSM& fsm) override;
+      };
+
+      //----------------------------------------------
+      // State: Start
+      //
+      class ZoomRectFSMStartState : public ZoomRectFSMState
+      {
+      public:
+         virtual LPCTSTR StateName() const  override { return _T("Start"); }
+         virtual void Do(ZoomRectFSM& fsm) override;
+      };
+
+      class ZoomRectFSM : public iZoomRectTask
+      {
+      public:
+         static ZoomRectFSMStartState Start;
+         static ZoomRectFSMWaitingForFirstPointState WaitingForFirstPoint;
+         static ZoomRectFSMWaitingForSecondPointState WaitingForSecondPoint;
+         static ZoomRectFSMDoneState Done;
+
+         ZoomRectFSM();
+
+         // Event Functions
+         void Do() {m_pState->Do(*this);}
+         void DoubleClick() {m_pState->DoubleClick(*this);}
+         void MouseDown()   {m_pState->MouseDown(*this); }
+         void MouseUp()     {m_pState->MouseUp(*this); }
+         void MouseMove()   {m_pState->MouseMove(*this); }
+         void EscKey()      {m_pState->EscKey(*this); }
+
+         // State Accessor Functions
+         void SetState(ZoomRectFSMState& state) { m_pState = &state; }
+         ZoomRectFSMState& GetState() const { return *m_pState; }
+
+      private:
+         ZoomRectFSMState* m_pState;
+      };
+   };
 };
-
-//----------------------------------------------
-// State: Done
-//
-class CZoomRectFSMDoneState : public CZoomRectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const  override { return _T("Done"); }
-};
-
-//----------------------------------------------
-// State: WaitingForFirstPoint
-//
-class CZoomRectFSMWaitingForFirstPointState : public CZoomRectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const  override { return _T("WaitingForFirstPoint"); }
-   virtual void MouseMove(CZoomRectFSM& fsm) override;
-   virtual void MouseDown(CZoomRectFSM& fsm) override;
-   virtual void DoubleClick(CZoomRectFSM& fsm) override;
-   virtual void EscKey(CZoomRectFSM& fsm) override;
-};
-
-//----------------------------------------------
-// State: WaitingForSecondPoint
-//
-class CZoomRectFSMWaitingForSecondPointState : public CZoomRectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const override { return _T("WaitingForSecondPoint"); }
-   virtual void MouseMove(CZoomRectFSM& fsm) override;
-   virtual void MouseUp(CZoomRectFSM& fsm) override;
-   virtual void DoubleClick(CZoomRectFSM& fsm) override;
-   virtual void EscKey(CZoomRectFSM& fsm) override;
-};
-
-//----------------------------------------------
-// State: Start
-//
-class CZoomRectFSMStartState : public CZoomRectFSMState
-{
-public:
-   virtual LPCTSTR StateName() const  override { return _T("Start"); }
-   virtual void Do(CZoomRectFSM& fsm) override;
-};
-
-class CZoomRectFSM : public iZoomRectTask
-{
-public:
-   static CZoomRectFSMStartState Start;
-   static CZoomRectFSMWaitingForFirstPointState WaitingForFirstPoint;
-   static CZoomRectFSMWaitingForSecondPointState WaitingForSecondPoint;
-   static CZoomRectFSMDoneState Done;
-
-   CZoomRectFSM();
-
-   // Event Functions
-   void Do() {m_pState->Do(*this);}
-   void DoubleClick() {m_pState->DoubleClick(*this);}
-   void MouseDown()   {m_pState->MouseDown(*this); }
-   void MouseUp()     {m_pState->MouseUp(*this); }
-   void MouseMove()   {m_pState->MouseMove(*this); }
-   void EscKey()      {m_pState->EscKey(*this); }
-
-   // State Accessor Functions
-   void SetState(CZoomRectFSMState& state) { m_pState = &state; }
-   CZoomRectFSMState& GetState() const { return *m_pState; }
-
-private:
-   CZoomRectFSMState* m_pState;
-};
-
-#endif // !defined(AFX_ZOOMRECTFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

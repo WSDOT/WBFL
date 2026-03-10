@@ -31,11 +31,6 @@
 #include <MathEx.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // In Girder Section Coordinates (anytime we cut a section through the girder)

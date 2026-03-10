@@ -728,3 +728,30 @@ bool GeometricOperations::IsPointInTriangle(const Point2d& p, const Point2d& A, 
 
    return (0 <= u && 0 <= v && (u + v <= 1)) ? true : false;
 }
+
+bool WBFL::Geometry::GeometricOperations::DoesLineSegmentContainPoint(const LineSegment2d& ls, const Point2d& point, Float64 tolerance)
+{
+   // adopted implementation from unidraw's LineObj class and added tolerance. We might
+   // want to consider having a global geometric tolerance for the geomop package.
+   Float64 x1 = ls.GetStartPoint().X();
+   Float64 y1 = ls.GetStartPoint().Y();
+   Float64 x2 = ls.GetEndPoint().X();
+   Float64 y2 = ls.GetEndPoint().Y();
+
+   Float64 x = point.X();
+   Float64 y = point.Y();
+
+   if ((x >= Min(x1, x2) - tolerance) &&
+      (x <= Max(x1, x2) + tolerance) &&
+      (y >= Min(y1, y2) - tolerance) &&
+      (y <= Max(y1, y2) + tolerance))
+   {
+      Float64 prod = (y - y1) * (x2 - x1) - (y2 - y1) * (x - x1);
+
+      return IsZero(prod, tolerance);
+   }
+   else
+   {
+      return false;
+   }
+}

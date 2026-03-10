@@ -32,11 +32,6 @@
 #include "Vector2d.h"
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 static Float64 ms_Tolerance = 1.0e-6;
 HRESULT geomUtil::GenerateCircle(IndexType numPoints, IPoint2d *center, Float64 radius, Float64 initAngle, IPoint2dCollection **points)
@@ -1295,4 +1290,19 @@ HRESULT geomUtil::CreateLine(ILineSegment2d* pSeg, ILine2d** ppLine)
 HRESULT geomUtil::CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints)
 {
    return ::CreatePointCollection(vPoints, ppPoints);
+}
+
+std::vector<WBFL::Geometry::Point2d> geomUtil::CreatePointCollection(IPoint2dCollection* pPoints)
+{
+   return ::CreatePointCollection(pPoints);
+}
+
+HRESULT geomUtil::ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape)
+{
+   return ::ConvertShape(pShape, ppShape);
+}
+
+std::shared_ptr<WBFL::Geometry::Shape> geomUtil::ConvertShape(IShape* pShape)
+{
+   return ::ConvertShape(pShape);
 }

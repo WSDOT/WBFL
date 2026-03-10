@@ -32,11 +32,6 @@
 #include "commctrl.h"
 #include "BackDoor.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // CNewProjectDlg dialog
 
@@ -136,11 +131,12 @@ BOOL CNewProjectDlg::OnInitDialog()
    m_cxMin = rect.Width();
    m_cyMin = rect.Height();
 
+   HINSTANCE hInstance = GetInstanceHandle();
    CButton* pBtn = (CButton*)GetDlgItem(IDC_LARGE);
-   pBtn->SetIcon( ::LoadIcon(GetInstanceHandle(),MAKEINTRESOURCE(IDI_LARGEICON)) );
+   pBtn->SetIcon( ::LoadIcon(hInstance,MAKEINTRESOURCE(IDI_LARGEICON)) );
 
    pBtn = (CButton*)GetDlgItem(IDC_SMALL);
-   pBtn->SetIcon( ::LoadIcon(GetInstanceHandle(),MAKEINTRESOURCE(IDI_SMALLICON)) );
+   pBtn->SetIcon( ::LoadIcon(hInstance,MAKEINTRESOURCE(IDI_SMALLICON)) );
 
    m_TemplateLargeImageList.Create(32, 32, ILC_COLOR16, 2, 2);
    m_TemplateLargeImageList.SetBkColor(m_ctrlTemplates.GetBkColor());

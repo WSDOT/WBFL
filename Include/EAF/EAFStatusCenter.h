@@ -22,10 +22,9 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+#include <EAF\EAFExp.h>
 #include <EAF\EAFTypes.h>
-#include <EAF\EAFStatusItem.h>
-
+#include <EAF\StatusItem.h>
 
 /*****************************************************************************
 INTERFACE
@@ -38,19 +37,20 @@ DESCRIPTION
    status information.
 *****************************************************************************/
 // {77977E9B-B074-401f-8994-73A418FC4FFF}
-DEFINE_GUID(IID_IEAFStatusCenter, 
+DEFINE_GUID(IID_IEAFStatusCenter,
 0x77977e9b, 0xb074, 0x401f, 0x89, 0x94, 0x73, 0xa4, 0x18, 0xfc, 0x4f, 0xff);
-interface IEAFStatusCenter : IUnknown
+class EAFCLASS IEAFStatusCenter
 {
+public:
    virtual StatusGroupIDType CreateStatusGroupID() = 0;
-   virtual StatusItemIDType Add(CEAFStatusItem* pItem) = 0;
+   virtual StatusItemIDType Add(std::shared_ptr<WBFL::EAF::StatusItem> pItem) = 0;
    virtual bool RemoveByID(StatusItemIDType id) = 0;
    virtual bool RemoveByIndex(IndexType index) = 0;
    virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) = 0;
-   virtual CEAFStatusItem* GetByID(StatusItemIDType id) = 0;
-   virtual CEAFStatusItem* GetByIndex(IndexType index) = 0;
-   virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) = 0;
-   virtual eafTypes::StatusSeverityType GetSeverity() = 0;
+   virtual std::shared_ptr<WBFL::EAF::StatusItem> GetByID(StatusItemIDType id) = 0;
+   virtual std::shared_ptr<WBFL::EAF::StatusItem> GetByIndex(IndexType index) = 0;
+   virtual WBFL::EAF::StatusSeverityType GetSeverity(std::shared_ptr<const WBFL::EAF::StatusItem> pItem) = 0;
+   virtual WBFL::EAF::StatusSeverityType GetSeverity() = 0;
    virtual IndexType Count() = 0;
-   virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback) = 0;
+   virtual StatusCallbackIDType RegisterCallback(std::shared_ptr<WBFL::EAF::StatusCallback> pCallback) = 0;
 };

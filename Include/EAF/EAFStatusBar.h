@@ -53,6 +53,7 @@ public:
    virtual void OnStatusChanged();
 
    void AutoSaveEnabled(BOOL bEnable);
+   void AutoSaveSaving(BOOL bSaving);
 
    virtual void Reset();
 
@@ -93,6 +94,7 @@ private:
    int m_ModifiedPaneIdx;
    int m_StatusPaneIdx;
    int m_AutoSavePaneIdx;
+   CString m_strStatusText;
 
 
 public:

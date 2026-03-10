@@ -21,29 +21,27 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_)
-#define AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// InplaceEdit.h : header file
-//
+#include <DManip/DManipExp.h>
 
-struct iTask;
+namespace WBFL
+{
+	namespace DManip
+	{
+		class iTask;
+	};
+};
 
-/////////////////////////////////////////////////////////////////////////////
-// CInplaceEdit window
-
-class CInplaceEdit : public CEdit
+/// @brief An CEdit derived control that can process an inplace edting task
+class DMANIPCLASS CInplaceEdit : public CEdit
 {
 // Construction
 public:
-	CInplaceEdit();
+	CInplaceEdit() = default;
 
 // Attributes
 public:
-   void SetTask(iTask* pTask);
+   void SetTask(std::shared_ptr<WBFL::DManip::iTask> pTask);
 
 // Operations
 public:
@@ -55,7 +53,7 @@ public:
 
 // Implementation
 public:
-	virtual ~CInplaceEdit();
+	virtual ~CInplaceEdit() = default;
 
 	// Generated message map functions
 protected:
@@ -66,12 +64,5 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-   iTask* m_pTask;
+	std::shared_ptr<WBFL::DManip::iTask> m_pTask;
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_)

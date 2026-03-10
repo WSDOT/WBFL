@@ -37,11 +37,6 @@
 #include <algorithm>
 #include "Interpolate.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // some handy types and constants
 ////////////////////////////////////////////

@@ -73,7 +73,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDGEOMMODELLIB;_WINDOWS;_DEBUG;WIN32;_AFXDLL;_USRDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDGEOMMODELLIB;_WINDOWS;_DEBUG;WIN32;_AFXDLL;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -197,6 +197,7 @@
     <ClCompile Include="CoordinateXform3d.cpp" />
     <ClCompile Include="DeckedSlabBeam.cpp" />
     <ClCompile Include="ElasticProperties.cpp" />
+    <ClCompile Include="FIBeam.cpp" />
     <ClCompile Include="GenericShape.cpp" />
     <ClCompile Include="GeomOp2d.cpp" />
     <ClCompile Include="Helpers.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="..\Include\GeomModel\CoordinateXform3d.h" />
     <ClInclude Include="..\Include\GeomModel\DeckedSlabBeam.h" />
     <ClInclude Include="..\Include\GeomModel\ElasticProperties.h" />
+    <ClInclude Include="..\Include\GeomModel\FIBeam.h" />
     <ClInclude Include="..\Include\GeomModel\GenericShape.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModel.h" />
     <ClInclude Include="..\Include\GeomModel\GeomModelExp.h" />

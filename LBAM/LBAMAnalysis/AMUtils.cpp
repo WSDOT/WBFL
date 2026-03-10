@@ -26,11 +26,6 @@
 #include "LBAMAnalysis.hh"
 #include "InfluenceLine.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 SubNodeLoc::SubNodeLoc(Float64 locx, Float64 locy, SubNodeReason reason, ISegmentCrossSection* pSegmentCrossSection ):
    m_xLoc(locx),

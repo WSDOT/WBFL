@@ -31,11 +31,6 @@
 #include <Math\LinearFunction.h>
 #include <Math\MathUtils.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 TransitionType TransitionTypeFromZone(ZoneType zone,Float64 Yl, Float64 Yr, bool bParabolas)
 {

@@ -38,6 +38,7 @@
 #include <Reporter\RcDateTime.h>
 #include <Reporter\RcHyperTarget.h>
 #include <Reporter\RcImage.h>
+#include <Reporter\RcEquation.h>
 #include <Reporter\RcSymbol.h>
 #include <Reporter\RcScalar.h>
 #include <Reporter\RcPercentage.h>
@@ -47,6 +48,7 @@
 #include <Reporter\RcSectionScalar.h>
 #include <Reporter\RcStation.h>
 #include <Reporter\RcComposite.h>
+#include <Reporter\HtmlHelper.h>
 
 // Private include files
 #include "HtmlUnitTagFormat.h"
@@ -188,8 +190,18 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
    }
 
    // table setup
-   *m_pOstream << _T("<TABLE BORDER=")<< out_pixels<<_T(" RULES=ALL CELLSPACING=")<<in_pixels
-               << _T(" CELLPADDING=")<<cell_pad_pixels;
+   if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge && pTable->GetOutsideBorderStyle() == rptRiStyle::NOBORDER)
+   {
+        *m_pOstream << _T("<TABLE CLASS = \"no-border\"") << _T(" RULES=ALL CELLSPACING=") << in_pixels
+            << _T(" CELLPADDING=") << cell_pad_pixels;
+   }
+   else
+   {
+       *m_pOstream << _T("<TABLE BORDER=") << out_pixels << _T(" RULES=ALL CELLSPACING=") << in_pixels
+           << _T(" CELLPADDING=") << cell_pad_pixels;
+   }
+   
+
 
    if ( 0 < table_width_px )
       *m_pOstream <<_T(" WIDTH=\"")<<table_width_px;
@@ -198,25 +210,57 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
       
    *m_pOstream << std::endl;
 
-   // create a paragraph visitor
-   rptHtmlParagraphVisitor my_visitor(m_pOstream, /*m_pUnitSnapShot,*/ m_pPageLayout, m_Helper,m_LogPixelsX,m_LogPixelsY);
+   // table label
+   rptParagraph& labelPara = pTable->TableLabel();
 
-   // table caption & label
-   rptParagraph& cap = pTable->TableCaption();
-   rptParagraph& label = pTable->TableLabel();
-
-   bool is_cap = !(cap.IsEmpty() && label.IsEmpty());
+   bool is_cap = !labelPara.IsEmpty();
    if (is_cap)
    {
-      *m_pOstream << _T("<CAPTION>");
+      // We won't use a typical paragraph visitor here. Caption paragraphs are simple, and we need to add 
+      // a custom behavior to copy table to clipboard. This only works in Edge
+      if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+      {
+         *m_pOstream << _T("<CAPTION onclick = \"TableCaptionFunction(this)\">") << std::endl;
+      }
+      else
+      {
+         *m_pOstream << _T("<CAPTION>") << std::endl;
+      }
 
-      if (!cap.IsEmpty())
-         // visit the caption paragraph
-         cap.Accept(my_visitor);
+      if (!labelPara.IsEmpty())
+      {
+         rptStyleName style = labelPara.GetStyleName();
+         // get corresponding element name for style name
+         std::_tstring el_name = m_Helper.GetElementName(style);
 
-      if (!label.IsEmpty())
-          // visit the label paragraph
-         label.Accept(my_visitor);
+         if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+         {
+            *m_pOstream << _T("<P class = \"") << el_name << _T(" tablecaptiontooltip\">") << std::endl;
+         }
+         else
+         {
+            *m_pOstream << _T("<P class = \"") << el_name << _T("\">") << std::endl;
+         }
+
+         // create a report content visitor
+         rptHtmlRcVisitor my_visitor(m_pOstream, m_pPageLayout, m_Helper, m_LogPixelsX, m_LogPixelsY);
+
+         // iterate over all report content in label
+         rptParagraph::ConstParagraphContentIterator pci;
+         for (pci = labelPara.ConstBegin(); pci != labelPara.ConstEnd(); pci++)
+         {
+            (*pci)->Accept(my_visitor);
+         }
+
+         if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+         {
+            *m_pOstream << _T("<SPAN class = \"tablecaptiontooltiptext\">Click to Select Table</SPAN></P") << std::endl;
+         }
+         else
+         {
+            *m_pOstream << _T("</P") << std::endl;
+         }
+      }
 
       *m_pOstream << _T("</CAPTION>")<<std::endl;
    }
@@ -245,6 +289,9 @@ void rptHtmlRcVisitor::VisitRcTable(rptRcTable* pTable)
 
       // row information
       *m_pOstream << _T("<TR>");
+
+      // create a paragraph visitor
+      rptHtmlParagraphVisitor my_visitor(m_pOstream, /*m_pUnitSnapShot,*/ m_pPageLayout, m_Helper, m_LogPixelsX, m_LogPixelsY);
 
       for (ColumnIndexType colno = 0; colno<num_cols; colno++)
       {
@@ -470,6 +517,16 @@ void rptHtmlRcVisitor::VisitRcHyperTarget(rptRcHyperTarget* my_m)
 void rptHtmlRcVisitor::VisitRcImage(rptRcImage* pImage)
 {
    std::_tstring file_name = pImage->GetFileName();
+
+#if defined _DEBUG
+   // test to make sure the file exists
+   WIN32_FIND_DATA findData;
+   HANDLE handle = ::FindFirstFile(file_name.c_str(), &findData);
+   CHECK(handle != INVALID_HANDLE_VALUE);
+   if (handle != INVALID_HANDLE_VALUE)
+      ::FindClose(handle);
+#endif
+
    std::_tstring picture_description = pImage->GetPictureDescription();
    std::_tstring align = _T("bottom");
    switch( pImage->GetImageAlignment() )
@@ -546,6 +603,38 @@ void rptHtmlRcVisitor::VisitRcImage(rptRcImage* pImage)
 
       *m_pOstream << _T("/>") << std::endl;
    }
+}
+
+void rptHtmlRcVisitor::VisitRcEquation(rptRcEquation* pEqn)
+{
+    if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+    {
+        if (pEqn->GetMathDisplay() == rptRcEquation::DisplayType::InLine)
+        {
+            *m_pOstream << _T("\\({\\displaystyle ") << pEqn->GetLaTeX() << _T("}\\)") << std::endl;
+        }
+        else
+        {
+            *m_pOstream << _T("$$\\displaystyle ") << pEqn->GetLaTeX() << _T("$$") << std::endl;
+        }
+    }
+    else
+    {
+        rptRcImage pImage(pEqn->GetFileName());
+
+        if (pEqn->GetMathDisplay() == rptRcEquation::DisplayType::InLine)
+        {
+            rptRcImage pImage(pEqn->GetFileName());
+            pImage.SetImageAlignment(rptRcImage::Align::Middle);
+            VisitRcImage(&pImage);
+        }
+        else
+        {
+            rptRcImage pImage(pEqn->GetFileName());
+            VisitRcImage(&pImage);
+        }
+
+    }
 }
 
 //------------------------------------------------------------------------

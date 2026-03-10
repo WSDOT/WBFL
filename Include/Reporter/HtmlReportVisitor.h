@@ -38,9 +38,10 @@ public:
    rptHtmlReportVisitor(
       std::_tostream* pMyOstream,///< output stream to receive the html code
       Uint32 logPixelsX,///< horizontal screen resolution in pixels per inch
-      Uint32 logPixelsY///< vertical screen resolution in pixels per inch
+      Uint32 logPixelsY,///< vertical screen resolution in pixels per inch
+      rptHtmlHelper::BrowserType browserType
    ) :
-   rptOutputReportVisitor(pMyOstream)
+   rptOutputReportVisitor(pMyOstream), m_Helper(browserType)
    {
       m_LogPixelsX = logPixelsX;
       m_LogPixelsY = logPixelsY;
@@ -50,6 +51,30 @@ public:
 
    /// Visit a report and generate HTML code
    virtual void VisitReport(rptReport* pReport) override;
+
+   // Table of Contents for context menu for Edge browser
+   // The IE browser builds its table of contents from the HTML DOM in custsite.cpp
+   // The Edge WebView2 object does not have a C++ interface to the DOM, and the only browser-based method is really 
+   // messy asyncronous jscript calls, that will result in nasty bugs, I beleive.
+   // So we will build the TOC directly in C++ and pass it to the edge browser view
+   struct TocItem
+   {
+      TocItem() : m_ID(0) { ; }
+      TocItem(LPCTSTR name, Uint32 id) : m_Title(name), m_ID(id) { ; }
+
+      std::_tstring m_Title; // TOC title
+      Uint32 m_ID; // ID used to generate html for navigation to anchor
+   };
+
+   struct ChapterTocItem
+   {
+      ChapterTocItem() = default;
+
+      TocItem m_TocItem;
+      std::vector <TocItem> m_ParagraphTOCItems;// hapters can contain nested paragraphs
+   };
+
+   static std::vector< ChapterTocItem> GenerateTOC(rptReport* pReport);
 
 private:
    rptHtmlHelper m_Helper;

@@ -31,43 +31,18 @@
 class EAFCLASS CEAFDataRecoveryHandler : public CDataRecoveryHandler
 {
 public:
-   CEAFDataRecoveryHandler(_In_ DWORD dwRestartManagerSupportFlags, _In_ int nAutosaveInterval) :
-      CDataRecoveryHandler(dwRestartManagerSupportFlags, nAutosaveInterval)
-   {
-      m_bIsAutosaving = FALSE;
-   }
+   CEAFDataRecoveryHandler(_In_ DWORD dwRestartManagerSupportFlags, _In_ int nAutosaveInterval);
 
    /// Overrides the default implementation to keep track if an autosave is in progress
    ///
    /// Clients can call GetDataRecoveryHandler() from the application, cast it to CEAFDataRecoveryHandler
    /// and call IsAutosaving() to see if an autosave is in progress
-   virtual BOOL AutosaveDocumentInfo(_In_ CDocument *pDocument, _In_ BOOL bResetModifiedFlag = TRUE) override
-   {
-      m_bIsAutosaving = TRUE;
-      BOOL bResult = __super::AutosaveDocumentInfo(pDocument, bResetModifiedFlag);
-      m_bIsAutosaving = FALSE;
+   virtual BOOL AutosaveDocumentInfo(_In_ CDocument* pDocument, _In_ BOOL bResetModifiedFlag = TRUE) override;
 
-      DWORD dwAttrib = GetFileAttributes(pDocument->GetPathName());
-      if (bResult && !(dwAttrib & FILE_ATTRIBUTE_READONLY) && EAFGetApp()->IsAutoSaveEnabled() && pDocument->IsModified())
-      {
-         // if the recovery autosave was successful do a regular save if the file has been previously saved and is not readonly
-         pDocument->DoFileSave();
-      }
-
-      return bResult;
-   }
-
-   virtual BOOL ReopenPreviousDocuments() override
-   {
-      // we don't want the base class implementation. it creates a new empty document but
-      // we just want to open the autosave/recovery document.
-      // this is now a do-nothing method
-      return TRUE;
-   }
-
+   virtual BOOL ReopenPreviousDocuments() override;
 
    /// Returns TRUE if an autosave is in progress
-   BOOL IsAutosaving() { return m_bIsAutosaving; }
+   BOOL IsAutosaving();
 
 private:
    BOOL m_bIsAutosaving;

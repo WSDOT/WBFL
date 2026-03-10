@@ -349,3 +349,6 @@ Win32/
 #ignore tag files. they are doxygen output
 *.tag
 
+/Depreciated/DManip/HtmlHelp/!SkinSubFolder!
+/Depreciated/DManip/HtmlHelp
+/Depreciated/DManipTools/HtmlHelp/!SkinSubFolder!

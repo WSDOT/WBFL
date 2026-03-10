@@ -95,7 +95,7 @@ void CLcParameterStack::Init(ILBAMAnalysisEngine* Engine)
    CComPtr<ILoadCombinations> loadcombos;
    hr = model->get_LoadCombinations(&loadcombos);
 
-   CollectionIndexType lc_cnt;
+   IndexType lc_cnt;
    hr = loadcombos->get_Count(&lc_cnt);
 
    CComPtr<IStages> stages;
@@ -105,7 +105,7 @@ void CLcParameterStack::Init(ILBAMAnalysisEngine* Engine)
    hr = stages->get_Count(&stg_cnt);
 
    // build paramters in the order in which they will be run
-   for (CollectionIndexType ilc=0; ilc<lc_cnt; ilc++)
+   for (IndexType ilc=0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCombination> load_combo;
       hr = loadcombos->get_Item(ilc, &load_combo);
@@ -240,9 +240,9 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
    CComPtr<IBstrArray> dead_lcs;
    hr = dead_lcs.CoCreateInstance(CLSID_BstrArray);
 
-   CollectionIndexType lc_cnt;
+   IndexType lc_cnt;
    hr = loadcases->get_Count(&lc_cnt);
-   for (CollectionIndexType ilc=0; ilc<lc_cnt; ilc++)
+   for (IndexType ilc=0; ilc<lc_cnt; ilc++)
    {
       CComPtr<ILoadCase> loadcase;
       hr = loadcases->get_Item(ilc, &loadcase);
@@ -250,7 +250,7 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
       CComBSTR lc_name;
       hr = loadcase->get_Name(&lc_name);
 
-      CollectionIndexType idx;
+      IndexType idx;
       active_lcs->Find(lc_name, &idx);
       if (idx == -1)
       {
@@ -259,12 +259,12 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
       }
    }
 
-   CollectionIndexType dead_cnt;
+   IndexType dead_cnt;
    hr = dead_lcs->get_Count(&dead_cnt);
    if (dead_cnt>0)
    {
       os<<"  There are "<<dead_cnt<<" LoadCases in this model with no loads (zero results). They are: "<<endl;
-      for (CollectionIndexType ilc=0; ilc<dead_cnt; ilc++)
+      for (IndexType ilc=0; ilc<dead_cnt; ilc++)
       {
          CComBSTR name;
          hr = dead_lcs->get_Item(ilc, &name);
@@ -277,9 +277,9 @@ void CLoadCombinationDumper::DumpLoadCaseResponse(std::_tostream& os)
    // loop over all of our active loadcases and stages and report responses
    StageIndexType stg_cnt = m_Util->StageCount();
 
-   CollectionIndexType alc_cnt;
+   IndexType alc_cnt;
    hr = active_lcs->get_Count(&alc_cnt);
-   for (CollectionIndexType ilc=0; ilc<alc_cnt; ilc++)
+   for (IndexType ilc=0; ilc<alc_cnt; ilc++)
    {
       CComBSTR lc_name;
       hr = active_lcs->get_Item(ilc, &lc_name);
@@ -337,9 +337,9 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    CComPtr<ISectionResult3Ds> force_results;
    hr=response->ComputeForces(lcName, poi_ids, stage, roMember, summ, &force_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -378,9 +378,9 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    CComPtr<ISectionResult3Ds> spt_force_results;
    hr=response->ComputeForces(lcName, spt_poi_ids, stage, roMember, summ, &spt_force_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       PoiIDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -413,9 +413,9 @@ void CLoadCombinationDumper::DumpLoadCaseForces(std::_tostream& os, BSTR lcName,
    os<<"   POI    X React    Y React    MZ React"<<std::endl;
    os<<" ------ ---------- ---------- ----------"<<std::endl;
 
-   CollectionIndexType num_supp;
+   IndexType num_supp;
    hr = supp_ids->get_Count(&num_supp);
-   for (CollectionIndexType is=0; is<num_supp; is++)
+   for (IndexType is=0; is<num_supp; is++)
    {
       PoiIDType poi_id;
       hr = supp_ids->get_Item(is,&poi_id);
@@ -461,9 +461,9 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    CComPtr<ISectionResult3Ds> defl_results;
    hr=response->ComputeDeflections(lcName, poi_ids, stage, summ, &defl_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -502,9 +502,9 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    CComPtr<ISectionResult3Ds> spt_defl_results;
    hr=response->ComputeDeflections(lcName, spt_poi_ids, stage, summ, &spt_defl_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       PoiIDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -537,9 +537,9 @@ void CLoadCombinationDumper::DumpLoadCaseDeflections(std::_tostream& os, BSTR lc
    os<<"   POI      Dx         Dy          Rz"<<std::endl;
    os<<" ------ ---------- ---------- ----------"<<std::endl;
 
-   CollectionIndexType num_supp;
+   IndexType num_supp;
    hr = supp_ids->get_Count(&num_supp);
-   for (CollectionIndexType is=0; is<num_supp; is++)
+   for (IndexType is=0; is<num_supp; is++)
    {
       PoiIDType poi_id;
       hr = supp_ids->get_Item(is,&poi_id);
@@ -585,9 +585,9 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
    CComPtr<ISectionStressResults> stress_results;
    hr=response->ComputeStresses(lcName, poi_ids, stage, summ, &stress_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -598,7 +598,7 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
       std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
       std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-      CollectionIndexType cnt;
+      IndexType cnt;
       double val;
       hr = stress_result->get_LeftCount(&cnt);
       if (cnt>0)
@@ -673,9 +673,9 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
    CComPtr<ISectionStressResults> spt_stress_results;
    hr=response->ComputeStresses(lcName, spt_poi_ids, stage, summ, &spt_stress_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       PoiIDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -686,7 +686,7 @@ void CLoadCombinationDumper::DumpLoadCaseStresses(std::_tostream& os, BSTR lcNam
       std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
       std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-      CollectionIndexType cnt;
+      IndexType cnt;
       double val;
       hr = stress_result->get_LeftCount(&cnt);
       if (cnt>0)
@@ -825,9 +825,9 @@ void CLoadCombinationDumper::DumpLoadCombinationForces(std::_tostream& os, std::
    os<<"   POI    Result      Key     Result      Key"<<endl;
    os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-   CollectionIndexType res_cnt;
+   IndexType res_cnt;
    hr = lcresults->get_Count(&res_cnt);
-   for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+   for (IndexType ires=0; ires<res_cnt; ires++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ires, &poi_id);
@@ -853,7 +853,7 @@ void CLoadCombinationDumper::DumpLoadCombinationForces(std::_tostream& os, std::
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -940,9 +940,9 @@ void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::_tostream& os, 
    os<<"   POI    Result      Key     Result      Key"<<endl;
    os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-   CollectionIndexType res_cnt;
+   IndexType res_cnt;
    hr = lcresults->get_Count(&res_cnt);
-   for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+   for (IndexType ires=0; ires<res_cnt; ires++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ires, &poi_id);
@@ -968,7 +968,7 @@ void CLoadCombinationDumper::DumpLoadCombinationDeflections(std::_tostream& os, 
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -1056,9 +1056,9 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
    os<<"   POI     SP0        SP1         SP2        SP3      Key       SP0        SP1        SP2        SP3       Key"<<endl;
    os<<" ------ ---------- ---------- ---------- ---------- -------- ---------- ---------- ---------- ---------- --------"<<endl;
 
-   CollectionIndexType res_cnt;
+   IndexType res_cnt;
    hr = lcresults->get_Count(&res_cnt);
-   for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+   for (IndexType ires=0; ires<res_cnt; ires++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ires, &poi_id);
@@ -1070,7 +1070,7 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
       std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
       std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-      CollectionIndexType cnt;
+      IndexType cnt;
       double val;
       hr = left_res->get_Count(&cnt);
       if (cnt>0)
@@ -1142,7 +1142,7 @@ void CLoadCombinationDumper::DumpLoadCombinationStresses(std::_tostream& os, std
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -1205,9 +1205,9 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, st
    os<<"   SPT    Result      Key  "<<endl;
    os<<" ------ ---------- --------"<<endl;
 
-   CollectionIndexType res_cnt;
+   IndexType res_cnt;
    hr = lcresults->get_Count(&res_cnt);
-   for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+   for (IndexType ires=0; ires<res_cnt; ires++)
    {
       IDType spt_id;
       hr = spt_ids->get_Item(ires, &spt_id);
@@ -1232,7 +1232,7 @@ void CLoadCombinationDumper::DumpLoadCombinationReactions(std::_tostream& os, st
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
@@ -1299,9 +1299,9 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostrea
    os<<"   SPT    Result      Key  "<<endl;
    os<<" ------ ---------- --------"<<endl;
 
-   CollectionIndexType res_cnt;
+   IndexType res_cnt;
    hr = lcresults->get_Count(&res_cnt);
-   for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+   for (IndexType ires=0; ires<res_cnt; ires++)
    {
       IDType spt_id;
       hr = spt_ids->get_Item(ires, &spt_id);
@@ -1326,7 +1326,7 @@ void CLoadCombinationDumper::DumpLoadCombinationSupportDeflections(std::_tostrea
       hr = one_poi.CoCreateInstance(CLSID_LongArray);
       hr = one_poi->Add(-1);
 
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
@@ -1377,7 +1377,7 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
    double llf;
    hr = config->get_LiveLoadFactor(&llf);
 
-   CollectionIndexType lcf_cnt;
+   IndexType lcf_cnt;
    hr = config->get_LoadCaseFactorCount(&lcf_cnt);
 
    os<<_T("                  Live Load  <-----------Load Case Factors ------------>")<<endl;
@@ -1389,7 +1389,7 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
    }
    else
    {
-      for (CollectionIndexType icf=0; icf<lcf_cnt; icf++)
+      for (IndexType icf=0; icf<lcf_cnt; icf++)
       {
          double fac;
          CComBSTR lcn;
@@ -1410,10 +1410,10 @@ void CLoadCombinationDumper::DumpLoadCombinationConfiguration(std::_tostream& os
 
    // Next, live load configuration. 
    // This is a pinta since we need to dive deep to get the number of axles in the controlling truck
-   CollectionIndexType nLiveLoadConfigurations;
+   IndexType nLiveLoadConfigurations;
    config->GetLiveLoadConfigurationCount(&nLiveLoadConfigurations);
 
-   for ( CollectionIndexType llc = 0; llc < nLiveLoadConfigurations; llc++ )
+   for ( IndexType llc = 0; llc < nLiveLoadConfigurations; llc++ )
    {
       CComPtr<ILiveLoadConfiguration> lvlc;
       hr = config->GetLiveLoadConfiguration(llc,&lvlc);

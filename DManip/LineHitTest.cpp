@@ -21,45 +21,38 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include <DManip\DManip.h>
+#include "pch.h"
 #include "LineHitTest.h"
+#include <DManip/DisplayList.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/DisplayObject.h>
 #include <Math.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
-BOOL CLineHitTest::HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point)
+bool LineHitTest::HitTest(const iDisplayObject* pDO, WBFL::Geometry::Point2d s, WBFL::Geometry::Point2d e, const POINT& point)
 {
-   CRect box = GetHitRect(pDO, pStart, pEnd);
+
+   CRect box = GetHitRect(pDO, s, e);
 
    return box.PtInRect(point);
 }
 
-CRect CLineHitTest::GetHitRect(iDisplayObject* pDO, IPoint2d* pStart, IPoint2d* pEnd)
+CRect WBFL::DManip::LineHitTest::GetHitRect(const iDisplayObject* pDO, WBFL::Geometry::Point2d s, WBFL::Geometry::Point2d e)
 {
-   CComPtr<iDisplayList> pDL;
-   pDO->GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> pMap;
-   pDispMgr->GetCoordinateMap(&pMap);
+   auto display_list = pDO->GetDisplayList();
+   auto display_mgr = display_list->GetDisplayMgr();
+   auto map = display_mgr->GetCoordinateMap();
 
    // convert start and end in to logical space
-   Float64 startWX, startWY, endWX, endWY;
-   pMap->MPtoWP(pStart, &startWX, &startWY);
-   pMap->MPtoWP(pEnd, &endWX, &endWY);
+   auto world_start = map->MPtoWP(s);
+   auto world_end = map->MPtoWP(e);
 
-   CPoint start, end;
-   pMap->WPtoLP(startWX, startWY, &start.x, &start.y);
-   pMap->WPtoLP(endWX, endWY, &end.x, &end.y);
+   CPoint cstart, cend;
+   map->WPtoLP(world_start, &cstart.x, &cstart.y);
+   map->WPtoLP(world_end, &cend.x, &cend.y);
 
-   CRect box(start, end);
+   CRect box(cstart, cend);
    box.InflateRect(4, 4);
 
    return box;

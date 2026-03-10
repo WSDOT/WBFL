@@ -24,14 +24,8 @@
 // FloatEdit.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include <DManip\InplaceNumericEditCtrl.h>
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+#include "pch.h"
+#include <DManip/InplaceNumericEditCtrl.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CInplaceNumericEdit
@@ -84,14 +78,14 @@ void CInplaceNumericEdit::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
     // most of the work done in here..
   for (i = 0; i < temp_str.GetLength(); i++) {
         // selected chars don't count..
-    if ((i >= start_char) && (i < end_char))
+    if ((start_char <= i) && (i < end_char))
       continue;
 
     switch (temp_str[i]) {
 
       case '+':
       case '-':
-        if (nELoc >= 0)
+        if (0 <= nELoc)
           bESignTyped = TRUE;
         else
           bSignTyped = TRUE;

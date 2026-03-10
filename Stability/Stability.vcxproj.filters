@@ -167,10 +167,18 @@
       <UniqueIdentifier>{00143dcd-27ce-4a65-869c-a0e4afa4b0fc}</UniqueIdentifier>
       <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
     </Filter>
+    <Filter Include="Equations">
+      <UniqueIdentifier>{a63cf361-f0de-4e74-941a-b21800d8fa3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Stability.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\Equations.md">
+      <Filter>Equations</Filter>
+    </None>
   </ItemGroup>
 </Project>

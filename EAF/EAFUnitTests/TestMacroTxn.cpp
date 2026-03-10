@@ -16,7 +16,7 @@ namespace EAFUnitTests
          testNotUndoableTxn   txn2;
          testNotRepeatableTxn txn3;
 
-         CEAFMacroTxn macro;
+         WBFL::EAF::MacroTxn macro;
          macro.AddTransaction(txn1);
          macro.AddTransaction(txn1);
          macro.AddTransaction(txn1);

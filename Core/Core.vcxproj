@@ -86,7 +86,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;xWBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -188,8 +188,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BrokerImp.cpp" />
-    <ClCompile Include="BrokerImp2.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -208,18 +206,11 @@
     <ClCompile Include="SysAgent.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Broker.rgs" />
-    <None Include="Broker2.rgs" />
     <None Include="Core.def" />
-    <None Include="Core.rgs" />
     <None Include="res\Working.avi" />
-    <None Include="SysAgent.rgs" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\AgentTools.h" />
-    <ClInclude Include="BrokerImp.h" />
-    <ClInclude Include="BrokerImp2.h" />
-    <ClInclude Include="dllmain.h" />
+    <ClInclude Include="CLSID.h" />
     <ClInclude Include="ProgressDlg.h" />
     <ClInclude Include="ProgressThread.h" />
     <ClInclude Include="Resource.h" />
@@ -230,31 +221,9 @@
     <ResourceCompile Include="Core.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\System\System.vcxproj">
-      <Project>{2d18c0c9-358d-455d-b56a-d4a247fce7b9}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\EAF\EAF.vcxproj">
+      <Project>{60e04843-976a-4a9f-9839-709e295d04e1}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\WBFLTools\WBFLTools.vcxproj">
-      <Project>{3c66a5db-a451-4912-a984-ddbf2e890495}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\WBFLTypes\WBFLTypes.vcxproj">
-      <Project>{b8cdd36e-37ab-484a-953b-864a2a431147}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Midl Include="..\Include\WBFLCore.idl">
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ARPDIR)\WBFL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ARPDIR)\WBFL\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Include\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\Include\$(ProjectName)_i.c</InterfaceIdentifierFileName>
-      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Include\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\Include\$(ProjectName)_i.c</InterfaceIdentifierFileName>
-    </Midl>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

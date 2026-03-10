@@ -21,27 +21,34 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_INPLACEEDITABLE_H_
-#define INCLUDED_INPLACEEDITABLE_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-class CInplaceEdit;
-
-interface iInplaceEditable : public IUnknown
+namespace WBFL
 {
-   // Call to start the Inplace Editing process
-   // This is a Template Method.
-   STDMETHOD_(void,DoInplaceEdit)() PURE;
+   namespace DManip
+   {
+      /// @brief Interface implemented by display objects that present an in-place editing interface such as a text edit box.
+      class DMANIPCLASS iInplaceEditable
+      {
+      public:
+         /// @brief Call to start the Inplace Editing process
+         virtual void DoInplaceEdit() = 0;
 
-   // Called when it is time to create an edit control on the screen
-   STDMETHOD_(void,CreateEditControl)() PURE;
+         virtual void EndInplaceEdit() = 0;
 
-   // Called when it is time to destroy the edit control
-   STDMETHOD_(void,DestroyEditControl)() PURE;
+         /// @brief Called when it is time to create an edit control on the screen
+         virtual void CreateEditControl() = 0;
 
-   STDMETHOD_(BOOL,ValidateData)() PURE;
+         /// @brief Called when it is time to destroy the edit control
+         virtual void DestroyEditControl() = 0;
 
-   STDMETHOD_(void,OnDataChanged)() PURE;
+         /// @brief Called when the data in the control needs to be validated
+         /// @return Return true if the data is valid
+         virtual bool ValidateData() = 0;
+
+         /// @brief Called by the framework when the edited data has changed
+         virtual void OnDataChanged() = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_INPLACEEDITABLE_H_

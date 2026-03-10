@@ -23,9 +23,9 @@
 
 #pragma once
 
-#define INITGUID
+//#define INITGUID
 #include <objbase.h>
-#include <initguid.h>
+//#include <initguid.h>
 
 //#ifndef CGID_IWebBrowser
 // CGID_WebBrowser: {ED016940-BD5B-11cf-BA4E-00C04FD70816}

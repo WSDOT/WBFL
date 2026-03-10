@@ -70,13 +70,15 @@ BOOL CReactionReportDlg::OnInitDialog()
    ASSERT( pLabel );
    
    CString str(m_Stream.str().c_str());
-   EDITSTREAM es;
-   es.dwCookie = (DWORD)(&str);
-   es.dwError = 0;
-   es.pfnCallback = StreamInCtrl;
-   long nc = pLabel->StreamIn( SF_RTF, es );
+   //EDITSTREAM es;
+   //es.dwCookie = (DWORD)(&str);
+   //es.dwError = 0;
+   //es.pfnCallback = StreamInCtrl;
+   //long nc = pLabel->StreamIn( SF_RTF, es );
 
-   pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
+   pLabel->SetWindowText(str);
+
+//   pLabel->SetBackgroundColor(FALSE, GetSysColor(COLOR_3DFACE) );
    pLabel->SetReadOnly(TRUE);
 
 	return TRUE;  // return TRUE unless you set the focus to a control

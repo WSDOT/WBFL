@@ -147,7 +147,7 @@ Float64 CompositeBeam::GetEffectiveSlabWidth() const
 
 void CompositeBeam::SetTributarySlabWidth(Float64 wTrib)
 {
-   Float64 wEff = GetEffectiveSlabWidth(); // get before modifing 
+   Float64 wEff = GetEffectiveSlabWidth(); // get before modifying 
 
    if (wTrib < wEff) wEff = wTrib;
 
@@ -390,7 +390,7 @@ Float64 CompositeBeam::GetQ(Float64 y) const
 
       ShapeProperties clipProps = clipElasticProps.TransformProperties(beamE);
 
-      // get area ablove/.below the clipping line
+      // get area above/below the clipping line
       Float64 area = clipProps.GetArea();
 
       // get the centroid of the clipped shape

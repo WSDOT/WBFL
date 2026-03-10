@@ -13,8 +13,7 @@
 #endif
 
 #include "resource.h"       // main symbols
-
-#include <WBFLDManip.h>
+#include <DManip/DManip.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DApp:

@@ -30,11 +30,6 @@
 #include <EAF\EAFApp.h>
 #include <MFCTools\VersionInfo.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // CEAFAboutDlg dialog
 
@@ -113,14 +108,13 @@ BOOL CEAFAboutDlg::OnInitDialog()
 
    // Fill the list control with plugin names
    CEAFApp* pApp = EAFGetApp();
-   CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
-   IndexType nPlugins = pComponentInfoMgr->GetPluginCount();
+   auto componentInfoMgr = pApp->GetComponentInfoManager();
+   IndexType nPlugins = componentInfoMgr->GetPluginCount();
    
    // for each plugin
    for ( IndexType pluginIdx = 0; pluginIdx < nPlugins; pluginIdx++ )
    {
-      CComPtr<IEAFComponentInfo> plugin;
-      pComponentInfoMgr->GetPlugin(pluginIdx,&plugin);
+      auto plugin = componentInfoMgr->GetPlugin(pluginIdx);
       UINT idx = m_AppList.AddString(plugin->GetName());
       m_AppList.SetItemData(idx,pluginIdx);
    }
@@ -138,10 +132,9 @@ void CEAFAboutDlg::OnAppListSelChanged()
    if ( idx != LB_ERR )
    {
       CEAFApp* pApp = EAFGetApp();
-      CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
-      CComPtr<IEAFComponentInfo> component;
+      auto componentInfoMgr = pApp->GetComponentInfoManager();
       DWORD_PTR pluginIdx = m_AppList.GetItemData(idx);
-      pComponentInfoMgr->GetPlugin(pluginIdx,&component);
+      auto component = componentInfoMgr->GetPlugin(pluginIdx);
       m_Description.SetWindowText(component->GetDescription());
       if ( component->HasMoreInfo() )
          GetDlgItem(IDC_MOREINFO)->EnableWindow(TRUE);
@@ -161,11 +154,10 @@ void CEAFAboutDlg::OnMoreInfo()
    if ( idx != LB_ERR )
    {
       CEAFApp* pApp = EAFGetApp();
-      CEAFComponentInfoManager* pComponentInfoMgr = pApp->GetComponentInfoManager();
+      auto componentInfoMgr = pApp->GetComponentInfoManager();
 
       DWORD_PTR pluginIdx = m_AppList.GetItemData(idx);
-      CComPtr<IEAFComponentInfo> component;
-      pComponentInfoMgr->GetPlugin(pluginIdx,&component);
+      auto component = componentInfoMgr->GetPlugin(pluginIdx);
 
       component->OnMoreInfo();
       OnAppListSelChanged();

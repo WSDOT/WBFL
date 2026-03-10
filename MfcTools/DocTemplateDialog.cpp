@@ -27,11 +27,6 @@
 #include <mfcTools\DocTemplateDialog.h>
 #include <array>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CDocTemplateDialog dialog

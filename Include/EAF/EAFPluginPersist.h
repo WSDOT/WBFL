@@ -25,21 +25,24 @@
 
 // EAFPluginPersist.h : header file
 //
-#include <WBFLCore.h>
 
+struct IStructuredSave;
+struct IStructuredLoad;
 
 /////////////////////////////////////////////////////////////////////////////
-// IEAFPluginPersist
+// IPluginPersist
 //
 // This interface must be implemented if a plugin wants to persist data
 
-// {C4498B21-40DB-46a2-BB35-4FFA10978AAD}
-DEFINE_GUID(IID_IEAFPluginPersist, 
-0xc4498b21, 0x40db, 0x46a2, 0xbb, 0x35, 0x4f, 0xfa, 0x10, 0x97, 0x8a, 0xad);
-struct __declspec(uuid("{C4498B21-40DB-46a2-BB35-4FFA10978AAD}")) IEAFPluginPersist;// for __uuidof
-
-interface IEAFPluginPersist : IUnknown
+namespace WBFL
 {
-   virtual HRESULT Save(IStructuredSave* pStrSave) = 0;
-   virtual HRESULT Load(IStructuredLoad* pStrLoad) = 0;
+   namespace EAF
+   {
+      class IPluginPersist
+      {
+      public:
+         virtual bool Save(IStructuredSave* pStrSave) = 0;
+         virtual bool Load(IStructuredLoad* pStrLoad) = 0;
+      };
+   };
 };

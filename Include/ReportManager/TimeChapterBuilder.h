@@ -51,7 +51,6 @@ namespace WBFL
             WBFL::System::Time& start,  ///< Time when an operation begins
             WBFL::System::Time& end ///< Time whe an operation ends
          ) const;
-         virtual std::unique_ptr<ChapterBuilder> Clone() const override;
       };
    };
 };

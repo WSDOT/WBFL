@@ -21,12 +21,62 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HELPERS_H_
-#define INCLUDED_HELPERS_H_
 #pragma once
 
-#include <DManip\DManipTypes.h>
+#include <DManip/DManipTypes.h>
 
-void DrawArrowHead(CDC* pDC,DManip::ArrowHeadStyleType style,CPoint left,CPoint tip,CPoint right);
+void DrawArrowHead(CDC* pDC,WBFL::DManip::ArrowHeadStyleType style,CPoint left,CPoint tip,CPoint right);
 
-#endif // INCLUDED_HELPERS_H_
+/// @brief Draws a point symbol using the current pen and brush
+/// @param pDC 
+/// @param rect 
+/// @param type 
+void DrawPointSymbol(CDC* pDC, const RECT& rect, WBFL::DManip::PointType type);
+
+
+void CreatePen(WBFL::DManip::LineStyleType style, UINT width, COLORREF color, CPen& pen);
+
+
+#if defined _DEBUG
+enum class ObjectType
+{
+   DO, DL, DM
+};
+
+struct ObjectRecord
+{
+   static Uint64 count; // keeps track of the allocation count
+
+   ObjectRecord(ObjectType type, void* ptr) :type(type) { address = (Uint64)ptr; allocation = count++; }
+   ObjectType type;
+   Uint64 address;
+   Uint64 view_address = 0;
+   Uint64 allocation;
+};
+
+class CircularRefDebugger
+{
+public:
+   static std::vector<ObjectRecord> ObjectRecords;
+   static void Add(ObjectType type, void* ptr) { ObjectRecords.emplace_back(type, ptr); }
+   static void Remove(void* ptr) 
+   {
+      auto iter = std::find_if(ObjectRecords.begin(), ObjectRecords.end(), [ptr](const auto& record) {return record.address == (Uint64)ptr; });
+      if (iter != ObjectRecords.end())
+         ObjectRecords.erase(iter);
+   }
+
+   static ObjectRecord& GetRecord(void* ptr)
+   {
+      auto iter = std::find_if(ObjectRecords.begin(), ObjectRecords.end(), [ptr](const auto& record) {return record.address == (Uint64)ptr; });
+      return *iter;
+   }
+
+   static size_t GetRecordCount(Uint64 view_address)
+   {
+      return std::count_if(ObjectRecords.begin(), ObjectRecords.end(), [view_address](const auto& record) {return record.view_address == view_address; });
+   }
+};
+
+
+#endif

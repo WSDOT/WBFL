@@ -80,6 +80,8 @@ namespace WBFL
             return m_rT.UnitOfMeasure.UnitTag();
          }
 
+         const T& GetType() const { return m_rT; }
+
       private:
          const T&             m_rT;
       };

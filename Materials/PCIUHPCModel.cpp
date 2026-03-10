@@ -103,13 +103,9 @@ std::pair<Float64, bool> PCIUHPCModel::ComputeStress(Float64 strain) const
    return std::make_pair(stress, bWithinStrainLimits);
 }
 
-void PCIUHPCModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> PCIUHPCModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
-   *pMinStrain = -0.003;
-   *pMaxStrain = 0.005;
+   return { -0.003, 0.005 };
 }
 
 Float64 PCIUHPCModel::GetStrainAtPeakStress() const

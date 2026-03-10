@@ -49,3 +49,7 @@
 #include <RCSection/SectionBuilder.h>
 #include <RCSection/VariableStressBlockFactor.h>
 #include <RCSection/XRCSection.h>
+
+#include <RCSection/RCBeam.h>
+#include <RCSection/RCSolution.h>
+#include <RCSection/RCSolver.h>

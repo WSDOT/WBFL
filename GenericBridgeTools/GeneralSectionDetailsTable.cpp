@@ -28,15 +28,10 @@
 #include <WBFLGenericBridgeTools\GeneralSectionDetailsTable.h>
 #include <Reporter\Reporter.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, const WBFL::Units::ForceData& GeneralForce, const WBFL::Units::LengthData& ComponentDim, const WBFL::Units::PressureData& Stress, const WBFL::Units::Length2Data& Area);
 
-rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, IEAFDisplayUnits* pDisplayUnits)
+rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, std::shared_ptr<IEAFDisplayUnits> pDisplayUnits)
 {
    return CreateGeneralSectionDetailsTable(pSolution, Ytg, bSimpleFormat, pDisplayUnits->GetGeneralForceUnit(), pDisplayUnits->GetComponentDimUnit(), pDisplayUnits->GetStressUnit(), pDisplayUnits->GetAreaUnit());
 }

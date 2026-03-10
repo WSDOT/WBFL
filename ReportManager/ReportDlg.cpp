@@ -28,11 +28,6 @@
 #include "ReportManager.h"
 #include "ReportDlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CReportDlg dialog
@@ -74,7 +69,7 @@ BOOL CReportDlg::OnInitDialog()
 	CDialog::OnInitDialog();
 	
 	// TODO: Add extra initialization here
-   m_pBrowser = m_pRptMgr->CreateReportBrowser(m_Browser.GetSafeHwnd(),m_pRptSpec,m_pRptSpecBuilder);
+   m_pBrowser = m_pRptMgr->CreateReportBrowser(m_Browser.GetSafeHwnd(),0,m_pRptSpec,m_pRptSpecBuilder);
 
    CRect rect;
    m_Browser.GetClientRect(&rect);

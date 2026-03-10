@@ -27,11 +27,6 @@
 #include "POI.h"
 #include "ModelEvents.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define ON_CHANGED() ATLASSERT(m_pModel!=0); \
                                m_pModel->OnPOIChanged(this);

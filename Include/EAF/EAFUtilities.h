@@ -23,24 +23,29 @@
 
 #pragma once
 
-class CEAFApp;
-
 #include <EAF\EAFExp.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFPluginState.h>
 #include <EAF\EAFTypes.h>
+#include <EAF\Broker.h>
 #include <vector>
 #include <map>
 
-class CEAFStatusItem;
-interface IBroker;
+class CEAFApp;
+namespace WBFL
+{
+   namespace EAF
+   {
+      class StatusItem;
+   };
+};
 
 // Returns the main application object
 EAFFUNC CEAFApp* EAFGetApp();
 
 // Returns a pointer to the broker. Only call this method if you are using a document
 // type that is a descendent of CEAFBrokerDocument
-EAFFUNC HRESULT EAFGetBroker(IBroker** ppBroker);
+EAFFUNC std::shared_ptr<WBFL::EAF::Broker> EAFGetBroker();
 
 // Displays a dialog for enabling/disabling plugin components. catid is the component
 // category ID of the type of plugin to be managed.
@@ -56,7 +61,7 @@ EAFFUNC CEAFDocument* EAFGetDocument();
 EAFFUNC CView* EAFGetActiveView();
 
 // Displays the common status center item message dialog box
-EAFFUNC eafTypes::StatusItemDisplayReturn EAFShowStatusMessage(CEAFStatusItem* pStatusItem,eafTypes::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
+EAFFUNC WBFL::EAF::StatusItemDisplayReturn EAFShowStatusMessage(std::shared_ptr<WBFL::EAF::StatusItem> pStatusItem,WBFL::EAF::StatusSeverityType severity,BOOL bRemoveableOnError,BOOL bEnableEdit,LPCTSTR lpszDocSetName=nullptr,UINT helpID=0);
 
 // Compares IIDs
 EAFFUNC bool operator<(REFIID a,REFIID b);
@@ -65,9 +70,9 @@ EAFFUNC bool operator<(REFIID a,REFIID b);
 EAFFUNC BOOL EAFShowUIHints(LPCTSTR lpszText,LPCTSTR lpszTitle = _T("Hints"));
 
 // Retrieves a file from an HTTP server.
-EAFFUNC eafTypes::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, const CString& strLocalTargetFile);
+EAFFUNC WBFL::EAF::HttpGetResult EAFGetFileFromHTTPServer(const CString& strFileURL, const CString& strLocalTargetFile);
 
-// Returns the name of the documentaion map (.DM) file
+// Returns the name of the documentation map (.DM) file
 EAFFUNC CString EAFGetDocumentationMapFile(LPCTSTR lpszDocSetName,LPCTSTR lpszDocumentationURL);
 
 // Causes the specified documentation map file to be loaded and fills topicMap with the help topic ID mapping 

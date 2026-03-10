@@ -21,19 +21,33 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DRAWPOINTSTRATEGY_H_
-#define INCLUDED_DRAWPOINTSTRATEGY_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iPointDisplayObject;
-interface iCoordinateMap;
-
-interface iDrawPointStrategy : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC) PURE;
-   STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint) PURE;
-   STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite) PURE;
-   STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** box) PURE;
-};
+   namespace DManip
+   {
+      class iPointDisplayObject;
+      class iCoordinateMap;
 
-#endif // INCLUDED_DRAWPOINTSTRATEGY_H_
+      /// @brief Interface implemented by point drawing strategy objects. 
+      /// By implementing a point drawing strategy, point display objects can easily be drawn in different ways.
+      class DMANIPCLASS iDrawPointStrategy
+      {
+      public:
+         /// @brief Called by the framework when a point display object needs to be drawn
+         virtual void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC) const = 0;
+
+         /// @brief Called by the framework when a point is being dragged and it needs to be drawn
+         virtual void DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const = 0;
+
+         /// @brief Called by the framework whenever an appropretate object is dragged over this display object. 
+         /// The point display object needs to be drawn highlighted to indicate to the user that it is a valid point to drop.
+         virtual void DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,bool bHighlight) const = 0;
+
+         /// @brief Returns the size of the display object in world coordinates
+         virtual WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const = 0;
+      };
+   };
+};

@@ -34,10 +34,10 @@
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFDocTemplate.h>
-#include <EAF\EAFMenu.h>
-#include <EAF\EAFToolBar.h>
+#include <EAF\Menu.h>
+#include <EAF\ToolBar.h>
 #include <EAF\EAFStatusBar.h>
-#include <EAF\EAFAcceleratorTable.h>
+#include <EAF\AcceleratorTable.h>
 #include <EAF\EAFStartPageWnd.h>
 #include <vector>
 
@@ -78,8 +78,8 @@ public:
    BOOL DisableFailCreateMessage() const;
    void DisableFailCreateMessage(BOOL bDisable = TRUE);
 
-   CEAFMenu* GetMainMenu();
-   CEAFAcceleratorTable* GetAcceleratorTable();
+   std::shared_ptr<WBFL::EAF::Menu> GetMainMenu();
+   std::shared_ptr<WBFL::EAF::AcceleratorTable> GetAcceleratorTable();
    CEAFStatusBar* GetStatusBar();
    void SetStatusBar(CEAFStatusBar* pStatusBar);
 
@@ -92,9 +92,8 @@ public:
    void ShowStartPage();
    void HideStartPage();
 
-   UINT CreateToolBar(LPCTSTR lpszName,CEAFPluginCommandManager* pCmdMgr);
-   CEAFToolBar* GetToolBar(UINT toolbarID);
-   void DestroyToolBar(CEAFToolBar* pToolBar);
+   UINT CreateToolBar(LPCTSTR lpszName, std::shared_ptr<WBFL::EAF::PluginCommandManager> pCmdMgr);
+   std::shared_ptr<WBFL::EAF::ToolBar> GetToolBar(UINT toolbarID);
    void DestroyToolBar(UINT toolbarID);
 
    /// Enables/disables the "Modified" flag on the status bar
@@ -133,27 +132,27 @@ protected:
    CWnd* m_pWndCurrentChild;
 
    // Factory method for creating the main frame main menu object
-   virtual CEAFMenu* CreateMainMenu();
-   CEAFMenu* m_pMainMenu;
+   virtual std::shared_ptr<WBFL::EAF::Menu> CreateMainMenu();
+   std::shared_ptr<WBFL::EAF::Menu> m_pMainMenu;
 
    // control bar embedded members
    CEAFStatusBar*  m_pStatusBar;
    CToolBar* m_pMainFrameToolBar;
    BOOL m_bDisableHideMainToolBar;
 
-   struct CEAFToolBarInfo
+   struct ToolBarRecord
    {
-      CEAFToolBar* m_pEAFToolBar;
+      std::shared_ptr<WBFL::EAF::ToolBar> m_ToolBar;
       UINT m_ToolBarID;
 
-      bool operator<(const CEAFToolBarInfo& other) const
+      bool operator<(const ToolBarRecord& other) const
       { return m_ToolBarID < other.m_ToolBarID; }
 
-      bool operator==(const CEAFToolBarInfo& other) const
+      bool operator==(const ToolBarRecord& other) const
       { return m_ToolBarID == other.m_ToolBarID; }
    };
 
-   using ToolBarInfo = std::vector<CEAFToolBarInfo>;
+   using ToolBarInfo = std::vector<ToolBarRecord>;
    ToolBarInfo m_ToolBarInfo;
    std::vector<UINT> m_ToolBarIDs;
    void SetToolBarState(CToolBar* pToolBar,BOOL bShow);
@@ -166,9 +165,10 @@ protected:
    virtual CEAFStatusBar* CreateStatusBar();
    virtual CToolBar* CreateMainFrameToolBar();
 
-   virtual CEAFStartPageWnd* CreateStartPage();
+   virtual std::shared_ptr<CEAFStartPageWnd> CreateStartPage();
    void ResizeStartPage();
-   CEAFStartPageWnd* m_pStartPageWnd;
+   void DestroyStartPage();
+   std::shared_ptr<CEAFStartPageWnd> m_pStartPageWnd;
    BOOL m_bKeepStartPageOpen;
 
 

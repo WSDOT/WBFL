@@ -149,7 +149,7 @@ std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WB
 
             bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
 
-            topSlice = std::make_unique<GeneralSectionSlice>(top_slice.ShapeIdx, top_slice.SliceShape, top_slice.Area, top_slice.pntCG, top_slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice);
+            topSlice = std::make_unique<GeneralSectionSlice>(top_slice.ShapeIdx, std::move(top_slice.SliceShape), top_slice.Area, top_slice.pntCG, top_slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice);
 
 #if defined _DEBUG_LOGGING
             std::_tstring fgName(slice.FgMaterial ? slice.FgMaterial->GetName() : _T("-"));
@@ -177,7 +177,7 @@ std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WB
 
             bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
 
-            bottomSlice = std::make_unique<GeneralSectionSlice>(bottom_slice.ShapeIdx, bottom_slice.SliceShape, bottom_slice.Area, bottom_slice.pntCG, bottom_slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice ? VARIANT_TRUE : VARIANT_FALSE);
+            bottomSlice = std::make_unique<GeneralSectionSlice>(bottom_slice.ShapeIdx, std::move(bottom_slice.SliceShape), bottom_slice.Area, bottom_slice.pntCG, bottom_slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice ? VARIANT_TRUE : VARIANT_FALSE);
 
 #if defined _DEBUG_LOGGING
             std::_tstring fgName(slice.FgMaterial ? slice.FgMaterial->GetName() : _T("-"));
@@ -213,7 +213,7 @@ std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WB
 
          bExceededStrainLimits |= bExceededStrainLimitsThisSlice;
 
-         std::unique_ptr<GeneralSectionSlice> section_slice(std::make_unique<GeneralSectionSlice>(slice.ShapeIdx, slice.SliceShape, slice.Area, slice.pntCG, slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice));
+         std::unique_ptr<GeneralSectionSlice> section_slice(std::make_unique<GeneralSectionSlice>(slice.ShapeIdx, std::move(slice.SliceShape), slice.Area, slice.pntCG, slice.ei, incremental_strain, total_strain, fg_stress, bg_stress, slice.FgMaterial, slice.BgMaterial, bExceededStrainLimitsThisSlice));
          slices.emplace_back(std::move(section_slice));
 
 #if defined _DEBUG_LOGGING

@@ -82,8 +82,12 @@ public:
    {
       if ( idx != 0 )
          return E_INVALIDARG;
-
-      return m_Beam->get_D4(tFlange);
+      
+      Float64 d4, d5;
+      m_Beam->get_D4(&d4);
+      m_Beam->get_D5(&d5);
+      *tFlange = d4 + d5;
+      return S_OK;
    }
 
 // IFlangedEndBlockSection
@@ -281,7 +285,11 @@ public:
       if (idx != 0)
          return E_INVALIDARG;
 
-      return m_Beam->get_D6(tFlange);
+      Float64 d5, d6;
+      m_Beam->get_D5(&d5);
+      m_Beam->get_D6(&d6);
+      *tFlange = d5 + d6;
+      return S_OK;
    }
 
 
@@ -737,7 +745,11 @@ public:
          return E_INVALIDARG;
       }
 
-      return m_Beam->get_D5(tFlange);
+      Float64 d4, d5;
+      m_Beam->get_D4(&d4);
+      m_Beam->get_D5(&d5);
+      *tFlange = d4 + d5;
+      return S_OK;
    }
 
 
@@ -987,7 +999,11 @@ public:
       if ( idx != 0 )
          return E_INVALIDARG;
 
-      return m_Beam->get_D5(tFlange);
+      Float64 d4, d5;
+      m_Beam->get_D4(&d4);
+      m_Beam->get_D5(&d5);
+      *tFlange = d4 + d5;
+      return S_OK;
    }
 
 // IPrestressedGirderSection
@@ -1381,7 +1397,11 @@ public:
          return E_INVALIDARG;
       }
 
-      return m_Beam->get_D5(tFlange);
+      Float64 d4, d5;
+      m_Beam->get_D4(&d4);
+      m_Beam->get_D5(&d5);
+      *tFlange = d4 + d5;
+      return S_OK;
    }
 
 
@@ -1889,7 +1909,7 @@ public:
          return E_INVALIDARG;
       }
 
-      return m_Beam->get_D5(tFlange);
+      return m_Beam->get_D8(tFlange);
    }
 
 

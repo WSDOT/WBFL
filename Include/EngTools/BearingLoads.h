@@ -42,19 +42,6 @@ namespace WBFL
         {
         public:
 
-            /// @return bearing pad fixidity in the X direction
-            enum class FixedTranslationX
-            {
-                Yes,
-                No,
-            };
-            /// @return bearing pad fixidity in the Y direction
-            enum class FixedTranslationY
-            {
-                Yes,
-                No,
-            };
-
             /// @brief Sets the bearing dead load
             /// @param DL
             void SetDeadLoad(Float64 DL);
@@ -78,11 +65,10 @@ namespace WBFL
             void SetShearDeformation(Float64 shear_def);
             /// @brief Sets the fixity for X-Translation
             /// @param fx
-            void SetFixedTranslationX(FixedTranslationX fx);
+            void SetFixedTranslationX(bool fx);
             /// @brief Sets the fixity for Y-Translation
             /// @param fy
-            void SetFixedTranslationY(FixedTranslationY fy);
-
+            void SetFixedTranslationY(bool fy);
 
             /// @return dead weight of bearing pad
             Float64 GetDeadLoad() const;
@@ -101,10 +87,10 @@ namespace WBFL
             /// @return bearing pad shear deformation 
             Float64 GetShearDeformation() const;
             /// @return if translation is fixed in the X direction
-            FixedTranslationX GetFixedTranslationX() const;
+            bool GetFixedTranslationX() const;
             /// @return if translation is fixed in the Y direction
-            FixedTranslationY GetFixedTranslationY() const;
-            /// @return bearing pad X Direction effective K factor 
+            bool GetFixedTranslationY() const;
+            /// @return bearing pad X Direction effective K factor
             Float64 GetEffectiveKFactorX() const;
             /// @return bearing pad Y Direction effective K factor
             Float64 GetEffectiveKFactorY() const;
@@ -119,8 +105,8 @@ namespace WBFL
             Float64 m_rotation_y{ 0.005 };///< y-axis rotation
             Float64 m_static_rotation{ 0.008 };///< static rotation
             Float64 m_cyclic_rotation{ 0.006 };///< cyclic rotation
-            FixedTranslationX m_fixed_translation_x{ FixedTranslationX::Yes };///< fixed X translation
-            FixedTranslationY m_fixed_translation_y{ FixedTranslationY::No };///< fixed Y translation
+            bool m_fixed_translation_x{ true };///< fixed X translation
+            bool m_fixed_translation_y{ false };///< fixed Y translation
 
         };
     }; // EngTools

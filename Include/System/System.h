@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_SYSTEM_H_
-#define INCLUDED_SYSTEM_SYSTEM_H_
 #pragma once
 
 
@@ -37,6 +35,7 @@
 #include <System\Checks.h>
 #include <System\Date.h>
 #include <System\DllTest.h>
+#include <System\Logger.h>
 #include <System\LogContext.h>
 #include <System\EngNotation.h>
 #include <System\Exception.h>
@@ -44,7 +43,7 @@
 #include <System\Flags.h>
 #include <System\IStructuredLoad.h>
 #include <System\IStructuredSave.h>
-#include <System\Log.h>
+#include <System\UnitTestLog.h>
 #include <System\NumericFormatTool.h>
 #include <System\SectionValue.h>
 #include <System\SingletonKiller.h>
@@ -59,6 +58,3 @@
 #include <System\XStructuredSave.h>
 #include <System\ComCatMgr.h>
 #include <System\FileStream.h>
-#include <SysTem\XStructuredLoad.h>
-
-#endif // INCLUDED_SYSTEM_SYSTEM_H_

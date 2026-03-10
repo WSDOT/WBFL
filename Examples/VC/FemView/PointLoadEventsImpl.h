@@ -7,48 +7,44 @@
 // PointLoadEventsImpl.h : header file
 //
 
+using namespace WBFL::DManip;
+
 class CFEA2DDoc;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointLoadEventsImpl command target
 
-class CPointLoadEventsImpl : public CCmdTarget
+class CPointLoadEventsImpl : public iPointLoadEvents, public iDisplayObjectEvents, public iDragData
 {
 public:
    CPointLoadEventsImpl(CFEA2DDoc* pDoc);
    ~CPointLoadEventsImpl();
 
-   DECLARE_INTERFACE_MAP()
+   // iPointLoadEvents
+   void InitFromLoad(IFem2dPointLoad* load) override;
 
-   BEGIN_INTERFACE_PART(Events,iPointLoadEvents)
-      STDMETHOD_(void,InitFromLoad)(IFem2dPointLoad* load);
-   END_INTERFACE_PART(Events)
+   // iDisplayObjectEvents
+   bool OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnLButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonDown(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnRButtonUp(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseMove(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
+   bool OnMouseWheel(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, short zDelta, const POINT& point) override;
+   bool OnKeyDown(std::shared_ptr<iDisplayObject> pDO, UINT nChar, UINT nRepCnt, UINT nFlags) override;
+   bool OnContextMenu(std::shared_ptr<iDisplayObject> pDO, CWnd* pWnd, const POINT& point) override;
+   void OnChanged(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset) override;
+   void OnMoved(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnCopied(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnSelect(std::shared_ptr<iDisplayObject> pDO) override;
+   void OnUnselect(std::shared_ptr<iDisplayObject> pDO) override;
 
-   BEGIN_INTERFACE_PART(DisplayObjectEvents,iDisplayObjectEvents)
-      STDMETHOD_(void,OnChanged)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnDragMoved)(iDisplayObject* pDO,ISize2d* offset);
-      STDMETHOD_(void,OnMoved)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnCopied)(iDisplayObject* pDO);
-      STDMETHOD_(bool,OnLButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDblClk)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonDown)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnLButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnRButtonUp)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseMove)(iDisplayObject* pDO,UINT nFlags,CPoint point);
-      STDMETHOD_(bool,OnMouseWheel)(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point);
-      STDMETHOD_(bool,OnKeyDown)(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags);
-      STDMETHOD_(bool,OnContextMenu)(iDisplayObject* pDO,CWnd* pWnd,CPoint point);
-      STDMETHOD_(void,OnSelect)(iDisplayObject* pDO);
-      STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO);
-   END_INTERFACE_PART(DisplayObjectEvents)
-
-   // iDragData Implementation
-   BEGIN_INTERFACE_PART(DragData,iDragData)
-      STDMETHOD_(UINT,Format)();
-      STDMETHOD_(BOOL,PrepareForDrag)(iDisplayObject* pDO,iDragDataSink* pSink);
-      STDMETHOD_(void,OnDrop)(iDisplayObject* pDO,iDragDataSource* pSource);
-   END_INTERFACE_PART(DragData)
+   // iDragData
+   UINT Format() override;
+   bool PrepareForDrag(std::shared_ptr<iDisplayObject> pDO, std::shared_ptr<iDragDataSink> pSink) override;
+   void OnDrop(std::shared_ptr<iDisplayObject> pDO, std::shared_ptr<iDragDataSource> pSource) override;
 
 public:
    CFEA2DDoc* m_pDoc;

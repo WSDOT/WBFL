@@ -26,16 +26,11 @@
 
 #include "stdafx.h"
 #include "ManagePluginsDlg.h"
-#include <EAF\EAFHelp.h>
+#include <EAF\Help.h>
 #include <EAF\EAFApp.h>
+#include <EAF\ComponentManager.h>
 #include <algorithm>
 
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 // CManagePluginsDlg dialog
@@ -123,53 +118,22 @@ BOOL CManagePluginsDlg::InitList()
 
    m_PluginStates.clear();
 
-   CComPtr<ICatRegister> pICatReg;
-   HRESULT hr = pICatReg.CoCreateInstance(CLSID_StdComponentCategoriesMgr);
-   if ( FAILED(hr) )
+   auto components = WBFL::EAF::ComponentManager::GetInstance().GetComponents(m_CATID);
+   for (auto& component : components)
    {
-      AfxMessageBox(_T("Failed to create the component category manager"));
-      return FALSE;
+      int idx = m_PluginList.AddString(CString(component.name.c_str()));
+      CString strCLSID(EAFStringFromCLSID(component.clsid).c_str());
+
+      CString strState = m_pApp->GetProfileString(m_strSection, strCLSID, _T("Enabled"));
+
+      bool bInitiallyEnabled = (strState.CompareNoCase(_T("Enabled")) == 0 ? true : false);
+      m_PluginList.SetCheck(idx, bInitiallyEnabled);
+
+      CEAFPluginState state(component.name.c_str(), component.clsid, strCLSID, bInitiallyEnabled);
+      m_PluginStates.push_back(state);
+      std::sort(m_PluginStates.begin(), m_PluginStates.end()); // the check list box is sorted, so we have to sort this to match
    }
 
-   CComQIPtr<ICatInformation> pICatInfo(pICatReg);
-   CComPtr<IEnumCLSID> pIEnumCLSID;
-
-   const int nID = 1;
-   CATID ID[nID];
-
-   ID[0] = m_CATID;
-   pICatInfo->EnumClassesOfCategories(nID,ID,0,nullptr,&pIEnumCLSID);
-
-   const int nPlugins = 5;
-   CLSID clsid[nPlugins]; 
-   ULONG nFetched = 0;
-
-   while ( SUCCEEDED(pIEnumCLSID->Next(nPlugins,clsid,&nFetched)) && 0 < nFetched)
-   {
-      for ( ULONG i = 0; i < nFetched; i++ )
-      {
-         LPOLESTR pszUserType;
-         OleRegGetUserType(clsid[i],USERCLASSTYPE_SHORT,&pszUserType);
-         CString strPluginName(OLE2T(pszUserType));
-         int idx = m_PluginList.AddString(strPluginName);
-
-         LPOLESTR pszCLSID;
-         ::StringFromCLSID(clsid[i],&pszCLSID);
-         
-         CString strCLSID(pszCLSID);
-
-         CString strState = m_pApp->GetProfileString(m_strSection,strCLSID,_T("Enabled"));
-         
-         bool bInitiallyEnabled = (strState.CompareNoCase(_T("Enabled")) == 0 ? true : false);
-         m_PluginList.SetCheck(idx,bInitiallyEnabled);
-
-         CEAFPluginState state(strPluginName,clsid[i],strCLSID,bInitiallyEnabled);
-         m_PluginStates.push_back(state);
-         std::sort(m_PluginStates.begin(),m_PluginStates.end()); // the check list box is sorted, so we have to sort this to match
-
-         ::CoTaskMemFree((void*)pszCLSID);
-      }
-   }
 
    return TRUE;
 }

@@ -3,8 +3,3 @@
 //	stdafx.obj will contain the pre-compiled type information
 
 #include "stdafx.h"
-
-
-#include <initguid.h>
-#include <WBFLDManip.h>
-#include <DManip\DManip_clsid.cpp>

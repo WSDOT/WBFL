@@ -86,10 +86,10 @@ public:
    );
 
    /// Return STL iterator to const Paragraph contained inside of Chapter pointing to beginning.
-   ConstChapterParagraphIterator ConstBegin();
+   ConstChapterParagraphIterator ConstBegin() const;
 
    /// Return STL iterator to const Paragraph contained inside of Chapter pointing to end.
-   ConstChapterParagraphIterator ConstEnd();
+   ConstChapterParagraphIterator ConstEnd() const;
 
    /// Return STL iterator to Paragraph contained inside of Chapter pointing to beginning.
    ChapterParagraphIterator Begin();

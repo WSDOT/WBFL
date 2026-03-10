@@ -148,6 +148,9 @@
     <ClCompile Include="XGeometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FIBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\GeomModel\AutoLib.h">
@@ -313,6 +316,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GeomModel\XGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\GeomModel\FIBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

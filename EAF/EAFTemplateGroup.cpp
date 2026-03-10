@@ -25,11 +25,6 @@
 #include "resource.h"
 #include <EAF\EAFTemplateGroup.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 IMPLEMENT_DYNAMIC(CEAFTemplateItem,CObject)

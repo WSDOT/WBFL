@@ -11,6 +11,53 @@ namespace LrfdUnitTests
    {
    public:
 
+      TEST_METHOD(Alpha1)
+      {
+         // before 7th Edition, 2015 interims, alpha1 is always 0.85
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEdition2014);
+
+         // want to work in KSI
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+         WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+         WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
+
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(4.0), 0.001);
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(10.0), 0.001);
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(12.5), 0.001);
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(15.0), 0.001);
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(20.0), 0.001);
+      }
+
+      TEST_METHOD(Alpha1_After7thEdition2015)
+      {
+         BDSAutoVersion av;
+         BDSManager::SetEdition(BDSManager::Edition::SeventhEditionWith2015Interims);
+
+         // want to work in KSI
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetMassUnit(WBFL::Units::Measure::_12KSlug);
+         WBFL::Units::System::SetLengthUnit(WBFL::Units::Measure::Inch);
+         WBFL::Units::System::SetAngleUnit(WBFL::Units::Measure::Radian);
+
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(4.0), 0.001);
+         Assert::AreEqual(0.85, ConcreteUtil::Alpha1(10.0), 0.001);
+         Assert::AreEqual(0.80, ConcreteUtil::Alpha1(12.5), 0.001);
+         Assert::AreEqual(0.75, ConcreteUtil::Alpha1(15.0), 0.001);
+         Assert::AreEqual(0.75, ConcreteUtil::Alpha1(20.0), 0.001);
+      }
+
+      TEST_METHOD(FlexuralCapacityResistanceFactor)
+      {
+         auto ecl = WBFL::LRFD::Rebar::GetCompressionControlledStrainLimit(WBFL::Materials::Rebar::Grade::Grade60);
+         auto etl = WBFL::LRFD::Rebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade::Grade60);
+
+         Assert::AreEqual(0.75, WBFL::LRFD::ConcreteUtil::GetFlexureCapacityResistanceFactor(ecl - 0.001, ecl, etl, 0.75, 1.0));
+         Assert::AreEqual(1.00, WBFL::LRFD::ConcreteUtil::GetFlexureCapacityResistanceFactor(etl + 0.001, ecl, etl, 0.75, 1.0));
+         Assert::AreEqual(0.875, WBFL::LRFD::ConcreteUtil::GetFlexureCapacityResistanceFactor((ecl + etl)/2, ecl, etl, 0.75, 1.0));
+      }
+
       TEST_METHOD(Beta1)
       {
          BDSAutoVersion av;

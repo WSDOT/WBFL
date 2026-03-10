@@ -113,6 +113,10 @@
 #define IDS_E_BADINSTALL                61449
 #define IDS_E_PROBPERSISTS              61450
 #define IDS_E_UNSAFESAVE                61451
+#define IDD_PROGRESSDLG                 1001
+#define IDR_ANIMATE                     1002
+#define IDC_PROGRESS                    1003
+#define IDC_ANIMATE                     1004
 
 // Next default values for new objects
 // 

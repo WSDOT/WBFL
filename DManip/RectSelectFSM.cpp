@@ -21,88 +21,76 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// RectSelectFSM.cpp: implementation of the CRectSelectFSMState class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
+#include "pch.h"
 #include "RectSelectFSM.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
 // Definition of static state objects
-CRectSelectFSMStartState                 CRectSelectFSM::Start;
-CRectSelectFSMWaitingForSecondPointState CRectSelectFSM::WaitingForSecondPoint;
-CRectSelectFSMDoneState                  CRectSelectFSM::Done;
+RectSelectFSMStartState                 RectSelectFSM::Start;
+RectSelectFSMWaitingForSecondPointState RectSelectFSM::WaitingForSecondPoint;
+RectSelectFSMDoneState                  RectSelectFSM::Done;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CRectSelectFSMState::CRectSelectFSMState()
+RectSelectFSMState::RectSelectFSMState()
 {
 
 }
 
-CRectSelectFSMState::~CRectSelectFSMState()
+RectSelectFSMState::~RectSelectFSMState()
 {
 
 }
 
-void CRectSelectFSMState::Do(CRectSelectFSM &fsm)
+void RectSelectFSMState::Do(RectSelectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("Do"),fsm.GetState().StateName());
 }
 
-void CRectSelectFSMState::MouseDown(CRectSelectFSM &fsm)
+void RectSelectFSMState::MouseDown(RectSelectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseDown"),fsm.GetState().StateName());
 }
 
-void CRectSelectFSMState::MouseUp(CRectSelectFSM &fsm)
+void RectSelectFSMState::MouseUp(RectSelectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseUp"),fsm.GetState().StateName());
 }
 
-void CRectSelectFSMState::MouseMove(CRectSelectFSM &fsm)
+void RectSelectFSMState::MouseMove(RectSelectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("MouseMove"),fsm.GetState().StateName());
 }
 
-void CRectSelectFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM &fsm)
+void RectSelectFSMState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,RectSelectFSM &fsm)
 {
    // Default implementation
    fsm.FSMError(_T("KeyPress"),fsm.GetState().StateName());
 }
 
 // States and State Transitions
-void CRectSelectFSMWaitingForSecondPointState::MouseUp(CRectSelectFSM& fsm)
+void RectSelectFSMWaitingForSecondPointState::MouseUp(RectSelectFSM& fsm)
 {
    // Action
    fsm.SelectObjects();
 
    // Change State
-   fsm.SetState(CRectSelectFSM::Done);
+   fsm.SetState(RectSelectFSM::Done);
 }
 
-void CRectSelectFSMWaitingForSecondPointState::MouseMove(CRectSelectFSM& fsm)
+void RectSelectFSMWaitingForSecondPointState::MouseMove(RectSelectFSM& fsm)
 {
    // Action
    fsm.TrackRect();
 
    // Change State
-   fsm.SetState(CRectSelectFSM::WaitingForSecondPoint);
+   fsm.SetState(RectSelectFSM::WaitingForSecondPoint);
 }
 
-void CRectSelectFSMWaitingForSecondPointState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,CRectSelectFSM& fsm)
+void RectSelectFSMWaitingForSecondPointState::KeyPress(UINT nChar, UINT nRepCnt, UINT nFlags,RectSelectFSM& fsm)
 {
    // Conditional state change
    if ( nChar == VK_ESCAPE )
@@ -111,21 +99,21 @@ void CRectSelectFSMWaitingForSecondPointState::KeyPress(UINT nChar, UINT nRepCnt
       fsm.Cancel();
 
       // Change State
-      fsm.SetState(CRectSelectFSM::Done);
+      fsm.SetState(RectSelectFSM::Done);
    }
 }
 
 
-void CRectSelectFSMStartState::Do(CRectSelectFSM& fsm)
+void RectSelectFSMStartState::Do(RectSelectFSM& fsm)
 {
    // Action
    fsm.InitTask();
 
    // Change State
-   fsm.SetState(CRectSelectFSM::WaitingForSecondPoint);
+   fsm.SetState(RectSelectFSM::WaitingForSecondPoint);
 }
 
-CRectSelectFSM::CRectSelectFSM():
+RectSelectFSM::RectSelectFSM():
 m_pState(&Start)
 {
 }

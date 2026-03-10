@@ -26,11 +26,6 @@
 #include "stdafx.h"
 #include "GeneralTests.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void TestISupportUnitServer(IUnknown* punk)
 {

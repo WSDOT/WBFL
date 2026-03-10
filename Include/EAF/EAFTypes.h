@@ -25,66 +25,72 @@
 
 #include <WBFLTypes.h>
 
-struct eafTypes
+namespace WBFL
 {
-   typedef enum UnitMode
+   namespace EAF
    {
-      umSI = 1,
-      umUS = 2
-   } UnitMode;
+      enum class UnitMode
+      {
+         SI = 1,
+         US = 2
+      };
+      inline constexpr auto operator+(UnitMode t) noexcept { return std::underlying_type<UnitMode>::type(t); }
 
-   // Status Item Severity Type
-   typedef enum StatusSeverityType
-   {
-      statusInformation,
-      statusWarning,
-      statusError
-   } StatusSeverityType;
+      enum class StatusSeverityType
+      {
+         Information,
+         Warning,
+         Error
+      };
+      inline constexpr auto operator+(StatusSeverityType t) noexcept { return std::underlying_type<StatusSeverityType>::type(t); }
 
-   typedef enum LpFrameMode
-   { 
-      lpfOn, 
-      lpfOff
-   } LpFrameMode;
+      enum class LpFrameMode
+      {
+         On,
+         Off
+      };
 
-   typedef enum CustomReportError {
-      creParentMissingAtLoad,   // Parent for custom missing at program load time
-      creParentMissingAtImport, // Parent for custom missing when importing
-      creChapterMissingAtLoad,
-      creChapterMissingAtImport
-   } CustomReportError;
+      enum class CustomReportError 
+      {
+         ParentMissingAtLoad,   // Parent for custom missing at program load time
+         ParentMissingAtImport, // Parent for custom missing when importing
+         ChapterMissingAtLoad,
+         ChapterMissingAtImport
+      };
 
-   typedef enum CustomReportHelp
-   {
-      crhCustomReport,
-      crhFavoriteReport
-   } CustomReportHelp;
+      enum class CustomReportHelp
+      {
+         CustomReport,
+         FavoriteReport
+      };
 
-   typedef enum HttpGetResult
-   {
-      hgrOk,
-      hgrInvalidUrl,
-      hgrConnectionError,
-      hgrNotFound
-   } HttpGetResult;
+      enum class HttpGetResult
+      {
+         Ok,
+         InvalidUrl,
+         ConnectionError,
+         NotFound
+      };
 
-   typedef enum HelpResult
-   {
-      hrOK,
-      hrDocSetNotFound,
-      hrTopicNotFound
-   } HelpResult;
+      enum class HelpResult
+      {
+         OK,
+         DocSetNotFound,
+         TopicNotFound
+      };
 
-   // Return values from EAFShowStatusMessage
-   typedef enum StatusItemDisplayReturn 
-   { 
-      eafsiClose,   // dialog closed without doing anything
-      eafsiRemove,  // dialog closed after removing status item
-      eafsiEdit     // dialog closed 
-   } StatusItemDisplayReturn;
+      // Return values from EAFShowStatusMessage
+      enum class StatusItemDisplayReturn
+      {
+         Close,   // dialog closed without doing anything
+         Remove,  // dialog closed after removing status item
+         Edit     // dialog closed 
+      };
 
+   };
 };
 
-typedef IDType StatusGroupIDType;
-typedef IDType StatusCallbackIDType;
-typedef IDType StatusItemIDType;
+using StatusGroupIDType = IDType;
+using StatusCallbackIDType = IDType;
+using StatusItemIDType = IDType;
+

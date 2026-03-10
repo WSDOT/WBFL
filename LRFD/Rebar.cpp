@@ -352,21 +352,19 @@ Float64 Rebar::GetTensionControlledStrainLimit(WBFL::Materials::Rebar::Grade gra
    return etl;
 }
 
-REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
+REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, const WBFL::Materials::SimpleConcrete& concrete, Float64 distFromBottom, bool bEpoxyCoated, bool bMeetsCoverRequirements)
 {
-#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
-   return Rebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity(), bIsTopBar, bEpoxyCoated, bMeetsCoverRequirements);
+   return Rebar::GetRebarDevelopmentLengthDetails(size,Ab,db,fy,concrete.GetType(),concrete.GetFc(),concrete.HasAggSplittingStrength(),concrete.GetAggSplittingStrength(),concrete.GetDensity(), distFromBottom, bEpoxyCoated, bMeetsCoverRequirements);
 }
 
-REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density, bool bIsTopBar, bool bEpoxyCoated, bool bMeetsCoverRequirements)
+REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::Rebar::Size size, Float64 Ab, Float64 db, Float64 fy, WBFL::Materials::ConcreteType type, Float64 fc, bool isFct, Float64 Fct,Float64 density, Float64 distFromBottom, bool bEpoxyCoated, bool bMeetsCoverRequirements)
 {
-#pragma Reminder("WORKING HERE - Revise this method... the db should be implied from Size - maybe just pass in a Rebar object")
    REBARDEVLENGTHDETAILS details;
    details.Ab = Ab;
    details.db = db;
    details.fy = fy;
-
    details.fc = fc;
+   details.distFromBottom = distFromBottom;
 
    details.lambdaRl = 1.0; // initialize lambdas even though only used for 2015+
    details.lambdaLw = 1.0;
@@ -378,7 +376,32 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
       Float64 fc = WBFL::Units::ConvertFromSysUnits(details.fc,WBFL::Units::Measure::KSI);
       Float64 fy = WBFL::Units::ConvertFromSysUnits(details.fy,WBFL::Units::Measure::KSI);
 
+      // lightweight concrete factor
+      if (BDSManager::Edition::SeventhEditionWith2016Interims <= BDSManager::GetEdition())
+      {
+         if (type == WBFL::Materials::ConcreteType::UHPC)
+            details.lambdaLw = 1.0; // GS 1.10.8.2.1
+         else
+            details.lambdaLw = ConcreteUtil::ComputeConcreteDensityModificationFactor(type, density, isFct, Fct, fc);
+      }
+      else
+      {
+         if (type == WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
+         {
+            details.lambdaLw = 1.0;
+         }
+         else if (type == WBFL::Materials::ConcreteType::AllLightweight || type == WBFL::Materials::ConcreteType::SandLightweight)
+         {
+            details.lambdaLw = 1.3;
+         }
+         else
+         {
+            CHECK(false); // new type?
+            details.lambdaLw = 1.0;
+         }
+      }
   
+      // Compute ldb
       Float64 ldb_min = WBFL::Units::ConvertToSysUnits(12.0, WBFL::Units::Measure::Inch);
       if (type == WBFL::Materials::ConcreteType::PCI_UHPC)
       {
@@ -403,11 +426,20 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
             fc = Min(fc, fc_max);
          }
 
-         details.ldb1 = 2.4 * db * fy / sqrt(fc);
+         if (BDSManager::Edition::TenthEdition2024 <= BDSManager::GetEdition())
+         {
+            // This equation changed drastically in the 10th edition
+            details.ldb1 = 0.17 * db * pow(fy / (1.97 * details.lambdaLw * pow(fc, 0.25)), 2.0);
+         }
+         else
+         {
+            details.ldb1 = 2.4 * db * fy / sqrt(fc);
+         }
+
          details.ldb1 = WBFL::Units::ConvertToSysUnits(details.ldb1, WBFL::Units::Measure::Inch);
       }
-      details.ldb2 = 0.0;
 
+      details.ldb2 = 0.0;
 
       details.ldb = Max(details.ldb1,details.ldb2,ldb_min);
    
@@ -416,46 +448,29 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
          // lambda Rl is always 1.0 for UHPC - GS 1.10.8.2
          details.lambdaRl = 1.0;
       }
+      else if (BDSManager::Edition::TenthEdition2024 <= BDSManager::GetEdition())
+      {
+         // If this is a top bar (there is more than 12" of fresh concrete is cast below reinforcement)
+         // use 1.3, other 1.0 LRFD 5.10.8.2.1b
+         Float64 inch12 = WBFL::Units::ConvertToSysUnits(12.0, WBFL::Units::Measure::Inch);
+         bool bIsTopBar = distFromBottom > inch12;
+
+         details.lambdaRl = bIsTopBar ? 1.3 : 1.0;
+      }
       else
       {
-         // if this is a top bar (there is more than 12" of fresh concrete is cast below reinforcement)
+         // If this is a top bar (there is more than 12" of fresh concrete is cast below reinforcement)
          // or this is not a top bar (not more than 12" of fresh concrete cast below reinforcement) and f'c > 10.ksi
          // use 1.3, other 1.0 LRFD 5.10.8.2.1b
+         Float64 inch12 = WBFL::Units::ConvertToSysUnits(12.0, WBFL::Units::Measure::Inch);
+         bool bIsTopBar = distFromBottom > inch12;
+
          details.lambdaRl = (bIsTopBar || (!bIsTopBar && 10.0 < fc)) ? 1.3 : 1.0;
       }
 
-      // lightweight concrete factor
-      if ( BDSManager::Edition::SeventhEditionWith2016Interims <= BDSManager::GetEdition())
-      {
-         if (type == WBFL::Materials::ConcreteType::UHPC)
-            details.lambdaLw = 1.0; // GS 1.10.8.2.1
-         else
-            details.lambdaLw = ConcreteUtil::ComputeConcreteDensityModificationFactor(type,density,isFct,Fct,fc);
-
-         details.factor = 1 / details.lambdaLw;// Eqn 5.11.2.1.1-1 was modified in LRFD 2016... using lambdaLw for lambda in the equation
-      }
-      else
-      {
-         if (type== WBFL::Materials::ConcreteType::Normal || type == WBFL::Materials::ConcreteType::PCI_UHPC || type == WBFL::Materials::ConcreteType::UHPC)
-         {
-            details.lambdaLw = 1.0;
-         }
-         else if (type == WBFL::Materials::ConcreteType::AllLightweight || type == WBFL::Materials::ConcreteType::SandLightweight)
-         {
-            details.lambdaLw = 1.3;
-         }
-         else
-         {
-            CHECK(false); // new type?
-            details.lambdaLw = 1.0;
-         }
-
-         // lambda cf is for epoxy coated bars - we don't current support epoxy coated bars so lambda.cf is 1.0
-         // also, lambda.Rl * lambda.cf need not be greater than 1.7... since lambda.cf is always 1.0 and lambda.Rl
-         // is never greater than 1.0, the 1.7 limit is always satisfied
-         details.factor = details.lambdaLw;
-      }
-
+      // lambda cf is for epoxy coated bars - we don't current support epoxy coated bars so lambda.cf is 1.0
+      // also, lambda.Rl * lambda.cf need not be greater than 1.7... since lambda.cf is always 1.0 and lambda.Rl
+      // is never greater than 1.0, the 1.7 limit is always satisfied
       details.lambdaCf = 1.0;
       if (bEpoxyCoated)
       {
@@ -472,7 +487,15 @@ REBARDEVLENGTHDETAILS Rebar::GetRebarDevelopmentLengthDetails(WBFL::Materials::R
       {
          details.bRlCfLimit = false;
       }
-      details.factor *= rl_cf;
+
+      if (BDSManager::Edition::TenthEdition2024 <= BDSManager::GetEdition())
+      {
+         details.factor = rl_cf;
+      }
+      else 
+      {
+         details.factor = rl_cf / details.lambdaLw;// Eqn 5.11.2.1.1-1 was modified in LRFD 2016... using lambdaLw for lambda in the equation
+      }
    }
    else
    {

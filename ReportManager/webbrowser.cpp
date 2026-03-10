@@ -28,7 +28,7 @@
 // Note: Most of the code below was copied on July 2, 2012 from http://www.codeproject.com from the 
 //       article "Using the WebBrowser control, simplified" by Gary R. Wheeler | 13 Feb 2012
 //       Original code was licensed by the "The Code Project Open License (CPOL)" which requires
-//       reference back to the orignal code.
+//       reference back to the original code.
 //       Class names were changed to retain compatibility with the original PGSuper/WBFL
 //       code base.
 //
@@ -42,11 +42,6 @@
 
 #include "WebBrowser.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define Unused(parameter) parameter					// avoid compile warnings
 													// about unused parameters

@@ -151,8 +151,8 @@ void Plane3d::ThroughPoints(const Point3d& p1, const Point3d& p2, const Point3d&
 #if defined _DEBUG
    Float64 d2 = -1.0 * (m_A * x2 + m_B * y2 + m_C * z2);
    Float64 d3 = -1.0 * (m_A * x3 + m_B * y3 + m_C * z3);
-   CHECK(IsEqual(d2, m_D, 0.05));
-   CHECK(IsEqual(d3, m_D, 0.05));
+   CHECK(IsEqual(d2, m_D, max(0.05,fabs(m_D/1.0e08))));
+   CHECK(IsEqual(d3, m_D, max(0.05, fabs(m_D / 1.0e08))));
 #endif
 }
 

@@ -32,11 +32,6 @@
 #include <MathEx.h>
 #include <algorithm>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // In Girder Section Coordinates (anytime we cut a section through the girder)
@@ -427,7 +422,6 @@ STDMETHODIMP CStrandGridModel::put_HarpedStrandAdjustmentEnd(EndType endType,Flo
    HRESULT hr;
    if (increment<0.0 && !IsZero(offset))
    {
-      ATLASSERT(false); // cannot adjust if increment<0.0
       m_HarpGridEnd[endType]->SetStrandAdjustment(dx,0.0);
       hr = E_INVALIDARG;
    }
@@ -1398,7 +1392,7 @@ STDMETHODIMP CStrandGridModel::ComputeAvgHarpedStrandSlopeEx(Float64 Xs,IIndexAr
 #if defined _DEBUG
    Float64 gdrLength;
    m_pGirder->get_GirderLength(&gdrLength);
-   ATLASSERT(0.0 <= Xs  && Xs <= gdrLength);
+   ATLASSERT(IsLE(0.0,Xs)  && IsLE(Xs,gdrLength));
 #endif
 
    Float64 leftEndHP, leftHP, rightHP, rightEndHP;

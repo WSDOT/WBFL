@@ -36,16 +36,11 @@
 #include "AgentTools.h"
 
 #include <Graphing/GraphManager.h>
-#include <IGraphManager.h>
+#include <EAF/EAFGraphManager.h>
 
 #include <MfcTools\Text.h>
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFGraphView
@@ -148,9 +143,9 @@ void CEAFGraphView::OnUpdateFilePrint(CCmdUI* pCmdUI)
 void CEAFGraphView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint) 
 {
    CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
-   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+   auto& statusCenter = pDoc->GetStatusCenter();
 
-   if (statusCenter.GetSeverity() == eafTypes::statusError)
+   if (statusCenter.GetSeverity() == WBFL::EAF::StatusSeverityType::Error)
    {
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");
@@ -200,9 +195,9 @@ std::unique_ptr<WBFL::Graphing::GraphBuilder>& CEAFGraphView::GetGraphBuilder()
 void CEAFGraphView::OnInitialUpdate() 
 {
    CEAFDocument* pDoc = (CEAFDocument*)GetDocument();
-   CEAFStatusCenter& statusCenter = pDoc->GetStatusCenter();
+   auto& statusCenter = pDoc->GetStatusCenter();
 
-   if (statusCenter.GetSeverity() == eafTypes::statusError)
+   if (statusCenter.GetSeverity() == WBFL::EAF::StatusSeverityType::Error)
    {
       m_bUpdateError = true;
       m_ErrorMsg = _T("Errors exist that prevent analysis. Review the errors posted in the status center for more information");

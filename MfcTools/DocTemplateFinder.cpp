@@ -30,11 +30,6 @@ CLASS
 #include <mfcTools\DocTemplateFinder.h>
 #include <mfcTools\DocTemplateDialog.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // funtion to make sure directories are \ terminated
 void TerminateDirList(std::vector<std::_tstring>* list);

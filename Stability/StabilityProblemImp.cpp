@@ -39,10 +39,10 @@ Girder::~Girder()
 
 bool Girder::operator==(const Girder& other) const
 {
-   if ( m_pSegment && other.m_pSegment && m_pSegment != other.m_pSegment )
+   if ((bool)m_AlternateTensStressDataProvider != (bool)other.m_AlternateTensStressDataProvider)
       return false;
 
-   if ( m_pSegment == nullptr && m_vSectionProperties != other.m_vSectionProperties )
+   if (m_AlternateTensStressDataProvider && other.m_AlternateTensStressDataProvider && m_AlternateTensStressDataProvider != other.m_AlternateTensStressDataProvider)
       return false;
 
    if ( m_vPointLoads != other.m_vPointLoads )
@@ -68,18 +68,14 @@ bool Girder::operator!=(const Girder& other) const
    return !(*this == other);
 }
 
-void Girder::SetSegment(ISegment* pSegment)
+void WBFL::Stability::Girder::SetAlternateTensStressDataProvider(std::shared_ptr<IAlternateTensStressDataProvider> pATSProvider)
 {
-   m_pSegment = pSegment;
+   m_AlternateTensStressDataProvider = pATSProvider;
 }
 
-void Girder::GetSegment(ISegment** ppSegment) const
+std::shared_ptr<IAlternateTensStressDataProvider> WBFL::Stability::Girder::GetAlternateTensStressDataProvider() const
 {
-   (*ppSegment) = m_pSegment;
-   if ( m_pSegment )
-   {
-      (*ppSegment)->AddRef();
-   }
+   return m_AlternateTensStressDataProvider;
 }
 
 void Girder::ClearSections()
@@ -397,6 +393,8 @@ StabilityProblemImp& StabilityProblemImp::operator=(const StabilityProblemImp& o
 
    m_fy = other.m_fy;
 
+   m_MaxCoverToUseHigherTensionStressLimit = other.m_MaxCoverToUseHigherTensionStressLimit;
+
    m_Ll = other.m_Ll;
    m_Lr = other.m_Lr;
 
@@ -423,7 +421,10 @@ bool StabilityProblemImp::operator==(const StabilityProblemImp& other) const
    if ( m_Concrete != other.m_Concrete )
       return false;
 
-   if ( !IsEqual(m_fy,other.m_fy) )
+   if (!IsEqual(m_fy, other.m_fy))
+      return false;
+
+   if (!IsEqual(m_MaxCoverToUseHigherTensionStressLimit, other.m_MaxCoverToUseHigherTensionStressLimit))
       return false;
 
    if ( !CompareAnalysisPoints(other) )
@@ -690,6 +691,16 @@ Float64 StabilityProblemImp::GetRebarYieldStrength() const
 void StabilityProblemImp::SetRebarYieldStrength(Float64 fy)
 {
    m_fy = fy;
+}
+
+void StabilityProblemImp::SetMaxCoverToUseHigherTensionStressLimit(Float64 cover)
+{
+   m_MaxCoverToUseHigherTensionStressLimit = cover;
+}
+
+Float64 StabilityProblemImp::GetMaxCoverToUseHigherTensionStressLimit() const
+{
+   return m_MaxCoverToUseHigherTensionStressLimit;
 }
 
 void StabilityProblemImp::SetSupportLocations(Float64 Ll,Float64 Lr)

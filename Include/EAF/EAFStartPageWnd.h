@@ -36,28 +36,19 @@
 
 class EAFCLASS CEAFStartPageWnd : public CMDIChildWnd
 {
-	DECLARE_DYNCREATE(CEAFStartPageWnd)
-protected:
-	CEAFStartPageWnd();           // protected constructor used by dynamic creation
-
-// Attributes
 public:
+	CEAFStartPageWnd() = default;
 
-// Operations
-public:
-
-// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CEAFStartPageWnd)
-	public:
+public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle = WS_CHILD | WS_VISIBLE, const RECT& rect = rectDefault, CMDIFrameWnd* pParentWnd = nullptr, CCreateContext* pContext = nullptr);
-	protected:
+
+protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	//}}AFX_VIRTUAL
 
-// Implementation
 protected:
-	virtual ~CEAFStartPageWnd();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;

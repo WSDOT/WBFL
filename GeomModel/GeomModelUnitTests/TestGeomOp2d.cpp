@@ -644,6 +644,13 @@ namespace GeomModelUnitTest
          Assert::IsFalse(GeometricOperations::IsPointInTriangle(p1, p2, p3, p4));
       }
 
+      TEST_METHOD(DoesLineSegmentContainPoint)
+      {
+         LineSegment2d ls(1, 1, 5, 5);
+         Assert::IsTrue(GeometricOperations::DoesLineSegmentContainPoint(ls, Point2d(3, 3), 0.0001));
+         Assert::IsFalse(GeometricOperations::DoesLineSegmentContainPoint(ls, Point2d(3, 1), 0.0001));
+      }
+
       TEST_METHOD(Intersect)
       {
          Point2d p1_7(1, 7), pn3_3(-3, 3), p0_4(0, 4), p3_5(3, 5), p6_6(6, 6);

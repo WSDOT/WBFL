@@ -38,12 +38,6 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE 
-BEGIN
-    "1 TYPELIB ""WBFLCore.tlb""\r\n"
-    "\0"
-END
-
 #endif    // APSTUDIO_INVOKED
 
 
@@ -53,8 +47,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 8,0,9,0
- PRODUCTVERSION 8,0,9,0
+ FILEVERSION 9,0,0,1
+ PRODUCTVERSION 9,0,0,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +66,12 @@ BEGIN
             VALUE "Comments", "A member of the Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
             VALUE "FileDescription", "Core Services"
-            VALUE "FileVersion", "8.0.9.0"
+            VALUE "FileVersion", "9.0.0.1"
             VALUE "InternalName", "Core"
             VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "Core30.DLL"
             VALUE "ProductName", "WBFL"
-            VALUE "ProductVersion", "8.0.9.0"
+            VALUE "ProductVersion", "9.0.0.1"
         END
     END
     BLOCK "VarFileInfo"
@@ -132,16 +126,6 @@ IDR_ANIMATE             AVI                     "res\\Working.avi"
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// REGISTRY
-//
-
-IDR_CORE                REGISTRY                "Core.rgs"
-IDR_BROKER              REGISTRY                "Broker.rgs"
-IDR_BROKER2             REGISTRY                "Broker2.rgs"
-IDR_SYSAGENT            REGISTRY                "SysAgent.rgs"
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // String Table
 //
 
@@ -152,16 +136,3 @@ END
 
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-1 TYPELIB "WBFLCore.tlb"
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
-

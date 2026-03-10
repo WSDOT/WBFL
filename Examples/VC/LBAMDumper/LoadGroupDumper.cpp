@@ -70,14 +70,14 @@ void CLoadGroupDumper::DumpAPOIs(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSuperstructurePOIs(is, rsIncremental, &poi_ids,&poi_locs); // use incremental since we want all pois
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("           Member              Member     Member     Global X ")<<endl;
       os<<_T(" POI ID     Type                ID       Location    Location ")<<endl;
       os<<_T(" ------ -------------------- ---------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -111,14 +111,14 @@ void CLoadGroupDumper::DumpAPOIs(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSupportPOIs(0, &poi_ids);
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("           Member              Member     Member  ")<<endl;
       os<<_T(" POI ID     Type                ID       Location ")<<endl;
       os<<_T(" ------ -------------------- ---------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -165,14 +165,14 @@ void CLoadGroupDumper::DumpPOIDistributionFactors(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSuperstructurePOIs(is, rsIncremental, &poi_ids,&poi_locs); // use incremental since we want all pois
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("         Global X ")<<endl;
       os<<_T(" POI ID  Location    gPMSgl   gPMMul   gNMSgl   gNMMul   gVSgl    gVMul    gDSgl    gDMul    gRSgl    gRMul    gTSgl    gTMul     gFatM    gFatV    gPed ")<<endl;
       os<<_T(" ------ ----------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -217,14 +217,14 @@ void CLoadGroupDumper::DumpPOIDistributionFactors(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSupportPOIs(0, &poi_ids);
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("       ")<<endl;
       os<<_T(" POI ID  gPMSgl   gPMMul   gNMSgl   gNMMul   gVSgl    gVMul    gDSgl    gDMul    gRSgl    gRMul    gTSgl    gTMul     gFat")<<endl;
       os<<_T(" ------ -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -266,14 +266,14 @@ void CLoadGroupDumper::DumpPOIDistributionFactors(std::_tostream& os)
       CComPtr<IIDArray> spt_ids;
       m_Util->GetSupportIDs(0, &spt_ids);
 
-      CollectionIndexType spt_cnt; 
+      IndexType spt_cnt; 
       hr = spt_ids->get_Count(&spt_cnt);
 
       os<<_T("       ")<<endl;
       os<<_T(" Suppt   gPMSgl   gPMMul   gNMSgl   gNMMul   gVSgl    gVMul    gDSgl    gDMul    gRSgl    gRMul    gTSgl    gTMul     gFatM    gFatV    gPed")<<endl;
       os<<_T(" ------ -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- -------- --------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<spt_cnt; ip++)
+      for (IndexType ip=0; ip<spt_cnt; ip++)
       {
          IDType id;
          hr = spt_ids->get_Item(ip, &id);
@@ -322,14 +322,14 @@ void CLoadGroupDumper::DumpPOIStressPoints(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSuperstructurePOIs(is, rsIncremental, &poi_ids,&poi_locs); // use incremental since we want all pois
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("         Global X         <-------- Left -----> <------ Right ------>")<<endl;
       os<<_T(" POI ID  Location    SP #      Sa           Sm         Sa          Sm    ")<<endl;
       os<<_T(" ------ ----------- ------ ----------- ----------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -339,14 +339,14 @@ void CLoadGroupDumper::DumpPOIStressPoints(std::_tostream& os)
          CComPtr<IStressPoints> left_sps, right_sps;
          hr = getsps->GetStressPointsAtPOI(id, stage, &left_sps, &right_sps);
 
-         CollectionIndexType left_cnt=0, right_cnt=0;
+         IndexType left_cnt=0, right_cnt=0;
          hr = left_sps->get_Count(&left_cnt);
          if (right_sps)
             hr = right_sps->get_Count(&right_cnt);
 
-         CollectionIndexType max_cnt = max(left_cnt, right_cnt);
+         IndexType max_cnt = max(left_cnt, right_cnt);
 
-         for (CollectionIndexType isp=0; isp<max_cnt; isp++)
+         for (IndexType isp=0; isp<max_cnt; isp++)
          {
             _tstring str_lft_sa, str_rgt_sa;
             _tstring str_lft_sm, str_rgt_sm;
@@ -405,14 +405,14 @@ void CLoadGroupDumper::DumpPOIStressPoints(std::_tostream& os)
       CComPtr<IIDArray> poi_ids;
       m_Util->GetSupportPOIs(is, &poi_ids);
 
-      CollectionIndexType poi_cnt; 
+      IndexType poi_cnt; 
       hr = poi_ids->get_Count(&poi_cnt);
 
       os<<_T("               <-------- Left -----> <------ Right ------>")<<endl;
       os<<_T(" POI ID  SP #      Sa          Sm          Sa          Sm    ")<<endl;
       os<<_T(" ------ ------ ----------- ----------- ----------- -----------")<<endl;
 
-      for (CollectionIndexType ip=0; ip<poi_cnt; ip++)
+      for (IndexType ip=0; ip<poi_cnt; ip++)
       {
          IDType id;
          hr = poi_ids->get_Item(ip, &id);
@@ -420,14 +420,14 @@ void CLoadGroupDumper::DumpPOIStressPoints(std::_tostream& os)
          CComPtr<IStressPoints> left_sps, right_sps;
          hr = getsps->GetStressPointsAtPOI(id, stage, &left_sps, &right_sps);
 
-         CollectionIndexType left_cnt=0, right_cnt=0;
+         IndexType left_cnt=0, right_cnt=0;
          hr = left_sps->get_Count(&left_cnt);
          if (right_sps)
             hr = right_sps->get_Count(&right_cnt);
 
-         CollectionIndexType max_cnt = max(left_cnt, right_cnt);
+         IndexType max_cnt = max(left_cnt, right_cnt);
 
-         for (CollectionIndexType isp=0; isp<max_cnt; isp++)
+         for (IndexType isp=0; isp<max_cnt; isp++)
          {
             _tstring str_lft_sa, str_rgt_sa;
             _tstring str_lft_sm, str_rgt_sm;
@@ -501,9 +501,9 @@ void CLoadGroupDumper::DumpLoadGroupResponse(std::_tostream& os)
    CComPtr<IBstrArray> dead_lgs;
    hr = dead_lgs.CoCreateInstance(CLSID_BstrArray);
 
-   CollectionIndexType lg_cnt;
+   IndexType lg_cnt;
    hr = loadgroups->get_Count(&lg_cnt);
-   for (CollectionIndexType ilg=0; ilg<lg_cnt; ilg++)
+   for (IndexType ilg=0; ilg<lg_cnt; ilg++)
    {
       CComPtr<ILoadGroup> loadgroup;
       hr = loadgroups->get_Item(ilg, &loadgroup);
@@ -511,7 +511,7 @@ void CLoadGroupDumper::DumpLoadGroupResponse(std::_tostream& os)
       CComBSTR lg_name;
       hr = loadgroup->get_Name(&lg_name);
 
-      CollectionIndexType idx;
+      IndexType idx;
       HRESULT hres = active_lgs->Find(lg_name, &idx);
       if (FAILED(hres))
       {
@@ -520,12 +520,12 @@ void CLoadGroupDumper::DumpLoadGroupResponse(std::_tostream& os)
       }
    }
 
-   CollectionIndexType dead_cnt;
+   IndexType dead_cnt;
    hr = dead_lgs->get_Count(&dead_cnt);
    if (dead_cnt>0)
    {
       os<<_T("  There are ")<<dead_cnt<<_T(" LoadGroups in this model with no loads (zero results). They are: ")<<endl;
-      for (CollectionIndexType ilg=0; ilg<dead_cnt; ilg++)
+      for (IndexType ilg=0; ilg<dead_cnt; ilg++)
       {
          CComBSTR name;
          hr = dead_lgs->get_Item(ilg, &name);
@@ -538,9 +538,9 @@ void CLoadGroupDumper::DumpLoadGroupResponse(std::_tostream& os)
    // loop over all of our active loadgroups and stages and report responses
    StageIndexType stg_cnt = m_Util->StageCount();
 
-   CollectionIndexType alg_cnt;
+   IndexType alg_cnt;
    hr = active_lgs->get_Count(&alg_cnt);
-   for (CollectionIndexType ilg=0; ilg<alg_cnt; ilg++)
+   for (IndexType ilg=0; ilg<alg_cnt; ilg++)
    {
       CComBSTR lg_name;
       hr = active_lgs->get_Item(ilg, &lg_name);
@@ -620,9 +620,9 @@ void CLoadGroupDumper::DumpLoadGroupForces(std::_tostream& os, BSTR lgName, Stag
    CComPtr<ISectionResult3Ds> force_results;
    hr=response->ComputeForces(lgName, poi_ids, stage, roMember, summ, &force_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       IDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -661,9 +661,9 @@ void CLoadGroupDumper::DumpLoadGroupForces(std::_tostream& os, BSTR lgName, Stag
    CComPtr<ISectionResult3Ds> spt_force_results;
    hr=response->ComputeForces(lgName, spt_poi_ids, stage, roMember, summ, &spt_force_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       IDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -696,9 +696,9 @@ void CLoadGroupDumper::DumpLoadGroupForces(std::_tostream& os, BSTR lgName, Stag
    os<<_T("   POI    X React    Y React    MZ React")<<std::endl;
    os<<_T(" ------ ---------- ---------- ----------")<<std::endl;
 
-   CollectionIndexType num_supp;
+   IndexType num_supp;
    hr = supp_ids->get_Count(&num_supp);
-   for (CollectionIndexType is=0; is<num_supp; is++)
+   for (IndexType is=0; is<num_supp; is++)
    {
       IDType poi_id;
       hr = supp_ids->get_Item(is,&poi_id);
@@ -744,9 +744,9 @@ void CLoadGroupDumper::DumpLoadGroupDeflections(std::_tostream& os, BSTR lgName,
    CComPtr<ISectionResult3Ds> defl_results;
    hr=response->ComputeDeflections(lgName, poi_ids, stage, summ, &defl_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -785,9 +785,9 @@ void CLoadGroupDumper::DumpLoadGroupDeflections(std::_tostream& os, BSTR lgName,
    CComPtr<ISectionResult3Ds> spt_defl_results;
    hr=response->ComputeDeflections(lgName, spt_poi_ids, stage, summ, &spt_defl_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       PoiIDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -820,9 +820,9 @@ void CLoadGroupDumper::DumpLoadGroupDeflections(std::_tostream& os, BSTR lgName,
    os<<_T("   POI      Dx         Dy          Rz")<<std::endl;
    os<<_T(" ------ ---------- ---------- ----------")<<std::endl;
 
-   CollectionIndexType num_supp;
+   IndexType num_supp;
    hr = supp_ids->get_Count(&num_supp);
-   for (CollectionIndexType is=0; is<num_supp; is++)
+   for (IndexType is=0; is<num_supp; is++)
    {
       PoiIDType poi_id;
       hr = supp_ids->get_Item(is,&poi_id);
@@ -868,9 +868,9 @@ void CLoadGroupDumper::DumpLoadGroupStresses(std::_tostream& os, BSTR lgName, St
    CComPtr<ISectionStressResults> stress_results;
    hr=response->ComputeStresses(lgName, poi_ids, stage, summ, &stress_results);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -881,7 +881,7 @@ void CLoadGroupDumper::DumpLoadGroupStresses(std::_tostream& os, BSTR lgName, St
       std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
       std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-      CollectionIndexType cnt;
+      IndexType cnt;
       Float64 val;
       hr = stress_result->get_LeftCount(&cnt);
       if (cnt>0)
@@ -956,9 +956,9 @@ void CLoadGroupDumper::DumpLoadGroupStresses(std::_tostream& os, BSTR lgName, St
    CComPtr<ISectionStressResults> spt_stress_results;
    hr=response->ComputeStresses(lgName, spt_poi_ids, stage, summ, &spt_stress_results);
 
-   CollectionIndexType num_spt_pois;
+   IndexType num_spt_pois;
    hr = spt_poi_ids->get_Count(&num_spt_pois);
-   for (CollectionIndexType ip=0; ip<num_spt_pois; ip++)
+   for (IndexType ip=0; ip<num_spt_pois; ip++)
    {
       PoiIDType poi_id;
       hr = spt_poi_ids->get_Item(ip, &poi_id);
@@ -969,7 +969,7 @@ void CLoadGroupDumper::DumpLoadGroupStresses(std::_tostream& os, BSTR lgName, St
       std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
       std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-      CollectionIndexType cnt;
+      IndexType cnt;
       Float64 val;
       hr = stress_result->get_LeftCount(&cnt);
       if (cnt>0)
@@ -1048,9 +1048,9 @@ void CLoadGroupDumper::DumpForceInfluenceLines(std::_tostream& os, StageIndexTyp
    m_Util->GetSupportPOIs(ist, &spt_poi_ids);
 
    // append support pois to ss pois
-   CollectionIndexType spt_cnt;
+   IndexType spt_cnt;
    hr = spt_poi_ids->get_Count(&spt_cnt);
-   for (CollectionIndexType is=0; is<spt_cnt; is++)
+   for (IndexType is=0; is<spt_cnt; is++)
    {
       PoiIDType id;
       hr = spt_poi_ids->get_Item(is,&id);
@@ -1071,9 +1071,9 @@ void CLoadGroupDumper::DumpForceInfluenceLines(std::_tostream& os, StageIndexTyp
    else
       ATLASSERT(0);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -1094,10 +1094,10 @@ void CLoadGroupDumper::DumpForceInfluenceLines(std::_tostream& os, StageIndexTyp
       os<<_T("   #     Location     Value")<<endl;
       os<<_T(" ------ ----------- -----------")<<endl;
 
-      CollectionIndexType ip_cnt;
+      IndexType ip_cnt;
       hr = lft_infl->get_Count(ilsBoth, &ip_cnt);
 
-      for (CollectionIndexType ip=0; ip<ip_cnt; ip++)
+      for (IndexType ip=0; ip<ip_cnt; ip++)
       {
          Float64 value, loc;
          InfluenceLocationType iltype;
@@ -1124,7 +1124,7 @@ void CLoadGroupDumper::DumpForceInfluenceLines(std::_tostream& os, StageIndexTyp
 
          hr = rgt_infl->get_Count(ilsBoth, &ip_cnt);
 
-         for (CollectionIndexType ip=0; ip<ip_cnt; ip++)
+         for (IndexType ip=0; ip<ip_cnt; ip++)
          {
             Float64 value, loc;
             InfluenceLocationType iltype;
@@ -1167,9 +1167,9 @@ void CLoadGroupDumper::DumpDeflectionInfluenceLines(std::_tostream& os, StageInd
    m_Util->GetSupportPOIs(ist, &spt_poi_ids);
 
    // append support pois to ss pois
-   CollectionIndexType spt_cnt;
+   IndexType spt_cnt;
    hr = spt_poi_ids->get_Count(&spt_cnt);
-   for (CollectionIndexType is=0; is<spt_cnt; is++)
+   for (IndexType is=0; is<spt_cnt; is++)
    {
       PoiIDType id;
       hr = spt_poi_ids->get_Item(is,&id);
@@ -1190,9 +1190,9 @@ void CLoadGroupDumper::DumpDeflectionInfluenceLines(std::_tostream& os, StageInd
    else
       ATLASSERT(0);
 
-   CollectionIndexType num_pois;
+   IndexType num_pois;
    hr = poi_ids->get_Count(&num_pois);
-   for (CollectionIndexType ip=0; ip<num_pois; ip++)
+   for (IndexType ip=0; ip<num_pois; ip++)
    {
       PoiIDType poi_id;
       hr = poi_ids->get_Item(ip, &poi_id);
@@ -1213,10 +1213,10 @@ void CLoadGroupDumper::DumpDeflectionInfluenceLines(std::_tostream& os, StageInd
       os<<_T("   #     Location     Value")<<endl;
       os<<_T(" ------ ----------- -----------")<<endl;
 
-      CollectionIndexType ip_cnt;
+      IndexType ip_cnt;
       hr = lft_infl->get_Count(ilsBoth, &ip_cnt);
 
-      for (CollectionIndexType ip=0; ip<ip_cnt; ip++)
+      for (IndexType ip=0; ip<ip_cnt; ip++)
       {
          Float64 value, loc;
          InfluenceLocationType iltype;
@@ -1243,7 +1243,7 @@ void CLoadGroupDumper::DumpDeflectionInfluenceLines(std::_tostream& os, StageInd
 
          hr = rgt_infl->get_Count(ilsBoth, &ip_cnt);
 
-         for (CollectionIndexType ip=0; ip<ip_cnt; ip++)
+         for (IndexType ip=0; ip<ip_cnt; ip++)
          {
             Float64 value, loc;
             InfluenceLocationType iltype;
@@ -1298,10 +1298,10 @@ void CLoadGroupDumper::DumpContraflexureResponse(std::_tostream& os)
       CComPtr<IDblArray> llnm_locs;
       hr = llnmr->ComputeNegativeMomentRegions(stage, &llnm_locs);
 
-      CollectionIndexType num_nmrs;
+      IndexType num_nmrs;
       hr = llnm_locs->get_Count(&num_nmrs);
 
-      for (CollectionIndexType inm=0; inm<num_nmrs; inm++)
+      for (IndexType inm=0; inm<num_nmrs; inm++)
       {
          Float64 loc;
          hr = llnm_locs->get_Item(inm, &loc);
@@ -1317,10 +1317,10 @@ void CLoadGroupDumper::DumpContraflexureResponse(std::_tostream& os)
       CComPtr<IDblArray> contr_locs;
       hr = response->ComputeContraflexureLocations(stage, &contr_locs);
 
-      CollectionIndexType contr_cnt;
+      IndexType contr_cnt;
       hr = contr_locs->get_Count(&contr_cnt);
 
-      for (CollectionIndexType icl=0; icl<contr_cnt; icl++)
+      for (IndexType icl=0; icl<contr_cnt; icl++)
       {
          Float64 loc;
          hr = contr_locs->get_Item(icl, &loc);
@@ -1337,10 +1337,10 @@ void CLoadGroupDumper::DumpContraflexureResponse(std::_tostream& os)
       CComPtr<IInfluenceLine> cf_resp;
       hr = response->ComputeContraflexureResponse(stage, fetMz, &cf_resp);
 
-      CollectionIndexType ip_cnt;
+      IndexType ip_cnt;
       hr = cf_resp->get_Count(ilsBoth, &ip_cnt);
 
-      for (CollectionIndexType ip=0; ip<ip_cnt; ip++)
+      for (IndexType ip=0; ip<ip_cnt; ip++)
       {
          Float64 value, loc;
          InfluenceLocationType iltype;
@@ -1367,9 +1367,9 @@ void CLoadGroupDumper::DumpContraflexureResponse(std::_tostream& os)
       os<<_T("  POI    Location   In CF Zone?")<<endl;
       os<<_T(" ------ ---------- --------------")<<endl;
 
-      CollectionIndexType num_pois;
+      IndexType num_pois;
       hr = poi_ids->get_Count(&num_pois);
-      for (CollectionIndexType ip=0; ip<num_pois; ip++)
+      for (IndexType ip=0; ip<num_pois; ip++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ip, &poi_id);

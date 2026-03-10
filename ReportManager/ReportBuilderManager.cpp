@@ -27,12 +27,6 @@
 #include <Reporter\Reporter.h>
 #include "ReportDlg.h"
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 using namespace WBFL::Reporting;
 
 std::shared_ptr<ReportBuilderManager> ReportBuilderManager::Create()
@@ -183,11 +177,21 @@ std::shared_ptr<ReportSpecificationBuilder> ReportBuilderManager::GetReportSpeci
    return GetReportSpecificationBuilder( rptDesc.GetReportName() );
 }
 
-std::shared_ptr<ReportBrowser> ReportBuilderManager::CreateReportBrowser(HWND hwndParent, const std::shared_ptr<ReportSpecification>& pRptSpec,const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder) const
+void ReportBuilderManager::SetReportBrowserType(ReportBrowser::Type browserType)
+{
+   m_BrowserType = browserType;
+}
+
+ReportBrowser::Type ReportBuilderManager::GetReportBrowserType() const
+{
+   return m_BrowserType;
+}
+
+std::shared_ptr<ReportBrowser> ReportBuilderManager::CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<ReportSpecification>& pRptSpec,const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder) const
 {
    std::shared_ptr<rptReport> pReport = CreateReport(pRptSpec);
-   std::shared_ptr<ReportBrowser> pBrowser( std::make_shared<ReportBrowser>() );
-   bool bSuccess = pBrowser->Initialize(hwndParent,shared_from_this(), pRptSpec, pRptSpecBuilder, pReport);
+   std::shared_ptr<ReportBrowser> pBrowser( std::make_shared<ReportBrowser>(m_BrowserType) );
+   bool bSuccess = pBrowser->Initialize(hwndParent, dwStyle ,shared_from_this(), pRptSpec, pRptSpecBuilder, pReport);
    if ( !bSuccess )
    {
       pBrowser = nullptr;

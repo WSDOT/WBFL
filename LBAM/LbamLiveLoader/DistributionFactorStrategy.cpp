@@ -27,11 +27,6 @@
 #include "WBFLLBAMLiveLoader.h"
 #include "DistributionFactorStrategy.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 //////////////////
 // Free functions to retrieve distribution factors

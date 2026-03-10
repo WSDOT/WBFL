@@ -1,9 +1,9 @@
 #ifndef INCLUDED_SUPPORTDRAWSTRATEGY_H_
 #define INCLUDED_SUPPORTDRAWSTRATEGY_H_
 
-interface iSupportDrawStrategy : public IUnknown
+interface iSupportDrawStrategy
 {
-   STDMETHOD_(void,SetSupport)(ISupport* jnt, IDType supportID) PURE;
+   virtual void SetSupport(ISupport* jnt, IDType supportID) = 0;
 };
 
 #endif // INCLUDED_SUPPORTDRAWSTRATEGY_H_

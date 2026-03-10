@@ -28,11 +28,6 @@
 #include "LBAMUtils.h"
 #include "LiveLoadModel.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // live load names. Note that this sequence must match the enums in LiveLoadModelType
 static LPCTSTR LL_NAMES[]={_T("Deflection"),_T("Design"),_T("Pedestrian"),_T("Fatigue"),_T("Permit"),_T("Special"),

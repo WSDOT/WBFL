@@ -29,6 +29,8 @@
 #include "Resource.h"
 #include <EAF\StatusCenter.h>
 
+class MyStatusCenterEventSink;
+
 class CStatusItemListCtrl : public CMFCListCtrl
 {
 public:
@@ -38,11 +40,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////
 // CStatusCenterDlg dialog
 
-class CStatusCenterDlg : public CDialog, public IEAFStatusCenterEventSink
+class CStatusCenterDlg : public CDialog
 {
 // Construction
 public:
-	CStatusCenterDlg(CEAFStatusCenter& statusCenter);
+	CStatusCenterDlg(WBFL::EAF::StatusCenter& statusCenter);
 	~CStatusCenterDlg();
 
 // Dialog Data
@@ -51,7 +53,7 @@ public:
 		// NOTE: the ClassWizard will add data members here
 	//}}AFX_DATA
 
-   void OnStatusItemAdded(CEAFStatusItem* pNewItem);
+   void OnStatusItemAdded(std::shared_ptr<const WBFL::EAF::StatusItem> pNewItem);
    void OnStatusItemRemoved(StatusItemIDType id);
 
 
@@ -66,7 +68,9 @@ public:
 
 // Implementation
 protected:
-   CEAFStatusCenter& m_StatusCenter;
+   WBFL::EAF::StatusCenter& m_StatusCenter;
+   std::shared_ptr<MyStatusCenterEventSink> m_EventSink;
+   IDType m_EventSinkCookie;
 
    CStatusItemListCtrl m_ctrlList;
 
@@ -95,6 +99,26 @@ protected:
    void RestoreWindowPosition();
 
 	DECLARE_MESSAGE_MAP()
+};
+
+
+class MyStatusCenterEventSink : public WBFL::EAF::StatusCenterEventSink
+{
+public:
+   MyStatusCenterEventSink(CStatusCenterDlg& dlg) : m_Dlg(dlg)
+   {
+   }
+
+   void OnStatusItemAdded(std::shared_ptr<const WBFL::EAF::StatusItem> pNewItem) override
+   {
+      m_Dlg.OnStatusItemAdded(pNewItem);
+   }
+   void OnStatusItemRemoved(StatusItemIDType id) override
+   {
+      m_Dlg.OnStatusItemRemoved(id);
+   }
+protected:
+   CStatusCenterDlg& m_Dlg;
 };
 
 //{{AFX_INSERT_LOCATION}}

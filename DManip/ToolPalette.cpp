@@ -21,23 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ToolPalette.cpp : implementation file
-//
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "DragDataImpl.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
-/////////////////////////////////////////////////////////////////////////////
-// CToolPalette dialog
-
+#include "pch.h"
+#include <DManip/ToolPalette.h>
+#include <DManip/Tool.h>
+#include <DManip/Draggable.h>
+#include <DManip/DragDataImpl.h>
 
 CToolPalette::CToolPalette()
 	: CDialogBar()
@@ -65,7 +53,7 @@ END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CToolPalette message handlers
-void CToolPalette::AddTool(iTool* tool)
+void CToolPalette::AddTool(std::shared_ptr<WBFL::DManip::iTool> tool)
 {
    ASSERT( tool != nullptr );
    if ( tool == nullptr )
@@ -79,44 +67,26 @@ void CToolPalette::AddTool(iTool* tool)
 
    CRect rTool;
    pWnd->GetClientRect(&rTool);
-   m_ctrlToolTip.AddTool(pWnd,tool->GetToolTipText(),rTool,tool->GetID());
+   m_ctrlToolTip.AddTool(pWnd,tool->GetToolTipText().c_str(), rTool, tool->GetID());
 }
 
-void CToolPalette::GetTool(IndexType idx,iTool** tool)
+std::shared_ptr<WBFL::DManip::iTool> CToolPalette::GetTool(IndexType idx)
 {
-   *tool = 0;
-
-   if ( idx < 0 || m_Tools.size() <= idx )
-      return; // Index is out of range
-
-   CComPtr<iTool> t = m_Tools[idx];
-   (*tool) = t;
-   (*tool)->AddRef();
+   PRECONDITION(0 <= idx && idx < m_Tools.size());
+   return m_Tools[idx];
 }
 
-void CToolPalette::FindTool(IDType id,iTool** tool)
+std::shared_ptr<WBFL::DManip::iTool> CToolPalette::FindTool(IDType id)
 {
-   (*tool) = 0;
-   ToolContainer::iterator iter;
-   for ( iter = m_Tools.begin(); iter != m_Tools.end(); iter++ )
-   {
-      CComPtr<iTool> pTool = *iter;
-      if ( pTool->GetID() == id )
-      {
-         *tool = pTool;
-         (*tool)->AddRef();
-         return;
-      }
-   }
-
+   auto iter = std::find_if(m_Tools.begin(), m_Tools.end(), [id](auto& tool) {return tool->GetID() == id; });
+   return iter == m_Tools.end() ? nullptr : *iter;
 }
 
 void CToolPalette::RemoveTool(IndexType idx)
 {
-   if ( idx < 0 || m_Tools.size() <= idx )
-      return; // Index is out of range
+   PRECONDITION(0 <= idx && idx < m_Tools.size());
 
-   CComPtr<iTool> tool = m_Tools[idx];
+   auto tool = m_Tools[idx];
    m_Tools.erase(m_Tools.begin() + idx);
 
    CWnd* pWnd = GetDlgItem(tool->GetID());
@@ -140,7 +110,7 @@ void CToolPalette::RemoveTool(IDType id)
    ToolContainer::iterator iter;
    for ( iter = m_Tools.begin(); iter != m_Tools.end(); iter++ )
    {
-      CComPtr<iTool> tool = *iter;
+      auto tool = *iter;
       if ( tool->GetID() == id )
       {
          m_Tools.erase(iter);
@@ -185,20 +155,17 @@ BOOL CToolPalette::OnCommand(WPARAM wParam, LPARAM lParam)
       // Something was clicked... Check to see if it was one of the tools
       WORD wID = LOWORD(wParam); // get the control id
 
-      CComPtr<iTool> tool;
-      FindTool(wID,&tool);
+      auto tool = FindTool(wID);
       if ( tool )
       {
-         CComQIPtr<iDraggable,&IID_iDraggable> draggable(tool);
+         auto draggable = std::dynamic_pointer_cast<WBFL::DManip::iDraggable>(tool);
          if ( draggable )
          {
-            CComObject<CDragDataSinkImpl>* pSink;
-            CComObject<CDragDataSinkImpl>::CreateInstance(&pSink);
-            CComPtr<iDragDataSink> sink(pSink);
+            auto sink = std::make_shared<WBFL::DManip::DragDataSink>();
             draggable->PrepareDrag(sink);
 
             COleDataSource ods;
-            pSink->CacheGlobalData(&ods);
+            sink->CacheGlobalData(&ods);
 
             DROPEFFECT de = ods.DoDragDrop(DROPEFFECT_COPY | DROPEFFECT_MOVE);
          }

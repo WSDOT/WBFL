@@ -79,9 +79,13 @@ namespace WBFL
          std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName);
          std::shared_ptr<ReportSpecificationBuilder> GetReportSpecificationBuilder(const ReportDescription& rptDesc);
 
+         void SetReportBrowserType(ReportBrowser::Type browserType);
+         ReportBrowser::Type GetReportBrowserType() const;
+
          /// Creates a ReportBrowser
          std::shared_ptr<ReportBrowser> CreateReportBrowser(
             HWND hwndParent, ///< Handle of the parent window
+            DWORD dwStyle, ///< Extra window styles (WS_CHILD | WS_VISIBLE is automatically applied), use 0 if no extra styles are wanted
             const std::shared_ptr<ReportSpecification>& pRptSpec, ///< The report specification for creating the report
             const std::shared_ptr<const ReportSpecificationBuilder>& pRptSpecBuilder ///< The report specification builder to support editing of the report
          ) const;
@@ -104,6 +108,8 @@ namespace WBFL
          RptBuilderContainer m_RptBuilders;
 
          std::shared_ptr<rptReport> CreateReport(const std::shared_ptr<ReportSpecification>& pRptSpec) const;
+
+         ReportBrowser::Type m_BrowserType{ ReportBrowser::Type::IE };
       };
    };
 };

@@ -22,8 +22,8 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
-#include <System\Log.h>
+#include <System\UnitTestLog.h>
 
-extern "C" bool WINAPI UnitTest(WBFL::Debug::Log& rlog);
+extern "C" bool WINAPI UnitTest(WBFL::Debug::UnitTestLog& rlog);
 
-typedef bool (WINAPI *pUnitTest)  (WBFL::Debug::Log& rlog);
+typedef bool (WINAPI *pUnitTest)  (WBFL::Debug::UnitTestLog& rlog);

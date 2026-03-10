@@ -26,11 +26,6 @@
 #include <MathEx.h>
 #include <ShellScalingApi.h> // needed for Per Monitor DPI information
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 using namespace WBFL::Graphing;
 

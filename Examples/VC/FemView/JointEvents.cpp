@@ -28,26 +28,16 @@ CJointEvents::~CJointEvents()
 {
 }
 
-BEGIN_INTERFACE_MAP(CJointEvents,CCmdTarget)
-   INTERFACE_PART(CJointEvents,IID_iDisplayObjectEvents,DisplayObjectEvents)
-   INTERFACE_PART(CJointEvents,IID_iDragData,DragData)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CJointEvents,DisplayObjectEvents);
-DELEGATE_CUSTOM_INTERFACE(CJointEvents,DragData);
-
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnChanged(iDisplayObject* pDO)
+void CJointEvents::OnChanged(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnDragMoved(iDisplayObject* pDO,ISize2d* offset)
+void CJointEvents::OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::Geometry::Size2d& offset)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
-
    // Move the joint and the display object
    JointIDType id = pDO->GetID();
 
-   CComPtr<IFem2dModel> model = pThis->m_pDoc->m_Model;
+   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
    CComPtr<IFem2dJointCollection> joints;
    model->get_Joints(&joints);
 
@@ -64,9 +54,7 @@ STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnDragMoved(iDisplayObje
    jnt->get_X(&x);
    jnt->get_Y(&y);
 
-   Float64 dx,dy;
-   offset->get_Dx(&dx);
-   offset->get_Dy(&dy);
+   auto [dx,dy] = offset.GetDimensions();
 
    x += dx;
    y += dy;
@@ -74,43 +62,39 @@ STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnDragMoved(iDisplayObje
    jnt->put_X(x);
    jnt->put_Y(y);
 
-   CComQIPtr<iPointDisplayObject,&IID_iPointDisplayObject> jntRep(pDO);
+   auto jntRep = std::dynamic_pointer_cast<iPointDisplayObject>(pDO);
    ASSERT(jntRep != NULL);
    jntRep->Offset(offset,TRUE,FALSE);
 }
 
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnMoved(iDisplayObject* pDO)
+void CJointEvents::OnMoved(std::shared_ptr<iDisplayObject> pDO)
 {
    // Joint got dropped in a different view... Need to delete the joint and
    // all members that attach to it.
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnCopied(iDisplayObject* pDO)
+void CJointEvents::OnCopied(std::shared_ptr<iDisplayObject> pDO)
 {
    // This joint got drag/drop copied to a different view... No big deal
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnLButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
-
    // Joint got double clicked on... Display its editing dialog
    IDType id = pDO->GetID();
-   pThis->EditJoint(id);
+   EditJoint(id);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnLButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnLButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
    // Select the display object and start a drag and drop task
 
-   CComPtr<iDisplayList> list;
-   pDO->GetDisplayList(&list);
+   auto list = pDO->GetDisplayList();
 
-   CComPtr<iDisplayMgr> dispMgr;
-   list->GetDisplayMgr(&dispMgr);
+   auto dispMgr = list->GetDisplayMgr();
 
    // If control key is pressed, don't clear current selection
    // (i.e. we want multi-select)
@@ -119,96 +103,86 @@ STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnLButtonDown(iDisplayOb
    if ( bMultiSelect )
    {
       // clear all selected objects that aren't part of the joint list
-      dispMgr->ClearSelectedObjectsByList(JNT_LIST,atByID,FALSE);
+      dispMgr->ClearSelectedObjectsByList(JNT_LIST,AccessType::ByID,FALSE);
    }
 
    dispMgr->SelectObject(pDO,!bMultiSelect);
 
    // d&d task
-   CComPtr<iTaskFactory> factory;
-   dispMgr->GetTaskFactory(&factory);
-   CComPtr<iTask> task;
-   factory->CreateLocalDragDropTask(dispMgr,point,&task);
+   auto factory = dispMgr->GetTaskFactory();
+   auto task = factory->CreateLocalDragDropTask(dispMgr,point);
    dispMgr->SetTask(task);
 
    return true;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnRButtonDblClk(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnRButtonDblClk(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnRButtonDown(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnRButtonDown(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnRButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnRButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnLButtonUp(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnLButtonUp(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnMouseMove(iDisplayObject* pDO,UINT nFlags,CPoint point)
+bool CJointEvents::OnMouseMove(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnMouseWheel(iDisplayObject* pDO,UINT nFlags,short zDelta,CPoint point)
+bool CJointEvents::OnMouseWheel(std::shared_ptr<iDisplayObject> pDO,UINT nFlags,short zDelta,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnKeyDown(iDisplayObject* pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
+bool CJointEvents::OnKeyDown(std::shared_ptr<iDisplayObject> pDO,UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    IDType id = pDO->GetID();
 
    switch(nChar)
    {
    case VK_RETURN:
-      pThis->EditJoint(id);
+      EditJoint(id);
       break;
 
    case VK_DELETE:
-      pThis->DeleteJoint(id);
+      DeleteJoint(id);
       break;
    }
 
    return true;
 }
 
-STDMETHODIMP_(bool) CJointEvents::XDisplayObjectEvents::OnContextMenu(iDisplayObject* pDO,CWnd* pWnd,CPoint point)
+bool CJointEvents::OnContextMenu(std::shared_ptr<iDisplayObject> pDO,CWnd* pWnd,const POINT& point)
 {
-   METHOD_PROLOGUE(CJointEvents,DisplayObjectEvents);
    return false;
 }
 
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnSelect(iDisplayObject* pDO)
+void CJointEvents::OnSelect(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(void) CJointEvents::XDisplayObjectEvents::OnUnselect(iDisplayObject* pDO)
+void CJointEvents::OnUnselect(std::shared_ptr<iDisplayObject> pDO)
 {
 }
 
-STDMETHODIMP_(UINT) CJointEvents::XDragData::Format()
+UINT CJointEvents::Format()
 {
    return ms_Format;
 }
 
-STDMETHODIMP_(BOOL) CJointEvents::XDragData::PrepareForDrag(iDisplayObject* pDO,iDragDataSink* pSink)
+bool CJointEvents::PrepareForDrag(std::shared_ptr<iDisplayObject> pDO,std::shared_ptr<iDragDataSink> pSink)
 {
    pSink->CreateFormat(ms_Format);
 
@@ -217,7 +191,7 @@ STDMETHODIMP_(BOOL) CJointEvents::XDragData::PrepareForDrag(iDisplayObject* pDO,
    return TRUE;
 }
 
-STDMETHODIMP_(void) CJointEvents::XDragData::OnDrop(iDisplayObject* pDO,iDragDataSource* pSource)
+void CJointEvents::OnDrop(std::shared_ptr<iDisplayObject> pDO,std::shared_ptr<iDragDataSource> pSource)
 {
    IDType id;
    pSource->PrepareFormat(ms_Format);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeTools - Tools for manipluating the Generic Bridge Modeling
-// Copyright © 1999-2025  Washington State Department of Transportation
+// Copyright Â© 1999-2025  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -43,11 +43,6 @@
 #include <map>
 #endif
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 template <class T>
 HRESULT GetMaterial(T* pSlab, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, IMaterial** ppMaterial)
@@ -2242,9 +2237,7 @@ HRESULT CSectionCutTool::CreateNoncompositeSection(IGenericBridge* bridge,Girder
          }
 
          if (rebarSection)
-         {
-            LayoutRebar(compositeSection, Econc, Dconc, rebarSection, xTop, yTop, stageIdx, sectionPropMethod);
-         }
+            LayoutRebar(compositeSection,Econc,Dconc,rebarSection,xTop,yTop,stageIdx,sectionPropMethod);
       } 
 
       // add holes for tendons/ducts if the stage is before the grouting stage

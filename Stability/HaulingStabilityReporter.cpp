@@ -53,8 +53,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
    const HaulingResults& results = pArtifact->GetHaulingResults();
    const HaulingCriteria& criteria = pArtifact->GetCriteria();
 
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    rptCDRatio cdRatio;
 
@@ -598,8 +597,7 @@ void HaulingStabilityReporter::BuildSpecCheckChapter(const IGirder* pGirder,cons
 
 void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,const HaulingResults* pResults,rptChapter* pChapter, const WBFL::Units::IndirectMeasure* pDisplayUnits, LPCTSTR lpszLocColumnLabel,Float64 offset, bool bReportTensileForceDetails)
 {
-   CComPtr<ISegment> segment;
-   pGirder->GetSegment(&segment);
+   std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    std::array<std::_tstring, 4> strFlange = { _T("Top Left"),_T("Top Right"),_T("Bottom Left"),_T("Bottom Right") };
    std::array<std::_tstring, 2> strTiltRotation = { _T("counter clockwise"), _T("clockwise") };
@@ -1041,12 +1039,11 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
    if (IsEqual(Ll, Lr))
    {
-      *pPara << _T("Offset Factor, ") << FO << _T(" = [(") << Sub2(_T("L"), _T("g")) << _T(" - ") << Sub2(_T("L"), _T("t")) << _T(" - ") << Sub2(_T("L"), _T("l")) << _T(")") << _T("/") << Sub2(_T("L"), _T("g")) << _T("]") << Super(_T("2")) << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
+      *pPara << _T("Offset Factor, ") << rptRcEquation(std::_tstring(rptStyleManager::GetImagePath()) + _T("WBFLStability/OffsetFactor_EqualOverhangs.png"), _T("F_o = \\left(\\dfrac{L_s}{L_g}\\right)^2 - \\dfrac{1}{3}")) << _T(" = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
    }
    else
    {
-      *pPara << _T("Offset Factor, ") << FO << _T(" = (") << Sub2(_T("L"), _T("a")) << _T("/") << Sub2(_T("L"), _T("g")) << _T(")") << Super(_T("2")) << _T("[1 - 2(b - a)/") << Sub2(_T("L"), _T("a")) << _T("]") << _T(" - 1/3 = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
-      *pPara << _T("where a = Min(Lt,Ll), b = Max(Lt,Ll), and ") << Sub2(_T("L"), _T("a")) << _T(" = ") << Sub2(_T("L"), _T("g")) << _T(" - 2a") << rptNewLine;
+      *pPara << _T("Offset Factor, ") << rptRcEquation(std::_tstring(rptStyleManager::GetImagePath()) + _T("WBFLStability/OffsetFactor_UnequalOverhangs.png"), _T("F_o = \\left(\\dfrac{L_a}{L_g} \\right)^2 \\left[1-\\dfrac{2(b-a)}{L_a}\\right] - \\dfrac{1}{3}, a = min(L_t,L_l), b = max(L_t,L_l), L_a =L_g - 2a")) << _T(" = ") << scalar.SetValue(pResults->OffsetFactor) << rptNewLine;
    }
 
    Float64 camber = pStabilityProblem->GetCamber();
@@ -2352,7 +2349,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
 
 #if defined REBAR_FOR_DIRECT_TENSION
-         if (segment && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
+         if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
          {
             rptRcTable* pRebarTable = nullptr;
             std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(WBFL::LRFD::LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));

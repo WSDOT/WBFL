@@ -24,7 +24,7 @@
 #pragma once
 
 #include <System\Checks.h>
-#include <System\Log.h>
+#include <System\UnitTestLog.h>
 #include <System\LogContext.h>
 #include <System\DebugWindowLogContext.h>
 #include <System\FileLogContext.h>

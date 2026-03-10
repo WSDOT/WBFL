@@ -1,32 +1,29 @@
 #ifndef INCLUDED_JOINTDRAWSTRATEGYIMPL_H_
 #define INCLUDED_JOINTDRAWSTRATEGYIMPL_H_
 
-class CJointDrawStrategyImpl : public CCmdTarget
+using namespace WBFL::DManip;
+
+class CJointDrawStrategyImpl : public iJointDrawStrategy, public iDrawPointStrategy
 {
 public:
    CJointDrawStrategyImpl(CFEA2DDoc* pDoc);
    ~CJointDrawStrategyImpl()
    {;}
 
+   // iJointDrawStrategy
+   void SetJoint(IFem2dJoint* jnt) override;
 
-   DECLARE_INTERFACE_MAP()
-
-   BEGIN_INTERFACE_PART(Strategy,iJointDrawStrategy)
-      STDMETHOD_(void,SetJoint)(IFem2dJoint* jnt);
-   END_INTERFACE_PART(Strategy)
-
-   BEGIN_INTERFACE_PART(DrawPointStrategy,iDrawPointStrategy)
-      STDMETHOD_(void,Draw)(iPointDisplayObject* pDO,CDC* pDC);
-      STDMETHOD_(void,DrawDragImage)(iPointDisplayObject* pDO,CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint);
-      STDMETHOD_(void,DrawHighlite)(iPointDisplayObject* pDO,CDC* pDC,BOOL bHighlite);
-      STDMETHOD_(void,GetBoundingBox)(iPointDisplayObject* pDO,IRect2d** ppRect);
-   END_INTERFACE_PART(DrawPointStrategy)
+   // iDrawPointStrategy
+   void Draw(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC) const override;
+   void DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const override;
+   void DrawHighlight(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, bool bHighlight) const override;
+   WBFL::Geometry::Rect2d GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const override;
 
 private:
    CFEA2DDoc* m_pDoc;
    CComPtr<IFem2dJoint> m_Joint;
 
-   virtual void Draw(iPointDisplayObject* pDO,CDC* pDC,COLORREF color,IPoint2d* loc);
+    void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const;
 };
 
 #endif // INCLUDED_JOINTDRAWSTRATEGYIMPL_H_

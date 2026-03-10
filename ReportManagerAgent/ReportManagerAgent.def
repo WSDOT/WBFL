@@ -1,9 +1,0 @@
-; ReportManagerAgent.def : Declares the module parameters.
-
-LIBRARY      "WBFLReportManagerAgent.DLL"
-
-EXPORTS
-	DllCanUnloadNow     PRIVATE
-	DllGetClassObject   PRIVATE
-	DllRegisterServer   PRIVATE
-	DllUnregisterServer	PRIVATE

@@ -107,6 +107,10 @@ public:
    /// Returns heading at specified level
    static rptHeading* CreateHeading(Uint8 hLevel);
 
+   /// @brief Returns a heading used for chapter titles
+   /// @return 
+   static rptHeading* CreateChapterHeading();
+
    /// Returns a level 1 heading
    static rptHeading* CreateHeading();
 

@@ -1,9 +1,9 @@
 #ifndef INCLUDED_TEMPORARYSUPPORTDRAWSTRATEGY_H_
 #define INCLUDED_TEMPORARYSUPPORTDRAWSTRATEGY_H_
 
-interface iTemporarySupportDrawStrategy : public IUnknown
+interface iTemporarySupportDrawStrategy
 {
-   STDMETHOD_(void,SetTemporarySupport)(ITemporarySupport* jnt, IDType supportID) PURE;
+   virtual void SetTemporarySupport(ITemporarySupport* jnt, IDType supportID) = 0;
 };
 
 #endif // INCLUDED_TEMPORARYSUPPORTDRAWSTRATEGY_H_

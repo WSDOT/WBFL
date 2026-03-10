@@ -21,21 +21,38 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DROPSITE_H_
-#define INCLUDED_DROPSITE_H_
 #pragma once
+#include <DManip/DManipExp.h>
 
-interface iDisplayObject;
-
-interface iDropSite : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(DROPEFFECT,CanDrop)(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point) PURE;
-   STDMETHOD_(void,OnDropped)(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point) PURE;
+   namespace Geometry
+   {
+      class Point2d;
+   };
 
-   STDMETHOD_(void,SetDisplayObject)(iDisplayObject* pDO) PURE;
-   STDMETHOD_(void,GetDisplayObject)(iDisplayObject** dispObj) PURE;
+   namespace DManip
+   {
+      class iDisplayObject;
 
-   STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) PURE;
+      /// @brief Interface implemented by DropSite objects. 
+      /// Client applications implement drop site objects and associate them with display objects that can have other display objects dropped on then.
+      class DMANIPCLASS iDropSite
+      {
+      public:
+         /// @brief Called by the framework when a display object is dragged over another. 
+         /// The drop site indicates whether the display objects can be dropped by returning a drop effect
+         virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point) = 0;
+
+         /// @brief Called by the framework when display objects are dropped on the drop site.
+         virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point) = 0;
+
+         /// @brief Associated a display object with this drop site
+         virtual void SetDisplayObject(std::weak_ptr<iDisplayObject> pDO) = 0;
+         virtual std::shared_ptr<iDisplayObject> GetDisplayObject() = 0;
+
+         /// @brief Call by the framework when the drop site needs to be highlighted
+         virtual void Highlight(CDC* pDC,BOOL bHighlight) = 0;
+      };
+   };
 };
-
-#endif // INCLUDED_DROPSITE_H_

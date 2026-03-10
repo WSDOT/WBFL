@@ -32,11 +32,6 @@
 
 #include "NewProjectDlg.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 
 AFX_STATIC void AFXAPI _AfxAppendFilterSuffix(CString& filter, CString& allFilter,OPENFILENAME& ofn,
@@ -125,7 +120,8 @@ void CEAFDocManager::OnFileNew()
 
 	if (m_templateList.IsEmpty())
 	{
-		TRACE(traceAppMsg, 0, "Error: no document templates registered with CWinApp.\n");
+	   WBFL::System::Logger::Error(_T("No document templates registered with CWinApp."));
+   	  TRACE(traceAppMsg, 0, "Error: no document templates registered with CWinApp.\n");
       CString strError;
       strError.LoadString(AFX_IDP_FAILED_TO_CREATE_DOC);
       CString strMsg;
@@ -160,7 +156,10 @@ void CEAFDocManager::OnFileNew()
       pTemplate->SetTemplateItem(pTemplate->GetTemplateGroup()->GetItem(0));
    }
 
-
+   auto item = pTemplate->GetTemplateItem();
+   CString msg;
+   msg.Format(_T("Creating new document: %s"), item->GetName());
+   WBFL::System::Logger::Info((LPCTSTR)msg);
    pTemplate->OpenDocumentFile(nullptr,FALSE,TRUE);
 }
 
@@ -170,7 +169,7 @@ BOOL CEAFDocManager::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD l
    // return CDocManager::DoPromptFileName(fileName,nIDSTitle,lFlags,bOpenFileDialog,pTemplate);
 
    // This code is copied from the base class version... the only difference is that default (*.*) file
-   // type is removed... also, we need to use \0 as the separater character in CFileDialog filters, however
+   // type is removed... also, we need to use \0 as the separator character in CFileDialog filters, however
    // the string append doesn't work right with \0 so we will use \n and then replace all the \n with \0
    // at the last moment
 	CFileDialog dlgFile(bOpenFileDialog, nullptr, nullptr, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, nullptr, nullptr, 0);
@@ -234,11 +233,10 @@ void CEAFDocManager::AddDocTemplate(CDocTemplate* pTemplate)
    CDocManager::AddDocTemplate(pTemplate);
 
    // Organize the document templates in a way that works with the new project dialog
-   CComPtr<IEAFAppPlugin> plugin;
-   pEAFDocTemplate->GetPlugin(&plugin);
-   ATLASSERT(plugin!=nullptr);
+   auto pluginApp = pEAFDocTemplate->GetPluginApp();
+   CHECK(pluginApp != nullptr);
 
-   // This is the root group (corrosponds to the root level nodes on the project type tree
+   // This is the root group (corresponds to the root level nodes on the project type tree
    // in the new project dialog)
    const CEAFTemplateGroup* pTemplateGroup = pEAFDocTemplate->GetTemplateGroup();
 

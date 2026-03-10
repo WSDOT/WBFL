@@ -5,10 +5,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace EAFUnitTests
 {
-	class TestTxn : public CEAFTransaction
+	class TestTxn : public WBFL::EAF::Transaction
 	{
 	public:
-		virtual std::unique_ptr<CEAFTransaction> CreateClone() const override { return std::make_unique<TestTxn>(); }
+		virtual std::unique_ptr<WBFL::EAF::Transaction> CreateClone() const override { return std::make_unique<TestTxn>(); }
 		virtual std::_tstring Name() const override { return _T("TestTxn"); }
 	};
 

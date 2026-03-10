@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EAF_EAFEXP_H_
-#define INCLUDED_EAF_EAFEXP_H_
 #pragma once
 
 // Define BUILDEAFLIB when building this library
@@ -46,4 +44,3 @@
 
 #include <EAF\AutoLib.h>
 
-#endif // INCLUDED_EAF_EAFEXP_H_

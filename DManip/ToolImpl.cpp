@@ -21,69 +21,51 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "ToolImpl.h"
+#include "pch.h"
+#include <DManip/ToolImpl.h>
+#include <DManip/DragData.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::DManip;
 
-CLIPFORMAT CToolImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.Tool"));
+CLIPFORMAT Tool::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.Tool"));
 
-CToolImpl::CToolImpl() :
-m_ID(-1), 
-m_strToolTipText(""),
-m_hIconInstance(0),
-m_IconResId(0),
-m_Icon(nullptr),
-m_First(true),
-m_bDrawIcon(true)
-{
-   m_pDragData = nullptr;
-}
-
-CToolImpl::~CToolImpl()
+Tool::~Tool()
 {
    if (m_Icon)
       ::DestroyIcon(m_Icon);
 }
 
-STDMETHODIMP_(void) CToolImpl::SetID(UINT id)
+void Tool::SetID(UINT id)
 {
    m_ID = id;
 }
 
-UINT CToolImpl::GetID()
+UINT Tool::GetID() const
 {
    return m_ID;
 }
 
-STDMETHODIMP_(void) CToolImpl::SetToolTipText(LPCTSTR lpszToolTipText)
+void Tool::SetToolTipText(LPCTSTR lpszToolTipText)
 {
    m_strToolTipText = lpszToolTipText;
 }
 
-STDMETHODIMP_(CString) CToolImpl::GetToolTipText()
+std::_tstring Tool::GetToolTipText() const
 {
    return m_strToolTipText;
 }
 
-STDMETHODIMP_(void) CToolImpl::SetDragData(iDragData* dd)
+void Tool::SetDragData(std::shared_ptr<iDragData> dd)
 {
    m_pDragData = dd;
 }
 
-STDMETHODIMP_(void) CToolImpl::GetDragData(iDragData** dd)
+std::shared_ptr<iDragData> Tool::GetDragData()
 {
-   (*dd) = m_pDragData;
-   (*dd)->AddRef();
+   return m_pDragData;
 }
 
-STDMETHODIMP_(UINT) CToolImpl::Format()
+UINT Tool::Format()
 {
    if ( m_pDragData )
       return m_pDragData->Format();
@@ -91,7 +73,7 @@ STDMETHODIMP_(UINT) CToolImpl::Format()
       return ms_cfFormat;
 }
 
-STDMETHODIMP_(void) CToolImpl::PrepareDrag(iDragDataSink* pSink)
+void Tool::PrepareDrag(std::shared_ptr<iDragDataSink> pSink)
 {
    // Save away tool specific data
    pSink->CreateFormat(ms_cfFormat);
@@ -103,7 +85,7 @@ STDMETHODIMP_(void) CToolImpl::PrepareDrag(iDragDataSink* pSink)
       m_pDragData->PrepareForDrag(nullptr,pSink);
 }
 
-STDMETHODIMP_(void) CToolImpl::OnDrop(iDragDataSource* pSource)
+void Tool::OnDrop(std::shared_ptr<iDragDataSource> pSource)
 {
    pSource->PrepareFormat(ms_cfFormat);
    pSource->Read(ms_cfFormat,(void*)&m_ID,sizeof(m_ID));
@@ -119,21 +101,20 @@ STDMETHODIMP_(void) CToolImpl::OnDrop(iDragDataSource* pSource)
       m_pDragData->OnDrop(nullptr,pSource);
 }
 
-STDMETHODIMP_(void) CToolImpl::OnDragMoved(ISize2d* offset)
+void Tool::OnDragMoved(const WBFL::Geometry::Size2d& offset)
 {
 }
 
-STDMETHODIMP_(void) CToolImpl::OnMoved()
+void Tool::OnMoved()
 {
 }
 
-STDMETHODIMP_(void) CToolImpl::OnCopied()
+void Tool::OnCopied()
 {
 }
 
-STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)
+void Tool::DrawDragImage(CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint)
 {
-#pragma Reminder("Deal with icons properly when we get to high dpi settings")
    const int SZ(42); // The icon size is 32, but windows 10 can stretch it and cause the BitBlt calls not to fully mask the icon 
                      // leaving trails per mantis 784. Soon we will need to deal with High DPI monitors but not yet.
 
@@ -181,7 +162,7 @@ STDMETHODIMP_(void) CToolImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, cons
    }
 }
 
-STDMETHODIMP_(HRESULT) CToolImpl::SetIcon(HINSTANCE hInstance, WORD iconResId)
+HRESULT Tool::SetIcon(HINSTANCE hInstance, WORD iconResId)
 {
    m_hIconInstance = hInstance;
    m_IconResId     = iconResId;
@@ -194,7 +175,7 @@ STDMETHODIMP_(HRESULT) CToolImpl::SetIcon(HINSTANCE hInstance, WORD iconResId)
       return E_FAIL;
 }
 
-void CToolImpl::LoadIcon()
+void Tool::LoadIcon()
 {
    // load the 16x16 version
    m_Icon = (HICON) ::LoadImage(m_hIconInstance, MAKEINTRESOURCE(m_IconResId),IMAGE_ICON,32,32,LR_DEFAULTCOLOR);

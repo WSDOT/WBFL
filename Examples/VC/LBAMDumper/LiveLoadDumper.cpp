@@ -172,7 +172,7 @@ void CLiveLoadDumper::DumpLlmForces(std::_tostream& os, std::_tostream& cos, Liv
    CComPtr<IVehicularLoads> vloads;
    hr = llModel->get_VehicularLoads(&vloads);
 
-   CollectionIndexType vl_cnt;
+   IndexType vl_cnt;
    hr = vloads->get_Count(&vl_cnt);
 
    if (vl_cnt==0)
@@ -202,9 +202,9 @@ void CLiveLoadDumper::DumpLlmForces(std::_tostream& os, std::_tostream& cos, Liv
       os<<"   POI    Result      Key     Result      Key"<<endl;
       os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-      CollectionIndexType res_cnt;
+      IndexType res_cnt;
       hr = llsresults->get_Count(&res_cnt);
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -227,7 +227,7 @@ void CLiveLoadDumper::DumpLlmForces(std::_tostream& os, std::_tostream& cos, Liv
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             PoiIDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -327,9 +327,9 @@ void CLiveLoadDumper::DumpLlmDeflections(std::_tostream& os, std::_tostream& cos
       os<<"   POI    Result      Key     Result      Key"<<endl;
       os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-      CollectionIndexType res_cnt;
+      IndexType res_cnt;
       hr = llsresults->get_Count(&res_cnt);
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -354,7 +354,7 @@ void CLiveLoadDumper::DumpLlmDeflections(std::_tostream& os, std::_tostream& cos
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -454,9 +454,9 @@ void CLiveLoadDumper::DumpLlmStresses(std::_tostream& os, std::_tostream& cos, L
       os<<"   POI     SP0        SP1         SP2        SP3      Key       SP0        SP1        SP2        SP3       Key"<<endl;
       os<<" ------ ---------- ---------- ---------- ---------- -------- ---------- ---------- ---------- ---------- --------"<<endl;
 
-      CollectionIndexType res_cnt;
+      IndexType res_cnt;
       hr = llsresults->get_Count(&res_cnt);
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          PoiIDType poi_id;
          hr = poi_ids->get_Item(ires, &poi_id);
@@ -468,7 +468,7 @@ void CLiveLoadDumper::DumpLlmStresses(std::_tostream& os, std::_tostream& cos, L
          std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
          std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-         CollectionIndexType cnt;
+         IndexType cnt;
          Float64 val;
          hr = left_res->get_Count(&cnt);
          if (cnt>0)
@@ -537,7 +537,7 @@ void CLiveLoadDumper::DumpLlmStresses(std::_tostream& os, std::_tostream& cos, L
          hr = one_poi.CoCreateInstance(CLSID_LongArray);
          hr = one_poi->Add(-1);
 
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -611,9 +611,9 @@ void CLiveLoadDumper::DumpLlmReactions(std::_tostream& os, std::_tostream& cos, 
       os<<"   ID      Result      Key"<<endl;
       os<<" ------ ---------- --------"<<endl;
 
-      CollectionIndexType res_cnt;
+      IndexType res_cnt;
       hr = llsresults->get_Count(&res_cnt);
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
@@ -638,7 +638,7 @@ void CLiveLoadDumper::DumpLlmReactions(std::_tostream& os, std::_tostream& cos, 
          hr = one_spt.CoCreateInstance(CLSID_LongArray);
          hr = one_spt->Add(-1);
 
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
@@ -718,9 +718,9 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::_tostream& os, std::_tostre
       os<<"   ID      Result      Key"<<endl;
       os<<" ------ ---------- --------"<<endl;
 
-      CollectionIndexType res_cnt;
+      IndexType res_cnt;
       hr = llsresults->get_Count(&res_cnt);
-      for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+      for (IndexType ires=0; ires<res_cnt; ires++)
       {
          IDType spt_id;
          hr = spt_ids->get_Item(ires, &spt_id);
@@ -744,7 +744,7 @@ void CLiveLoadDumper::DumpLlmSupportDeflections(std::_tostream& os, std::_tostre
          hr = one_spt.CoCreateInstance(CLSID_LongArray);
          hr = one_spt->Add(-1);
 
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
@@ -841,9 +841,9 @@ void CLiveLoadDumper::DumpEvrForces(std::_tostream& os, std::_tostream& cos, Liv
          os<<"   POI    Result      Key     Result      Key"<<endl;
          os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-         CollectionIndexType res_cnt;
+         IndexType res_cnt;
          hr = llsresults->get_Count(&res_cnt);
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             PoiIDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -867,7 +867,7 @@ void CLiveLoadDumper::DumpEvrForces(std::_tostream& os, std::_tostream& cos, Liv
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
-            for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+            for (IndexType ires=0; ires<res_cnt; ires++)
             {
                IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);
@@ -982,9 +982,9 @@ void CLiveLoadDumper::DumpEvrDeflections(std::_tostream& os, std::_tostream& cos
          os<<"   POI    Result      Key     Result      Key"<<endl;
          os<<" ------ ---------- -------- ---------- --------"<<endl;
 
-         CollectionIndexType res_cnt;
+         IndexType res_cnt;
          hr = llsresults->get_Count(&res_cnt);
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             PoiIDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -1010,7 +1010,7 @@ void CLiveLoadDumper::DumpEvrDeflections(std::_tostream& os, std::_tostream& cos
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
-            for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+            for (IndexType ires=0; ires<res_cnt; ires++)
             {
                IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);
@@ -1126,9 +1126,9 @@ void CLiveLoadDumper::DumpEvrReactions(std::_tostream& os, std::_tostream& cos, 
          os<<"   ID      Result      Key"<<endl;
          os<<" ------ ---------- --------"<<endl;
 
-         CollectionIndexType res_cnt;
+         IndexType res_cnt;
          hr = llsresults->get_Count(&res_cnt);
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
@@ -1153,7 +1153,7 @@ void CLiveLoadDumper::DumpEvrReactions(std::_tostream& os, std::_tostream& cos, 
             hr = one_spt.CoCreateInstance(CLSID_LongArray);
             hr = one_spt->Add(-1);
 
-            for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+            for (IndexType ires=0; ires<res_cnt; ires++)
             {
                IDType spt_id;
                hr = spt_ids->get_Item(ires, &spt_id);
@@ -1249,9 +1249,9 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::_tostream& os, std::_tostre
          os<<"   ID      Result      Key"<<endl;
          os<<" ------ ---------- --------"<<endl;
 
-         CollectionIndexType res_cnt;
+         IndexType res_cnt;
          hr = llsresults->get_Count(&res_cnt);
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType spt_id;
             hr = spt_ids->get_Item(ires, &spt_id);
@@ -1276,7 +1276,7 @@ void CLiveLoadDumper::DumpEvrSupportDeflections(std::_tostream& os, std::_tostre
             hr = one_spt.CoCreateInstance(CLSID_LongArray);
             hr = one_spt->Add(-1);
 
-            for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+            for (IndexType ires=0; ires<res_cnt; ires++)
             {
                IDType spt_id;
                hr = spt_ids->get_Item(ires, &spt_id);
@@ -1374,9 +1374,9 @@ void CLiveLoadDumper::DumpEvrStresses(std::_tostream& os, std::_tostream& cos, L
          os<<"   POI     SP0        SP1         SP2        SP3      Key       SP0        SP1        SP2        SP3       Key"<<endl;
          os<<" ------ ---------- ---------- ---------- ---------- -------- ---------- ---------- ---------- ---------- --------"<<endl;
 
-         CollectionIndexType res_cnt;
+         IndexType res_cnt;
          hr = llsresults->get_Count(&res_cnt);
-         for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+         for (IndexType ires=0; ires<res_cnt; ires++)
          {
             IDType poi_id;
             hr = poi_ids->get_Item(ires, &poi_id);
@@ -1388,7 +1388,7 @@ void CLiveLoadDumper::DumpEvrStresses(std::_tostream& os, std::_tostream& cos, L
             std::_tstring rgt_sp0, rgt_sp1, rgt_sp2, rgt_sp3;
             std::_tstring lft_sp0, lft_sp1, lft_sp2, lft_sp3;
 
-            CollectionIndexType cnt;
+            IndexType cnt;
             Float64 val;
             hr = left_res->get_Count(&cnt);
             if (cnt>0)
@@ -1458,7 +1458,7 @@ void CLiveLoadDumper::DumpEvrStresses(std::_tostream& os, std::_tostream& cos, L
             hr = one_poi.CoCreateInstance(CLSID_LongArray);
             hr = one_poi->Add(-1);
 
-            for (CollectionIndexType ires=0; ires<res_cnt; ires++)
+            for (IndexType ires=0; ires<res_cnt; ires++)
             {
                IDType poi_id;
                hr = poi_ids->get_Item(ires, &poi_id);

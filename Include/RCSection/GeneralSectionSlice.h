@@ -80,7 +80,7 @@ namespace WBFL
          IndexType GetShapeIndex() const;
 
          /// Shape of the slice
-         const WBFL::Geometry::Shape& GetShape() const;
+         const std::shared_ptr<const WBFL::Geometry::Shape>& GetShape() const;
 
          /// Area of slice
          Float64 GetArea() const;

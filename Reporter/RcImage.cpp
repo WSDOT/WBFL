@@ -43,42 +43,8 @@ m_Float(flt)
 {
 }
 
-rptRcImage::rptRcImage(const rptRcImage& rOther) :
-rptReportContent(rOther)
-{
-   m_FileName = rOther.m_FileName;
-   m_PictureDescription = rOther.m_PictureDescription;
-   m_Align = rOther.m_Align;
-   m_Float = rOther.m_Float;
-}
-
-rptRcImage::~rptRcImage()
-{
-}
-
-rptRcImage& rptRcImage::operator= (const rptRcImage& rOther)
-{
-   if( this != &rOther )
-   {
-      m_FileName = rOther.m_FileName;
-      m_PictureDescription = rOther.m_PictureDescription;
-      m_Align = rOther.m_Align;
-      m_Float = rOther.m_Float;
-   }
-
-   return *this;
-}
-
 void rptRcImage::Accept( rptRcVisitor& rVisitor )
 {
-#if defined _DEBUG
-   // test to make sure the file exists
-   WIN32_FIND_DATA findData;
-   HANDLE handle = ::FindFirstFile(m_FileName.c_str(),&findData);
-   CHECK(handle != INVALID_HANDLE_VALUE);
-   if ( handle != INVALID_HANDLE_VALUE )
-      ::FindClose(handle);
-#endif
    rVisitor.VisitRcImage( this );
 }
 
@@ -86,8 +52,6 @@ rptReportContent* rptRcImage::CreateClone() const
 {
    return new rptRcImage( *this );
 }
-
-//======================== ACCESS     =======================================
 
 const std::_tstring& rptRcImage::GetFileName() const
 {

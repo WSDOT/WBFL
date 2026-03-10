@@ -27,8 +27,8 @@
 
 #pragma once
 
+#include <EAF\Agent.h>
 #include <EAF\EAFApp.h>
-#include <EAF\EAFInterfaceCache.h>
 #include <EAF\EAFBrokerDocument.h>
 #include <EAF\EAFMainFrame.h>
 #include <EAF\EAFUIIntegration.h>
@@ -36,14 +36,15 @@
 #include <EAF\EAFStatusCenter.h>
 #include <EAF\EAFTransactions.h>
 #include <EAF\EAFProjectLog.h>
+#include <EAF\EAFProgress.h>
 
-#include <WBFLCore.h> // IBroker, et. al.
+//#include "ProgressThread.h"
 
 
 //////////////////////////////////////////////////////////////////////////////
 // CProxyIEAFDisplayUnitsEventSink
 template <class T>
-class CProxyIEAFDisplayUnitsEventSink : public IConnectionPointImpl<T, &IID_IEAFDisplayUnitsEventSink, CComDynamicUnkArray>
+class CProxyIEAFDisplayUnitsEventSink : public WBFL::EAF::EventSinkManager<T>
 {
 public:
 
@@ -59,22 +60,20 @@ public:
       //   return S_OK;
       //}
 
-      pT->Lock();
+      //pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = this->m_vec.begin();
-		while (pp < this->m_vec.end())
+      for (auto& [id,sink] : this->m_EventSinks)
 		{
-			if (*pp != nullptr)
+		 auto callback = sink.lock();
+			if (callback != nullptr)
 			{
-				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
-				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanging();
+				ret = callback->OnUnitsChanging();
 			}
-			pp++;
 		}
-		pT->Unlock();
+		//pT->Unlock();
 		return ret;
 	}
-	HRESULT Fire_UnitsChanged(eafTypes::UnitMode newUnitsMode)
+	HRESULT Fire_UnitsChanged(WBFL::EAF::UnitMode newUnitsMode)
 	{
 		T* pT = (T*)this;
 
@@ -84,19 +83,18 @@ public:
       //   return S_OK;
       //}
 
-      pT->Lock();
+      //pT->Lock();
 		HRESULT ret = S_OK;
-		IUnknown** pp = this->m_vec.begin();
-		while (pp < this->m_vec.end())
-		{
-			if (*pp != nullptr)
-			{
-				IEAFDisplayUnitsEventSink* pIEAFDisplayUnitsEventSink = reinterpret_cast<IEAFDisplayUnitsEventSink*>(*pp);
-				ret = pIEAFDisplayUnitsEventSink->OnUnitsChanged(newUnitsMode);
+
+      for (auto& [id, sink] : this->m_EventSinks)
+      {
+		 auto callback = sink.lock();
+         if (callback != nullptr)
+         {
+            ret = callback->OnUnitsChanged(newUnitsMode);
 			}
-			pp++;
 		}
-		pT->Unlock();
+		//pT->Unlock();
 		return ret;
 	}
 };
@@ -105,14 +103,9 @@ public:
 DEFINE_GUID(CLSID_EAFDocProxyAgent, 
 0xffbdf482, 0x53b0, 0x42e5, 0x92, 0xc8, 0xd, 0x13, 0x1, 0x81, 0x6f, 0x70);
 
-class ATL_NO_VTABLE CEAFDocProxyAgent : 
-   public CComObjectRootEx<CComSingleThreadModel>,
-   //public CComRefCountTracer<CEAFDocProxyAgent,CComObjectRootEx<CComSingleThreadModel> >,
-   public CComCoClass<CEAFDocProxyAgent,&CLSID_EAFDocProxyAgent>,
-   public IConnectionPointContainerImpl<CEAFDocProxyAgent>,
-   public CProxyIEAFDisplayUnitsEventSink<CEAFDocProxyAgent>,
+class CEAFDocProxyAgent : public WBFL::EAF::Agent,
+   public CProxyIEAFDisplayUnitsEventSink<IEAFDisplayUnitsEventSink>,
    public iUnitModeListener,
-   public IAgentEx,
    public IEAFViewRegistrar,
    public IEAFMainMenu,
    public IEAFToolbars,
@@ -121,33 +114,13 @@ class ATL_NO_VTABLE CEAFDocProxyAgent :
    public IEAFDisplayUnits,
    public IEAFStatusCenter,
    public IEAFTransactions,
+   //public IEAFProgress, // This isn't working here, so it is implemented by SysAgent in WBFLCore.dll
    public IEAFProjectLog
 {
 public:
-	CEAFDocProxyAgent();
-	virtual ~CEAFDocProxyAgent();
+	CEAFDocProxyAgent(CEAFBrokerDocument* pDoc, CEAFMainFrame* pFrame);
+	virtual ~CEAFDocProxyAgent() = default;
 
-BEGIN_COM_MAP(CEAFDocProxyAgent)
-   COM_INTERFACE_ENTRY(IAgent)
-   COM_INTERFACE_ENTRY(IAgentEx)
-   COM_INTERFACE_ENTRY(IEAFViewRegistrar)
-   COM_INTERFACE_ENTRY(IEAFMainMenu)
-   COM_INTERFACE_ENTRY(IEAFToolbars)
-   COM_INTERFACE_ENTRY(IEAFAcceleratorTable)
-   COM_INTERFACE_ENTRY(IEAFDocument)
-   COM_INTERFACE_ENTRY(IEAFDisplayUnits)
-   COM_INTERFACE_ENTRY(IEAFStatusCenter)
-   COM_INTERFACE_ENTRY(IEAFTransactions)
-	COM_INTERFACE_ENTRY(IEAFProjectLog)
-	COM_INTERFACE_ENTRY_IMPL(IConnectionPointContainer)
-END_COM_MAP()
-
-BEGIN_CONNECTION_POINT_MAP(CEAFDocProxyAgent)
-   CONNECTION_POINT_ENTRY( IID_IEAFDisplayUnitsEventSink )
-END_CONNECTION_POINT_MAP()
-
-   void SetDocument(CEAFBrokerDocument* pDoc);
-   void SetMainFrame(CEAFMainFrame* pFrame);
    CEAFMainFrame* GetMainFrame();
 
 // iUnitModeListener
@@ -156,147 +129,157 @@ END_CONNECTION_POINT_MAP()
       Fire_UnitsChanging();
    }
 
-   void OnUnitsModeChanged(eafTypes::UnitMode newUnitMode)
+   void OnUnitsModeChanged(WBFL::EAF::UnitMode newUnitMode)
    {
       Fire_UnitsChanged(newUnitMode);
    }
 
-   // IAgentEx
+   // Agent
 public:
-   STDMETHOD(SetBroker)(/*[in]*/ IBroker* pBroker) override;
-	STDMETHOD(RegInterfaces)() override;
-	STDMETHOD(Init)() override;
-	STDMETHOD(Init2)() override;
-	STDMETHOD(Reset)() override;
-	STDMETHOD(ShutDown)() override;
-   STDMETHOD(GetClassID)(CLSID* pCLSID) override;
+   std::_tstring GetName() const override { return _T("EAFDocProxyAgent"); }
+   bool Init() override;
+	bool RegisterInterfaces() override;
+   bool ShutDown() override;
+   CLSID GetCLSID() const override;
+
 
 // IEAFViewRegistrar
 public:
-   virtual long RegisterView(UINT nResourceID,IEAFCommandCallback* pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount=-1) override;
-   virtual void RemoveView(long key) override;
-   virtual CView* CreateView(long key,LPVOID pData=0) override;
-   virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) override;
-   virtual std::vector<CView*> GetRegisteredView(long key) override;
+   long RegisterView(UINT nResourceID,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount=-1) override;
+   void RemoveView(long key) override;
+   CView* CreateView(long key,LPVOID pData=0) override;
+   void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) override;
+   std::vector<CView*> GetRegisteredView(long key) override;
 
 // IEAFMainMenu
 public:
-   virtual CEAFMenu* GetMainMenu() override;
-   virtual CEAFMenu* CreateContextMenu() override;
+   std::shared_ptr<WBFL::EAF::Menu> GetMainMenu() override;
+   std::shared_ptr<WBFL::EAF::Menu> CreateContextMenu() override;
 
 // IEAFToolbars
 public:
-   virtual UINT CreateToolBar(LPCTSTR lpszName) override;
-   virtual CEAFToolBar* GetToolBar(UINT toolbarID) override;
-   virtual void DestroyToolBar(CEAFToolBar* pToolBar) override;
-   virtual void DestroyToolBar(UINT toolbarID) override;
+   UINT CreateToolBar(LPCTSTR lpszName) override;
+   std::shared_ptr<WBFL::EAF::ToolBar> GetToolBar(UINT toolbarID) override;
+   void DestroyToolBar(UINT toolbarID) override;
 
 // IEAFAcceleratorTable
 public:
-   virtual BOOL AddAccelTable(HACCEL hAccel,IEAFCommandCallback* pCallback) override;
-   virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd,IEAFCommandCallback* pCallback) override;
-   virtual BOOL RemoveAccelKey(WORD cmd,IEAFCommandCallback* pCallback) override;
-   virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key) override;
+   BOOL AddAccelTable(HACCEL hAccel,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) override;
+   BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) override;
+   BOOL RemoveAccelKey(WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) override;
+   BOOL RemoveAccelKey(BYTE fVirt,WORD key) override;
 
 
 // IEAFDocument
 public:
-   virtual BOOL IsModified() override;
-   virtual void SetModified(BOOL bModified) override;
-   virtual void Save() override;
-   virtual void SaveAs(LPCTSTR strPathName,BOOL bReplace) override;
-   virtual CString GetFileName() override;
-   virtual CString GetFileTitle() override;
-   virtual CString GetFilePath() override;
-   virtual CString GetFileRoot() override;
-   virtual void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = nullptr) override;
+   BOOL IsModified() override;
+   void SetModified(BOOL bModified) override;
+   void Save() override;
+   void SaveAs(LPCTSTR strPathName,BOOL bReplace) override;
+   CString GetFileName() override;
+   CString GetFileTitle() override;
+   CString GetFilePath() override;
+   CString GetFileRoot() override;
+   void UpdateAllViews(CView* pSender,LPARAM lHint = 0L,CObject* pHint = nullptr) override;
 
 // IEAFDisplayUnits
 public:
-   virtual void                            SetUnitMode(eafTypes::UnitMode unitMode) override;
-	virtual eafTypes::UnitMode              GetUnitMode() override;
- 	virtual const WBFL::Units::StationFormat&        GetStationFormat() override;
-   virtual const WBFL::Units::ScalarData&            GetScalarFormat() override;
-   virtual const WBFL::Units::ScalarData&            GetPercentageFormat() override;
-   virtual const WBFL::Units::LengthData&        GetComponentDimUnit() override;
-   virtual const WBFL::Units::LengthData&        GetXSectionDimUnit() override;
-   virtual const WBFL::Units::LengthData&        GetSpanLengthUnit() override;
-   virtual const WBFL::Units::LengthData&        GetDeflectionUnit()  override;
-   virtual const WBFL::Units::LengthData&        GetAlignmentLengthUnit() override;
-   virtual const WBFL::Units::Length2Data&       GetAreaUnit() override;
-   virtual const WBFL::Units::Length4Data&       GetMomentOfInertiaUnit() override;
-   virtual const WBFL::Units::Length3Data&       GetSectModulusUnit() override;
-   virtual const WBFL::Units::PressureData&      GetStressUnit() override;
-   virtual const WBFL::Units::PressureData&      GetModEUnit() override;
-   virtual const WBFL::Units::ForceData&         GetGeneralForceUnit() override;
-   virtual const WBFL::Units::ForceData&         GetTonnageUnit() override;
-   virtual const WBFL::Units::ForceData&         GetShearUnit() override;
-   virtual const WBFL::Units::MomentData&        GetMomentUnit() override;
-   virtual const WBFL::Units::MomentData&        GetSmallMomentUnit() override;
-   virtual const WBFL::Units::AngleData&         GetAngleUnit() override;
-   virtual const WBFL::Units::AngleData&         GetRadAngleUnit() override;  // Radians always
-   virtual const WBFL::Units::DensityData&       GetDensityUnit() override;
-   virtual const WBFL::Units::MassPerLengthData& GetMassPerLengthUnit() override;
-   virtual const WBFL::Units::ForcePerLengthData& GetForcePerLengthUnit() override;
-   virtual const WBFL::Units::MomentPerAngleData& GetMomentPerAngleUnit() override;
-   virtual const WBFL::Units::TimeData&          GetShortTimeUnit() override;
-   virtual const WBFL::Units::TimeData&          GetWholeDaysUnit() override;
-   virtual const WBFL::Units::TimeData&          GetFractionalDaysUnit() override;
-   virtual const WBFL::Units::AreaPerLengthData& GetAvOverSUnit() override;
-   virtual const WBFL::Units::ForceLength2Data&  GetStiffnessUnit() override;
-   virtual const WBFL::Units::SqrtPressureData&   GetTensionCoefficientUnit() override;
-   virtual const WBFL::Units::PerLengthData&      GetPerLengthUnit() override;
-   virtual const WBFL::Units::PerLengthData&      GetCurvatureUnit() override;
-   virtual const WBFL::Units::PressureData&       GetSidewalkPressureUnit() override;
-   virtual const WBFL::Units::PressureData&       GetOverlayWeightUnit() override;
-   virtual const WBFL::Units::PressureData&       GetWindPressureUnit() override;
-   virtual const WBFL::Units::TemperatureData&    GetTemperatureUnit() override;
-   virtual const WBFL::Units::VelocityData&       GetVelocityUnit() override;
+   void                            SetUnitMode(WBFL::EAF::UnitMode unitMode) override;
+   WBFL::EAF::UnitMode              GetUnitMode() override;
+   const WBFL::Units::StationFormat&        GetStationFormat() override;
+   const WBFL::Units::ScalarData&            GetScalarFormat() override;
+   const WBFL::Units::ScalarData&            GetPercentageFormat() override;
+   const WBFL::Units::LengthData&        GetComponentDimUnit() override;
+   const WBFL::Units::LengthData&        GetXSectionDimUnit() override;
+   const WBFL::Units::LengthData&        GetSpanLengthUnit() override;
+   const WBFL::Units::LengthData&        GetDeflectionUnit()  override;
+   const WBFL::Units::LengthData&        GetAlignmentLengthUnit() override;
+   const WBFL::Units::Length2Data&       GetAreaUnit() override;
+   const WBFL::Units::Length4Data&       GetMomentOfInertiaUnit() override;
+   const WBFL::Units::Length3Data&       GetSectModulusUnit() override;
+   const WBFL::Units::PressureData&      GetStressUnit() override;
+   const WBFL::Units::PressureData&      GetModEUnit() override;
+   const WBFL::Units::ForceData&         GetGeneralForceUnit() override;
+   const WBFL::Units::ForceData&         GetTonnageUnit() override;
+   const WBFL::Units::ForceData&         GetShearUnit() override;
+   const WBFL::Units::MomentData&        GetMomentUnit() override;
+   const WBFL::Units::MomentData&        GetSmallMomentUnit() override;
+   const WBFL::Units::AngleData&         GetAngleUnit() override;
+   const WBFL::Units::AngleData&         GetRadAngleUnit() override;  // Radians always
+   const WBFL::Units::DensityData&       GetDensityUnit() override;
+   const WBFL::Units::MassPerLengthData& GetMassPerLengthUnit() override;
+   const WBFL::Units::ForcePerLengthData& GetForcePerLengthUnit() override;
+   const WBFL::Units::MomentPerAngleData& GetMomentPerAngleUnit() override;
+   const WBFL::Units::TimeData&          GetShortTimeUnit() override;
+   const WBFL::Units::TimeData&          GetWholeDaysUnit() override;
+   const WBFL::Units::TimeData&          GetFractionalDaysUnit() override;
+   const WBFL::Units::AreaPerLengthData& GetAvOverSUnit() override;
+   const WBFL::Units::ForceLength2Data&  GetStiffnessUnit() override;
+   const WBFL::Units::SqrtPressureData&   GetTensionCoefficientUnit() override;
+   const WBFL::Units::PerLengthData&      GetPerLengthUnit() override;
+   const WBFL::Units::PerLengthData&      GetCurvatureUnit() override;
+   const WBFL::Units::PressureData&       GetSidewalkPressureUnit() override;
+   const WBFL::Units::PressureData&       GetOverlayWeightUnit() override;
+   const WBFL::Units::PressureData&       GetWindPressureUnit() override;
+   const WBFL::Units::TemperatureData&    GetTemperatureUnit() override;
+   const WBFL::Units::VelocityData&       GetVelocityUnit() override;
 
 // IEAFStatusCenter
 public:
-   virtual StatusCallbackIDType RegisterCallback(iStatusCallback* pCallback) override;
-   virtual StatusGroupIDType CreateStatusGroupID() override;
-   virtual StatusItemIDType Add(CEAFStatusItem* pItem) override;
-   virtual bool RemoveByID(StatusItemIDType id) override;
-   virtual bool RemoveByIndex(IndexType index) override;
-   virtual bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) override;
-   virtual CEAFStatusItem* GetByID(StatusItemIDType id) override;
-   virtual CEAFStatusItem* GetByIndex(IndexType index) override;
-   virtual eafTypes::StatusSeverityType GetSeverity(const CEAFStatusItem* pItem) override;
-   virtual eafTypes::StatusSeverityType GetSeverity() override;
-   virtual IndexType Count() override;
+   StatusCallbackIDType RegisterCallback(std::shared_ptr<WBFL::EAF::StatusCallback> pCallback) override;
+   StatusGroupIDType CreateStatusGroupID() override;
+   StatusItemIDType Add(std::shared_ptr<WBFL::EAF::StatusItem> pItem) override;
+   bool RemoveByID(StatusItemIDType id) override;
+   bool RemoveByIndex(IndexType index) override;
+   bool RemoveByStatusGroupID(StatusGroupIDType statusGroupID) override;
+   std::shared_ptr<WBFL::EAF::StatusItem> GetByID(StatusItemIDType id) override;
+   std::shared_ptr<WBFL::EAF::StatusItem> GetByIndex(IndexType index) override;
+   WBFL::EAF::StatusSeverityType GetSeverity(std::shared_ptr<const WBFL::EAF::StatusItem> pItem) override;
+   WBFL::EAF::StatusSeverityType GetSeverity() override;
+   IndexType Count() override;
 
 // IEAFTransactions
 public:
-   virtual void Execute(const CEAFTransaction& rTxn) override;
-   virtual void Execute(std::unique_ptr<CEAFTransaction>&& pTxn) override;
-   virtual void Undo() override;
-   virtual void Redo() override;
-   virtual void Repeat() override;
-   virtual bool CanUndo() const override;
-   virtual bool CanRedo() const override;
-   virtual bool CanRepeat() const override;
-   virtual std::_tstring UndoName() const override;
-   virtual std::_tstring RedoName() const override;
-   virtual std::_tstring RepeatName() const override;
-   virtual IndexType GetTxnCount() const override;
-   virtual IndexType GetUndoCount() const override;
+   void Execute(const WBFL::EAF::Transaction& rTxn) override;
+   void Execute(std::unique_ptr<WBFL::EAF::Transaction>&& pTxn) override;
+   void Undo() override;
+   void Redo() override;
+   void Repeat() override;
+   bool CanUndo() const override;
+   bool CanRedo() const override;
+   bool CanRepeat() const override;
+   std::_tstring UndoName() const override;
+   std::_tstring RedoName() const override;
+   std::_tstring RepeatName() const override;
+   IndexType GetTxnCount() const override;
+   IndexType GetUndoCount() const override;
 
 // IEAFProjectLog
 public:
-   virtual CString GetName() override;
-   virtual void LogMessage( LPCTSTR lpszMsg ) override;
-   virtual void Destroy() override;
+   void LogMessage( LPCTSTR lpszMsg ) override;
+
+//// IEAFProgress
+//public:
+//   HRESULT CreateProgressWindow(DWORD dwMask, UINT nDelay) override;
+//   HRESULT Init(short begin, short end, short inc) override;
+//   HRESULT Increment() override;
+//   HRESULT UpdateMessage(LPCTSTR msg) override;
+//   HRESULT Continue() override;
+//   HRESULT DestroyProgressWindow() override;
 
 protected:
-   DECLARE_EAF_AGENT_DATA;
+   EAF_DECLARE_AGENT_DATA;
 
    CEAFBrokerDocument* m_pDoc;
    CEAFMainFrame* m_pMainFrame;
 
-   CString m_LogFileName;
-   DWORD m_dwLogFileCookie;
+   //CProgressThread* m_pThread = nullptr;
+   //Int16 m_cProgressRef = 0; // progress thread ref count
+   //HRESULT ValidateThread();
+   //std::vector<std::_tstring> m_MessageStack;
+   //std::_tstring m_LastMessage;
+
+   //CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
 
    bool IsLogFileOpen();
    void OpenLogFile();

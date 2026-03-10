@@ -44,8 +44,10 @@ namespace WBFL
          Float64 dv_uhpc{ Float64_Max }; // dv for use in Vuhpc and shear stress calculations, but not more than dv
          Float64 bv{ 0.0 };
          Float64 Es{ 0.0 };
+         Float64 Kdb{ 1.0 };
          Float64 As{ 0.0 };
          Float64 Eps{ 0.0 };
+         Float64 Kds{ 1.0 };
          Float64 Aps{ 0.0 };
          Float64 Ec{ 0.0 };
          Float64 Ac{ 0.0 };

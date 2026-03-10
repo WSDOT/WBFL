@@ -55,9 +55,6 @@ namespace WBFL
          /// Builds the chapter based on the reporting specification and output level
          virtual rptChapter* Build(const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const = 0;
 
-         /// Creates a clone this chapter builder
-         virtual std::unique_ptr<ChapterBuilder> Clone() const = 0;
-
          /// Returns true if the chapter needs to be re-built based on a reporting hint, reporting specification, and output level.
          /// Default implementation returns false
          virtual bool NeedsUpdate(const std::shared_ptr<const ReportHint>& pHint, const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const;

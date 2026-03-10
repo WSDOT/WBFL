@@ -15,6 +15,8 @@
 #include "TemporarySupportDrawStrategyImpl.h"
 #include "LBAMTruckDisplayImpl.h"
 
+#include "LegendDisplayObject.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,7 +30,7 @@ static char THIS_FILE[] = __FILE__;
 CDisplayObjectFactory::CDisplayObjectFactory(CLBAMViewerDoc* pDoc)
 {
    m_pDoc = pDoc;
-   ::CoCreateInstance(CLSID_DisplayObjectFactory,NULL,CLSCTX_ALL,IID_iDisplayObjectFactory,(void**)&m_Factory);
+   m_Factory = WBFL::DManip::DisplayObjectFactory::Create();
 }
 
 
@@ -36,115 +38,95 @@ CDisplayObjectFactory::~CDisplayObjectFactory()
 {
 }
 
-
-
-
-BEGIN_INTERFACE_MAP(CDisplayObjectFactory,CCmdTarget)
-   INTERFACE_PART(CDisplayObjectFactory,IID_iDisplayObjectFactory,Factory)
-END_INTERFACE_MAP()
-
-DELEGATE_CUSTOM_INTERFACE(CDisplayObjectFactory,Factory);
-
-
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayObjectFactory message handlers
-STDMETHODIMP_(void) CDisplayObjectFactory::XFactory::Create(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj)
+std::shared_ptr<WBFL::DManip::iDisplayObject> CDisplayObjectFactory::Create(CLIPFORMAT cfFormat, COleDataObject* pDataObject) const
 {
-   METHOD_PROLOGUE(CDisplayObjectFactory,Factory);
-
-   if ( cfFormat == CSupportEvents::ms_Format )
+   if (cfFormat == CLegendDisplayObject::ms_cfFormat)
    {
-      CComPtr<iPointDisplayObject> SupportRep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&SupportRep);
+      auto legRep = CLegendDisplayObject::Create();
 
-      CSupportDrawStrategyImpl* pDrawStrategy = new CSupportDrawStrategyImpl(pThis->m_pDoc);
-      SupportRep->SetDrawingStrategy((iDrawPointStrategy*)pDrawStrategy->GetInterface(&IID_iDrawPointStrategy));
+      if (pDataObject)
+      {
+         // Initialize from data object
+         auto source = WBFL::DManip::DragDataSource::Create();
+         source->SetDataObject(pDataObject);
 
-      CSupportEvents* pEvents = new CSupportEvents(pThis->m_pDoc);
-      CComPtr<iDisplayObjectEvents> pDOE = (iDisplayObjectEvents*)pEvents->GetInterface(&IID_iDisplayObjectEvents);
-      SupportRep->RegisterEventSink(pDOE);
+         // rebuild the display object from the data source
+         legRep->OnDrop(source);
+      }
 
-      CComQIPtr<iDragData,&IID_iDragData> dd(pEvents->GetInterface(&IID_IUnknown));
-      CComQIPtr<iDraggable,&IID_iDraggable> draggable(SupportRep);
-      draggable->SetDragData(dd);
+      return std::dynamic_pointer_cast<WBFL::DManip::iDisplayObject>(legRep);
+   }
+   else if ( cfFormat == CSupportEvents::ms_Format )
+   {
+      auto SupportRep = WBFL::DManip::PointDisplayObject::Create();
+
+      auto pDrawStrategy = std::make_shared<CSupportDrawStrategyImpl>(m_pDoc);
+      SupportRep->SetDrawingStrategy(pDrawStrategy);
+
+      auto pEvents = std::make_shared<CSupportEvents>(m_pDoc);
+      SupportRep->RegisterEventSink(pEvents);
+      SupportRep->SetDragData(pEvents);
 
       if ( pDataObject )
       {
          // Initialize from data object
-         CComPtr<iDragDataSource> source;
-         ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+         auto source = WBFL::DManip::DragDataSource::Create();
          source->SetDataObject(pDataObject);
 
          // rebuild the display object from the data source
-         draggable->OnDrop(source);
+         SupportRep->OnDrop(source);
       }
 
-      (*dispObj) = SupportRep;
-      (*dispObj)->AddRef();
+      return SupportRep;
    }
    else if ( cfFormat == CTemporarySupportEvents::ms_Format )
    {
-      CComPtr<iPointDisplayObject> TemporarySupportRep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&TemporarySupportRep);
+      auto TemporarySupportRep = WBFL::DManip::PointDisplayObject::Create();
 
-      CTemporarySupportDrawStrategyImpl* pDrawStrategy = new CTemporarySupportDrawStrategyImpl(pThis->m_pDoc);
-      TemporarySupportRep->SetDrawingStrategy((iDrawPointStrategy*)pDrawStrategy->GetInterface(&IID_iDrawPointStrategy));
+      auto pDrawStrategy = std::make_shared<CTemporarySupportDrawStrategyImpl>(m_pDoc);
+      TemporarySupportRep->SetDrawingStrategy(pDrawStrategy);
 
-      CTemporarySupportEvents* pEvents = new CTemporarySupportEvents(pThis->m_pDoc);
-      CComPtr<iDisplayObjectEvents> pDOE = (iDisplayObjectEvents*)pEvents->GetInterface(&IID_iDisplayObjectEvents);
-      TemporarySupportRep->RegisterEventSink(pDOE);
-
-      CComQIPtr<iDragData,&IID_iDragData> dd(pEvents->GetInterface(&IID_IUnknown));
-      CComQIPtr<iDraggable,&IID_iDraggable> draggable(TemporarySupportRep);
-      draggable->SetDragData(dd);
+      auto pEvents = std::make_shared<CTemporarySupportEvents>(m_pDoc);
+      TemporarySupportRep->RegisterEventSink(pEvents);
+      TemporarySupportRep->SetDragData(pEvents);
 
       if ( pDataObject )
       {
          // Initialize from data object
-         CComPtr<iDragDataSource> source;
-         ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+         auto source = WBFL::DManip::DragDataSource::Create();
          source->SetDataObject(pDataObject);
 
          // rebuild the display object from the data source
-         draggable->OnDrop(source);
+         TemporarySupportRep->OnDrop(source);
       }
 
-      (*dispObj) = TemporarySupportRep;
-      (*dispObj)->AddRef();
+      return TemporarySupportRep;
    }
    else if ( cfFormat == CLBAMTruckDisplayImpl::ms_Format )
    {
-      CComPtr<iPointDisplayObject> TruckRep;
-      ::CoCreateInstance(CLSID_PointDisplayObject,NULL,CLSCTX_ALL,IID_iPointDisplayObject,(void**)&TruckRep);
+      auto TruckRep = WBFL::DManip::PointDisplayObject::Create();
 
-      CLBAMTruckDisplayImpl* pDisplayImpl = new CLBAMTruckDisplayImpl();
-      TruckRep->SetDrawingStrategy((iDrawPointStrategy*)pDisplayImpl->GetInterface(&IID_iDrawPointStrategy));
-
-      CComPtr<iDisplayObjectEvents> pDOE = (iDisplayObjectEvents*)pDisplayImpl->GetInterface(&IID_iDisplayObjectEvents);
-      TruckRep->RegisterEventSink(pDOE);
-
-      CComQIPtr<iDragData,&IID_iDragData> dd(pDisplayImpl->GetInterface(&IID_IUnknown));
-      CComQIPtr<iDraggable,&IID_iDraggable> draggable(TruckRep);
-      draggable->SetDragData(dd);
+      auto pDisplayImpl = std::make_shared<CLBAMTruckDisplayImpl>();
+      TruckRep->SetDrawingStrategy(pDisplayImpl);
+      TruckRep->RegisterEventSink(pDisplayImpl);
+      TruckRep->SetDragData(pDisplayImpl);
 
       if ( pDataObject )
       {
          // Initialize from data object
-         CComPtr<iDragDataSource> source;
-         ::CoCreateInstance(CLSID_DragDataSource,NULL,CLSCTX_ALL,IID_iDragDataSource,(void**)&source);
+         auto source = WBFL::DManip::DragDataSource::Create();
          source->SetDataObject(pDataObject);
 
          // rebuild the display object from the data source
-         draggable->OnDrop(source);
+         TruckRep->OnDrop(source);
       }
 
-      (*dispObj) = TruckRep;
-      (*dispObj)->AddRef();
+      return TruckRep;
    }
-
    else
    {
-      pThis->m_Factory->Create(cfFormat,pDataObject,dispObj);
+      return m_Factory->Create(cfFormat,pDataObject);
    }
-
 }

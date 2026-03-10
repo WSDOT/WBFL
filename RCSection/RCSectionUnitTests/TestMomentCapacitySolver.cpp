@@ -724,7 +724,7 @@ namespace RCSectionUnitTest
          Float64 _ec = girder_initial_strain->GetZ(0, Y); // initial strain in girder concrete
          Assert::IsTrue(IsEqual(ec - _ec, esl - ei));
 
-         const auto& general_solution = solution->GetGeneralSectionSolution();
+         const auto* general_solution = solution->GetGeneralSectionSolution();
          auto slices = general_solution->FindSlices(3); // shape 3 is the lowest strand
          auto nSlices = slices.size();
          Assert::IsTrue(nSlices == 1);
@@ -851,7 +851,7 @@ namespace RCSectionUnitTest
          _ec = girder_initial_strain->GetZ(0, Y); // initial strain in girder concrete
          Assert::IsTrue(IsEqual(ec - _ec, 0.035 - ei));
 
-         const auto& general_solution2 = solution->GetGeneralSectionSolution();
+         const auto* general_solution2 = solution->GetGeneralSectionSolution();
          slices = general_solution2->FindSlices(3); // shape 3 is the lowest strand
          nSlices = slices.size();
          Assert::IsTrue(nSlices == 1);

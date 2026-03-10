@@ -135,7 +135,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDENGTOOLSLIB;_DEBUG;_WINDOWS;WIN32;_AFXDLL;WBFL_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILDENGTOOLSLIB;_DEBUG;_WINDOWS;WIN32;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -187,7 +187,11 @@
   <ItemGroup>
     <ClCompile Include="Bearing.cpp" />
     <ClCompile Include="BearingCalculator.cpp" />
+    <ClCompile Include="BearingCheckArtifact.cpp" />
+    <ClCompile Include="BearingDesignCriteria.cpp" />
     <ClCompile Include="BearingLoads.cpp" />
+    <ClCompile Include="BearingReporter.cpp" />
+    <ClCompile Include="BearingResults.cpp" />
     <ClCompile Include="BiaxialBeamStrain.cpp" />
     <ClCompile Include="FDMeshGenerator.cpp" />
     <ClCompile Include="main.cpp">
@@ -203,7 +207,11 @@
     <ClInclude Include="..\Include\EngTools\AutoLib.h" />
     <ClInclude Include="..\Include\EngTools\Bearing.h" />
     <ClInclude Include="..\Include\EngTools\BearingCalculator.h" />
+    <ClInclude Include="..\Include\EngTools\BearingCheckArtifact.h" />
+    <ClInclude Include="..\Include\EngTools\BearingDesignCriteria.h" />
     <ClInclude Include="..\Include\EngTools\BearingLoads.h" />
+    <ClInclude Include="..\Include\EngTools\BearingReporter.h" />
+    <ClInclude Include="..\Include\EngTools\BearingResults.h" />
     <ClInclude Include="..\Include\EngTools\BiaxialBeamStrain.h" />
     <ClInclude Include="..\Include\EngTools\EngTools.h" />
     <ClInclude Include="..\Include\EngTools\EngToolsExp.h" />
@@ -223,6 +231,9 @@
   <ItemGroup>
     <ProjectReference Include="..\GeomModel\GeomModel.vcxproj">
       <Project>{0727c73e-e23d-4b55-800c-0c17ca862844}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\LRFD\LRFD.vcxproj">
+      <Project>{262ce7a1-072b-4578-b45c-75546fa4c384}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{9c7b0108-aa89-413c-9d75-5d700f0aece1}</Project>

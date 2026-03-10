@@ -30,11 +30,6 @@
 #include <cctype>
 
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void DDX_Direction(CDataExchange* pDX,int nIDC,IDirection* pDirection,IDisplayUnitFormatter* formatter)
 {
@@ -147,10 +142,10 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& value, const WBFL::Unit
 
    WBFL::COGO::Station station(value);
 
-	if (pDX->m_bSaveAndValidate)
-	{
-	   // Transfer data from the control
-	   ::GetWindowText(hWndCtrl, lpszBuffer.get(), cLength);
+   if (pDX->m_bSaveAndValidate)
+   {
+      // Transfer data from the control
+      ::GetWindowText(hWndCtrl, lpszBuffer.get(), cLength);
 
       try
       {
@@ -165,8 +160,8 @@ void DDX_Station( CDataExchange* pDX, int nIDC, Float64& value, const WBFL::Unit
 
       value = station.GetValue();
    }
-	else
-	{  
+   else
+   {
       std::_tstring strStation;
       try
       {
@@ -193,11 +188,11 @@ void DDV_GreaterThanStation(CDataExchange* pDX, Float64 value, Float64 stationLi
 {
 #pragma Reminder("UPDATE: does this need to take station equation zone index into account")
 
-	if (!pDX->m_bSaveAndValidate)
-	{
-		TRACE0("Warning: initial dialog data is out of range.\n");
-		return;         // don't stop now
-	}
+   if (!pDX->m_bSaveAndValidate)
+   {
+      TRACE0("Warning: initial dialog data is out of range.\n");
+      return;         // don't stop now
+   }
 
    if (!::IsGT(stationLimit,value))
    {
@@ -207,7 +202,7 @@ void DDV_GreaterThanStation(CDataExchange* pDX, Float64 value, Float64 stationLi
       CString msg;
       msg.Format(_T("Please enter a station that is greater than %s"), strLimit.c_str());
       AfxMessageBox(msg, MB_ICONEXCLAMATION);
-	   pDX->Fail();
+      pDX->Fail();
    }
 }
 

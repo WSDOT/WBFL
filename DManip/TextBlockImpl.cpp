@@ -21,64 +21,26 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// TextBlockImpl.cpp: implementation of the CTextBlockImpl class.
-//
-//////////////////////////////////////////////////////////////////////
+#include "pch.h"
+#include <DManip/TextBlockImpl.h>
+#include <DManip/DisplayList.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/DisplayView.h>
 
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "TextBlockImpl.h"
+using namespace WBFL::DManip;
 
-#include <MathEx.h>
-
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CTextBlockImpl::CTextBlockImpl()
+TextBlock::TextBlock(IDType id) : iTextBlock(id)
 {
-}
-
-CTextBlockImpl::~CTextBlockImpl()
-{
-}
-
-HRESULT CTextBlockImpl::FinalConstruct()
-{
-   m_TextAlign = TA_TOP | TA_LEFT;
-   m_Position.CoCreateInstance(CLSID_Point2d);
-   m_strText = _T("");
-
    CFont font;
-   font.CreatePointFont(80,_T("Arial"));
+   font.CreatePointFont(80, _T("Arial"));
    font.GetLogFont(&m_Font);
    m_Font.lfHeight = 80;
    m_Font.lfQuality = ANTIALIASED_QUALITY;
-
-   m_BkMode = OPAQUE;
-   m_FgColor = RGB(0,0,0);
-   m_BgColor = RGB(255,255,255);
-
-   SetDisplayObject(this);
-
-   return S_OK;
-}
-
-void CTextBlockImpl::FinalRelease()
-{
-   CDisplayObjectDefaultImpl::Do_FinalRelease();
 }
 
 // iDisplayObject Implementation
 // This are the methods not delegated to the implementation object
-STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
+void TextBlock::Draw(CDC* pDC)
 {
    if ( !IsVisible() ) // Don't draw if not visible
       return;
@@ -144,21 +106,14 @@ STDMETHODIMP_(void) CTextBlockImpl::Draw(CDC* pDC)
    pDC->SetTextAlign(nFlag);
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::Highlite(CDC* pDC,BOOL bHighlite)
+void TextBlock::Highlight(CDC* pDC,bool bHighlight)
 {
-#pragma Reminder("Clean this up")
-   // Draw bold or something
    Draw(pDC);
 }
 
-STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
+RECT TextBlock::GetLogicalBoundingBox() const
 {
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDM;
-   pDL->GetDisplayMgr(&pDM);
-   CComPtr<iCoordinateMap> pMapper;
-   pDM->GetCoordinateMap(&pMapper);
+   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
 
    LONG lx,ly;
    GetPositionInLogicalSpace(&lx,&ly);
@@ -166,16 +121,16 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    CStringArray strArray;
    GetTextLines(strArray);
 
-   CDisplayView* pView = pDM->GetView();
+   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
    
    CSize extents(0,0);
    for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = pMapper->GetTextExtent(pView, m_Font,str);
+      CSize size = map->GetTextExtent(pView, m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = pMapper->GetTextExtent(pView, m_Font,_T("ABCDEFG\0"));
+         size = map->GetTextExtent(pView, m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -238,152 +193,134 @@ STDMETHODIMP_(CRect) CTextBlockImpl::GetBoundingBox()
    CPoint p3( int((bl.x - crotate.x)*c + (bl.y - crotate.y)*s + crotate.x), int(-(bl.x - crotate.x)*s + (bl.y - crotate.y)*c + crotate.y) );
    CPoint p4( int((br.x - crotate.x)*c + (br.y - crotate.y)*s + crotate.x), int(-(br.x - crotate.x)*s + (br.y - crotate.y)*c + crotate.y) );
 
-   box.left   = Min( Min(p1.x,p2.x), Min(p3.x,p4.x) );
-   box.right  = Max( Max(p1.x,p2.x), Max(p3.x,p4.x) );
-   box.bottom = Max( Max(p1.y,p2.y), Max(p3.y,p4.y) );
-   box.top    = Min( Min(p1.y,p2.y), Min(p3.y,p4.y) );
+   box.left   = Min( p1.x, p2.x, p3.x, p4.x );
+   box.right  = Max( p1.x, p2.x, p3.x, p4.x );
+   box.bottom = Max( p1.y, p2.y, p3.y, p4.y );
+   box.top    = Min( p1.y, p2.y, p3.y, p4.y );
 
    return box;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::GetBoundingBox(IRect2d** wrect)
+WBFL::Geometry::Rect2d TextBlock::GetBoundingBox() const
 {
-   CRect box = GetBoundingBox(); // logical coordinates
+   CRect box = GetLogicalBoundingBox(); // logical coordinates
 
    // map to world coordinates
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-   CComPtr<iDisplayMgr> pDM;
-   pDL->GetDisplayMgr(&pDM);
-   CComPtr<iCoordinateMap> pMapper;
-   pDM->GetCoordinateMap(&pMapper);
+   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
 
    Float64 left,right,top,bottom;
-   pMapper->LPtoWP(box.left,box.bottom,&left,&bottom);
-   pMapper->LPtoWP(box.right,box.top,&right,&top);
+   map->LPtoWP(box.left,box.bottom,&left,&bottom);
+   map->LPtoWP(box.right,box.top,&right,&top);
 
-   CComPtr<IRect2d> bounding_box;
-   bounding_box.CoCreateInstance(CLSID_Rect2d);
-   bounding_box->put_Left(left);
-   bounding_box->put_Right(right);
-   bounding_box->put_Top(top);
-   bounding_box->put_Bottom(bottom);
-
-   (*wrect) = bounding_box;
-   (*wrect)->AddRef();
+   return { left,bottom,right,top };
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetPosition(IPoint2d* pos)
+void TextBlock::SetPosition(const WBFL::Geometry::Point2d& pos)
 {
-   m_Position->MoveEx(pos);
+   m_Position.Move(pos);
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::GetPosition(IPoint2d** pos)
+const WBFL::Geometry::Point2d& TextBlock::GetPosition() const
 {
-   (*pos) = m_Position;
-   (*pos)->AddRef();
+   return m_Position;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetTextAlign(UINT nFlags)
+void TextBlock::SetTextAlign(UINT nFlags)
 {
    m_TextAlign = nFlags;
 }
 
-STDMETHODIMP_(UINT) CTextBlockImpl::GetTextAlign()
+UINT TextBlock::GetTextAlign() const
 {
    return m_TextAlign;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetAngle(LONG angle)
+void TextBlock::SetAngle(LONG angle)
 {
    m_Font.lfEscapement  = angle;
    m_Font.lfOrientation = angle;
 }
 
-STDMETHODIMP_(LONG) CTextBlockImpl::GetAngle()
+LONG TextBlock::GetAngle() const
 {
    return m_Font.lfEscapement;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetPointSize(LONG pointSize)
+void TextBlock::SetPointSize(LONG pointSize)
 {
    m_Font.lfHeight = pointSize;
 }
 
-STDMETHODIMP_(LONG) CTextBlockImpl::GetPointSize()
+LONG TextBlock::GetPointSize() const
 {
    return m_Font.lfHeight;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetText(LPCTSTR lpszText)
+void TextBlock::SetText(LPCTSTR lpszText)
 {
    if ( m_strText == CString(lpszText) )
       return;
 
    m_strText = lpszText;
 
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-
-   if ( pDL )
+   auto display_list = GetDisplayList();
+   if ( display_list )
    {
-      CComPtr<iDisplayMgr> pDispMgr;
-      pDL->GetDisplayMgr(&pDispMgr);
-
-      if ( pDispMgr )
+      auto display_mgr = display_list->GetDisplayMgr();
+      if ( display_mgr )
       {
-         CRect box = GetBoundingBox();
-         pDispMgr->InvalidateRect(box);
+         CRect box = GetLogicalBoundingBox();
+         display_mgr->GetView()->InvalidateRect(box);
       }
    }
 }
 
-STDMETHODIMP_(CString) CTextBlockImpl::GetText()
+CString TextBlock::GetText() const
 {
    return m_strText;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetFont(const LOGFONT& Font)
+void TextBlock::SetFont(const LOGFONT& Font)
 {
    m_Font = Font;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::GetFont(LOGFONT* pFont)
+LOGFONT TextBlock::GetFont() const
 {
-   *pFont = m_Font;
+   return m_Font;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetTextColor(COLORREF color)
+void TextBlock::SetTextColor(COLORREF color)
 {
    m_FgColor = color;
 }
 
-STDMETHODIMP_(COLORREF) CTextBlockImpl::GetTextColor()
+COLORREF TextBlock::GetTextColor() const
 {
    return m_FgColor;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetBkColor(COLORREF color)
+void TextBlock::SetBkColor(COLORREF color)
 {
    m_BgColor = color;
 }
 
-STDMETHODIMP_(COLORREF) CTextBlockImpl::GetBkColor()
+COLORREF TextBlock::GetBkColor() const
 {
    return m_BgColor;
 }
 
-STDMETHODIMP_(void) CTextBlockImpl::SetBkMode(int bkMode)
+void TextBlock::SetBkMode(int bkMode)
 {
    m_BkMode = bkMode;
 }
 
-STDMETHODIMP_(int) CTextBlockImpl::GetBkMode()
+int TextBlock::GetBkMode() const
 {
    return m_BkMode;
 }
 
-void CTextBlockImpl::GetTextLines(CStringArray& strArray)
+void TextBlock::GetTextLines(CStringArray& strArray) const
 {
    // deal with multiline text because TextOut doesn't know what to do with "\n"
    CString strText = GetText();
@@ -406,52 +343,21 @@ void CTextBlockImpl::GetTextLines(CStringArray& strArray)
    }
 }
 
-void CTextBlockImpl::GetPositionInWorldSpace(Float64* wx,Float64* wy)
+void TextBlock::GetPositionInLogicalSpace(LONG* lx,LONG* ly) const
 {
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDM;
-   pDL->GetDisplayMgr(&pDM);
- 
-   CComPtr<iCoordinateMap> pMapper;
-   pDM->GetCoordinateMap(&pMapper);
-
-   pMapper->MPtoWP(m_Position,wx,wy);
+   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
+   auto wp = map->MPtoWP(m_Position);
+   map->WPtoLP(wp,lx,ly);
 }
 
-void CTextBlockImpl::GetPositionInLogicalSpace(LONG* lx,LONG* ly)
-{
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDM;
-   pDL->GetDisplayMgr(&pDM);
- 
-   CComPtr<iCoordinateMap> pMapper;
-   pDM->GetCoordinateMap(&pMapper);
-
-   Float64 wx,wy;
-   pMapper->MPtoWP(m_Position,&wx,&wy);
-   pMapper->WPtoLP(wx,wy,lx,ly);
-}
-
-void CTextBlockImpl::CreateFont(CFont& font,CDC* pDC)
+void TextBlock::CreateFont(CFont& font,CDC* pDC)
 {
    // this font accounts for the rotation between Model and World space
 
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
+   auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
+   auto mapping = std::dynamic_pointer_cast<const iMapping>(map);
 
-   CComPtr<iDisplayMgr> pDM;
-   pDL->GetDisplayMgr(&pDM);
- 
-   CComPtr<iCoordinateMap> pMapper;
-   pDM->GetCoordinateMap(&pMapper);
-
-   CComQIPtr<iMapping> mapping(pMapper);
-   Float64 cx,cy,angle;
-   mapping->GetRotation(&cx,&cy,&angle);
+   auto [center,angle] = mapping->GetRotation();
 
    angle *= 1800/M_PI; // convert to angle degrees (in 10ths of a degree)
 
@@ -468,8 +374,8 @@ void CTextBlockImpl::CreateFont(CFont& font,CDC* pDC)
    lfFont.lfEscapement  = text_angle;
    lfFont.lfOrientation = text_angle;
 
-   CDisplayView* pView = pDM->GetView();
-   pView->ScaleFont(lfFont);
+   auto view = GetDisplayList()->GetDisplayMgr()->GetView();
+   view->ScaleFont(lfFont);
 
    font.CreatePointFontIndirect(&lfFont, pDC);
 }

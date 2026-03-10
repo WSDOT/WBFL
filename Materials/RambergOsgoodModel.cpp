@@ -86,13 +86,9 @@ std::pair<Float64, bool> RambergOsgoodModel::ComputeStress(Float64 strain) const
    return std::make_pair(stress,::IsLT(m_MaxStrain, sign * strain) ? false : true);
 }
 
-void RambergOsgoodModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> RambergOsgoodModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
-   *pMinStrain = -0.003;
-   *pMaxStrain = 0.005;
+   return { -0.003, 0.005 };
 }
 
 Float64 RambergOsgoodModel::GetStrainAtPeakStress() const

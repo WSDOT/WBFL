@@ -101,13 +101,9 @@ std::pair<Float64, bool> LRFDPrestressModel::ComputeStress(Float64 strain) const
    return std::make_pair(fps,::IsLT(m_MaxStrain, sign * strain) ? false : true);
 }
 
-void LRFDPrestressModel::GetStrainLimits(Float64* pMinStrain, Float64* pMaxStrain) const
+std::pair<Float64, Float64> LRFDPrestressModel::GetStrainLimits() const
 {
-   PRECONDITION(pMinStrain != nullptr);
-   PRECONDITION(pMaxStrain != nullptr);
-
-   *pMinStrain = m_MinStrain;
-   *pMaxStrain = m_MaxStrain;
+   return { m_MinStrain,m_MaxStrain };
 }
 
 Float64 LRFDPrestressModel::GetStrainAtPeakStress() const

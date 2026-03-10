@@ -21,26 +21,20 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DISPLAYVIEW_H__BCB8A109_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_DISPLAYVIEW_H__BCB8A109_E659_11D4_8B81_006097C68A9C__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// DisplayView.h : header file
-//
 
-#include <DManip\DManipExp.h>
-#include <DManip\DisplayMgr.h>
-#include <DManip\CoordinateMap.h>
+#include <DManip/DManipExp.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/CoordinateMap.h>
+#include <DManip/Mapping.h>
 
-struct iTask;
-struct iTaskFactory;
-interface iMapping;
+class WBFL::DManip::iTask;
+class WBFL::DManip::TaskFactory;
 
-/////////////////////////////////////////////////////////////////////////////
-// CDisplayView view
 
+
+/// @brief The display view canvas.
 class DMANIPCLASS CDisplayView : public CScrollView
 {
 protected:
@@ -49,13 +43,14 @@ protected:
 
 // Attributes
 public:
-   void GetDisplayMgr(iDisplayMgr** dispMgr);
-   CRect GetViewRect();
+   std::shared_ptr<WBFL::DManip::iDisplayMgr> GetDisplayMgr();
+   std::shared_ptr<const WBFL::DManip::iDisplayMgr> GetDisplayMgr() const;
+   CRect GetViewRect() const;
 
 // Operations
 public:
-   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,IPoint2d* point);
-   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect,IPoint2d* point);
+   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point);
+   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -85,29 +80,33 @@ public:
 	virtual void OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo = nullptr);
 
 public:
-   void GetCoordinateMap(iCoordinateMap** map);
+   std::shared_ptr<const WBFL::DManip::iCoordinateMap> GetCoordinateMap() const;
 
-   void SetMappingMode(DManip::MapMode mm, bool reDraw=true);
-   DManip::MapMode GetMappingMode();
+   /// @brief Sets the mapping mode
+   void SetMappingMode(WBFL::DManip::MapMode mm, bool reDraw=true);
+   WBFL::DManip::MapMode GetMappingMode();
 
-   // Scaling
+   /// @brief Scales the world space to fit within the window
    void ScaleToFit(bool reDraw=true);
 
-   // pan such that the specified point is in the
-   // center of the client area.
+   /// @brief Pan such that the specified point is in the center of the client area.
    void CenterOnPoint(CPoint center, bool reDraw=true);
-   void CenterOnPoint(Float64 x, Float64 y, bool reDraw=true);
-   void CenterOnPoint(IPoint2d* wOrg, bool reDraw=true);
-   void DoCenterOnPoint(); // Activates the CenterOnPoint Task
+   void CenterOnPoint(const WBFL::Geometry::Point2d& wOrg, bool reDraw=true);
 
-   // zoom to a rectangle
+   /// @brief Activates a task whereby the user centers the canvas on a point by left button mouse click
+   void ActivateCenterOnPointTask();
+
+   /// @brief Zooms the view to a rectangle
    void Zoom(CRect rect, bool reDraw=true);
-   void Zoom(IRect2d* rect, bool reDraw=true);
-   void Zoom(Float64 factor, bool reDraw=true); // zoom in relative to the current mapping
-   void DoZoom();
+   void Zoom(const WBFL::Geometry::Rect2d& rect, bool reDraw=true);
+   /// @brief Zoomes the view by apply a scaling factor
+   void Zoom(Float64 factor, bool reDraw=true);
 
-   // Scales font size (point size) for high DPI devices
-   void ScaleFont(LOGFONT& lfFont);
+   /// @brief Actives a task whereby the user zooms in on the canvas by drawing a rectangle with the mouse
+   void ActivateZoomTask();
+
+   /// @brief Scales font size (point size) for high DPI devices
+   void ScaleFont(LOGFONT& lfFont) const;
 
 // Implementation
 protected:
@@ -143,24 +142,23 @@ protected:
    // by using the iMapping interface directly in your subclass
    void SetLogicalViewRect(int mapMode, CRect rect);
    RECT GetLogicalViewRect();
-   void SetWorldViewRect(IRect2d* rect);
+   void SetWorldViewRect(const WBFL::Geometry::Rect2d& rect);
 
    CRect GetAdjustedLogicalViewRect();
-   void GetAdjustedWorldViewRect(IRect2d* *rect);
+   WBFL::Geometry::Rect2d GetAdjustedWorldViewRect();
 
-
-   CComPtr<iDisplayMgr>       m_pDispMgr;
+   std::shared_ptr<WBFL::DManip::iDisplayMgr>       m_pDispMgr;
 
    // current mapping
-   CComPtr<iMapping>          m_pMapping;
-   CComPtr<iCoordinateMap>    m_pCoordinateMap;
+   std::shared_ptr<WBFL::DManip::iMapping>          m_pMapping;
+   std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pCoordinateMap;
 
    // different mappings for screen and printer. to be switched back
    // and forth at print time
-   CComPtr<iMapping>          m_pPrinterMapping;
-   CComPtr<iCoordinateMap>    m_pPrinterCoordinateMap;
-   CComPtr<iMapping>          m_pScreenMapping;
-   CComPtr<iCoordinateMap>    m_pScreenCoordinateMap;
+   std::shared_ptr<WBFL::DManip::iMapping>          m_pPrinterMapping;
+   std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pPrinterCoordinateMap;
+   std::shared_ptr<WBFL::DManip::iMapping>          m_pScreenMapping;
+   std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pScreenCoordinateMap;
 
    bool m_IsPrinting;
    CRect m_PrintingRect;
@@ -178,6 +176,8 @@ protected:
 	virtual void HandleMouseWheel(UINT nFlags, short zDelta, CPoint logPoint);
 	virtual void HandleKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	virtual void HandleContextMenu(CWnd* pWnd,CPoint logPoint);
+public:
+   afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 /////////////////////////////////////////////////////////////////////////////
@@ -204,9 +204,3 @@ public:
 private:
    CDisplayView* m_pView;
 };
-
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_DISPLAYVIEW_H__BCB8A109_E659_11D4_8B81_006097C68A9C__INCLUDED_)

@@ -66,7 +66,7 @@ namespace WBFL
          Float64 GetDepthToTensionResultant() const;
          Float64 GetMomentArm() const;
          Float64 GetCurvature() const;
-         const std::unique_ptr<GeneralSectionSolution>& GetGeneralSectionSolution() const;
+         const GeneralSectionSolution* GetGeneralSectionSolution() const;
 
       private:
          Float64 m_Curvature{ 0.0 };
@@ -193,9 +193,9 @@ namespace WBFL
          return m_Curvature;
       }
 
-      const std::unique_ptr<GeneralSectionSolution>& MomentCapacitySolutionImpl::GetGeneralSectionSolution() const
+      const GeneralSectionSolution* MomentCapacitySolutionImpl::GetGeneralSectionSolution() const
       {
-         return m_GeneralSolution;
+         return m_GeneralSolution.get();
       }
    };
 };
@@ -309,7 +309,7 @@ Float64 MomentCapacitySolution::GetCurvature() const
    return m_pImpl->GetCurvature();
 }
 
-const std::unique_ptr<GeneralSectionSolution>& MomentCapacitySolution::GetGeneralSectionSolution() const
+const GeneralSectionSolution* MomentCapacitySolution::GetGeneralSectionSolution() const
 {
    return m_pImpl->GetGeneralSectionSolution();
 }

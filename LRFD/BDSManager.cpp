@@ -193,6 +193,9 @@ LPCTSTR BDSManager::GetEditionAsString(BDSManager::Edition edition,bool bAbbrevi
    case Edition::NinthEdition2020:
       return (bAbbreviated ? _T("AashtoLrfd2020") : _T("9th Edition 2020"));
 
+   case Edition::TenthEdition2024:
+      return (bAbbreviated ? _T("AashtoLrfd2024") : _T("10th Edition 2024"));
+
    case Edition::LastEdition:
       return GetEditionAsString(GetLatestEdition(), bAbbreviated);
 
@@ -210,7 +213,11 @@ LPCTSTR BDSManager::GetUnitAsString()
 BDSManager::Edition BDSManager::GetEdition(LPCTSTR strAbbrev)
 {
    std::_tstring tmp(strAbbrev);
-   if (tmp == _T("AashtoLrfd2020"))
+   if (tmp == _T("AashtoLrfd2024"))
+   {
+      return Edition::TenthEdition2024;
+   }
+   else if (tmp == _T("AashtoLrfd2020"))
    {
       return Edition::NinthEdition2020;
    }

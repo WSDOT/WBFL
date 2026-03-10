@@ -3,6 +3,7 @@
 
 #include <MathEx.h>
 #include "LBAMViewerDoc.h"
+#include "DataSet2d.h"
 
 // carriage return for reports
 #define C_R _T("\\par ")
@@ -10,14 +11,14 @@
 enum  llResponseType{llrTruckLaneCombo, llrTruckEnvelope, llrTruckOnly, llrLaneOnly, llrSidewalkOnly};
 
 
-inline void FillDataSet(IDblArray* locList, iDataSet2d* dataSet, ISectionResult3Ds* secRes, CLBAMViewerDoc::ResponseType currRt)
+inline void FillDataSet(IDblArray* locList, std::shared_ptr<iDataSet2d> dataSet, ISectionResult3Ds* secRes, CLBAMViewerDoc::ResponseType currRt)
 {
    HRESULT hr;
-   CollectionIndexType size;
+   IndexType size;
    hr = secRes->get_Count(&size);
    ATLASSERT(SUCCEEDED(hr));
 
-   for (CollectionIndexType i=0; i<size; i++)
+   for (IndexType i=0; i<size; i++)
    {
       CComPtr<ISectionResult3D> res;
       hr = secRes->get_Item(i, &res);
@@ -57,16 +58,10 @@ inline void FillDataSet(IDblArray* locList, iDataSet2d* dataSet, ISectionResult3
          ATLASSERT(0);
 
       // set left value
-      CComPtr<IPoint2d> pnt;
-      hr = pnt.CoCreateInstance(CLSID_Point2d);
-      ATLASSERT(SUCCEEDED(hr));
-
       double loc;
       locList->get_Item(i,&loc);
-      pnt->put_X(loc);
-      pnt->put_Y(left);
 
-      dataSet->Add(pnt);
+      dataSet->Add(WBFL::Geometry::Point2d(loc,left));
 
       // only set right value if it's different
       if ((currRt==CLBAMViewerDoc::rtFx || currRt==CLBAMViewerDoc::rtFy|| currRt==CLBAMViewerDoc::rtMz))
@@ -77,13 +72,7 @@ inline void FillDataSet(IDblArray* locList, iDataSet2d* dataSet, ISectionResult3
 
       //if (!IsEqual(left, right))
       {
-         CComPtr<IPoint2d> pnt2;
-         hr = pnt2.CoCreateInstance(CLSID_Point2d);
-         ATLASSERT(SUCCEEDED(hr));
-
-         pnt2->put_X(loc);
-         pnt2->put_Y(right);
-         dataSet->Add(pnt2);
+         dataSet->Add(WBFL::Geometry::Point2d(loc,right));
       }
    }
 }

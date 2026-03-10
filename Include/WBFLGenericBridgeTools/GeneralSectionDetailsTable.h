@@ -32,4 +32,4 @@
 #include <EAF\EAFDisplayUnits.h>
 
 WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat,const WBFL::Units::IndirectMeasure* pDisplayUnits);
-WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, IEAFDisplayUnits* pDisplayUnits);
+WBFLGENERICBRIDGETOOLSFUNC rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution, Float64 Ytg, bool bSimpleFormat, std::shared_ptr<IEAFDisplayUnits> pDisplayUnits);

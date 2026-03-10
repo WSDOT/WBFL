@@ -25,11 +25,6 @@
 #include <MFCTools\CustomDDX.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void DDX_String( CDataExchange* pDX, int nIDC, std::_tstring& str )
 {

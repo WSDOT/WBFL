@@ -241,17 +241,19 @@ std::unique_ptr<Shape> CompositeShape::CreateClippedShape(const Rect2d& r, Shape
    return clipped;
 }
 
-void CompositeShape::AddShape(const Shape& shape,CompositeShape::ShapeType shapeType)
+std::shared_ptr<Shape> CompositeShape::AddShape(const Shape& shape,CompositeShape::ShapeType shapeType)
 {
-   AddShape(shape.CreateClone(), shapeType);
+   std::shared_ptr<Shape> clone = std::move(shape.CreateClone());
+   AddShape(clone, shapeType);
+   return clone;
 }
 
-void CompositeShape::AddShape(std::unique_ptr<Shape>&& shape, CompositeShape::ShapeType shapeType)
+void CompositeShape::AddShape(std::shared_ptr<Shape> shape, CompositeShape::ShapeType shapeType)
 {
    if (m_Shapes.empty() && shapeType == ShapeType::Void)
       THROW_GEOMETRY(WBFL_GEOMETRY_E_SHAPE); // first shape must be solid
 
-   m_Shapes.emplace_back(std::move(shape), shapeType);
+   m_Shapes.emplace_back(shape, shapeType);
    SetDirtyFlag();
 }
 
@@ -268,13 +270,13 @@ void CompositeShape::Clear()
    SetDirtyFlag();
 }
 
-std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx)
+std::shared_ptr<Shape> CompositeShape::GetShape(IndexType idx)
 {
    ValidateIndex(idx, m_Shapes);
    return m_Shapes[idx].first;
 }
 
-const std::shared_ptr<Shape>& CompositeShape::GetShape(IndexType idx) const
+std::shared_ptr<const Shape> CompositeShape::GetShape(IndexType idx) const
 {
    ValidateIndex(idx, m_Shapes);
    return m_Shapes[idx].first;

@@ -27,11 +27,6 @@
 #include <fstream>
 #include <ctime>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 // DLLs using this unit test framework must
 // 1) Add "EXPORTS UnitTest @1" to their .def file
@@ -59,7 +54,7 @@ static char THIS_FILE[] = __FILE__;
 // }
 // #endif // _UNITTEST
 
-bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog);
+bool TestDll(LPCTSTR plibname, WBFL::Debug::UnitTestLog& rlog);
 
 // put names of all dll's to be tested here:
 static LPCTSTR lib_list[] = { _T("Dummy.dll") // the initializer list needs at least one entry
@@ -93,7 +88,7 @@ int main()
 #else
    WBFL::Debug::FileLogContext dc(_T("UnitTest_Release.Log"));
 #endif
-   WBFL::Debug::Log tl(dc);
+   WBFL::Debug::UnitTestLog tl(dc);
 
 
    // send intro messages to screen and file
@@ -110,12 +105,12 @@ int main()
    // Test reporting
    tl << WBFL::Debug::endl;
    tl << _T("Total number of tests           : ") << tl.GetNumEntries() << WBFL::Debug::endl;
-   tl << _T("Number of Passing tests         : ") << tl.GetTestCount( WBFL::Debug::Log::TestResult::Passed ) << WBFL::Debug::endl;
-   tl << _T("Number of Failing tests         : ") << tl.GetTestCount( WBFL::Debug::Log::TestResult::Failed ) << WBFL::Debug::endl;
-   tl << _T("Number of tests not implemented : ") << tl.GetTestCount( WBFL::Debug::Log::TestResult::NotImplemented ) << WBFL::Debug::endl;
+   tl << _T("Number of Passing tests         : ") << tl.GetTestCount( WBFL::Debug::UnitTestLog::TestResult::Passed ) << WBFL::Debug::endl;
+   tl << _T("Number of Failing tests         : ") << tl.GetTestCount( WBFL::Debug::UnitTestLog::TestResult::Failed ) << WBFL::Debug::endl;
+   tl << _T("Number of tests not implemented : ") << tl.GetTestCount( WBFL::Debug::UnitTestLog::TestResult::NotImplemented ) << WBFL::Debug::endl;
 
    dc << WBFL::Debug::endl;
-   tl.DumpFilteredLog( WBFL::Debug::Log::TestResult::Failed );
+   tl.DumpFilteredLog( WBFL::Debug::UnitTestLog::TestResult::Failed );
 
    WBFL::System::Date now_end;
    tl << _T("*** Finished WBFL Unit Testing at ") << now_end.AsString() << _T(" ***") << WBFL::Debug::endl;
@@ -125,7 +120,7 @@ int main()
 }
 
 
-bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog)
+bool TestDll(LPCTSTR plibname, WBFL::Debug::UnitTestLog& rlog)
 {
    HINSTANCE hLibrary;
    pUnitTest ptst;
@@ -152,27 +147,27 @@ bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog)
             ost<<_T("*** Failed *** Handled uncaught sysXBase exception from :")<< dllname<<std::endl
                <<_T("Reason was ")<<xb->GetReason()<<std::endl;
             rlog << ost.str();
-            rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+            rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
          }
          catch (WBFL::System::XBase& xb)
          {
             ost << _T("*** Failed *** Handled uncaught sysXBase exception from :") << dllname << std::endl
                << _T("Reason was ") << xb.GetReason() << std::endl;
             rlog << ost.str();
-            rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+            rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
          }
          catch (std::exception& e)
          {
             ost << _T("*** Failed *** Handled uncaught std::exception from :") << dllname << std::endl
                << _T("Reason was ") << e.what() << std::endl;
             rlog << ost.str();
-            rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+            rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
          }
          catch(...)
          {
             ost<<_T("*** Failed *** Handled uncaught exception from :")<< dllname<<std::endl;
             rlog << ost.str();
-            rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+            rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
          }
 
          FreeLibrary(hLibrary);
@@ -183,7 +178,7 @@ bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog)
          //failed to get UnitTest from dll
          ost<<_T("*** Failed *** Failed to load UnitTest function from: ")<< dllname<<std::endl;
          rlog << ost.str();
-         rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+         rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
       }
    }
    else
@@ -199,7 +194,7 @@ bool TestDll(LPCTSTR plibname, WBFL::Debug::Log& rlog)
       ost << _T(" Error ") << dwError << _T(" ") << messageBuffer << std::endl;
 
       rlog << ost.str();
-      rlog.LogTestResult(ost.str(), WBFL::Debug::Log::TestResult::Failed);
+      rlog.LogTestResult(ost.str(), WBFL::Debug::UnitTestLog::TestResult::Failed);
 
       //Free the buffer.
       LocalFree(messageBuffer);

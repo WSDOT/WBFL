@@ -13,9 +13,6 @@ namespace EngToolsUnitTests
 
 		TEST_METHOD(Test)
 		{
-
-
-
 			BearingLoads brg_loads;
 
 			Assert::IsTrue(IsEqual(brg_loads.GetDeadLoad(), WBFL::Units::ConvertToSysUnits(86.0, WBFL::Units::Measure::Kip)));
@@ -28,10 +25,6 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(IsEqual(brg_loads.GetShearDeformation(), WBFL::Units::ConvertToSysUnits(0.47, WBFL::Units::Measure::Inch)));
 			Assert::IsTrue(IsEqual(brg_loads.GetEffectiveKFactorX(), 1.0));
 			Assert::IsTrue(IsEqual(brg_loads.GetEffectiveKFactorY(), 2.0));
-
-
-
-
 
 		}
 	};

@@ -32,6 +32,7 @@
 #include <EngTools/Bearing.h>
 #include <EngTools/BearingLoads.h>
 #include <EngTools/BearingCalculator.h>
+#include <EngTools/BearingReporter.h>
 #include <EngTools/PrandtlMembraneSolution.h>
 #include <EngTools/PrandtlMembraneSolver.h>
 #include <EngTools/UniformFDMesh.h>

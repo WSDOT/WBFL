@@ -1,9 +1,9 @@
 #ifndef INCLUDED_JOINTDRAWSTRATEGY_H_
 #define INCLUDED_JOINTDRAWSTRATEGY_H_
 
-interface iJointDrawStrategy : public IUnknown
+interface iJointDrawStrategy
 {
-   STDMETHOD_(void,SetJoint)(IFem2dJoint* jnt) PURE;
+   virtual void SetJoint(IFem2dJoint* jnt) = 0;
 };
 
 #endif // INCLUDED_JOINTDRAWSTRATEGY_H_

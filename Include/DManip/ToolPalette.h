@@ -21,24 +21,24 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_)
-#define AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// ToolPalette.h : header file
-//
 
-#include <DManip\DManipExp.h>
+#include <DManip/DManipExp.h>
 #include <vector>
 #include <afxcmn.h>
 
-struct iTool;
+namespace WBFL
+{
+	namespace DManip
+	{
+		class iTool;
+	};
+};
 
-/////////////////////////////////////////////////////////////////////////////
-// CToolPalette dialog
-
+/// @brief This class provides a customization of the MFC CDialogBar class.
+/// This class adds the capability to add task based tools to a dialog bar.
+/// The dialog bar resource must have an icon control for each tool. The ID
+/// of the icon control must batch the tool's ID.
 class DMANIPCLASS CToolPalette : public CDialogBar
 {
 // Construction
@@ -64,17 +64,33 @@ public:
 	//}}AFX_VIRTUAL
 
 public:
-   void AddTool(iTool* tool);
-   void GetTool(IndexType idx,iTool** pTool);
-   void FindTool(IDType id,iTool** pTool);
+   /// @brief Adds a tool to the tool palette
+   void AddTool(std::shared_ptr<WBFL::DManip::iTool> tool);
+
+	/// @brief Returns a tool object based on its position (index)
+	std::shared_ptr<WBFL::DManip::iTool> GetTool(IndexType idx);
+
+	/// @brief Searches for a tool object
+	/// @param id ID of the tool object
+	/// @return The tool object if found, otherwise nullptr
+	std::shared_ptr<WBFL::DManip::iTool> FindTool(IDType id);
+
+   /// @brief Removes a tool object based on its position (index)
+   /// @param idx 
    void RemoveTool(IndexType idx);
+
+   /// @brief Removes a tool object based on its ID
+   /// @param id 
    void RemoveTool(IDType id);
 
+   /// @brief Called by the framework to create a tool tip from the icon control's window
+	/// This method can also be called by subclasses to add tool tips based on other
+	/// non-tool controls (such as check boxes or push buttons) that are part of the dialog bar.
    void AddTooltip(CWnd* pWnd);
 
 // Implementation
 protected:
-   using ToolContainer = std::vector<CAdapt<CComPtr<iTool>>>;
+   using ToolContainer = std::vector<std::shared_ptr<WBFL::DManip::iTool>>;
    ToolContainer m_Tools;
 
    CToolTipCtrl m_ctrlToolTip;
@@ -85,8 +101,3 @@ protected:
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_)

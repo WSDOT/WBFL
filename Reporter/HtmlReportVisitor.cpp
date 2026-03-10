@@ -69,22 +69,27 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
     }
 
    // Use html helper to Write out style block
-   m_Helper.VisitFontLibrary(*m_pOstream);
+   m_Helper.VisitFontLibrary(*m_pOstream); 
+
+#pragma Reminder("UPDATE: implement on-border in VisitFontLibrary")
+   *m_pOstream << _T("<style>") << std::endl;
+   *m_pOstream << _T(".no-border td {border:none; outline:none; border-collapse:collapse;}") << std::endl;
+   *m_pOstream << _T("</style>") << std::endl;
 
    // Use MEDIA attribute of STYLE tag to handle differences between
    // printing and viewing.
    //
    const rptPageLayout* pl = pReport->GetPageLayout();
-//   *m_pOstream << "<STYLE MEDIA=\"PRINT\">" << std::endl;
-//   *m_pOstream << "   BODY {margin:0,0,0,0}" << std::endl;
-//   *m_pOstream << "</STYLE>" << std::endl;
+   *m_pOstream << "<STYLE MEDIA=\"SCREEN\">" << std::endl;
+   *m_pOstream << "   BODY {margin:0,0,0,0}" << std::endl;
+   *m_pOstream << "</STYLE>" << std::endl;
 
-   *m_pOstream << _T("<STYLE MEDIA=\"SCREEN\">") << std::endl;
+   *m_pOstream << _T("<STYLE MEDIA=\"PRINT\">") << std::endl;
    *m_pOstream << _T("   BODY {");
-   *m_pOstream           << _T("margin-top:")    << (pl->GetTopMargin()*m_LogPixelsY) << _T(" ");
-   *m_pOstream           << _T("margin-bottom:") << (pl->GetBottomMargin()*m_LogPixelsY) << _T(" ");
-   *m_pOstream           << _T("margin-left:")   << (pl->GetLeftMargin()*m_LogPixelsX) << _T(" ");
-   *m_pOstream           << _T("margin-right:")  << (pl->GetRightMargin()*m_LogPixelsX) << _T(" ");
+   *m_pOstream           << _T("margin-top:")    << (pl->GetTopMargin()*m_LogPixelsY) << _T("; ");
+   *m_pOstream           << _T("margin-bottom:") << (pl->GetBottomMargin()*m_LogPixelsY) << _T("; ");
+   *m_pOstream           << _T("margin-left:")   << (pl->GetLeftMargin()*m_LogPixelsX) << _T("; ");
+   *m_pOstream           << _T("margin-right:")  << (pl->GetRightMargin()*m_LogPixelsX) << _T("; ");
    *m_pOstream           << _T("}") << std::endl;
    *m_pOstream << _T("</STYLE>") << std::endl;
 
@@ -96,6 +101,15 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
 //      *m_pOstream << "@page {size: landscape; }" << std::endl;
 //      *m_pOstream << "</STYLE>" << std::endl;
 //   }
+
+
+   
+   if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+   {
+       *m_pOstream << _T("<script type = \"text/javascript\"") << std::endl;
+       *m_pOstream << _T("    src = \"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML\">") << std::endl;
+       *m_pOstream << _T("</script>") << std::endl;
+   }
 
 
    *m_pOstream << _T("</head>") << std::endl<<std::endl;
@@ -118,16 +132,74 @@ void rptHtmlReportVisitor::VisitReport(rptReport* pReport)
    *m_pOstream << _T("</body>") << std::endl;
 
    // javascript to disable drag & drop
-   *m_pOstream << _T("<SCRIPT LANGUAGE=\"JavaScript\">") <<std::endl;
-   *m_pOstream << _T("function onde(){") <<std::endl;
-   *m_pOstream << _T("    var oEvent = window.event;")<<std::endl;
-   *m_pOstream << _T("    oEvent.returnValue = false;")<<std::endl;
-   *m_pOstream << _T("    oEvent.cancelBubble = true;")<<std::endl;
-   *m_pOstream << _T("}")<<std::endl;
-   *m_pOstream << _T("</SCRIPT>")<<std::endl<<std::endl;
+   *m_pOstream << _T("<SCRIPT LANGUAGE=\"JavaScript\">") << std::endl;
+   *m_pOstream << _T("function onde(){") << std::endl;
+   *m_pOstream << _T("    var oEvent = window.event;") << std::endl;
+   *m_pOstream << _T("    oEvent.returnValue = false;") << std::endl;
+   *m_pOstream << _T("    oEvent.cancelBubble = true;") << std::endl;
+   *m_pOstream << _T("}") << std::endl;
+   *m_pOstream << _T("</SCRIPT>") << std::endl << std::endl;
+   *m_pOstream << std::endl;
+
+   if (m_Helper.GetBrowserType() == rptHtmlHelper::BrowserType::Edge)
+   {
+      // table caption script
+      *m_pOstream << _T("<script>") << std::endl;
+      *m_pOstream << _T("   function TableCaptionFunction(x) {") << std::endl;
+      *m_pOstream << _T("   var table = x.parentElement;") << std::endl;
+      *m_pOstream << _T("   var range = document.createRange();") << std::endl;
+      *m_pOstream << _T("   range.selectNodeContents(table);") << std::endl;
+      *m_pOstream << _T("   var sel = window.getSelection();") << std::endl;
+      *m_pOstream << _T("   sel.removeAllRanges();") << std::endl;
+      *m_pOstream << _T("   sel.addRange(range);") << std::endl;
+
+      //
+      // Code below could change this to copy the selected item directly. Seems like Select is less obtrusive
+      //   *m_pOstream << _T("   document.execCommand(\"copy\");") << std::endl;
+      //   *m_pOstream << _T("   alert(\"Table copied to clipboard. You can now past into Word or Excel\");") << std::endl;
+      *m_pOstream << _T("}") << std::endl;
+      *m_pOstream << _T("</script>") << std::endl;
+
+   }
 
    *m_pOstream << _T("</html>") <<std::endl;
 
+}
+
+std::vector<rptHtmlReportVisitor::ChapterTocItem> rptHtmlReportVisitor::GenerateTOC(rptReport* pReport)
+{
+   std::vector<rptHtmlReportVisitor::ChapterTocItem> tableOfContents;
+
+   Uint32 chapterID = rptHtmlHelper::ChapterStart;
+   Uint32 paraID = rptHtmlHelper::ParaStart;
+
+   rptReport::ConstChapterListIterator pci;
+   for (pci = pReport->ConstBegin(); pci != pReport->ConstEnd(); pci++)
+   {
+      // Note that order and adding of ID's must match those in rptHtmlChapterVisitor and rptHtmlParagraphVisitor
+      const rptChapter& chapter(**pci);
+      LPCTSTR chname = chapter.GetName();
+      if (chname != 0)
+      {
+         rptHtmlReportVisitor::ChapterTocItem chaptertocitem;
+         chaptertocitem.m_TocItem = TocItem(chname, chapterID++);
+
+         rptChapter::ConstChapterParagraphIterator pch;
+         for (pch = chapter.ConstBegin(); pch != chapter.ConstEnd(); pch++)
+         {
+            const rptParagraph& para(**pch);
+            LPCTSTR paraname = para.GetName();
+            if (paraname != 0)
+            {
+               chaptertocitem.m_ParagraphTOCItems.push_back(rptHtmlReportVisitor::TocItem(paraname, paraID++));
+            }
+         }
+
+         tableOfContents.push_back(chaptertocitem);
+      }
+   }
+
+   return tableOfContents;
 }
 
 //======================== ACCESS     =======================================

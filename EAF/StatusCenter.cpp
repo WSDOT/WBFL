@@ -25,18 +25,14 @@
 #include <EAF\StatusCenter.h>
 #include <MathEx.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
+using namespace WBFL::EAF;
 
-bool StatusItemCompare::operator()(const std::shared_ptr<CEAFStatusItem>& a, const std::shared_ptr<CEAFStatusItem>& b) const
+bool StatusItemCompare::operator()(const std::shared_ptr<StatusItem>& a, const std::shared_ptr<StatusItem>& b) const
 {
    // Use a simple string compare with message. Older versions (pre Jan 2019) tried to get tricky
    // and use IsEqual, but this caused unexpected issues with the strict weak ordering
    // requirements of std::set. One issue was duplicate issues in the status center
-   int st = a->CompareDescriptions(b.get());
+   int st = a->CompareDescriptions(b);
 
 #ifdef _DEBUG
    if (st == 0)
@@ -51,7 +47,7 @@ bool StatusItemCompare::operator()(const std::shared_ptr<CEAFStatusItem>& a, con
    return st < 0;
 }
 
-CEAFStatusCenter::CEAFStatusCenter()
+StatusCenter::StatusCenter()
 {
    m_NextID = 1;
    m_NextStatusGroupID = 1;
@@ -60,26 +56,26 @@ CEAFStatusCenter::CEAFStatusCenter()
    m_bIsEnabled = true;
 }
 
-CEAFStatusCenter::~CEAFStatusCenter()
+StatusCenter::~StatusCenter()
 {
 }
 
-bool CEAFStatusCenter::IsEnabled() const
+bool StatusCenter::IsEnabled() const
 {
    return m_bIsEnabled;
 }
 
-void CEAFStatusCenter::Enable(bool bEnable)
+void StatusCenter::Enable(bool bEnable)
 {
    m_bIsEnabled = bEnable;
 }
    
-StatusGroupIDType CEAFStatusCenter::CreateStatusGroupID()
+StatusGroupIDType StatusCenter::CreateStatusGroupID()
 {
    return m_NextStatusGroupID++;
 }
 
-StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
+StatusItemIDType StatusCenter::Add(std::shared_ptr<StatusItem> pItem)
 {
 #if defined _DEBUG
    StatusCallbackIDType callbackID = pItem->GetCallbackID();
@@ -102,14 +98,14 @@ StatusItemIDType CEAFStatusCenter::Add(CEAFStatusItem* pItem)
    return INVALID_ID; // failed
 }
 
-bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
+bool StatusCenter::RemoveByID(StatusItemIDType id)
 {
    Container::iterator itemIter(m_Items.begin());
    Container::iterator itemIterEnd(m_Items.end());
    for ( ; itemIter != itemIterEnd; itemIter++ )
    {
       auto pItem = *itemIter;
-      if ( pItem->GetID() == id && m_pCurrentItem != pItem.get() )
+      if ( pItem->GetID() == id && m_pCurrentItem != pItem )
       {
          m_Items.erase(itemIter);
          NotifyRemoved(id);
@@ -124,7 +120,7 @@ bool CEAFStatusCenter::RemoveByID(StatusItemIDType id)
    return false;
 }
 
-bool CEAFStatusCenter::RemoveByIndex(IndexType index)
+bool StatusCenter::RemoveByIndex(IndexType index)
 {
    if ( index < 0 || (IndexType)m_Items.size() <= index )
       return false;
@@ -136,7 +132,7 @@ bool CEAFStatusCenter::RemoveByIndex(IndexType index)
    }
 
    auto pItem = *iter;
-   if ( m_pCurrentItem != pItem.get() )
+   if ( m_pCurrentItem != pItem )
    {
       StatusItemIDType id = pItem->GetID();
       m_Items.erase(iter);
@@ -151,7 +147,7 @@ bool CEAFStatusCenter::RemoveByIndex(IndexType index)
    return false;
 }
 
-bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
+bool StatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
 {
    bool bItemsRemoved = false;
    Container::iterator iter;
@@ -166,7 +162,7 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
       auto pItem = *itemIter;
       if ( pItem->GetStatusGroupID() == id )
       {
-         if ( m_pCurrentItem != pItem.get() )
+         if ( m_pCurrentItem != pItem )
          {
             StatusItemIDType itemID = pItem->GetID();
             NotifyRemoved(itemID);
@@ -187,29 +183,29 @@ bool CEAFStatusCenter::RemoveByStatusGroupID(StatusGroupIDType id)
    return bItemsRemoved;
 }
 
-CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id)
+std::shared_ptr<StatusItem> StatusCenter::GetByID(StatusItemIDType id)
 {
    for (auto pItem : m_Items)
    {
       if (pItem->GetID() == id)
-         return pItem.get();
+         return pItem;
    }
 
    return nullptr;
 }
 
-const CEAFStatusItem* CEAFStatusCenter::GetByID(StatusItemIDType id) const
+std::shared_ptr<const StatusItem> StatusCenter::GetByID(StatusItemIDType id) const
 {
    for(const auto pItem : m_Items)
    {
       if (pItem->GetID() == id)
-         return pItem.get();
+         return pItem;
    }
 
    return nullptr;
 }
 
-CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index)
+std::shared_ptr<StatusItem> StatusCenter::GetByIndex(IndexType index)
 {
    if ( m_Items.size() <= index )
       return nullptr;
@@ -220,10 +216,10 @@ CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index)
       iter++;
    }
 
-   return iter->get();
+   return *iter;
 }
 
-const CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index) const
+std::shared_ptr<const StatusItem> StatusCenter::GetByIndex(IndexType index) const
 {
    if (m_Items.size() <= index)
       return nullptr;
@@ -234,85 +230,81 @@ const CEAFStatusItem* CEAFStatusCenter::GetByIndex(IndexType index) const
       iter++;
    }
 
-   return iter->get();
+   return *iter;
 }
 
-IndexType CEAFStatusCenter::Count() const
+IndexType StatusCenter::Count() const
 {
    return m_Items.size();
 }
 
-eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity() const
+WBFL::EAF::StatusSeverityType StatusCenter::GetSeverity() const
 {
-   eafTypes::StatusSeverityType severity = eafTypes::statusInformation;
+   WBFL::EAF::StatusSeverityType severity = WBFL::EAF::StatusSeverityType::Information;
 
    for(const auto pItem : m_Items)
    {
       severity = Max(severity, GetSeverity(pItem->GetCallbackID()));
-      if (severity == eafTypes::statusError)
-         break; // serverity is at it's maximum level, no reason to continue the loop
+      if (severity == WBFL::EAF::StatusSeverityType::Error)
+         break; // severity is at it's maximum level, no reason to continue the loop
    }
 
    return severity;
 }
 
-void CEAFStatusCenter::SinkEvents(IEAFStatusCenterEventSink* pSink)
+IDType StatusCenter::RegisterEventSink(std::shared_ptr<StatusCenterEventSink> pSink)
 {
-   m_Sinks.insert(pSink);
+   auto cookie = m_EventSinkCookie++;
+   m_Sinks.insert(std::make_pair(cookie, pSink));
+   return cookie;
 }
 
-void CEAFStatusCenter::UnSinkEvents(IEAFStatusCenterEventSink* pSink)
+void StatusCenter::UnregisterEventSink(IDType cookie)
 {
-   Sinks::iterator found = m_Sinks.find(pSink);
-   if ( found != m_Sinks.end() )
+   auto found = m_Sinks.find(cookie);
+   if (found != m_Sinks.end())
       m_Sinks.erase(found);
 }
 
-void CEAFStatusCenter::NotifyAdded(CEAFStatusItem* pNewItem)
+void StatusCenter::NotifyAdded(std::shared_ptr<const StatusItem> pNewItem)
 {
    if ( !IsEnabled() )
       return;
 
-   Sinks::iterator iter(m_Sinks.begin());
-   Sinks::iterator end(m_Sinks.end());
-   for ( ; iter != end; iter++ )
+   for (auto& [cookie, sink] : m_Sinks)
    {
-      IEAFStatusCenterEventSink* pSink = *iter;
-      pSink->OnStatusItemAdded(pNewItem);
+      sink->OnStatusItemAdded(pNewItem);
    }
 }
 
-void CEAFStatusCenter::NotifyRemoved(StatusItemIDType id)
+void StatusCenter::NotifyRemoved(StatusItemIDType id)
 {
    if ( !IsEnabled() )
       return;
 
-   Sinks::iterator iter(m_Sinks.begin());
-   Sinks::iterator end(m_Sinks.end());
-   for ( ; iter != end; iter++ )
+   for(auto& [cookie,sink] : m_Sinks)
    {
-      IEAFStatusCenterEventSink* pSink = *iter;
-      pSink->OnStatusItemRemoved(id);
+      sink->OnStatusItemRemoved(id);
    }
 }
 
-StatusCallbackIDType CEAFStatusCenter::RegisterCallbackItem(iStatusCallback* pCallback)
+StatusCallbackIDType StatusCenter::RegisterCallbackItem(std::shared_ptr<StatusCallback> pCallback)
 {
    StatusCallbackIDType callbackID = m_NextCallbackID++;
    m_Callbacks.emplace(callbackID,pCallback);
    return callbackID;
 }
 
-eafTypes::StatusSeverityType CEAFStatusCenter::GetSeverity(StatusCallbackIDType callbackID) const
+WBFL::EAF::StatusSeverityType StatusCenter::GetSeverity(StatusCallbackIDType callbackID) const
 {
    const auto pCallback = GetCallback(callbackID);
    if ( !pCallback )
-      return eafTypes::statusInformation;
+      return WBFL::EAF::StatusSeverityType::Information;
 
    return pCallback->GetSeverity();
 }
 
-std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID)
+std::shared_ptr<StatusCallback> StatusCenter::GetCallback(StatusCallbackIDType callbackID)
 {
    auto found = m_Callbacks.find(callbackID);
    if (found == m_Callbacks.end())
@@ -321,7 +313,7 @@ std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallbackIDT
    return (*found).second;
 }
 
-const std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallbackIDType callbackID) const
+const std::shared_ptr<StatusCallback> StatusCenter::GetCallback(StatusCallbackIDType callbackID) const
 {
    auto found = m_Callbacks.find(callbackID);
    if (found == m_Callbacks.end())
@@ -330,12 +322,12 @@ const std::shared_ptr<iStatusCallback> CEAFStatusCenter::GetCallback(StatusCallb
    return (*found).second;
 }
 
-void CEAFStatusCenter::EditItem(StatusItemIDType id)
+void StatusCenter::EditItem(StatusItemIDType id)
 {
    if ( !IsEnabled() )
       return;
 
-   CEAFStatusItem* pItem = GetByID(id);
+   auto pItem = GetByID(id);
    ASSERT(pItem != nullptr);
 
    StatusCallbackIDType callbackID = pItem->GetCallbackID();

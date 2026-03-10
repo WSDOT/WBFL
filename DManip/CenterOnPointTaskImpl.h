@@ -21,75 +21,55 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// CenterOnPointTaskImpl.h: interface for the CCenterOnPointTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_CENTERONPOINTTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_CENTERONPOINTTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
-#include "resource.h"
 #include "CenterOnPointFSM.h"
+#include <DManip/Task.h>
 
-class ATL_NO_VTABLE CCenterOnPointTaskImpl : 
-	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CCenterOnPointTaskImpl, &CLSID_CenterOnPointTask>,
-   public CCenterOnPointFSM,
-   public iTask
+class CDisplayView;
+
+namespace WBFL
 {
-public:
-	CCenterOnPointTaskImpl();
-	virtual ~CCenterOnPointTaskImpl();
+   namespace DManip
+   {
+      class CenterOnPointTask : 
+         public CenterOnPointFSM,
+         public iTask
+      {
+      public:
+         CenterOnPointTask();
+         CenterOnPointTask(CDisplayView* pView);
+         virtual ~CenterOnPointTask();
 
-   void Init(CDisplayView* pView);
+         // CenterOnPointTask methods (from CenterOnPointFSM)
+	      virtual void FSMError(LPCTSTR t,LPCTSTR s) override;
+	      virtual void CenterOnPoint() override;
+         virtual void Cancel() override;
+	      virtual void InitTask() override;
 
-DECLARE_PROTECT_FINAL_CONSTRUCT()
+         // iTask methods
+         virtual void Start() override;
+         virtual void OnLButtonDown(UINT nFlags, const CPoint& point) override;
+	      virtual void OnLButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnLButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDown(UINT nFlags, const CPoint& point) override;
+	      virtual void OnRButtonUp(UINT nFlags,const CPoint& point) override;
+         virtual void OnRButtonDblClk(UINT nFlags,const CPoint& point) override;
+         virtual void OnMouseMove(UINT nFlags, const CPoint& point) override;
+         virtual void OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point) override;
+         virtual void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) override;
+         virtual void OnContextMenu(CWnd* pWnd,const CPoint& point) override;
+         virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual void OnDragLeave() override;
+         virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
+         virtual DROPEFFECT OnDragScroll(DWORD dwKeyState,CPoint point) override;
+         virtual BOOL OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
+         virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
-DECLARE_REGISTRY_RESOURCEID(IDR_CENTERONPOINTTASK)
-
-BEGIN_COM_MAP(CCenterOnPointTaskImpl)
-   COM_INTERFACE_ENTRY(iTask)
-	COM_INTERFACE_ENTRY(iCenterOnPointTask)
-END_COM_MAP()
-
-   // CCenterOnPointTask methods (from CCenterOnPointFSM)
-	STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) override;
-	STDMETHOD_(void,CenterOnPoint)() override;
-   STDMETHOD_(void,Cancel)() override;
-	STDMETHOD_(void,InitTask)() override;
-
-   // CTask methods
-   STDMETHOD_(void,Start)() override;
-
-   STDMETHOD_(void,OnLButtonDown)(UINT nFlags, const CPoint& point) override;
-	STDMETHOD_(void,OnLButtonUp)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnLButtonDblClk)(UINT nFlags,const CPoint& point) override;
-
-   STDMETHOD_(void,OnRButtonDown)(UINT nFlags, const CPoint& point) override;
-	STDMETHOD_(void,OnRButtonUp)(UINT nFlags,const CPoint& point) override;
-   STDMETHOD_(void,OnRButtonDblClk)(UINT nFlags,const CPoint& point) override;
-
-   STDMETHOD_(void,OnMouseMove)(UINT nFlags, const CPoint& point) override;
-   STDMETHOD_(void,OnMouseWheel)(UINT nFlags, short zDelta, const CPoint& point) override;
-
-   STDMETHOD_(void,OnKeyDown)(UINT nChar, UINT nRepCnt, UINT nFlags) override;
-   STDMETHOD_(void,OnContextMenu)(CWnd* pWnd,const CPoint& point) override;
-
-   STDMETHOD_(DROPEFFECT,OnDragEnter)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(void,OnDragLeave)() override;
-   STDMETHOD_(DROPEFFECT,OnDragOver)(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(DROPEFFECT,OnDragScroll)(DWORD dwKeyState,CPoint point) override;
-   STDMETHOD_(BOOL,OnDrop)(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point) override;
-   STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
-
-private:
-   CDisplayView* m_pView;
-   CPoint m_Point;
-   HCURSOR m_OldCursor;
+      private:
+         CDisplayView* m_pView;
+         CPoint m_Point;
+         HCURSOR m_OldCursor;
+      };
+   };
 };
-
-#endif // !defined(AFX_CENTERONPOINTTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

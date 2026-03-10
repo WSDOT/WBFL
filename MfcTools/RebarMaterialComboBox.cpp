@@ -24,11 +24,6 @@
 #include "stdafx.h"
 #include <MfcTools\RebarMaterialComboBox.h>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 void DDX_RebarMaterial(CDataExchange* pDX,UINT nIDC,WBFL::Materials::Rebar::Type& type,WBFL::Materials::Rebar::Grade& grade)
 {

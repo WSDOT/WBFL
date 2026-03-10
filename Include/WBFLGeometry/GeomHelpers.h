@@ -91,6 +91,10 @@ public:
    static HRESULT CreateLine(IPoint2d* pStart, IPoint2d* pEnd, ILine2d** ppLine);
    static HRESULT CreateLine(ILineSegment2d* pSeg, ILine2d** ppLine);
    static HRESULT CreatePointCollection(const std::vector<WBFL::Geometry::Point2d>& vPoints, IPoint2dCollection** ppPoints);
+   static std::vector<WBFL::Geometry::Point2d> CreatePointCollection(IPoint2dCollection* pPoints);
+
+   static HRESULT ConvertShape(const WBFL::Geometry::Shape* pShape, IShape** ppShape);
+   static std::shared_ptr<WBFL::Geometry::Shape> ConvertShape(IShape* pShape);
 
 private:
    geomUtil() = delete;

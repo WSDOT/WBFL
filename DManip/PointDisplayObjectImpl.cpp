@@ -21,139 +21,107 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// PointDisplayObject.cpp: implementation of the CPointDisplayObjectImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
-#include "PointDisplayObjectImpl.h"
-#include "SimpleDrawPointStrategyImpl.h"
+#include "pch.h"
+#include <DManip/PointDisplayObjectImpl.h>
+#include <DManip/DisplayMgr.h>
+#include <DManip/DragData.h>
+#include <DManip/SimpleDrawPointStrategy.h>
+#include <DManip/DisplayView.h>
 
 #include <math.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-UINT CPointDisplayObjectImpl::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.PointDisplayObject"));
+UINT PointDisplayObject::ms_cfFormat = ::RegisterClipboardFormat(_T("WBFLDManip.PointDisplayObject"));
 
-CPointDisplayObjectImpl::CPointDisplayObjectImpl()
+PointDisplayObject::PointDisplayObject(IDType id) :
+   iPointDisplayObject(id)
 {
+   m_pDrawStrategy = SimpleDrawPointStrategy::Create();
 }
 
-CPointDisplayObjectImpl::~CPointDisplayObjectImpl()
+void PointDisplayObject::Draw(CDC* pDC)
 {
+   if (!IsVisible()) return; // don't draw if not visible
+
+   if (m_pDrawStrategy)
+   {
+      auto dispObj = std::dynamic_pointer_cast<iPointDisplayObject>(shared_from_this());
+      m_pDrawStrategy->Draw(dispObj, pDC);
+   }
 }
 
-HRESULT CPointDisplayObjectImpl::FinalConstruct()
+void PointDisplayObject::Highlight(CDC* pDC, bool bHighlight)
 {
-   HRESULT hr;
+   if (!IsVisible()) return; // don't draw if not visible
 
-   SetDisplayObject(this); // Must be called from FinalConstruct and not c'tor
-
-   CComObject<CSimpleDrawPointStrategyImpl>* pStrategy;
-   hr = CComObject<CSimpleDrawPointStrategyImpl>::CreateInstance(&pStrategy);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_pDrawStrategy = pStrategy;
-
-   m_pDragData = 0;
-
-   hr = m_Position.CoCreateInstance(CLSID_Point2d);
-   if ( FAILED(hr) )
-      return hr;
-
-   m_bAutoUpdate = FALSE;
-
-   return S_OK;
+   if (m_pDrawStrategy)
+   {
+      auto dispObj = std::dynamic_pointer_cast<iPointDisplayObject>(shared_from_this());
+      m_pDrawStrategy->DrawHighlight(dispObj, pDC, bHighlight);
+   }
 }
 
-void CPointDisplayObjectImpl::FinalRelease()
+WBFL::Geometry::Rect2d PointDisplayObject::GetBoundingBox() const
 {
-   CDisplayObjectDefaultImpl::Do_FinalRelease();
+   if (m_pDrawStrategy)
+   {
+      auto dispObj = std::dynamic_pointer_cast<const iPointDisplayObject>(shared_from_this());
+      return m_pDrawStrategy->GetBoundingBox(dispObj);
+   }
+   else
+   {
+      return { m_Position,m_Position };
+   }
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::SetPosition(IPoint2d* pos,BOOL bRedraw,BOOL bFireEvent)
+void PointDisplayObject::SetPosition(const WBFL::Geometry::Point2d& pos, bool bRedraw, bool bFireEvent)
 {
    if ( bRedraw )
    {
       // Erase the old graphic
-      CComPtr<iDisplayList> pDL;
-      GetDisplayList(&pDL);
+      auto pDL = GetDisplayList();
+      auto pDispMgr = pDL->GetDisplayMgr();
 
-      CComPtr<iDisplayMgr> pDispMgr;
-      pDL->GetDisplayMgr(&pDispMgr);
-
-      CRect box = GetBoundingBox();
-      pDispMgr->InvalidateRect(box);
+      CRect box = GetLogicalBoundingBox();
+      pDispMgr->GetView()->InvalidateRect(box);
    }
    
    // Set the new position
-   Float64 currX, currY;
-   m_Position->get_X(&currX);
-   m_Position->get_Y(&currY);
-   m_Position =  pos;
+   auto [currX, currY] = m_Position.GetLocation();
+   m_Position = pos;
 
    // Update the position of all the sockets
-   SocketContainer::iterator iter;
-   for ( iter = m_Sockets.begin(); iter != m_Sockets.end(); iter++ )
-   {
-      CComPtr<iSocket> pSocket = *iter;
-      pSocket->SetPosition(m_Position);
-   }
+   std::for_each(m_Sockets.begin(), m_Sockets.end(), [p=m_Position](auto& socket) {socket->SetPosition(p); });
 
    if ( bRedraw )
    {
-      CComPtr<iDisplayList> pDL;
-      GetDisplayList(&pDL);
-
-      CComPtr<iDisplayMgr> pDispMgr;
-      pDL->GetDisplayMgr(&pDispMgr);
-
-      CRect box = GetBoundingBox();
-      pDispMgr->InvalidateRect(box);
+      auto pDL = GetDisplayList();
+      auto pDispMgr = pDL->GetDisplayMgr();
+      CRect box = GetLogicalBoundingBox();
+      pDispMgr->GetView()->InvalidateRect(box);
    }
 
    if ( bFireEvent )
    {
       // Compute the amount moved
-      Float64 x,y;
-      m_Position->get_X(&x);
-      m_Position->get_Y(&y);
+      auto [x, y] = m_Position.GetLocation();
 
-      CComPtr<ISize2d> offset;
-      offset.CoCreateInstance(CLSID_Size2d);
-      offset->put_Dx(x - currX);
-      offset->put_Dy(y - currY);
-
+      WBFL::Geometry::Size2d offset(x - currX, y - currY);
       Fire_OnDragMoved(offset);
    }
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::GetPosition(IPoint2d* *pos)
+const WBFL::Geometry::Point2d& PointDisplayObject::GetPosition() const
 {
-   (*pos) = m_Position;
-   (*pos)->AddRef();
+   return m_Position;
 }
 
-STDMETHODIMP_(CPoint) CPointDisplayObjectImpl::GetPosition()
+CPoint PointDisplayObject::GetLogicalPosition() const
 {
-   CComPtr<iDisplayList> pDL;
-   GetDisplayList(&pDL);
-
-   CComPtr<iDisplayMgr> pDispMgr;
-   pDL->GetDisplayMgr(&pDispMgr);
-
-   CComPtr<iCoordinateMap> map;
-   pDispMgr->GetCoordinateMap(&map);
+   auto pDL = GetDisplayList();
+   auto pDispMgr = pDL->GetDisplayMgr();
+   auto map = pDispMgr->GetCoordinateMap();
 
    LONG lx,ly;
    map->WPtoLP(m_Position,&lx,&ly);
@@ -163,79 +131,64 @@ STDMETHODIMP_(CPoint) CPointDisplayObjectImpl::GetPosition()
    return p;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::Offset(ISize2d* offset,BOOL bRedraw,BOOL bFireEvent)
+void PointDisplayObject::Offset(const WBFL::Geometry::Size2d& offset, bool bRedraw, bool bFireEvent)
 {
-   m_Position->OffsetEx(offset);
+   m_Position.Offset(offset);
    SetPosition(m_Position,bRedraw,bFireEvent);
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::SetDrawingStrategy(iDrawPointStrategy* pStrategy)
+void PointDisplayObject::SetDrawingStrategy(std::shared_ptr<iDrawPointStrategy> pStrategy)
 {
    m_pDrawStrategy = pStrategy;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::GetDrawingStrategy(iDrawPointStrategy** pStrategy)
+std::shared_ptr<iDrawPointStrategy> PointDisplayObject::GetDrawingStrategy()
 {
-   (*pStrategy) = m_pDrawStrategy;
-   (*pStrategy)->AddRef();
+   return m_pDrawStrategy;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::Draw(CDC* pDC)
+void PointDisplayObject::EnableAutoUpdate(bool bEnable)
 {
-   if ( !IsVisible() ) // Don't draw if not visible
-      return;
-
-   m_pDrawStrategy->Draw(this,pDC);
+   m_bAutoUpdate = bEnable;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::Highlite(CDC* pDC,BOOL bHighlite)
+bool PointDisplayObject::IsAutoUpdateEnabled() const
 {
-   if ( !IsVisible() ) // Don't draw if not visible
-      return;
-
-   m_pDrawStrategy->DrawHighlite(this,pDC,bHighlite);
+   return m_bAutoUpdate;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::GetBoundingBox(IRect2d** rect)
-{
-   m_pDrawStrategy->GetBoundingBox(this, rect);
-}
-
-STDMETHODIMP_(void) CPointDisplayObjectImpl::SetDragData(iDragData* dd)
+void PointDisplayObject::SetDragData(std::shared_ptr<iDragData> dd)
 {
    m_pDragData = dd;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::GetDragData(iDragData** dd)
+std::shared_ptr<iDragData> PointDisplayObject::GetDragData()
 {
-   *dd = m_pDragData;
-   (*dd)->AddRef();
+   return m_pDragData;
 }
 
-STDMETHODIMP_(UINT) CPointDisplayObjectImpl::Format()
+UINT PointDisplayObject::Format()
 {
    return ( m_pDragData ) ? m_pDragData->Format() : 0;
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::PrepareDrag(iDragDataSink* pSink)
+void PointDisplayObject::PrepareDrag(std::shared_ptr<iDragDataSink> pSink)
 {
    pSink->CreateFormat(ms_cfFormat);
-   Float64 x,y;
    UINT size = sizeof(Float64);
 
-   m_Position->get_X(&x);
-   m_Position->get_Y(&y);
+   auto [x, y] = m_Position.GetLocation();
 
    pSink->Write(ms_cfFormat,&x,size);
    pSink->Write(ms_cfFormat,&y,size);
 
    if ( m_pDragData )
    {
-      m_pDragData->PrepareForDrag(this,pSink);
+      m_pDragData->PrepareForDrag(shared_from_this(), pSink);
    }
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::OnDrop(iDragDataSource* pSource)
+void PointDisplayObject::OnDrop(std::shared_ptr<iDragDataSource> pSource)
 {
    Float64 x,y;
    UINT size = sizeof(Float64);
@@ -243,19 +196,18 @@ STDMETHODIMP_(void) CPointDisplayObjectImpl::OnDrop(iDragDataSource* pSource)
    pSource->Read(ms_cfFormat,&x,size);
    pSource->Read(ms_cfFormat,&y,size);
 
-   m_Position->put_X(x);
-   m_Position->put_Y(y);
+   m_Position.Move(x, y);
 
   if ( m_pDragData )
-     m_pDragData->OnDrop(this,pSource);
+     m_pDragData->OnDrop(shared_from_this(), pSource);
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::DrawDragImage(CDC* pDC, iCoordinateMap* map, const CPoint& dragStart, const CPoint& dragPoint)
+void PointDisplayObject::DrawDragImage(CDC* pDC, std::shared_ptr<const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint)
 {
-   m_pDrawStrategy->DrawDragImage(this,pDC,map, dragStart,dragPoint);
+   m_pDrawStrategy->DrawDragImage(std::dynamic_pointer_cast<iPointDisplayObject>(shared_from_this()), pDC, map, dragStart, dragPoint);
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::OnDragMoved(ISize2d* offset)
+void PointDisplayObject::OnDragMoved(const WBFL::Geometry::Size2d& offset)
 {
    if (m_bAutoUpdate)
    {
@@ -266,24 +218,14 @@ STDMETHODIMP_(void) CPointDisplayObjectImpl::OnDragMoved(ISize2d* offset)
    Fire_OnDragMoved(offset);
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::OnMoved()
+void PointDisplayObject::OnMoved()
 {
    // This display object got moved onto another drop target
    Fire_OnMoved();
 }
 
-STDMETHODIMP_(void) CPointDisplayObjectImpl::OnCopied()
+void PointDisplayObject::OnCopied()
 {
    // This display object got copied onto another drop target
    Fire_OnCopied();
-}
-
-STDMETHODIMP_(void) CPointDisplayObjectImpl::EnableAutoUpdate(BOOL bEnable)
-{
-   m_bAutoUpdate = bEnable;
-}
-
-STDMETHODIMP_(BOOL) CPointDisplayObjectImpl::IsAutoUpdateEnabled()
-{
-   return m_bAutoUpdate;
 }

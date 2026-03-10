@@ -21,104 +21,92 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// ForeignDragDropTaskImpl.cpp: implementation of the CForeignDragDropTaskImpl class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
-#include <WBFLDManip.h>
-#include <DManip\DManip.h>
+#include "pch.h"
 #include "ForeignDragDropTaskImpl.h"
+#include <DManip/DisplayObject.h>
+#include <DManip/DropSite.h>
+#include <DManip/DisplayView.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
+using namespace WBFL::DManip;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CForeignDragDropTaskImpl::CForeignDragDropTaskImpl()
-{
-   m_PointCache.CoCreateInstance(CLSID_Point2d);
-}
-
-CForeignDragDropTaskImpl::~CForeignDragDropTaskImpl()
+ForeignDragDropTask::ForeignDragDropTask()
 {
 }
 
-void CForeignDragDropTaskImpl::Init(iDisplayMgr* pDM,const CPoint& startPoint)
+ForeignDragDropTask::ForeignDragDropTask(std::shared_ptr<iDisplayMgr> pDM,const CPoint& startPoint)
 {
    m_pDispMgr = pDM;
 
-   m_pDispMgr->GetCoordinateMap(&m_pMap);
+   m_pMap = m_pDispMgr->GetCoordinateMap();
 
    m_DragStart = startPoint;
    m_LastPoint = m_DragStart;
    m_DragPoint = m_DragStart;
 
-   m_pDataObject = 0;
+   m_pDataObject = nullptr;
    m_dwKeyState  = 0;
    m_dropEffect  = 0;
    m_dropList    = 0;
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::Start()
+ForeignDragDropTask::~ForeignDragDropTask()
+{
+}
+
+void ForeignDragDropTask::Start()
 {
    Do();
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnLButtonUp(UINT nFlags,const CPoint& point)
+void ForeignDragDropTask::OnLButtonUp(UINT nFlags,const CPoint& point)
 {
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnRButtonUp(UINT nFlags,const CPoint& point)
-{
-   // Do nothing
-}
-
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnMouseMove(UINT nFlags, const CPoint& point)
+void ForeignDragDropTask::OnRButtonUp(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
+void ForeignDragDropTask::OnMouseMove(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnLButtonDown(UINT nFlags, const CPoint& point)
+void ForeignDragDropTask::OnMouseWheel(UINT nFlags, short zDelta, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnRButtonDown(UINT nFlags, const CPoint& point)
+void ForeignDragDropTask::OnLButtonDown(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnLButtonDblClk(UINT nFlags,const CPoint& point)
+void ForeignDragDropTask::OnRButtonDown(UINT nFlags, const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnRButtonDblClk(UINT nFlags,const CPoint& point)
+void ForeignDragDropTask::OnLButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-}
-
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnContextMenu(CWnd* pWnd,const CPoint& point)
+void ForeignDragDropTask::OnRButtonDblClk(UINT nFlags,const CPoint& point)
 {
    // Do nothing
 }
 
-STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
+void ForeignDragDropTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+}
+
+void ForeignDragDropTask::OnContextMenu(CWnd* pWnd,const CPoint& point)
+{
+   // Do nothing
+}
+
+DROPEFFECT ForeignDragDropTask::OnDragEnter(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    m_pDataObject = pDataObject;
    m_dwKeyState = dwKeyState;
@@ -129,14 +117,14 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragEnter(COleDataObject* 
    return DragEnter(pDataObject,dwKeyState,point);
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::OnDragLeave()
+void ForeignDragDropTask::OnDragLeave()
 {
    DragLeave();
    
    m_pDispMgr->SetTask(nullptr);
 }
 
-STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
+DROPEFFECT ForeignDragDropTask::OnDragOver(COleDataObject* pDataObject,DWORD dwKeyState,CPoint point)
 {
    m_pDataObject = pDataObject;
    m_dwKeyState = dwKeyState;
@@ -151,7 +139,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragOver(COleDataObject* p
    return de;
 }
 
-STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragScroll(DWORD dwKeyState,CPoint point)
+DROPEFFECT ForeignDragDropTask::OnDragScroll(DWORD dwKeyState,CPoint point)
 {
    m_dwKeyState = dwKeyState;
 
@@ -160,7 +148,7 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDragScroll(DWORD dwKeyStat
    return DragScroll(dwKeyState,point);
 }
 
-STDMETHODIMP_(BOOL) CForeignDragDropTaskImpl::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
+BOOL ForeignDragDropTask::OnDrop(COleDataObject* pDataObject,DROPEFFECT dropEffect,CPoint point)
 {
    m_pDataObject = pDataObject;
    m_dropEffect = dropEffect;
@@ -170,13 +158,13 @@ STDMETHODIMP_(BOOL) CForeignDragDropTaskImpl::OnDrop(COleDataObject* pDataObject
    
    BOOL bRetVal = Drop(pDataObject,dropEffect,point);
 
-   if ( CompareStates(CForeignDragDropFSM::Done) )
+   if ( CompareStates(ForeignDragDropFSM::Done) )
       m_pDispMgr->SetTask(nullptr);
 
    return bRetVal;
 }
 
-STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
+DROPEFFECT ForeignDragDropTask::OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point)
 {
    m_pDataObject = pDataObject;
    m_dropEffect  = dropEffect;
@@ -187,81 +175,74 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::OnDropEx(COleDataObject* pDa
 
    BOOL bRetVal = DropEx(pDataObject,dropEffect,dropList,point);
 
-   if ( CompareStates(CForeignDragDropFSM::Done) )
+   if ( CompareStates(ForeignDragDropFSM::Done) )
       m_pDispMgr->SetTask(nullptr);
 
    return bRetVal;
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::FSMError(LPCTSTR t,LPCTSTR s)
+void ForeignDragDropTask::FSMError(LPCTSTR t,LPCTSTR s)
 {
    ASSERT(FALSE);
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::InitTask()
+void ForeignDragDropTask::InitTask()
 {
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::CreateDragObjects()
+void ForeignDragDropTask::CreateDragObjects()
 {
    m_pDispMgr->CreateDragObjects(m_pDataObject);
    m_pDispMgr->DrawDragObjects(m_DragStart,m_LastPoint);
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::DestroyDragObjects()
+void ForeignDragDropTask::DestroyDragObjects()
 {
    m_pDispMgr->DrawDragObjects(m_DragStart,m_DragPoint);
    m_pDispMgr->DestroyDragObjects();
 
-   m_pDispMgr->HighliteDropSite(FALSE);
+   m_pDispMgr->HighlightDropSite(FALSE);
    m_pDispMgr->UnregisterDropSite();
 }
 
-STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
+DROPEFFECT ForeignDragDropTask::DetermineDropEffect()
 {
    DROPEFFECT de = DROPEFFECT_NONE;
 
    // If the cursor is currently over a display object, 
    // determine if it is a drop object.
-   DisplayObjectContainer dispObjs;
-   m_pDispMgr->FindDisplayObjects(m_DragPoint,&dispObjs);
+   auto dispObjs = m_pDispMgr->FindDisplayObjects(m_DragPoint);
    bool found = false;
    if ( 0 < dispObjs.size() )
    {
       Float64 wx, wy;
       m_pMap->LPtoWP(m_DragPoint.x, m_DragPoint.y, &wx, &wy);
       m_pMap->WPtoMP(wx, wy, &wx, &wy);
-      m_PointCache->put_X(wx);
-      m_PointCache->put_Y(wy);
+      m_PointCache.Move(wx, wy);
 
-      DisplayObjectContainer::iterator iter;
-      for ( iter = dispObjs.begin(); iter != dispObjs.end(); iter++ )
+      for(auto& dispObj : dispObjs)
       {
-         CComPtr<iDisplayObject> pDO = *iter;
-
          // Is it a drop object? Can we drop the payload on it?
-         CComPtr<iDropSite> pDropSite;
-         pDO->GetDropSite(&pDropSite);
-         if ( pDropSite )
+         auto drop_site = dispObj->GetDropSite();
+         if ( drop_site )
          {
             
-            de = pDropSite->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
-            if ( de > 0 )
+            de = drop_site->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
+            if ( 0 < de )
             {
                // Payload can be dropped!
-               CComPtr<iDropSite> currentDropSite;
-               m_pDispMgr->GetDropSite(&currentDropSite);
-               if ( currentDropSite && !pDropSite.IsEqualObject(currentDropSite) )
+               auto current_drop_site = m_pDispMgr->GetDropSite();
+               if (current_drop_site && drop_site.get() != current_drop_site.get() )
                {
                   // if there is a current drop site, draw it in its normal stage
-                  m_pDispMgr->HighliteDropSite(FALSE);
+                  m_pDispMgr->HighlightDropSite(FALSE);
                }
 
                // Set the new drop site
-               m_pDispMgr->RegisterDropSite(pDropSite);
+               m_pDispMgr->RegisterDropSite(drop_site);
 
-               // draw in highlited stage
-               m_pDispMgr->HighliteDropSite(TRUE);
+               // draw in Highlighted stage
+               m_pDispMgr->HighlightDropSite(TRUE);
 
                found = true;
                break; // we found a drop site... get the heck outta here
@@ -273,15 +254,14 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
    if (!found)
    {
       // Cursor is not over a display object - relegate to view
-      m_pDispMgr->HighliteDropSite(FALSE);
+      m_pDispMgr->HighlightDropSite(FALSE);
       m_pDispMgr->UnregisterDropSite();
 
       // Ask the View if we can drop the payload on the canvas
       Float64 wx, wy;
       m_pMap->LPtoWP(m_DragPoint.x, m_DragPoint.y, &wx, &wy);
       m_pMap->WPtoMP(wx, wy, &wx, &wy);
-      m_PointCache->put_X(wx);
-      m_PointCache->put_Y(wy);
+      m_PointCache.Move(wx, wy);
 
       CDisplayView* pView = m_pDispMgr->GetView();
       de = pView->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
@@ -290,27 +270,25 @@ STDMETHODIMP_(DROPEFFECT) CForeignDragDropTaskImpl::DetermineDropEffect()
    return de;
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::TrackDragObjects()
+void ForeignDragDropTask::TrackDragObjects()
 {
    m_pDispMgr->DrawDragObjects(m_DragStart,m_LastPoint);
    m_pDispMgr->DrawDragObjects(m_DragStart,m_DragPoint);
 }
 
-STDMETHODIMP_(void) CForeignDragDropTaskImpl::NotifyDropTarget()
+void ForeignDragDropTask::NotifyDropTarget()
 {
    // If the payload landed on a drop site, notify it,
    // otherwise, notify the canvas
    Float64 wx, wy;
    m_pMap->LPtoWP(m_DragPoint.x, m_DragPoint.y, &wx, &wy);
    m_pMap->WPtoMP(wx, wy, &wx, &wy);
-   m_PointCache->put_X(wx);
-   m_PointCache->put_Y(wy);
+   m_PointCache.Move(wx, wy);
 
-   CComPtr<iDropSite> pDropSite;
-   m_pDispMgr->GetDropSite(&pDropSite);
-   if ( pDropSite )
+   auto drop_site = m_pDispMgr->GetDropSite();
+   if ( drop_site )
    {
-      pDropSite->OnDropped(m_pDataObject,m_dropEffect,m_PointCache);
+      drop_site->OnDropped(m_pDataObject,m_dropEffect,m_PointCache);
    }
    else
    {

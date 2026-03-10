@@ -103,7 +103,7 @@ void rptStyleManager::InitStyles()
    flag = psl->AddNamedStyle(ms_SubheadingStyle, subheadings);
    //ATLASSERT(flag);
 
-   for (IndexType hLevel = 1; hLevel <= 6; hLevel++)
+   for (Uint16 hLevel = 1; hLevel <= 6; hLevel++)
    {
 
        PRECONDITION(1 <= hLevel && hLevel <= 6);
@@ -117,6 +117,16 @@ void rptStyleManager::InitStyles()
        psl->SetHeadingStyle(hLevel, heading);
        //ATLASSERT(flag);
    }
+
+   //rptRiStyle  chaptertitle;
+   //chaptertitle.SetFontType(rptRiStyle::SWISS);
+   //chaptertitle.SetFontSize(13);
+   //chaptertitle.SetIsHeading(true);
+   //chaptertitle.SetAlignment(rptRiStyle::LEFT);
+   //chaptertitle.SetBold(true);
+   //chaptertitle.SetColor(rptRiStyle::Blue);
+   //psl->SetHeadingStyle(1, chaptertitle);
+
 
    // Table Column Headings
    rptRiStyle colheadings;
@@ -338,6 +348,11 @@ rptHeading* rptStyleManager::CreateHeading(Uint8 hLevel)
     rptHeading* pHeading = new rptHeading(hLevel);
 
     return pHeading;
+}
+
+rptHeading* rptStyleManager::CreateChapterHeading()
+{
+   return CreateHeading(1);
 }
 
 rptHeading* rptStyleManager::CreateHeading()

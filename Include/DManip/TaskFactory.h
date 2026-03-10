@@ -21,24 +21,36 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TASKFACTORY_H_
-#define INCLUDED_TASKFACTORY_H_
 #pragma once
+#include <DManip/DManipExp.h>
+#include <DManip/TaskFactory.h>
 
 class CDisplayView;
 
-interface iTask;
-interface iDisplayMgr;
-interface iInplaceEditable;
-
-interface iTaskFactory : public IUnknown
+namespace WBFL
 {
-   STDMETHOD_(void,CreateInplaceEditTask)(CDisplayView* pView,iInplaceEditable* pEditable,iTask** task) PURE;
-   STDMETHOD_(void,CreateRectSelectTask)(iDisplayMgr* pDispMgr,const CPoint& startPoint,iTask** task) PURE;
-   STDMETHOD_(void,CreateLocalDragDropTask)(iDisplayMgr* pDispMgr,const CPoint& startPoint,iTask** task) PURE;
-   STDMETHOD_(void,CreateForeignDragDropTask)(iDisplayMgr* pDispMgr,const CPoint& startPoint,iTask** task) PURE;
-   STDMETHOD_(void,CreateCenterOnPointTask)(CDisplayView* pView,iTask** task) PURE;
-   STDMETHOD_(void,CreateZoomTask)(CDisplayView* pView,HCURSOR hCursor,COLORREF color,iTask** task) PURE;
-};
+   namespace DManip
+   {
+      class iInplaceEditable;
+      class iTask;
+      class iDisplayMgr;
 
-#endif // INCLUDED_TASKFACTORY_H_
+      /// @brief A factory object that creates task objects.
+      /// When implementing custom tasks, extend this class to create the tasks
+      /// and use a customized version of DisplayMgr that knows how to use your
+      /// customized task factory.
+      class DMANIPCLASS TaskFactory
+      {
+      public:
+	      TaskFactory() = default;
+	      virtual ~TaskFactory() = default;
+
+         virtual std::shared_ptr<iTask> CreateInplaceEditTask(CDisplayView* pView,std::shared_ptr<iInplaceEditable> pEditable) const;
+         virtual std::shared_ptr<iTask> CreateRectSelectTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
+         virtual std::shared_ptr<iTask> CreateLocalDragDropTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
+         virtual std::shared_ptr<iTask> CreateForeignDragDropTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
+         virtual std::shared_ptr<iTask> CreateCenterOnPointTask(CDisplayView* pView) const;
+         virtual std::shared_ptr<iTask> CreateZoomTask(CDisplayView* pView,HCURSOR hCursor,COLORREF color) const;
+      };
+   };
+};

@@ -65,11 +65,11 @@ public:
       Float flt=None ///< image float
    );
 
-   rptRcImage(const rptRcImage& rOther);
+   rptRcImage(const rptRcImage& rOther) = default;
 
-   virtual ~rptRcImage();
+   virtual ~rptRcImage() = default;
 
-   rptRcImage& operator=(const rptRcImage& rOther);
+   rptRcImage& operator=(const rptRcImage& rOther) = default;
 
    /// Accepts a visitor and calls VisitRcImage(this)
    virtual void Accept( rptRcVisitor& rVisitor ) override;

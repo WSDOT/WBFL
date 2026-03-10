@@ -28,12 +28,6 @@
 #include <ReportManager\TimeChapterBuilder.h>
 #include <Reporter\Reporter.h>
 
-#ifdef _DEBUG
-#undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
-#define new DEBUG_NEW
-#endif
-
 using namespace WBFL::Reporting;
 
 ReportBuilder::ReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :

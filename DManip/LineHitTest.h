@@ -21,19 +21,19 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LINEHITTEST_H_
-#define INCLUDED_LINEHITTEST_H_
 #pragma once
 
-interface iDisplayObject;
-interface IPoint;
-
-class CLineHitTest
+namespace WBFL
 {
-public:
-   static BOOL HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point);
+   namespace DManip
+   {
+      class iDisplayObject;
 
-   static CRect GetHitRect(iDisplayObject* pDO, IPoint2d* pStart, IPoint2d* pEnd);
+      class LineHitTest
+      {
+      public:
+         static bool HitTest(const iDisplayObject* pDO, WBFL::Geometry::Point2d start, WBFL::Geometry::Point2d end, const POINT& point);
+         static CRect GetHitRect(const iDisplayObject* pDO, WBFL::Geometry::Point2d start, WBFL::Geometry::Point2d end);
+      };
+   };
 };
-
-#endif // INCLUDED_LINEHITTEST_H_

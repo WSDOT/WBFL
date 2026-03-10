@@ -35,11 +35,6 @@
 #include <MathEx.h>
 #include "..\..\LBAMTestUtils.h"
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 #define TEST_MODEL_HOSED() TRY_TEST(pMe->m_csModelHosedFired, true); pMe->InitFired();
 #define TEST_COMBO_CHANGED() TRY_TEST(pMe->m_csCombinationChangedFired, true); pMe->InitFired();

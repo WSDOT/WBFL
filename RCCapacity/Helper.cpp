@@ -33,11 +33,6 @@
 #include <MathEx.h>
 #include <xutility>
 
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
 
 Float64 Alpha1(Float64 fc,IUnitServer* pUnitServer,SpecUnitType unitType)
 {
