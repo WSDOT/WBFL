@@ -43,7 +43,7 @@ namespace WBFL
 
          /// @brief Sets the output stream for logging
          /// @param stream 
-         static void SetOutput(std::ostream* stream);
+         static std::ostream* SetOutput(std::ostream* stream);
 
          /// @brief Sets the logging verbosity. Any messages with a Severity at this level or greater are logged.
          /// @param verbosity 

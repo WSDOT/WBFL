@@ -61,9 +61,11 @@ void plain_text_message(std::ostream& out, Logger::Severity type, const std::str
    out << message.c_str() << std::endl;
 }
 
-void Logger::SetOutput(std::ostream* stream1)
+std::ostream* Logger::SetOutput(std::ostream* stream1)
 {
+   std::ostream* old = log;
    log = stream1;
+   return old;
 }
 
 void Logger::Verbosity(Severity v)
