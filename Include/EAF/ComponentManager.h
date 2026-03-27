@@ -107,6 +107,12 @@ namespace WBFL
          /// @return 
          const ComponentInfo& GetComponent(CLSID clsid) const;
 
+         /// @brief Determines if a class belongs to a category
+         /// @param clsid 
+         /// @param catid 
+         /// @return Returns true if the class belots to the category
+         bool IsClassOfCategory(CLSID clsid, CATID catid) const;
+
          /// @brief Creates a new component object
          /// @param info 
          /// @return nullptr if unsuccessful
