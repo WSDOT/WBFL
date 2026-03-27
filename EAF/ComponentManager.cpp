@@ -131,6 +131,17 @@ const ComponentInfo& ComponentManager::GetComponent(CLSID clsid) const
    throw std::runtime_error(msg.str());
 }
 
+bool ComponentManager::IsClassOfCategory(CLSID clsid, CATID catid) const
+{
+   const ComponentInfo& component_info = GetComponent(clsid);
+   for (const auto& cid : component_info.categories)
+   {
+      if (cid == catid)
+         return true;
+   }
+   return false;
+}
+
 template <class T>
 typename boost::dll::detail::import_type<T>::type get_factory_method(const boost::dll::fs::path& lib,
    boost::dll::load_mode::type mode = boost::dll::load_mode::default_mode)
