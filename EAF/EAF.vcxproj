@@ -307,6 +307,7 @@
   <ItemGroup>
     <CustomBuild Include="EAF.def" />
     <None Include="res\EAF.rc2" />
+    <None Include="res\Working.avi" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EAF.rc" />

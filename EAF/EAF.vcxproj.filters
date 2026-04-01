@@ -668,5 +668,6 @@
     <None Include="res\EAF.rc2">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\Working.avi" />
   </ItemGroup>
 </Project>
