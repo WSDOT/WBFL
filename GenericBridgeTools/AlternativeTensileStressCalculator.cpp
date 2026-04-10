@@ -66,7 +66,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
 
    // Shape must be in Centroidal/Stress Point coordinates
 
-   typedef enum { slAllTens, slAllComp, slOther } StressLocation;
+   typedef enum { slAllTens, slAllComp, slTensTop, slTensBot } StressLocation;
    StressLocation stressLoc;
    pRequirements->Yna = -1;
    pRequirements->NAslope = 0;
@@ -76,6 +76,8 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    Float64 fTopRight = pRequirements->pntTopRight.Z();
    Float64 fBotLeft = pRequirements->pntBottomLeft.Z();
    Float64 fBotRight = pRequirements->pntBottomRight.Z();
+
+   Float64 Hg = pRequirements->pntTopLeft.Y() - pRequirements->pntBottomLeft.Y();
 
    // Determine maximum bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
    Float64 allowable_bar_stress = 0.5*pRequirements->fy;
@@ -98,7 +100,15 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
    }
    else
    {
-      stressLoc = slOther;
+      if (::IsLT(0.0, fTopLeft) || ::IsLT(0.0, fTopRight))
+      {
+         stressLoc = slTensTop;
+      }
+      else
+      {
+         ASSERT(::IsLT(0.0, fBotLeft) || ::IsLT(0.0, fBotRight));
+         stressLoc = slTensBot;
+      }
    }
 
    // use a 3d plane to determine the neutral axis
@@ -213,7 +223,10 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
          }
          else
          {
-            ATLASSERT(false); // the clipping line should leave a shape
+            // clipping should leave a shape since there is tension on at least one corner of the section.
+            // however, the corner stresses are computed assuming no chamfers in the flanges.
+            // there are extremely rare cases when the clipping line could pass through a chamfer and leave no shape, 
+            // even though there is tension in the section. 
             AreaTens = 0.0;
          }
       }
@@ -345,8 +358,19 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
             Float64 x, y;
             location->Location(&x, &y); // in girder section coordinates (0,0 at top center)
 
+            Float64 barCover = Float64_Max;
+            if (fabs(y) < Hg/2.0 && stressLoc == slTensTop)
+            {
+               // bar is closer to top of beam
+               barCover = -1.0 * y - db / 2.0;
+            }
+            else if (Hg/2.0 <= fabs(y) && stressLoc == slTensBot)
+            {
+               // bar is closer to bottom of beam
+               barCover = Hg + y - db / 2.0;
+            }
+
             // Determine if rebar is within max cover requirement
-            Float64 barCover = -1.0 * y - db / 2.0;
             if (barCover <= maxCover)
             {
                AsProvd += Ab;
