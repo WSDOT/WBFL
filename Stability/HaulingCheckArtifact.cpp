@@ -286,6 +286,11 @@ bool HaulingCheckArtifact::PassedTensionCheck(HaulingSlope slope) const
             for (IndexType w = 0; w < 2; w++)
             {
                WindDirection wind = (WindDirection)w;
+
+#if !defined REBAR_FOR_DIRECT_TENSION
+               Float64 fAllow = GetAllowableTension(slope, sectionResult, impact, wind);
+#endif // REBAR_FOR_DIRECT_TENSION
+
                Float64 f = sectionResult.f[+slope][+impact][+wind][+corner];
                if (::IsLE(fAllow, f))
                {

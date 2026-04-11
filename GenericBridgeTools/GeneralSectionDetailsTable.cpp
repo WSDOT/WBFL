@@ -82,13 +82,13 @@ rptRcTable* CreateGeneralSectionDetailsTable(IGeneralSectionSolution* pSolution,
       (*pTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("cg")), rptLengthUnitTag, ComponentDim);
 
       pTable->SetRowSpan(0, col, 2);
-      (*pTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("i")), rptAreaUnitTag, Area);
+      (*pTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("slice")), rptAreaUnitTag, Area);
 
       pTable->SetRowSpan(0, col, 2);
-      (*pTable)(0, col++) << COLHDR(Sub2(_T("f"), _T("i")), rptStressUnitTag, Stress);
+      (*pTable)(0, col++) << COLHDR(RPT_STRESS(_T("slice")), rptStressUnitTag, Stress);
 
       pTable->SetRowSpan(0, col, 2);
-      (*pTable)(0, col++) << COLHDR(Sub2(_T("T"), _T("i")), rptForceUnitTag, GeneralForce);
+      (*pTable)(0, col++) << COLHDR(Sub2(_T("T"), _T("slice")), rptForceUnitTag, GeneralForce);
    }
 
 
