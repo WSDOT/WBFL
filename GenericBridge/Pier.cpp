@@ -73,6 +73,13 @@ STDMETHODIMP CPier::get_DeckProfile(IPoint2dCollection** ppPoints)
    return m_DeckProfile.CopyTo(ppPoints);
 }
 
+STDMETHODIMP CPier::putref_DeckProfile(IPoint2dCollection* pPoints)
+{
+	CHECK_IN(pPoints);
+	m_DeckProfile = pPoints;
+	return S_OK;
+}
+
 STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
 {
    CHECK_RETVAL(pTDeck);
@@ -108,13 +115,6 @@ STDMETHODIMP CPier::get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasur
 
 /////////////////////////////////////////////////////////////////////////////
 // IPierEx
-STDMETHODIMP CPier::putref_DeckProfile(IPoint2dCollection* pPoints)
-{
-   CHECK_IN(pPoints);
-   m_DeckProfile = pPoints;
-   return S_OK;
-}
-
 STDMETHODIMP CPier::put_DeckThickness(/*[in]*/Float64 tDeck)
 {
    m_tDeck = tDeck;

@@ -122,6 +122,13 @@ HRESULT  CPierImpl::get_Type(PierType* type)
    return S_OK;
 }
 
+HRESULT  CPierImpl::putref_DeckProfile(IPoint2dCollection* ppPoints)
+{
+   CHECK_IN(ppPoints);
+   m_DeckProfile = ppPoints;
+   return S_OK;
+}
+
 HRESULT  CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
 {
    CHECK_RETVAL(pWcc);

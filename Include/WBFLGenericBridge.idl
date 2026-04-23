@@ -1858,6 +1858,7 @@ library WBFLGenericBridge
 
       // Profile of the deck, in the plane of the pier. X = offset from alignment. Y = elevation
       // X = 0 is at the alignment.
+	  [propputref, helpstring("property DeckProfile")] HRESULT DeckProfile([in]IPoint2dCollection* pPoints);
       [propget, helpstring("property DeckProfile")] HRESULT DeckProfile([out,retval]IPoint2dCollection** ppPoints);
 
       // Gross deck thickness at CL Pier.
@@ -1919,7 +1920,6 @@ library WBFLGenericBridge
 	]
 	interface IPierEx : IPier
 	{
-      [propputref,helpstring("property DeckProfile")] HRESULT DeckProfile([in]IPoint2dCollection* pPoints);
       [propput,helpstring("property DeckThickness")] HRESULT DeckThickness([in]Float64 tDeck);
 
       // Sets the curb line offsets, measured normal to the alignment

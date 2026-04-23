@@ -74,6 +74,7 @@ public:
 public:
    STDMETHOD(put_Type)(/*[in]*/PierType type) override { return m_PierImpl.put_Type(type); }
    STDMETHOD(get_Type)(/*[out,retval]*/PierType* type) override { return m_PierImpl.get_Type(type); }
+   STDMETHOD(putref_DeckProfile)(/*[in]*/IPoint2dCollection* pPoints) override;
    STDMETHOD(get_DeckProfile)(/*[out,retval]*/IPoint2dCollection** ppPoints) override;
    STDMETHOD(get_DeckThickness)(/*[out,retval]*/Float64* pTDeck) override;
    STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO) override;
@@ -98,7 +99,6 @@ public:
 
 // IPierEx
 public:
-   STDMETHOD(putref_DeckProfile)(/*[in]*/IPoint2dCollection* pPoints) override;
    STDMETHOD(put_DeckThickness)(/*[in]*/Float64 tDeck) override;
    STDMETHOD(put_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/Float64 clo) override;
 
