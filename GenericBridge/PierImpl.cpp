@@ -129,6 +129,12 @@ HRESULT  CPierImpl::putref_DeckProfile(IPoint2dCollection* ppPoints)
    return S_OK;
 }
 
+HRESULT  CPierImpl::get_DeckProfile(IPoint2dCollection** ppPoints)
+{
+    CHECK_RETOBJ(ppPoints);
+    return m_DeckProfile.CopyTo(ppPoints);
+}
+
 HRESULT  CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
 {
    CHECK_RETVAL(pWcc);

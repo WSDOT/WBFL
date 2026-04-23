@@ -123,11 +123,7 @@ HRESULT CBridgePier::ValidateOrientation(BSTR bstrOrientation)
 // IPier
 STDMETHODIMP CBridgePier::get_DeckProfile(/*[out,retval]*/IPoint2dCollection** ppPoints)
 {
-	///return m_pPier->get_DeckProfile(ppPoints);
-    //m_DeckProfile->Clone(ppPoints);
-    //CHECK_RETVAL(ppPoints);
-    //*ppPoints = m_DeckProfile;
-    return S_OK;
+	return m_PierImpl.get_DeckProfile(ppPoints);
 }
 
 STDMETHODIMP CBridgePier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)

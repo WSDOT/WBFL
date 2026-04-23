@@ -51,6 +51,7 @@ public:
    HRESULT put_Type(/*[in]*/PierType type);
    HRESULT get_Type(/*[out,retval]*/PierType* type);
    HRESULT putref_DeckProfile(/*[in]*/IPoint2dCollection* ppPoints);
+   HRESULT get_DeckProfile(/*[out,retval]*/IPoint2dCollection** ppPoints);
    //HRESULT get_DeckElevation(/*[out,retval]*/Float64* pElev);
    //HRESULT get_CrownPointOffset(/*[out,retval]*/Float64* pCPO);
    //HRESULT get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
