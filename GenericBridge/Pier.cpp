@@ -67,18 +67,6 @@ STDMETHODIMP CPier::InterfaceSupportsErrorInfo(REFIID riid)
 
 /////////////////////////////////////////////////////////////////////////////
 // IPier
-STDMETHODIMP CPier::get_DeckProfile(IPoint2dCollection** ppPoints)
-{
-   CHECK_RETOBJ(ppPoints);
-   return m_DeckProfile.CopyTo(ppPoints);
-}
-
-STDMETHODIMP CPier::putref_DeckProfile(IPoint2dCollection* pPoints)
-{
-	CHECK_IN(pPoints);
-	m_DeckProfile = pPoints;
-	return S_OK;
-}
 
 STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
 {

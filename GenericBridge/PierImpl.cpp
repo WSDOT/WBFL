@@ -309,7 +309,7 @@ HRESULT  CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* p
 void CPierImpl::CreateDeckProfileFunction(WBFL::Math::PiecewiseFunction* pFN)
 {
    CComPtr<IPoint2dCollection> deckProfile;
-   m_pPier->get_DeckProfile(&deckProfile);
+   get_DeckProfile(&deckProfile);
 
    CComPtr<IEnumPoint2d> enumPoints;
    deckProfile->get__Enum(&enumPoints);
