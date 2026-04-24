@@ -40,8 +40,8 @@ HRESULT CPier::FinalConstruct()
       return hr;
    }
 
-   m_CurbLineOffset[qcbLeft] = 0;
-   m_CurbLineOffset[qcbRight] = 0;
+   m_PierImpl.put_CurbLineOffset(qcbLeft, 0);
+   m_PierImpl.put_CurbLineOffset(qcbRight, 0);
 
    return S_OK;
 }
@@ -75,21 +75,6 @@ STDMETHODIMP CPier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
    return S_OK;
 }
 
-STDMETHODIMP CPier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
-{
-   CHECK_RETVAL(pCLO);
-   *pCLO = m_CurbLineOffset[side];
-   if ( clMeasure == clmPlaneOfPier )
-   {
-      CComPtr<IAngle> objSkew;
-      get_SkewAngle(&objSkew);
-      Float64 skew;
-      objSkew->get_Value(&skew);
-      *pCLO /= cos(skew);
-   }
-   return S_OK;
-}
-
 STDMETHODIMP CPier::get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc)
 {
    CHECK_RETVAL(pWcc);
@@ -106,12 +91,6 @@ STDMETHODIMP CPier::get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasur
 STDMETHODIMP CPier::put_DeckThickness(/*[in]*/Float64 tDeck)
 {
    m_tDeck = tDeck;
-   return S_OK;
-}
-
-STDMETHODIMP CPier::put_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/Float64 clo)
-{
-   m_CurbLineOffset[side] = clo;
    return S_OK;
 }
 

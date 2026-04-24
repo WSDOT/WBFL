@@ -135,6 +135,27 @@ HRESULT  CPierImpl::get_DeckProfile(IPoint2dCollection** ppPoints)
     return m_DeckProfile.CopyTo(ppPoints);
 }
 
+HRESULT  CPierImpl::put_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/Float64 clo)
+{
+    m_CurbLineOffset[side] = clo;
+    return S_OK;
+}
+
+HRESULT  CPierImpl::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
+{
+    CHECK_RETVAL(pCLO);
+    *pCLO = m_CurbLineOffset[side];
+    if (clMeasure == clmPlaneOfPier)
+    {
+        CComPtr<IAngle> objSkew;
+        get_SkewAngle(&objSkew);
+        Float64 skew;
+        objSkew->get_Value(&skew);
+        *pCLO /= cos(skew);
+    }
+    return S_OK;
+}
+
 HRESULT  CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
 {
    CHECK_RETVAL(pWcc);

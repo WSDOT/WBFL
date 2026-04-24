@@ -1903,11 +1903,14 @@ library WBFLGenericBridge
    interface IBridgePier : IPier
    {
       [propget,helpstring("property Bridge")] HRESULT Bridge([out,retval]IGenericBridge** ppBridge);
-		[propget,helpstring("property Index")] HRESULT Index([out,retval]PierIndexType* pIndex);
+      [propget,helpstring("property Index")] HRESULT Index([out,retval]PierIndexType* pIndex);
       [propget,helpstring("property ID")] HRESULT ID([out,retval]PierIDType* pID);
       [propget, helpstring("property Location")] HRESULT Location([out, retval]Float64* pXb);
       [propget,helpstring("property Station")] HRESULT Station([out,retval] IStation* *station);
-		[propget,helpstring("property Direction")] HRESULT Direction([out,retval] IDirection* *direction);
+	  [propget,helpstring("property Direction")] HRESULT Direction([out,retval] IDirection* *direction);
+
+	  // Sets the curb line offsets, measured normal to the alignment
+	  [propput, helpstring("property CurbLineOffset")] HRESULT CurbLineOffset([in]DirectionType side, [in]Float64 clo);
    };
 
    [

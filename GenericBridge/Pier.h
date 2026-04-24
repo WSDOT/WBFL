@@ -62,9 +62,7 @@ END_COM_MAP()
 private:
    CPierImpl m_PierImpl;
 
-   CComPtr<IPoint2dCollection> m_DeckProfile;
    Float64 m_tDeck;
-   Float64 m_CurbLineOffset[2];
 
 // ISupportsErrorInfo
 public:
@@ -77,7 +75,8 @@ public:
    STDMETHOD(putref_DeckProfile)(/*[in]*/IPoint2dCollection* pPoints) override { return m_PierImpl.putref_DeckProfile(pPoints); }
    STDMETHOD(get_DeckProfile)(/*[out,retval]*/IPoint2dCollection** ppPoints) { return m_PierImpl.get_DeckProfile(ppPoints); }
    STDMETHOD(get_DeckThickness)(/*[out,retval]*/Float64* pTDeck) override;
-   STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO) override;
+   STDMETHOD(put_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/Float64 clo) { return m_PierImpl.put_CurbLineOffset(side, clo); }
+   STDMETHOD(get_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO) { return m_PierImpl.get_CurbLineOffset(side, clMeasure, pCLO); }
    STDMETHOD(get_CurbToCurbWidth)(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc) override;
    STDMETHOD(putref_SkewAngle)(/*[in]*/IAngle* pSkew) override { return m_PierImpl.putref_SkewAngle(pSkew); }
    STDMETHOD(get_SkewAngle)(/*[out,retval]*/IAngle** ppSkew) override { return m_PierImpl.get_SkewAngle(ppSkew); }
@@ -100,7 +99,6 @@ public:
 // IPierEx
 public:
    STDMETHOD(put_DeckThickness)(/*[in]*/Float64 tDeck) override;
-   STDMETHOD(put_CurbLineOffset)(/*[in]*/DirectionType side,/*[in]*/Float64 clo) override;
 
 // IStructuredStorage2
 public:
