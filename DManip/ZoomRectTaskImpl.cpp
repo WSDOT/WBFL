@@ -29,13 +29,14 @@ using namespace WBFL::DManip;
 
 ZoomRectTask::ZoomRectTask()
 {
+   m_pDispHandler = nullptr;
    m_pTrackPen = nullptr;
    m_Cursor = nullptr;
 }
 
-ZoomRectTask::ZoomRectTask(CDisplayView* pView, HCURSOR hCursor, COLORREF color)
+ZoomRectTask::ZoomRectTask(CDisplay* pDispHandler, HCURSOR hCursor, COLORREF color)
 {
-   m_pView = pView;
+   m_pDispHandler = pDispHandler;
    m_Cursor = hCursor;
    m_pTrackPen = new CPen(PS_SOLID, 1, color);
 }
@@ -49,7 +50,7 @@ void ZoomRectTask::Start()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-   m_pView->SetCapture();
+   m_pDispHandler->GetWnd()->SetCapture();
    if ( m_Cursor == nullptr )
       m_Cursor = AfxGetApp()->LoadCursor(IDC_MAGNIFY);
 
@@ -64,7 +65,7 @@ void ZoomRectTask::OnLButtonUp(UINT nFlags,const CPoint& point)
 
    MouseUp();
 
-   m_pView->GetDisplayMgr()->SetTask(nullptr);
+   m_pDispHandler->GetDisplayMgr()->SetTask(nullptr);
 }
 
 void ZoomRectTask::OnRButtonUp(UINT nFlags,const CPoint& point)
@@ -111,7 +112,7 @@ void ZoomRectTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    if ( nChar == VK_ESCAPE )
    {
       EscKey();
-      m_pView->GetDisplayMgr()->SetTask(nullptr);
+      m_pDispHandler->GetDisplayMgr()->SetTask(nullptr);
    }
 }
 
@@ -162,7 +163,7 @@ void ZoomRectTask::ZoomRect()
    ReleaseCapture();
    SetCursor(m_OldCursor);
 
-   m_pView->Zoom(CRect(m_FirstPoint,m_SecondPoint));
+   m_pDispHandler->Zoom(CRect(m_FirstPoint,m_SecondPoint));
 }
 
 void ZoomRectTask::RecordFirstPoint()
@@ -172,7 +173,7 @@ void ZoomRectTask::RecordFirstPoint()
 
 void ZoomRectTask::ClearRect()
 {
-   if ( m_pView->GetCapture() == m_pView )
+   if (m_pDispHandler->GetWnd()->GetCapture() == m_pDispHandler->GetWnd())
    {
       DrawRect(m_FirstPoint,m_SecondPoint);
    }
@@ -180,7 +181,7 @@ void ZoomRectTask::ClearRect()
 
 void ZoomRectTask::TrackRect()
 {
-   if ( m_pView->GetCapture() == m_pView )
+   if (m_pDispHandler->GetWnd()->GetCapture() == m_pDispHandler->GetWnd())
    {
       DrawRect(m_FirstPoint,m_SecondPoint);
       DrawRect(m_FirstPoint,m_TempPoint);
@@ -207,7 +208,7 @@ void ZoomRectTask::Cancel()
 
 void ZoomRectTask::DrawRect(CPoint& from,CPoint& to)
 {
-   CDManipClientDC dc(m_pView);
+   CDManipClientDC dc(m_pDispHandler);
 
    // setup dc
    int rop = dc.SetROP2(R2_XORPEN);

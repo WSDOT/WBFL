@@ -84,7 +84,7 @@ void PointDisplayObject::SetPosition(const WBFL::Geometry::Point2d& pos, bool bR
       auto pDispMgr = pDL->GetDisplayMgr();
 
       CRect box = GetLogicalBoundingBox();
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
    
    // Set the new position
@@ -99,7 +99,7 @@ void PointDisplayObject::SetPosition(const WBFL::Geometry::Point2d& pos, bool bR
       auto pDL = GetDisplayList();
       auto pDispMgr = pDL->GetDisplayMgr();
       CRect box = GetLogicalBoundingBox();
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
 
    if ( bFireEvent )

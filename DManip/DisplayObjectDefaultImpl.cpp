@@ -84,7 +84,7 @@ void DisplayObjectDefaultImpl::Visible(bool bVisible)
       auto pDispMgr = m_pDispList.lock()->GetDisplayMgr();
       CRect box = GetLogicalBoundingBox();
       box.InflateRect(1,1);
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
 }
 
@@ -234,7 +234,7 @@ void DisplayObjectDefaultImpl::Select(bool bSelect)
 //   {
       CRect box = GetLogicalBoundingBox();
       box.InflateRect(1,1); // inflate a bit for tolerancing
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 //   }
 }
 

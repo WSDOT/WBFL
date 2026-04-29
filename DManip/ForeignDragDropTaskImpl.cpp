@@ -263,8 +263,8 @@ DROPEFFECT ForeignDragDropTask::DetermineDropEffect()
       m_pMap->WPtoMP(wx, wy, &wx, &wy);
       m_PointCache.Move(wx, wy);
 
-      CDisplayView* pView = m_pDispMgr->GetView();
-      de = pView->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
+      CDisplay* pDisp = m_pDispMgr->GetDisplay();
+      de = pDisp->CanDrop(m_pDataObject, m_dwKeyState, m_PointCache);
    }
 
    return de;
@@ -292,7 +292,7 @@ void ForeignDragDropTask::NotifyDropTarget()
    }
    else
    {
-      CDisplayView* pView = m_pDispMgr->GetView();
-      pView->OnDropped(m_pDataObject,m_dropEffect,m_PointCache);
+      CDisplay* pDisp = m_pDispMgr->GetDisplay();
+      pDisp->OnDropped(m_pDataObject,m_dropEffect,m_PointCache);
    }
 }

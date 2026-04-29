@@ -63,6 +63,7 @@ static bool PassedPD(Float64 datum, Float64 test, Float64 minPD, Float64 Toleran
 IMPLEMENT_DYNCREATE(CDisplayView, CScrollView)
 
 CDisplayView::CDisplayView()
+:CDisplay(this)
 {
    m_pDispMgr = WBFL::DManip::DisplayMgr::Create();
 
@@ -80,8 +81,6 @@ CDisplayView::CDisplayView()
    m_IsPrinting = false;
    m_pMapping       = m_pScreenMapping;
    m_pCoordinateMap = m_pScreenCoordinateMap;
-
-   m_nMapMode = MM_TEXT;
 }
 
 CDisplayView::~CDisplayView()
@@ -91,16 +90,6 @@ CDisplayView::~CDisplayView()
    m_pDispMgr.reset(); // must force display manager to release otherwise the records wont be empty
    CHECK(CircularRefDebugger::GetRecordCount((Uint64)this) == 0); // if this fires, there is a circular referenee problem and objects aren't destroyed 
 #endif
-}
-
-std::shared_ptr<WBFL::DManip::iDisplayMgr> CDisplayView::GetDisplayMgr()
-{
-   return m_pDispMgr;
-}
-
-std::shared_ptr<const WBFL::DManip::iDisplayMgr> CDisplayView::GetDisplayMgr() const
-{
-   return m_pDispMgr;
 }
 
 BEGIN_MESSAGE_MAP(CDisplayView, CScrollView)
@@ -173,17 +162,6 @@ INT_PTR CDisplayView::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
    return retval;
 }
 
-CRect CDisplayView::GetViewRect() const
-{
-   CRect rView;
-   if ( m_IsPrinting )
-      rView = m_PrintingRect;
-   else
-      GetClientRect(&rView);
-
-   return rView;
-}
-
 void CDisplayView::OnDraw(CDC* pDC)
 {
    int nBkMode = pDC->SetBkMode(TRANSPARENT);
@@ -247,7 +225,7 @@ int CDisplayView::OnCreate(LPCREATESTRUCT lpCreateStruct)
    if (CScrollView::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
-   m_pDispMgr->SetView(this);
+   m_pDispMgr->SetDisplay(this);
 
    return 0;
 }
@@ -443,27 +421,12 @@ DROPEFFECT CDisplayView::OnDragScroll( DWORD dwKeyState, CPoint point )
    return de;
 }
 
-DROPEFFECT CDisplayView::CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point)
-{
-   return DROPEFFECT_NONE;
-}
-
-void CDisplayView::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point)
-{
-   // Do nothing
-}
-
 void CDisplayView::OnSize(UINT nType, int cx, int cy)
 {
    CScrollView::OnSize(nType, cx, cy);
 
    auto rect = GetAdjustedWorldViewRect();
-   CenterOnPoint(rect.Center(), false);
-}
-
-std::shared_ptr<const WBFL::DManip::iCoordinateMap> CDisplayView::GetCoordinateMap() const
-{
-   return m_pCoordinateMap;
+   CDisplay::CenterOnPoint(rect.Center(), false);
 }
 
 void CDisplayView::ActivateCenterOnPointTask()
@@ -478,31 +441,12 @@ void CDisplayView::ActivateZoomTask()
    m_pDispMgr->SetTask(task);
 }
 
-void CDisplayView::Zoom(CRect rect, bool reDraw)
-{
-   rect.NormalizeRect();
-
-   Float64 wbot, wleft, wtop, wright;
-   m_pCoordinateMap->LPtoWP(rect.left,  rect.bottom, &wleft,  &wbot);
-   m_pCoordinateMap->LPtoWP(rect.right, rect.top,    &wright, &wtop);
-
-   WBFL::Geometry::Rect2d wrect(wleft, wbot, wright, wtop);
-   wrect.Normalize();
-
-   Zoom(wrect, reDraw);
-}
-
-void CDisplayView::Zoom(const WBFL::Geometry::Rect2d& rect, bool reDraw)
-{
-   SetWorldViewRect(rect);
-   CenterOnPoint(rect.Center(), reDraw);
-}
 
 void CDisplayView::Zoom(Float64 factor, bool reDraw)
 {
    if (factor<=0.0)
    {
-      CHECK(false);
+      ATLASSERT(false);
       return;
    }
    
@@ -528,16 +472,6 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
       Invalidate();
 }
 
-void CDisplayView::ScaleFont(LOGFONT& lfFont) const
-{
-   HMONITOR hMonitor = MonitorFromWindow(GetSafeHwnd(), MONITOR_DEFAULTTONEAREST);
-   UINT Xdpi, Ydpi;
-   HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, &Xdpi, &Ydpi);
-   CHECK(Xdpi == Ydpi);
-
-   lfFont.lfHeight = MulDiv(lfFont.lfHeight, Xdpi, USER_DEFAULT_SCREEN_DPI);
-}
-
 void CDisplayView::ScaleToFit(bool reDraw)
 {
    // create fresh dc for mapper in GetBoundingBox if we are not printing
@@ -560,7 +494,7 @@ void CDisplayView::ScaleToFit(bool reDraw)
    for (IndexType it = 0; it<max_iter; it++)
    {
       auto rect = m_pDispMgr->GetBoundingBox(false);
-      Zoom(rect,false);
+      CDisplay::Zoom(rect,false);
 
       auto wid = rect.Width();
       auto hgt = rect.Height();
@@ -584,32 +518,6 @@ void CDisplayView::ScaleToFit(bool reDraw)
    {
       Invalidate();
    }
-}
-
-void CDisplayView::CenterOnPoint(const WBFL::Geometry::Point2d& wPoint, bool reDraw)
-{
-   // get center of adjusted world extents
-   const auto& origin = m_pMapping->GetWorldOrg();
-   auto ext = m_pMapping->GetAdjustedWorldExt();
-
-   auto center = origin + ext / 2.0;
-
-   // compute distance between centers and offset world view rect this much
-   auto offset = wPoint - center;
-
-   auto new_origin = origin + offset;
-   m_pMapping->SetWorldOrg(new_origin);
-
-   if (reDraw)
-      Invalidate();
-}
-
-void CDisplayView::CenterOnPoint(CPoint center, bool reDraw)
-{
-   // move world rect required distance
-   auto wPoint = m_pCoordinateMap->LPtoWP(center.x, center.y);
-
-   CenterOnPoint(wPoint, reDraw);
 }
 
 CRect CDisplayView::GetAdjustedLogicalViewRect()
@@ -645,7 +553,7 @@ WBFL::DManip::MapMode CDisplayView::GetMappingMode()
 
 void CDisplayView::SetLogicalViewRect(int mapMode, CRect rect)
 {
-   m_nMapMode = mapMode;
+   SetMapMode(mapMode);
    
    // assume that bottom of rect is always origin
    m_pMapping->SetLogicalOrg(rect.left, rect.bottom);
@@ -666,23 +574,13 @@ RECT CDisplayView::GetLogicalViewRect()
    return rect;
 }
 
-void CDisplayView::SetWorldViewRect(const WBFL::Geometry::Rect2d& rect)
-{
-   m_pMapping->SetWorldOrg(rect.Left(), rect.Bottom());
-   m_pMapping->SetWorldExt(rect.Width(), rect.Height());
-}
 
 void CDisplayView::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
 {
    CScrollView::OnPrepareDC(pDC,pInfo);
 
-   pDC->SetMapMode(m_nMapMode);
+   pDC->SetMapMode(GetMapMode());
    m_pMapping->PrepareDC(pDC);
-}
-
-void CDisplayView::OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo)
-{
-   m_pMapping->CleanUpDC(pDC);
 }
 
 void CDisplayView::OnDestroy()
@@ -773,7 +671,7 @@ void CDisplayView::OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo)
    m_pMapping       = m_pPrinterMapping;
    m_pCoordinateMap = m_pPrinterCoordinateMap;
 
-   CenterOnPoint(wc);
+   CDisplay::CenterOnPoint(wc);
 
 	CScrollView::OnBeginPrinting(pDC, pInfo);
 }

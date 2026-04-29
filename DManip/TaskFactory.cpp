@@ -32,7 +32,7 @@
 
 using namespace WBFL::DManip;
 
-std::shared_ptr<iTask> TaskFactory::CreateInplaceEditTask(CDisplayView* pView,std::shared_ptr<iInplaceEditable> pEditable) const
+std::shared_ptr<iTask> TaskFactory::CreateInplaceEditTask(CDisplay* pView,std::shared_ptr<iInplaceEditable> pEditable) const
 {
    return std::make_shared<InplaceEditTask>(pView, pEditable);
 }
@@ -52,12 +52,12 @@ std::shared_ptr<iTask> TaskFactory::CreateForeignDragDropTask(std::shared_ptr<iD
    return std::make_shared<ForeignDragDropTask>(pDispMgr, startPoint);
 }
 
-std::shared_ptr<iTask> TaskFactory::CreateCenterOnPointTask(CDisplayView* pView) const
+std::shared_ptr<iTask> TaskFactory::CreateCenterOnPointTask(CDisplay* pWnd) const
 {
-   return std::make_shared<CenterOnPointTask>(pView);
+   return std::make_shared<CenterOnPointTask>(pWnd);
 }
 
-std::shared_ptr<iTask> TaskFactory::CreateZoomTask(CDisplayView* pView,HCURSOR hCursor,COLORREF color) const
+std::shared_ptr<iTask> TaskFactory::CreateZoomTask(CDisplay* pWnd,HCURSOR hCursor,COLORREF color) const
 {
-   return std::make_shared<ZoomRectTask>(pView, hCursor, color);
+   return std::make_shared<ZoomRectTask>(pWnd, hCursor, color);
 }

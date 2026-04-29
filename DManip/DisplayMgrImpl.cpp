@@ -59,38 +59,38 @@ void DisplayMgr::PrepareDragData(std::shared_ptr<iDragDataSink> pSink)
       });
 }
 
-void DisplayMgr::SetView(CDisplayView* pView)
+void DisplayMgr::SetDisplay(CDisplay* pDisp)
 {
    // because of the implementation of Revoke and Register, we need to work
    // in the app module state
 
    AFX_MANAGE_STATE(AfxGetAppModuleState());
-   if ( m_pView )
+   if ( m_pDisp )
    {
       m_DropTarget.Revoke();
    }
 
-   m_pView = pView;
+   m_pDisp = pDisp;
 
    // If this VERIFY fails, you most likely initialized COM with
    // CoInitialize instead of OleInitialize. You must use
    // OleInitialize for drag and drop to work
-   VERIFY( m_DropTarget.Register(m_pView) );
+   VERIFY( m_DropTarget.Register(m_pDisp->GetWnd()) );
 }
 
-CDisplayView* DisplayMgr::GetView()
+CDisplay* DisplayMgr::GetDisplay()
 {
-   return m_pView;
+   return m_pDisp;
 }
 
-const CDisplayView* DisplayMgr::GetView() const
+const CDisplay* DisplayMgr::GetDisplay() const
 {
-   return m_pView;
+   return m_pDisp;
 }
 
 std::shared_ptr<const iCoordinateMap> DisplayMgr::GetCoordinateMap() const
 {
-   return m_pView->GetCoordinateMap();
+   return m_pDisp->GetCoordinateMap();
 }
 
 std::shared_ptr<iDisplayList> DisplayMgr::CreateDisplayList(IDType id)
@@ -218,7 +218,7 @@ void DisplayMgr::SelectObject(std::shared_ptr<iDisplayObject> pDO, bool bClearSe
       m_SelectedObjects.emplace_back(pDO);
 
       CRect bbox = pDO->GetLogicalBoundingBox();
-      m_pView->InvalidateRect(bbox);
+      m_pDisp->GetWnd()->InvalidateRect(bbox);
    }
 }
 
@@ -959,7 +959,7 @@ INT_PTR DisplayMgr::OnToolHitTest(const POINT& point,TOOLINFO* pTI)
          CHECK(m_ToolTipObject->HitTest(point));
 
          pTI->cbSize = sizeof(TOOLINFO);
-         pTI->hwnd = m_pView->GetSafeHwnd();
+         pTI->hwnd = m_pDisp->GetWnd()->GetSafeHwnd();
          pTI->uId = MAKELONG(point.x, point.y);
          pTI->lpszText = LPSTR_TEXTCALLBACK;
          pTI->rect = m_ToolTipObject->GetLogicalBoundingBox();
@@ -1087,7 +1087,7 @@ void DisplayMgr::CreateDragObjects(COleDataObject* pDataObject)
 
 void DisplayMgr::DrawDragObjects(const POINT& dragStart, const POINT& dragPoint)
 {
-   CDManipClientDC dc(m_pView);
+   CDManipClientDC dc(m_pDisp);
    int rop2 = dc.SetROP2(R2_NOTXORPEN);
 
    auto map = GetCoordinateMap();
@@ -1124,7 +1124,7 @@ void DisplayMgr::HighlightDropSite(BOOL bHighlight)
 {
    if ( auto drop_site = m_pDropSite)
    {
-      CDManipClientDC dc(m_pView);
+      CDManipClientDC dc(m_pDisp);
       drop_site->Highlight(&dc,bHighlight);
    }
 }
@@ -1499,20 +1499,20 @@ std::shared_ptr<iDisplayMgrEvents> DisplayMgr::GetEventSink()
 void DisplayMgr::OnDisplayObjectAdded(IDType listID, std::shared_ptr<iDisplayObject> pDO)
 {
    CRect box = pDO->GetLogicalBoundingBox();
-   if (m_pView->GetSafeHwnd()) m_pView->InvalidateRect(box);
+   if (m_pDisp->GetWnd()->GetSafeHwnd()) m_pDisp->GetWnd()->InvalidateRect(box);
 
 #if defined _DEBUG
    auto& record = CircularRefDebugger::GetRecord((void*)(pDO.get()));
-   record.view_address = (Uint64)m_pView;
+   record.view_address = (Uint64)m_pDisp->GetWnd();
 #endif
 }
 
 void DisplayMgr::OnDisplayObjectRemoved(IDType listID, IDType doID)
 {
-   if(m_pView->GetSafeHwnd()) m_pView->Invalidate();
+   if(m_pDisp->GetWnd()->GetSafeHwnd()) m_pDisp->GetWnd()->Invalidate();
 }
 
 void DisplayMgr::OnDisplayObjectsCleared(IDType listID)
 {
-   if (m_pView->GetSafeHwnd()) m_pView->Invalidate();
+   if (m_pDisp->GetWnd()->GetSafeHwnd()) m_pDisp->GetWnd()->Invalidate();
 }

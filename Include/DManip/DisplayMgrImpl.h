@@ -51,15 +51,15 @@ namespace WBFL
 
          // iDisplayMgr Implementation
       public:
-         virtual void SetView(CDisplayView* pView) override;
+         virtual void SetDisplay(CDisplay* pDisp) override;
 
          // Be very careful using the View!!!
          // Do not use the view unless you are ABSOLUTELY SURE that the method you are 
          // calling it from has nothing to do with printing or print preview. If all you 
          // need is scaling, use GetCoordinateMap from below. 
          // If all you want is to call InvalidateRect, or InvalidateRgn, call the methods below
-         virtual CDisplayView* GetView() override;
-         virtual const CDisplayView* GetView() const override;
+         virtual CDisplay* GetDisplay() override;
+         virtual const CDisplay* GetDisplay() const override;
 
          virtual std::shared_ptr<const iCoordinateMap> GetCoordinateMap() const override;
 
@@ -178,7 +178,7 @@ namespace WBFL
          virtual void OnDisplayObjectsCleared(IDType listID) override;
 
       private:
-         CDisplayView* m_pView = nullptr;
+         CDisplay* m_pDisp = nullptr;
 
          std::vector<std::shared_ptr<iDisplayObjectFactory>> m_DisplayObjectFactories;
 
