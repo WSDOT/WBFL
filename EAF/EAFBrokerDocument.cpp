@@ -365,7 +365,7 @@ void CEAFBrokerDocument::InitAgents()
    {
       GET_IFACE(IEAFReportManager, reportManager);
       CEAFApp* pApp = EAFGetApp();
-      auto strBrowserType = pApp->GetProfileString(_T("Settings"), _T("ReportBrowser"), _T("Edge"));
+      auto strBrowserType = pApp->GetProfileString(_T("Settings"), _T("ReportBrowser"), _T("IE"));
       WBFL::Reporting::ReportBrowser::Type browserType = (strBrowserType.CompareNoCase(_T("IE")) == 0 ? WBFL::Reporting::ReportBrowser::Type::IE : WBFL::Reporting::ReportBrowser::Type::Edge);
       reportManager->SetReportBrowserType(browserType);
    }
