@@ -39,7 +39,7 @@ class WBFL::DManip::TaskFactory;
 
 
 /// @brief The display window canvas.
-class DMANIPCLASS CDisplayWnd : public CWnd, CDisplay
+class DMANIPCLASS CDisplayWnd : public CWnd, public CDisplay
 {
 protected:
 	CDisplayWnd();           // protected constructor used by dynamic creation
@@ -63,13 +63,13 @@ public:
 //	virtual DROPEFFECT OnDragEnter(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
 //	virtual void OnDragLeave() override;
 //	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
-//	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+
 //   virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, CPoint point ) override;
 //	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = nullptr) override;
 	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const override;
-//protected:
-//	virtual void OnDraw(CDC* pDC) override;      // overridden to draw this view
-//	virtual void OnInitialUpdate() override;     // first time after construct
+protected:
+	virtual void OnDraw(CDC* pDC);
+	void CustomInit();     // first time after construct
 //	virtual void OnEndPrinting(CDC* pDC, CPrintInfo* pInfo) override;
 //	virtual void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo) override;
 	//}}AFX_VIRTUAL
@@ -84,7 +84,7 @@ public:
 	virtual void OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo = nullptr);
 
 public:
-   std::shared_ptr<const WBFL::DManip::iCoordinateMap> GetCoordinateMap() const;
+//std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pCoordinateMap; maybe bring this back but CDisplay already has this member.....
 
    /// @brief Sets the mapping mode
    void SetMappingMode(WBFL::DManip::MapMode mm, bool reDraw=true);
@@ -151,11 +151,6 @@ protected:
    CRect GetAdjustedLogicalViewRect();
    WBFL::Geometry::Rect2d GetAdjustedWorldViewRect();
 
-   std::shared_ptr<WBFL::DManip::iDisplayMgr>       m_pDispMgr;
-
-   // current mapping
-   std::shared_ptr<WBFL::DManip::iMapping>          m_pMapping;
-   std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pCoordinateMap;
 
    // different mappings for screen and printer. to be switched back
    // and forth at print time

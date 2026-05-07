@@ -67,6 +67,8 @@ CDisplayWnd::CDisplayWnd()
 {
    m_pDispMgr = WBFL::DManip::DisplayMgr::Create();
 
+   m_pDispMgr->SetDisplay(this);////////////// be careful. This is in OnCreaate (although never called)
+
    auto task_factory = std::make_shared<WBFL::DManip::TaskFactory>();
    m_pDispMgr->SetTaskFactory(task_factory);
 
@@ -129,18 +131,18 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayWnd drawing
 
-//void CDisplayWnd::OnInitialUpdate()
-//{
-//   CScrollView::OnInitialUpdate();
-//
-//   // set up initial mapping for logical size
-//   CRect rect;
-//   GetClientRect(&rect);
-//   CSize size = rect.Size();
-//   SetScrollSizes(MM_TEXT,size,CScrollView::sizeDefault,CScrollView::sizeDefault);
-//
-//   SetLogicalViewRect(MM_TEXT, rect);
-//}
+void CDisplayWnd::CustomInit()
+{
+   //CScrollView::OnInitialUpdate();
+
+   // set up initial mapping for logical size
+   CRect rect;
+   GetClientRect(&rect);
+   //CSize size = rect.Size();
+   //SetScrollSizes(MM_TEXT,size,CScrollView::sizeDefault,CScrollView::sizeDefault);
+
+   SetLogicalViewRect(MM_TEXT, rect);
+}
 
 INT_PTR CDisplayWnd::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
 {
@@ -187,46 +189,18 @@ CRect CDisplayWnd::GetViewRect() const
    return rView;
 }
 
-//void CDisplayWnd::OnDraw(CDC* pDC)
-//{
-//   int nBkMode = pDC->SetBkMode(TRANSPARENT);
-//#if defined(_DEBUG)
-////   m_pDispMgr->DrawGravityWells(pDC);
-//#endif 
-//
-//   // Delegate
-//   m_pDispMgr->DrawDisplayObjects(pDC);
-//
-//   pDC->SetBkMode(nBkMode);
-//
-////#if defined _DEBUG
-////   CPen redPen(PS_SOLID,3,RGB(0,0,255));
-////   CPen* pOldPen = pDC->SelectObject(&redPen);
-////   // Draw coordinate axes
-////   Float64 xmin = -1000;
-////   Float64 xmax =  1000;
-////   Float64 ymin = -1000;
-////   Float64 ymax =  1000;
-////
-////   LONG lx1,ly1;
-////   LONG lx2,ly2;
-////   m_pCoordinateMap->WPtoLP(0,ymin,&lx1,&ly1);
-////   m_pCoordinateMap->WPtoLP(0,ymax,&lx2,&ly2);
-////   pDC->MoveTo(lx1,ly1);
-////   pDC->LineTo(lx2,ly2);
-////
-////   m_pCoordinateMap->WPtoLP(xmin,0,&lx1,&ly1);
-////   m_pCoordinateMap->WPtoLP(xmax,0,&lx2,&ly2);
-////   pDC->MoveTo(lx1,ly1);
-////   pDC->LineTo(lx2,ly2);
-////
-////   m_pCoordinateMap->WPtoLP(0,0,&lx1,&ly1);
-////   pDC->SetTextAlign(TA_BASELINE | TA_LEFT);
-////   pDC->TextOut(lx1,ly1,"Origin");
-////
-////   pDC->SelectObject(pOldPen);
-////#endif
-//}
+void CDisplayWnd::OnDraw(CDC* pDC)
+{
+   int nBkMode = pDC->SetBkMode(TRANSPARENT);
+#if defined(_DEBUG)
+//   m_pDispMgr->DrawGravityWells(pDC);
+#endif 
+
+   // Delegate
+   m_pDispMgr->DrawDisplayObjects(pDC);
+
+   pDC->SetBkMode(nBkMode);
+}
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayWnd diagnostics
@@ -417,21 +391,6 @@ BOOL CDisplayWnd::OnNeedToolTipText(UINT id,NMHDR* pNMHDR,LRESULT* pResult)
 //   return de;
 //}
 
-//BOOL CDisplayWnd::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) 
-//{
-//   // Convert the point to logical coordinates
-//   CPoint logPoint = point;
-//   CDManipClientDC dc(this);
-//   dc.DPtoLP(&logPoint);
-//
-//   BOOL bDropped = m_pDispMgr->OnDrop(pDataObject,dropEffect,logPoint);
-//
-//   if ( !bDropped )
-//      bDropped = CScrollView::OnDrop(pDataObject,dropEffect,point);
-//
-//   return bDropped;
-//}
-
 //DROPEFFECT CDisplayWnd::OnDragScroll( DWORD dwKeyState, CPoint point )
 //{
 //   // Convert the point to logical coordinates
@@ -464,10 +423,10 @@ void CDisplayWnd::OnSize(UINT nType, int cx, int cy)
    CenterOnPoint(rect.Center(), false);
 }
 
-std::shared_ptr<const WBFL::DManip::iCoordinateMap> CDisplayWnd::GetCoordinateMap() const
-{
-   return m_pCoordinateMap;
-}
+//std::shared_ptr<const WBFL::DManip::iCoordinateMap> CDisplayWnd::GetCoordinateMap() const
+//{
+//   return m_pCoordinateMap;
+//}
 
 void CDisplayWnd::ActivateCenterOnPointTask()
 {
