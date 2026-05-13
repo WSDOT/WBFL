@@ -142,6 +142,7 @@ void CDisplayWnd::CustomInit()
    //SetScrollSizes(MM_TEXT,size,CScrollView::sizeDefault,CScrollView::sizeDefault);
 
    SetLogicalViewRect(MM_TEXT, rect);
+   //SetLogicalViewRect(MM_ISOTROPIC, rect);
 }
 
 INT_PTR CDisplayWnd::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
@@ -607,11 +608,12 @@ WBFL::DManip::MapMode CDisplayWnd::GetMappingMode()
 
 void CDisplayWnd::SetLogicalViewRect(int mapMode, CRect rect)
 {
-   //m_nMapMode = mapMode;
+   m_nMapMode = mapMode;
    
-   // assume that bottom of rect is always origin
-   m_pMapping->SetLogicalOrg(rect.left, rect.bottom);
-   m_pMapping->SetLogicalExt(rect.right-rect.left, rect.top-rect.bottom);
+   // assume that top of rect is always origin NOTE: This is a tempporary solution to the fact 
+   //that the mapping class doesn't handle negative extents properly.
+   m_pMapping->SetLogicalOrg(rect.left, rect.top);
+   m_pMapping->SetLogicalExt(rect.right-rect.left, rect.bottom-rect.top);
 }
 
 RECT CDisplayWnd::GetLogicalViewRect()
@@ -634,13 +636,13 @@ void CDisplayWnd::SetWorldViewRect(const WBFL::Geometry::Rect2d& rect)
    m_pMapping->SetWorldExt(rect.Width(), rect.Height());
 }
 
-//void CDisplayWnd::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
-//{
-//   CScrollView::OnPrepareDC(pDC,pInfo);
-//
-//   pDC->SetMapMode(m_nMapMode);
-//   m_pMapping->PrepareDC(pDC);
-//}
+void CDisplayWnd::OnPrepareDC(CDC* pDC, CPrintInfo* pInfo)
+{
+   //CScrollView::OnPrepareDC(pDC,pInfo);
+
+   pDC->SetMapMode(m_nMapMode);
+   m_pMapping->PrepareDC(pDC);
+}
 
 void CDisplayWnd::OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo)
 {
@@ -744,8 +746,8 @@ void CDisplayWnd::OnPaint()
 {
 	CPaintDC dc(this); // device context for painting
 	
-	//OnPrepareDC(&dc);
-	//OnDraw(&dc);
+	OnPrepareDC(&dc);
+	OnDraw(&dc);
    OnCleanUpDC(&dc);
 }
 

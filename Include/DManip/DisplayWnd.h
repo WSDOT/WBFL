@@ -65,8 +65,8 @@ public:
 //	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
 
 //   virtual DROPEFFECT OnDragScroll( DWORD dwKeyState, CPoint point ) override;
-//	virtual void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = nullptr) override;
-	virtual INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const override;
+	void OnPrepareDC(CDC* pDC, CPrintInfo* pInfo = nullptr);
+	INT_PTR OnToolHitTest(CPoint point, TOOLINFO* pTI) const override;
 protected:
 	virtual void OnDraw(CDC* pDC);
 	void CustomInit();     // first time after construct
