@@ -279,8 +279,6 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 	bool t_max_cover_check = artifact.MaximumElastomerCoverThicknessCheck();
 	Float64 Gmin = brg.GetShearModulusMinimum();
 	Float64 Gmax = brg.GetShearModulusMaximum();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	Float64 total_bearing_height = brg_calc.ComputeBearingHeight(brg);
 	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
 	bool height_check = artifact.MinimumTotalBearingHeightCheck();
@@ -599,47 +597,6 @@ void CommonReportBearingSpecificationCheck(const WBFL::Units::IndirectMeasure* p
 
 	}
 
-
-	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
-	(*pChapter) << pSubHeading;
-	*pSubHeading << _T("Minimum Shear Modulus Check:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << Sub2(_T("G"), _T("min")) << _T(" = ") << E.SetValue(criteria.MinimumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
-	if (gMin_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" ") << symbol(GTE) << _T(" ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmin) << _T(" < ") << E.SetValue(criteria.MinimumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
-
-	*pPara << rptNewLine;
-
-	pSubHeading = pSubHeading = rptStyleManager::CreateSubHeading();
-	(*pChapter) << pSubHeading;
-	*pSubHeading << _T("Maximum Shear Modulus Check:");
-	pPara = new rptParagraph;
-	(*pChapter) << pPara;
-
-	*pPara << Sub2(_T("G"), _T("max")) << _T(" = ") << E.SetValue(criteria.MaximumElastomerShearModulus) << _T(" (14.7.6.2)") << rptNewLine;
-	if (gMax_check)
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" ") << symbol(LTE) << _T(" ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_PASS << rptNewLine;
-	}
-	else
-	{
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << E.SetValue(Gmax) << _T(" > ") << E.SetValue(criteria.MaximumElastomerShearModulus);
-		*pPara << _T(" ") << RPT_FAIL << rptNewLine;
-	}
-
-	*pPara << rptNewLine;
-
 }
 
 void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::IndirectMeasure* pDispUnits, rptChapter* pChapter, rptParagraph* pPara,
@@ -651,8 +608,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 	const auto& brg = artifact.GetBearing();
 
 	Float64 weight = brg.GetBearingWeight();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	bool w_min_check = artifact.MinimumWidthCheck();
 	bool l_min_check = artifact.MinimumLengthCheck();
 	bool a_min_check = artifact.MinimumAreaCheck();
@@ -687,7 +642,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_x_check : false)
 		|| (spec < WBFL::LRFD::BDSManager::Edition::SixthEdition2012 ? !n_min_rot_y_check : false)
 		|| !n_max_stab_x_check || !n_max_stab_y_check || !max_comp_strain_check || !max_stress_check
-		|| !deltaLLiACheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
+		|| !deltaLLiACheck || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
 		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
 		|| (criteria.bMinimumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
@@ -771,14 +726,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryA(const WBFL::Units::Indirect
 		if (!deltaLLiACheck)
 		{
 			*pPara << _T("Instantaneous live load deflection exceeds the recommended limit.") << rptNewLine;
-		}
-		if (!gMin_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus range is below the minimum limit.") << rptNewLine;
-		}
-		if (!gMax_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus range exceeds the maximum limit.") << rptNewLine;
 		}
 		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{
@@ -1320,8 +1267,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 	bool hydrostatic_check = artifact.HydrostaticStressCheck();
 	auto horiz_force_check = artifact.HorizontalForceCheck();
 	auto deltaLLiBCheck = artifact.MaximumLiveLoadDeflectionMethodBCheck();
-	bool gMin_check = artifact.MinimumAllowableShearModulusCheck();
-	bool gMax_check = artifact.MaximumAllowableShearModulusCheck();
 	bool hri_check = artifact.RequiredIntermediateElastomerThicknessCheck();
 	bool height_check = artifact.MinimumTotalBearingHeightCheck();
 	bool minDistBrg2gBfCheck = artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck();
@@ -1347,7 +1292,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		|| (spec >= WBFL::LRFD::BDSManager::Edition::TenthEdition2024 ? !t_min_cover_check : false)
 		|| !shear_def_check || !static_axial_X_ss_check || !static_axial_Y_ss_check || !ss_X_combo_sum_check || !ss_Y_combo_sum_check || (check_app_TL_stab_X && !stab_X_dir_check)
 		|| (check_app_TL_stab_Y && !stab_Y_dir_check) || (!use_ext_plates && !rest_system_req_check) || (use_ext_plates && !hydrostatic_check)
-		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || !gMin_check || !gMax_check || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
+		|| (!use_ext_plates && !horiz_force_check) || !deltaLLiBCheck || (criteria.bRequiredIntermediateElastomerThickness ? !hri_check : false)
 		|| (criteria.bMinimumTotalBearingHeight ? !height_check : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !minDistBrg2gBfCheck : false)
 		|| (criteria.bMaximumBearingEdgeToGirderEdgeDistance ? !maxDistBrg2gBfCheck : false)
@@ -1420,14 +1365,6 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		if (!deltaLLiBCheck)
 		{
 			*pPara << _T("Instantaneous live load deflection exceeds the recommended limit.") << rptNewLine;
-		}
-		if (!gMin_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus is below the minimum limit.") << rptNewLine;
-		}
-		if (!gMax_check)
-		{
-			*pPara << _T("Specifed elastomer shear modulus exceeds the maximum limit.") << rptNewLine;
 		}
 		if (criteria.bRequiredIntermediateElastomerThickness && !hri_check)
 		{

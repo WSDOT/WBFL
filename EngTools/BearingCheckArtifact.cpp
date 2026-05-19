@@ -233,18 +233,6 @@ bool BearingCheckArtifact::HorizontalForceCheck() const
 	return check;
 }
 
-bool BearingCheckArtifact::MinimumAllowableShearModulusCheck() const
-{
-	bool check = m_bearing.GetShearModulusMinimum() >= m_criteria.MinimumElastomerShearModulus;
-	return check;
-}
-
-bool BearingCheckArtifact::MaximumAllowableShearModulusCheck() const
-{
-	bool check = m_bearing.GetShearModulusMaximum() <= m_criteria.MaximumElastomerShearModulus;
-	return check;
-}
-
 bool BearingCheckArtifact::RequiredIntermediateElastomerThicknessCheck() const
 {
 	bool check = IsEqual(m_bearing.GetIntermediateLayerThickness(), m_criteria.RequiredIntermediateElastomerThickness, 0.001);

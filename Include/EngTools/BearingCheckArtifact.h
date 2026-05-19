@@ -114,10 +114,6 @@ namespace WBFL
             bool HorizontalForceCheck() const;
             /// @return Check for the maximum allowable hydrostatic stress
             bool HydrostaticStressCheck() const;
-            /// @return Check for the minmimum allowable shear modulus
-            bool MinimumAllowableShearModulusCheck() const;
-            /// @return Check for the maximum allowable shear modulus (method A)
-            bool MaximumAllowableShearModulusCheck() const;
             /// @return Required intermediate elastomer layer thickness check
             bool RequiredIntermediateElastomerThicknessCheck() const;
             /// @return Minimum Total Bearing Height Check

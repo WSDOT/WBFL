@@ -79,8 +79,6 @@ namespace EngToolsUnitTests
 			Assert::IsFalse(artifact.HydrostaticStressCheck());
 			Assert::IsTrue(artifact.HorizontalForceCheck());
 			Assert::IsTrue(artifact.MaximumLiveLoadDeflectionMethodBCheck());
-			Assert::IsTrue(artifact.MinimumAllowableShearModulusCheck());
-			Assert::IsTrue(artifact.MaximumAllowableShearModulusCheck());
 			Assert::IsTrue(artifact.RequiredIntermediateElastomerThicknessCheck());
 			Assert::IsTrue(artifact.MinimumTotalBearingHeightCheck());
 			Assert::IsTrue(artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck());
@@ -161,8 +159,6 @@ namespace EngToolsUnitTests
 			Assert::IsFalse(artifact.HydrostaticStressCheck());
 			Assert::IsTrue(artifact.HorizontalForceCheck());
 			Assert::IsTrue(artifact.MaximumLiveLoadDeflectionMethodBCheck());
-			Assert::IsFalse(artifact.MinimumAllowableShearModulusCheck());
-			Assert::IsFalse(artifact.MaximumAllowableShearModulusCheck());
 			Assert::IsFalse(artifact.RequiredIntermediateElastomerThicknessCheck());
 			Assert::IsFalse(artifact.MinimumTotalBearingHeightCheck());
 			Assert::IsTrue(artifact.MinimumBearingEdgeToBottomFlangeEdgeDistCheck());
