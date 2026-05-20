@@ -610,10 +610,8 @@ void CDisplayWnd::SetLogicalViewRect(int mapMode, CRect rect)
 {
    m_nMapMode = mapMode;
    
-   // assume that top of rect is always origin NOTE: This is a tempporary solution to the fact 
-   //that the mapping class doesn't handle negative extents properly.
-   m_pMapping->SetLogicalOrg(rect.left, rect.top);
-   m_pMapping->SetLogicalExt(rect.right-rect.left, rect.bottom-rect.top);
+   m_pMapping->SetLogicalOrg(rect.left, rect.bottom);
+   m_pMapping->SetLogicalExt(rect.right - rect.left, rect.top - rect.bottom);
 }
 
 RECT CDisplayWnd::GetLogicalViewRect()
