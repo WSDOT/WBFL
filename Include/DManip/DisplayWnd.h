@@ -122,7 +122,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(CDisplayView)
-   afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	//afx_msg void PreSubclassWindow();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);

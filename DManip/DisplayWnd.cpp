@@ -67,6 +67,7 @@ CDisplayWnd::CDisplayWnd()
 {
    m_pDispMgr = WBFL::DManip::DisplayMgr::Create();
 
+   // do NOT call SetDisplay here - window not created yet, registration fails
    m_pDispMgr->SetDisplay(this);////////////// be careful. This is in OnCreaate (although never called)
 
    auto task_factory = std::make_shared<WBFL::DManip::TaskFactory>();
@@ -84,9 +85,6 @@ CDisplayWnd::CDisplayWnd()
    m_pMapping       = m_pScreenMapping;
    m_pCoordinateMap = m_pScreenCoordinateMap;
 
-
-
-   //m_nMapMode = MM_TEXT;
 }
 
 CDisplayWnd::~CDisplayWnd()
@@ -220,15 +218,18 @@ void CDisplayWnd::Dump(CDumpContext& dc) const
 
 /////////////////////////////////////////////////////////////////////////////
 // CDisplayWnd message handlers
-int CDisplayWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-   if (CWnd::OnCreate(lpCreateStruct) == -1)
-		return -1;
 
-   m_pDispMgr->SetDisplay(this);
-
-   return 0;
-}
+//void CDisplayWnd::PreSubclassWindow()
+//{
+//    // CWnd::PreSubclassWindow is called when a control is subclassed from a dialog template
+//    CWnd::PreSubclassWindow();
+//
+//    // Ensure the display manager registers this window only after HWND exists.
+//    if (m_pDispMgr)
+//    {
+//        m_pDispMgr->SetDisplay(this);
+//    }
+//}
 
 void CDisplayWnd::OnLButtonDown(UINT nFlags, CPoint point) 
 {
@@ -504,7 +505,7 @@ void CDisplayWnd::ScaleFont(LOGFONT& lfFont) const
 void CDisplayWnd::ScaleToFit(bool reDraw)
 {
    // create fresh dc for mapper in GetBoundingBox if we are not printing
-   CClientDC dc2(this);
+   CDManipClientDC dc2(this);
 
    // bounding box computation is iterative. Iterate until box size on consecutive iterations
    // is within 2 percent
