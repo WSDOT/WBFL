@@ -105,6 +105,7 @@
     <ClCompile Include="CompoundDrawPointStrategy.cpp" />
     <ClCompile Include="DimensionLine.cpp" />
     <ClCompile Include="Display.cpp" />
+    <ClCompile Include="DisplayDropTarget.cpp" />
     <ClCompile Include="DisplayListImpl.cpp" />
     <ClCompile Include="DisplayMgrImpl.cpp" />
     <ClCompile Include="DisplayObjectDefaultImpl.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="..\Include\DManip\CoordinateMap.h" />
     <ClInclude Include="..\Include\DManip\DimensionLine.h" />
     <ClInclude Include="..\Include\DManip\Display.h" />
+    <ClInclude Include="..\Include\DManip\DisplayDropTarget.h" />
     <ClInclude Include="..\Include\DManip\DisplayList.h" />
     <ClInclude Include="..\Include\DManip\DisplayListEvents.h" />
     <ClInclude Include="..\Include\DManip\DisplayListImpl.h" />
