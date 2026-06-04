@@ -29,10 +29,8 @@
 #include <DManip/CoordinateMap.h>
 #include <DManip/Mapping.h>
 #include <DManip/Display.h>
-#include <DManip/DisplayDropTarget.h>
 
 #include "afxwin.h"
-#include "afxole.h"
 
 
 class WBFL::DManip::iTask;
@@ -55,9 +53,8 @@ public:
 
 // Operations
 public:
-   //BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
-   DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point);
-   void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
+   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point);
+   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -154,7 +151,6 @@ protected:
    CRect GetAdjustedLogicalViewRect();
    WBFL::Geometry::Rect2d GetAdjustedWorldViewRect();
 
-   CDisplayDropTarget m_DropTarget;
 
    // different mappings for screen and printer. to be switched back
    // and forth at print time

@@ -85,8 +85,6 @@ CDisplayWnd::CDisplayWnd()
    m_pMapping       = m_pScreenMapping;
    m_pCoordinateMap = m_pScreenCoordinateMap;
 
-   //m_DropTarget.Register(this); already in CustomInit...
-
 }
 
 CDisplayWnd::~CDisplayWnd()
@@ -133,30 +131,16 @@ END_MESSAGE_MAP()
 
 void CDisplayWnd::CustomInit()
 {
-    //CScrollView::OnInitialUpdate();
+   //CScrollView::OnInitialUpdate();
 
-    // set up initial mapping for logical size
-    CRect rect;
-    GetClientRect(&rect);
-    //CSize size = rect.Size();
-    //SetScrollSizes(MM_TEXT,size,CScrollView::sizeDefault,CScrollView::sizeDefault);
+   // set up initial mapping for logical size
+   CRect rect;
+   GetClientRect(&rect);
+   //CSize size = rect.Size();
+   //SetScrollSizes(MM_TEXT,size,CScrollView::sizeDefault,CScrollView::sizeDefault);
 
-    SetLogicalViewRect(MM_TEXT, rect);
-    //SetLogicalViewRect(MM_ISOTROPIC, rect);
-
-    // Register drop target only when HWND is valid. Trace and assert the result so we can diagnose failures.
-    HWND hwnd = GetSafeHwnd();
-    if (!::IsWindow(hwnd))
-    {
-        TRACE("CDisplayWnd::CustomInit: HWND not valid (GetSafeHwnd()=0x%p). Drop target registration deferred.\n", (void*)hwnd);
-    }
-    else
-    {
-        BOOL registered = m_DropTarget.Register(this);
-        TRACE("CDisplayWnd::CustomInit: Register DropTarget hwnd=0x%p returned=%d\n", (void*)hwnd, (int)registered);
-        ASSERT(registered); // fail fast in debug so you can inspect why Register returned false
-    }
-
+   SetLogicalViewRect(MM_TEXT, rect);
+   //SetLogicalViewRect(MM_ISOTROPIC, rect);
 }
 
 INT_PTR CDisplayWnd::OnToolHitTest(CPoint point,TOOLINFO* pTI) const
@@ -432,21 +416,6 @@ void CDisplayWnd::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, c
 {
    // Do nothing
 }
-
-//BOOL CDisplayWnd::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point)
-//{
-//    // Convert the point to logical coordinates
-//    CPoint logPoint = point;
-//    CDManipClientDC dc(this);
-//    dc.DPtoLP(&logPoint);
-//
-//    BOOL bDropped = m_pDispMgr->OnDrop(pDataObject, dropEffect, logPoint);
-//
-//    if (!bDropped)
-//        //bDropped = CScrollView::OnDrop(pDataObject, dropEffect, point);
-//
-//    return bDropped;
-//}
 
 void CDisplayWnd::OnSize(UINT nType, int cx, int cy)
 {
