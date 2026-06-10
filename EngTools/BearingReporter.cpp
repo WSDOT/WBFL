@@ -44,15 +44,15 @@ void BearingReporter::ReportIntroduction(rptParagraph* pPara, const BearingCheck
 		*pPara << Bold(_T("-Shear strain due to static rotation in secondary direction is based on the greater of torsional rotation ")) << rptNewLine;
 		*pPara << Bold(_T("due skew at pier, "));
 		*pPara << Bold(Sub2(symbol(theta), _T("t")) << _T(" = ") << Sub2(symbol(theta), _T("f")) << _T(" ") << symbol(TIMES) << _T(" tan(") << Sub2(symbol(theta), _T("skew"))) << _T("),");
-		*pPara << Bold(_T(" and 0.010 rad out-of-plumb tolerance.")) << rptNewLine;
+		*pPara << Bold(_T(" and 0.010 radians out-of-plumb tolerance.")) << rptNewLine;
 	}
 	else
 	{
 		*pPara << Bold(_T("-Shear strain due to rotation in secondary direction is based on 0.010 radians out-of-plumb tolerance.")) << rptNewLine;
-		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0 radians.")) << rptNewLine;
+		*pPara << Bold(_T("-Shear strain due to cyclic rotation in the secondary direction is assumed to be 0.0.")) << rptNewLine;
 	}
 
-	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0 radians.")) << rptNewLine;
+	*pPara << Bold(_T("-Strain due to displacement in the secondary direction is assumed to be 0.0.")) << rptNewLine;
 
 	*pPara << Bold(_T("-Peak hydrostatic stress must be checked for bearings with externally bonded steel plates.")) << rptNewLine << rptNewLine;
 
@@ -99,7 +99,7 @@ void BearingReporter::ReportBearingProperties(const WBFL::Units::IndirectMeasure
 	Float64 cyclic_rotation = loads.GetCyclicRotation();
 
 	BearingLoads t_loads;
-	Float64 t_static_rotation, t_cyclic_rotation;
+	Float64 t_static_rotation = 0.01, t_cyclic_rotation = 0.0;
 	if (tArtifact != nullptr)
 	{
 		t_loads = tArtifact->GetBearingLoads();
@@ -1275,7 +1275,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 	bool maxTLCheck = artifact.MaximumTotalLoadCheck();
 
 	/// torsional rotation calculations
-	bool secondary_rest_system_req_check, secondary_hydrostatic_check;
+	bool secondary_rest_system_req_check = false, secondary_hydrostatic_check = false;
 	if (tArtifact != nullptr)
 	{
 
@@ -1546,9 +1546,10 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	/// torsional rotation calculations
 	Bearing secondary_brg;
 	BearingLoads secondary_brg_loads;
-	Float64 secondary_static_rotation, secondary_cyclic_rotation, secondary_hydrostatic_stress, secondary_peak_hyd, secondary_total_axial_strain,
-		secondary_restraint_system_calc, secondary_alpha, secondary_Ca;
-	bool secondary_rest_system_req_check, secondary_hydrostatic_check;
+	Float64 secondary_static_rotation = 0.01, secondary_cyclic_rotation = 0.0, 
+	secondary_hydrostatic_stress = 0.0, secondary_peak_hyd = 0.0, secondary_total_axial_strain = 0.0,
+		secondary_restraint_system_calc = 0.0, secondary_alpha = 0.0, secondary_Ca =0.0;
+	bool secondary_rest_system_req_check = false, secondary_hydrostatic_check = false;
 	if (tArtifact != nullptr)
 	{
 		secondary_brg = tArtifact->GetBearing();
@@ -2158,7 +2159,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		*pPara << E.SetValue(Gmin) << _T(" ") << symbol(TIMES) << _T(" ") << area.SetValue(a) << _T(" ") << symbol(TIMES) << _T(" ") << length.SetValue(sdef);
 		*pPara << _T(" / ") << length.SetValue(total_elastomer_thickness) << _T("| = ");
 		*pPara << force.SetValue(abs(horiz_force)) << rptNewLine;
-		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(mu) << Sub2(_T("P"), _T("D")) << _T(" = 0.20") << force.SetValue(dl);
+		*pPara << symbol(RIGHT_SINGLE_ARROW) << symbol(mu) << Sub2(_T("P"), _T("D")) << _T(" = 0.20") << symbol(TIMES) << force.SetValue(dl);
 		*pPara << force.SetValue(dl / 5) << rptNewLine;
 		*pPara << symbol(RIGHT_SINGLE_ARROW);
 		if (horiz_force_check)
