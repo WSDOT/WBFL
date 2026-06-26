@@ -107,7 +107,7 @@ void CCHaulingTensionStressLimit::ReportTensionLimit(HaulingSlope slope, rptPara
    }
    else
    {
-      *pPara << _T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.") << rptNewLine;
+      *pPara << Italic(_T("Tensile stress limit with bonded reinforcement sufficient to resist tension force in concrete was not evaluated because reinforcement is not modeled.")) << rptNewLine;
    }
 }
 
