@@ -48,6 +48,9 @@ bool Girder::operator==(const Girder& other) const
    if ( m_vPointLoads != other.m_vPointLoads )
       return false;
 
+   if (m_vSectionProperties != other.m_vSectionProperties )
+      return false;
+
    if ( !IsEqual(m_DragCoefficient,other.m_DragCoefficient) )
       return false;
 
