@@ -70,6 +70,7 @@ private:
    Float64 m_H1, m_H2, m_H3, m_H4, m_H5;
    Float64 m_X1, m_X2, m_X3, m_X4;
    Float64 m_W1, m_W2;
+   Float64 m_R;
    CComPtr<IRebarLayout> m_RebarLayout;
 
    bool m_bIsLXBDirty;
@@ -126,6 +127,8 @@ public:
    STDMETHOD(get_W1)(/*[out,retval]*/Float64* pW1) override;
    STDMETHOD(put_W2)(/*[in]*/Float64 W2) override;
    STDMETHOD(get_W2)(/*[out,retval]*/Float64* pW2) override;
+   STDMETHOD(put_R)(/*[in]*/Float64 R) override;
+   STDMETHOD(get_R)(/*[out,retval]*/Float64* pR) override;
 
 // IStructuredStorage2
 public:

@@ -46,6 +46,7 @@ HRESULT CLinearCrossBeam::FinalConstruct()
    m_X4 = 0;
    m_W1 = 0;
    m_W2 = 0;
+   m_R = 0;
 
    HRESULT hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
    if ( FAILED(hr) )
@@ -675,6 +676,23 @@ STDMETHODIMP CLinearCrossBeam::get_W2(/*[out,retval]*/Float64* pW2)
 {
    CHECK_RETVAL(pW2);
    *pW2 = m_W2;
+   return S_OK;
+}
+
+STDMETHODIMP CLinearCrossBeam::put_R(/*[in]*/Float64 R)
+{
+   if ( !IsEqual(m_R,R) )
+   {
+      m_R = R;
+      Invalidate();
+   }
+   return S_OK;
+}
+
+STDMETHODIMP CLinearCrossBeam::get_R(/*[out,retval]*/Float64* pR)
+{
+   CHECK_RETVAL(pR);
+   *pR = m_R;
    return S_OK;
 }
 
