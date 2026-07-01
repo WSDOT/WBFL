@@ -1352,7 +1352,7 @@ void BearingReporter::ReportBearingSpecCheckSummaryB(const WBFL::Units::Indirect
 		}
 		if ((!use_ext_plates && !rest_system_req_check) || (!use_ext_plates && tArtifact != nullptr && !secondary_rest_system_req_check))
 		{
-			*pPara << _T("Bearing restraint system is required.") << rptNewLine;
+			*pPara << _T("Bearing restraint system is required OR revise bearing geometry.") << rptNewLine;
 		}
 		if ((use_ext_plates && !hydrostatic_check) || (use_ext_plates && tArtifact != nullptr && !secondary_hydrostatic_check))
 		{
@@ -1997,7 +1997,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 			*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << symbol(TIMES) << stress.SetValue(cyclic_stress);
 			*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << restraint_system_calc;
 			*pPara << _T(" > 1 ") << rptNewLine;
-			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
+			*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("Restraint System Required OR revise bearing geometry") << color(Red);
 		}
 		*pPara << _T(" (SECTION 14.7.5.4)");
 
@@ -2032,7 +2032,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 				*pPara << n << _T(" + ") << n_multiplier << _T(") / (") << stress.SetValue(static_stress) << _T(" + 1.75 ") << stress.SetValue(cyclic_stress);
 				*pPara << _T(") ") << symbol(TIMES) << _T(" ") << E.SetValue(EcB) << _T(" = ") << secondary_restraint_system_calc;
 				*pPara << _T(" > 1 ") << rptNewLine;
-				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
+				*pPara << symbol(RIGHT_SINGLE_ARROW) << color(Red) << _T("Restraint System Required OR revise bearing geometry") << color(Red);
 			}
 			*pPara << _T(" (SECTION 14.7.5.4)");
 
@@ -2170,7 +2170,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 		else
 		{
 			*pPara << force.SetValue(abs(horiz_force)) << _T(" > ") << force.SetValue(dl / 5.0);
-			*pPara << _T(" ") << color(Red) << _T("RESTRAINT SYSTEM REQUIRED") << color(Red);
+			*pPara << _T(" ") << color(Red) << _T("Restraint System Required OR revise bearing geometry") << color(Red);
 		}
 
 		*pPara << rptNewLine << rptNewLine;
