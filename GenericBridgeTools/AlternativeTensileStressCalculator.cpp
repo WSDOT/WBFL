@@ -60,6 +60,18 @@ gbtAlternativeTensileStressRequirements::gbtAlternativeTensileStressRequirements
 }
 
 
+Float64 gbtAlternativeTensileStressRequirements::GetAllowableBarStress() const
+{
+   // Determine maximum bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
+   Float64 allowable_bar_stress = 0.5 * fy;
+   if (bLimitBarStress && fsMax < allowable_bar_stress)
+   {
+      allowable_bar_stress = fsMax;
+   }
+   ATLASSERT(!IsZero(allowable_bar_stress));
+   return allowable_bar_stress;
+}
+
 void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirements* pRequirements)
 {
    // Determine neutral axis location and mild steel requirement for alternative tensile stress
@@ -79,13 +91,7 @@ void gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirem
 
    Float64 Hg = pRequirements->pntTopLeft.Y() - pRequirements->pntBottomLeft.Y();
 
-   // Determine maximum bar stress for computing higher allowable temporary tensile (5.9.4.1.2)
-   Float64 allowable_bar_stress = 0.5*pRequirements->fy;
-   if (pRequirements->bLimitBarStress && pRequirements->fsMax < allowable_bar_stress)
-   {
-      allowable_bar_stress = pRequirements->fsMax;
-   }
-   ATLASSERT(!IsZero(allowable_bar_stress));
+   Float64 allowable_bar_stress = pRequirements->GetAllowableBarStress();
 
    // Evaluate the state of stress
    if (::IsLE(fTopLeft, 0.0) && ::IsLE(fTopRight, 0.0) && ::IsLE(fBotLeft, 0.0) && ::IsLE(fBotRight, 0.0))

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1828,12 +1828,49 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
             {
                std::_tstring strTitle(_T("Bonded reinforcement requirements [") + std::_tstring(WBFL::LRFD::LrfdCw8th(_T("C5.9.4.1.2"), _T("C5.9.2.3.1b"))) + std::_tstring(_T("]")));
-               ColumnIndexType nColumns = (bSimpleFormat ? 8 : 19);
+
+               pPara = new rptParagraph(rptStyleManager::GetSubheadingStyle());
+               *pChapter << pPara;
+               *pPara << strTitle << rptNewLine;
+               pPara = new rptParagraph;
+               *pChapter << pPara;
+
+               ColumnIndexType nColumns = (bSimpleFormat ? 4 : 5);
                if (bReportTensileForceDetails)
                {
-                  nColumns++;
+                  nColumns++; // adds the Tension Forces Details column which includes At and T as summaries
                }
-               pRebarTable = rptStyleManager::CreateDefaultTable(nColumns, strTitle);
+               else
+               {
+                  nColumns += 2; // adds At and T columns if details not given
+               }
+               pRebarTable = rptStyleManager::CreateDefaultTable(nColumns, _T("Bonded Reinforcement Requirements"));
+
+
+               (*pPara) << _T("The neutral axis is defined by its location with respect to the top center of the girder (") << Sub2(_T("Y"), _T("na")) << _T(")");
+               if (!bSimpleFormat)
+               {
+                  (*pPara) << _T(" and its slope (m)");
+               }
+               (*pPara) << rptNewLine;
+
+               (*pPara) << Super(_T("*")) << _T(" to be considered sufficient, reinforcement must be fully developed and lie within the tension area of the section") << rptNewLine;
+               (*pPara) << _T("** minimum area of sufficiently bonded reinforcement needed to use the alternative tensile stress limit") << rptNewLine;
+
+               (*pPara) << pRebarTable << rptNewLine;
+               *pPara << rptNewLine;
+
+               // neutral axis column, left justify
+               pRebarTable->SetColumnStyle(1, rptStyleManager::GetTableCellStyle(CB_NONE | CJ_LEFT));
+               pRebarTable->SetStripeRowColumnStyle(1, rptStyleManager::GetTableStripeRowCellStyle(CB_NONE | CJ_LEFT));
+
+               // beam stress column, left justify
+               pRebarTable->SetColumnStyle(2, rptStyleManager::GetTableCellStyle(CB_NONE | CJ_LEFT));
+               pRebarTable->SetStripeRowColumnStyle(2, rptStyleManager::GetTableStripeRowCellStyle(CB_NONE | CJ_LEFT));
+
+               // tension force details, center justify
+               pRebarTable->SetColumnStyle(3, rptStyleManager::GetTableCellStyle(CB_NONE | CJ_CENTER));
+               pRebarTable->SetStripeRowColumnStyle(3, rptStyleManager::GetTableStripeRowCellStyle(CB_NONE | CJ_CENTER));
 
                col = 0;
                if (lpszLocColumnLabel)
@@ -1844,69 +1881,27 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
                {
                   (*pRebarTable)(0, col++) << COLHDR(_T("Dist from") << rptNewLine << _T("left end"), rptLengthUnitTag, pDisplayUnits->SpanLength);
                }
-               (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("Y"), _T("na")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
 
                if (bSimpleFormat)
                {
-                  (*pRebarTable)(0, col++) << COLHDR(RPT_STRESS(_T("t")), rptStressUnitTag, pDisplayUnits->Stress);
-                  (*pRebarTable)(0, col++) << COLHDR(RPT_STRESS(_T("b")), rptStressUnitTag, pDisplayUnits->Stress);
+                  (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("Y"), _T("na")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
                }
                else
                {
-                  pRebarTable->SetNumberOfHeaderRows(2);
-                  col = 0;
-
-                  // location
-                  pRebarTable->SetRowSpan(0, col++, 2);
-
-                  // Yna
-                  pRebarTable->SetRowSpan(0, col++, 2);
-
-                  pRebarTable->SetRowSpan(0, col, 2);
-                  (*pRebarTable)(0, col++) << _T("Slope NA");
-
-                  pRebarTable->SetColumnSpan(0, col, 3);
-                  (*pRebarTable)(0, col) << _T("Top Left");
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("x"), _T("tl")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("tl")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("tl")), rptStressUnitTag, pDisplayUnits->Stress);
-
-                  pRebarTable->SetColumnSpan(0, col, 3);
-                  (*pRebarTable)(0, col) << _T("Top Right");
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("x"), _T("tr")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("tr")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("tr")), rptStressUnitTag, pDisplayUnits->Stress);
-
-                  pRebarTable->SetColumnSpan(0, col, 3);
-                  (*pRebarTable)(0, col) << _T("Bottom Left");
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("x"), _T("bl")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("bl")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("bl")), rptStressUnitTag, pDisplayUnits->Stress);
-
-                  pRebarTable->SetColumnSpan(0, col, 3);
-                  (*pRebarTable)(0, col) << _T("Bottom Right");
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("x"), _T("br")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(Sub2(_T("y"), _T("br")), rptLengthUnitTag, pDisplayUnits->ComponentDim);
-                  (*pRebarTable)(1, col++) << COLHDR(RPT_STRESS(_T("br")), rptStressUnitTag, pDisplayUnits->Stress);
-
-                  ColumnIndexType colOffset = 0;
-                  if (bReportTensileForceDetails)
-                  {
-                     pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // Tension Force Details
-                  }
-                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // At
-                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // T
-                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Provided
-                  pRebarTable->SetRowSpan(0, col + colOffset, 2); colOffset++; // As Required
+                  (*pRebarTable)(0, col++) << _T("Neutral") << rptNewLine << _T("Axis");
                }
+               (*pRebarTable)(0, col++) << _T("Beam") << rptNewLine << _T("Stresses");
+
 
                if (bReportTensileForceDetails)
                {
                   (*pRebarTable)(0, col++) << _T("Tension Force Details");
                }
-
-               (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("t")), rptAreaUnitTag, pDisplayUnits->Area);
-               (*pRebarTable)(0, col++) << COLHDR(_T("T"), rptForceUnitTag, pDisplayUnits->GeneralForce);
+               else
+               {
+                  (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("t")), rptAreaUnitTag, pDisplayUnits->Area);
+                  (*pRebarTable)(0, col++) << COLHDR(_T("T"), rptForceUnitTag, pDisplayUnits->GeneralForce);
+               }
                (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("s")) << rptNewLine << _T("Provided") << Super(_T("*")), rptAreaUnitTag, pDisplayUnits->Area);
                (*pRebarTable)(0, col++) << COLHDR(Sub2(_T("A"), _T("s")) << rptNewLine << _T("Required") << Super(_T("**")), rptAreaUnitTag, pDisplayUnits->Area);
             }
@@ -1932,6 +1927,9 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 
                Float64 Ag, Ixx, Iyy, Ixy, Xleft, Ytop, Hg, Wtop, Wbot;
                pGirder->GetSectionProperties(pAnalysisPoint->GetLocation(), &Ag, &Ixx, &Iyy, &Ixy, &Xleft, &Ytop, &Hg, &Wtop, &Wbot);
+
+               shortLength.ShowUnitTag(false);
+               stress.ShowUnitTag(false);
 
                (*pTotalStressTable)(srow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
 
@@ -1996,55 +1994,87 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
 #if !defined REBAR_FOR_DIRECT_TENSION
                if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
                {
+                  shortLength.ShowUnitTag(true);
+                  stress.ShowUnitTag(true);
+
                   col = 0;
                   (*pRebarTable)(rrow, col++) << rptRcStringLiteral(pAnalysisPoint->AsString(pDisplayUnits->SpanLength, offset, false));
-                  (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].Yna);
                   if (bSimpleFormat)
                   {
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Z());
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Z());
+                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].Yna);
+
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("t")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Z()) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("b")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Z());
+                     col++;
                   }
                   else
                   {
-                     (*pRebarTable)(rrow, col++) << scalar.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].NAslope);
+                     (*pRebarTable)(rrow, col) << Sub2(_T("Y"),_T("na")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].Yna) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << _T("m = ") << scalar.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].NAslope);
+                     col++;
 
                      // must subtract Ytop from the y-coordinates to report the distance from the top fiber, which is what the rebar requirements are based on
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.X());
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Y() + Ytop);
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Z());
+                     (*pRebarTable)(rrow, col) << Bold(_T("Top Left")) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("x"),_T("tl")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.X()) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("y"),_T("tl")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Y() + Ytop) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("tl")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopLeft.Z());
 
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.X());
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.Y() + Ytop);
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.Z());
+                     (*pRebarTable)(rrow, col) << rptNewLine;
 
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.X());
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Y() + Ytop);
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Z());
+                     (*pRebarTable)(rrow, col) << Bold(_T("Top Right")) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("x"),_T("tr")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.X()) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("y"),_T("tr")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.Y() + Ytop) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("tr")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntTopRight.Z());
 
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.X());
-                     (*pRebarTable)(rrow, col++) << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.Y() + Ytop);
-                     (*pRebarTable)(rrow, col++) << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.Z());
+                     (*pRebarTable)(rrow, col) << rptNewLine;
+
+                     (*pRebarTable)(rrow, col) << Bold(_T("Bottom Left")) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("x"),_T("bl")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.X()) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("y"),_T("bl")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Y() + Ytop) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("bl")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomLeft.Z());
+
+                     (*pRebarTable)(rrow, col) << rptNewLine;
+
+                     (*pRebarTable)(rrow, col) << Bold(_T("Bottom Right")) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("x"),_T("br")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.X()) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << Sub2(_T("y"),_T("br")) << _T(" = ") << shortLength.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.Y() + Ytop) << rptNewLine;
+                     (*pRebarTable)(rrow, col) << RPT_STRESS(_T("br")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].pntBottomRight.Z());
+                     col++;
                   }
+
 
                   if (bReportTensileForceDetails)
                   {
                      if (sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].tensionForceSolution)
                      {
                         rptRcTable* pDetailsTable = CreateGeneralSectionDetailsTable(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].tensionForceSolution, sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].Ytg, bSimpleFormat, pDisplayUnits);
-                        (*pRebarTable)(rrow, col++) << pDetailsTable;
+                        (*pRebarTable)(rrow, col) << pDetailsTable;
+
+                        force.ShowUnitTag(true);
+                        (*pRebarTable)(rrow, col) << _T("T = ") << symbol(SUM) << Sub2(_T("T"),_T("slice")) << _T(" = ") << force.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].T) << rptNewLine;
+                        force.ShowUnitTag(false);
+
+                        stress.ShowUnitTag(true);
+                        (*pRebarTable)(rrow, col) << RPT_STRESS(_T("s")) << _T(" = ") << stress.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].GetAllowableBarStress());
+                        stress.ShowUnitTag(false);
+
+                        (*pRebarTable)(rrow, col) << _T(", ") << Sub2(_T("A"), _T("s")) << _T(" ") << Super2(_T("Required"),_T("**")) << _T(" = ") << _T("T / ") << RPT_STRESS(_T("s"));
+                        col++;
                      }
                      else
                      {
-                        (*pRebarTable)(rrow, col++) << _T("-");
+                        (*pRebarTable)(rrow, col++) << _T("N/A");
                      }
                   }
-
-                  (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].AreaTension);
-                  (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].T);
+                  else
+                  {
+                     (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].AreaTension);
+                     (*pRebarTable)(rrow, col++) << force.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].T);
+                  }
                   (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].AsProvided);
                   if (sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]][+wind].AsRequired < 0)
                   {
-                     (*pRebarTable)(rrow, col++) << _T("-");
+                     (*pRebarTable)(rrow, col++) << _T("N/A");
                   }
                   else
                   {
@@ -2338,23 +2368,6 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
                *pPara << FS_R << _T(" = ") << scalar.SetValue(pResults->FsRollover[+slope][+impactDir[impactCase]][+wind]) << rptNewLine;
             }
 
-
-#if !defined REBAR_FOR_DIRECT_TENSION
-            if (pAlternateTensStressDataProvider && concrete.GetType() != WBFL::Materials::ConcreteType::UHPC)
-            {
-               (*pPara) << pRebarTable << rptNewLine;
-               (*pPara) << _T("The neutral axis is defined by its location with respect to the top center of the girder (") << Sub2(_T("Y"), _T("na")) << _T(")");
-               if (!bSimpleFormat)
-               {
-                  (*pPara) << _T(" and its slope(Slope NA)");
-               }
-               (*pPara) << rptNewLine;
-               (*pPara) << Super(_T("*")) << _T(" to be considered sufficient, reinforcement must be fully developed and lie within the tension area of the section") << rptNewLine;
-               (*pPara) << _T("** minimum area of sufficiently bonded reinforcement needed to use the alternative tensile stress limit") << rptNewLine;
-
-               *pPara << rptNewLine;
-            }
-#endif
          } // next wind direction
 
 
@@ -2382,7 +2395,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
             if (bReportTensileForceDetails)
             {
                *pPara << rptNewLine;
-               (*pPara) << _T("Tension Force, T = ") << symbol(SUM) << Sub2(_T("T"), _T("i")) << _T(" = ") << symbol(SUM) << _T("(") << Sub2(_T("A"), _T("i")) << _T(")(") << Sub2(_T("f"), _T("i")) << _T(")") << rptNewLine;
+               (*pPara) << _T("Tension Force, T = ") << symbol(SUM) << Sub2(_T("T"), _T("slice")) << _T(" = ") << symbol(SUM) << _T("(") << Sub2(_T("A"), _T("slice")) << _T(")(") << Sub2(_T("f"), _T("slice")) << _T(")") << rptNewLine;
             }
 
             *pPara << rptNewLine;
@@ -2505,7 +2518,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
                   }
                   else
                   {
-                     (*pRebarTable)(rrow, col++) << _T("-");
+                     (*pRebarTable)(rrow, col++) << _T("N/A");
                   }
                }
 
@@ -2514,7 +2527,7 @@ void HaulingStabilityReporter::BuildDetailsChapter(const IGirder* pGirder,const 
                (*pRebarTable)(rrow, col++) << area.SetValue(sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]].AsProvided);
                if (sectionResult.altTensionRequirements[+slope][+impactDir[impactCase]].AsRequired < 0)
                {
-                  (*pRebarTable)(rrow, col++) << _T("-");
+                  (*pRebarTable)(rrow, col++) << _T("N/A");
                }
                else
                {
