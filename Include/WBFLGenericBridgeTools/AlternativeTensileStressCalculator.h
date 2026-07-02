@@ -86,6 +86,8 @@ struct WBFLGENERICBRIDGETOOLSCLASS gbtAlternativeTensileStressRequirements
    gbtAlternativeTensileStressRequirements();
    gbtAlternativeTensileStressRequirements(const gbtAlternativeTensileStressRequirements& other) = default;
    gbtAlternativeTensileStressRequirements& operator=(const gbtAlternativeTensileStressRequirements& other) = default;
+
+   Float64 GetAllowableBarStress() const;
 };
 
 void WBFLGENERICBRIDGETOOLSFUNC gbtComputeAlternativeStressRequirements(gbtAlternativeTensileStressRequirements* pRequirements);
