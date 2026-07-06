@@ -187,6 +187,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnnotatedDisplayUnitFormatter.cpp" />
     <ClCompile Include="AutoSystem.cpp" />
     <ClCompile Include="IndirectMeasure.cpp" />
     <ClCompile Include="Library.cpp" />
@@ -202,6 +203,7 @@
     <ClCompile Include="XUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\Units\AnnotatedDisplayUnitFormatter.h" />
     <ClInclude Include="..\Include\Units\AutoLib.h" />
     <ClInclude Include="..\Include\Units\AutoSystem.h" />
     <ClInclude Include="..\Include\Units\Convert.h" />

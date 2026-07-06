@@ -15,6 +15,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="TestAnnotatedDisplayUnitFormatter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TestAutoSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

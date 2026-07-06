@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,6 +29,7 @@
    #error It is for external users only
 #endif
 
+#include <Units/AnnotatedDisplayUnitFormatter.h>
 #include <Units/AutoSystem.h>
 #include <Units/Convert.h>
 #include <Units/Measure.h>
