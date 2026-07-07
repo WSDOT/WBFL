@@ -211,7 +211,7 @@ BOOL CEAFApp::InitInstance()
    WBFL::System::Logger::Verbosity(cmdInfo.m_LoggingVerbosity);
 
    CString manifest;
-   manifest.Format(_T("Manifest.%s"), m_pszAppName);
+   manifest.Format(_T("Manifest.%s"), GetManifestApplicationName().c_str());
    LoadManifest(manifest);
 
    // Get the units system set up 
@@ -434,6 +434,11 @@ void CEAFApp::RegistryExit()
    WriteProfileInt(_T("Settings"),_T("LastRun"),time.Seconds());
 
    WriteProfileString(_T("Settings"),_T("Documentation"),m_bUseOnlineDocumentation == TRUE ? _T("Online") : _T("Offline"));
+}
+
+std::_tstring CEAFApp::GetManifestApplicationName() const
+{
+   return m_pszAppName;
 }
 
 CEAFCommandLineInfo& CEAFApp::GetCommandLineInfo()

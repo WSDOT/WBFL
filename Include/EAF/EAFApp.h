@@ -185,6 +185,10 @@ protected:
    // called by the framework during ExitInstance() when registry settings need to be saved
    virtual void RegistryExit();
 
+   // returns the name of the application for purposes of loading manifest files.
+   // The default is m_pszAppName.
+   virtual std::_tstring GetManifestApplicationName() const;
+
 
    void EnableTipOfTheDay(LPCTSTR lpszTipFile);
    void EnableTipOfTheDay(const std::vector<CString>& vTipFiles);
