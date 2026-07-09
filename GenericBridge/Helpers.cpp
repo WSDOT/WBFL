@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -741,6 +741,71 @@ Float64 ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber)
    }
 
    return (4 * precamber / Ls)*Xs*(1 - Xs / Ls);
+}
+
+void GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 thickeningWidth, Float64 thickeningLength, Float64 transitionLength, Float64* pDeltaW)
+{
+   *pDeltaW = 0.0;
+   if (IsZero(thickeningWidth))
+   {
+      return;
+   }
+
+   Float64 d = fabs(Xs - Xpier);
+   if (d <= thickeningLength)
+   {
+      *pDeltaW = thickeningWidth;
+   }
+   else if (!IsZero(transitionLength) && d <= thickeningLength + transitionLength)
+   {
+      *pDeltaW = thickeningWidth * (1.0 - (d - thickeningLength) / transitionLength);
+   }
+}
+
+void AdjustForWebThickening(IPrecastBeam* pBeam, Float64 deltaW)
+{
+   if (IsZero(deltaW)) return;
+
+   // Logic for web thickening is the same as for end blocks, except that the input end block width is defined
+   // as the total modified Tw
+
+   deltaW *= 2.0; // convert to total web thickening
+
+   Float64 T1, T2;
+   pBeam->get_T1(&T1);
+   pBeam->get_T2(&T2);
+   Float64 EB1 = T1 + deltaW;
+   Float64 EB2 = T2 + deltaW;
+
+   AdjustForEndBlocks(pBeam, EB1, EB2);
+}
+
+void AdjustForWebThickening(IPrecastBeam2* pBeam, Float64 deltaW)
+{
+   if (IsZero(deltaW)) return;
+
+   deltaW *= 2.0; // convert to total web thickening
+
+   Float64 T1, T2;
+   pBeam->get_T1(&T1);
+   pBeam->get_T2(&T2);
+   Float64 EB1 = T1 + deltaW;
+   Float64 EB2 = T2 + deltaW;
+
+   AdjustForEndBlocks(pBeam, EB1, EB2);
+}
+
+void AdjustForWebThickening(INUBeam* pBeam, Float64 deltaW)
+{
+   if (IsZero(deltaW)) return;
+
+   deltaW *= 2.0; // convert to total web thickening
+
+   Float64 T;
+   pBeam->get_T(&T);
+   T += deltaW;
+
+   pBeam->put_EndBlock(T);
 }
 
 Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSegment,Float64 segmentLength,const std::vector<Float64>& vHaunchDepths)

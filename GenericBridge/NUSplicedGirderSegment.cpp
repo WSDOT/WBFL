@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -27,6 +27,7 @@
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
 #include "NUSplicedGirderSegment.h"
+#include <GenericBridge/Helpers.h>
 #include <MathEx.h>
 #include <algorithm>
 
@@ -92,6 +93,14 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias section
       Float64 Web;
       GetEndBlockWidth(Xs, sectionBias, &Web);
       AdjustForEndBlocks(newBeam, Web);
+
+      if (m_InteriorPierXs >= 0 && !IsZero(m_WebThickeningWidth))
+      {
+         Float64 deltaW;
+         ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
+            m_WebThickeningLength, m_WebThickeningTransitionLength, &deltaW);
+         ::AdjustForWebThickening(newBeam, deltaW);
+      }
 
       CComPtr<IPoint2d> pnt;
       pnt.CoCreateInstance(CLSID_Point2d);

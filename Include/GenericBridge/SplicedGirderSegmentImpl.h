@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -54,6 +54,11 @@ public:
       m_EndBlockTransitionLength[etEnd]   = 0;
       m_EndBlockWidth[etStart]            = 0;
       m_EndBlockWidth[etEnd]              = 0;
+
+      m_InteriorPierXs = -1.0;
+      m_WebThickeningWidth = 0;
+      m_WebThickeningLength = 0;
+      m_WebThickeningTransitionLength = 0;
 
       for ( int i = 0; i < 4; i++ )
       {
@@ -151,6 +156,11 @@ protected:
    std::array<Float64, 2> m_EndBlockTransitionLength; // length of transition
    std::array<Float64, 2> m_EndBlockWidth; // width of end block at end of girder... constant until transition
                                // then transitions to the section
+
+   Float64 m_InteriorPierXs;            // Xs of interior pier along segment, -1 if none
+   Float64 m_WebThickeningWidth;        // extra width per web face at pier
+   Float64 m_WebThickeningLength;       // full-width zone half-length from pier
+   Float64 m_WebThickeningTransitionLength; // linear taper half-length from pier
 
    SegmentVariationType m_VariationType;
    std::array<Float64, 4> m_VariationLength; // index is the SegmentZoneType enum
@@ -354,6 +364,54 @@ public:
    STDMETHOD(get_EndBlockWidth)(EndType endType,Float64* pWidth) override
    {
       *pWidth = m_EndBlockWidth[endType];
+      return S_OK;
+   }
+
+   STDMETHOD(put_InteriorPierXs)(Float64 Xs) override
+   {
+      m_InteriorPierXs = Xs;
+      return S_OK;
+   }
+
+   STDMETHOD(get_InteriorPierXs)(Float64* pXs) override
+   {
+      *pXs = m_InteriorPierXs;
+      return S_OK;
+   }
+
+   STDMETHOD(put_WebThickeningWidth)(Float64 width) override
+   {
+      m_WebThickeningWidth = width;
+      return S_OK;
+   }
+
+   STDMETHOD(get_WebThickeningWidth)(Float64* pWidth) override
+   {
+      *pWidth = m_WebThickeningWidth;
+      return S_OK;
+   }
+
+   STDMETHOD(put_WebThickeningLength)(Float64 length) override
+   {
+      m_WebThickeningLength = length;
+      return S_OK;
+   }
+
+   STDMETHOD(get_WebThickeningLength)(Float64* pLength) override
+   {
+      *pLength = m_WebThickeningLength;
+      return S_OK;
+   }
+
+   STDMETHOD(put_WebThickeningTransitionLength)(Float64 length) override
+   {
+      m_WebThickeningTransitionLength = length;
+      return S_OK;
+   }
+
+   STDMETHOD(get_WebThickeningTransitionLength)(Float64* pLength) override
+   {
+      *pLength = m_WebThickeningTransitionLength;
       return S_OK;
    }
 

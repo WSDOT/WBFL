@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -1552,6 +1552,15 @@ library WBFLGenericBridge
       [propget, helpstring("property EndBlockTransitionLength")] HRESULT EndBlockTransitionLength([in]EndType endType,[out,retval] Float64* pLength);
       [propput, helpstring("property EndBlockWidth")] HRESULT EndBlockWidth([in]EndType endType,[in] Float64 width);
       [propget, helpstring("property EndBlockWidth")] HRESULT EndBlockWidth([in]EndType endType,[out,retval] Float64* pWidth);
+
+      [propput, helpstring("property InteriorPierXs")] HRESULT InteriorPierXs([in] Float64 Xs);
+      [propget, helpstring("property InteriorPierXs")] HRESULT InteriorPierXs([out,retval] Float64* pXs);
+      [propput, helpstring("property WebThickeningWidth")] HRESULT WebThickeningWidth([in] Float64 width);
+      [propget, helpstring("property WebThickeningWidth")] HRESULT WebThickeningWidth([out,retval] Float64* pWidth);
+      [propput, helpstring("property WebThickeningLength")] HRESULT WebThickeningLength([in] Float64 length);
+      [propget, helpstring("property WebThickeningLength")] HRESULT WebThickeningLength([out,retval] Float64* pLength);
+      [propput, helpstring("property WebThickeningTransitionLength")] HRESULT WebThickeningTransitionLength([in] Float64 length);
+      [propget, helpstring("property WebThickeningTransitionLength")] HRESULT WebThickeningTransitionLength([out,retval] Float64* pLength);
 
       [propput, helpstring("property VariationType")] HRESULT VariationType([in] SegmentVariationType variationType);
       [propget, helpstring("property VariationType")] HRESULT VariationType([out,retval] SegmentVariationType* variationType);
