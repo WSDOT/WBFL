@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,14 +40,18 @@ namespace WBFL
 
          StationFormat() = default;
          StationFormat(const StationFormat&) = default;
-         
+
+         /// Constructs a station formatter for the given unit of measure.
          StationFormat(UnitOfMeasure unitOfMeasure);
 
          virtual ~StationFormat();
 
          StationFormat& operator=(const StationFormat&) = default;
 
+         /// Returns true if other has the same unit of measure as this station formatter.
          bool operator==(const StationFormat& other) const;
+
+         /// Returns true if other does not have the same unit of measure as this station formatter.
          bool operator!=(const StationFormat& other) const;
 
          /// Returns the station as a pair in the format (StationValue,ZoneIndex)
@@ -57,7 +61,10 @@ namespace WBFL
          /// Returns a string that represents the station.
          std::_tstring AsString(Float64 station, ZoneIndexType zoneIdx = INVALID_INDEX) const;
 
+         /// Sets the unit of measure used to format and parse stations.
          void SetUnitOfMeasure(UnitOfMeasure unitOfMeasure);
+
+         /// Returns the unit of measure used to format and parse stations.
          UnitOfMeasure GetUnitOfMeasure() const;
 
       private:
@@ -72,8 +79,8 @@ namespace WBFL
          StationFormats() = delete;
          ~StationFormats() = delete;
 
-         static const StationFormat SI;
-         static const StationFormat US;
+         static const StationFormat SI; ///< SI-unit (meter) stationing, e.g. "3+034.540" (3 digits before "+", 3 decimal places)
+         static const StationFormat US; ///< US-unit (feet) stationing, e.g. "3+34.54" (2 digits before "+", 2 decimal places)
       };
    };
 };

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,6 +37,9 @@ namespace WBFL
       class XEntryNotFoundT : public WBFL::System::XBase
       {
       public:
+         /// Constructs the exception for the entry that could not be found, identified by key. file and
+         /// line should be the source file and line number where the exception is being thrown, typically
+         /// _T(__FILE__) and __LINE__.
          XEntryNotFoundT(const K& key, const std::_tstring& file, Uint32 line) :
              WBFL::System::XBase(file,line),
              m_Key( key )
@@ -47,14 +50,17 @@ namespace WBFL
 
          XEntryNotFoundT& operator=(const XEntryNotFoundT& rOther) = default;
 
+         /// Throws this exception object.
          virtual void Throw() const override
          { throw *static_cast<const XEntryNotFoundT*>(this); }
 
+         /// Returns 0; this exception has only one reason (an entry was not found).
          virtual Int32 GetReason() const noexcept override
          {
             return 0;
          };
 
+         /// Returns the key that could not be found in the library.
          K GetOffendingKey() const
          { return m_Key; }
 
@@ -70,6 +76,7 @@ namespace WBFL
       class LibraryT
       {
       public:
+         /// Constructs an empty library.
          LibraryT()
          {
             // WARNING
@@ -89,16 +96,21 @@ namespace WBFL
 
          LibraryT& operator = (const LibraryT&) = default;
 
+         /// Adds value to the library, keyed by key. If key is already in use, its entry is silently
+         /// replaced (std::map::insert semantics mean the existing entry is kept and this call is a no-op;
+         /// this is a bit surprising and worth confirming if you rely on overwrite-on-duplicate behavior).
          void AddEntry(const K& key, const V& value)
          {
             m_Map.insert( std::make_pair(key,value) );
          }
 
+         /// Removes the entry keyed by key, if present. Does nothing if key is not in the library.
          void RemoveEntry(const K& key)
          {
             m_Map.erase( key );
          }
 
+         /// Returns the entry keyed by key. Throws XEntryNotFoundT<K,V> if key is not in the library.
          V& GetEntry(const K& key)
          {
             auto i = m_Map.find( key );
@@ -106,10 +118,12 @@ namespace WBFL
             {
                throw XEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
             }
-      
+
             return (*i).second;
          }
 
+         /// Returns a copy of the entry keyed by key. Throws XEntryNotFoundT<K,V> if key is not in the
+         /// library.
          V GetEntry(const K& key) const
          {
             auto i = m_Map.find( key );
@@ -117,10 +131,11 @@ namespace WBFL
             {
                throw XEntryNotFoundT<K,V>( key, _T(__FILE__), __LINE__ );
             }
-      
+
             return (*i).second;
          }
 
+         /// Returns true if key is in the library.
          bool Contains(const K& key) const
          {
             auto i = m_Map.find( key );

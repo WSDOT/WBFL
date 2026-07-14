@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,7 +32,13 @@ namespace WBFL
 {
    namespace Units
    {
-      /// Class that defines an application wide units system such as KMS (kilogram-meter-seconds)
+      /// Class that defines an application wide units system such as KMS (kilogram-meter-seconds).
+      ///
+      /// All state on this class is static/global to the process - there is one system of units for the
+      /// entire application, not one per object or per thread. Values passed to and returned from most of
+      /// WBFL's APIs are expressed in these "system units" (see ConvertToSysUnits()/ConvertFromSysUnits() in
+      /// Convert.h); use AutoSystem to temporarily change the system units and have them automatically
+      /// restored. The default system units are kg/m/sec/Celsius/radian.
       class UNITSCLASS System
       {
       public:
@@ -40,34 +46,36 @@ namespace WBFL
          System(const System&) = delete;
          System& operator=(const System&) = delete;
 
-         /// Initializes the unit system
+         /// Initializes the unit system. Equivalent to calling SetMassUnit(), SetLengthUnit(),
+         /// SetTimeUnit(), SetTemperatureUnit(), and SetAngleUnit() individually. This may be called any
+         /// number of times; there is no one-time lock on the system units.
          static void SetSystemUnits(const Mass& mass, const Length& length, const Time& time, const Temperature& temp, const Angle& angle);
 
-         /// Sets the system unit for mass
+         /// Sets the system unit for mass. Returns the previous system unit for mass.
          static Mass SetMassUnit(const Mass& u);
 
          /// Returns the current system unit for mass
          static Mass GetMassUnit();
 
-         /// Sets the system unit for length
+         /// Sets the system unit for length. Returns the previous system unit for length.
          static Length SetLengthUnit(const Length& u);
 
          /// Returns the current system unit for length
          static Length GetLengthUnit();
 
-         /// Sets the system unit for time
+         /// Sets the system unit for time. Returns the previous system unit for time.
          static Time SetTimeUnit(const Time& u);
 
          /// Returns the current system unit for time
          static Time GetTimeUnit();
 
-         /// Sets the system unit for temperature
+         /// Sets the system unit for temperature. Returns the previous system unit for temperature.
          static Temperature SetTemperatureUnit(const Temperature& u);
 
          /// Returns the current system unit for temperature
          static Temperature GetTemperatureUnit();
 
-         /// Sets the system unit for angle
+         /// Sets the system unit for angle. Returns the previous system unit for angle.
          static Angle SetAngleUnit(const Angle& u);
 
          /// Returns the current system unit for angle

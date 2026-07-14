@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,7 +38,12 @@ namespace WBFL
       class UNITSCLASS AnnotatedDisplayUnitFormatter
       {
       public:
-         enum class Justify { Left, Right };
+         /// Text justification of the formatted value within its field width.
+         enum class Justify
+         {
+            Left,  ///< Left-justify the formatted text
+            Right  ///< Right-justify the formatted text
+         };
 
          AnnotatedDisplayUnitFormatter() = default;
          AnnotatedDisplayUnitFormatter(const AnnotatedDisplayUnitFormatter&) = default;
@@ -48,16 +53,23 @@ namespace WBFL
          /// feet-inches, or "+" for stationing with no suffix). If the string leads with a comma,
          /// there is no separator and the text after the comma is the suffix.
          void SetAnnotation(const std::_tstring& annotation);
+
+         /// Returns the separator/suffix annotation string, in the same "separator,suffix" encoding
+         /// accepted by SetAnnotation().
          std::_tstring GetAnnotation() const;
 
          /// Sets the power-of-ten offset at which the value is split into major/minor parts
          /// (e.g. 0 for feet-inches, 2 for US stationing, 3 for SI stationing).
          void SetOffsetDigits(Uint32 nDigits);
+
+         /// Returns the power-of-ten offset at which the value is split into major/minor parts.
          Uint32 GetOffsetDigits() const;
 
          /// Sets the factor used to scale the minor part after the split (e.g. 12 to convert a
          /// fractional-feet remainder into inches).
          void SetMultiplier(Float64 multiplier);
+
+         /// Returns the factor used to scale the minor part after the split.
          Float64 GetMultiplier() const;
 
          /// Sets the display width, precision, justification, and the tolerance below which a
@@ -65,10 +77,21 @@ namespace WBFL
          /// only; like the original COM object, it is not applied by AsString (minor part is
          /// always fixed-point).
          void SetFormatSpecifiers(Uint32 width, Uint32 precision, Justify justify, WBFL::System::NumericFormatTool::Format notation, Float64 zeroTolerance);
+
+         /// Returns the display field width set by SetFormatSpecifiers().
          Uint32 GetWidth() const;
+
+         /// Returns the display precision set by SetFormatSpecifiers().
          Uint32 GetPrecision() const;
+
+         /// Returns the numeric notation set by SetFormatSpecifiers(). Stored/retrievable for API
+         /// completeness only; it is not applied by AsString() (see SetFormatSpecifiers()).
          WBFL::System::NumericFormatTool::Format GetNotation() const;
+
+         /// Returns the text justification set by SetFormatSpecifiers().
          Justify GetJustification() const;
+
+         /// Returns the zero tolerance set by SetFormatSpecifiers().
          Float64 GetZeroTolerance() const;
 
          /// Formats value. When bIncludeAnnotation is false, the major/minor parts are separated

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,7 +41,11 @@ namespace WBFL
       UNITSTPL XEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
       UNITSTPL LibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
 
+      /// A named catalog of IndirectMeasure display-format profiles, keyed by name (e.g. "US units",
+      /// "SI units"). Use AddEntry()/GetEntry() to define and retrieve named profiles.
       using Library       = LibraryT<         std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
+
+      /// Exception thrown by Library when a requested profile name isn't in the catalog.
       using EntryNotFound = XEntryNotFoundT<  std::basic_string<TCHAR, std::char_traits<TCHAR>, std::allocator<TCHAR> >, IndirectMeasure>;
 
    };

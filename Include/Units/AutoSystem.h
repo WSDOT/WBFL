@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -38,7 +38,10 @@ namespace WBFL
       class UNITSCLASS AutoSystem
       {
       public:
+         /// Snapshots the current system units (see System::GetMassUnit() etc.).
          AutoSystem();
+
+         /// Restores the system units captured by the constructor.
          ~AutoSystem();
 
          AutoSystem(const AutoSystem&) = delete;

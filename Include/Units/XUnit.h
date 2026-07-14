@@ -45,12 +45,19 @@ namespace WBFL
             UnitNotFound             ///< A DynamicUnitTypeManager operation referenced a unit tag that hasn't been defined within the unit type
          };
 
+         /// Constructs the exception with the given reason. file and line should be the source file and
+         /// line number where the exception is being thrown, typically _T(__FILE__) and __LINE__.
          XUnit(Reason reason,const std::_tstring& file,Uint32 line);
 
          virtual ~XUnit();
 
+         /// Throws this exception object.
          virtual void Throw() const override;
+
+         /// Returns the reason for this exception, as the underlying integer value of Reason.
          virtual Int32 GetReason() const noexcept override;
+
+         /// Returns the reason for this exception.
          Reason GetReasonCode() const noexcept;
 
       #if defined _DEBUG
