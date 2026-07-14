@@ -77,16 +77,7 @@ namespace WBFL
       {
       public:
          /// Constructs an empty library.
-         LibraryT()
-         {
-            // WARNING
-            // If this dummy line of code does not exist in release builds
-            // m_Map does not get initialized correctly and the program
-            // crashes out.  I don't know what's going on, but if this line
-            // (or presumably any other code that calls a m_Map member function)
-            // does not exist, the Release builds don't work.
-            IndexType size = m_Map.size();
-         }
+         LibraryT() = default;
 
          LibraryT(const LibraryT&) = default;
 
