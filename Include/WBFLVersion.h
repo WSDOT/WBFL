@@ -2,7 +2,7 @@
 // Washington Bridge Foundation Libraries - The foundation of
 // high quality structural engineering applications
 //
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include <sdkddkver.h>
+#include <targetver.h>
 
 #ifndef _WBFL_VERSION
 #define _WBFL_VERSION 910 // version 9.1.0

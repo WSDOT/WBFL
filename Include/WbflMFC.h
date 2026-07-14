@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2023  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2023  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -22,8 +22,6 @@
 ///////////////////////////////////////////////////////////////////////
 
 #pragma once
-
-
 
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions

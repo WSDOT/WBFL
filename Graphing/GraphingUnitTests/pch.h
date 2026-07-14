@@ -8,6 +8,7 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
+#include <targetver.h>
 #include <Graphing/Graphing.h>
 
 #endif //PCH_H

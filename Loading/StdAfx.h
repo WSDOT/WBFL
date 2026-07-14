@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Loading - Generic library to describe bridge loadings
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+
+#include <targetver.h>
 
 #include <WBFLMFC.h>
 #include <WBFLAll.h>
