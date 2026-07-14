@@ -124,7 +124,7 @@ namespace WBFL
          bool Contains(const K& key) const
          {
             auto i = m_Map.find( key );
-            return ( i == m_Map.end() );
+            return ( i != m_Map.end() );
          }
 
       private:
