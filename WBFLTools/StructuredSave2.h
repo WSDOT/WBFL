@@ -25,8 +25,7 @@
 
 // StructuredSave2.h : Declaration of the CStructuredSave2
 
-#ifndef __STRUCTUREDSAVE2_H_
-#define __STRUCTUREDSAVE2_H_
+#pragma once
 
 #include <list>
 #include <map>
@@ -110,4 +109,3 @@ private:
    void AssertValid() const;
 };
 
-#endif //__STRUCTUREDSAVE2_H_

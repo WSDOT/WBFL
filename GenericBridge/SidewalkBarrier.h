@@ -25,8 +25,7 @@
 
 // SidewalkBarrier.h : Declaration of the CSidewalkBarrier
 
-#ifndef __SIDEWALKBARRIER_H_
-#define __SIDEWALKBARRIER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -110,4 +109,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__SIDEWALKBARRIER_H_

@@ -25,8 +25,7 @@
 
 // AxialInteractionCurveSolver.h : Declaration of the CAxialInteractionCurveSolver
 
-#ifndef __AxialInteractionCurveSolver_H_
-#define __AxialInteractionCurveSolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -80,4 +79,3 @@ public:
 	STDMETHOD(Solve)(/*[in]*/Float64 na,/*[in]*/long nFzSteps,/*[out,retval]*/IInteractionCapacityCurveSolution** solution) override;
 };
 
-#endif //__AxialInteractionCurveSolver_H_

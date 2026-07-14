@@ -23,8 +23,7 @@
 
 // Segments.h : Declaration of the CSegments
 
-#ifndef __SEGMENTS_H_
-#define __SEGMENTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <map>
@@ -271,4 +270,3 @@ public:
    using const_iterator = iterator;
 };
 
-#endif //__SEGMENTS_H_

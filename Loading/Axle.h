@@ -23,8 +23,7 @@
 
 // Axle.h : Declaration of the CAxle
 
-#ifndef __AXLE_H_
-#define __AXLE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
@@ -86,4 +85,3 @@ protected:
    Float64 m_Spacing;
 };
 
-#endif //__AXLE_H_

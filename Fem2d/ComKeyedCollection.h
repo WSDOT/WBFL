@@ -25,8 +25,6 @@
 
 // CComKeyedCollection.h : Declaration of the CCComKeyedCollection
 
-#ifndef __CComKeyedCollection_H_
-#define __CComKeyedCollection_H_
 #pragma once
 
 #include <map>
@@ -328,6 +326,3 @@ public:
    }
 };
 
-
-
-#endif //

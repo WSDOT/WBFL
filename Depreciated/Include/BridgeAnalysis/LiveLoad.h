@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_LIVELOAD_H_
-#define INCLUDED_BRIDGEANALYSIS_LIVELOAD_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -183,4 +181,3 @@ inline Float64 bamLiveLoad::GetTruckLoadImpact() const {return m_TruckLoadImpact
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEANALYSIS_LIVELOAD_H_

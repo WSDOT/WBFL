@@ -1,5 +1,4 @@
-#ifndef INCLUDED_TEMPORARYSUPPORTDRAWSTRATEGYIMPL_H_
-#define INCLUDED_TEMPORARYSUPPORTDRAWSTRATEGYIMPL_H_
+#pragma once
 
 #include "TemporarySupportDrawStrategy.h"
 
@@ -24,4 +23,3 @@ private:
    virtual void Draw(std::shared_ptr<const WBFL::DManip::iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const;
 };
 
-#endif // INCLUDED_SUPPORTDRAWSTRATEGYIMPL_H_

@@ -25,8 +25,7 @@
 
 // LFDSolver.h : Declaration of the CLFDSolver
 
-#ifndef __LFDSOLVER_H_
-#define __LFDSOLVER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -68,4 +67,3 @@ public:
 	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution) override;
 };
 
-#endif //__LFDSOLVER_H_

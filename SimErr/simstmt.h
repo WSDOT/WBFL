@@ -37,8 +37,7 @@ to the simulator in a particular source file, at a particular line number.
 CErrorSimulator maintains an array of these objects, representing all the
 places the source program wants to simulate errors.
 ---------------------------------------------------------------------------*/
-#ifndef SIMSTMT_H
-#define SIMSTMT_H
+#pragma once
 
 //---------------------------------------------------------------------------
 class CSimStmt
@@ -77,6 +76,4 @@ public:     // data members
    bool Read(FILE *pFile);
    bool Write(FILE *pFile);
 };
-
-#endif //SIMSTMT_H
 

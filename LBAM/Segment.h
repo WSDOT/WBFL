@@ -23,8 +23,7 @@
 
 // Segment.h : Declaration of the CSegment
 
-#ifndef __SEGMENT_H_
-#define __SEGMENT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CrossSectionCP.h"
@@ -98,4 +97,3 @@ protected:
    DWORD m_SegmentCrossSectionCookie;
 };
 
-#endif //__SEGMENT_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SIMPLEDRAWLINESTRATEGY_H_
-#define INCLUDED_SIMPLEDRAWLINESTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawLineStrategy.h>
@@ -53,4 +51,3 @@ interface iSimpleDrawLineStrategy : public iDrawLineStrategy
    STDMETHOD_(LineStyleType,GetLineStyle)() PURE;
 };
 
-#endif // INCLUDED_SIMPLEDRAWLINESTRATEGY_H_

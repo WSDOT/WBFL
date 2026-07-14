@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTUNITS_H__53A5E275_DF16_11D3_8A38_006097C68A9C__INCLUDED_)
-#define AFX_TESTUNITS_H__53A5E275_DF16_11D3_8A38_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestUnits  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTUNITS_H__53A5E275_DF16_11D3_8A38_006097C68A9C__INCLUDED_)

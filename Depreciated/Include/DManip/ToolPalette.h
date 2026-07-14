@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_)
-#define AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // ToolPalette.h : header file
 //
 
@@ -89,4 +84,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TOOLPALETTE_H__961A70E3_F6D1_11D4_8B99_006097C68A9C__INCLUDED_)

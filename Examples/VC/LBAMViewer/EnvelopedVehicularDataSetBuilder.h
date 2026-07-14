@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ENVELOPEDVEHICULARDATASETBUILDER_H__10C2652A_DE47_4FF9_9BA9_FC05801AA726__INCLUDED_)
-#define AFX_ENVELOPEDVEHICULARDATASETBUILDER_H__10C2652A_DE47_4FF9_9BA9_FC05801AA726__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DataSetBuilder.h"
 #include "ReactionReportBuilder.h"
@@ -53,4 +48,3 @@ private:
    llResponseType                         m_RespType;
 };
 
-#endif // !defined(AFX_ENVELOPEDVEHICULARDATASETBUILDER_H__10C2652A_DE47_4FF9_9BA9_FC05801AA726__INCLUDED_)

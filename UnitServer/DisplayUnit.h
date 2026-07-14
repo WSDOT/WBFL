@@ -25,8 +25,7 @@
 
 // DisplayUnit.h : Declaration of the CDisplayUnit
 
-#ifndef __DISPLAYUNIT_H_
-#define __DISPLAYUNIT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflUnitServerCP.h"
@@ -106,4 +105,3 @@ public:
    }
 };
 
-#endif //__DISPLAYUNIT_H_

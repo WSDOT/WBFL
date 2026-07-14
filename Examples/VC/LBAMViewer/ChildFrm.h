@@ -3,12 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include <map>
 
-#if !defined(AFX_CHILDFRM_H__1C0C4772_4920_445B_B485_FAB7D6F2637F__INCLUDED_)
-#define AFX_CHILDFRM_H__1C0C4772_4920_445B_B485_FAB7D6F2637F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class iDataSetBuilder;
 
@@ -90,4 +85,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CHILDFRM_H__1C0C4772_4920_445B_B485_FAB7D6F2637F__INCLUDED_)

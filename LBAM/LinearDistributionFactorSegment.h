@@ -23,8 +23,7 @@
 
 // LinearDistributionFactorSegment.h : Declaration of the CLinearDistributionFactorSegment
 
-#ifndef __LINEARDISTRIBUTIONFACTORSEGMENT_H_
-#define __LINEARDISTRIBUTIONFACTORSEGMENT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMCP.h"
@@ -104,4 +103,3 @@ protected:
 
 };
 
-#endif //__LINEARDISTRIBUTIONFACTORSEGMENT_H_

@@ -24,8 +24,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Model.h : Declaration of the CModel
 
-#ifndef __Model_H_
-#define __Model_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -325,4 +323,3 @@ private:
 #endif
 };
 
-#endif //__Model_H_

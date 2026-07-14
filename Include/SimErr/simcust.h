@@ -33,8 +33,7 @@ types that are specific to each application.
 
 This is the specific information for the sample program.
 ---------------------------------------------------------------------------*/
-#ifndef SIMCUST_H
-#define SIMCUST_H
+#pragma once
 
 #include "SimErr\simdef.h"  // data definitions used in the function prototypes
 #include "SimErr\simerr.h"  // error simulation functions
@@ -233,6 +232,4 @@ inline void SimErrException(const char *strFile, int nLine, T* pExcept,
 }
 
 #endif // SIMERR
-
-#endif // SIMCUST_H
 

@@ -23,8 +23,7 @@
 
 // Model.h : Declaration of the CModel
 
-#ifndef __MODEL_H_
-#define __MODEL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMCP.h"
@@ -325,4 +324,3 @@ private:
    LocationCache m_LocationCache;
 };
 
-#endif //__MODEL_H_

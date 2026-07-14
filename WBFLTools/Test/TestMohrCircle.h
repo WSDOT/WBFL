@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTMOHRCIRCLE_H__352AD825_C929_11D3_8A1F_006097C68A9C__INCLUDED_)
-#define AFX_TESTMOHRCIRCLE_H__352AD825_C929_11D3_8A1F_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestMohrCircle  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTMOHRCIRCLE_H__352AD825_C929_11D3_8A1F_006097C68A9C__INCLUDED_)

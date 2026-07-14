@@ -25,8 +25,7 @@
 
 // DisplayUnitFormatter.h : Declaration of the CDisplayUnitFormatter
 
-#ifndef __DISPLAYUNITFORMATTER_H_
-#define __DISPLAYUNITFORMATTER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflUnitServerCP.h"
@@ -85,4 +84,3 @@ public:
 	STDMETHOD(FormatSpecifiers)(/*[in]*/Uint32 width,/*[in]*/ Uint32 precision,/*[in]*/ TextJustificationType justify,/*[in]*/NumericFormatType notation,/*[in]*/ Float64 zeroTol) override;
 };
 
-#endif //__DISPLAYUNITFORMATTER_H_

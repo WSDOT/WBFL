@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ITEMDATAMANAGER_H_
-#define INCLUDED_ITEMDATAMANAGER_H_
+#pragma once
 
 #include <map>
 #include <string>
@@ -45,4 +44,3 @@ private:
    ItemDataCollection m_Items;
 };
 
-#endif // INCLUDED_ITEMDATAMANAGER_H_

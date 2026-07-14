@@ -23,8 +23,7 @@
 
 // LoadCombinationResponseAgg.h : Declaration of the CLoadCombinationResponseAgg
 
-#ifndef __LoadCombinationResponseAGG_H_
-#define __LoadCombinationResponseAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCombiner.h"
@@ -92,4 +91,3 @@ private:
    CLoadCombiner*  m_pCombiner;
 };
 
-#endif //__LoadCombinationResponseAgg_H_

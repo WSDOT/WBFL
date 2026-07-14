@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECTFACTORYIMPL_H_
-#define INCLUDED_DISPLAYOBJECTFACTORYIMPL_H_
 #pragma once
 
 #include "resource.h"
@@ -50,4 +48,3 @@ public:
    STDMETHOD_(void,Create)(CLIPFORMAT cfFormat,COleDataObject* pDataObject,iDisplayObject** dispObj) override;
 };
 
-#endif // INCLUDED_DISPLAYOBJECTFACTORYIMPL_H_

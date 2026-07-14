@@ -25,8 +25,7 @@
 
 // PrecastSlab.h : Declaration of the CPrecastSlab
 
-#ifndef __PRECASTSLAB_H_
-#define __PRECASTSLAB_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "BridgeDeckImpl.h"
@@ -117,4 +116,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__PRECASTSLAB_H_

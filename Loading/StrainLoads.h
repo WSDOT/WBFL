@@ -23,8 +23,7 @@
 
 // StrainLoads.h : Declaration of the CStrainLoads
 
-#ifndef __STRAINLOADS_H_
-#define __STRAINLOADS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
@@ -141,4 +140,3 @@ public:
 
 };
 
-#endif //__STRAINLOADS_H_

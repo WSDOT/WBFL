@@ -25,8 +25,7 @@
 
 // Rectangle.h : Declaration of the CRectangle
 
-#ifndef __RECTANGLE_H_
-#define __RECTANGLE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Rectangle.h>
@@ -85,4 +84,3 @@ public:
 	STDMETHOD(get_Shape)(/*[out, retval]*/ IShape* *pVal) override;
 };
 
-#endif //__RECTANGLE_H_

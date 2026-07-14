@@ -1,5 +1,4 @@
-#ifndef INCLUDED_IFACE_HPSTRESSRESULT_H_
-#define INCLUDED_IFACE_HPSTRESSRESULT_H_
+#pragma once
 
 /*****************************************************************************
 INTERFACE
@@ -29,7 +28,3 @@ interface IHpSectionStressResult : IUnknown
 	STDMETHOD(HpSetResults)(/*[in]*/IndexType numLeft, /*[in]*/double* leftVals, /*[in]*/IndexType numRight, /*[in]*/double* rightVals)=0;
 };
 
-
-
-
-#endif

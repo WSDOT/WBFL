@@ -20,8 +20,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_WBFL_COLORS_H_
-#define INCLUDED_WBFL_COLORS_H_
+#pragma once
 
 /////////////////////////////////////
 // Color Codes
@@ -579,4 +578,3 @@
 #define GREY99					RGB(252,252,252)
 #define GREY100				RGB(255,255,255)
 
-#endif // INCLUDED_WBFL_COLORS_H_

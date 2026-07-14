@@ -1,7 +1,6 @@
 // TestDisplayUnitMgrEvents.h : Declaration of the CTestDisplayUnitMgrEvents
 
-#ifndef __TESTDISPLAYUNITMGREVENTS_H_
-#define __TESTDISPLAYUNITMGREVENTS_H_
+#pragma once
 
 #include "CUnknown.h"
 
@@ -36,4 +35,3 @@ public:
    STDMETHOD(OnDisplayUnitGroupsCleared)();
 };
 
-#endif //__TESTDISPLAYUNITMGREVENTS_H_

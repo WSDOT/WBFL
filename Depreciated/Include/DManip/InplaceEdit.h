@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_INPLACEEDITABLE_H_
-#define INCLUDED_INPLACEEDITABLE_H_
 #pragma once
 
 class CInplaceEdit;
@@ -44,4 +42,3 @@ interface iInplaceEditable : public IUnknown
    STDMETHOD_(void,OnDataChanged)() PURE;
 };
 
-#endif // INCLUDED_INPLACEEDITABLE_H_

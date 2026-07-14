@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTPIER_H_
-#define INCLUDED_TESTPIER_H_
+#pragma once
 
 class CTestPier
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestPier();
 };
 
-#endif // INCLUDED_TESTPIER_H_

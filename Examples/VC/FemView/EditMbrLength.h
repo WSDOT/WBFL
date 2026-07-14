@@ -1,9 +1,5 @@
-#if !defined(AFX_EDITMBRLENGTH_H__3D49F39A_0F42_11D5_8BC4_006097C68A9C__INCLUDED_)
-#define AFX_EDITMBRLENGTH_H__3D49F39A_0F42_11D5_8BC4_006097C68A9C__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // EditMbrLength.h : header file
 //
 
@@ -52,4 +48,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EDITMBRLENGTH_H__3D49F39A_0F42_11D5_8BC4_006097C68A9C__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // Point2dCollection.h : Declaration of the CPoint2dCollection
 
-#ifndef __POINT2DCOLLECTION_H_
-#define __POINT2DCOLLECTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -78,4 +77,3 @@ public:
    STDMETHOD(RemoveDuplicatePoints)() override;
 };
 
-#endif //__POINT2DCOLLECTION_H_

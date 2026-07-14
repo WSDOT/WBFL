@@ -25,8 +25,7 @@
 
 // UGirderSection.h : Declaration of the CUGirderSection
 
-#ifndef __UGirderSection_H_
-#define __UGirderSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -166,4 +165,3 @@ public:
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 };
 
-#endif //__UGirderSection_H_

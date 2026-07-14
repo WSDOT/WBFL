@@ -25,8 +25,6 @@
 
 // VerticalCurve.h : Declaration of the CVerticalCurve
 
-#ifndef __VerticalCurve_H_
-#define __VerticalCurve_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -114,4 +112,3 @@ private:
 	IProfile* m_pProfile; // weak pointer to actual COM parent
 };
 
-#endif //__VerticalCurve_H_

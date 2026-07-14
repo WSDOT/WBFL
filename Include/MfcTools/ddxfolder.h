@@ -24,8 +24,6 @@
 
 ////////////////////////////////// Macros ///////////////////////////
 
-#ifndef __DDXFOLDER_H__
-#define __DDXFOLDER_H__
 #pragma once
 
 #include <MfcTools\ModifyButton.h>
@@ -100,5 +98,3 @@ void MFCTOOLSFUNC DDX_FolderControl(CDataExchange* pDX, int nIDC,int nIDCBtn, CG
 void MFCTOOLSFUNC DDX_FolderValue(CDataExchange* pDX, CGetFolderControl& rCGetFolderControl, CString& sFolder);
 void MFCTOOLSFUNC DDV_FolderControl(CDataExchange* pDX, CGetFolderControl& rCGetFolderControl, DWORD dwFlags);
 
-
-#endif //_DDXFOLDER_H__

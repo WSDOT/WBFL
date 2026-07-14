@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TestSimpleTwoSpan_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_)
-#define AFX_TestSimpleTwoSpan_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 class TestSimpleTwoSpan:
@@ -54,7 +49,4 @@ END_SINK_MAP()
 public:
 
 };
-
-#endif // !defined(AFX_TestSimpleTwoSpan_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_)
-
 

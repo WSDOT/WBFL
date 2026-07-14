@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_BAMTYPES_H_
-#define INCLUDED_BRIDGEANALYSIS_BAMTYPES_H_
 #pragma once
 
 enum bamLoadDirection { Local, Global, GlobalProjected };
@@ -38,4 +36,3 @@ struct bamElementExcludeInfo
    bamElementType m_ElementType;
 };
 
-#endif // INCLUDED_BRIDGEANALYSIS_BAMTYPES_H_

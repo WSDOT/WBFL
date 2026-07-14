@@ -21,15 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EXTRECTANGLEDRAWELINESTRATEGYIMPL_H_
-#define INCLUDED_EXTRECTANGLEDRAWELINESTRATEGYIMPL_H_
 // ExtRectangleDrawLineStrategyImpl.h: interface for the CExtRectangleDrawLineStrategyImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -110,4 +106,3 @@ private:
    void DrawPerimeter(CDC* pDC,COLORREF color, int penStyle, CPoint& p1,CPoint& p2,CPoint& p3,CPoint& p4);
 };
 
-#endif // INCLUDED_EXTRECTANGLEDRAWELINESTRATEGYIMPL_H_

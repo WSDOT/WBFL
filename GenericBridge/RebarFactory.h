@@ -25,8 +25,7 @@
 
 // RebarFactory.h : Declaration of the CRebarFactory
 
-#ifndef __RebarFactory_H_
-#define __RebarFactory_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -75,4 +74,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__RebarFactory_H_

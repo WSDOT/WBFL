@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTSTRESSPOINT_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_)
-#define AFX_TESTSTRESSPOINT_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestStressPoint  :
 public CComObjectRootEx<CComSingleThreadModel>,
@@ -65,4 +60,3 @@ public:
    DWORD m_CollCookie;
 };
 
-#endif // !defined(AFX_TESTSTRESSPOINT_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_)

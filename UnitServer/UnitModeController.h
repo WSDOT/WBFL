@@ -25,8 +25,7 @@
 
 // UnitModeController.h : Declaration of the CUnitModeController
 
-#ifndef __UNITMODECONTROLLER_H_
-#define __UNITMODECONTROLLER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflUnitServerCP.h"
@@ -74,4 +73,3 @@ public:
 	STDMETHOD(put_UnitMode)(/*[in]*/ UnitModeType newVal) override;
 };
 
-#endif //__UNITMODECONTROLLER_H_

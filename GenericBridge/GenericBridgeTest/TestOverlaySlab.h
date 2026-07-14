@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTOVERLAYSLAB_H_
-#define INCLUDED_TESTOVERLAYSLAB_H_
+#pragma once
 
 class CTestOverlaySlab
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestOverlaySlab();
 };
 
-#endif // INCLUDED_TESTOVERLAYSLAB_H_

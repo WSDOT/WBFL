@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_)
-#define AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // InplaceEdit.h : header file
 //
 
@@ -74,4 +69,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_INPLACEEDIT_H__FC76B7E1_E710_11D4_8B82_006097C68A9C__INCLUDED_)

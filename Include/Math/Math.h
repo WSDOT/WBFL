@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_MATH_H_
-#define INCLUDED_MATH_MATH_H_
 #pragma once
 
 // This is a master include file for the Math Package
@@ -54,4 +52,3 @@
 #include <Math\XNumericIntegration.h>
 #include <Math\XRootFinder.h>
 
-#endif // INCLUDED_MATH_MATH_H_

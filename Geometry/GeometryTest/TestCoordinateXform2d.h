@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCOORDINATEXFORM2D_H__6B576C60_B7ED_11D3_8CDF_B6D93DDFBB56__INCLUDED_)
-#define AFX_TESTCOORDINATEXFORM2D_H__6B576C60_B7ED_11D3_8CDF_B6D93DDFBB56__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCoordinateXform2d  
 {
@@ -44,4 +39,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTCOORDINATEXFORM2D_H__6B576C60_B7ED_11D3_8CDF_B6D93DDFBB56__INCLUDED_)

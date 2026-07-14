@@ -25,8 +25,7 @@
 
 // StrainHardenedRebarModel.h : Declaration of the CStrainHardenedRebarModel
 
-#ifndef __StrainHardenedRebarModel_H_
-#define __StrainHardenedRebarModel_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <Materials/RebarModel.h>
@@ -87,4 +86,3 @@ public:
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 };
 
-#endif //__StrainHardenedRebarModel_H_

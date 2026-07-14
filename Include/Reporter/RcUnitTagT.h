@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_RCUNITTAGT_H_
-#define INCLUDED_REPORTER_RCUNITTAGT_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -103,4 +101,3 @@ using rptAreaUnitTag = rptLength2UnitTag;
 using rptVolumeUnitTag = rptLength3UnitTag;
 using rptAreaPerLengthUnitTag = rptLengthUnitTag;
 
-#endif // INCLUDED_REPORTER_RCUNITTAGT_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_XUNWIND_H_
-#define INCLUDED_XUNWIND_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -135,4 +133,3 @@ public:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_XUNWIND_H_

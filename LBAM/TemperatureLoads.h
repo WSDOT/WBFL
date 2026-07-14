@@ -23,8 +23,7 @@
 
 // TemperatureLoads.h : Declaration of the CTemperatureLoads
 
-#ifndef __TEMPERATURELOADS_H_
-#define __TEMPERATURELOADS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCP.h"
@@ -139,4 +138,3 @@ public:
 
 };
 
-#endif //__TEMPERATURELOADS_H_

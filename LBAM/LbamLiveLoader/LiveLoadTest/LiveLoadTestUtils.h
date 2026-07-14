@@ -25,8 +25,7 @@
 
 // LBAMCollection.h : 
 
-#ifndef __LiveLoadTestUtils_H_
-#define __LiveLoadTestUtils_H_
+#pragma once
 
 
 
@@ -453,7 +452,4 @@ inline void CompLLSupportDeflectionResults(ILBAMModel* Model, BSTR Stage, Optimi
       os <<"L"<<std::setw(3) << supportIDIdx <<std::setw(16)<< llmval<<std::endl;
    }
 }
-
-
-#endif
 

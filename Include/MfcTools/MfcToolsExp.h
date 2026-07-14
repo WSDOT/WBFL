@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_MFCTOOLSEXP_H_
-#define INCLUDED_MFCTOOLS_MFCTOOLSEXP_H_
 #pragma once
 
 // Define BUILDMFCTOOLSLIB when building this library
@@ -52,4 +50,3 @@
 #include <MfcTools\AutoLib.h>
 #endif
 
-#endif // INCLUDED_MFCTOOLS_MFCTOOLSEXP_H_

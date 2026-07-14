@@ -25,8 +25,7 @@
 
 // FilteredSegmentCollection.h : Declaration of the CFilteredSegmentCollection
 
-#ifndef __FILTEREDSEGMENTCOLLECTION_H_
-#define __FILTEREDSEGMENTCOLLECTION_H_
+#pragma once
 
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
@@ -80,4 +79,3 @@ private:
    {return S_OK;}
 };
 
-#endif //__FILTEREDSEGMENTCOLLECTION_H_

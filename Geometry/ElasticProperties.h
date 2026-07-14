@@ -23,8 +23,7 @@
 
 // ElasticProperties.h : Declaration of the CElasticProperties
 
-#ifndef __ELASTICPROPERTIES_H_
-#define __ELASTICPROPERTIES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/ElasticProperties.h>
@@ -96,4 +95,3 @@ private:
 	WBFL::Geometry::ElasticProperties m_Props;
 };
 
-#endif //__ELASTICPROPERTIES_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTUSINGBOGUSCONTEXT_H__E017CA86_82A6_404F_8890_35224A61178D__INCLUDED_)
-#define AFX_TESTUSINGBOGUSCONTEXT_H__E017CA86_82A6_404F_8890_35224A61178D__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestUsingBogusContext  
 {
@@ -43,4 +38,3 @@ public:
 	static void Test();
 };
 
-#endif // !defined(AFX_TESTUSINGBOGUSCONTEXT_H__E017CA86_82A6_404F_8890_35224A61178D__INCLUDED_)

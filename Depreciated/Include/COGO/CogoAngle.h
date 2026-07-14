@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGO_COGOANGLE_H_
-#define INCLUDED_COGO_COGOANGLE_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -192,6 +190,4 @@ bool COGOFUNC operator  > (const cogoAngle& a,const cogoAngle& b);
 bool COGOFUNC operator  < (const cogoAngle& a,const cogoAngle& b);
 bool COGOFUNC operator >= (const cogoAngle& a,const cogoAngle& b);
 bool COGOFUNC operator <= (const cogoAngle& a,const cogoAngle& b);
-
-#endif // INCLUDED_COGO_COGOANGLE_H_
 

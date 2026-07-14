@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPLATEGIRDER_H__5C4113A8_D200_4C06_93DB_AD972EF31CC3__INCLUDED_)
-#define AFX_TESTPLATEGIRDER_H__5C4113A8_D200_4C06_93DB_AD972EF31CC3__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestPlateGirder  
 {
@@ -49,4 +44,3 @@ private:
 	static void TestIPlateGirder();
 };
 
-#endif // !defined(AFX_TESTPLATEGIRDER_H__5C4113A8_D200_4C06_93DB_AD972EF31CC3__INCLUDED_)

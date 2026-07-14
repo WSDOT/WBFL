@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_REACTION_H_
-#define INCLUDED_BRIDGEANALYSIS_REACTION_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -234,6 +232,4 @@ bamReaction BAMFUNC operator+(const bamReaction& lhs,const bamReaction& rhs);
 bamReaction BAMFUNC operator-(const bamReaction& lhs,const bamReaction& rhs);
 bamReaction BAMFUNC operator*(const bamReaction& lhs,Float64 d);
 bamReaction BAMFUNC operator*(Float64 d,const bamReaction& rhs);
-
-#endif // INCLUDED_BRIDGEANALYSIS_REACTION_H_
 

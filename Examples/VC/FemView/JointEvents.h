@@ -1,9 +1,5 @@
-#ifndef INCLUDED_JOINTEVENTS_H_
-#define INCLUDED_JOINTEVENTS_H_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // JointEvents.h : header file
 //
 
@@ -55,4 +51,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // INCLUDED_JOINTEVENTS_H_

@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ENGNOTATION_H_
-#define INCLUDED_ENGNOTATION_H_
+#pragma once
 
 #if !defined INCLUDED_IOSTREAM_
 #include <iostream>
@@ -52,4 +51,3 @@ using eng_notation_manip = std::_Smanip<sysEngNotationData>;
 
 eng_notation_manip eng_notation(Float64 value,long nDigits,long sigDigits = 0);
 
-#endif // INCLUDED_ENGNOTATION_H_

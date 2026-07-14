@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_)
-#define AFX_TESTPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestPolyShape  
 {
@@ -52,4 +47,3 @@ private:
    static void TestContains();
 };
 
-#endif // !defined(AFX_TESTPOLYSHAPE_H__F36E1237_BC70_11D3_8A10_006097C68A9C__INCLUDED_)

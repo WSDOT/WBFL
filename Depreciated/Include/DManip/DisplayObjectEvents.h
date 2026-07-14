@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECTEVENTS_H_
-#define INCLUDED_DISPLAYOBJECTEVENTS_H_
 #pragma once
 
 interface iDisplayObjectEvents : public IUnknown
@@ -56,4 +54,3 @@ interface iDisplayObjectEvents : public IUnknown
    STDMETHOD_(void,OnUnselect)(iDisplayObject* pDO) PURE;
 };
 
-#endif // INCLUDED_DISPLAYOBJECTEVENTS_H_

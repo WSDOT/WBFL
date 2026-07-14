@@ -23,8 +23,7 @@
 
 // StagesAgg.h : Declaration of the CStagesAgg
 
-#ifndef __StageSAGG_H_
-#define __StageSAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAM.h"
@@ -81,4 +80,3 @@ public:
    CComPtr<IStages> m_Stages;
 };
 
-#endif //__StagesAgg_H_

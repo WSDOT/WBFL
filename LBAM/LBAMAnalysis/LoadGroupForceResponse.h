@@ -23,8 +23,7 @@
 
 // LoadGroupForceResponse.h : Declaration of the CLoadGroupForceResponse
 
-#ifndef __LOADGROUPFORCERESPONSE_H_
-#define __LOADGROUPFORCERESPONSE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadGroupResponse.h"
@@ -78,4 +77,3 @@ protected:
    }
 };
 
-#endif //__LOADGROUPFORCERESPONSE_H_

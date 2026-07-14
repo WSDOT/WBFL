@@ -1,5 +1,4 @@
-#ifndef INCLUDED_TXNMGRIMPL_H_
-#define INCLUDED_TXNMGRIMPL_H_
+#pragma once
 
 #include <WBFLTransactions.h>
 
@@ -442,4 +441,3 @@ protected:
    ValueType3 m_Param3;
 };
 
-#endif //  INCLUDED_TXNMGRIMPL_H_

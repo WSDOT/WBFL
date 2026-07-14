@@ -23,10 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGOTEST_H_
-#define INCLUDED_COGOTEST_H_
 #pragma once
 
 bool TestIObjectSafety(REFCLSID rclsid,REFIID riid,DWORD dwSupportedOptions);
 
-#endif // INCLUDED_COGOTEST_H_

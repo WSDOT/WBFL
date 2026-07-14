@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTTransversePIERDESCRIPTION_H_
-#define INCLUDED_TESTTransversePIERDESCRIPTION_H_
+#pragma once
 
 class CTestTransversePierDescription
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestTransversePierDescription();
 };
 
-#endif // INCLUDED_TESTTransversePIERDESCRIPTION_H_

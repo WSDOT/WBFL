@@ -25,8 +25,7 @@
 
 // PrestressingStrand.h : Declaration of the CPrestressingStrand
 
-#ifndef __PRESTRESSINGSTRAND_H_
-#define __PRESTRESSINGSTRAND_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 //#include "GenericBridgeCP.h"
@@ -130,4 +129,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__PRESTRESSINGSTRAND_H_

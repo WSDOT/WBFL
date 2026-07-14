@@ -23,8 +23,7 @@
 
 // StrainLoad.h : Declaration of the CStrainLoad
 
-#ifndef __STRAINLOAD_H_
-#define __STRAINLOAD_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
@@ -95,4 +94,3 @@ protected:
    Float64       m_CurvatureStrain;
 };
 
-#endif //__STRAINLOAD_H_

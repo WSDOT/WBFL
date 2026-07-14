@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MAPPING_H_
-#define INCLUDED_MAPPING_H_
 #pragma once
 
 interface iMapping : public IUnknown
@@ -61,4 +59,3 @@ interface iMapping : public IUnknown
    STDMETHOD_(void,GetRotation)(Float64* cx,Float64* cy,Float64* angle) PURE;
 };
 
-#endif // INCLUDED_MAPPING_H_

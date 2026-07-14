@@ -25,8 +25,7 @@
 
 // MomentCapacitySolver.h : Declaration of the CMomentCapacitySolver
 
-#ifndef __MomentCapacitySolver_H_
-#define __MomentCapacitySolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -121,4 +120,3 @@ public:
    STDMETHOD(get_PlasticCentroid)(/*[out,retval]*/ IPoint2d** pcg) override;
 };
 
-#endif //__MomentCapacitySolver_H_

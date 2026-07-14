@@ -25,8 +25,7 @@
 
 // MohrCircle.h : Declaration of the CMohrCircle
 
-#ifndef __MOHRCIRCLE_H_
-#define __MOHRCIRCLE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -80,4 +79,3 @@ public:
 	STDMETHOD(put_Sii)(/*[in]*/ Float64 sii) override;
 };
 
-#endif //__MOHRCIRCLE_H_

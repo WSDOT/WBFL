@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_SPAN_H_
-#define INCLUDED_BRIDGEMODELING_SPAN_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -328,4 +326,3 @@ inline CollectionIndexType bmfSpan::GetGirderPathCount() const { return m_Girder
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEMODELING_SPAN_H_

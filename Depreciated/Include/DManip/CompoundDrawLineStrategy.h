@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_
-#define INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawLineStrategy.h>
@@ -36,4 +34,3 @@ interface iCompoundDrawLineStrategy : public iDrawLineStrategy
    STDMETHOD_(IndexType,Count)() PURE;
 };
 
-#endif // INCLUDED_COMPOUNDDRAWLINESTRATEGY_H_

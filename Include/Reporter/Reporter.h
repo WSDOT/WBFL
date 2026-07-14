@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_REPORTER_H_
-#define INCLUDED_REPORTER_REPORTER_H_
 #pragma once
 
 // This is a master include file for the Reporting Package
@@ -70,4 +68,3 @@
 #include <Reporter\StyleLibrary.h>
 #include <Reporter\CDRatio.h>
 
-#endif // INCLUDED_REPORTER_REPORTER_H_

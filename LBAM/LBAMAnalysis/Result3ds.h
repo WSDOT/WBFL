@@ -23,8 +23,7 @@
 
 // Result3Ds.h : Declaration of the CResult3Ds
 
-#ifndef __RESULT3DS_H_
-#define __RESULT3DS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -91,4 +90,3 @@ public:
 
 };
 
-#endif //__Result3DS_H_

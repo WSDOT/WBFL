@@ -23,8 +23,7 @@
 
 // EnvelopedVehicularLoadResponseAgg.h : Declaration of the CEnvelopedVehicularLoadResponseAgg
 
-#ifndef __EnvelopedVehicularLoadResponseAgg_H_
-#define __EnvelopedVehicularLoadResponseAgg_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMModelEnveloper.h"
@@ -122,4 +121,3 @@ private:
 
 };
 
-#endif //__EnvelopedVehicularLoadResponseAgg_H_

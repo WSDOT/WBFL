@@ -25,8 +25,7 @@
 
 // Rect2d.h : Declaration of the CRect2d
 
-#ifndef __RECT2D_H_
-#define __RECT2D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Primitives.h>
@@ -108,4 +107,3 @@ public:
 	STDMETHOD(GetBounds)(/*[out, retval]*/ Float64* pLeft, /*[out, retval]*/ Float64* pRight, /*[out, retval]*/ Float64* pBottom, /*[out, retval]*/ Float64* pTop) override;
 };
 
-#endif //__RECT2D_H_

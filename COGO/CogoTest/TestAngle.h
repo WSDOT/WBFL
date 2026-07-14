@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTANGLE_H__2C98A24D_55F7_11D5_8C29_006097C68A9C__INCLUDED_)
-#define AFX_TESTANGLE_H__2C98A24D_55F7_11D5_8C29_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestAngle  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTANGLE_H__2C98A24D_55F7_11D5_8C29_006097C68A9C__INCLUDED_)

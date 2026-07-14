@@ -1,9 +1,5 @@
-#if !defined(AFX_EDITJOINTDLG_H__1F8A97D0_F789_11D4_8B9B_006097C68A9C__INCLUDED_)
-#define AFX_EDITJOINTDLG_H__1F8A97D0_F789_11D4_8B9B_006097C68A9C__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // EditJointDlg.h : header file
 //
 
@@ -47,4 +43,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EDITJOINTDLG_H__1F8A97D0_F789_11D4_8B9B_006097C68A9C__INCLUDED_)

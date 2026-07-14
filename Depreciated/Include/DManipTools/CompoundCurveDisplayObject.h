@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CompoundCurveDISPLAYOBJECT_H_
-#define INCLUDED_CompoundCurveDISPLAYOBJECT_H_
 #pragma once
 
 interface ICompoundCurve;
@@ -53,4 +51,3 @@ interface iCompoundCurveDisplayObject : public iDisplayObject
    STDMETHOD_(void,get_Font)(LOGFONT* pFont) PURE;
 };
 
-#endif // INCLUDED_CompoundCurveDISPLAYOBJECT_H_

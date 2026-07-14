@@ -2,9 +2,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_CHILDFRM_H__BD01DE7D_5A3D_11D2_9D69_00609710E6CE__INCLUDED_)
-#define AFX_CHILDFRM_H__BD01DE7D_5A3D_11D2_9D69_00609710E6CE__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -49,4 +46,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CHILDFRM_H__BD01DE7D_5A3D_11D2_9D69_00609710E6CE__INCLUDED_)

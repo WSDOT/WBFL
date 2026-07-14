@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_PROGRESSMONITORUTILS_H_
-#define INCLUDED_PROGRESSMONITORUTILS_H_
+#pragma once
 
 // Simple class that calls Hide() in its destructor. Makes showing progress window exception-safe
 
@@ -50,5 +49,3 @@ private:
 
 typedef CAutoHide<IProgressMonitorWindow> CProgressAutoHide; 
 
-
-#endif // INCLUDED_PROGRESSMONITORUTILS_H_

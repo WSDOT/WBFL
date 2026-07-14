@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DISPLAYMGRIMPL_H__BCB8A10C_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_DISPLAYMGRIMPL_H__BCB8A10C_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include <afxole.h> // For drag and drop
@@ -209,4 +204,3 @@ private:
    CComPtr<iDisplayMgrEvents> m_EventSink;
 };
 
-#endif // !defined(AFX_DISPLAYMGRIMPL_H__BCB8A10C_E659_11D4_8B81_006097C68A9C__INCLUDED_)

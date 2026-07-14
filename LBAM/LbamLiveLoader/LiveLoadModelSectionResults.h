@@ -23,8 +23,7 @@
 
 // ILiveLoadModelSectionResults.h : Declaration of the CLiveLoadModelSectionResults
 
-#ifndef __ILiveLoadModelSectionResults_H_
-#define __ILiveLoadModelSectionResults_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -105,4 +104,3 @@ private:
 
 };
 
-#endif //__ILiveLoadModelSectionResults_H_

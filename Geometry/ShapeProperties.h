@@ -25,8 +25,7 @@
 
 // ShapeProperties.h : Declaration of the CShapeProperties
 
-#ifndef __SHAPEPROPERTIES_H_
-#define __SHAPEPROPERTIES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/ShapeProperties.h>
@@ -99,4 +98,3 @@ public:
 	STDMETHOD(put_Area)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__SHAPEPROPERTIES_H_

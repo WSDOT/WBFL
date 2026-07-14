@@ -23,8 +23,7 @@
 
 // Result3D.h : Declaration of the CResult3D
 
-#ifndef __RESULT3D_H_
-#define __RESULT3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAMAnalysis.h"
@@ -98,4 +97,3 @@ protected:
 
 };
 
-#endif //__RESULT3D_H_

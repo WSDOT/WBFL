@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_SECTIONSTRESS_H_
-#define INCLUDED_BRIDGEANALYSIS_SECTIONSTRESS_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -224,6 +222,4 @@ bamSectionStress BAMFUNC operator*(Float64 d,const bamSectionStress& rhs);
 bamSectionStress BAMFUNC operator*(const bamSectionStress& lhs,Float64 d);
 bamSectionStress BAMFUNC operator*(const sysSectionValue& lhs,const bamSectionStress& rhs);
 bamSectionStress BAMFUNC operator*(const bamSectionStress& lhs,const sysSectionValue& rhs);
-
-#endif // INCLUDED_BRIDGEANALYSIS_SECTIONSTRESS_H_
 

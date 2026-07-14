@@ -3,12 +3,7 @@
 //      are changed infrequently
 //
 
-#if !defined(AFX_STDAFX_H__FF18985F_F484_4470_82BC_88603EE38124__INCLUDED_)
-#define AFX_STDAFX_H__FF18985F_F484_4470_82BC_88603EE38124__INCLUDED_
- 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
@@ -93,4 +88,3 @@ private:
 
 using namespace WBFL::DManip;
 
-#endif // !defined(AFX_STDAFX_H__FF18985F_F484_4470_82BC_88603EE38124__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // TendonCollection.h : Declaration of the CTendonCollection
 
-#ifndef __TendonCollection_H_
-#define __TendonCollection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLComCollections.h>
@@ -94,4 +93,3 @@ public:
 //	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__TendonCollection_H_

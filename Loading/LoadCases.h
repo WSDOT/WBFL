@@ -23,8 +23,7 @@
 
 // LoadCases.h : Declaration of the CLoadCases
 
-#ifndef __LOADCASES_H_
-#define __LOADCASES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
@@ -93,4 +92,3 @@ public:
    void FinalRelease();
 };
 
-#endif //__LOADCASES_H_

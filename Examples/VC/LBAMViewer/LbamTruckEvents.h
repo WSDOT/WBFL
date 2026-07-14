@@ -1,5 +1,4 @@
-#ifndef INCLUDED_LBAMTRUCKEVENTS_H_
-#define INCLUDED_LBAMTRUCKEVENTS_H_
+#pragma once
 
 
 interface iLBAMTruckEvents
@@ -10,4 +9,3 @@ interface iLBAMTruckEvents
 	virtual void SetRoadwayElevation(std::shared_ptr<WBFL::DManip::iPointDisplayObject> pDO, double newVal) = 0;
 };
 
-#endif // INCLUDED_LBAMTruckEVENTS_H_

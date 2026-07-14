@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_AUTOLIB_H_
-#define INCLUDED_MFCTOOLS_AUTOLIB_H_
 #pragma once
 
 #if !defined (BUILDMFCTOOLSLIB)
@@ -36,4 +34,3 @@
 
 #endif // BUILDMFCTOOLSLIB
 
-#endif // INCLUDED_MFCTOOLS_AUTOLIB_H_

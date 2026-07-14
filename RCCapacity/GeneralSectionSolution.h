@@ -25,8 +25,7 @@
 
 // GeneralSectionSolution.h : Declaration of the CGeneralSectionSolution
 
-#ifndef __GeneralSectionSolution_H_
-#define __GeneralSectionSolution_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -99,4 +98,3 @@ public:
 	STDMETHOD(FindSlices)(/*[in]*/IndexType shapeIdx, /*[out, retval]*/IUnkArray** ppSlices) override;
 };
 
-#endif //__GeneralSectionSolution_H_

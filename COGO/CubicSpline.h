@@ -25,8 +25,6 @@
 
 // CubicSpline.h : Declaration of the CCubicSpline
 
-#ifndef __CUBICSPLINE_H_
-#define __CUBICSPLINE_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -109,4 +107,3 @@ private:
    std::shared_ptr<WBFL::COGO::CubicSpline> m_Curve;
 };
 
-#endif //__CUBICSPLINE_H_

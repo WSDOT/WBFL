@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPLANE3D_H__6EBA7721_B886_11D3_8A0D_006097C68A9C__INCLUDED_)
-#define AFX_TESTPLANE3D_H__6EBA7721_B886_11D3_8A0D_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestPlane3d  
 {
@@ -46,4 +41,3 @@ private:
    static void TestPlaneLineIntersect();
 };
 
-#endif // !defined(AFX_TESTPLANE3D_H__6EBA7721_B886_11D3_8A0D_006097C68A9C__INCLUDED_)

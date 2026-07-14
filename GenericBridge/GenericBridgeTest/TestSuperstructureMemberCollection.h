@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_
-#define INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_
+#pragma once
 
 class CTestSuperstructureMemberCollection
 {
@@ -42,4 +41,3 @@ private:
    static void TestMethods();
 };
 
-#endif // INCLUDED_TESTSUPERSTRUCTUREMEMBERCOLLECTION_H_

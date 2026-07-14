@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCIRCULARSEGMENT_H__C6C2A644_6563_11D4_8CE4_0080C7380027__INCLUDED_)
-#define AFX_TESTCIRCULARSEGMENT_H__C6C2A644_6563_11D4_8CE4_0080C7380027__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCircularSegment  
 {
@@ -51,4 +46,3 @@ private:
    static void OtherTests();
 };
 
-#endif // !defined(AFX_TESTCIRCULARSEGMENT_H__C6C2A644_6563_11D4_8CE4_0080C7380027__INCLUDED_)

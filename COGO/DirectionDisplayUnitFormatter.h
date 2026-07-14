@@ -25,8 +25,6 @@
 
 // DirectionDisplayUnitFormatter.h : Declaration of the CDirectionDisplayUnitFormatter
 
-#ifndef __DIRECTIONDISPLAYUNITFORMATTER_H_
-#define __DIRECTIONDISPLAYUNITFORMATTER_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -91,4 +89,3 @@ private:
    Float64 m_ZeroTolerance;
 };
 
-#endif //__DIRECTIONDISPLAYUNITFORMATTER_H_

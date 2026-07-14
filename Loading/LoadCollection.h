@@ -24,8 +24,7 @@
 #include "ComCollections.h"
 #include "resource.h"       // main symbols
 
-#ifndef __CLoadCollection_H_
-#define __CLoadCollection_H_
+#pragma once
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1041,5 +1040,3 @@ protected:
    }
 };
 
-
-#endif //

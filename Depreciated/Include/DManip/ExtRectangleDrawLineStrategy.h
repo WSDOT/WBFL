@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EXTRECTANGLEDRAWDRAWLINESTRATEGY_H_
-#define INCLUDED_EXTRECTANGLEDRAWDRAWLINESTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawLineStrategy.h>
@@ -60,4 +58,3 @@ interface iExtRectangleDrawLineStrategy : public iDrawLineStrategy
    STDMETHOD_(BOOL,DoFill)() PURE;
 };
 
-#endif // INCLUDED_EXTRECTANGLEDRAWDRAWLINESTRATEGY_H_

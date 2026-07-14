@@ -23,8 +23,7 @@
 
 // DistributionFactors.h : Declaration of the CDistributionFactors
 
-#ifndef __DISTRIBUTIONFACTORS_H_
-#define __DISTRIBUTIONFACTORS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLComCollections.h>
@@ -201,4 +200,3 @@ private:
 
 };
 
-#endif //__DISTRIBUTIONFACTORS_H_

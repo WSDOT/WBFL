@@ -25,8 +25,7 @@
 
 // UHPConcrete.h : Declaration of the CUHPConcrete
 
-#ifndef __UHPConcrete_H_
-#define __UHPConcrete_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -109,4 +108,3 @@ public:
    STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
-#endif //__UHPConcrete_H_

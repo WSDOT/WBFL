@@ -27,14 +27,9 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTLOADCOMBINER_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_)
-#define AFX_TESTLOADCOMBINER_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_
-
 #include "LcTestUtils.h"
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class TestLoadCombiner:
 public CComObjectRootEx<CComSingleThreadModel>,
@@ -61,7 +56,4 @@ protected:
    bool m_csCombinationChangedFired;
    unsigned long m_Cookie;
 };
-
-#endif // !defined(AFX_TestLoadCombiner_H__0D3A1E9E_4612_4A70_B90E_98892D621FDA__INCLUDED_)
-
 

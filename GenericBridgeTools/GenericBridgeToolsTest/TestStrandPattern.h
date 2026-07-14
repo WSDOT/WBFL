@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTSTRANDPATTERN_H_
-#define INCLUDED_TESTSTRANDPATTERN_H_
+#pragma once
 
 class CTestStrandPattern
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestStrandPattern();
 };
 
-#endif // INCLUDED_TESTSTRANDPATTERN_H_

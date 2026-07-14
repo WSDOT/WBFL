@@ -25,8 +25,7 @@
 
 // ErrorLog.h : Declaration of the CErrorLog
 
-#ifndef __ERRORLOG_H_
-#define __ERRORLOG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -66,4 +65,3 @@ private:
    std::vector<std::shared_ptr<std::_tofstream> > m_LogFiles;
 };
 
-#endif //__ERRORLOG_H_

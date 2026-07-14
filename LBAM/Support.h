@@ -23,8 +23,7 @@
 
 // Support.h : Declaration of the CSupport
 
-#ifndef __SUPPORT_H_
-#define __SUPPORT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "Segments.h"
@@ -147,4 +146,3 @@ public:
    std::vector<SupportIDType> m_AssociatedSupportIDs;
 };
 
-#endif //__Support_H_

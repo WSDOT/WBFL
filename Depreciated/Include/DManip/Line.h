@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LINE_H_
-#define INCLUDED_LINE_H_
 #pragma once
 
 #include <DManip\DisplayObject.h>
@@ -37,4 +35,3 @@ interface iLineDisplayObject : public iDisplayObject
    STDMETHOD_(void,GetEndPoints)(IPoint2d* *pStart,IPoint2d* *pEnd) PURE;
 };
 
-#endif // INCLUDED_LINE_H_

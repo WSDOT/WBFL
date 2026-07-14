@@ -23,8 +23,7 @@
 
 // LoadCombinationsAgg.h : Declaration of the CLoadCombinationsAgg
 
-#ifndef __LOADCOMBINATIONSAGG_H_
-#define __LOADCOMBINATIONSAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAM.h"
@@ -79,4 +78,3 @@ public:
    CComPtr<ILoadCombinations> m_LoadCombinations;
 };
 
-#endif //__LoadCombinationsAgg_H_

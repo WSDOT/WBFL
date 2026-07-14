@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTBeamShapeFactory_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_)
-#define AFX_TESTBeamShapeFactory_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestBeamShapeFactory  
 {
@@ -49,4 +44,3 @@ private:
    static void VerifyShape(BeamShapeType type, IShape* pShape);
 };
 
-#endif // !defined(AFX_TESTBeamShapeFactory_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_)

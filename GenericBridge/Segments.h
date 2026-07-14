@@ -25,8 +25,7 @@
 
 // Segments.h : Declaration of the CSegments
 
-#ifndef __SEGMENTS_H_
-#define __SEGMENTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <map>
@@ -209,4 +208,3 @@ public:
    friend iterator; // this is NOT VERY OBVIOUS HERE!!! , but it won't compile elsewhere
 };
 
-#endif //__SEGMENTS_H_

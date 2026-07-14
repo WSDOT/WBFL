@@ -25,8 +25,7 @@
 
 // LRFDPrestressFormula.h : Declaration of the CLRFDPrestressFormula
 
-#ifndef __LRFDPrestressFormula_H_
-#define __LRFDPrestressFormula_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <Materials/LRFDPrestressModel.h>
@@ -86,4 +85,3 @@ public:
    STDMETHOD(get_StrainAtPeakStress)(/*[out,retval]*/Float64* strain) override;
 };
 
-#endif //__LRFDPrestressFormula_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTINFLUENCELINE_H__82AFA9DE_4AD0_4F9C_8EE6_A77A3830313B__INCLUDED_)
-#define AFX_TESTINFLUENCELINE_H__82AFA9DE_4AD0_4F9C_8EE6_A77A3830313B__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestInfluenceLine  
 {
@@ -43,4 +38,3 @@ public:
    HRESULT Test();
 };
 
-#endif // !defined(AFX_TESTINFLUENCELINE_H__82AFA9DE_4AD0_4F9C_8EE6_A77A3830313B__INCLUDED_)

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DRAWLINESTRATEGY_H_
-#define INCLUDED_DRAWLINESTRATEGY_H_
 #pragma once
 
 interface iLineDisplayObject;
@@ -41,4 +39,3 @@ interface iDrawLineStrategy : public IUnknown
    STDMETHOD_(void,GetBoundingBox)(iLineDisplayObject* pDO,IRect2d** box) PURE;
 };
 
-#endif // INCLUDED_DRAWLINESTRATEGY_H_

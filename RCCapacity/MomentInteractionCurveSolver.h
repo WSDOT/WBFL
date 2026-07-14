@@ -25,8 +25,7 @@
 
 // MomentInteractionCurveSolver.h : Declaration of the CMomentInteractionCurveSolver
 
-#ifndef __MomentInteractionCurveSolver_H_
-#define __MomentInteractionCurveSolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -78,4 +77,3 @@ public:
    STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/Float64 startNA,/*[in]*/Float64 endNA,/*[in]*/long nSteps,/*[out,retval]*/IInteractionCapacityCurveSolution** solution) override;
 };
 
-#endif //__MomentInteractionCurveSolver_H_

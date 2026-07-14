@@ -23,8 +23,7 @@
 
 // Supports.h : Declaration of the CSupports
 
-#ifndef __SUPPORTS_H_
-#define __SUPPORTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "SupportCP.h"
@@ -168,4 +167,3 @@ public:
 
 };
 
-#endif //__SUPPORTS_H_

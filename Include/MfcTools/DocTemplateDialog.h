@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DOCTEMPLATEDIALOG_H__E428EFC3_5E1F_11D2_9D6E_00609710E6CE__INCLUDED_)
-#define AFX_DOCTEMPLATEDIALOG_H__E428EFC3_5E1F_11D2_9D6E_00609710E6CE__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -109,4 +106,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_DOCTEMPLATEDIALOG_H__E428EFC3_5E1F_11D2_9D6E_00609710E6CE__INCLUDED_)

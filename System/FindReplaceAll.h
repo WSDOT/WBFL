@@ -1,5 +1,4 @@
-#ifndef INCLUDED_FINDREPLACEALL_H_
-#define INCLUDED_FINDREPLACEALL_H_
+#pragma once
 
 inline bool find_replace_all(std::_tstring* ptarget, const std::_tstring& find, const std::_tstring& replace)
 {
@@ -17,4 +16,3 @@ inline bool find_replace_all(std::_tstring* ptarget, const std::_tstring& find, 
    return ret;
 }
 
-#endif

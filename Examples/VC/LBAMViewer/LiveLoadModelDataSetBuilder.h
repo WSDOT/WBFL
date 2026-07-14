@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LIVELOADMODELDATASETBUILDER_H__3BE3848A_55B5_4AFF_85AE_17393BB1F515__INCLUDED_)
-#define AFX_LIVELOADMODELDATASETBUILDER_H__3BE3848A_55B5_4AFF_85AE_17393BB1F515__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DataSetBuilder.h"
 #include "ReactionReportBuilder.h"
@@ -52,4 +47,3 @@ private:
 
 };
 
-#endif // !defined(AFX_LIVELOADMODELDATASETBUILDER_H__3BE3848A_55B5_4AFF_85AE_17393BB1F515__INCLUDED_)

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPOINT3D_H__6FECF103_B6A3_11D3_8CDF_C9DF305B3C59__INCLUDED_)
-#define AFX_TESTPOINT3D_H__6FECF103_B6A3_11D3_8CDF_C9DF305B3C59__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 
@@ -46,4 +41,3 @@ private:
 	static void TestISupportErrorInfo();
 };
 
-#endif // !defined(AFX_TESTPOINT3D_H__6FECF103_B6A3_11D3_8CDF_C9DF305B3C59__INCLUDED_)

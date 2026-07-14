@@ -25,8 +25,6 @@
 
 // MultiWebSection2.h : Declaration of the CMultiWebSection2
 
-#ifndef __MultiWebSection2_H_
-#define __MultiWebSection2_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -168,4 +166,3 @@ public:
    STDMETHOD(AddShape)(/*[in]*/ IShape* shape,/*[in]*/ VARIANT_BOOL bVoid) override;
 };
 
-#endif //__MultiWebSection2_H_

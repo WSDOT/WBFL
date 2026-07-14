@@ -4,12 +4,10 @@
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
 
-#ifndef PCH_H
-#define PCH_H
+#pragma once
 
 // add headers that you want to pre-compile here
 #include <GeomModel/GeomModel.h>
 
 bool TestHookPoint(WBFL::Geometry::Shape& shape);
 
-#endif //PCH_H

@@ -25,8 +25,6 @@
 
 // LoadingCollection.h : Declaration of the CLoadingCollection
 
-#ifndef __LoadingCollection_H_
-#define __LoadingCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -76,4 +74,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__LoadingCollection_H_

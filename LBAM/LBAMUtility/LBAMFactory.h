@@ -23,8 +23,7 @@
 
 // LBAMFactory.h : Declaration of the CLBAMFactory
 
-#ifndef __LBAMFACTORY_H_
-#define __LBAMFACTORY_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -119,4 +118,3 @@ private:
    
    };
 
-#endif //__LBAMFACTORY_H_

@@ -1,5 +1,4 @@
-#ifndef INCLUDED_STRDATA_H_
-#define INCLUDED_STRDATA_H_
+#pragma once
 
 #include <vector>
 #include <stack>
@@ -117,4 +116,3 @@ private:
    std::unique_ptr<StrStorageDataMap<cls> > _strstgmap; \
    bool _LoadMap();
 
-#endif // INCLUDED_STRDATA_H_

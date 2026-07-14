@@ -25,8 +25,6 @@
 
 // Loading.h : Declaration of the CLoading
 
-#ifndef __LOADING_H_
-#define __LOADING_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -117,4 +115,3 @@ private:
 
 };
 
-#endif //__LOADING_H_

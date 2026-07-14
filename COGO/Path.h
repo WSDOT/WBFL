@@ -25,8 +25,6 @@
 
 // Path.h : Declaration of the CPath
 
-#ifndef __PATH_H_
-#define __PATH_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -109,4 +107,3 @@ private:
 #endif
 };
 
-#endif //__PATH_H_

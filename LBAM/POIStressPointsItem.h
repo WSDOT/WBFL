@@ -23,8 +23,7 @@
 
 // POIStressPointsItem.h : Declaration of the CPOIStressPointsItem
 
-#ifndef __POISTRESSPOINTSITEM_H_
-#define __POISTRESSPOINTSITEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 class CPOIStressPoints;
@@ -88,4 +87,3 @@ private:
    CComPtr<IStressPoints> m_RightStressPoints;
 };
 
-#endif //__POISTRESSPOINTSITEM_H_

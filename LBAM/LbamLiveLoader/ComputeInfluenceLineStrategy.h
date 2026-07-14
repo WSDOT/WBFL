@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __iComputeInfluenceLineStrategy_H_
-#define __iComputeInfluenceLineStrategy_H_
+#pragma once
 
 
 // polymorphic strategy class for computing influence lines for different effects
@@ -171,7 +170,3 @@ private:
    IInfluenceLineResponse* m_Response;
 };
 
-
-
-
-#endif

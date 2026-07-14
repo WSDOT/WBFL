@@ -25,8 +25,6 @@
 
 // Joint.h : Declaration of the CJoint
 
-#ifndef __Joint_H_
-#define __Joint_H_
 #pragma once
 
 #include "stdafx.h"
@@ -144,4 +142,3 @@ private:
    friend CLoading;
 };
 
-#endif //__Joint_H_

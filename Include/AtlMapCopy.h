@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ATLMAPCOPY_H_
-#define INCLUDED_ATLMAPCOPY_H_
+#pragma once
 
 // Atl Copy class for copying variants from an stl map contained in a
 // ICollectionOnSTLImpl
@@ -88,5 +87,3 @@ class _MapCopyUsingStaticCast
       static void destroy(destType**p ) {if (*p) (*p)->Release();}
 };
 
-
-#endif // INCLUDED_ATLMAPCOPY_H_

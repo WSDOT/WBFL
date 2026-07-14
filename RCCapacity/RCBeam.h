@@ -25,8 +25,7 @@
 
 // RCBeam.h : Declaration of the CRCBeam
 
-#ifndef __RCBEAM_H_
-#define __RCBEAM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -131,4 +130,3 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
-#endif //__RCBEAM_H_

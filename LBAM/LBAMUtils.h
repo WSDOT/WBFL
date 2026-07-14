@@ -23,8 +23,7 @@
 
 // LBAMCollection.h : 
 
-#ifndef __LBAMUtils_H_
-#define __LBAMUtils_H_
+#pragma once
 
 #include <MathEx.h>
 #include <vector>
@@ -425,6 +424,3 @@ private:
    CComPtr<TArr> m_Arr;
 };
 
-
-
-#endif //

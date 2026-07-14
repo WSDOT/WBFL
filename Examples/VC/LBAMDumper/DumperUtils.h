@@ -1,5 +1,4 @@
-#ifndef __LBAMDumperUtils_H_
-#define __LBAMDumperUtils_H_
+#pragma once
 
 #include <WBFLLBAMUtility.h>
 #include <System\NumericFormatTool.h>
@@ -435,4 +434,3 @@ static AxleIndexType GetAxleCnt(IVehicularLoads* vloads, ILiveLoadConfiguration*
    return axle_cnt;
 }
 
-#endif

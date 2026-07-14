@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_MomentCapacitySolverTest_H__69A6DB73_8BC5_4D0E_B0E6_50ACD5E81A11__INCLUDED_)
-#define AFX_MomentCapacitySolverTest_H__69A6DB73_8BC5_4D0E_B0E6_50ACD5E81A11__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CMomentCapacitySolverTest  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_MomentCapacitySolverTest_H__69A6DB73_8BC5_4D0E_B0E6_50ACD5E81A11__INCLUDED_)

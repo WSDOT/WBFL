@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_SEGMENTINFO_H_
-#define INCLUDED_BRIDGEANALYSIS_SEGMENTINFO_H_
 #pragma once
 
 struct bamSegmentInfo
@@ -34,4 +32,3 @@ struct bamSegmentInfo
    Float64 m_Density;
 };
 
-#endif // INCLUDED_BRIDGEANALYSIS_SEGMENTINFO_H_

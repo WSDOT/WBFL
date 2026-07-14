@@ -23,8 +23,7 @@
 
 // LoadGroupResponseAgg.h : Declaration of the CLoadGroupResponseAgg
 
-#ifndef __LoadGroupResponseAGG_H_
-#define __LoadGroupResponseAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMModelEnveloper.h"
@@ -101,4 +100,3 @@ private:
 
 };
 
-#endif //__LoadGroupResponseAgg_H_

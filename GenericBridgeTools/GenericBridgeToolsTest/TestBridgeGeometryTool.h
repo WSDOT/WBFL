@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTBRIDGEGEOMETRYTOOL_H_
-#define INCLUDED_TESTBRIDGEGEOMETRYTOOL_H_
+#pragma once
 
 class CTestBridgeGeometryTool
 {
@@ -42,4 +41,3 @@ private:
    static void TestSplicedGirderBridge();
 };
 
-#endif // INCLUDED_TESTBRIDGEGEOMETRYTOOL_H_

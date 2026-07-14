@@ -23,8 +23,6 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __Fem2dError_H_
-#define __Fem2dError_H_
 #pragma once
 
 // HRESULT's for the Fem2d System
@@ -73,4 +71,3 @@
 #define FEM2D_E_MODEL_HAS_NO_MEMBERS                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,554)
 #define FEM2D_E_STRAIN_LOAD_OFF_GIRDER_END		            MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,546)
 
-#endif

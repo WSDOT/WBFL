@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REINFORCEDCONCRETE_REINFORCEDCONCRETE_H_
-#define INCLUDED_REINFORCEDCONCRETE_REINFORCEDCONCRETE_H_
 #pragma once
 
 // This is a master include file for the Reinforced Concrete Analysis Package
@@ -40,5 +38,3 @@
 #include <ReinforcedConcrete\ReinforcementElement.h>
 #include <ReinforcedConcrete\WhitneyCapacityProblem.h>
 
-
-#endif //  INCLUDED_REINFORCEDCONCRETE_REINFORCEDCONCRETE_H_

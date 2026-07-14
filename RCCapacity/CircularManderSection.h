@@ -25,8 +25,7 @@
 
 // CircularManderSection.h : Declaration of the CCircularManderSection
 
-#ifndef __CircularManderSection_H_
-#define __CircularManderSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <Materials/ConfinedConcreteModel.h>
@@ -103,4 +102,3 @@ public:
 	STDMETHOD(get_Cover)(/*[out,retval]*/Float64* c) override;
 };
 
-#endif //__CircularManderSection_H_

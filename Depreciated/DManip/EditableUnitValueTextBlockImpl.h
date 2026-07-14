@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EDITABLEUNITVALUETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_)
-#define AFX_EDITABLEUNITVALUETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include "InplaceEditDefaultImpl.h"
@@ -218,4 +213,3 @@ private:
    CComPtr<IStation> m_Station;
 };
 
-#endif // !defined(AFX_EDITABLEUNITVALUETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_)

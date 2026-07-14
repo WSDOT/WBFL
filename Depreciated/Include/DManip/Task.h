@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TASK_H_
-#define INCLUDED_TASK_H_
 #pragma once
 
 interface iTask : public IUnknown
@@ -52,4 +50,3 @@ interface iTask : public IUnknown
    STDMETHOD_(DROPEFFECT,OnDropEx)(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) PURE;
 };
 
-#endif // INCLUDED_TASK_H_

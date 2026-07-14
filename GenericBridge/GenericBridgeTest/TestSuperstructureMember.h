@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTSUPERSTRUCTUREMEMBER_H_
-#define INCLUDED_TESTSUPERSTRUCTUREMEMBER_H_
+#pragma once
 
 class CTestSuperstructureMember
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestSuperstructureMember();
 };
 
-#endif // INCLUDED_TESTSUPERSTRUCTUREMEMBER_H_

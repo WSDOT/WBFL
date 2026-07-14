@@ -23,8 +23,7 @@
 
 // SuperstructureMembers.h : Declaration of the CSuperstructureMembers
 
-#ifndef __SUPERSTRUCTUREMEMBERS_H_
-#define __SUPERSTRUCTUREMEMBERS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "SuperstructureMemberCP.h"
@@ -170,4 +169,3 @@ protected:
    Float64 m_Offset;
 };
 
-#endif //__SUPERSTRUCTUREMEMBERS_H_

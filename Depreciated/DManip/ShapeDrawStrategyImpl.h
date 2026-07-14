@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SHAPEDRAWSTRATEGYIMPL_H__9E3A6AF6_E734_11D4_8B83_006097C68A9C__INCLUDED_)
-#define AFX_SHAPEDRAWSTRATEGYIMPL_H__9E3A6AF6_E734_11D4_8B83_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -195,4 +190,3 @@ private:
    void GetPointsInWorldSpace(iDisplayObject* pDO, const std::shared_ptr<const WBFL::Geometry::Shape>& shape, IPoint2dCollection** pPoints);
    void CreatePen(LineStyleType lineStyle, UINT width, COLORREF color, CPen& pen);
 };
-#endif // !defined(AFX_SHAPEDRAWSTRATEGYIMPL_H__9E3A6AF6_E734_11D4_8B83_006097C68A9C__INCLUDED_)

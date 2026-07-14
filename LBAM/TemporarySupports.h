@@ -23,8 +23,7 @@
 
 // TemporarySupports.h : Declaration of the CTemporarySupports
 
-#ifndef __TEMPORARYSUPPORTS_H_
-#define __TEMPORARYSUPPORTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLComCollections.h>
@@ -180,4 +179,3 @@ public:
 
 };
 
-#endif //__TEMPORARYSUPPORTS_H_

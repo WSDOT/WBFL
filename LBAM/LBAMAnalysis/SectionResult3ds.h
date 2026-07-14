@@ -23,8 +23,7 @@
 
 // SectionResult3Ds.h : Declaration of the CSectionResult3Ds
 
-#ifndef __SECTIONRESULT3DS_H_
-#define __SECTIONRESULT3DS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -92,4 +91,3 @@ public:
 
 };
 
-#endif //__SECTIONRESULT3DS_H_

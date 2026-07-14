@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDIRECTION_H__18FEC32B_59E4_11D5_8C2D_006097C68A9C__INCLUDED_)
-#define AFX_TESTDIRECTION_H__18FEC32B_59E4_11D5_8C2D_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestDirection  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTDIRECTION_H__18FEC32B_59E4_11D5_8C2D_006097C68A9C__INCLUDED_)

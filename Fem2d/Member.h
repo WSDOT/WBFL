@@ -25,8 +25,6 @@
 
 // Member.h : Declaration of the CMember
 
-#ifndef __Member_H_
-#define __Member_H_
 #pragma once
 
 #include "stdafx.h"
@@ -219,5 +217,3 @@ friend CModel;
 
 };
 
-
-#endif //__Member_H_

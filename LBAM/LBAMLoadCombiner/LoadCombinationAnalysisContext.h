@@ -23,8 +23,7 @@
 
 // LoadCombinationAnalysisContext.h : Declaration of the CLoadCombinationAnalysisContext
 
-#ifndef __LOADCOMBINATIONANALYSISCONTEXT_H_
-#define __LOADCOMBINATIONANALYSISCONTEXT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMLoadCombinerCP.h"
@@ -249,4 +248,3 @@ private:
    CComPtr<IGetStressPoints>        m_pGetStressPoints;
 };
 
-#endif //__LOADCOMBINATIONANALYSISCONTEXT_H_

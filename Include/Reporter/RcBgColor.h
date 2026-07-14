@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_rptRcBgColor_H_
-#define INCLUDED_REPORTER_rptRcBgColor_H_
 #pragma once
 
 #include <string>
@@ -74,4 +72,3 @@ private:
    rptRcBgColor() = delete;
 };
 
-#endif // INCLUDED_REPORTER_rptRcBgColor_H_

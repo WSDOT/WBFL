@@ -23,8 +23,7 @@
 
 // LiveLoadResponseAgg.h : Declaration of the CLiveLoadResponseAgg
 
-#ifndef __LiveLoadResponseAgg_H_
-#define __LiveLoadResponseAgg_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMModelEnveloper.h"
@@ -123,4 +122,3 @@ private:
 
 };
 
-#endif //__LiveLoadResponseAgg_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDISTRIBUTIONFACTOR_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_)
-#define AFX_TESTDISTRIBUTIONFACTOR_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestDistributionFactor  :
 public CComObjectRootEx<CComSingleThreadModel>,
@@ -57,4 +52,3 @@ public:
    unsigned long m_Cookie;   // cookies for connection points
 };
 
-#endif // !defined(AFX_TESTDistributionFactor_H__0AD9D36E_69B4_11D5_B01F_00105A9AF985__INCLUDED_)

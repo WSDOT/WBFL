@@ -23,8 +23,7 @@
 
 // DataSet2d.h : Declaration of the CDataSet2d
 
-#ifndef __DATASET2D_H_
-#define __DATASET2D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -106,4 +105,3 @@ protected:
    DataPointSymbolType m_SymbolType;
 };
 
-#endif //__DataSet2d_H_

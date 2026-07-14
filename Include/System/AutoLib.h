@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SYSTEM_AUTOLIB_H_
-#define INCLUDED_SYSTEM_AUTOLIB_H_
 #pragma once
 
 #if !defined (BUILDSYSLIB) // Don't do this if we are building. We can't link to ourselves
@@ -37,4 +35,3 @@
 
 #endif // BUILDSYSLIB
 
-#endif // INCLUDED_SYSTEM_AUTOLIB_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTANNOTATEDDISPLAYUNITFORMATTER_H__56842E26_CD2A_11D3_8CE1_926A77670A4E__INCLUDED_)
-#define AFX_TESTANNOTATEDDISPLAYUNITFORMATTER_H__56842E26_CD2A_11D3_8CE1_926A77670A4E__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestAnnotatedDisplayUnitFormatter  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTANNOTATEDDISPLAYUNITFORMATTER_H__56842E26_CD2A_11D3_8CE1_926A77670A4E__INCLUDED_)

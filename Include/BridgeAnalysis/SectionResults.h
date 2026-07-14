@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_SECTIONRESULTS_H_
-#define INCLUDED_BRIDGEANALYSIS_SECTIONRESULTS_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -247,6 +245,4 @@ private:
 //bamSectionResults BAMFUNC operator*(const bamSectionResults& lhs,Float64 d);
 //bamSectionResults BAMFUNC operator*(const sysSectionValue& lhs,const bamSectionResults& rhs);
 //bamSectionResults BAMFUNC operator*(const bamSectionResults& lhs,const sysSectionValue& rhs);
-
-#endif // INCLUDED_BRIDGEANALYSIS_SECTIONRESULTS_H_
 

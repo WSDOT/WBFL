@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTGEOMUTIL_H__73F99804_B896_11D3_8A0E_006097C68A9C__INCLUDED_)
-#define AFX_TESTGEOMUTIL_H__73F99804_B896_11D3_8A0E_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestGeomUtil  
 {
@@ -46,4 +41,3 @@ private:
 	static void Test2d();
 };
 
-#endif // !defined(AFX_TESTGEOMUTIL_H__73F99804_B896_11D3_8A0E_006097C68A9C__INCLUDED_)

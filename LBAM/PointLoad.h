@@ -23,8 +23,7 @@
 
 // PointLoad.h : Declaration of the CPointLoad
 
-#ifndef __POINTLOAD_H_
-#define __POINTLOAD_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCP.h"
@@ -106,4 +105,3 @@ protected:
    Float64       m_Mz;
 };
 
-#endif //__POINTLOAD_H_

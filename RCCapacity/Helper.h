@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HELPER_H_
-#define INCLUDED_HELPER_H_
+#pragma once
 
 #include <WBFLUnitServer.h>
 #include "RCSolution.h"
@@ -42,4 +41,3 @@ void CopySolution(IRCSolutionEx* solution_ex,IRCSolution** solution);
 void RCBeamToRCBeam2Ex(IRCBeam* rcbeam,IRCBeam2Ex** rcbeam2);
 void RCBeam2ToRCBeam2Ex(IRCBeam2* rcbeam,IRCBeam2Ex** rcbeam2);
 
-#endif // INCLUDED_HELPER_H_

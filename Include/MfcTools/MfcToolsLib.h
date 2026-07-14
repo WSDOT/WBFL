@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_MFCTOOLSLIB_H_
-#define INCLUDED_MFCTOOLS_MFCTOOLSLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -35,4 +33,3 @@ DESCRIPTION
    Support library that provides mfc services.
 *****************************************************************************/
 
-#endif // INCLUDED_MFCTOOLS_MFCTOOLSLIB_H_

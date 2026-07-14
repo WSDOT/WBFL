@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LINEHITTEST_H_
-#define INCLUDED_LINEHITTEST_H_
 #pragma once
 
 interface iDisplayObject;
@@ -34,4 +32,3 @@ public:
    static BOOL HitTest(iDisplayObject* pDO,IPoint2d* pStart,IPoint2d* pEnd,CPoint point);
 };
 
-#endif // INCLUDED_LINEHITTEST_H_

@@ -23,8 +23,6 @@
 
 // LegendEntryImpl.h : Declaration of the CLegendEntryImpl
 
-#ifndef __LEGENDENTRYIMPL_H_
-#define __LEGENDENTRYIMPL_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -89,4 +87,3 @@ private:
 
 };
 
-#endif //__LEGENDENTRYIMPL_H_

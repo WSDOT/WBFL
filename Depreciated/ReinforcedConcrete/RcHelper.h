@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_RCHELPER_H_
-#define INCLUDED_RCHELPER_H_
 #pragma once
 
 #include <GeomModel/Primitives.h>
@@ -45,4 +43,3 @@ void PcCoords2Na(const WBFL::Geometry::Point2d& pc, Float64 d,
 bool IsZeroCapacityProblem(rcaCapacityProblem& problem);
 rcaCapacitySolution MakeZeroCapacitySolution(rcaCapacityProblem& problem);
 
-#endif // INCLUDED_RCHELPER_H_

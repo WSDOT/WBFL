@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TOOL_H
-#define INCLUDED_TOOL_H
 #pragma once
 
 interface iTool : public IUnknown
@@ -39,4 +37,3 @@ interface iToolIcon : public IUnknown
    STDMETHOD_(HRESULT,SetIcon)(HINSTANCE hInstance, WORD IconResId) PURE;
 };
 
-#endif // INCLUDED_TOOL_H

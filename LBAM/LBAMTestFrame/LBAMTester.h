@@ -1,7 +1,6 @@
 // LBAMTester.h : Declaration of the CLBAMTester
 
-#ifndef __LBAMTESTER_H_
-#define __LBAMTESTER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -124,4 +123,3 @@ private:
    bool m_Dirty; // dirty when an engine or model changes
 };
 
-#endif //__LBAMTESTER_H_

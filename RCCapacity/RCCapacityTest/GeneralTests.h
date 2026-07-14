@@ -23,10 +23,8 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERALTESTS_H_
-#define INCLUDED_GENERALTESTS_H_
+#pragma once
 
 void TestISupportUnitServer(IUnknown* punk);
 void DumpSolution(IGeneralSection* section, IMomentCapacitySolution* solution);
 
-#endif // INCLUDED_GENERALTESTS_H_

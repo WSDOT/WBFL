@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_STRSAVE_H__0131A8C4_26EB_11D2_8EB0_006097DF3C68__INCLUDED_)
-#define AFX_STRSAVE_H__0131A8C4_26EB_11D2_8EB0_006097DF3C68__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -92,4 +89,3 @@ OBJECT_ENTRY_AUTO(CLSID_StructuredSave,CStrSave)
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_STRSAVE_H__0131A8C4_26EB_11D2_8EB0_006097DF3C68__INCLUDED_)

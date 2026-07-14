@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTMODEL_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_)
-#define AFX_TESTMODEL_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestModel :
 public CComObjectRootEx<CComSingleThreadModel>,
@@ -85,4 +80,3 @@ protected:
    void TestLoadModifier(CTestModel* pMe, T* thingWithLm);
 };
 
-#endif // !defined(AFX_TESTModel_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_)

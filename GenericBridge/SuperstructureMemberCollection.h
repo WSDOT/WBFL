@@ -25,8 +25,7 @@
 
 // SuperstructureMemberCollection.h : Declaration of the CSuperstructureMemberCollection
 
-#ifndef __SUPERSTRUCTUREMEMBERCOLLECTION_H_
-#define __SUPERSTRUCTUREMEMBERCOLLECTION_H_
+#pragma once
 
 #include "WBFLComCollections.h"
 #include "resource.h"       // main symbols
@@ -79,4 +78,3 @@ public:
    //STDMETHOD(Insert)(/*[in]*/IndexType index,/*[in]*/ISuperstructureMember* pVal) override;
 };
 
-#endif //__SUPERSTRUCTUREMEMBERCOLLECTION_H_

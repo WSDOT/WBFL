@@ -25,8 +25,6 @@
 
 // JointDeflection.h : Declaration of the CJointDeflection
 
-#ifndef __JOINTDeflection_H_
-#define __JOINTDeflection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -101,4 +99,3 @@ private:
 
 };
 
-#endif //__JointDeflection_H_

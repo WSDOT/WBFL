@@ -20,12 +20,7 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 
-#if !defined(AFX_STATUSMESSAGEDIALOG_H__E371357F_A5AF_4D06_AEEF_60EDC174B783__INCLUDED_)
-#define AFX_STATUSMESSAGEDIALOG_H__E371357F_A5AF_4D06_AEEF_60EDC174B783__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // StatusMessageDialog.h : header file
 //
 #include <EAF\EAFTypes.h>
@@ -92,4 +87,3 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_STATUSMESSAGEDIALOG_H__E371357F_A5AF_4D06_AEEF_60EDC174B783__INCLUDED_)

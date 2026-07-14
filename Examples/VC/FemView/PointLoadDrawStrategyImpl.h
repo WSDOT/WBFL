@@ -1,5 +1,4 @@
-#ifndef INCLUDED_POINTLOADDRAWSTRATEGYIMPL_H_
-#define INCLUDED_POINTLOADDRAWSTRATEGYIMPL_H_
+#pragma once
 
 using namespace WBFL::DManip;
 
@@ -28,4 +27,3 @@ private:
    COLORREF m_Color;
 };
 
-#endif // INCLUDED_POINTLOADDRAWSTRATEGYIMPL_H_

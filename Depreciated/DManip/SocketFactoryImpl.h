@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SOCKETFACTORYIMPL_H__D88A0193_DCD4_11D4_8B74_006097C68A9C__INCLUDED_)
-#define AFX_SOCKETFACTORYIMPL_H__D88A0193_DCD4_11D4_8B74_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -55,5 +50,3 @@ END_COM_MAP()
    STDMETHOD_(void,CreateSocket)(IDType id,IPoint2d* pos,iSocket** socket);
 };
 
-
-#endif // !defined(AFX_SOCKETFACTORYIMPL_H__D88A0193_DCD4_11D4_8B74_006097C68A9C__INCLUDED_)

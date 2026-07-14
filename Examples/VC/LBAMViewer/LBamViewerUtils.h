@@ -1,5 +1,4 @@
-#ifndef INCLUDED_LBAMVIEWERUTILS_H_
-#define INCLUDED_LBAMVIEWERUTILS_H_
+#pragma once
 
 inline void GetVehicularLoad(ILBAMModel* model, LiveLoadModelType modelType, VehicleIndexType vehicleIndex, IVehicularLoad** vehicularLoad)
 {
@@ -48,5 +47,3 @@ inline void GetVehicularLoad(ILBAMModel* model, LiveLoadModelType modelType, Veh
 static const int NUM_LLM=6;
 static const TCHAR* LL_NAMES[]={_T("Deflection"),_T("Design"),_T("Pedestrian"),_T("Fatigue"),_T("Permit"),_T("Special")};
 
-
-#endif

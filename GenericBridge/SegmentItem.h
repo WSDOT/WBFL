@@ -25,8 +25,7 @@
 
 // SegmentItem.h : Declaration of the CSegmentItem
 
-#ifndef __SEGMENTITEM_H_
-#define __SEGMENTITEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -76,4 +75,3 @@ protected:
    CComPtr<ISegment> m_Segment;
 };
 
-#endif //__SEGMENTITEM_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SOLVERTEST_H__A2D8EBF0_20FB_4964_8DDD_54376FCABCB7__INCLUDED_)
-#define AFX_SOLVERTEST_H__A2D8EBF0_20FB_4964_8DDD_54376FCABCB7__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CSolverTest  
 {
@@ -49,4 +44,3 @@ private:
 
 };
 
-#endif // !defined(AFX_SOLVERTEST_H__A2D8EBF0_20FB_4964_8DDD_54376FCABCB7__INCLUDED_)

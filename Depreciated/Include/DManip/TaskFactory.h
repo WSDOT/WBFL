@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TASKFACTORY_H_
-#define INCLUDED_TASKFACTORY_H_
 #pragma once
 
 class CDisplayView;
@@ -41,4 +39,3 @@ interface iTaskFactory : public IUnknown
    STDMETHOD_(void,CreateZoomTask)(CDisplayView* pView,HCURSOR hCursor,COLORREF color,iTask** task) PURE;
 };
 
-#endif // INCLUDED_TASKFACTORY_H_

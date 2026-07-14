@@ -25,8 +25,7 @@
 
 // MomentCurvatureSolver.h : Declaration of the CMomentCurvatureSolver
 
-#ifndef __MomentCurvatureSolver_H_
-#define __MomentCurvatureSolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -88,4 +87,3 @@ public:
    STDMETHOD(Solve)(/*[in]*/ Float64 Fz,/*[in]*/ Float64 angle,/*[out,retval]*/IMomentCurvatureSolution** solution) override;
 };
 
-#endif //__MomentCurvatureSolver_H_

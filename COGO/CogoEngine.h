@@ -25,8 +25,6 @@
 
 // CogoEngine.h : Declaration of the CCogoEngine
 
-#ifndef __COGOENGINE_H_
-#define __COGOENGINE_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -127,4 +125,3 @@ public:
    STDMETHOD(Point)(/*[in]*/ IPoint2d* center, /*[in]*/ Float64 radius,/*[in]*/ IPoint2d* point, /*[in]*/ TangentSignType sign, /*[out]*/ IPoint2d** tangent) override;
 };
 
-#endif //__COGOENGINE_H_

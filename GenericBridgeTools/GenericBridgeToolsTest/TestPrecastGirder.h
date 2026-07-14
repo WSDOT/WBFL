@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTPRECASTGIRDER_H_
-#define INCLUDED_TESTPRECASTGIRDER_H_
+#pragma once
 
 class CTestPrecastGirder
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestPrecastGirder();
 };
 
-#endif // INCLUDED_TESTPRECASTGIRDER_H_

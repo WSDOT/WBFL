@@ -25,8 +25,7 @@
 
 // CrackedSectionSlice.h : Declaration of the CCrackedSectionSlice
 
-#ifndef __CrackedSectionSlice_H_
-#define __CrackedSectionSlice_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -82,4 +81,3 @@ public:
    STDMETHOD(get_Shape)(/*[out,retval]*/IShape** pShape) override;
 };
 
-#endif //__CrackedSectionSlice_H_

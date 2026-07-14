@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTCOLUMN_H_
-#define INCLUDED_TESTCOLUMN_H_
+#pragma once
 
 class CTestColumn
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestColumn();
 };
 
-#endif // INCLUDED_TESTCOLUMN_H_

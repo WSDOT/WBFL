@@ -1,12 +1,7 @@
 // TestProgress.h : main header file for the TESTPROGRESS application
 //
 
-#if !defined(AFX_TESTPROGRESS_H__0AD12FED_78FE_4B49_B90C_1D124CCDDA13__INCLUDED_)
-#define AFX_TESTPROGRESS_H__0AD12FED_78FE_4B49_B90C_1D124CCDDA13__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
@@ -52,4 +47,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TESTPROGRESS_H__0AD12FED_78FE_4B49_B90C_1D124CCDDA13__INCLUDED_)

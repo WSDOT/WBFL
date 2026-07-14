@@ -25,8 +25,7 @@
 
 // GirderSections.h 
 
-#ifndef INCLUDED_GIRDERSECTIONS_H_
-#define INCLUDED_GIRDERSECTIONS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GenericBridge\GirderSectionImpl.h>
@@ -2128,4 +2127,3 @@ public:
 
 };
 
-#endif //  INCLUDED_GIRDERSECTIONS_H_

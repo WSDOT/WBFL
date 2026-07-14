@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_STYLEHOLDER_H_
-#define INCLUDED_REPORTER_STYLEHOLDER_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -50,4 +48,3 @@ protected:
    void MakeAssignment(const rptStyleHolder& rOther);
 };
 
-#endif // INCLUDED_REPORTER_STYLEHOLDER_H_

@@ -25,8 +25,6 @@
 
 // Profile.h : Declaration of the CProfile
 
-#ifndef __PROFILE_H_
-#define __PROFILE_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -116,4 +114,3 @@ private:
 #endif
 };
 
-#endif //__PROFILE_H_

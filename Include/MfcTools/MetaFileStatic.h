@@ -20,12 +20,8 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-#if !defined(AFX_METAFILESTATIC_H__8D398A4E_9072_11D3_ADE0_00105A9AF985__INCLUDED_)
-#define AFX_METAFILESTATIC_H__8D398A4E_9072_11D3_ADE0_00105A9AF985__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 /*****************************************************************************
 CLASS 
    CMetaFileStatic
@@ -99,4 +95,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_METAFILESTATIC_H__8D398A4E_9072_11D3_ADE0_00105A9AF985__INCLUDED_)

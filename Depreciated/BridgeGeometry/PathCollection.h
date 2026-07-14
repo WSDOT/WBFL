@@ -25,8 +25,6 @@
 
 // PathCollection.h : Declaration of the CPathCollection
 
-#ifndef __PATHCOLLECTION_H_
-#define __PATHCOLLECTION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -98,4 +96,3 @@ private:
 
 OBJECT_ENTRY_NON_CREATEABLE_EX_AUTO(__uuidof(PathCollection), CPathCollection)
 
-#endif //__PATHCOLLECTION_H_

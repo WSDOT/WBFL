@@ -23,8 +23,6 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _FEM2DCP_H_
-#define _FEM2DCP_H_
 #pragma once
 
 
@@ -74,4 +72,3 @@ public:
 
 	}
 };
-#endif

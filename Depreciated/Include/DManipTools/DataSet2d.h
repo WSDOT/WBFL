@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_IDATASET2D_H_
-#define INCLUDED_IDATASET2D_H_
 #pragma once
 
 interface IPoint2d;
@@ -42,4 +40,3 @@ interface iDataSet2d : public IUnknown
    STDMETHOD_(void,Clear)() PURE;
 };
 
-#endif // INCLUDED_IDATASET2D_H_

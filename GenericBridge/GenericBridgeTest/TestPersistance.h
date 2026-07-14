@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTPERSISTANCE_H_
-#define INCLUDED_TESTPERSISTANCE_H_
+#pragma once
 
 
 class ATL_NO_VTABLE CTestPersistance
@@ -44,4 +43,3 @@ private:
    static void BuildSegment(IPrismaticSegment* segment);
 };
 
-#endif // INCLUDED_TESTPERSISTANCE_H_

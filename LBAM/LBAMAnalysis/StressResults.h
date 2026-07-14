@@ -23,8 +23,7 @@
 
 // StressResults.h : Declaration of the CStressResults
 
-#ifndef __STRESSRESULTS_H_
-#define __STRESSRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -93,4 +92,3 @@ protected:
 
 };
 
-#endif //__STRESSRESULTS_H_

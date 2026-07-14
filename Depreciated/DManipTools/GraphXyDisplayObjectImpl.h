@@ -23,8 +23,6 @@
 
 // GraphXyDisplayObject.h : Declaration of the CGraphXyDisplayObject
 
-#ifndef __GRAPHXYDISPLAYOBJECT_H_
-#define __GRAPHXYDISPLAYOBJECT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -114,4 +112,3 @@ private:
    HRESULT DrawString(std::_tstring& string, Float64 wx, Float64 wy, UINT textAlign);
 };
 
-#endif //__GRAPHXYDISPLAYOBJECT_H_

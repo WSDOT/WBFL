@@ -23,8 +23,7 @@
 
 // LBAMAnalysisEngine.h : Declaration of the CLBAMAnalysisEngine
 
-#ifndef __LBAMANALYSISENGINE_H_
-#define __LBAMANALYSISENGINE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -120,4 +119,3 @@ private:
    CComPtr<IConcurrentLoadCombinationResponse>  m_pConcurrentLoadCombinationResponse;
 };
 
-#endif //__LBAMANALYSISENGINE_H_

@@ -25,8 +25,7 @@
 
 // GenericBarrier.h : Declaration of the CGenericBarrier
 
-#ifndef __GENERICBARRIER_H_
-#define __GENERICBARRIER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -92,4 +91,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__GenericBARRIER_H_

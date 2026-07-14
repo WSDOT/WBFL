@@ -25,8 +25,6 @@
 
 // PointLoad.h : Declaration of the CPointLoad
 
-#ifndef __POINTLOAD_H_
-#define __POINTLOAD_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -116,4 +114,3 @@ private:
 
 };
 
-#endif //__POINTLOAD_H_

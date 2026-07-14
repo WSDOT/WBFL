@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_CENTERONPOINTTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_CENTERONPOINTTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 interface iCenterOnPointTask : public IUnknown
 {
@@ -40,4 +35,3 @@ interface iCenterOnPointTask : public IUnknown
    STDMETHOD_(void,Cancel)() PURE;
 };
 
-#endif // !defined(AFX_CENTERONPOINTTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

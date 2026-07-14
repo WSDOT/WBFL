@@ -25,8 +25,7 @@
 
 // CompositeShape.h : Declaration of the CCompositeShape
 
-#ifndef __COMPOSITESHAPE_H_
-#define __COMPOSITESHAPE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -122,4 +121,3 @@ public:
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 };
 
-#endif //__COMPOSITESHAPE_H_

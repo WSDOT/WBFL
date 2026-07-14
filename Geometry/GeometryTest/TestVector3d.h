@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTVECTOR3D_H__19582346_B7D5_11D3_8A0B_006097C68A9C__INCLUDED_)
-#define AFX_TESTVECTOR3D_H__19582346_B7D5_11D3_8A0B_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestVector3d  
 {
@@ -45,4 +40,3 @@ private:
 	static void TestISupportErrorInfo();
 };
 
-#endif // !defined(AFX_TESTVECTOR3D_H__19582346_B7D5_11D3_8A0B_006097C68A9C__INCLUDED_)

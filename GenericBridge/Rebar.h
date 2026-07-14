@@ -25,8 +25,7 @@
 
 // Rebar.h : Declaration of the CRebar
 
-#ifndef __Rebar_H_
-#define __Rebar_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -124,4 +123,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__Rebar_H_

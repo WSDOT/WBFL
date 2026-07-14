@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_PSPOWERFORMULATEST_H__13966DD8_1D1B_4CA2_9D3A_E468601FCCF1__INCLUDED_)
-#define AFX_PSPOWERFORMULATEST_H__13966DD8_1D1B_4CA2_9D3A_E468601FCCF1__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CPSPowerFormulaTest  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_PSPOWERFORMULATEST_H__13966DD8_1D1B_4CA2_9D3A_E468601FCCF1__INCLUDED_)

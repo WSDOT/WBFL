@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EDITABLEUNITVALUETEXTBLOCK_H_
-#define INCLUDED_EDITABLEUNITVALUETEXTBLOCK_H_
 #pragma once
 
 #include <DManip\TextBlock.h>
@@ -41,4 +39,3 @@ interface iEditableUnitValueTextBlock : public iTextBlock
    STDMETHOD_(void,IsStation)(bool bIsStation) PURE;
 };
 
-#endif // INCLUDED_EDITABLEUNITVALUETEXTBLOCK_H_

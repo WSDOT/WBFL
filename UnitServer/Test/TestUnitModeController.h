@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTUNITMODECONTROLLER_H__51F0A2A5_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_)
-#define AFX_TESTUNITMODECONTROLLER_H__51F0A2A5_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestUnitModeController  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTUNITMODECONTROLLER_H__51F0A2A5_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_)

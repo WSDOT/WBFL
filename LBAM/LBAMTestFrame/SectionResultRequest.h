@@ -1,7 +1,6 @@
 // SectionResultRequest.h : Declaration of the CSectionResultRequest
 
-#ifndef __SECTIONRESULTREQUEST_H_
-#define __SECTIONRESULTREQUEST_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -78,4 +77,3 @@ protected:
 
 };
 
-#endif //__SectionResultRequest_H_

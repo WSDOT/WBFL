@@ -23,11 +23,9 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TEST_H_
-#define INCLUDED_TEST_H_
+#pragma once
 
 #include <iostream>
 #include <WBFLTools.h>
 #include <WBFLGeometry.h>
 
-#endif // INCLUDED_TEST_H_

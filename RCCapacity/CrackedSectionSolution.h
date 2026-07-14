@@ -25,8 +25,7 @@
 
 // CrackedSectionSolution.h : Declaration of the CCrackedSectionSolution
 
-#ifndef __CrackedSectionSolution_H_
-#define __CrackedSectionSolution_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -74,4 +73,3 @@ public:
    STDMETHOD(get_ElasticProperties)(/*[out,retval]*/IElasticProperties** ppProps) override;
 };
 
-#endif //__CrackedSectionSolution_H_

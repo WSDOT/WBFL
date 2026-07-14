@@ -23,8 +23,7 @@
 
 // SegmentCrossSection.h : Declaration of the CCrossSection
 
-#ifndef __CROSSSECTION_H_
-#define __CROSSSECTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CrossSectionCP.h"
@@ -123,4 +122,3 @@ protected:
    DWORD m_StressPointsCookie;
 };
 
-#endif //__CROSSSECTION_H_

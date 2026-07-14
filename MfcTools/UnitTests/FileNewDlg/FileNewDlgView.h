@@ -2,9 +2,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_FILENEWDLGVIEW_H__BD01DE81_5A3D_11D2_9D69_00609710E6CE__INCLUDED_)
-#define AFX_FILENEWDLGVIEW_H__BD01DE81_5A3D_11D2_9D69_00609710E6CE__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -65,4 +62,3 @@ inline CFileNewDlgDoc* CFileNewDlgView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_FILENEWDLGVIEW_H__BD01DE81_5A3D_11D2_9D69_00609710E6CE__INCLUDED_)

@@ -25,12 +25,7 @@
 //      or project specific include files that are used frequently,
 //      but are changed infrequently
 
-#if !defined(AFX_STDAFX_H__82E12968_8640_48F4_809D_6745C27A3723__INCLUDED_)
-#define AFX_STDAFX_H__82E12968_8640_48F4_809D_6745C27A3723__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <targetver.h>
 
@@ -65,4 +60,3 @@ inline CComBSTR GetHelpFile()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_STDAFX_H__82E12968_8640_48F4_809D_6745C27A3723__INCLUDED)

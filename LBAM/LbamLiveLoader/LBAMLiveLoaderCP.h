@@ -1,5 +1,4 @@
-#ifndef _LBAMLIVELOADERCP_H_
-#define _LBAMLIVELOADERCP_H_
+#pragma once
 
 
 
@@ -68,4 +67,3 @@ public:
 		}
 	}
 };
-#endif

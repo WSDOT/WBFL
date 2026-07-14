@@ -25,8 +25,7 @@
 
 // RebarSection.h : Declaration of the CRebarSection
 
-#ifndef __RebarSection_H_
-#define __RebarSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -81,4 +80,3 @@ public:
    STDMETHOD(get__EnumRebarSectionItem)(/*[out,retval]*/IEnumRebarSectionItem* *enumRSI) override;
 };
 
-#endif //__RebarSection_H_

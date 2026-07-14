@@ -25,8 +25,7 @@
 
 // InteractionCurveSolution.h : Declaration of the CInteractionCurveSolution
 
-#ifndef __InteractionCurveSolution_H_
-#define __InteractionCurveSolution_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -76,4 +75,3 @@ public:
 	STDMETHOD(get_SolutionPointCount)(/*[out,retval]*/IndexType* nPoints) override;
 };
 
-#endif //__InteractionCurveSolution_H_

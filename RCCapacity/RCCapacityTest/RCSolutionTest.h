@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_RCSOLUTIONTEST_H__0E79AD7F_8812_4644_BD65_ECD3D0B1C9FD__INCLUDED_)
-#define AFX_RCSOLUTIONTEST_H__0E79AD7F_8812_4644_BD65_ECD3D0B1C9FD__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CRCSolutionTest  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_RCSOLUTIONTEST_H__0E79AD7F_8812_4644_BD65_ECD3D0B1C9FD__INCLUDED_)

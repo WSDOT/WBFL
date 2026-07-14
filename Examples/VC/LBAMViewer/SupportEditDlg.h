@@ -1,9 +1,5 @@
-#if !defined(AFX_SUPPORTEDITDLG_H__082AFE4F_2AC3_4D9A_A80C_39E642199441__INCLUDED_)
-#define AFX_SUPPORTEDITDLG_H__082AFE4F_2AC3_4D9A_A80C_39E642199441__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // SupportEditDlg.h : header file
 //
 
@@ -43,4 +39,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_SUPPORTEDITDLG_H__082AFE4F_2AC3_4D9A_A80C_39E642199441__INCLUDED_)

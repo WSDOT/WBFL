@@ -25,8 +25,7 @@
 
 // DisplayUnit2.h : Declaration of the CDisplayUnit2
 
-#ifndef __DISPLAYUNIT2_H_
-#define __DISPLAYUNIT2_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CPDisplayUnit2Events.h"
@@ -107,4 +106,3 @@ public:
    }
 };
 
-#endif //__DISPLAYUNIT2_H_

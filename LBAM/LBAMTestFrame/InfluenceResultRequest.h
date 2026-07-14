@@ -1,7 +1,6 @@
 // InfluenceResultRequest.h : Declaration of the CInfluenceResultRequest
 
-#ifndef __INFLUENCERESULTREQUEST_H_
-#define __INFLUENCERESULTREQUEST_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -83,4 +82,3 @@ protected:
    CComPtr<IInfluenceLine>      m_InfluenceLine;
 };
 
-#endif //__INFLUENCERESULTREQUEST_H_

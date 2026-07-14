@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYLIST_H_
-#define INCLUDED_DISPLAYLIST_H_
 #pragma once
 
 #include <DManip\DisplayObjectContainer.h>
@@ -68,5 +66,3 @@ interface iDisplayList : public IUnknown
    STDMETHOD_(void,GetEventSink)(iDisplayListEvents** pEventSink) PURE;
 };
 
-
-#endif // INCLUDED_DISPLAYLIST_H_

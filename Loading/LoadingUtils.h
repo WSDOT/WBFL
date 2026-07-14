@@ -23,8 +23,7 @@
 
 // LoadingUtils.h
 
-#ifndef INCLUDED_LOADINGUTILS_H_
-#define INCLUDED_LOADINGUTILS_H_
+#pragma once
 
 #include <MathEx.h>
 #include <vector>
@@ -423,5 +422,3 @@ inline HRESULT StringToLoadDirection(BSTR bstrtype, ldLoadDirection* ptype)
 //};
 //
 
-
-#endif //

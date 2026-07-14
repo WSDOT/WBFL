@@ -23,8 +23,7 @@
 
 // DistributedLoad.h : Declaration of the CDistributedLoad
 
-#ifndef __DISTRIBUTEDLOAD_H_
-#define __DISTRIBUTEDLOAD_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCP.h"
@@ -114,4 +113,3 @@ protected:
 
 };
 
-#endif //__DISTRIBUTEDLOAD_H_

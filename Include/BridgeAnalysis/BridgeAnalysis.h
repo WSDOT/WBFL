@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_H_
-#define INCLUDED_BRIDGEANALYSIS_H_
 #pragma once
 
 // Master include file for clients of the Bridge Analysis Framework
@@ -58,4 +56,3 @@
 #include <BridgeAnalysis\Truck.h>
 #include <BridgeAnalysis\StagedLoadCombination.h>
 
-#endif // INCLUDED_BRIDGEANALYSIS_H_

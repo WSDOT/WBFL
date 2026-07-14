@@ -1,5 +1,4 @@
-#ifndef INCLUDED_DATASETBUILDER_H_
-#define INCLUDED_DATASETBUILDER_H_
+#pragma once
 
 #include "stdAfx.h"
 #include "DataSetUtils.h"
@@ -37,5 +36,3 @@ public:
    }
 };
 
-
-#endif

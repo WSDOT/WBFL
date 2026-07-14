@@ -25,8 +25,6 @@
 
 // MemberCollection.h : Declaration of the CMemberCollection
 
-#ifndef __MemberCollection_H_
-#define __MemberCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -81,4 +79,3 @@ private:
 
 };
 
-#endif //__MemberCollection_H_

@@ -25,8 +25,7 @@
 
 // Tendon.h : Declaration of the CTendon
 
-#ifndef __TENDON_H_
-#define __TENDON_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLComCollections.h>
@@ -135,4 +134,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__TENDON_H_

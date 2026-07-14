@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCOMPOSITEBEAM_H__4D52C938_08D5_11D5_8BBD_006097C68A9C__INCLUDED_)
-#define AFX_TESTCOMPOSITEBEAM_H__4D52C938_08D5_11D5_8BBD_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCompositeBeam  
 {
@@ -47,4 +42,3 @@ private:
 	static void TestIXYPosition();
 };
 
-#endif // !defined(AFX_TESTCOMPOSITEBEAM_H__4D52C938_08D5_11D5_8BBD_006097C68A9C__INCLUDED_)

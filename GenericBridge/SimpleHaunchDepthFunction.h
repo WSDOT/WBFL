@@ -25,8 +25,7 @@
 
 // SimpleHaunchDepthFunction.h : Declaration of the CSimpleHaunchDepthFunction
 
-#ifndef __SimpleHaunchDepthFunction_H_
-#define __SimpleHaunchDepthFunction_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -81,4 +80,3 @@ private:
    std::vector<Float64> m_HaunchDepths;
 };
 
-#endif //__SimpleHaunchDepthFunction_H_

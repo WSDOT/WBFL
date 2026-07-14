@@ -25,8 +25,7 @@
 
 // PSPowerFormula.h : Declaration of the CPSPowerFormula
 
-#ifndef __PSPOWERFORMULA_H_
-#define __PSPOWERFORMULA_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -101,4 +100,3 @@ public:
    STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
-#endif //__PSPOWERFORMULA_H_

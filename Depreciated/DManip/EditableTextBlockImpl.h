@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EDITABLETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_)
-#define AFX_EDITABLETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include "InplaceEditDefaultImpl.h"
@@ -215,4 +210,3 @@ private:
    COnMouseOverCursor* m_pOnMouseOverCursor;
 };
 
-#endif // !defined(AFX_EDITABLETEXTBLOCK_H__FC76B7E5_E710_11D4_8B82_006097C68A9C__INCLUDED_)

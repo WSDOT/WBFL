@@ -23,8 +23,7 @@
 
 // LiveLoadModelResponse.h : Declaration of the CLiveLoadModelResponse
 
-#ifndef __LIVELOADMODELRESPONSE_H_
-#define __LIVELOADMODELRESPONSE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -153,4 +152,3 @@ private:
 
 };
 
-#endif //__LIVELOADMODELRESPONSE_H_

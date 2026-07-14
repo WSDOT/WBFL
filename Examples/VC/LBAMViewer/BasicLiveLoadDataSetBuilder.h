@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_BASICLIVELOADDATASETBUILDER_H__851938D5_0209_4F35_B735_36FB5049D1B5__INCLUDED_)
-#define AFX_BASICLIVELOADDATASETBUILDER_H__851938D5_0209_4F35_B735_36FB5049D1B5__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DataSetBuilder.h"
 #include "ReactionReportBuilder.h"
@@ -67,4 +62,3 @@ private:
    bool                             m_IsTruck;
 };
 
-#endif // !defined(AFX_BASICLIVELOADDATASETBUILDER_H__851938D5_0209_4F35_B735_36FB5049D1B5__INCLUDED_)

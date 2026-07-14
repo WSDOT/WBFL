@@ -23,8 +23,7 @@
 
 // EnvelopedVehicularResponseFactory.h : Declaration of the CEnvelopedVehicularResponseFactory
 
-#ifndef _ENVELOPEDVEHICULARRESPONSEFACTORY_H_
-#define _ENVELOPEDVEHICULARRESPONSEFACTORY_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -60,4 +59,3 @@ public:
 	STDMETHOD(CreateEnvelopedVehicularResponse)(/*[out,retval]*/IEnvelopedVehicularResponse** pEVR) override;
 };
 
-#endif //_ENVELOPEDVEHICULARRESPONSEFACTORY_H_

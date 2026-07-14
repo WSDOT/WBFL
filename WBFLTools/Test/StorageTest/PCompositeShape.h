@@ -25,8 +25,7 @@
 
 // PCompositeShape.h : Declaration of the CPCompositeShape
 
-#ifndef __PCOMPOSITESHAPE_H_
-#define __PCOMPOSITESHAPE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -219,4 +218,3 @@ private:
 	}
 };
 
-#endif //__PCOMPOSITESHAPE_H_

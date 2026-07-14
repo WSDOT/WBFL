@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTGENERICBRIDGE_H_
-#define INCLUDED_TESTGENERICBRIDGE_H_
+#pragma once
 
 class CTestGenericBridge
 {
@@ -50,4 +49,3 @@ private:
    static void ValidateBridge(IGenericBridge* bridge,Float64 stations[],Float64 spanLengths[],CComBSTR orientations[],Float64 spacings[]);
 };
 
-#endif // INCLUDED_TESTGENERICBRIDGE_H_

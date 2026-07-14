@@ -25,8 +25,7 @@
 
 // GenericBridgeImpl.h : Declaration of the CGenericBridge
 
-#ifndef __GENERICBRIDGEIMPL_H_
-#define __GENERICBRIDGEIMPL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <map>
@@ -135,4 +134,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__GENERICBRIDGEIMPL_H_

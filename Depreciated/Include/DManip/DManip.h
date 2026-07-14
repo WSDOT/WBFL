@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DMANIP_H_
-#define INCLUDED_DMANIP_H_
 #pragma once
 
 #include <WBFLDManip.h>
@@ -100,5 +98,3 @@
 #include <DManip\CompoundDrawLineStrategy.h>
 #include <DManip\CompoundDrawPointStrategy.h>
 
-
-#endif // INCLUDED_DMANIP_H_

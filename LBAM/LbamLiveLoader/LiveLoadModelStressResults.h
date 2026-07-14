@@ -23,8 +23,7 @@
 
 // LiveLoadModelStressResults.h : Declaration of the CLiveLoadModelStressResults
 
-#ifndef __LIVELOADMODELSTRESSRESULTS_H_
-#define __LIVELOADMODELSTRESSRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -100,4 +99,3 @@ private:
 
 };
 
-#endif //__LIVELOADMODELSTRESSRESULTS_H_

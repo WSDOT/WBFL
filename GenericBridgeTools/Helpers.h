@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HELPERS_H_
-#define INCLUDED_HELPERS_H_
+#pragma once
 
 
 #include "WBFLGenericBridge.h"
@@ -37,4 +36,3 @@ void GetPiers(IGenericBridge* bridge,Float64 station,PierIndexType* pPrevPier,Pi
 
 HRESULT GetCGFromPoints(IPoint2dCollection* points, IPoint2d** pCG);
 
-#endif // INCLUDED_HELPERS_H_

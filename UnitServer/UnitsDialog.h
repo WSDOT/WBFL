@@ -25,8 +25,7 @@
 
 // UnitsDialog.h : Declaration of the CUnitsDialog
 
-#ifndef __UNITSDIALOG_H_
-#define __UNITSDIALOG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <atlwin.h>
@@ -98,4 +97,3 @@ END_MSG_MAP()
 	}
 };
 
-#endif //__UNITSDIALOG_H_

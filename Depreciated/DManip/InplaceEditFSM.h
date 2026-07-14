@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_InplaceEditFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_InplaceEditFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <DManip\InplaceEditTask.h>
 
@@ -118,4 +113,3 @@ private:
    CInplaceEditFSMState* m_pState;
 };
 
-#endif // !defined(AFX_InplaceEditFSM_H__5D499BF5_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // Size2d.h : Declaration of the CSize2d
 
-#ifndef __SIZE2D_H_
-#define __SIZE2D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Primitives.h>
@@ -73,4 +72,3 @@ public:
 	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__SIZE2D_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTStrainLoad_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_)
-#define AFX_TESTStrainLoad_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestStrainLoad :
 public CComObjectRootEx<CComSingleThreadModel>,
@@ -63,4 +58,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTStrainLoad_H__4A50DAE5_753F_11D5_B02C_00105A9AF985__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // BearingLayout : Declaration of the CBearingLayout
 
-#ifndef __BearingLayout_H_
-#define __BearingLayout_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <MathEx.h>
@@ -121,4 +120,3 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
-#endif //__BearingLayout_H_

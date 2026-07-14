@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DataPointEVENTS_H_
-#define INCLUDED_DataPointEVENTS_H_
-
 #pragma once
 
 DEFINE_GUID(IID_iDataPointEvents, 
@@ -33,4 +30,3 @@ interface iDataPointEvents : public IUnknown
 {
 };
 
-#endif // INCLUDED_DataPointEVENTS_H_

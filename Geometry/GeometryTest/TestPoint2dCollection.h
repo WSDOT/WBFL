@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPOINT2DCOLLECTION_H__5B12E405_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_)
-#define AFX_TESTPOINT2DCOLLECTION_H__5B12E405_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 class CTestPoint2dCollection
@@ -46,4 +41,3 @@ private:
 	static void TestISupportErrorInfo();
 };
 
-#endif // !defined(AFX_TESTPOINT2DCOLLECTION_H__5B12E405_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_)

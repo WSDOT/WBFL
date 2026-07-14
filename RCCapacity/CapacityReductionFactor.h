@@ -25,8 +25,7 @@
 
 // CapacityReductionFactor.h : Declaration of the CCapacityReductionFactor
 
-#ifndef __CapacityReductionFactor_H_
-#define __CapacityReductionFactor_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -70,4 +69,3 @@ public:
 	STDMETHOD(ComputeEx)(/*[in]*/IUnkArray* pConcShapes,/*[in]*/IUnkArray* pReinfShapes,/*[in]*/ILine2d* neutralAxis,/*[in]*/Float64 ppr,/*[out]*/Float64* c,/*[out]*/Float64* dt,/*[out]*/Float64* phi) override;
 };
 
-#endif //__CapacityReductionFactor_H_

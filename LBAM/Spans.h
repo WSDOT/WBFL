@@ -23,8 +23,7 @@
 
 // Spans.h : Declaration of the CSpans
 
-#ifndef __SPANS_H_
-#define __SPANS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "SpanCP.h" 
@@ -165,4 +164,3 @@ public:
 
 };
 
-#endif //__SPANS_H_

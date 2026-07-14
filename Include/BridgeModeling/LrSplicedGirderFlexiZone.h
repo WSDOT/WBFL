@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_LrSplicedGirderFlexiZONE_H_
-#define INCLUDED_BRIDGEMODELING_LrSplicedGirderFlexiZONE_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -173,4 +171,3 @@ public:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEMODELING_LrSplicedGirderFlexiZONE_H_

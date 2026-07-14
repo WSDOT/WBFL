@@ -23,8 +23,7 @@
 
 // LoadGroups.h : Declaration of the CLoadGroups
 
-#ifndef __LOADGROUPS_H_
-#define __LOADGROUPS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadingCP.h"
@@ -92,4 +91,3 @@ public:
    void FinalRelease();
 };
 
-#endif //__LOADGROUPS_H_

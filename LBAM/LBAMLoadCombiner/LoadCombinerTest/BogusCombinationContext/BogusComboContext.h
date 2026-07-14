@@ -25,8 +25,6 @@
 
 // BogusComboContext.h : Declaration of the CBogusComboContext
 
-#ifndef __BOGUSCOMBOCONTEXT_H_
-#define __BOGUSCOMBOCONTEXT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -418,4 +416,3 @@ private:
    BenchMarkMap m_BenchMarks;
 };
 
-#endif //__BOGUSCOMBOCONTEXT_H_

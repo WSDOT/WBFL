@@ -25,8 +25,6 @@
 
 // Direction.h : Declaration of the CDirection
 
-#ifndef __DIRECTION_H_
-#define __DIRECTION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -91,4 +89,3 @@ private:
 	WBFL::COGO::Direction m_Direction;
 };
 
-#endif //__DIRECTION_H_

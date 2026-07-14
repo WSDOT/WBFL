@@ -23,8 +23,7 @@
 
 // POI.h : Declaration of the CPOI
 
-#ifndef __POI_H_
-#define __POI_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "POICP.h"
@@ -112,4 +111,3 @@ protected:
    DWORD                     m_POIStressPointsCookie;
 };
 
-#endif //__POI_H_

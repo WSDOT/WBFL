@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGO_COGODIRECTION_H_
-#define INCLUDED_COGO_COGODIRECTION_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -221,7 +219,4 @@ const cogoDirection COGOFUNC operator-(const cogoDirection& dir,const cogoAngle&
 
 //------------------------------------------------------------------------
 const cogoAngle COGOFUNC operator-(const cogoDirection& dir1,const cogoDirection& dir2);
-
-
-#endif // INCLUDED_COGO_COGODIRECTION_H_
 

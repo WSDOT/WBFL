@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_RCBEAMTEST_H__5194555A_9EB5_4FB7_9966_F0FBB75A385C__INCLUDED_)
-#define AFX_RCBEAMTEST_H__5194555A_9EB5_4FB7_9966_F0FBB75A385C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CRCBeamTest  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_RCBEAMTEST_H__5194555A_9EB5_4FB7_9966_F0FBB75A385C__INCLUDED_)

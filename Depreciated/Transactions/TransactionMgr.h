@@ -25,8 +25,7 @@
 
 // TransactionMgr.h : Declaration of the CTransactionMgr
 
-#ifndef __TRANSACTIONMGR_H_
-#define __TRANSACTIONMGR_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <list>
@@ -111,4 +110,3 @@ public:
    STDMETHOD(AbortMacro)() override;
 };
 
-#endif //__TRANSACTIONMGR_H_

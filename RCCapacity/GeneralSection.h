@@ -25,8 +25,7 @@
 
 // GeneralSection.h : Declaration of the CGeneralSection
 
-#ifndef __GeneralSection_H_
-#define __GeneralSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -107,4 +106,3 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
-#endif //__GeneralSection_H_

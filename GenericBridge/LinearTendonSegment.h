@@ -25,8 +25,7 @@
 
 // LinearTendonSegment.h : Declaration of the CLinearTendonSegment
 
-#ifndef __LINEARTENDONSEGMENT_H_
-#define __LINEARTENDONSEGMENT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 //#include "GenericBridgeCP.h"
@@ -110,4 +109,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__LINEARTENDONSEGMENT_H_

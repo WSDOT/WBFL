@@ -1,9 +1,7 @@
-#ifndef INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_
-#define INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_
+#pragma once
 
 interface iLBAMTruckDrawStrategy
 {
    virtual void SetColor(COLORREF color) = 0;
 };
 
-#endif // INCLUDED_LBAMTRUCKDRAWSTRATEGY_H_

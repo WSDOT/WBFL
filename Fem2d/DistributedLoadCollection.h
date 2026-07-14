@@ -25,8 +25,6 @@
 
 // DistributedLoadCollection.h : Declaration of the CDistributedLoadCollection
 
-#ifndef __DistributedLoadCollection_H_
-#define __DistributedLoadCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__DistributedLoadCollection_H_

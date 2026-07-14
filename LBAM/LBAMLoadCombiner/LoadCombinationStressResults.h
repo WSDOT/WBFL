@@ -23,8 +23,7 @@
 
 // LoadCombinationStressResults.h : Declaration of the CLoadCombinationStressResults
 
-#ifndef __LOADCOMBINATIONSTRESSRESULTS_H_
-#define __LOADCOMBINATIONSTRESSRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -99,4 +98,3 @@ private:
 
 // LoadCombinationStressResults.h : Declaration of the CLoadCombinationStressResults
 
-#endif //__LOADCOMBINATIONSTRESSRESULTS_H_

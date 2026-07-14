@@ -25,8 +25,7 @@
 
 // FasterPolyShape.h : Declaration of the CFasterPolyShape
 
-#ifndef __FASTERPOLYSHAPE_H_
-#define __FASTERPOLYSHAPE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "Helper.h"
@@ -198,4 +197,3 @@ private:
 
 };
 
-#endif //__FASTERPOLYSHAPE_H_

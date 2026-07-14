@@ -23,8 +23,7 @@
 
 // POIs.h : Declaration of the CPOIs
 
-#ifndef __POIS_H_
-#define __POIS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "POICP.h"
@@ -92,4 +91,3 @@ public:
    void FinalRelease();
 };
 
-#endif //__POIS_H_

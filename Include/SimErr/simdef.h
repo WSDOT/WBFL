@@ -33,8 +33,7 @@ SIMDEF.h   Data definitions used in simulation function prototypes
 
 This file defines the data types used by the error simulation functions.
 ---------------------------------------------------------------------------*/
-#ifndef SIMDEF_H
-#define SIMDEF_H
+#pragma once
 
 
 #ifdef SIMERR_DLL
@@ -95,4 +94,3 @@ struct simerrInit_t
 #define SIMERR_VERSION   1           // version of the error testing library
 #define SIMERR_TIME_SEED       (-1)        // time-based random number seed
 
-#endif // SIMDEF_H

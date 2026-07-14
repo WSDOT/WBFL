@@ -26,12 +26,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPOINTERFAIL_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)
-#define AFX_TESTPOINTERFAIL_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestPointerFail : public CTestHarness
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TestPointerFail_H__861F0A3A_B19D_11D4_AF3B_00105A9AF985__INCLUDED_)

@@ -37,8 +37,7 @@ that may generate errors or throw exceptions.  If SIMERR is defined, the
 SimXXX functions will return errors and throw exceptions.  This tests
 the effectiveness of error detection, propagation and recovery.
 ---------------------------------------------------------------------------*/
-#ifndef SIMERR_H
-#define SIMERR_H
+#pragma once
 
 #include "simdef.h"  // data definitions used in the function prototypes
 
@@ -173,7 +172,4 @@ inline void SimErrException(const char *, int , int ,
 #pragma warning( default : 4100 )   
 
 #endif // SIMERR
-
-
-#endif // SIMERR_H
 

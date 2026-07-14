@@ -25,8 +25,7 @@
 
 // SuperstructureMember.h : Declaration of the CSuperstructureMember
 
-#ifndef __SUPERSTRUCTUREMEMBER_H_
-#define __SUPERSTRUCTUREMEMBER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
@@ -113,4 +112,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__SUPERSTRUCTUREMEMBER_H_

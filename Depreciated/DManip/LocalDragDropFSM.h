@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LOCALDRAGDROPFSM_H_
-#define INCLUDED_LOCALDRAGDROPFSM_H_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <DManip\LocalDragDropTask.h>
 
@@ -139,4 +134,3 @@ private:
    CLocalDragDropFSMState* m_pState;
 };
 
-#endif // INCLUDED_LOCALDRAGDROPFSM_H_

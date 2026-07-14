@@ -25,8 +25,7 @@
 
 // CastSlab.h : Declaration of the CCastSlab
 
-#ifndef __CASTSLAB_H_
-#define __CASTSLAB_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "BridgeDeckImpl.h"
@@ -110,4 +109,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__CASTSLAB_H_

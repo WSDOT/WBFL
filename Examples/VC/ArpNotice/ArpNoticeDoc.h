@@ -2,12 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ARPNOTICEDOC_H__790C0062_8D43_11D3_89DC_006097C68A9C__INCLUDED_)
-#define AFX_ARPNOTICEDOC_H__790C0062_8D43_11D3_89DC_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 class CArpNoticeDoc : public CDocument
@@ -54,4 +49,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_ARPNOTICEDOC_H__790C0062_8D43_11D3_89DC_006097C68A9C__INCLUDED_)

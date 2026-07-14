@@ -1,5 +1,4 @@
-#ifndef INCLUDED_CORE_MFCDUAL_H_
-#define INCLUDED_CORE_MFCDUAL_H_
+#pragma once
 
 // mfcdual.h: Helpful macros for adding dual interface support to
 //			  MFC applications
@@ -193,5 +192,3 @@ STDMETHODIMP objectClass::X##customClass::QueryInterface( \
    return pThis->ExternalQueryInterface( &iid, ppvObj ); \
 }
 
-
-#endif //  INCLUDED_CORE_MFCDUAL_H_

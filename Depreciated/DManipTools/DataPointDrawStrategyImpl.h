@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DATAPOINTDRAWSTRATEGYIMPL_H_
-#define INCLUDED_DATAPOINTDRAWSTRATEGYIMPL_H_
 #pragma once
 
 #include "DataPointDrawStrategy.h"
@@ -63,4 +61,3 @@ private:
    COLORREF m_Color;
 };
 
-#endif // INCLUDED_DATAPOINTDRAWSTRATEGYIMPL_H_

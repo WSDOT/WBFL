@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_InplaceEditTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_InplaceEditTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 interface iInplaceEditTask : public IUnknown
 {
@@ -40,4 +35,3 @@ interface iInplaceEditTask : public IUnknown
    STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
 };
 
-#endif // !defined(AFX_InplaceEditTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

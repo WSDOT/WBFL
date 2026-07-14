@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCUSTOMBASEUNITS_H__173E1C7A_DF2E_11D3_8A38_006097C68A9C__INCLUDED_)
-#define AFX_TESTCUSTOMBASEUNITS_H__173E1C7A_DF2E_11D3_8A38_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCustomBaseUnits
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTCUSTOMBASEUNITS_H__173E1C7A_DF2E_11D3_8A38_006097C68A9C__INCLUDED_)

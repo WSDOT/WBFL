@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOSITEDISPLAYOBJECT_H_
-#define INCLUDED_COMPOSITEDISPLAYOBJECT_H_
 #pragma once
 
 interface iCompositeDisplayObject : public iDisplayObject
@@ -35,4 +33,3 @@ interface iCompositeDisplayObject : public iDisplayObject
    STDMETHOD_(void,GetDisplayObjects)(iDisplayList** dispList) PURE;
 };
 
-#endif // INCLUDED_COMPOSITEDISPLAYOBJECT_H_

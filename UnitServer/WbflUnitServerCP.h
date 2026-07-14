@@ -1,5 +1,4 @@
-#ifndef _WBFLUNITSERVERCP_H_
-#define _WBFLUNITSERVERCP_H_
+#pragma once
 
 
 template <class T>
@@ -653,4 +652,3 @@ public:
 		}
 	}
 };
-#endif

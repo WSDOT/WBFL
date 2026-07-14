@@ -23,8 +23,7 @@
 
 // LoadCombinationResults.h : Declaration of the CLoadCombinationResults
 
-#ifndef __LOADCOMBINATIONRESULTS_H_
-#define __LOADCOMBINATIONRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -102,4 +101,3 @@ private:
    ComboResList m_ComboResults;
 };
 
-#endif //__LOADCOMBINATIONRESULTS_H_

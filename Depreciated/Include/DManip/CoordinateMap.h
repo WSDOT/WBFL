@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COORDINATEMAP_H_
-#define INCLUDED_COORDINATEMAP_H_
 #pragma once
 
 class CDisplayView;
@@ -68,4 +66,3 @@ interface iCoordinateMap : public IUnknown
    STDMETHOD_(CSize,GetTextExtent)(CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) PURE;
 };
 
-#endif // INCLUDED_COORDINATEMAP_H_

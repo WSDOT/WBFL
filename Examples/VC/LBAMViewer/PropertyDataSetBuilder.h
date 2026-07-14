@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_PropertyDATASETBUILDER_H__51063E76_8187_480E_BE44_28EBF2348E5C__INCLUDED_)
-#define AFX_PropertyDATASETBUILDER_H__51063E76_8187_480E_BE44_28EBF2348E5C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DataSetBuilder.h"
 
@@ -46,7 +41,3 @@ private:
    PType m_Type;
 };
 
-
-
-
-#endif

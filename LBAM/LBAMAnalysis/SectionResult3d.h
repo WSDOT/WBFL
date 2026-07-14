@@ -23,8 +23,7 @@
 
 // SectionResult3D.h : Declaration of the CSectionResult3D
 
-#ifndef __SECTIONRESULT3D_H_
-#define __SECTIONRESULT3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAMAnalysis.h"
@@ -109,4 +108,3 @@ protected:
    };
 };
 
-#endif //__SECTIONRESULT3D_H_

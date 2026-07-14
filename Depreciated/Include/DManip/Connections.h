@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CONNECTIONS_H_
-#define INCLUDED_CONNECTIONS_H_
 #pragma once
 
 struct iPlug;
@@ -98,4 +96,3 @@ public:
    STDMETHOD_(void,GetEndPlug)(iPlug** plug) PURE;
 };
 
-#endif // INCLUDED_CONNECTIONS_H_

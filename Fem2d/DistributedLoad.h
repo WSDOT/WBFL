@@ -25,8 +25,6 @@
 
 // DistributedLoad.h : Declaration of the CDistributedLoad
 
-#ifndef __DISTRIBUTEDLOAD_H_
-#define __DISTRIBUTEDLOAD_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -117,4 +115,3 @@ private:
 
 };
 
-#endif //__DistributedLoad_H_

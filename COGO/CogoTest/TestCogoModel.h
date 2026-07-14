@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCOGOMODEL_H__B9E4933E_5E73_11D5_8C32_006097C68A9C__INCLUDED_)
-#define AFX_TESTCOGOMODEL_H__B9E4933E_5E73_11D5_8C32_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCogoModel  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTCOGOMODEL_H__B9E4933E_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

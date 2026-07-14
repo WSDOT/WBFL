@@ -25,8 +25,7 @@
 
 // MacroAdapter.h : Declaration of the CMacroAdapter
 
-#ifndef __MACROADAPTER_H_
-#define __MACROADAPTER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -70,4 +69,3 @@ public:
 	STDMETHOD(putref_Macro)(/*[in]*/ IWBFLMacroTransaction* newVal) override;
 };
 
-#endif //__MACROADAPTER_H_

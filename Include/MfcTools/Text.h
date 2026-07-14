@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_TEXT_H_
-#define INCLUDED_MFCTOOLS_TEXT_H_
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
@@ -32,4 +30,3 @@ void MFCTOOLSFUNC ChangeComboBoxString(CComboBox* pCB,int idx,LPCTSTR lpszNewStr
 
 HFONT MFCTOOLSFUNC CreateRotatedFont(HDC hDC, LONG rotation, LONG nPointSize, LPCTSTR lpszFaceName);
 
-#endif // INCLUDED_MFCTOOLS_TEXT_H_

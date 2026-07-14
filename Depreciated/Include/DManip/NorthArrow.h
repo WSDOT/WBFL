@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_NORTHARROW_H_
-#define INCLUDED_NORTHARROW_H_
 #pragma once
 
 #include <DManip\DisplayObject.h>
@@ -43,4 +41,3 @@ interface iNorthArrow : public iDisplayObject
    STDMETHOD_(LONG,GetSize)() PURE;
 };
 
-#endif // INCLUDED_NORTHARROW_H_

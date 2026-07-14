@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LOCALDRAGDROPTASK_H_
-#define INCLUDED_LOCALDRAGDROPTASK_H_
 #pragma once
 
 interface iLocalDragDropTask
@@ -36,4 +34,3 @@ interface iLocalDragDropTask
    STDMETHOD_(void,FSMError)(LPCTSTR t,LPCTSTR s) PURE;
 };
 
-#endif // INCLUDED_LOCALDRAGDROPTASK_H_

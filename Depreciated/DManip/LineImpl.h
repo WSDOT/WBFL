@@ -21,15 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LINEIMPL_H_
-#define INCLUDED_LINEIMPL_H_
 // LineImpl.h: interface for the CLineImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include <DManip\DisplayObjectDefaultImpl.h>
@@ -168,4 +164,3 @@ private:
    void GetEndPoint(IPoint2d* *point);
 };
 
-#endif // INCLUDED_LINEIMPL_H_

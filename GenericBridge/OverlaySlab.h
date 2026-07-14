@@ -25,8 +25,7 @@
 
 // OverlaySlab.h : Declaration of the COverlaySlab
 
-#ifndef __OVERLAYSLAB_H_
-#define __OVERLAYSLAB_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "BridgeDeckImpl.h"
@@ -98,4 +97,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__OVERLAYSLAB_H_

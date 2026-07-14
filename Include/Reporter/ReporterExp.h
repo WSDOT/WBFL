@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_REPORTEREXP_H_
-#define INCLUDED_REPORTER_REPORTEREXP_H_
 #pragma once
 
 // Define BUILDREPORTERLIB when building this library
@@ -47,4 +45,3 @@
 #include <Reporter\AutoLib.h>
 #include <WbflAll.h>
 
-#endif // INCLUDED_REPORTER_REPORTEREXP_H_

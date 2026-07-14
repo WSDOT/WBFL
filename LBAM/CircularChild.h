@@ -1,7 +1,6 @@
 // CCircularChild.h : Declaration of the CCCircularChild
 
-#ifndef __CCircularChild_H_
-#define __CCircularChild_H_
+#pragma once
 
 // Template class used for fixing memory leak problem from circular references
 // between a parent and a child. Refer to Brice's article "Circular Reference
@@ -101,4 +100,3 @@ private:
    }
 };
 
-#endif // CCircularChild

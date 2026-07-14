@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DIMENSIONLINEIMPL_H__80AD65CB_E7E0_11D4_8B84_006097C68A9C__INCLUDED_)
-#define AFX_DIMENSIONLINEIMPL_H__80AD65CB_E7E0_11D4_8B84_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include <DManip\DisplayObjectDefaultImpl.h>
@@ -234,4 +229,3 @@ private:
    void GetEndPoint(IPoint2d* *point);
 };
 
-#endif // !defined(AFX_DIMENSIONLINEIMPL_H__80AD65CB_E7E0_11D4_8B84_006097C68A9C__INCLUDED_)

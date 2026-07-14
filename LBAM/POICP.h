@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _POICP_H_
-#define _POICP_H_
+#pragma once
 
 template <class T>
 class CProxyDPOIEvents : public IConnectionPointImpl<T, &IID_IPOIEvents, CComDynamicUnkArray>
@@ -192,4 +191,3 @@ public:
 		}
 	}
 };
-#endif

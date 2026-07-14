@@ -25,8 +25,7 @@
 
 // AppUnitSystem.h : Declaration of the CAppUnitSystem
 
-#ifndef __APPUNITSYSTEM_H_
-#define __APPUNITSYSTEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "UnitServerImp.h"
@@ -163,4 +162,3 @@ public:
 	}
 };
 
-#endif //__APPUNITSYSTEM_H_

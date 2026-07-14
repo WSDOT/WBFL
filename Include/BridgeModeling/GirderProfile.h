@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_GIRDERPROFILE_H_
-#define INCLUDED_BRIDGEMODELING_GIRDERPROFILE_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -102,6 +100,4 @@ private:
 
 // EXTERNAL REFERENCES
 //
-
-#endif // INCLUDED_BRIDGEMODELING_GIRDERPROFILE_H_
 

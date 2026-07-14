@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CUSTSITEVARS_H_
-#define INCLUDED_CUSTSITEVARS_H_
+#pragma once
 
 // menu stuff for CCustomControlSite
 #define CCS_CMENU_BASE    300 
@@ -39,4 +38,3 @@
 #define CCS_RB_VIEW_FORWARD 8
 #define CCS_RB_TOC          50
 
-#endif // INCLUDED_CUSTSITEVARS_H_

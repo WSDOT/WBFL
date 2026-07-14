@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_
-#define INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h> // even though this class isn't exported, we need this to bring in WBFLTypes and other related headers
@@ -43,4 +41,3 @@ private:
    rptHtmlUnitTagFormat& operator=(const rptHtmlUnitTagFormat&) = delete;
 };
 
-#endif // INCLUDED_BRIDGEMODELING_HTMLUNITTAGFORMAT_H_

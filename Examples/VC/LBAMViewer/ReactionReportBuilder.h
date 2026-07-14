@@ -1,5 +1,4 @@
-#ifndef INCLUDED_ReactionReportBuilder_H_
-#define INCLUDED_ReactionReportBuilder_H_
+#pragma once
 
 #include "stdAfx.h"
 
@@ -12,4 +11,3 @@ public:
                                     std::_tostream& pos)=0;
 };
 
-#endif

@@ -25,8 +25,7 @@
 
 // UnitSystem.h : Declaration of the CUnitSystem
 
-#ifndef __UNITSYSTEM_H_
-#define __UNITSYSTEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflUnitServerCP.h"
@@ -184,4 +183,3 @@ public:
    }
 };
 
-#endif //__UNITSYSTEM_H_

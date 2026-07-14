@@ -25,8 +25,7 @@
 
 // NLSolver.h : Declaration of the CNLSolver
 
-#ifndef __NLSOLVER_H_
-#define __NLSOLVER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -187,4 +186,3 @@ public:
    STDMETHOD(get_ConcreteCrushingStrain)(/*[out,retval]*/ Float64* ec) override;
 };
 
-#endif //__NLSOLVER_H_

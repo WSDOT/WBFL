@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGO_COGO_H_
-#define INCLUDED_COGO_COGO_H_
 #pragma once
 
 // Master include file for clients of the Cogo library
@@ -42,4 +40,3 @@
 #include <Cogo\VCurve.h>
 #include <Cogo\Engine.h>
 
-#endif // INCLUDED_COGO_COGO_H_

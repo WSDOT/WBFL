@@ -25,8 +25,7 @@
 
 // StrandGrid.h : Declaration of the CStrandGrid
 
-#ifndef __STRANDGRID_H_
-#define __STRANDGRID_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -275,4 +274,3 @@ private:
    bool IsLeftStrandPosition(GridPoint2d& gridPoint, IndexType positionIndex, bool bEvenStrandsOnLeft) const;
 };
 
-#endif //__STRANDGRID_H_

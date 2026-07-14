@@ -25,8 +25,7 @@
 
 // Material.h : Declaration of the CMaterial
 
-#ifndef __MATERIAL_H_
-#define __MATERIAL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <map>
@@ -83,4 +82,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__MATERIAL_H_

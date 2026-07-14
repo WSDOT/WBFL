@@ -25,8 +25,7 @@
 
 // Point3dCollection.h : Declaration of the CPoint3dCollection
 
-#ifndef __POINT3DCOLLECTION_H_
-#define __POINT3DCOLLECTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -81,4 +80,3 @@ public:
    STDMETHOD(RemoveDuplicatePoints)() override;
 };
 
-#endif //__POINT3DCOLLECTION_H_

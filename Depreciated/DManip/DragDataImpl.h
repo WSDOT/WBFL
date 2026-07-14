@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DRAGDATAIMPL_H__791A55EF_E8D7_11D4_8B85_006097C68A9C__INCLUDED_)
-#define AFX_DRAGDATAIMPL_H__791A55EF_E8D7_11D4_8B85_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -113,4 +108,3 @@ private:
    std::map<UINT,DataSink*> m_Sinks;
 };
 
-#endif // !defined(AFX_DRAGDATAIMPL_H__791A55EF_E8D7_11D4_8B85_006097C68A9C__INCLUDED_)

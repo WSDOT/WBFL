@@ -25,8 +25,7 @@
 
 // FlexRebarLayoutItem.h : Declaration of the CFlexRebarLayoutItem
 
-#ifndef __FlexRebarLayoutItem_H_
-#define __FlexRebarLayoutItem_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -100,4 +99,3 @@ public:
 	STDMETHOD(putref_Girder)(/*[in]*/IPrecastGirder* girder) override;
 };
 
-#endif //__FlexRebarLayoutItem_H_

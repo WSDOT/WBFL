@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTTRIANGLE_H__41AB73F0_BE02_11D3_8A12_006097C68A9C__INCLUDED_)
-#define AFX_TESTTRIANGLE_H__41AB73F0_BE02_11D3_8A12_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestTriangle  
 {
@@ -48,4 +43,3 @@ private:
 	static void TestIXYPosition();
 };
 
-#endif // !defined(AFX_TESTTRIANGLE_H__41AB73F0_BE02_11D3_8A12_006097C68A9C__INCLUDED_)

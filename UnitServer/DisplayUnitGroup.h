@@ -25,8 +25,7 @@
 
 // DisplayUnitGroup.h : Declaration of the CDisplayUnitGroup
 
-#ifndef __DISPLAYUNITGROUP_H_
-#define __DISPLAYUNITGROUP_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -120,4 +119,3 @@ public:
    }
 };
 
-#endif //__DISPLAYUNITGROUP_H_

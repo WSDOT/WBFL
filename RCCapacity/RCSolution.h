@@ -25,8 +25,7 @@
 
 // RCSolution.h : Declaration of the CRCSolution
 
-#ifndef __RCSOLUTION_H_
-#define __RCSOLUTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -90,4 +89,3 @@ public:
    STDMETHOD(get_fps)(/*[out,retval]*/ Float64* fps) override;
 };
 
-#endif //__RCSOLUTION_H_

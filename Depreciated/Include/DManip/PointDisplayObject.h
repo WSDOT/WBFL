@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_POINTDISPLAYOBJECT_H_
-#define INCLUDED_POINTDISPLAYOBJECT_H_
 #pragma once
 
 #include <DManip\DisplayObject.h>
@@ -41,4 +39,3 @@ interface iPointDisplayObject : public iDisplayObject
    STDMETHOD_(BOOL,IsAutoUpdateEnabled)() PURE;
 };
 
-#endif // INCLUDED_POINTDISPLAYOBJECT_H_

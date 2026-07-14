@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTLONGITUDINALPIERDESCRIPTION_H_
-#define INCLUDED_TESTLONGITUDINALPIERDESCRIPTION_H_
+#pragma once
 
 class CTestLongitudinalPierDescription
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestLongitudinalPierDescription();
 };
 
-#endif // INCLUDED_TESTLONGITUDINALPIERDESCRIPTION_H_

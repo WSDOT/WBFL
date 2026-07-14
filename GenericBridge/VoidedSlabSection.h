@@ -25,8 +25,7 @@
 
 // VoidedSlabSection.h : Declaration of the CVoidedSlabSection
 
-#ifndef __VoidedSlabSection_H_
-#define __VoidedSlabSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -164,4 +163,3 @@ public:
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 };
 
-#endif //__VoidedSlabSection_H_

@@ -23,8 +23,7 @@
 
 // SuperstructureMember.h : Declaration of the CSuperstructureMember
 
-#ifndef __SUPERSTRUCTUREMEMBER_H_
-#define __SUPERSTRUCTUREMEMBER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "Segments.h"
@@ -141,4 +140,3 @@ protected:
                                  // but they aren't part of the real structure so they don't get loaded.
 };
 
-#endif //__SUPERSTRUCTUREMEMBER_H_

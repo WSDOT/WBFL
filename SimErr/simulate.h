@@ -34,8 +34,7 @@ simulator.h  definition of CErrorSimulator
 CErrorSimulator tracks all the statements that simulate failures in a
 program, and decides when each statement should be triggered.
 ---------------------------------------------------------------------------*/
-#ifndef SIMULATOR_H
-#define SIMULATOR_H
+#pragma once
 
 #ifndef SIMSTMT_H
 #include "simstmt.h"
@@ -118,4 +117,3 @@ protected:
    bool               m_bInitialized; // true if ready to simulate errors
 };
 
-#endif //SIMULATOR_H

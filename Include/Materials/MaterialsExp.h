@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATERIAL_MATERIALEXP_H_
-#define INCLUDED_MATERIAL_MATERIALEXP_H_
 #pragma once
 
 // Define BUILDMATLIB when building this library
@@ -47,4 +45,3 @@
 #include <Materials/AutoLib.h>
 #include <WbflAll.h>
 
-#endif // INCLUDED_MATERIAL_MATERIALEXP_H_

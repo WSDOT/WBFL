@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTRECTANGLE_H__24D6FE20_BD71_11D3_8CDF_8E94BB1B7E54__INCLUDED_)
-#define AFX_TESTRECTANGLE_H__24D6FE20_BD71_11D3_8CDF_8E94BB1B7E54__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestRectangle  
 {
@@ -48,4 +43,3 @@ private:
 	static void TestIRectangle();
 };
 
-#endif // !defined(AFX_TESTRECTANGLE_H__24D6FE20_BD71_11D3_8CDF_8E94BB1B7E54__INCLUDED_)

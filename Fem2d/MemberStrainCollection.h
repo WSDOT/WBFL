@@ -25,8 +25,6 @@
 
 // MemberStrainCollection.h : Declaration of the CMemberStrainCollection
 
-#ifndef __MemberStrainCollection_H_
-#define __MemberStrainCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__MemberStrainCollection_H_

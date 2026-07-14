@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTUBeam_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_)
-#define AFX_TESTUBeam_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestUBeam  
 {
@@ -48,4 +43,3 @@ private:
 	static void TestIUBeam();
 };
 
-#endif // !defined(AFX_TESTUBeam_H__35A093A0_BE30_11D3_8CDF_F55DC8C41954__INCLUDED_)

@@ -25,8 +25,6 @@
 
 // SurfacePoint.h : Declaration of the CSurfacePoint
 
-#ifndef __SURFACEPOINT_H_
-#define __SURFACEPOINT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -87,4 +85,3 @@ private:
    ISurface* m_pSurface; // weak reference
 };
 
-#endif //__SURFACEPOINT_H_

@@ -21,15 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SIMPLEDRAWELINESTRATEGYIMPL_H_
-#define INCLUDED_SIMPLEDRAWELINESTRATEGYIMPL_H_
 // SimpleDrawLineStrategyImpl.h: interface for the CSimpleDrawLineStrategyImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -91,4 +87,3 @@ private:
    void GetPointsInWorldSpace(iLineDisplayObject* pDO,Float64* sx,Float64* sy,Float64* ex,Float64* ey);
 };
 
-#endif // INCLUDED_SIMPLEDRAWELINESTRATEGYIMPL_H_

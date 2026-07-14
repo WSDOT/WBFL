@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_PRIMITIVES3D_H_
-#define INCLUDED_GEOMETRY_PRIMITIVES3D_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -255,4 +253,3 @@ namespace WBFL
       inline GEOMMODELFUNC Point3d& operator/=(Point3d& p, Float64 K) { p.Scale(1.0 / K); return p; }   } // namespace Geometry
 } // namespace WBFL
 
-#endif // INCLUDED_GEOMETRY_PRIMITIVES3D_H_

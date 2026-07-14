@@ -25,12 +25,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_MAINFRM_H__77026798_056A_422B_B5DB_F132FF54D48F__INCLUDED_)
-#define AFX_MAINFRM_H__77026798_056A_422B_B5DB_F132FF54D48F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <EAF\EAFExp.h>
 #include <EAF\EAFDocTemplate.h>
@@ -217,4 +212,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_MAINFRM_H__77026798_056A_422B_B5DB_F132FF54D48F__INCLUDED_)

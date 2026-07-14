@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTLineSegment3d_H__5B12E407_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_)
-#define AFX_TESTLineSegment3d_H__5B12E407_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestLineSegment3d
 {
@@ -45,4 +40,3 @@ private:
 	static void TestISupportErrorInfo();
 };
 
-#endif // !defined(AFX_TESTLineSegment3d_H__5B12E407_AF9C_11D3_8CDF_FF25C5D0C656__INCLUDED_)

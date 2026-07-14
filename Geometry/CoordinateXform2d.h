@@ -25,8 +25,7 @@
 
 // CoordinateXform2d.h : Declaration of the CCoordinateXform2d
 
-#ifndef __COORDINATEXFORM2D_H_
-#define __COORDINATEXFORM2D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/CoordinateXform2d.h>
@@ -75,4 +74,3 @@ public:
 	STDMETHOD(put_NewOrigin)(/*[in]*/ IPoint2d* newVal) override;
 };
 
-#endif //__COORDINATEXFORM2D_H_

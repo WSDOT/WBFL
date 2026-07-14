@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(INCLUDED_TESTCOMPOSITESHAPEITEM_H_)
-#define INCLUDED_TESTCOMPOSITESHAPEITEM_H_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCompositeShapeItem  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(INCLUDED_TESTCOMPOSITESHAPEITEM_H_)

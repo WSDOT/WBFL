@@ -25,8 +25,7 @@
 
 // PlateGirder.h : Declaration of the CPlateGirder
 
-#ifndef __PLATEGIRDER_H_
-#define __PLATEGIRDER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/PlateGirder.h>
@@ -96,4 +95,3 @@ public:
 	STDMETHOD(put_TopFlangeWidth)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__PLATEGIRDER_H_

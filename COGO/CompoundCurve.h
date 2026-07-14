@@ -25,8 +25,6 @@
 
 // CompoundCurve.h : Declaration of the CCompoundCurve
 
-#ifndef __CompoundCurve_H_
-#define __CompoundCurve_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -138,4 +136,3 @@ private:
    std::shared_ptr<WBFL::COGO::CompoundCurve> m_Curve;
 };
 
-#endif //__CompoundCurve_H_

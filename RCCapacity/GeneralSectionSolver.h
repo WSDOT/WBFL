@@ -25,8 +25,7 @@
 
 // GeneralSectionSolver.h : Declaration of the CGeneralSectionSolver
 
-#ifndef __GeneralSectionSolver_H_
-#define __GeneralSectionSolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -124,4 +123,3 @@ public:
    STDMETHOD(Solve)(/*[in]*/ IPlane3d* strainPlane,/*[out,retval]*/IGeneralSectionSolution** solution) override;
 };
 
-#endif //__GeneralSectionSolver_H_

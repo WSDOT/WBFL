@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LIVELOADDUMPER_H__0F75E61A_17D0_4872_BF8C_0845609B3635__INCLUDED_)
-#define AFX_LIVELOADDUMPER_H__0F75E61A_17D0_4872_BF8C_0845609B3635__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DumperUtils.h"
 
@@ -187,4 +182,3 @@ private:
 
 };
 
-#endif // !defined(AFX_LIVELOADDUMPER_H__0F75E61A_17D0_4872_BF8C_0845609B3635__INCLUDED_)

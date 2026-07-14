@@ -23,8 +23,7 @@
 
 // LoadCaseResponseAgg.h : Declaration of the CLoadCaseResponseAgg
 
-#ifndef __LoadCaseResponseAGG_H_
-#define __LoadCaseResponseAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCombiner.h"
@@ -76,4 +75,3 @@ private:
 
 };
 
-#endif //__LoadCaseResponseAgg_H_

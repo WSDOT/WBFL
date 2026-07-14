@@ -25,8 +25,7 @@
 
 // PolyShape.h : Declaration of the CPolyShape
 
-#ifndef __POLYSHAPE_H_
-#define __POLYSHAPE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "Helper.h"
@@ -114,4 +113,3 @@ private:
    CComPtr<IPoint2d> m_HookPoint;
 };
 
-#endif //__POLYSHAPE_H_

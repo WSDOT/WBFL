@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_RCUNITVALUET_H_
-#define INCLUDED_REPORTER_RCUNITVALUET_H_
 #pragma once
 
 
@@ -180,4 +178,3 @@ using rptAreaUnitValue = rptLength2UnitValue;
 using rptVolumeUnitValue = rptLength3UnitValue;
 using rptAreaPerLengthValue = rptLengthUnitValue;
 
-#endif // INCLUDED_REPORTER_RCUNITVALUET_H_

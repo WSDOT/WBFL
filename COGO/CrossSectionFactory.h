@@ -25,8 +25,6 @@
 
 // CrossSectionFactory.h : Declaration of the CCrossSectionFactory
 
-#ifndef __CROSSSECTIONFACTORY_H_
-#define __CROSSSECTIONFACTORY_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -80,4 +78,3 @@ private:
    IProfile* m_pProfile;
 };
 
-#endif //__CROSSSECTIONFACTORY_H_

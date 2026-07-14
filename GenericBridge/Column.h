@@ -25,8 +25,7 @@
 
 // Column.h : Declaration of the CColumn
 
-#ifndef __COLUMN_H_
-#define __COLUMN_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -100,4 +99,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__COLUMN_H_

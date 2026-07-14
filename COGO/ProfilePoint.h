@@ -25,8 +25,6 @@
 
 // ProfilePoint.h : Declaration of the CProfilePoint
 
-#ifndef __PROFILEPOINT_H_
-#define __PROFILEPOINT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ private:
 	std::shared_ptr<WBFL::COGO::ProfilePoint> m_ProfilePoint{ std::make_shared<WBFL::COGO::ProfilePoint>() };
 };
 
-#endif //__PROFILEPOINT_H_

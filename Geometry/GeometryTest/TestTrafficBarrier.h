@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTTRAFFICBARRIER_H__EB0CA6C0_C083_11D3_8CE0_C066B07A6B3B__INCLUDED_)
-#define AFX_TESTTRAFFICBARRIER_H__EB0CA6C0_C083_11D3_8CE0_C066B07A6B3B__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestTrafficBarrier  
 {
@@ -48,4 +43,3 @@ private:
 	static void TestITrafficBarrier();
 };
 
-#endif // !defined(AFX_TESTTRAFFICBARRIER_H__EB0CA6C0_C083_11D3_8CE0_C066B07A6B3B__INCLUDED_)

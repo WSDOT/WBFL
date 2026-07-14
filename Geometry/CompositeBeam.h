@@ -23,8 +23,7 @@
 
 // CompositeBeam.h : Declaration of the CCompositeBeam
 
-#ifndef __COMPOSITEBEAM_H_
-#define __COMPOSITEBEAM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -116,4 +115,3 @@ private:
    void UpdateShapeLocations();
 };
 
-#endif //__COMPOSITEBEAM_H_

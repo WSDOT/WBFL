@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTELASTICPROPERTIES_H__4D52C935_08D5_11D5_8BBD_006097C68A9C__INCLUDED_)
-#define AFX_TESTELASTICPROPERTIES_H__4D52C935_08D5_11D5_8BBD_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestElasticProperties  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTELASTICPROPERTIES_H__4D52C935_08D5_11D5_8BBD_006097C68A9C__INCLUDED_)

@@ -23,8 +23,7 @@
 
 // LibraryViewer.h : Declaration of the CLibraryViewer
 
-#ifndef __LIBRARYVIEWER_H_
-#define __LIBRARYVIEWER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <atlctl.h>
@@ -207,4 +206,3 @@ private:
 	}
 };
 
-#endif //__LIBRARYVIEWER_H_

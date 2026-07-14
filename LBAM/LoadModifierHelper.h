@@ -23,8 +23,7 @@
 
 // LoadModifierHelper - encapsulates common code/behaviour for classes that support loadmodifiers
 
-#ifndef __LOADMODIFIERHELPER_H_
-#define __LOADMODIFIERHELPER_H_
+#pragma once
 
 const int LM_ARRSIZE=lctUserDefined+1;
 
@@ -239,4 +238,3 @@ private:
    Float64 m_LoadModifiers[LM_ARRSIZE][2];
 };
 
-#endif

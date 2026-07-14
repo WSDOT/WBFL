@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_ANALYSISMODEL_H__A1C2BAF3_A20B_11D5_B05D_00105A9AF985__INCLUDED_)
-#define AFX_ANALYSISMODEL_H__A1C2BAF3_A20B_11D5_B05D_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "WBFLLBAMAnalysis.h"
 #include "AnalysisUtils.h"
@@ -341,4 +336,3 @@ private:
 
 };
 
-#endif // !defined(AFX_ANALYSISMODEL_H__A1C2BAF3_A20B_11D5_B05D_00105A9AF985__INCLUDED_)

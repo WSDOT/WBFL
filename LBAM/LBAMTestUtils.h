@@ -25,8 +25,7 @@
 
 // LBAMCollection.h : 
 
-#ifndef __LBAMTestUtils_H_
-#define __LBAMTestUtils_H_
+#pragma once
 
 #include <WBFLLBAM.h>
 inline void ConfigureLrfdLiveLoadModelInKipFeet(ILBAMModel* model)
@@ -507,4 +506,3 @@ void TestPersistance(T* pllc, const CLSID& ClsId)
    }
 }
 
-#endif //

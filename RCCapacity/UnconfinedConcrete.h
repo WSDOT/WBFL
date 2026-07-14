@@ -25,8 +25,7 @@
 
 // UnconfinedConcrete.h : Declaration of the CUnconfinedConcrete
 
-#ifndef __UNCONFINEDCONCRETE_H_
-#define __UNCONFINEDCONCRETE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -95,4 +94,3 @@ public:
 	STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
-#endif //__UNCONFINEDCONCRETE_H_

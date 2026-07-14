@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HELPER_H_
-#define INCLUDED_HELPER_H_
+#pragma once
 
 #include <UnitServer.hh>
 
@@ -50,4 +49,3 @@ inline LPCOLESTR GetHelpFile()
    return _T("WBFLUnitServer.chm");
 }
 
-#endif

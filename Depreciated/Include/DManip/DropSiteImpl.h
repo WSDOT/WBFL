@@ -1,5 +1,4 @@
-#ifndef INCLUDED_DROPSITEIMPL_H_
-#define INCLUDED_DROPSITEIMPL_H_
+#pragma once
 
 #include <DManip\DManipExp.h>
 #include <DManip\DropSite.h>
@@ -20,4 +19,3 @@ private:
    iDisplayObject* m_pDispObj;
 };
 
-#endif // INCLUDED_DROPSITEIMPL_H_

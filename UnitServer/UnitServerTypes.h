@@ -19,8 +19,7 @@
 #include "rpc.h"
 #include "rpcndr.h"
 
-#ifndef __UnitServerTypes_h__
-#define __UnitServerTypes_h__
+#pragma once
 
 #ifdef __cplusplus
 extern "C"{
@@ -53,4 +52,3 @@ extern RPC_IF_HANDLE __MIDL_itf_UnitServerTypes_0000_v0_0_s_ifspec;
 }
 #endif
 
-#endif

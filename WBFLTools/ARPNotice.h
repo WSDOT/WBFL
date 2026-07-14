@@ -25,8 +25,7 @@
 
 // ARPNotice.h : Declaration of the CARPNotice
 
-#ifndef __ARPNOTICE_H_
-#define __ARPNOTICE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -63,4 +62,3 @@ public:
 	STDMETHOD(Show)(/*[in]*/ VARIANT_BOOL bGiveChoice,/*[in]*/ LicenseType lt,/*[out,retval]*/ AcceptanceType* accept) override;
 };
 
-#endif //__ARPNOTICE_H_

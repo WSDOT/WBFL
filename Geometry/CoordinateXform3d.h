@@ -25,8 +25,7 @@
 
 // CoordinateXform3d.h : Declaration of the CCoordinateXform3d
 
-#ifndef __COORDINATEXFORM3D_H_
-#define __COORDINATEXFORM3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/CoordinateXform3d.h>
@@ -77,4 +76,3 @@ public:
 	STDMETHOD(put_NewOrigin)(/*[in]*/ IPoint3d *newVal) override;
 };
 
-#endif //__COORDINATEXFORM3D_H_

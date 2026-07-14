@@ -25,8 +25,7 @@
 
 // DisplayUnitMgr2.h : Declaration of the CDisplayUnitMgr2
 
-#ifndef __DISPLAYUNITMGR2_H_
-#define __DISPLAYUNITMGR2_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -125,4 +124,3 @@ public:
    }
 };
 
-#endif //__DISPLAYUNITMGR2_H_

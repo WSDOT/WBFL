@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTMATERIAL_H_
-#define INCLUDED_TESTMATERIAL_H_
+#pragma once
 
 class CTestMaterial
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestMaterial();
 };
 
-#endif // INCLUDED_TESTMATERIAL_H_

@@ -2,12 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_MAINFRM_H__41E9F630_4D20_4F4F_9D12_05D49E30645E__INCLUDED_)
-#define AFX_MAINFRM_H__41E9F630_4D20_4F4F_9D12_05D49E30645E__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CLBAMViewerView;
 
@@ -69,4 +64,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_MAINFRM_H__41E9F630_4D20_4F4F_9D12_05D49E30645E__INCLUDED_)

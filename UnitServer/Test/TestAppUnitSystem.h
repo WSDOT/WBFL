@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTAPPUNITSYSTEM_H__16683EE8_558C_11D4_8CE4_0080C7380027__INCLUDED_)
-#define AFX_TESTAPPUNITSYSTEM_H__16683EE8_558C_11D4_8CE4_0080C7380027__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestAppUnitSystem : 
    public CComObjectRootEx<CComSingleThreadModel>,
@@ -59,4 +54,3 @@ private:
    void Pass() { m_bTestState = true; }
 };
 
-#endif // !defined(AFX_TESTAPPUNITSYSTEM_H__16683EE8_558C_11D4_8CE4_0080C7380027__INCLUDED_)

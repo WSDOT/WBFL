@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TestBridgeGeometry_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
-#define AFX_TestBridgeGeometry_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestBridgeFramingGeometry
 {
@@ -49,4 +44,3 @@ private:
    static void Test5();
 };
 
-#endif // !defined(AFX_TestBridgeGeometry_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

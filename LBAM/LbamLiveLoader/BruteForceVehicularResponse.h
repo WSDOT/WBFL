@@ -23,8 +23,7 @@
 
 // BruteForceVehicularResponse.h : Declaration of the CBruteForceVehicularResponse
 
-#ifndef __BruteForceVehicularResponse_H_
-#define __BruteForceVehicularResponse_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -348,4 +347,3 @@ private:
    void IntializeCompare(OptimizationType optimization, iLLCompare** pleftCompare,  iLLCompare** prightCompare);
 };
 
-#endif //__BruteForceVehicularResponse_H_

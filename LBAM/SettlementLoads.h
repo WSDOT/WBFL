@@ -23,8 +23,7 @@
 
 // SettlementLoads.h : Declaration of the CSettlementLoads
 
-#ifndef __SETTLEMENTLOADS_H_
-#define __SETTLEMENTLOADS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCP.h"
@@ -138,4 +137,3 @@ public:
    }
 };
 
-#endif //__SETTLEMENTLOADS_H_

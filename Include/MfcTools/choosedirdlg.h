@@ -24,9 +24,6 @@
 
 ////////////////////////////////// Macros ///////////////////////////
 
-#ifndef __CHOOSEDIRDLG_H__
-#define __CHOOSEDIRDLG_H__
-
 #pragma once
 
 /////////////////////////// Classes /////////////////////////////////
@@ -41,6 +38,3 @@ protected:
   static int CALLBACK SetSelProc(HWND hWnd, UINT uMsg, LPARAM lParam, LPARAM lpData);
 };
 
-
-
-#endif //_CHOOSEDIRDLG_H__

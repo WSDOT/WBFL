@@ -26,12 +26,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTPOINT2D_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
-#define AFX_TESTPOINT2D_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestPoint2d
 {
@@ -41,4 +36,3 @@ public:
    static void Test();
 };
 
-#endif // !defined(AFX_TESTPOINT2D_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

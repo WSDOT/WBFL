@@ -1,9 +1,5 @@
-#if !defined(AFX_LOADSELECTTREEVIEW_H__91FB666D_BC0E_4D3B_A2B6_C5288A5767D7__INCLUDED_)
-#define AFX_LOADSELECTTREEVIEW_H__91FB666D_BC0E_4D3B_A2B6_C5288A5767D7__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // LoadSelectTreeView.h : header file
 //
 #include "LBAMViewerDoc.h"
@@ -122,4 +118,3 @@ void UpdateProperties(CLBAMViewerDoc* pVDoc, CTreeCtrl* tree, HTREEITEM hitm);
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_LOADSELECTTREEVIEW_H__91FB666D_BC0E_4D3B_A2B6_C5288A5767D7__INCLUDED_)

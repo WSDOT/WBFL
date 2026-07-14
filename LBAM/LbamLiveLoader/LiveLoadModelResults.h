@@ -23,8 +23,7 @@
 
 // LiveLoadModelResults.h : Declaration of the CLiveLoadModelResults
 
-#ifndef __LIVELOADMODELRESULTS_H_
-#define __LIVELOADMODELRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -96,4 +95,3 @@ private:
 
 };
 
-#endif //__LIVELOADMODELRESULTS_H_

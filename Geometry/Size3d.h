@@ -25,8 +25,7 @@
 
 // Size3d.h : Declaration of the CSize3d
 
-#ifndef __SIZE3D_H_
-#define __SIZE3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Primitives3d.h>
@@ -76,4 +75,3 @@ public:
 	STDMETHOD(put_Dx)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__SIZE3D_H_

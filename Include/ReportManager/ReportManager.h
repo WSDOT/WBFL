@@ -1,5 +1,4 @@
-#ifndef INCLUDED_REPORTMANAGER_H_
-#define INCLUDED_REPORTMANAGER_H_
+#pragma once
 
 // This is a master include file for the Reporting Package
 #if defined(BUILDREPORTMANAGERLIB)
@@ -15,4 +14,3 @@
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportSpecificationBuilder.h>
 
-#endif // INCLUDED_REPORTMANAGER_H_

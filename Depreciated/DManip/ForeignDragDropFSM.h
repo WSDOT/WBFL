@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_FOREIGNDRAGDROPFSM_H_
-#define INCLUDED_FOREIGNDRAGDROPFSM_H_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <DManip\ForeignDragDropTask.h>
 
@@ -139,4 +134,3 @@ private:
    CForeignDragDropFSMState* m_pState;
 };
 
-#endif // INCLUDED_FOREIGHDRAGDROPFSM_H_

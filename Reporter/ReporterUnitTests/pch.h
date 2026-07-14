@@ -4,8 +4,7 @@
 // However, files listed here are ALL re-compiled if any one of them is updated between builds.
 // Do not add files here that you will be updating frequently as this negates the performance advantage.
 
-#ifndef PCH_H
-#define PCH_H
+#pragma once
 
 #include <Reporter/Reporter.h>
 #include <Reporter/Report.h>
@@ -27,4 +26,3 @@
 #include <Reporter/OutputRcVisitor.h>
 #include <Reporter/HtmlRcVisitor.h>
 
-#endif //PCH_H

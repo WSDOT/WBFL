@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REINFORCEDCONCRETE_REINFCONCLIB_H_
-#define INCLUDED_REINFORCEDCONCRETE_REINFCONCLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -39,4 +37,3 @@ DESCRIPTION
 
 #include <WBFLTools.h>
 
-#endif // INCLUDED_REINFORCEDCONCRETE_REINFCONCLIB_H_

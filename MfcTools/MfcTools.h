@@ -1,9 +1,6 @@
 // MfcTools.h : main header file for the MFCTOOLS DLL
 //
 
-#if !defined(AFX_MFCTOOLS_H__3C5D7EEB_3089_11D2_9D3D_00609710E6CE__INCLUDED_)
-#define AFX_MFCTOOLS_H__3C5D7EEB_3089_11D2_9D3D_00609710E6CE__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -44,4 +41,3 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_MFCTOOLS_H__3C5D7EEB_3089_11D2_9D3D_00609710E6CE__INCLUDED_)

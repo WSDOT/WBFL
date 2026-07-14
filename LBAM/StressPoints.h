@@ -23,8 +23,7 @@
 
 // StressPoints.h : Declaration of the CStressPoints
 
-#ifndef __STRESSPOINTS_H_
-#define __STRESSPOINTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -147,4 +146,3 @@ public:
    }
 };
 
-#endif //__StressPoints_H_

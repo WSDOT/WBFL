@@ -25,8 +25,7 @@
 
 // GeneralSectionSlice.h : Declaration of the CGeneralSectionSlice
 
-#ifndef __GeneralSectionSlice_H_
-#define __GeneralSectionSlice_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -102,4 +101,3 @@ public:
    STDMETHOD(ExceededStrainLimit)(/*[out, retval]*/VARIANT_BOOL* pvbExceededStrainLimit) override;
 };
 
-#endif //__GeneralSectionSlice_H_

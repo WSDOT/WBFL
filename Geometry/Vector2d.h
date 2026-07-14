@@ -25,8 +25,7 @@
 
 // Vector2d.h : Declaration of the CVector2d
 
-#ifndef __VECTOR2D_H_
-#define __VECTOR2D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Vector2d.h>
@@ -93,4 +92,3 @@ public:
 	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__VECTOR2D_H_

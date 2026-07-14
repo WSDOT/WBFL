@@ -23,8 +23,7 @@
 
 // BasicVehicularResponse.h : Declaration of the CBasicVehicularResponse
 
-#ifndef __BASICVEHICULARRESPONSE_H_
-#define __BASICVEHICULARRESPONSE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LiveLoaderUtils.h"
@@ -134,4 +133,3 @@ private:
 
 };
 
-#endif //__BASICVEHICULARRESPONSE_H_

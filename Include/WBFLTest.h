@@ -1,5 +1,4 @@
-#ifndef INCLUDED_WBFLTEST_H_
-#define INCLUDED_WBFLTEST_H_
+#pragma once
 
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
@@ -40,4 +39,3 @@ inline void _try_test(bool bPassed,const char* file,long line)  {std::cout << fi
 #define TRY_TEST(x,y) {bool bPassed = (x==y); _try_test(bPassed,__FILE__,__LINE__); ATLASSERT(bPassed);}
 #endif
 
-#endif // INCLUDED_WBFLTEST_H_

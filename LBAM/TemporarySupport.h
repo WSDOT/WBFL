@@ -23,8 +23,7 @@
 
 // TemporarySupport.h : Declaration of the CTemporarySupport
 
-#ifndef __TEMPORARYSUPPORT_H_
-#define __TEMPORARYSUPPORT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "Segments.h"
@@ -163,4 +162,3 @@ public:
    DWORD                            m_DistributionFactorCookie;
 };
 
-#endif //__TEMPORARYSUPPORT_H_

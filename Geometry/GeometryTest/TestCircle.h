@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTCIRCLE_H__0B054565_BD60_11D3_8A11_006097C68A9C__INCLUDED_)
-#define AFX_TESTCIRCLE_H__0B054565_BD60_11D3_8A11_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestCircle  
 {
@@ -49,4 +44,3 @@ private:
 	static void TestICircle();
 };
 
-#endif // !defined(AFX_TESTCIRCLE_H__0B054565_BD60_11D3_8A11_006097C68A9C__INCLUDED_)

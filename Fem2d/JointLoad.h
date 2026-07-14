@@ -25,8 +25,6 @@
 
 // JointLoad.h : Declaration of the CJointLoad
 
-#ifndef __JOINTLOAD_H_
-#define __JOINTLOAD_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -102,4 +100,3 @@ private:
 
 };
 
-#endif //__JOINTLOAD_H_

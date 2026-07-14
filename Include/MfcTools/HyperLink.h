@@ -20,8 +20,6 @@
 // Transportation, Bridge and Structures Office, P.O. Box  47340, 
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
-#ifndef INCLUDED_MFCTOOLS_HYPERLINK_H_
-#define INCLUDED_MFCTOOLS_HYPERLINK_H_
 #pragma once
 
 //
@@ -148,4 +146,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line
 
-#endif // INCLUDED_MFCTOOLS_HYPERLINK_H_

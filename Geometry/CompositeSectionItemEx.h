@@ -23,8 +23,7 @@
 
 // CompositeSectionItemEx.h : Declaration of the CCompositeSectionItem
 
-#ifndef __COMPOSITESECTIONITEMEX_H_
-#define __COMPOSITESECTIONITEMEX_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -85,4 +84,3 @@ private:
    CComPtr<IShape> m_Shape;
 };
 
-#endif //__COMPOSITESECTIONITEMEX_H_

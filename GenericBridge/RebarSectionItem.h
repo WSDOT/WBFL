@@ -25,8 +25,7 @@
 
 // RebarSectionItem.h : Declaration of the CRebarSectionItem
 
-#ifndef __RebarSectionItem_H_
-#define __RebarSectionItem_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -85,4 +84,3 @@ private:
    HookType m_RightHookType;
 };
 
-#endif //__RebarSectionItem_H_

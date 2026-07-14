@@ -23,8 +23,7 @@
 
 // DistributionFactor.h : Declaration of the CDistributionFactor
 
-#ifndef __DISTRIBUTIONFACTOR_H_
-#define __DISTRIBUTIONFACTOR_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMCP.h"
@@ -157,6 +156,4 @@ HRESULT PutVal(Float64 newVal, Float64& G);
 HRESULT PutVal2(Float64 newVal, Float64& G, bool& dofire);
 HRESULT GetProp(IStructuredLoad2 *pload, BSTR name, Float64& prop);
 };
-
-#endif //__DISTRIBUTIONFACTOR_H_
 

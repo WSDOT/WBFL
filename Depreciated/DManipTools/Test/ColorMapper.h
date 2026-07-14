@@ -26,8 +26,7 @@
 // Oct 1999 - Released as open source
 // Feb 2002 - Converted to mfc
 
-#if !defined (COLORMAPPER_H_)
-#define COLORMAPPER_H_
+#pragma once
 
 // Color mapping class for Windows
 //
@@ -126,4 +125,3 @@ private:
    CColorIterator();
 };
 
-#endif // COLORMAPPER_H_

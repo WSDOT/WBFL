@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __iDistributionFactorStrategy_H_
-#define __iDistributionFactorStrategy_H_
+#pragma once
 
 // Use Strategy pattern for determining distribution factor values for various effect types
 // This eliminates lots of case statements in the live loader code, but is still complex.
@@ -134,5 +133,3 @@ private:
    IGetDistributionFactors* m_GetDistributionFactors;
 };
 
-
-#endif

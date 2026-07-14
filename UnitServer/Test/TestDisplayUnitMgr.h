@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDISPLAYUNITMGR_H__51F0A2CD_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_)
-#define AFX_TESTDISPLAYUNITMGR_H__51F0A2CD_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestDisplayUnitMgr : 
    public CComObjectRootEx<CComSingleThreadModel>,
@@ -68,4 +63,3 @@ public:
    STDMETHOD(OnDisplayUnitGroupsCleared)();
 };
 
-#endif // !defined(AFX_TESTDISPLAYUNITMGR_H__51F0A2CD_CAC1_11D3_8CE1_A85CC0A0E770__INCLUDED_)

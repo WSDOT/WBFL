@@ -25,8 +25,6 @@
 
 // AngleDisplayUnitFormatter.h : Declaration of the CAngleDisplayUnitFormatter
 
-#ifndef __ANGLEDISPLAYUNITFORMATTER_H_
-#define __ANGLEDISPLAYUNITFORMATTER_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -90,4 +88,3 @@ private:
    Float64 m_ZeroTolerance;
 };
 
-#endif //__ANGLEDISPLAYUNITFORMATTER_H_

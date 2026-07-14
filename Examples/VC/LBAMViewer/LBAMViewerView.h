@@ -2,13 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LBAMVIEWERVIEW_H__9C9264B2_61E9_477D_A752_9D835E871087__INCLUDED_)
-#define AFX_LBAMVIEWERVIEW_H__9C9264B2_61E9_477D_A752_9D835E871087__INCLUDED_
-
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "LBAMViewerDoc.h"
 #include "GraphXyDisplayObjectImpl.h"
@@ -97,4 +91,3 @@ inline CLBAMViewerDoc* CLBAMViewerView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_LBAMVIEWERVIEW_H__9C9264B2_61E9_477D_A752_9D835E871087__INCLUDED_)

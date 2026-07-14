@@ -23,8 +23,7 @@
 
 // FilteredDfSegmentCollection.h : Declaration of the CFilteredDfSegmentCollection
 
-#ifndef __FILTEREDDFSEGMENTCOLLECTION_H_
-#define __FILTEREDDFSEGMENTCOLLECTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMUtils.h"
@@ -77,4 +76,3 @@ private:
    {return S_OK;}
 };
 
-#endif //__FILTEREDDFSEGMENTCOLLECTION_H_

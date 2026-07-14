@@ -24,8 +24,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2dCollection.h : 
 
-#ifndef __MODELEVENTS_H_
-#define __MODELEVENTS_H_
 #pragma once
 
 class ModelEvents
@@ -68,4 +66,3 @@ public:
    virtual void OnPOIRemoved(PoiIDType ID) = 0;
    virtual void OnPOIsCleared() = 0;
 };
-#endif 

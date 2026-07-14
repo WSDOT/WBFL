@@ -25,8 +25,7 @@
 
 // Plane3d.h : Declaration of the CPlane3d
 
-#ifndef __PLANE3D_H_
-#define __PLANE3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Plane3d.h>
@@ -81,4 +80,3 @@ public:
    STDMETHOD(Clone)(/*[out,retval]*/IPlane3d** clone) override;
 };
 
-#endif //__PLANE3D_H_

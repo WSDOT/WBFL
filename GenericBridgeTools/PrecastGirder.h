@@ -25,8 +25,7 @@
 
 // PrecastGirder.h : Declaration of the CPrecastGirder
 
-#ifndef __PRECASTGIRDER_H_
-#define __PRECASTGIRDER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -109,4 +108,3 @@ public:
    STDMETHOD(get_ClosureJointRebarLayout)(/*[out,retval]*/IRebarLayout** rebarLayout) override;
 };
 
-#endif //__PRECASTGIRDER_H_

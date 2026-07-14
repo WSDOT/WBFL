@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DATAPOINTDRAWSTRATEGY_H_
-#define INCLUDED_DATAPOINTDRAWSTRATEGY_H_
 #pragma once
 
 #include "DManipTools\DManipTools.h"
@@ -49,4 +47,3 @@ interface iDataPointDrawStrategy : public IUnknown
    STDMETHOD_(void,put_Color)(COLORREF color) PURE;
 };
 
-#endif // INCLUDED_DATAPOINTDRAWSTRATEGY_H_

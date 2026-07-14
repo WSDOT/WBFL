@@ -23,8 +23,7 @@
 
 // VehicularLoads.h : Declaration of the CVehicularLoads
 
-#ifndef __VEHICULARLOADS_H_
-#define __VEHICULARLOADS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LiveLoadCP.h"
@@ -92,4 +91,3 @@ protected:
 
 };
 
-#endif //__VEHICULARLOADS_H_

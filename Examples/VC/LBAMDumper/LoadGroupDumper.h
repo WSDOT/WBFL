@@ -2,14 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LOADGROUPDUMPER_H__0843B1BD_9861_4ACE_BF8C_BCA37796EEDB__INCLUDED_)
-#define AFX_LOADGROUPDUMPER_H__0843B1BD_9861_4ACE_BF8C_BCA37796EEDB__INCLUDED_
-
-
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CDumperUtil;
 
@@ -40,4 +33,3 @@ private:
    CDumperUtil*                 m_Util;
 };
 
-#endif // !defined(AFX_LOADGROUPDUMPER_H__0843B1BD_9861_4ACE_BF8C_BCA37796EEDB__INCLUDED_)

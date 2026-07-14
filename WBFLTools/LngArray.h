@@ -25,8 +25,7 @@
 
 // LngArray.h : Declaration of the CLngArray
 
-#ifndef __LngArray_H_
-#define __LngArray_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -80,4 +79,3 @@ protected:
 	using ContainerIterator = ContainerType::iterator;
    ContainerType m_Values;
 };
-#endif //__LngArray_H_

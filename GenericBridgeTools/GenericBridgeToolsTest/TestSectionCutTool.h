@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTSECTIONCUTTOOL_H_
-#define INCLUDED_TESTSECTIONCUTTOOL_H_
+#pragma once
 
 class CTestSectionCutTool
 {
@@ -42,4 +41,3 @@ private:
    static void TestSplicedGirderBridge();
 };
 
-#endif // INCLUDED_TESTSECTIONCUTTOOL_H_

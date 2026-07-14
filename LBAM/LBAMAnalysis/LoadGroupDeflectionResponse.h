@@ -23,8 +23,7 @@
 
 // LoadGroupDeflectionResponse.h : Declaration of the CLoadGroupDeflectionResponse
 
-#ifndef __LOADGROUPDEFLECTIONRESPONSE_H_
-#define __LOADGROUPDEFLECTIONRESPONSE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadGroupResponse.h"
@@ -83,4 +82,3 @@ protected:
 
 };
 
-#endif //__LOADGROUPDEFLECTIONRESPONSE_H_

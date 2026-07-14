@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DISPLAYOBJECTCONTAINER_H_
-#define INCLUDED_DISPLAYOBJECTCONTAINER_H_
 #pragma once
 
 #include <vector>
@@ -30,4 +28,3 @@ interface iDisplayObject;
 using DisplayObjectItem = CComPtr<iDisplayObject>;
 using DisplayObjectContainer = std::vector<DisplayObjectItem>;
 
-#endif // INCLUDED_DISPLAYOBJECTCONTAINER_H_

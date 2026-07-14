@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TARGETDRAWSTRATEGY_H_
-#define INCLUDED_TARGETDRAWSTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawPointStrategy.h>
@@ -37,4 +35,3 @@ interface iTargetDrawStrategy : public iDrawPointStrategy
    STDMETHOD_(COLORREF,GetBgColor)() PURE;
 };
 
-#endif // INCLUDED_TARGETDRAWSTRATEGY_H_

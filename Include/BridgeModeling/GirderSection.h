@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_GIRDERSECTION_H_
-#define INCLUDED_BRIDGEMODELING_GIRDERSECTION_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -87,6 +85,4 @@ struct BMFCLASS bmfGirderSection
 
 // EXTERNAL REFERENCES
 //
-
-#endif // INCLUDED_BRIDGEMODELING_GIRDERSECTION_H_
 

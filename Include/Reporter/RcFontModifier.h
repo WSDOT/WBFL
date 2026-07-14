@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_RCFONTMODIFIER_H_
-#define INCLUDED_REPORTER_RCFONTMODIFIER_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -128,4 +126,3 @@ private:
 ///     *pPara << _T("Y = X") << superscript(ON) << _T("2") << superscript(OFF) << rptNewLine;
 #define superscript(a) new rptRcFontModifier(rptRiStyle::SUPERSCRIPT, rptRcFontModifier::a)
 
-#endif // INCLUDED_REPORTER_RCFONTMODIFIER_H_

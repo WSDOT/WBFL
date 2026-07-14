@@ -25,8 +25,6 @@
 
 // CrossSectionCollection.h : Declaration of the CCrossSectionCollection
 
-#ifndef __CROSSSECTIONCOLLECTION_H_
-#define __CROSSSECTIONCOLLECTION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -141,4 +139,3 @@ private:
    HRESULT UpdateCrownPointPath();
 };
 
-#endif //__CROSSSECTIONCOLLECTION_H_

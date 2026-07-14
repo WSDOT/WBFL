@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTSEGMENT_H_
-#define INCLUDED_TESTSEGMENT_H_
+#pragma once
 
 class CTestSegment
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestSegment();
 };
 
-#endif // INCLUDED_TESTSEGMENT_H_

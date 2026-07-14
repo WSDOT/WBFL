@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DIMENSIONLINE_H_
-#define INCLUDED_DIMENSIONLINE_H_
 #pragma once
 
 #include <DManip\DisplayObject.h>
@@ -51,4 +49,3 @@ interface iDimensionLine : public iDisplayObject
    STDMETHOD_(void,GetTextBlock)(iTextBlock** textBlock) PURE;
 };
 
-#endif // INCLUDED_DIMENSIONLINE_H_

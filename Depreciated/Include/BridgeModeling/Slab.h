@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_SLAB_H_
-#define INCLUDED_BRIDGEMODELING_SLAB_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -255,4 +253,3 @@ inline Float64 bmfSlab::GetOverlayDensity() const { return m_OverlayDensity; }
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEMODELING_SLAB_H_

@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __TRUCK_H_
-#define __TRUCK_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAMLiveLoader.h"
@@ -140,17 +139,3 @@ private:
    AxleIndexType        m_PivotAxleIndex;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif

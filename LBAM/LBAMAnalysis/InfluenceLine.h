@@ -23,8 +23,7 @@
 
 // InfluenceLine.h : Declaration of the CInfluenceLine
 
-#ifndef __INFLUENCELINE_H_
-#define __INFLUENCELINE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -262,4 +261,3 @@ private:
 
 };
 
-#endif //__INFLUENCELine_H_

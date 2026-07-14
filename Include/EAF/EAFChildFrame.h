@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_EAFCHILDFRAME_H__7924728D_DE8D_4EFB_9A99_CA16C6FF93DD__INCLUDED_)
-#define AFX_EAFCHILDFRAME_H__7924728D_DE8D_4EFB_9A99_CA16C6FF93DD__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // eafchildframe.h : header file
 //
 #include <EAF\EAFExp.h>
@@ -91,4 +86,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EAFCHILDFRAME_H__7924728D_DE8D_4EFB_9A99_CA16C6FF93DD__INCLUDED_)

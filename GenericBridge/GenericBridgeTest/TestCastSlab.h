@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTCASTSLAB_H_
-#define INCLUDED_TESTCASTSLAB_H_
+#pragma once
 
 class CTestCastSlab
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestCastSlab();
 };
 
-#endif // INCLUDED_TESTCASTSLAB_H_

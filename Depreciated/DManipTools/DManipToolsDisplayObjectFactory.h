@@ -23,8 +23,6 @@
 
 // DManipToolsDisplayObjectFactory.h : Declaration of the CDManipToolsDisplayObjectFactory
 
-#ifndef __DManipToolsDisplayObjectFactory_H_
-#define __DManipToolsDisplayObjectFactory_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -57,7 +55,3 @@ END_COM_MAP()
 
 };
 
-#endif //__DManipToolsDisplayObjectFactory_H_
-
-
-   

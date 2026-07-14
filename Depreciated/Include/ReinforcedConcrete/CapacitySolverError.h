@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REINFORCEDCONCRETE_CAPACITYSOLVERERROR_H_
-#define INCLUDED_REINFORCEDCONCRETE_CAPACITYSOLVERERROR_H_
+#pragma once
 
 #if !defined INCLUDED_REINFORCEDCONCRETE_REINFCONCEXP_H_
 #include <ReinforcedConcrete\ReinfConcExp.h>
@@ -169,4 +168,3 @@ private:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_REINFORCEDCONCRETE_CAPACITYSOLVERERROR_H_

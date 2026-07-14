@@ -25,8 +25,6 @@
 
 // CogoModel.h : Declaration of the CCogoModel
 
-#ifndef __COGOMODEL_H_
-#define __COGOMODEL_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -294,4 +292,3 @@ private:
    template <class C> IDType GetID(const C& container, IndexType index);
 };
 
-#endif //__COGOMODEL_H_

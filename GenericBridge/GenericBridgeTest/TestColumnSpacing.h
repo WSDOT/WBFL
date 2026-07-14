@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTCOLUMNSPACING_H_
-#define INCLUDED_TESTCOLUMNSPACING_H_
+#pragma once
 
 
 class CTestColumnSpacing
@@ -39,4 +38,3 @@ public:
 	virtual ~CTestColumnSpacing();
 };
 
-#endif // INCLUDED_TESTCOLUMNSPACING_H_

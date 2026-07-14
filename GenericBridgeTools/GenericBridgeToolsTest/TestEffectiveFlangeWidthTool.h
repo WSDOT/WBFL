@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTEFFECTIVEFLANGEWIDTHTOOL_H_
-#define INCLUDED_TESTEFFECTIVEFLANGEWIDTHTOOL_H_
+#pragma once
 
 class CTestEffectiveFlangeWidthTool
 {
@@ -42,4 +41,3 @@ private:
    static void TestSpliceGirderBridge();
 };
 
-#endif // INCLUDED_TESTEFFECTIVEFLANGEWIDTHTOOL_H_

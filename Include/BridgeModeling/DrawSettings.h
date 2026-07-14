@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_DRAWSETTINGS_H_
-#define INCLUDED_BRIDGEMODELING_DRAWSETTINGS_H_
 #pragma once
 
 // Bridge Model Editor
@@ -70,4 +68,3 @@
 #define BMF_GEV_SHOW_STIRRUPS    ((DWORD)0x00002000)
 #define BMF_GEV_SHOW_LONG_REINF  ((DWORD)0x00004000)
 
-#endif // INCLUDED_BRIDGEMODELING_DRAWSETTINGS_H_

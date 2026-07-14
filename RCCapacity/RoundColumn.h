@@ -25,8 +25,7 @@
 
 // RoundColumn.h : Declaration of the CRoundColumn
 
-#ifndef __RoundColumn_H_
-#define __RoundColumn_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -90,4 +89,3 @@ private:
    HRESULT ComputeInteractionCurve(long nSteps,bool bFactor,Float64 ecl,Float64 etl,IPoint2dCollection** ppUnfactored,IPoint2dCollection** ppFactored);
 };
 
-#endif //__RoundColumn_H_

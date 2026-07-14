@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDOCUNITSYSTEM_H__16683EE9_558C_11D4_8CE4_0080C7380027__INCLUDED_)
-#define AFX_TESTDOCUNITSYSTEM_H__16683EE9_558C_11D4_8CE4_0080C7380027__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class ATL_NO_VTABLE CTestDocUnitSystem : 
    public CComObjectRootEx<CComSingleThreadModel>,
@@ -62,4 +57,3 @@ private:
    static void MoreTests();
 };
 
-#endif // !defined(AFX_TESTDOCUNITSYSTEM_H__16683EE9_558C_11D4_8CE4_0080C7380027__INCLUDED_)

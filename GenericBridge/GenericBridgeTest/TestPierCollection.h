@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTPIERCOLLECTION_H_
-#define INCLUDED_TESTPIERCOLLECTION_H_
+#pragma once
 
 class CTestPierCollection
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestPierCollection();
 };
 
-#endif // INCLUDED_TESTPIERCOLLECTION_H_

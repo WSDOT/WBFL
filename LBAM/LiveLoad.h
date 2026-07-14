@@ -23,8 +23,7 @@
 
 // LiveLoad.h : Declaration of the CLiveLoad
 
-#ifndef __LIVELOAD_H_
-#define __LIVELOAD_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LiveLoadCP.h"
@@ -115,4 +114,3 @@ private:
    HRESULT PutLiveLoadModel(LiveLoadModelType modelType, ILiveLoadModel *newVal, bool doFire=true);
 };
 
-#endif //__LIVELOAD_H_

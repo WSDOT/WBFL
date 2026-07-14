@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_WBFL_H_
-#define INCLUDED_WBFL_H_
 #pragma once
 
 //#pragma warning ( disable : 4231 4251 4786 )
@@ -56,4 +54,3 @@
 #include <Reporter\Reporter.h>
 #include <Units\Units.h>
 
-#endif // INCLUDED_WBFL_H_

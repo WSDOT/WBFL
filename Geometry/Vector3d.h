@@ -25,8 +25,7 @@
 
 // Vector3d.h : Declaration of the CVector3d
 
-#ifndef __VECTOR3D_H_
-#define __VECTOR3D_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/Vector3d.h>
@@ -92,4 +91,3 @@ public:
 	STDMETHOD(put_X)(/*[in]*/ Float64 newVal) override;
 };
 
-#endif //__VECTOR3D_H_

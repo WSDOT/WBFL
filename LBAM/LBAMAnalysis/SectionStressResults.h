@@ -23,8 +23,7 @@
 
 // SectionStressResults.h : Declaration of the CSectionStressResults
 
-#ifndef __SECTIONSTRESSRESULTS_H_
-#define __SECTIONSTRESSRESULTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "SectionStressResult.h"
@@ -90,4 +89,3 @@ protected:
 
 };
 
-#endif //__SECTIONSTRESSRESULTS_H_

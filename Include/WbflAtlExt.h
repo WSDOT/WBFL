@@ -23,10 +23,6 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
-#ifndef INCLUDED_WBFLATLEXT_H_
-#define INCLUDED_WBFLATLEXT_H_
-
 #pragma once
 
 // _Copy class for use with Enumerators. VB Collections use IEnumVARIANT's. Because of this
@@ -291,6 +287,3 @@ inline HRESULT CrAssignPointer(ATL::CComPtr<TC>& rpTarget, TC* pNewVal, TL* list
    return S_OK;
 }
 
-
-
-#endif // INCLUDED_WBFLATLEXT_H_

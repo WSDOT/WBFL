@@ -23,8 +23,7 @@
 
 // Axles.h : Declaration of the CAxles
 
-#ifndef __AXLES_H_
-#define __AXLES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "AxleCP.h"
@@ -162,4 +161,3 @@ public:
    }
 };
 
-#endif //__AXLES_H_

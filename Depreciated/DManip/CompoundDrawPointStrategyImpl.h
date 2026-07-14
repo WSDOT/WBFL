@@ -21,15 +21,11 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COMPOUNDDRAWEPOINTSTRATEGYIMPL_H_
-#define INCLUDED_COMPOUNDDRAWEPOINTSTRATEGYIMPL_H_
 // CompoundDrawPointStrategyImpl.h: interface for the CCompoundDrawPointStrategyImpl class.
 //
 //////////////////////////////////////////////////////////////////////
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -71,4 +67,3 @@ private:
    Strategies m_Strategies;
 };
 
-#endif // INCLUDED_COMPOUNDDRAWPOINTSTRATEGYIMPL_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_MFCTOOLS_H_
-#define INCLUDED_MFCTOOLS_MFCTOOLS_H_
 #pragma once
 
 // This is a master include file for the MFC Tools Package
@@ -67,4 +65,3 @@
 	{ WM_COMMAND, (WORD)BN_CLICKED, (WORD)IDOK, (WORD)IDOK, AfxSigCmd_b, \
    (AFX_PMSG)(static_cast<BOOL (AFX_MSG_CALL CCmdTarget::*)(void)> (OnOK)) },
 
-#endif //  INCLUDED_MFCTOOLS_MFCTOOLS_H_

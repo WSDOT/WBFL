@@ -25,8 +25,7 @@
 
 // PCircle.h : Declaration of the CPCircle
 
-#ifndef __PCIRCLE_H_
-#define __PCIRCLE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WbflAtlExt.h>
@@ -176,4 +175,3 @@ private:
 	}
 };
 
-#endif //__PCIRCLE_H_

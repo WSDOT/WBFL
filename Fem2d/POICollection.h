@@ -25,8 +25,6 @@
 
 // POICollection.h : Declaration of the CPOICollection
 
-#ifndef __POICollection_H_
-#define __POICollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__POICollection_H_

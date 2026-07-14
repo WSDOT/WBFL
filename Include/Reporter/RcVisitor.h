@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_RCVISITOR_H_
-#define INCLUDED_REPORTER_RCVISITOR_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -87,4 +85,3 @@ private:
    rptRcVisitor& operator=(const rptRcVisitor&) = delete;
 };
 
-#endif // INCLUDED_REPORTER_RCVISITOR_H_

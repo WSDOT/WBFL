@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TEXTBLOCK_H_
-#define INCLUDED_TEXTBLOCK_H_
 #pragma once
 
 #include <DManip\DisplayObject.h>
@@ -88,4 +86,3 @@ interface iAnchoredTextBlock : public iDisplayObject
    STDMETHOD_(void, GetFont)(LOGFONT* pFont) PURE;
 };
 
-#endif // INCLUDED_TEXTBLOCK_H_

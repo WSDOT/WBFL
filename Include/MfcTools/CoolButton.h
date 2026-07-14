@@ -1,11 +1,7 @@
-#if !defined(AFX_CoolButton_H__3A90681F_CE5F_11D3_808C_005004D6CF90__INCLUDED_)
-#define AFX_CoolButton_H__3A90681F_CE5F_11D3_808C_005004D6CF90__INCLUDED_
 
 #include <MfcTools\MfcToolsExp.h>
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // CoolButton.h : header file
 //
 
@@ -96,6 +92,4 @@ protected:
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_CoolButton_H__3A90681F_CE5F_11D3_808C_005004D6CF90__INCLUDED_)
 

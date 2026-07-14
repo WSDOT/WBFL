@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTSHAPEPROPERTIES_H__A4EDFC14_B949_11D3_8A0F_006097C68A9C__INCLUDED_)
-#define AFX_TESTSHAPEPROPERTIES_H__A4EDFC14_B949_11D3_8A0F_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestShapeProperties  
 {
@@ -46,4 +41,3 @@ private:
    static void TestIShapePropertiesEx();
 };
 
-#endif // !defined(AFX_TESTSHAPEPROPERTIES_H__A4EDFC14_B949_11D3_8A0F_006097C68A9C__INCLUDED_)

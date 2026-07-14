@@ -1,12 +1,7 @@
 // TestProgressDlg.h : header file
 //
 
-#if !defined(AFX_TESTPROGRESSDLG_H__3557B780_9AED_40B9_A90C_4DF5B7DE04EF__INCLUDED_)
-#define AFX_TESTPROGRESSDLG_H__3557B780_9AED_40B9_A90C_4DF5B7DE04EF__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 /////////////////////////////////////////////////////////////////////////////
 // CTestProgressDlg dialog
@@ -57,4 +52,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TESTPROGRESSDLG_H__3557B780_9AED_40B9_A90C_4DF5B7DE04EF__INCLUDED_)

@@ -25,8 +25,6 @@
 
 // PointLoadCollection.h : Declaration of the CPointLoadCollection
 
-#ifndef __PointLoadCollection_H_
-#define __PointLoadCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__PointLoadCollection_H_

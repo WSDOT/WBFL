@@ -25,8 +25,7 @@
 
 // StructuredLoad2.h : Declaration of the CStructuredLoad2
 
-#ifndef __STRUCTUREDLOAD2_H_
-#define __STRUCTUREDLOAD2_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -104,4 +103,3 @@ private:
    CComPtr<IUnknown> GetObjectRef( BSTR bsobjref );
 };
 
-#endif //__STRUCTUREDLOAD2_H_

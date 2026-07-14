@@ -23,9 +23,5 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _BOGUSCOMBINATIONCONTEXTCP_H_
-#define _BOGUSCOMBINATIONCONTEXTCP_H_
-
 #pragma once
 
-#endif

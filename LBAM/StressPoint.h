@@ -23,8 +23,7 @@
 
 // StressPoint.h : Declaration of the CStressPoint
 
-#ifndef __STRESSPOINT_H_
-#define __STRESSPOINT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CrossSectionCP.h"
@@ -88,4 +87,3 @@ END_CONNECTION_POINT_MAP()
 
 };
 
-#endif //__STRESSPOINT_H_

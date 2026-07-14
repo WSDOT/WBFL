@@ -25,8 +25,6 @@
 
 // Angle.h : Declaration of the CAngle
 
-#ifndef __ANGLE_H_
-#define __ANGLE_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -81,4 +79,3 @@ private:
 	std::shared_ptr<WBFL::COGO::Angle> m_Angle{ std::make_shared<WBFL::COGO::Angle>() };
 };
 
-#endif //__ANGLE_H_

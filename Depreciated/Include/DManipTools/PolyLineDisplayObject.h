@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_IPOLYLINEDISPLAYOBJECT_H_
-#define INCLUDED_IPOLYLINEDISPLAYOBJECT_H_
 #pragma once
 
 #include "DManipToolsTypes.h"
@@ -57,4 +55,3 @@ interface iPolyLineDisplayObject : public iDisplayObject
    STDMETHOD_(void,get_PointType)(PolyLinePointType* ptType) PURE;
 };
 
-#endif 

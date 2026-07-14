@@ -1,5 +1,4 @@
-#ifndef INCLUDED_LISTID_H_
-#define INCLUDED_LISTID_H_
+#pragma once
 
 #define SPAN_LIST          0
 #define SSM_LIST           1
@@ -11,4 +10,3 @@
 #define TRUCK_LIST         7
 #define LEGEND_LIST        8
 
-#endif // INCLUDED_LISTID_H_

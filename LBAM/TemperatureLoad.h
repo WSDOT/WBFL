@@ -23,8 +23,7 @@
 
 // TemperatureLoad.h : Declaration of the CTemperatureLoad
 
-#ifndef __TEMPERATURELOAD_H_
-#define __TEMPERATURELOAD_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCP.h"
@@ -97,4 +96,3 @@ protected:
    Float64       m_TBottom;
 };
 
-#endif //__TEMPERATURELOAD_H_

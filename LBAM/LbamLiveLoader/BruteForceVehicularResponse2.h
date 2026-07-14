@@ -23,8 +23,7 @@
 
 // BruteForceVehicularResponse2.h : Declaration of the CBruteForceVehicularResponse2
 
-#ifndef __BruteForceVehicularResponse2_H_
-#define __BruteForceVehicularResponse2_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -454,4 +453,3 @@ private:
    bool IsPoiAtSupport(BSTR stage,PoiIDType poiID);
 };
 
-#endif //__BruteForceVehicularResponse2_H_

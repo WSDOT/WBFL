@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTSTRESSPOINTS_H__5613547D_28BD_402A_B4BB_52A10D1E7279__INCLUDED_)
-#define AFX_TESTSTRESSPOINTS_H__5613547D_28BD_402A_B4BB_52A10D1E7279__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class TestStressPoints  
 {
@@ -44,4 +39,3 @@ public:
 	HRESULT Test();
 };
 
-#endif // !defined(AFX_TESTSTRESSPOINTS_H__5613547D_28BD_402A_B4BB_52A10D1E7279__INCLUDED_)

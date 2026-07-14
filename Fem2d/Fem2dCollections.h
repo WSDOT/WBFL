@@ -24,8 +24,7 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2dCollection.h : 
 
-#ifndef __FEM2DCOLLECTION_H_
-#define __FEM2DCOLLECTION_H_
+#pragma once
 
 #include "ComKeyedCollection.h"
 
@@ -200,4 +199,3 @@ public:
    }
 };
 
-#endif //

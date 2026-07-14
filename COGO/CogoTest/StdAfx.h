@@ -28,12 +28,7 @@
 //      are changed infrequently
 //
 
-#if !defined(AFX_STDAFX_H__2C98A249_55F7_11D5_8C29_006097C68A9C__INCLUDED_)
-#define AFX_STDAFX_H__2C98A249_55F7_11D5_8C29_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <targetver.h>
 
@@ -59,4 +54,3 @@ extern CComModule _Module;
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_STDAFX_H__2C98A249_55F7_11D5_8C29_006097C68A9C__INCLUDED_)

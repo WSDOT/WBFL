@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_SUPPORTELEMENT_H_
-#define INCLUDED_BRIDGEANALYSIS_SUPPORTELEMENT_H_
 #pragma once
 
 #include <BridgeAnalysis\BridgeAnalysisExp.h>
@@ -125,4 +123,3 @@ inline SupportIDType bamSupportElement::GetID() const { return m_ID; }
 inline void bamSupportElement::SetSupportSize(Int16 size) {m_SupportSize = size;}
 inline Int16  bamSupportElement::GetSupportSize() const {return m_SupportSize;}
 
-#endif // INCLUDED_BRIDGEANALYSIS_SUPPORTELEMENT_H_

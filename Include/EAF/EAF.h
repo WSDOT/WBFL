@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EAF_H_
-#define INCLUDED_EAF_H_
 #pragma once
 
 // This is a master include file for the EAF Package
@@ -44,4 +42,3 @@
 #include <EAF\Transaction.h>
 #include <EAF\TxnManager.h>
 
-#endif //  INCLUDED_EAF_H_

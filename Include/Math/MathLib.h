@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MATH_MATHLIB_H_
-#define INCLUDED_MATH_MATHLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -37,5 +35,3 @@ DESCRIPTION
 
 #include <MathEx.h>
 
-
-#endif // INCLUDED_MATH_MATHLIB_H_

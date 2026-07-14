@@ -23,8 +23,7 @@
 
 // SegmentItem.h : Declaration of the CSegmentItem
 
-#ifndef __SEGMENTITEM_H_
-#define __SEGMENTITEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CrossSectionCP.h"
@@ -93,4 +92,3 @@ protected:
    DWORD m_SegmentCookie;
 };
 
-#endif //__SEGMENTITEM_H_

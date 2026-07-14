@@ -1,5 +1,4 @@
-#ifndef INCLUDED_REINFORCEDCONCRETE_UNITCONTROLT_H_
-#define INCLUDED_REINFORCEDCONCRETE_UNITCONTROLT_H_
+#pragma once
 
 // SYSTEM INCLUDES
 //
@@ -383,5 +382,3 @@ typedef uicUnitControlT<unitForce>   uicForceUnitEdit;
 typedef uicUnitControlT<unitStress>  uicStressUnitEdit;
 typedef uicUnitControlT<unitDensity> uicDensityUnitEdit;
 
-
-#endif // INCLUDED_REINFORCEDCONCRETE_UNITCONTROLT_H_

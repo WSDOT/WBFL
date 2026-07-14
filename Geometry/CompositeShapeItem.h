@@ -25,8 +25,7 @@
 
 // CompositeShapeItem.h : Declaration of the CCompositeShapeItem
 
-#ifndef __COMPOSITESHAPEITEM_H_
-#define __COMPOSITESHAPEITEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -71,4 +70,3 @@ private:
    CComPtr<IShape> m_Shape;
 };
 
-#endif //__COMPOSITESHAPEITEM_H_

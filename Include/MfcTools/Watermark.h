@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_WATERMARK_H__5429BD52_E13A_11D1_8E93_006097DF3C68__INCLUDED_)
-#define AFX_WATERMARK_H__5429BD52_E13A_11D1_8E93_006097DF3C68__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -76,4 +73,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_WATERMARK_H__5429BD52_E13A_11D1_8E93_006097DF3C68__INCLUDED_)

@@ -2,12 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LBAMVIEWERDOC_H__F8C27425_F157_4AB0_B6CB_170D2BFF1E0F__INCLUDED_)
-#define AFX_LBAMVIEWERDOC_H__F8C27425_F157_4AB0_B6CB_170D2BFF1E0F__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 #include "Hints.h"
@@ -111,4 +106,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_LBAMVIEWERDOC_H__F8C27425_F157_4AB0_B6CB_170D2BFF1E0F__INCLUDED_)

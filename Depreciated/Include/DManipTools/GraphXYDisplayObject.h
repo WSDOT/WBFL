@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_IGRAPHXYDISPLAYOBJECT_H_
-#define INCLUDED_IGRAPHXYDISPLAYOBJECT_H_
 #pragma once
 
 #include "DManipToolsTypes.h"
@@ -81,4 +79,3 @@ interface iGraphXyDisplayObject : public IUnknown
    STDMETHOD_(void,put_DoDisplayGrid)(BOOL newVal) PURE;
 };
 
-#endif 

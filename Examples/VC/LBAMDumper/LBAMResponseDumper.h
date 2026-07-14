@@ -1,7 +1,6 @@
 // LBAMResponseDumper.h : Declaration of the CLBAMResponseDumper
 
-#ifndef __LBAMRESPONSEDUMPER_H_
-#define __LBAMRESPONSEDUMPER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -60,4 +59,3 @@ private:
    VARIANT_BOOL m_LoadCombinationResponse;
 };
 
-#endif //__LBAMRESPONSEDUMPER_H_

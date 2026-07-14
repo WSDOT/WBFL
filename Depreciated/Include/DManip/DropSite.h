@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DROPSITE_H_
-#define INCLUDED_DROPSITE_H_
 #pragma once
 
 interface iDisplayObject;
@@ -38,4 +36,3 @@ interface iDropSite : public IUnknown
    STDMETHOD_(void,Highlite)(CDC* pDC,BOOL bHighlite) PURE;
 };
 
-#endif // INCLUDED_DROPSITE_H_

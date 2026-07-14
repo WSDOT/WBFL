@@ -25,8 +25,7 @@
 
 // MixedSolver.h : Declaration of the CMixedSolver
 
-#ifndef __MIXEDSOLVER_H_
-#define __MIXEDSOLVER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -68,4 +67,3 @@ public:
 	STDMETHOD(Solve)(/*[in]*/ IRCBeam* beam,/*[out,retval]*/ IRCSolution* *solution) override;
 };
 
-#endif //__MIXEDSOLVER_H_

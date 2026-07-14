@@ -23,8 +23,7 @@
 
 // DistributionFactorSegment.h : Declaration of the CDistributionFactorSegment
 
-#ifndef __DISTRIBUTIONFACTORSEGMENT_H_
-#define __DISTRIBUTIONFACTORSEGMENT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMCP.h"
@@ -98,4 +97,3 @@ protected:
 
 };
 
-#endif //__DISTRIBUTIONFACTORSEGMENT_H_

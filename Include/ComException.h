@@ -23,9 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
-#ifndef INCLUDED_COMEXCEPTION_H_
-#define INCLUDED_COMEXCEPTION_H_
+#pragma once
 
 // SYSTEM INCLUDES
 //
@@ -333,5 +331,3 @@ inline CComBSTR CreateErrorMsg1D(UINT nid, Float64 someDouble)
    return CComBSTR(msg);
 }
 
-
-#endif // INCLUDED_COMEXCEPTION_H_

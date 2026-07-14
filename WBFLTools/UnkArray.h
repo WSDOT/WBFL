@@ -25,8 +25,7 @@
 
 // UnkArray.h : Declaration of the CUnkArray
 
-#ifndef __UNKARRAY_H_
-#define __UNKARRAY_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -80,4 +79,3 @@ protected:
    ContainerType m_Values;
 };
 
-#endif //__UNKARRAY_H_

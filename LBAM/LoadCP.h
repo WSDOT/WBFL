@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _LoadCP_H_
-#define _LoadCP_H_
+#pragma once
 
 template <class T>
 class CProxyDDistributedLoadEvents : public IConnectionPointImpl<T, &IID_IDistributedLoadEvents, CComDynamicUnkArray>
@@ -424,7 +423,3 @@ public:
 	}
 };
 
-
-
-
-#endif

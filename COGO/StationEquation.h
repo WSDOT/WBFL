@@ -25,8 +25,6 @@
 
 // StationEquation.h : Declaration of the CStationEquation
 
-#ifndef __StationEquation_H_
-#define __StationEquation_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -73,4 +71,3 @@ private:
    WBFL::COGO::StationEquation m_Equation;
 };
 
-#endif //__StationEquation_H_

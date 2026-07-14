@@ -1,5 +1,4 @@
-#ifndef INCLUDED_JOINTDRAWSTRATEGYIMPL_H_
-#define INCLUDED_JOINTDRAWSTRATEGYIMPL_H_
+#pragma once
 
 using namespace WBFL::DManip;
 
@@ -26,4 +25,3 @@ private:
     void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const;
 };
 
-#endif // INCLUDED_JOINTDRAWSTRATEGYIMPL_H_

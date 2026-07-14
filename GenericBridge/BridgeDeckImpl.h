@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEDECKIMPL_H_
-#define INCLUDED_BRIDGEDECKIMPL_H_
+#pragma once
 
 #include <MathEx.h>
 #include "ItemDataManager.h"
@@ -150,4 +149,3 @@ protected:
    }
 };
 
-#endif // INCLUDED_BRIDGEDECKIMPL_H_

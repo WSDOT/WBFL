@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTMANAGER_REPORTMANAGEREXP_H_
-#define INCLUDED_REPORTMANAGER_REPORTMANAGEREXP_H_
+#pragma once
 
 // Define BUILDREPORTMANAGERLIB when building this library
 // For static builds, define REPORTMANAGERLIB
@@ -49,4 +48,3 @@
 
 #include <ReportManager\AutoLib.h>
 
-#endif // INCLUDED_REPORTMANAGER_REPORTMANAGEREXP_H_

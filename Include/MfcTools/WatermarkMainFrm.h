@@ -25,9 +25,6 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_WATERMARKMAINFRM_H__59D503EE_265C_11D2_8EB0_006097DF3C68__INCLUDED_)
-#define AFX_WATERMARKMAINFRM_H__59D503EE_265C_11D2_8EB0_006097DF3C68__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -79,4 +76,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_WATERMARKMAINFRM_H__59D503EE_265C_11D2_8EB0_006097DF3C68__INCLUDED_)

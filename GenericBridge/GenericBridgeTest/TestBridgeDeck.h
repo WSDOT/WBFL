@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTBRIDGEDECK_H_
-#define INCLUDED_TESTBRIDGEDECK_H_
+#pragma once
 
 class CTestBridgeDeck
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestBridgeDeck();
 };
 
-#endif // INCLUDED_TESTBRIDGEDECK_H_

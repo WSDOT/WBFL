@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_NorthArrowIMPL_H__BCB8A108_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_NorthArrowIMPL_H__BCB8A108_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -183,4 +178,3 @@ private:
    LONG m_Size;
 };
 
-#endif // !defined(AFX_NorthArrowIMPL_H__BCB8A108_E659_11D4_8B81_006097C68A9C__INCLUDED_)

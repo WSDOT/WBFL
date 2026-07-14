@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_ENGTOOLS_ENGTOOLSEXP_H_
-#define INCLUDED_ENGTOOLS_ENGTOOLSEXP_H_
 #pragma once
 
 // Define BUILDENGTOOLSLIB when building this library
@@ -47,4 +45,3 @@
 #include <EngTools\AutoLib.h>
 #include <WBFLAll.h>
 
-#endif // INCLUDED_ENGTOOLS_ENGTOOLSEXP_H_

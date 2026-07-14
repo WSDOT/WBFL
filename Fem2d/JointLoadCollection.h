@@ -25,8 +25,6 @@
 
 // JointLoadCollection.h : Declaration of the CJointLoadCollection
 
-#ifndef __JointLoadCollection_H_
-#define __JointLoadCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__JointLoadCollection_H_

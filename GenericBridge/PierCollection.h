@@ -25,8 +25,7 @@
 
 // PierCollection.h : Declaration of the CPierCollection
 
-#ifndef __PIERCOLLECTION_H_
-#define __PIERCOLLECTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -106,4 +105,3 @@ public:
    STDMETHOD(Load)(IStructuredLoad2 *pload) override;
 };
 
-#endif //__PIERCOLLECTION_H_

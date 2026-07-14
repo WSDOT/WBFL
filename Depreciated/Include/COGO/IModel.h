@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGO_IMODEL_H_
-#define INCLUDED_COGO_IMODEL_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -162,4 +160,3 @@ struct cogoIModel
    // GROUP: INQUIRY
 };
 
-#endif // INCLUDED_COGO_IMODEL_H_

@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __LBAMLoadCombinerError_H_
-#define __LBAMLoadCombinerError_H_
+#pragma once
 
 // HRESULT's for the LBAM Load Combiner system
 
@@ -39,4 +38,3 @@
 #define LBAMC_E_SUM_INTERNAL_POI                      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1912)
 #define LBAMC_E_SUPPORT_NOT_EXIST                     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,1913)
 
-#endif 

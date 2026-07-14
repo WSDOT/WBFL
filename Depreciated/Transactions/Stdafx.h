@@ -27,12 +27,7 @@
 //      or project specific include files that are used frequently,
 //      but are changed infrequently
 
-#if !defined(AFX_STDAFX_H__49744F82_6CC6_4F22_856A_8BAB9EA5F3EB__INCLUDED_)
-#define AFX_STDAFX_H__49744F82_6CC6_4F22_856A_8BAB9EA5F3EB__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <Private\WBFLPackage.h>
 
@@ -49,4 +44,3 @@ extern CComModule _Module;
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_STDAFX_H__49744F82_6CC6_4F22_856A_8BAB9EA5F3EB__INCLUDED)

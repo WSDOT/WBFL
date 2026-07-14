@@ -1,5 +1,4 @@
-#ifndef INCLUDED_LBAMTRUCKDISPLAYOBJECT_H_
-#define INCLUDED_LBAMTRUCKDISPLAYOBJECT_H_
+#pragma once
 
 #include "LBAMTruckDrawStrategy.h"
 #include "LBAMTruckEvents.h"
@@ -106,7 +105,3 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-
-
-
-#endif // INCLUDED_TRUCKDISPLAYOBJECT_H_

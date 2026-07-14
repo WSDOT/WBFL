@@ -1,5 +1,4 @@
-#ifndef INCLUDED_POINTLOADDRAWSTRATEGY_H_
-#define INCLUDED_POINTLOADDRAWSTRATEGY_H_
+#pragma once
 
 interface iPointLoadDrawStrategy
 {
@@ -7,4 +6,3 @@ interface iPointLoadDrawStrategy
    virtual void SetColor(COLORREF color) = 0;
 };
 
-#endif // INCLUDED_POINTLOADDRAWSTRATEGY_H_

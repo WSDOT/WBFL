@@ -25,8 +25,7 @@
 
 // PCISolver.h : Declaration of the CPCISolver
 
-#ifndef __PCISOLVER_H_
-#define __PCISOLVER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -95,4 +94,3 @@ public:
    STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode) override;
 };
 
-#endif //__PCISOLVER_H_

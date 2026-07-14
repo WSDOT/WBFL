@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LBtnRectSelectTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_LBtnRectSelectTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 //
 // Abastract base class for a task that selects objects in the display view
@@ -46,4 +41,3 @@ interface iRectSelectTask : public IUnknown
    STDMETHOD_(void,Cancel)() PURE;
 };
 
-#endif // !defined(AFX_LBtnRectSelectTASK_H__5D499BF4_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_POINTDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_)
-#define AFX_POINTDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -201,4 +196,3 @@ private:
    static UINT ms_cfFormat;
 };
 
-#endif // !defined(AFX_POINTDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_)

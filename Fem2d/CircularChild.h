@@ -24,8 +24,6 @@
 ///////////////////////////////////////////////////////////////////////
 // CCircularChild.h : Declaration of the CCCircularChild
 
-#ifndef __CCircularChild_H_
-#define __CCircularChild_H_
 #pragma once
 
 // Template class used for fixing memory leak problem from circular references
@@ -126,4 +124,3 @@ private:
    }
 };
 
-#endif // CCircularChild

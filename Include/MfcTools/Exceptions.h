@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_EXCEPTIONS_H_
-#define INCLUDED_MFCTOOLS_EXCEPTIONS_H_
 #pragma once
 
 #include <MfcTools\XShutDown.h>
@@ -31,4 +29,3 @@
 #define THROW_SHUTDOWN(msg,reason,save) throw( new CXShutDown(msg,reason,save,_T(__FILE__),__LINE__) )
 #define THROW_UNWIND(msg,reason)        throw( new CXUnwind(msg,reason,_T(__FILE__),__LINE__) )
 
-#endif // INCLUDED_MFCTOOLS_EXCEPTIONS_H_

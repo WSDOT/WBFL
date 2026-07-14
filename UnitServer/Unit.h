@@ -25,8 +25,7 @@
 
 // Unit.h : Declaration of the CUnit
 
-#ifndef __UNIT_H_
-#define __UNIT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "UnitType.h"
@@ -149,4 +148,3 @@ private:
    }
 };
 
-#endif //__UNIT_H_

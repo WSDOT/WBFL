@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LOADCOMBINATIONDUMPER_H__48A404A7_304C_4ADD_82A6_1AFF323B181D__INCLUDED_)
-#define AFX_LOADCOMBINATIONDUMPER_H__48A404A7_304C_4ADD_82A6_1AFF323B181D__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DumperUtils.h"
 
@@ -47,4 +42,3 @@ private:
    long                         m_LastKey;
 };
 
-#endif // !defined(AFX_LOADCOMBINATIONDUMPER_H__48A404A7_304C_4ADD_82A6_1AFF323B181D__INCLUDED_)

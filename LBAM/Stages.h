@@ -23,8 +23,7 @@
 
 // Stages.h : Declaration of the CStages
 
-#ifndef __STAGES_H_
-#define __STAGES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflComCollections.h"
@@ -172,4 +171,3 @@ public:
 
 };
 
-#endif //__STAGES_H_

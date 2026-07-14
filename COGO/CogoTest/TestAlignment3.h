@@ -26,12 +26,7 @@
 // TestAlignment3.h: interface for the CTestAlignment3 class.
 ////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTAlignment3_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)
-#define AFX_TESTAlignment3_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestAlignment3
 {
@@ -50,4 +45,3 @@ private:
    static void CompareAlignments(IAlignment* pAlignment1,IAlignment* pAlignment2,Float64 start,Float64 end,long nPoints);
 };
 
-#endif // !defined(AFX_TESTAlignment3_H__9066FECB_C9F3_11D3_8A20_006097C68A9C__INCLUDED_)

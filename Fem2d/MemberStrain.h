@@ -25,8 +25,6 @@
 
 // MemberStrain.h : Declaration of the CMemberStrain
 
-#ifndef __MEMBERSTRAIN_H_
-#define __MEMBERSTRAIN_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -115,4 +113,3 @@ private:
    void GetLocalData(Float64 Angle,Float64 length, Float64* pStartLoc, Float64* pEndLoc);
 };
 
-#endif //__MEMBERSTRAIN_H_

@@ -23,8 +23,7 @@
 
 // LoadCasesAgg.h : Declaration of the CLoadCasesAgg
 
-#ifndef __LOADCASESAGG_H_
-#define __LOADCASESAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLLBAM.h"
@@ -77,4 +76,3 @@ public:
    CComPtr<ILoadCases> m_LoadCases;
 };
 
-#endif //__LoadCasesAgg_H_

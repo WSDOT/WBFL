@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_
-#define INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_
 #pragma once
 
 #include <DManip\GravityWellStrategy.h>
@@ -35,4 +33,3 @@ interface iShapeGravityWellStrategy : public iGravityWellStrategy
    STDMETHOD_(void,GetShape)(IShape** ppShape) PURE;
 };
 
-#endif // INCLUDED_SHAPEGRAVITYWELLSTRATEGY_H_

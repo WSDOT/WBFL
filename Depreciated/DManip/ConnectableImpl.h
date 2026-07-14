@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_CONNECTABLEIMPL_H__D88A0194_DCD4_11D4_8B74_006097C68A9C__INCLUDED_)
-#define AFX_CONNECTABLEIMPL_H__D88A0194_DCD4_11D4_8B74_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include <vector>
@@ -194,4 +189,3 @@ private:
    }
 };
 
-#endif // !defined(AFX_CONNECTABLEIMPL_H__D88A0194_DCD4_11D4_8B74_006097C68A9C__INCLUDED_)

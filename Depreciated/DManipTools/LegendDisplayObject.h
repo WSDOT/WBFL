@@ -23,8 +23,6 @@
 
 // LegendDisplayObject.h : Declaration of the CLegendDisplayObject
 
-#ifndef __LEGENDDISPLAYOBJECT_H_
-#define __LEGENDDISPLAYOBJECT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -213,4 +211,3 @@ private:
    std::unique_ptr<CLegendMessageCatcher> m_pMessageCatcher;
 };
 
-#endif //__LEGENDDISPLAYOBJECT_H_

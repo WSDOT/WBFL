@@ -23,8 +23,7 @@
 
 // MassProperties.h : Declaration of the CMassProperties
 
-#ifndef __MASSPROPERTIES_H_
-#define __MASSPROPERTIES_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <GeomModel/MassProperties.h>
@@ -66,4 +65,3 @@ private:
 	WBFL::Geometry::MassProperties m_Props;
 };
 
-#endif //__MASSPROPERTIES_H_

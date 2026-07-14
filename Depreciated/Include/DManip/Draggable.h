@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DRAGGABLE_H_
-#define INCLUDED_DRAGGABLE_H_
 #pragma once
 
 interface iDragDataSource;
@@ -48,4 +46,3 @@ interface iDraggable : public IUnknown
                                   const CPoint& dragPoint) PURE;
 };
 
-#endif // INCLUDED_DRAGGABLE_H_

@@ -1,7 +1,6 @@
 // POIsAgg.h : Declaration of the CPOIsAgg
 
-#ifndef __POISAGG_H_
-#define __POISAGG_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAM.h"
@@ -54,4 +53,3 @@ public:
    CComPtr<IPOIs> m_POIs;
 };
 
-#endif //__POIsAgg_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GEOMETRY_PLANE3D_H_
-#define INCLUDED_GEOMETRY_PLANE3D_H_
 #pragma once
 
 #include <GeomModel/GeomModelExp.h>
@@ -106,4 +104,3 @@ namespace WBFL
    }; // Geometry
 }; // WBFL
 
-#endif // INCLUDED_GEOMETRY_PLANE3D_H_

@@ -23,8 +23,6 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COLLECTIONS_H_
-#define INCLUDED_COLLECTIONS_H_
 #pragma once
 
 #include <map>
@@ -366,4 +364,3 @@ public:
    }
 };
 
-#endif // INCLUDED_COLLECTIONS_H_

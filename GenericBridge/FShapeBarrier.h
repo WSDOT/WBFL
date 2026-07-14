@@ -25,8 +25,7 @@
 
 // FShapeBarrier.h : Declaration of the CFShapeBarrier
 
-#ifndef __FSHAPEBARRIER_H_
-#define __FSHAPEBARRIER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -88,4 +87,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__FSHAPEBARRIER_H_

@@ -21,9 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-
-#ifndef __CComCollections_H_
-#define __CComCollections_H_
+#pragma once
 
 #include <vector>
 #include <map>
@@ -34,4 +32,3 @@
 
 #include "WBFLComCollections.h"
 
-#endif

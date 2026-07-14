@@ -25,8 +25,7 @@
 
 // AnnotatedDisplayUnitFormatter.h : Declaration of the CAnnotatedDisplayUnitFormatter
 
-#ifndef __ANNOTATEDDISPLAYUNITFORMATTER_H_
-#define __ANNOTATEDDISPLAYUNITFORMATTER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WbflUnitServerCP.h"
@@ -108,4 +107,3 @@ public:
 	STDMETHOD(get_Annotation)(/*[out,retval]*/ BSTR* bstrAnnotation) override;
 };
 
-#endif //__ANNOTATEDDISPLAYUNITFORMATTER_H_

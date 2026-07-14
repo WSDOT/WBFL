@@ -1,5 +1,4 @@
-#ifndef INCLUDED_DATASETUTILS_H_
-#define INCLUDED_DATASETUTILS_H_
+#pragma once
 
 #include <MathEx.h>
 #include "LBAMViewerDoc.h"
@@ -105,5 +104,3 @@ inline VehicularLoadConfigurationType GetConfigType(llResponseType respType, std
    return vlcDefault;
 }
 
-
-#endif

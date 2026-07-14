@@ -21,10 +21,5 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef _LBAMANALYSISCP_H_
-#define _LBAMANALYSISCP_H_
+#pragma once
 
-
-
-
-#endif

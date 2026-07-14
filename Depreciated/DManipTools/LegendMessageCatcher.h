@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LEGENDMESSAGECATCHER_H__4F0EFCD1_40FD_40C9_87A5_C70ECC623B4D__INCLUDED_)
-#define AFX_LEGENDMESSAGECATCHER_H__4F0EFCD1_40FD_40C9_87A5_C70ECC623B4D__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // LegendMessageCatcher.h : header file
 //
 
@@ -85,4 +80,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_LEGENDMESSAGECATCHER_H__4F0EFCD1_40FD_40C9_87A5_C70ECC623B4D__INCLUDED_)

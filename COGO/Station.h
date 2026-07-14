@@ -25,8 +25,6 @@
 
 // Station.h : Declaration of the CStation
 
-#ifndef __STATION_H_
-#define __STATION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ private:
    WBFL::COGO::Station m_Station;
 };
 
-#endif //__STATION_H_

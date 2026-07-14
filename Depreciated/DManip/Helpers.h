@@ -21,12 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_HELPERS_H_
-#define INCLUDED_HELPERS_H_
 #pragma once
 
 #include <DManip\DManipTypes.h>
 
 void DrawArrowHead(CDC* pDC,DManip::ArrowHeadStyleType style,CPoint left,CPoint tip,CPoint right);
 
-#endif // INCLUDED_HELPERS_H_

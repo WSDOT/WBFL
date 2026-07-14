@@ -25,8 +25,7 @@
 
 // Segment.h : Declaration of the CSegment
 
-#ifndef __SEGMENT_H_
-#define __SEGMENT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "ItemDataManager.h"
@@ -119,4 +118,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__SEGMENT_H_

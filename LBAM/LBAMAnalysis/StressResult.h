@@ -23,8 +23,7 @@
 
 // StressResult.h : Declaration of the CStressResult
 
-#ifndef __STRESSRESULT_H_
-#define __STRESSRESULT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -86,4 +85,3 @@ public:
    Float64Vec m_Results;
 };
 
-#endif //__STRESSRESULT_H_

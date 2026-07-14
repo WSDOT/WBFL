@@ -25,8 +25,7 @@
 
 // DblArray.h : Declaration of the CDblArray
 
-#ifndef __DBLARRAY_H_
-#define __DBLARRAY_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -79,4 +78,3 @@ protected:
    ContainerType m_Values;
 };
 
-#endif //__DBLARRAY_H_

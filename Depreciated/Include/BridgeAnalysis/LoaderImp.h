@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_LOADERIMP_H_
-#define INCLUDED_BRIDGEANALYSIS_LOADERIMP_H_
 #pragma once
 
 #include <BridgeAnalysis\BridgeAnalysisExp.h>
@@ -93,4 +91,3 @@ private:
    bamConcMomentZImp* m_pMyLoad;
 };
 
-#endif // INCLUDED_BRIDGEANALYSIS_LOADERIMP_H_

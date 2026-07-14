@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTCROSSBEAM_H_
-#define INCLUDED_TESTCROSSBEAM_H_
+#pragma once
 
 class CTestCrossBeam
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestCrossBeam();
 };
 
-#endif // INCLUDED_TESTCROSSBEAM_H_

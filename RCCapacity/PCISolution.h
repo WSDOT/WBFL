@@ -25,8 +25,7 @@
 
 // PCISolution.h : Declaration of the CPCISolution
 
-#ifndef __PCISOLUTION_H_
-#define __PCISOLUTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -78,4 +77,3 @@ public:
    STDMETHOD(get_AvgBeta1)(/*[out, retval]*/ Float64 *pVal) override;
 };
 
-#endif //__PCISOLUTION_H_

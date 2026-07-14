@@ -23,8 +23,7 @@
 
 // LibraryMgr.h : Declaration of the CLibraryMgr
 
-#ifndef __LIBRARYMGR_H_
-#define __LIBRARYMGR_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -126,4 +125,3 @@ private:
    CComBSTR m_bstrName;
 };
 
-#endif //__LIBRARYMGR_H_

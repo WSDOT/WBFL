@@ -25,8 +25,7 @@
 
 // PCIUHPConcrete.h : Declaration of the CPCIUHPConcrete
 
-#ifndef __PCIUHPConcrete_H_
-#define __PCIUHPConcrete_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -95,4 +94,3 @@ public:
    STDMETHOD(putref_UnitServer)(/*[in]*/ IUnitServer* pNewVal) override;
 };
 
-#endif //__PCIUHPConcrete_H_

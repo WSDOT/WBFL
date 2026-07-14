@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TestPoiPlacement_H__105091B2_A27D_11D5_B05D_00105A9AF985__INCLUDED_)
-#define AFX_TestPoiPlacement_H__105091B2_A27D_11D5_B05D_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <vector>
 
@@ -49,4 +44,3 @@ private:
 
 };
 
-#endif // !defined(AFX_TestPoiPlacement_H__105091B2_A27D_11D5_B05D_00105A9AF985__INCLUDED_)

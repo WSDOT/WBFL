@@ -22,8 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LRFDEXP_H_
-#define INCLUDED_LRFD_LRFDEXP_H_
 #pragma once
 
 // Define BUILDLRFDLIB when building this library
@@ -48,5 +46,3 @@
 #include <Lrfd\AutoLib.h>
 #include <WbflAll.h>
 
-
-#endif // INCLUDED_LRFD_LRFDEXP_H_

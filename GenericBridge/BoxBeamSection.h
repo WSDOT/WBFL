@@ -25,8 +25,7 @@
 
 // BoxBeamSection.h : Declaration of the CBoxBeamSection
 
-#ifndef __BoxBeamSection_H_
-#define __BoxBeamSection_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -173,4 +172,3 @@ public:
    STDMETHOD(IgnoreBiaxialBending)(BOOL* pIgnore) override { *pIgnore = FALSE; return S_OK; }
 };
 
-#endif //__BoxBeamSection_H_

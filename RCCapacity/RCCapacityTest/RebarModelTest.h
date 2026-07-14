@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_REBARMODELTEST_H__0733F052_B4CB_42BC_BD85_7506208246B4__INCLUDED_)
-#define AFX_REBARMODELTEST_H__0733F052_B4CB_42BC_BD85_7506208246B4__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CRebarModelTest  
 {
@@ -43,4 +38,3 @@ public:
 
 };
 
-#endif // !defined(AFX_REBARMODELTEST_H__0733F052_B4CB_42BC_BD85_7506208246B4__INCLUDED_)

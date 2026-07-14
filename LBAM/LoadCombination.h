@@ -23,8 +23,7 @@
 
 // LoadCombination.h : Declaration of the CLoadCombination
 
-#ifndef __LOADCOMBINATION_H_
-#define __LOADCOMBINATION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CombinationCP.h"
@@ -142,4 +141,3 @@ protected:
 
 };
 
-#endif //__LOADCOMBINATION_H_

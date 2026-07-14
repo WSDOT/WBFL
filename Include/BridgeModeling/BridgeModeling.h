@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_BRIDGEMODELING_H_
-#define INCLUDED_BRIDGEMODELING_BRIDGEMODELING_H_
 #pragma once
 
 // Master include file for clients of the Bridge Modeling Framework
@@ -64,4 +62,3 @@
 #include <BridgeModeling\TrafficBarrierTemplate.h>
 #include <BridgeModeling\XBridgeModel.h>
 
-#endif // INCLUDED_BRIDGEMODELING_BRIDGEMODELING_H_

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTSTRUCTUREDSTORAGE2_H__2D3A33C2_5507_11D5_B003_00105A9AF985__INCLUDED_)
-#define AFX_TESTSTRUCTUREDSTORAGE2_H__2D3A33C2_5507_11D5_B003_00105A9AF985__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #if defined _DEBUG
 #if defined VBA_BUILD
@@ -97,4 +92,3 @@ private:
 
 };
 
-#endif // !defined(AFX_TESTSTRUCTUREDSTORAGE2_H__2D3A33C2_5507_11D5_B003_00105A9AF985__INCLUDED_)

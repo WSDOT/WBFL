@@ -25,8 +25,7 @@
 
 // ColumnLayout : Declaration of the CColumnLayout
 
-#ifndef __ColumnLayout_H_
-#define __ColumnLayout_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <MathEx.h>
@@ -129,4 +128,3 @@ public:
    STDMETHOD(Load)(IStructuredLoad2* pLoad) override;
 };
 
-#endif //__ColumnLayout_H_

@@ -1,9 +1,5 @@
-#if !defined(AFX_EDITTRUCKPOSITION_H__7667497B_9A21_4ACC_965C_70AF91EB442C__INCLUDED_)
-#define AFX_EDITTRUCKPOSITION_H__7667497B_9A21_4ACC_965C_70AF91EB442C__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // EditTruckPosition.h : header file
 //
 #include "lbamviewer.h"
@@ -68,4 +64,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_EDITTRUCKPOSITION_H__7667497B_9A21_4ACC_965C_70AF91EB442C__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // StrandPattern.h : Declaration of the CStrandPattern
 
-#ifndef __STRANDPATTERN_H_
-#define __STRANDPATTERN_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -159,4 +158,3 @@ public:
    STDMETHOD(get_StrandBoundingBox)(/*[out,retval]*/IRect2d** box);
 };
 
-#endif //__STRANDPATTERN_H_

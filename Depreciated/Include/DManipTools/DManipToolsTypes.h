@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DMANIPTOOLSTYPES_H_
-#define INCLUDED_DMANIPTOOLSTYPES_H_
 #pragma once
 
 enum DataPointSymbolType
@@ -46,4 +44,3 @@ enum DataPointSymbolType
    dpstLastDefault    = 15  // this needs to always be the last in the list (for iterating)
 };
 
-#endif 

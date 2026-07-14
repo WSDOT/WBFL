@@ -25,8 +25,7 @@
 
 // BstrArray.h : Declaration of the CBstrArray
 
-#ifndef __BSTRARRAY_H_
-#define __BSTRARRAY_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -80,4 +79,3 @@ protected:
 
 };
 
-#endif //__BSTRARRAY_H_

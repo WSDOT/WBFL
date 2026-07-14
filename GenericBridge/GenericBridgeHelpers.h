@@ -23,9 +23,6 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGEHELPERS_H_
-#define INCLUDED_GENERICBRIDGEHELPERS_H_
-
 #pragma once
 
 #include "WBFLGenericBridge.h"
@@ -63,4 +60,3 @@ Float64 GB_GetFracDistance(Float64 fracLoc, Float64 Length, bool ignoreTooBig=fa
 
 HRESULT GB_GetSectionLocation(ISuperstructureMemberSegment* pSegment,Float64 distAlongSegment,IPoint2d** ppTopCenter);
 
-#endif // INCLUDED_GENERICBRIDGEHELPERS_H_

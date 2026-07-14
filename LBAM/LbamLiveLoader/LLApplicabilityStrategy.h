@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __iLLApplicabilityStrategy_H_
-#define __iLLApplicabilityStrategy_H_
+#pragma once
 
 
 // class for determining applicable locations for live load response
@@ -173,5 +172,3 @@ public:
    {;}
 };
 
-
-#endif

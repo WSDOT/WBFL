@@ -21,12 +21,9 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LOADINGERRORS_H_
-#define INCLUDED_LOADINGERRORS_H_
+#pragma once
 
 // Errors from the WBFL Loading library
 
 #define LOADING_E_BLANK_NAMES_NOT_ALLOWED  				     MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,601)
 
-
-#endif // INCLUDED_LOADINGERRORS_H_

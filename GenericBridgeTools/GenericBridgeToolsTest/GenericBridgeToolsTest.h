@@ -23,8 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETOOLSTEST_H_
-#define INCLUDED_GENERICBRIDGETOOLSTEST_H_
+#pragma once
 
 #include <vector>
 
@@ -54,4 +53,3 @@ IDType GetGirderLayoutLineID(IndexType spanIdx,IndexType gdrIdx);
 IDType GetGirderLineID(IndexType spanIdx,IndexType gdrIdx);
 IDType GetGirderSegmentLineID(IndexType gdrIdx,IndexType segIdx);
 
-#endif // INCLUDED_GENERICBRIDGETOOLSTEST_H_

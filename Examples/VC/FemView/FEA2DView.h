@@ -2,12 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_FEA2DVIEW_H__BCB8A0F1_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_FEA2DVIEW_H__BCB8A0F1_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CFEA2DView : public CDisplayView
 {
@@ -88,4 +83,3 @@ inline CFEA2DDoc* CFEA2DView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_FEA2DVIEW_H__BCB8A0F1_E659_11D4_8B81_006097C68A9C__INCLUDED_)

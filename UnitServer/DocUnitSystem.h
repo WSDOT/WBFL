@@ -25,8 +25,7 @@
 
 // DocUnitSystem.h : Declaration of the CDocUnitSystem
 
-#ifndef __DOCUNITSYSTEM_H_
-#define __DOCUNITSYSTEM_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "UnitModeController.h"
@@ -103,4 +102,3 @@ public:
 	}
 };
 
-#endif //__DOCUNITSYSTEM_H_

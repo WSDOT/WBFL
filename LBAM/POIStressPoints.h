@@ -23,8 +23,7 @@
 
 // POIStressPoints.h : Declaration of the CPOIStressPoints
 
-#ifndef __POISTRESSPOINTS_H_
-#define __POISTRESSPOINTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "POIStressPointsItem.h"
@@ -116,4 +115,3 @@ private:
    void DoErase(IteratorType& it, bool doFire=true);
 };
 
-#endif //__POISTRESSPOINTS_H_

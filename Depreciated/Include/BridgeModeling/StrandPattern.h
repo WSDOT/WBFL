@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_STRANDPATTERN_H_
-#define INCLUDED_BRIDGEMODELING_STRANDPATTERN_H_
 #pragma once
 
 #include <BridgeModeling\BridgeModelingExp.h>
@@ -357,4 +355,3 @@ public:
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEMODELING_STRANDPATTERN_H_

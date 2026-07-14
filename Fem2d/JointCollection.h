@@ -25,8 +25,6 @@
 
 // JointCollection.h : Declaration of the CJointCollection
 
-#ifndef __JointCollection_H_
-#define __JointCollection_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -79,4 +77,3 @@ public:
 
 };
 
-#endif //__JointCollection_H_

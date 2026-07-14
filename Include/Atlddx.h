@@ -1,5 +1,4 @@
-#ifndef INCLUDED_ATLDDX_H_
-#define INCLUDED_ATLDDX_H_
+#pragma once
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
 // Copyright © 1999-2022  Washington State Department of Transportation
@@ -84,4 +83,3 @@ inline void DDX_PutUnitValue(HWND hwndDlg,int nIDC,int nIDCTag,CComBSTR bstrGrou
    ::SetWindowText(hWndEditCtrl,OLE2T(bstrValue));
 }
 
-#endif // INCLUDED_ATLDDX_H_

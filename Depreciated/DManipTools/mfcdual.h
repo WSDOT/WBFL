@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_CORE_MFCDUAL_H_
-#define INCLUDED_CORE_MFCDUAL_H_
 #pragma once
 
 // mfcdual.h: Helpful macros for adding dual interface support to
@@ -217,5 +215,3 @@ STDMETHODIMP objectClass::X##customClass::QueryInterface( \
    return pThis->ExternalQueryInterface( &iid, ppvObj ); \
 }
 
-
-#endif //  INCLUDED_CORE_MFCDUAL_H_

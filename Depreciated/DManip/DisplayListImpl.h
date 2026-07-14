@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DISPLAYLISTIMPL_H__BCB8A10D_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_DISPLAYLISTIMPL_H__BCB8A10D_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include <DManip\DisplayListEvents.h>
@@ -155,4 +150,3 @@ private:
    void Fire_OnDisplayObjectsCleared();
 };
 
-#endif // !defined(AFX_DISPLAYLISTIMPL_H__BCB8A10D_E659_11D4_8B81_006097C68A9C__INCLUDED_)

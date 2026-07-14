@@ -25,8 +25,7 @@
 
 // EffectiveFlangeWidthTool.h : Declaration of the CEffectiveFlangeWidthTool
 
-#ifndef __EFFECTIVEFLANGEWIDTHTOOL_H_
-#define __EFFECTIVEFLANGEWIDTHTOOL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -77,4 +76,3 @@ public:
 	STDMETHOD(EffectiveFlangeWidthBySegmentEx)(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs, IEffectiveFlangeWidthDetails** details) override;
 };
 
-#endif //__EFFECTIVEFLANGEWIDTHTOOL_H_

@@ -23,8 +23,7 @@
 
 // DistributedLoads.h : Declaration of the CDistributedLoads
 
-#ifndef __DISTRIBUTEDLOADS_H_
-#define __DISTRIBUTEDLOADS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadCollection.h"
@@ -135,4 +134,3 @@ public:
 
 };
 
-#endif //__DISTRIBUTEDLOADS_H_

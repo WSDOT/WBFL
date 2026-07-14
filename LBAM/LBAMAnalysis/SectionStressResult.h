@@ -23,8 +23,7 @@
 
 // SectionStressResult.h : Declaration of the CSectionStressResult
 
-#ifndef __SECTIONSTRESSRESULT_H_
-#define __SECTIONSTRESSRESULT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -94,4 +93,3 @@ public:
    Float64Vec m_RightResults;
 };
 
-#endif //__SECTIONSTRESSRESULT_H_

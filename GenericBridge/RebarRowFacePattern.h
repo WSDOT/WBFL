@@ -25,8 +25,7 @@
 
 // RebarRowFacePattern.h : Declaration of the CRebarRowFacePattern
 
-#ifndef __RebarRowFacePattern_H_
-#define __RebarRowFacePattern_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -114,4 +113,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__RebarRowFacePattern_H_

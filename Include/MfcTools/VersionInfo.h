@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_VERSIONINFO_H_
-#define INCLUDED_MFCTOOLS_VERSIONINFO_H_
 #pragma once
 
 //
@@ -82,4 +80,3 @@ protected:
   VS_FIXEDFILEINFO*   m_pffi;          //Pointer to the fixed size version info data
 };
 
-#endif //INCLUDED_MFCTOOLS_VERSIONINFO_H_

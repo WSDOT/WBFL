@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_SPANELEMENT_H_
-#define INCLUDED_BRIDGEANALYSIS_SPANELEMENT_H_
 #pragma once
 
 #include <BridgeAnalysis\BridgeAnalysisExp.h>
@@ -123,4 +121,3 @@ public:
    #endif // _UNITTEST
 };
 
-#endif // INCLUDED_BRIDGEANALYSIS_SPANELEMENT_H_

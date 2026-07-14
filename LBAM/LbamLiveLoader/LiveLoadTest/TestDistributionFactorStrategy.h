@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDISTRIBUTIONFACTORSTRATEGY_H__7BD308D2_B610_4F2D_AB72_F6DD50905652__INCLUDED_)
-#define AFX_TESTDISTRIBUTIONFACTORSTRATEGY_H__7BD308D2_B610_4F2D_AB72_F6DD50905652__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "..\DistributionFactorStrategy.h"
 
@@ -46,4 +41,3 @@ public:
 
 };
 
-#endif // !defined(AFX_TESTDISTRIBUTIONFACTORSTRATEGY_H__7BD308D2_B610_4F2D_AB72_F6DD50905652__INCLUDED_)

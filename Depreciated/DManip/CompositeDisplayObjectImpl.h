@@ -21,12 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_COMPOSITEDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_)
-#define AFX_COMPOSITEDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -202,4 +197,3 @@ public:
    STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
 };
 
-#endif // !defined(AFX_COMPOSITEDISPLAYOBJECT_H__9E3A6AF5_E734_11D4_8B83_006097C68A9C__INCLUDED_)

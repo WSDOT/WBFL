@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef __LBAMError_H_
-#define __LBAMError_H_
+#pragma once
 
 // HRESULT's for the Fem2d System
 
@@ -44,5 +43,3 @@
 #define LBAM_E_NO_SEGMENTS_FOR_STAGE                      MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,618)
 #define LBAM_E_POI_NO_STAGE                               MAKE_HRESULT(SEVERITY_ERROR,FACILITY_ITF,619)
 
-
-#endif

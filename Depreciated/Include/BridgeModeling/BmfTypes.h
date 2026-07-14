@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_BMFTYPES_H_
-#define INCLUDED_BRIDGEMODELING_BMFTYPES_H_
-
 #pragma once
 
 #include <BridgeModeling\BridgeModelingExp.h>
@@ -38,5 +35,3 @@ enum bmfMeasuredHow   { AlongLine, NormalToLine };
 // Used primarily for measurements along a girder.
 enum bmfMeasuredFrom  { LeftEnd, LeftBearing, RightBearing, RightEnd };
 
-
-#endif // INCLUDED_BRIDGEMODELING_BMFTYPES_H_

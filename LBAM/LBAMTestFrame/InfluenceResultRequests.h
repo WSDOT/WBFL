@@ -1,7 +1,6 @@
 // InfluenceResultRequests.h : Declaration of the CInfluenceResultRequests
 
-#ifndef __INFLUENCERESULTREQUESTS_H_
-#define __INFLUENCERESULTREQUESTS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -71,4 +70,3 @@ public:
    }
 };
 
-#endif //__INFLUENCERESULTREQUESTS_H_

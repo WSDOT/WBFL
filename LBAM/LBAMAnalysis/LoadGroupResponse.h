@@ -23,8 +23,7 @@
 
 // LoadGroupResponse.h : Declaration of the CLoadGroupResponse
 
-#ifndef __LoadGroupResponse_H_
-#define __LoadGroupResponse_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "AnalysisModel.h"
@@ -689,4 +688,3 @@ private:
    ChangeManager m_ChangeManager;
 };
 
-#endif //__LoadGroupResponse_H_

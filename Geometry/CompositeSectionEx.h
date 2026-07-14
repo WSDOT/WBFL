@@ -23,8 +23,7 @@
 
 // CompositeSectionEx.h : Declaration of the CCompositeSectionEx
 
-#ifndef __COMPOSITESECTIONEX_H_
-#define __COMPOSITESECTIONEX_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -96,4 +95,3 @@ public:
 	STDMETHOD(Rotate)(/*[in]*/ Float64 cx,/*[in]*/ Float64 cy,/*[in]*/ Float64 angle) override;
 };
 
-#endif //__COMPOSITESECTIONEX_H_

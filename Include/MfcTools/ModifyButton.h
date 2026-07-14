@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MODIFYBUTTON_H_
-#define INCLUDED_MODIFYBUTTON_H_
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
@@ -64,4 +62,3 @@ protected:
   CToolTipCtrl m_ToolTip;
 };
 
-#endif

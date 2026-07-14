@@ -23,11 +23,9 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_GENERICBRIDGETEST_H_
-#define INCLUDED_GENERICBRIDGETEST_H_
+#pragma once
 
 bool TestIObjectSafety(IUnknown* punk,REFIID riid,DWORD dwSupportedOptions);
 
 void TestWebSections(IPrestressedGirderSection* pSection, const std::vector<std::pair<Float64, Float64>>& vExpectedValues);
 
-#endif // INCLUDED_GENERICBRIDGETEST_H_

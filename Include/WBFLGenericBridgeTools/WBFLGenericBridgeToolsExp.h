@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_WBFLGENERICBRIDGETOOLS_EXPORT_H_
-#define INCLUDED_WBFLGENERICBRIDGETOOLS_EXPORT_H_
 #pragma once
 
 #if defined (BUILDWBFLGENERICBRIDGETOOLSLIB) && !defined(WBFLGENERICBRIDGETOOLSLIB)
@@ -43,4 +41,3 @@
 #include <WBFLGenericBridgeTools\AutoLib.h>
 #endif
 
-#endif // INCLUDED_WBFLTOOLS_EXPORT_H_

@@ -23,8 +23,7 @@
 
 // LBAMModelEnveloper.h : Declaration of the CLBAMModelEnveloper
 
-#ifndef __LBAMMODELENVELOPER_H_
-#define __LBAMMODELENVELOPER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -127,4 +126,3 @@ public:
    long                                     m_ProgressCookie;
 };
 
-#endif //__LBAMMODELENVELOPER_H_

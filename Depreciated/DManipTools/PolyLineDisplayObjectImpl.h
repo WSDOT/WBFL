@@ -23,8 +23,6 @@
 
 // PolyLineDisplayObject.h : Declaration of the CPolyLineDisplayObjectImpl
 
-#ifndef __POLYLINEDISPLAYOBJECT_H_
-#define __POLYLINEDISPLAYOBJECT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -177,4 +175,3 @@ private:
    void BuildLine(IPoint2d* fromPoint,IPoint2d* toPoint);
 };
 
-#endif //__PolyLineDISPLAYOBJECT_H_

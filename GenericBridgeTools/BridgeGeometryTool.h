@@ -25,8 +25,7 @@
 
 // BridgeGeometryTool.h : Declaration of the CBridgeGeometryTool
 
-#ifndef __BridgeGeometryTool_H_
-#define __BridgeGeometryTool_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -97,4 +96,3 @@ public:
    STDMETHOD(CurbLinePoint)(/*[in]*/ IGenericBridge* bridge,/*[in]*/ Float64 station,/*[in]*/ IDirection* direction,/*[in]*/ DirectionType side,/*[out,retval]*/ IPoint2d** point) override;
 };
 
-#endif //__BridgeGeometryTool_H_

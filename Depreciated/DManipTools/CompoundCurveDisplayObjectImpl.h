@@ -23,8 +23,6 @@
 
 // CompoundCurveDisplayObjectImpl.h : Declaration of the CCompoundCurveDisplayObjectImpl
 
-#ifndef __CompoundCurveDISPLAYOBJECT_H_
-#define __CompoundCurveDISPLAYOBJECT_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -161,4 +159,3 @@ public:
    STDMETHOD_(void, GetParent)(iDisplayObject** ppParent) override { Do_GetParent(ppParent); }
 };
 
-#endif //__CompoundCurveDISPLAYOBJECT_H_

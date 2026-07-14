@@ -1,5 +1,4 @@
-#ifndef __CUnknown_h__
-#define __CUnknown_h__
+#pragma once
 
 #include <objbase.h>
 
@@ -92,5 +91,3 @@ private:
 
 ///////////////////////////////////////////////////////////
 
-
-#endif

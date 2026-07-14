@@ -23,12 +23,7 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_PROGRESSMONITORDLG_H__E1D69FE4_ED1E_49ED_A71F_BCE26EA1FD84__INCLUDED_)
-#define AFX_PROGRESSMONITORDLG_H__E1D69FE4_ED1E_49ED_A71F_BCE26EA1FD84__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // ProgressMonitorDlg.h : header file
 //
 #include "resource.h"
@@ -86,4 +81,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_PROGRESSMONITORDLG_H__E1D69FE4_ED1E_49ED_A71F_BCE26EA1FD84__INCLUDED_)

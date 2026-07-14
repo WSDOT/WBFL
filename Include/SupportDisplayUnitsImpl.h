@@ -1,5 +1,4 @@
-#ifndef INCLUDED_SUPPORTUNITS_H_
-#define INCLUDED_SUPPORTUNITS_H_
+#pragma once
 
 #include <WBFLUnitServer.h>
 
@@ -69,4 +68,3 @@ public:
       CComPtr<IDocUnitSystem> m_UnitSystem;
 };
 
-#endif // INCLUDED_SUPPORTUNITS_H_

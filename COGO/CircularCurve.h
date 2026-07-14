@@ -25,8 +25,6 @@
 
 // CircularCurve.h : Declaration of the CCircularCurve
 
-#ifndef __CircularCurve_H_
-#define __CircularCurve_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -115,4 +113,3 @@ private:
    std::shared_ptr<WBFL::COGO::CircularCurve> m_Curve;
 };
 
-#endif //__CircularCurve_H_

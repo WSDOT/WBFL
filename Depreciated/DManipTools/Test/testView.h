@@ -3,13 +3,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include "ColorMapper.h"
 
-
-#if !defined(AFX_TESTVIEW_H__5788F6AE_AC29_49F1_A359_6E40F25CD89A__INCLUDED_)
-#define AFX_TESTVIEW_H__5788F6AE_AC29_49F1_A359_6E40F25CD89A__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 class CTestView : public CDisplayView
@@ -79,4 +73,3 @@ inline CTestDoc* CTestView::GetDocument()
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TESTVIEW_H__5788F6AE_AC29_49F1_A359_6E40F25CD89A__INCLUDED_)

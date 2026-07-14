@@ -25,8 +25,7 @@
 
 // GeomUtil.h : Declaration of the CGeomUtil
 
-#ifndef __GEOMUTIL_H_
-#define __GEOMUTIL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -93,4 +92,3 @@ public:
    STDMETHOD(PointInTriangle)(/*[in]*/IPoint2d* p,/*[in]*/IPoint2d* pA,/*[in]*/IPoint2d* pB,/*[in]*/IPoint2d* pC,/*[out,retval]*/VARIANT_BOOL* pbResult) override;
 };
 
-#endif //__GEOMUTIL_H_

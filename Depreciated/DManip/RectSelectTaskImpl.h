@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)
-#define AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 #include "RectSelectFSM.h"
@@ -91,4 +86,3 @@ private:
    CPoint m_TempPoint;
 };
 
-#endif // !defined(AFX_LBtnRectSelectTASKIMPL_H__5D499BF8_CF77_11D4_8B66_006097C68A9C__INCLUDED_)

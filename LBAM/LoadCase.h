@@ -23,8 +23,7 @@
 
 // LoadCase.h : Declaration of the CLoadCase
 
-#ifndef __LOADCASE_H_
-#define __LOADCASE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "CombinationCP.h"
@@ -104,4 +103,3 @@ protected:
    LoadGroupContainer m_LoadGroups;
 };
 
-#endif //__LOADCASE_H_

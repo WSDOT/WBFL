@@ -25,8 +25,7 @@
 
 // Pier.h : Declaration of the CBridgePier
 
-#ifndef __PIER_H_
-#define __PIER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "PierImpl.h"
@@ -126,4 +125,3 @@ public:
 	STDMETHOD(Save)(/*[in]*/ IStructuredSave2* save) override;
 };
 
-#endif //__PIER_H_

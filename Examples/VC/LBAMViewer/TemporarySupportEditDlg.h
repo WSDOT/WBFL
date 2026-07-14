@@ -1,9 +1,5 @@
-#if !defined(AFX_TEMPORARYSUPPORTEDITDLG_H__52D37275_5BA0_410C_9AAC_737B4C6868D5__INCLUDED_)
-#define AFX_TEMPORARYSUPPORTEDITDLG_H__52D37275_5BA0_410C_9AAC_737B4C6868D5__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 // TemporarySupportEditDlg.h : header file
 //
 
@@ -43,4 +39,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TEMPORARYSUPPORTEDITDLG_H__52D37275_5BA0_410C_9AAC_737B4C6868D5__INCLUDED_)

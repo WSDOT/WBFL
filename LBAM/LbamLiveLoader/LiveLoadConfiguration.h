@@ -23,8 +23,7 @@
 
 // LiveLoadConfiguration.h : Declaration of the CLiveLoadConfiguration
 
-#ifndef __LIVELOADCONFIGURATION_H_
-#define __LIVELOADCONFIGURATION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LBAMLiveLoaderCP.h"
@@ -134,4 +133,3 @@ protected:
 
 };
 
-#endif //__LIVELOADCONFIGURATION_H_

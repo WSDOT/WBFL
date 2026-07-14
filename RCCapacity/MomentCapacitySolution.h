@@ -25,8 +25,7 @@
 
 // MomentCapacitySolution.h : Declaration of the CMomentCapacitySolution
 
-#ifndef __MomentCapacitySolution_H_
-#define __MomentCapacitySolution_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -98,4 +97,3 @@ public:
    STDMETHOD(get_GeneralSectionSolution)(/*[out,retval]*/IGeneralSectionSolution** solution) override;
 };
 
-#endif //__MomentCapacitySolution_H_

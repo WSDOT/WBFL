@@ -25,8 +25,7 @@
 
 // UnitType.h : Declaration of the CUnitType
 
-#ifndef __UNITTYPE_H_
-#define __UNITTYPE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -174,4 +173,3 @@ private:
    }
 };
 
-#endif //__UNITTYPE_H_

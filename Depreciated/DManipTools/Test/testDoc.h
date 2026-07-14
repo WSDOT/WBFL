@@ -2,12 +2,7 @@
 //
 /////////////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTDOC_H__0D14AEE2_1AE0_49C0_BE41_D4E597913D80__INCLUDED_)
-#define AFX_TESTDOC_H__0D14AEE2_1AE0_49C0_BE41_D4E597913D80__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 
 class CTestDoc : public CDocument
@@ -54,4 +49,3 @@ protected:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_TESTDOC_H__0D14AEE2_1AE0_49C0_BE41_D4E597913D80__INCLUDED_)

@@ -27,12 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_TESTTangent_H__B9E4933F_5E73_11D5_8C32_006097C68A9C__INCLUDED_)
-#define AFX_TESTTangent_H__B9E4933F_5E73_11D5_8C32_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CTestTangent  
 {
@@ -47,4 +42,3 @@ private:
    static void TestPoint();
 };
 
-#endif // !defined(AFX_TESTTangent_H__B9E4933F_5E73_11D5_8C32_006097C68A9C__INCLUDED_)

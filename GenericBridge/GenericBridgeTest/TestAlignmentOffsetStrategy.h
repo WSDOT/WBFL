@@ -27,8 +27,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_TESTALIGNMENTOFFSETSTRATEGY_H_
-#define INCLUDED_TESTALIGNMENTOFFSETSTRATEGY_H_
+#pragma once
 
 class CTestAlignmentOffsetStrategy
 {
@@ -38,4 +37,3 @@ public:
 	virtual ~CTestAlignmentOffsetStrategy();
 };
 
-#endif // INCLUDED_TESTALIGNMENTOFFSETSTRATEGY_H_

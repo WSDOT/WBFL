@@ -25,8 +25,7 @@
 
 // SectionBuilder.h : Declaration of the CSectionBuilder
 
-#ifndef __SectionBuilder_H_
-#define __SectionBuilder_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -67,4 +66,3 @@ public:
    STDMETHOD(CircularColumn)(/*[in]*/Float64 D,/*[in]*/Float64 cover,/*[in]*/long Nb,/*[in]*/Float64 As,/*[in]*/IStressStrain* concrete,/*[in]*/IStressStrain* rebar,/*[out,retval]*/IGeneralSection** section) override;
 };
 
-#endif //__SectionBuilder_H_

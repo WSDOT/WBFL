@@ -25,8 +25,7 @@
 
 // CompositeHaunchDepthFunction.h : Declaration of the CCompositeHaunchDepthFunction
 
-#ifndef __CompositeHaunchDepthFunction_H_
-#define __CompositeHaunchDepthFunction_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -88,4 +87,3 @@ private:
    std::vector<HaunchLayout> m_HaunchLayouts;
 };
 
-#endif //__CompositeHaunchDepthFunction_H_

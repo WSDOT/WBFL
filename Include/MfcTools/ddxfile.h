@@ -24,8 +24,6 @@
 
 ////////////////////////////////// Macros ///////////////////////////
 
-#ifndef _DDXFILE_H__
-#define _DDXFILE_H__
 #pragma once
 
 #include <MfcTools\ModifyButton.h>
@@ -118,5 +116,3 @@ void MFCTOOLSFUNC DDX_FilenameControl(CDataExchange* pDX, int nIDC, int nIDCBtn,
 void MFCTOOLSFUNC DDX_FilenameValue(CDataExchange* pDX, CGetFilenameControl& rCGetFilenameControl, CString& sFile);
 void MFCTOOLSFUNC DDV_FilenameControl(CDataExchange* pDX, CGetFilenameControl& rCGetFilenameControl);
 
-
-#endif //_DDXFILE_H__

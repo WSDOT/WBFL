@@ -1,7 +1,6 @@
 // FileTestLogger.h : Declaration of the CFileTestLogger
 
-#ifndef __FILETESTLOGGER_H_
-#define __FILETESTLOGGER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <fstream>
@@ -59,4 +58,3 @@ private:
 
 };
 
-#endif //__FILETESTLOGGER_H_

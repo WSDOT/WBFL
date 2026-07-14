@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEANALYSIS_BRIDGEMODEL_H_
-#define INCLUDED_BRIDGEANALYSIS_BRIDGEMODEL_H_
 #pragma once
 
 // SYSTEM INCLUDES
@@ -620,4 +618,3 @@ inline bool operator == (const bamPointOfInterest& a,const bamPointOfInterest& b
 // EXTERNAL REFERENCES
 //
 
-#endif // INCLUDED_BRIDGEANALYSIS_BRIDGEMODEL_H_

@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_)
-#define AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include <DManip\DManipExp.h>
 #include <DManip\DisplayObject.h>
@@ -161,4 +156,3 @@ protected:
    iDisplayObject* m_pCompositeParent; // weak reference to parent object... typically used when this DO is part of a composite
 };
 
-#endif // !defined(AFX_DISPLAYOBJECTDEFAULTIMPL_H__BCB8A107_E659_11D4_8B81_006097C68A9C__INCLUDED_)

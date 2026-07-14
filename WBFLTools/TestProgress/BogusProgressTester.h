@@ -1,7 +1,6 @@
 // BogusProgressTester.h : Declaration of the CBogusProgressTester
 
-#ifndef __BOGUSPROGRESSTESTER_H_
-#define __BOGUSPROGRESSTESTER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -49,4 +48,3 @@ private:
    long                      m_Cookie;
 };
 
-#endif //__BOGUSPROGRESSTESTER_H_

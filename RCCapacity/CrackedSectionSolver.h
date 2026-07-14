@@ -25,8 +25,7 @@
 
 // CrackedSectionSolver.h : Declaration of the CCrackedSectionSolver
 
-#ifndef __CrackedSectionSolver_H_
-#define __CrackedSectionSolver_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <WBFLUnitServer.h>
@@ -136,4 +135,3 @@ public:
    STDMETHOD(Solve)(/*[in]*/Float64 naAngle,/*[out,retval]*/ICrackedSectionSolution** solution) override;
 };
 
-#endif //__CrackedSectionSolver_H_

@@ -25,12 +25,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_INPLACEEDITDEFAULTIMPL_H__FC76B7E3_E710_11D4_8B82_006097C68A9C__INCLUDED_)
-#define AFX_INPLACEEDITDEFAULTIMPL_H__FC76B7E3_E710_11D4_8B82_006097C68A9C__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "resource.h"
 
@@ -67,4 +62,3 @@ public:
    virtual CInplaceEdit* GetEditObject() = 0;
 };
 
-#endif // !defined(AFX_INPLACEEDITDEFAULTIMPL_H__FC76B7E3_E710_11D4_8B82_006097C68A9C__INCLUDED_)

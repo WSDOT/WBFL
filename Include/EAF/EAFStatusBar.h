@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_EAFSTATUSBAR_H_
-#define INCLUDED_EAFSTATUSBAR_H_
-
 #pragma once
 
 
@@ -101,5 +98,3 @@ public:
    virtual BOOL Create(CWnd* pParentWnd, DWORD dwStyle = WS_CHILD | WS_VISIBLE | CBRS_BOTTOM, UINT nID = AFX_IDW_STATUS_BAR);
 };
 
-
-#endif // INCLUDED_EAFSTATUSBAR_H_

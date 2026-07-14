@@ -23,8 +23,7 @@
 
 // LoadCombinationResultConfiguration.h : Declaration of the CLoadCombinationResultConfiguration
 
-#ifndef __LOADCOMBINATIONRESULTCONFIGURATION_H_
-#define __LOADCOMBINATIONRESULTCONFIGURATION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -104,4 +103,3 @@ protected:
    ResultsSummationType             m_ResultsSummationType;
 };
 
-#endif //__LOADCOMBINATIONRESULTCONFIGURATION_H_

@@ -23,8 +23,7 @@
 
 // VehicularAnalysisContext.h : Declaration of the CVehicularAnalysisContext
 
-#ifndef __VEHICULARANALYSISCONTEXT_H_
-#define __VEHICULARANALYSISCONTEXT_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -192,4 +191,3 @@ private:
 
 };
 
-#endif //__VEHICULARANALYSISCONTEXT_H_

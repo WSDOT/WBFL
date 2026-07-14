@@ -25,8 +25,7 @@
 
 // GirderSectionImpl.h : Declaration of the IGirderSectionImpl
 
-#ifndef __GIRDERSECTIONIMPL_H_
-#define __GIRDERSECTIONIMPL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -601,4 +600,3 @@ public:
    }
 };
 
-#endif //__GIRDERSECTIONIMPL_H_

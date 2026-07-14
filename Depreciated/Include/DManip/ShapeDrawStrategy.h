@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_SHAPEDRAWSTRATEGY_H_
-#define INCLUDED_SHAPEDRAWSTRATEGY_H_
 #pragma once
 
 #include <DManip\DrawPointStrategy.h>
@@ -84,4 +82,3 @@ interface iShapeDrawStrategy2 : public iDrawPointStrategy
    STDMETHOD_(bool, HasBoundingShape)() PURE;
 };
 
-#endif // INCLUDED_SHAPEDRAWSTRATEGY_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_COGO_COGOEXP_H_
-#define INCLUDED_COGO_COGOEXP_H_
 #pragma once
 
 // Define BUILDCOGOLIB when building this library
@@ -52,4 +50,3 @@
 #include <Cogo\AutoLib.h>
 #endif
 
-#endif // INCLUDED_COGO_COGOEXP_H_

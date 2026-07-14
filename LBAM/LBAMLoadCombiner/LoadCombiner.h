@@ -23,8 +23,7 @@
 
 // LoadCombiner.h : Declaration of the CLoadCombiner
 
-#ifndef __LOADCOMBINER_H_
-#define __LOADCOMBINER_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -197,4 +196,3 @@ private:
 
 };
 
-#endif //__LOADCOMBINER_H_

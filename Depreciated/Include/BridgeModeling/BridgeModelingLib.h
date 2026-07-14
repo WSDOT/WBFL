@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRDIGEMODELING_BRIDGEMODELINGLIB_H_
-#define INCLUDED_BRDIGEMODELING_BRIDGEMODELINGLIB_H_
 #pragma once
 
 /*****************************************************************************
@@ -52,6 +50,3 @@ COPYRIGHT
 extern CComModule _Module;
 #include <atlcom.h>
 
-
-
-#endif // INCLUDED_BRDIGEMODELING_BRIDGEMODELINGLIB_H_

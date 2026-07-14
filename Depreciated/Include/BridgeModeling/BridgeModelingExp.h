@@ -21,8 +21,7 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_BRIDGEMODELING_BRIDGEMODELINGEXP_H_
-#define INCLUDED_BRIDGEMODELING_BRIDGEMODELINGEXP_H_
+#pragma once
 
 // Define BUILDBMFLIB when building this library
 // For static builds, define BMFLIB
@@ -49,5 +48,3 @@
 
 #define BMF_LEVEL_DRAW 0
 
-
-#endif // INCLUDED_BRIDGEMODELING_BRIDGEMODELINGEXP_H_

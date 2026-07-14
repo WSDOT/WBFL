@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_INFLUENCELINEDATASETBUILDER_H__FC05FEE7_8D7C_4091_AA21_77E74AD51426__INCLUDED_)
-#define AFX_INFLUENCELINEDATASETBUILDER_H__FC05FEE7_8D7C_4091_AA21_77E74AD51426__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "DataSetBuilder.h"
 
@@ -43,4 +38,3 @@ private:
 
 };
 
-#endif // !defined(AFX_INFLUENCELINEDATASETBUILDER_H__FC05FEE7_8D7C_4091_AA21_77E74AD51426__INCLUDED_)

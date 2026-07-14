@@ -22,8 +22,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_LRFD_LRFD_H_
-#define INCLUDED_LRFD_LRFD_H_
 #pragma once
 
 // This is a master include file for the LRFD Tools Package
@@ -81,4 +79,3 @@
 #include <LRFD\LRFDConcrete.h>
 #include <LRFD\LRFDTimeDependentConcrete.h>
 
-#endif // INCLUDED_LRFD_LRFD_H_

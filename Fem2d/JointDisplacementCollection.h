@@ -25,8 +25,6 @@
 
 // JointDeflectionCollection.h : Declaration of the CJointDeflectionCollection
 
-#ifndef __JOINTDeflectionCOLLECTION_H_
-#define __JOINTDeflectionCOLLECTION_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -80,4 +78,3 @@ public:
 	STDMETHOD(Clear)() override;
 };
 
-#endif //__JointDeflectionCollection_H_

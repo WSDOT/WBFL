@@ -23,8 +23,7 @@
 
 // LoadGroup.h : Declaration of the CLoadGroup
 
-#ifndef __LOADGROUP_H_
-#define __LOADGROUP_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LoadGroupCP.h"
@@ -90,4 +89,3 @@ protected:
    VARIANT_BOOL m_Transient;
 };
 
-#endif //__LOADGROUP_H_

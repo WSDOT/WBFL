@@ -24,9 +24,6 @@
 // Core.h : main header file for the CORE DLL
 //
 
-#if !defined(AFX_CORE_H__99C34A9A_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_)
-#define AFX_CORE_H__99C34A9A_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_
-
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -70,4 +67,3 @@ public:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_CORE_H__99C34A9A_2BE4_11D2_8EB3_006097DF3C68__INCLUDED_)

@@ -25,8 +25,7 @@
 
 // SectionCutTool.h : Declaration of the CSectionCutTool
 
-#ifndef __SECTIONCUTTOOL_H_
-#define __SECTIONCUTTOOL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -150,4 +149,3 @@ private:
    std::vector<CSectionCutTool::GirderPointRecord> GetGirderPoints(IGenericBridge* pBridge,IStation* pStation,IDirection* pDirection);
 };
 
-#endif //__SECTIONCUTTOOL_H_

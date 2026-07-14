@@ -25,8 +25,7 @@
 
 // EffectiveFlangeWidthDetails.h : Declaration of the CEffectiveFlangeWidthDetails
 
-#ifndef __EFFECTIVEFLANGEWIDTHDETAILS_H_
-#define __EFFECTIVEFLANGEWIDTHDETAILS_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -86,4 +85,3 @@ public:
    STDMETHOD(EffectiveFlangeWidth)(/*[out,retval]*/ Float64* effFlangeWidth) override;
 };
 
-#endif //__EFFECTIVEFLANGEWIDTHDETAILS_H_

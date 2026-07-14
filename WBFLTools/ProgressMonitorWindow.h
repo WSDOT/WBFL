@@ -25,8 +25,7 @@
 
 // ProgressMonitorWindow.h : Declaration of the CProgressMonitorWindow
 
-#ifndef __PROGRESSMONITORWINDOW_H_
-#define __PROGRESSMONITORWINDOW_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "ProgressMonitorDlg.h"
@@ -93,4 +92,3 @@ private:
 
 };
 
-#endif //__PROGRESSMONITORWINDOW_H_

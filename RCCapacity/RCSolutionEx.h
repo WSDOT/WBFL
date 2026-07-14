@@ -25,8 +25,7 @@
 
 // RCSolutionEx.h : Declaration of the CRCSolutionEx
 
-#ifndef __RCSOLUTIONEX_H_
-#define __RCSOLUTIONEX_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 
@@ -92,4 +91,3 @@ public:
    STDMETHOD(get_fs)(/*[out,retval]*/ IDblArray** fs) override;
 };
 
-#endif //__RCSOLUTIONEX_H_

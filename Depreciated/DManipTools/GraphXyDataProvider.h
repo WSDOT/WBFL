@@ -23,8 +23,6 @@
 
 // GraphXyDataProvider.h : Declaration of the CGraphXyDataProvider
 
-#ifndef __GraphXyDataProvider_H_
-#define __GraphXyDataProvider_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -68,4 +66,3 @@ private:
 
 };
 
-#endif //__GraphXyDataProvider_H_

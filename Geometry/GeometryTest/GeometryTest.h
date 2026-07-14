@@ -2,12 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_GEOMETRYTEST_H__9ACFED6A_9EBA_11D3_8CDF_C5F740C1124A__INCLUDED_)
-#define AFX_GEOMETRYTEST_H__9ACFED6A_9EBA_11D3_8CDF_C5F740C1124A__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 class CGeometryTest  
 {
@@ -27,4 +22,3 @@ private:
 
 };
 
-#endif // !defined(AFX_GEOMETRYTEST_H__9ACFED6A_9EBA_11D3_8CDF_C5F740C1124A__INCLUDED_)

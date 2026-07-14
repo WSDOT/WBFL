@@ -1,5 +1,4 @@
-#ifndef INCLUDED_SUPPORTDRAWSTRATEGYIMPL_H_
-#define INCLUDED_SUPPORTDRAWSTRATEGYIMPL_H_
+#pragma once
 
 #include "SupportDrawStrategy.h"
 
@@ -25,4 +24,3 @@ private:
 
 };
 
-#endif // INCLUDED_SUPPORTDRAWSTRATEGYIMPL_H_

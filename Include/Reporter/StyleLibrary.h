@@ -21,9 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_STYLELIBRARY_H_
-#define INCLUDED_REPORTER_STYLELIBRARY_H_
-
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -130,6 +127,4 @@ private:
    static std::_tstring ms_ImagePath;
    static Float64 ms_MaxTableWidth;
 };
-
-#endif // INCLUDED_REPORTER_STYLELIBRARY_H_
 

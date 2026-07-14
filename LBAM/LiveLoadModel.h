@@ -23,8 +23,7 @@
 
 // LiveLoadModel.h : Declaration of the CLiveLoadModel
 
-#ifndef __LIVELOADMODEL_H_
-#define __LIVELOADMODEL_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "LiveLoadCP.h"
@@ -106,4 +105,3 @@ protected:
    DWORD                    m_VehicularLoadsCookie;
 };
 
-#endif //__LIVELOADMODEL_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_REPORTER_RCFLOWMODIFIER_H_
-#define INCLUDED_REPORTER_RCFLOWMODIFIER_H_
 #pragma once
 
 #include <Reporter\ReporterExp.h>
@@ -130,4 +128,3 @@ public:
 ///    *pPara << rptTab << rptTab << _T("Some Text") << rptNewLine;
 #define rptTab rptHardTabFactory()
 
-#endif

@@ -25,8 +25,7 @@
 
 // RebarLayout.h : Declaration of the CRebarLayout
 
-#ifndef __RebarLayout_H_
-#define __RebarLayout_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "WBFLComCollections.h"
@@ -82,4 +81,3 @@ public:
    STDMETHOD(get__EnumRebarLayoutItems)(/*[out,retval]*/IEnumRebarLayoutItems** enumRebarLayoutItems) override;
 };
 
-#endif //__RebarLayout_H_

@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_DMANIPEXP_H_
-#define INCLUDED_DMANIPEXP_H_
 #pragma once
 
 // Define BUILDDMANIPLIB when building this library
@@ -48,4 +46,3 @@
 #include <DManip/AutoLib.h>
 #endif // INCLUDED_DMANIP_AUTOLIB_H_
 
-#endif // INCLUDED_DMANIPEXP_H_

@@ -23,8 +23,6 @@
 
 // DataSet2d.h : Declaration of the CDataSet2dImpl
 
-#ifndef __DATASET2D_H_
-#define __DATASET2D_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -80,4 +78,3 @@ protected:
 
 };
 
-#endif //__DataSet2d_H_

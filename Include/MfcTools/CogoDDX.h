@@ -21,8 +21,6 @@
 // Olympia, WA 98503, USA or e-mail Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-#ifndef INCLUDED_MFCTOOLS_COGODDX_H_
-#define INCLUDED_MFCTOOLS_COGODDX_H_
 #pragma once
 
 #include <MfcTools\MfcToolsExp.h>
@@ -47,4 +45,3 @@ void MFCTOOLSFUNC DDV_StationInRange(CDataExchange* pDX, Float64 station, Float6
 void MFCTOOLSFUNC DDV_StationInRange(CDataExchange* pDX, Float64 value, Float64 minStation, Float64 maxStation, const WBFL::Units::StationFormat& unitStation);
 void MFCTOOLSFUNC DDV_Orientation(CDataExchange* pDX, std::_tstring& strOrientation);
 
-#endif // INCLUDED_MFCTOOLS_COGODDX_H_

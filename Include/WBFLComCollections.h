@@ -26,9 +26,6 @@
 
 // CComCollections.h
 
-#ifndef __WBFLCComCollections_H_
-#define __WBFLCComCollections_H_
-
 #pragma once
 
 #include <vector>
@@ -2068,4 +2065,3 @@ public:
    }
 }; // CComIDKeyedCollection
 
-#endif //__WBFLCComCollections_H_

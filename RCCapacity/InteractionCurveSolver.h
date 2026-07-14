@@ -25,8 +25,6 @@
 
 // InteractionCurveSolver.h : Declaration of the CInteractionCurveSolver
 
-#ifndef __InteractionCurveSolver_H_
-#define __InteractionCurveSolver_H_
 #pragma once
 
 #include "resource.h"       // main symbols
@@ -81,4 +79,3 @@ public:
 	STDMETHOD(Solve)(/*[in]*/Float64 Fz,/*[in]*/ long naIncrement,/*[out,retval]*/IInteractionCurveSolution** solution) override;
 };
 
-#endif //__InteractionCurveSolver_H_

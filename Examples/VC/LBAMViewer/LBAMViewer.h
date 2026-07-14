@@ -1,12 +1,7 @@
 // LBAMViewer.h : main header file for the LBAMVIEWER application
 //
 
-#if !defined(AFX_LBAMVIEWER_H__FDE87788_2325_4709_8169_46AEC1E48624__INCLUDED_)
-#define AFX_LBAMVIEWER_H__FDE87788_2325_4709_8169_46AEC1E48624__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
@@ -52,4 +47,3 @@ private:
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
-#endif // !defined(AFX_LBAMVIEWER_H__FDE87788_2325_4709_8169_46AEC1E48624__INCLUDED_)

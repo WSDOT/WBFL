@@ -25,8 +25,7 @@
 
 // MomentCurvatureSolution.h : Declaration of the CMomentCurvatureSolution
 
-#ifndef __MomentCurvatureSolution_H_
-#define __MomentCurvatureSolution_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -86,4 +85,3 @@ public:
    STDMETHOD(get_PointCount)(/*[out,retval]*/IndexType* nPoints) override;
 };
 
-#endif //__MomentCurvatureSolution_H_

@@ -25,8 +25,7 @@
 
 // MacroTransaction.h : Declaration of the CMacroTransaction
 
-#ifndef __MACROTRANSACTION_H_
-#define __MACROTRANSACTION_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include <vector>
@@ -82,4 +81,3 @@ public:
 	STDMETHOD(Execute)() override;
 };
 
-#endif //__MACROTRANSACTION_H_

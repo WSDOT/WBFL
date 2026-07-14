@@ -25,8 +25,7 @@
 
 // UnitServerImp.h : Declaration of the CUnitServerImp
 
-#ifndef __UNITSERVERIMP_H_
-#define __UNITSERVERIMP_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "UnitTypes.h"
@@ -183,4 +182,3 @@ private:
 
 };
 
-#endif //__UNITSERVERIMP_H_

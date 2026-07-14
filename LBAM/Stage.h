@@ -23,8 +23,7 @@
 
 // Stage.h : Declaration of the CStage
 
-#ifndef __STAGE_H_
-#define __STAGE_H_
+#pragma once
 
 #include "resource.h"       // main symbols
 #include "StageCP.h"
@@ -86,4 +85,3 @@ protected:
    CComBSTR m_Description;
 };
 
-#endif //__STAGE_H_
