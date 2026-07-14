@@ -11,7 +11,7 @@
 #define _ATL_APARTMENT_THREADED
 #define _ATL_NO_AUTOMATIC_NAMESPACE
 
-#include "targetver.h"
+#include <targetver.h>
 
 #include <Private\WBFLPackage.h>
 

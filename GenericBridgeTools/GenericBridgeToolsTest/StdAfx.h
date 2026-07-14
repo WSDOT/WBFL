@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridgeToolsTest - Test driver for generic bridge tools library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,6 +34,8 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
+#include <targetver.h>
 
 // TODO: reference additional headers your program requires here
 #include <ObjBase.h>

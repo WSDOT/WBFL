@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,6 +34,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <targetver.h>
 
 #include <atlbase.h> 
 //You may derive a class from CComModule and use it if you want to override

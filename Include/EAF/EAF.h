@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,8 @@
 	#error Do not use this header file in the EAF Package
    #error It is for external users only
 #endif
+
+#include <targetver.h>
 
 #include <afxext.h> // required for EAFMainFrame.h
 
