@@ -247,12 +247,10 @@ Interfaces\ISupportUnitSystem\ISupportUnitSystem.htm
 Interfaces\ISupportUnitServer\UnitServer_Property_(ISupportUnitServer_Interface).htm
 Interfaces\ISupportUnitServer\ISupportUnitServer.htm
 Concepts\Unit_Server.htm
-Examples\Convert_Example.htm
 Concepts\Unit_Systems.htm
 Interfaces\IUnitConvert\ConvertFromBaseUnits_(IUnitConvert_Interface).htm
 Interfaces\IUnitConvert\Convert_(IUnitConvert_Interface).htm
 Interfaces\IUnitConvert\IUnitConvert.htm
-Examples\UnitSystemDemo.htm
 Interfaces\IUnitConvert\ConvertToBaseUnits_(IUnitConvert_Interface).htm
 Interfaces\IUnitConvert2\Convert_(IUnitConvert2_Interface).htm
 Interfaces\IUnitConvert2\IUnitConvert2.htm

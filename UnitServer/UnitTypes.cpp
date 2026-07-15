@@ -30,6 +30,8 @@
 #include "UnitType.h"
 #include "Helper.h"
 #include <algorithm>
+#include <Units\Measure.h>
+#include <Units\XUnit.h>
 
 
 void CUnitTypes::UnadviseUnitType(IUnitType* pUnitType)
@@ -77,47 +79,25 @@ void CUnitTypes::UnadviseAll()
 /////////////////////////////////////////////////////////////////////////////
 // CUnitTypes
 
-#define INIT_NEWUNIT()  \
-   CUnitType* pUnitType;
-
-#define BEGIN_NEWUNIT(name,m,l,t,k,a) \
-   pUnitType = create_unit_type(m_pUnitServer,(name),(m),(l),(t),(k),(a)); \
-   SaveUnitType( pUnitType ); \
+// Wraps IUnitTypes::Add/IUnitType::AddUnit in a block scope so BEGIN_NEWUNITTYPE/NEWUNIT/END_NEWUNITTYPE read
+// like the classic macro table, while every number is sourced from WBFL::Units::Measure:: (the single
+// native source of truth) rather than being hand-transcribed here a second time. Both the unit-type and
+// each of its units flow through the same public Add()/AddUnit() methods used by dynamically-created unit
+// types at run time, so the shared unit catalog (see CUnitServerImp::GetUnitCatalog()) ends up with an
+// identical, single entry for every built-in and dynamically-added unit type/unit alike.
+#define BEGIN_NEWUNITTYPE(name,m,l,t,k,a) \
+   { \
+      CComPtr<IUnitType> pUnitType; \
+      HRESULT hr = Add( CComBSTR(name), (m),(l),(t),(k),(a), &pUnitType ); \
+      if ( FAILED(hr) ) return hr; \
+      CComPtr<IUnits> pUnits; \
+      pUnitType->get_Units(&pUnits);
 
 #define NEWUNIT(tag,pre,cf,post,us) \
-   pUnitType->AddUnit((tag),(pre),(cf),(post),(us));
+      pUnits->Add( CComBSTR(tag), (pre),(cf),(post), (us), nullptr );
 
-#define END_NEWUNIT() \
-   pUnitType->Release()
-
-CUnitType* create_unit_type(IUnitServer* pUnitServer,const CComBSTR& bstrLabel,Float64 m,Float64 l,Float64 t,Float64 k,Float64 a)
-{
-   CComObject<CUnitType>* pUnitType;
-   CComObject<CUnitType>::CreateInstance( &pUnitType );
-   pUnitType->AddRef();
-   pUnitType->Init( pUnitServer,bstrLabel, m, l, t, k ,a );
-   return pUnitType;   
-}
-
-void CUnitTypes::SaveUnitType(IUnitType* pUnitType)
-{
-   USES_CONVERSION;
-
-   CComVariant var( pUnitType );
-
-   // Hookup to the connection point
-   DWORD dwCookie;
-   CComBSTR bstrLabel;
-   pUnitType->get_Label(&bstrLabel);
-   std::_tstring strLabel( OLE2T(bstrLabel) );
-   CComPtr<IUnitType> pCPUnitType(pUnitType);
-   pCPUnitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &dwCookie );
-   m_Cookies.insert( std::make_pair(strLabel,dwCookie) );
-
-   InternalRelease(); // Break Circular Reference
-
-   m_coll.push_back( var );
-}
+#define END_NEWUNITTYPE() \
+   }
 
 HRESULT CUnitTypes::FinalConstruct()
 {
@@ -131,158 +111,175 @@ void CUnitTypes::FinalRelease()
 
 HRESULT CUnitTypes::InitDefaultUnits()
 {
-   INIT_NEWUNIT();
+   using namespace WBFL::Units;
 
-   // Mass
-   BEGIN_NEWUNIT( CComBSTR("Mass"), 1,0,0,0,0 );
-      NEWUNIT( CComBSTR("kg"),    0.0, 1.000,         0.0, unitsSI );
-      NEWUNIT( CComBSTR("Mg"),    0.0, 1.0e3,         0.0, unitsSI );
-      NEWUNIT( CComBSTR("g"),     0.0, 1.0e-3,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("MT"),    0.0, 1.0e3,         0.0, unitsSI );
-      NEWUNIT( CComBSTR("slug"),  0.0, 14.5939029372, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("lb"),    0.0, 0.45359237,    0.0, unitsUS );
-      NEWUNIT( CComBSTR("kslug"), 0.0, 14593.9029372, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("12slug"),0.0, 175.126835246, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("12kslug"), 0.0, 175126.835246, 0.0, unitsUS );
-   END_NEWUNIT();
+   // Every built-in unit added below intentionally has the same dimensionality as one of WBFLUnits'
+   // compile-time PhysicalT aliases (that's the whole point - built-in and dynamically-added unit types
+   // share one catalog). Suppress DynamicPhysical's "this duplicates a compile-time dimension" diagnostic
+   // for the duration of this seeding; it stays fully active for any other, non-built-in caller.
+#if defined _DEBUG
+   DynamicPhysical::SuppressDuplicateDimensionWarningScope suppressWarnings;
+#endif
 
-   // Length
-   BEGIN_NEWUNIT( CComBSTR("Length"), 0,1,0,0,0 );
-      NEWUNIT( CComBSTR("m"),    0.0, 1.0000,   0.0, unitsSI );
-      NEWUNIT( CComBSTR("mm"),   0.0, 1.0e-3,   0.0, unitsSI );
-      NEWUNIT( CComBSTR("cm"),   0.0, 1.0e-2,   0.0, unitsSI );
-      NEWUNIT( CComBSTR("km"),   0.0, 1.0e03,   0.0, unitsSI );
-      NEWUNIT( CComBSTR("ft"),   0.0, 0.3048,   0.0, unitsUS );
-      NEWUNIT( CComBSTR("in"),   0.0, 0.0254,   0.0, unitsUS );
-      NEWUNIT( CComBSTR("mile"), 0.0, 1609.344, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("yd"),   0.0, 0.9144,   0.0, unitsUS );
-      NEWUNIT( CComBSTR("ft(US survey)"),   0.0, 1200./3937.,   0.0, unitsUS );
-      NEWUNIT( CComBSTR("yd(US survey)"),   0.0, 3600./3937.,   0.0, unitsUS );
-   END_NEWUNIT();
+   try
+   {
+      // Mass
+      BEGIN_NEWUNITTYPE( CComBSTR("Mass"), 1,0,0,0,0 );
+         NEWUNIT( CComBSTR("kg"),     0.0, Measure::Kilogram.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("Mg"),     0.0, Measure::Megagram.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("g"),      0.0, Measure::Gram.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("MT"),     0.0, Measure::MetricTon.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("slug"),   0.0, Measure::Slug.GetConvFactor(),     0.0, unitsUS );
+         NEWUNIT( CComBSTR("lb"),     0.0, Measure::PoundMass.GetConvFactor(),0.0, unitsUS );
+         NEWUNIT( CComBSTR("kslug"),  0.0, Measure::KSlug.GetConvFactor(),    0.0, unitsUS );
+         NEWUNIT( CComBSTR("12slug"), 0.0, Measure::_12Slug.GetConvFactor(),  0.0, unitsUS );
+         NEWUNIT( CComBSTR("12kslug"),0.0, Measure::_12KSlug.GetConvFactor(), 0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Time
-   BEGIN_NEWUNIT( CComBSTR("Time"), 0,0,1,0,0 );
-      NEWUNIT( CComBSTR("sec"), 0.0,     1.0, 0.0, UnitSystemType(unitsSI + unitsUS) );
-      NEWUNIT( CComBSTR("min"), 0.0,    60.0, 0.0, UnitSystemType(unitsSI + unitsUS) );
-      NEWUNIT( CComBSTR("hr"),  0.0,  3600.0, 0.0, UnitSystemType(unitsSI + unitsUS) );
-      NEWUNIT( CComBSTR("day"), 0.0, 86400.0, 0.0, UnitSystemType(unitsSI + unitsUS) );
-   END_NEWUNIT();
+      // Length
+      BEGIN_NEWUNITTYPE( CComBSTR("Length"), 0,1,0,0,0 );
+         NEWUNIT( CComBSTR("m"),    0.0, Measure::Meter.GetConvFactor(),        0.0, unitsSI );
+         NEWUNIT( CComBSTR("mm"),   0.0, Measure::Millimeter.GetConvFactor(),   0.0, unitsSI );
+         NEWUNIT( CComBSTR("cm"),   0.0, Measure::Centimeter.GetConvFactor(),   0.0, unitsSI );
+         NEWUNIT( CComBSTR("km"),   0.0, Measure::Kilometer.GetConvFactor(),    0.0, unitsSI );
+         NEWUNIT( CComBSTR("ft"),   0.0, Measure::Feet.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("in"),   0.0, Measure::Inch.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("mile"), 0.0, Measure::Mile.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("yd"),   0.0, Measure::Yard.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("ft(US survey)"), 0.0, Measure::USSurveyFoot.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("yd(US survey)"), 0.0, Measure::USSurveyYard.GetConvFactor(), 0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Temperature
-   BEGIN_NEWUNIT( CComBSTR("Temperature"), 0,0,0,1,0 );
-      NEWUNIT( CComBSTR("C"),   0.0, 1.0,   0.0, unitsAll );
-      NEWUNIT( CComBSTR("F"), -32.0, 5./9., 0.0, unitsAll );
-   END_NEWUNIT();
+      // Time
+      BEGIN_NEWUNITTYPE( CComBSTR("Time"), 0,0,1,0,0 );
+         NEWUNIT( CComBSTR("sec"), 0.0, Measure::Second.GetConvFactor(), 0.0, UnitSystemType(unitsSI + unitsUS) );
+         NEWUNIT( CComBSTR("min"), 0.0, Measure::Minute.GetConvFactor(), 0.0, UnitSystemType(unitsSI + unitsUS) );
+         NEWUNIT( CComBSTR("hr"),  0.0, Measure::Hour.GetConvFactor(),   0.0, UnitSystemType(unitsSI + unitsUS) );
+         NEWUNIT( CComBSTR("day"), 0.0, Measure::Day.GetConvFactor(),   0.0, UnitSystemType(unitsSI + unitsUS) );
+      END_NEWUNITTYPE();
 
-   // Angle
-   BEGIN_NEWUNIT( CComBSTR("Angle"), 0,0,0,0,1 );
-      NEWUNIT( CComBSTR("rad"), 0.0, 1.0,               0.0, unitsAll  );
-      NEWUNIT( CComBSTR("deg"), 0.0, 1.74532925199e-02, 0.0, unitsAll  );
-   END_NEWUNIT();
+      // Temperature
+      BEGIN_NEWUNITTYPE( CComBSTR("Temperature"), 0,0,0,1,0 );
+         NEWUNIT( CComBSTR("C"), Measure::Celsius.GetPreTerm(),    Measure::Celsius.GetConvFactor(),    Measure::Celsius.GetPostTerm(),    unitsAll );
+         NEWUNIT( CComBSTR("F"), Measure::Fahrenheit.GetPreTerm(), Measure::Fahrenheit.GetConvFactor(), Measure::Fahrenheit.GetPostTerm(), unitsAll );
+      END_NEWUNITTYPE();
 
-   // Mass Per Length
-   BEGIN_NEWUNIT( CComBSTR("MassPerLength"), 1,-1,0,0,0 );
-      NEWUNIT( CComBSTR("kg/m"),    0.0, 1.0,             0.0, unitsSI );
-      NEWUNIT( CComBSTR("slug/ft"), 0.0, 0.0208854342115, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("lb/ft"),   0.0, 1.48816394357,   0.0, unitsUS );
-   END_NEWUNIT();
+      // Angle
+      BEGIN_NEWUNITTYPE( CComBSTR("Angle"), 0,0,0,0,1 );
+         NEWUNIT( CComBSTR("rad"), 0.0, Measure::Radian.GetConvFactor(), 0.0, unitsAll );
+         NEWUNIT( CComBSTR("deg"), 0.0, Measure::Degree.GetConvFactor(), 0.0, unitsAll );
+      END_NEWUNITTYPE();
 
-   // Area
-   BEGIN_NEWUNIT( CComBSTR("Length2"), 0,2,0,0,0 );
-      NEWUNIT( CComBSTR("m^2"),    0.0, 1.0,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("mm^2"),   0.0, 1.0e-06,       0.0, unitsSI );
-      NEWUNIT( CComBSTR("cm^2"),   0.0, 1.0e-04,       0.0, unitsSI );
-      NEWUNIT( CComBSTR("km^2"),   0.0, 1.0e+06,       0.0, unitsSI );
-      NEWUNIT( CComBSTR("ft^2"),   0.0, 0.09290304,    0.0, unitsUS );
-      NEWUNIT( CComBSTR("in^2"),   0.0, 0.00064516,    0.0, unitsUS );
-      NEWUNIT( CComBSTR("mile^2"), 0.0, 2589988.11034, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("yd^2"),   0.0, 0.83612736,    0.0, unitsUS );
-   END_NEWUNIT();
+      // Mass Per Length
+      BEGIN_NEWUNITTYPE( CComBSTR("MassPerLength"), 1,-1,0,0,0 );
+         NEWUNIT( CComBSTR("kg/m"),    0.0, Measure::KgPerMeter.GetConvFactor(),  0.0, unitsSI );
+         NEWUNIT( CComBSTR("slug/ft"), 0.0, Measure::SlugPerFeet.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("lb/ft"),   0.0, Measure::LbfPerFeet.GetConvFactor(),  0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Volume
-   BEGIN_NEWUNIT( CComBSTR("Length3"), 0,3,0,0,0 );
-      NEWUNIT( CComBSTR("m^3"),    0.0, 1.0,            0.0, unitsSI );
-      NEWUNIT( CComBSTR("mm^3"),   0.0, 1.0e-09,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("cm^3"),   0.0, 1.0e-06,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("km^3"),   0.0, 1.0e+09,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("ft^3"),   0.0, 0.028316846592, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("in^3"),   0.0, 0.000016387064, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("mile^3"), 0.0, 4168181825.44,  0.0, unitsUS );
-      NEWUNIT( CComBSTR("yd^3"),   0.0, 0.764554857984, 0.0, unitsUS );
-   END_NEWUNIT();
+      // Area
+      BEGIN_NEWUNITTYPE( CComBSTR("Length2"), 0,2,0,0,0 );
+         NEWUNIT( CComBSTR("m^2"),    0.0, Measure::Meter2.GetConvFactor(),    0.0, unitsSI );
+         NEWUNIT( CComBSTR("mm^2"),   0.0, Measure::Millimeter2.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("cm^2"),   0.0, Measure::Centimeter2.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("km^2"),   0.0, Measure::Kilometer2.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("ft^2"),   0.0, Measure::Feet2.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("in^2"),   0.0, Measure::Inch2.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("mile^2"), 0.0, Measure::Mile2.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("yd^2"),   0.0, Measure::Yard2.GetConvFactor(),      0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Length4 (Moment of Interita)
-   BEGIN_NEWUNIT( CComBSTR("Length4"), 0,4,0,1,0 );
-      NEWUNIT( CComBSTR("m^4"),    0.0, 1.0,               0.0, unitsSI );
-      NEWUNIT( CComBSTR("mm^4"),   0.0, 1.0e-12,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("cm^4"),   0.0, 1.0e-08,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("km^4"),   0.0, 1.0e+12,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("ft^4"),   0.0, 8.63097484124e-03, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("in^4"),   0.0, 4.162314256e-07,   0.0, unitsUS );
-      NEWUNIT( CComBSTR("mile^4"), 0.0, 6.70803841168e12,  0.0, unitsUS );
-      NEWUNIT( CComBSTR("yd^4"),   0.0, 0.699108962141,    0.0, unitsUS );
-   END_NEWUNIT();
+      // Volume
+      BEGIN_NEWUNITTYPE( CComBSTR("Length3"), 0,3,0,0,0 );
+         NEWUNIT( CComBSTR("m^3"),    0.0, Measure::Meter3.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("mm^3"),   0.0, Measure::Millimeter3.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("cm^3"),   0.0, Measure::Centimeter3.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("km^3"),   0.0, Measure::Kilometer3.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("ft^3"),   0.0, Measure::Feet3.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("in^3"),   0.0, Measure::Inch3.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("mile^3"), 0.0, Measure::Mile3.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("yd^3"),   0.0, Measure::Yard3.GetConvFactor(),      0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Pressure
-   BEGIN_NEWUNIT( CComBSTR("Pressure"), 1,-1,-2,0,0 );
-      NEWUNIT( CComBSTR("Pa"),  0.0, 1.0,               0.0, unitsSI );
-      NEWUNIT( CComBSTR("kPa"), 0.0, 1.0e+03,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("MPa"), 0.0, 1.0e+06,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("psi"), 0.0, 6.89475729317e+03, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("psf"), 0.0, 4.78802589803e+01, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("ksi"), 0.0, 6.89475729317e+06, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("ksf"), 0.0, 4.78802589803e+04, 0.0, unitsUS );
-   END_NEWUNIT();
+      // Length4 (Moment of Inertia). NOTE: the temperature exponent here was previously 1 (a bug - moment
+      // of inertia has no temperature dependence, confirmed against WBFL::Units::Length4's dimension); it
+      // is corrected to 0 here.
+      BEGIN_NEWUNITTYPE( CComBSTR("Length4"), 0,4,0,0,0 );
+         NEWUNIT( CComBSTR("m^4"),    0.0, Measure::Meter4.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("mm^4"),   0.0, Measure::Millimeter4.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("cm^4"),   0.0, Measure::Centimeter4.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("km^4"),   0.0, Measure::Kilometer4.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("ft^4"),   0.0, Measure::Feet4.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("in^4"),   0.0, Measure::Inch4.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("mile^4"), 0.0, Measure::Mile4.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("yd^4"),   0.0, Measure::Yard4.GetConvFactor(),      0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Unit Weight
-   BEGIN_NEWUNIT( CComBSTR("UnitWeight"), 1,-3,-3,0,0 );
-      NEWUNIT( CComBSTR("N/m^3"), 0.0, 1.0,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("pci"),   0.0, 271447.137526, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("pcf"),   0.0, 157.087463846, 0.0, unitsUS );
-   END_NEWUNIT();
+      // Pressure
+      BEGIN_NEWUNITTYPE( CComBSTR("Pressure"), 1,-1,-2,0,0 );
+         NEWUNIT( CComBSTR("Pa"),  0.0, Measure::Pa.GetConvFactor(),  0.0, unitsSI );
+         NEWUNIT( CComBSTR("kPa"), 0.0, Measure::kPa.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("MPa"), 0.0, Measure::MPa.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("psi"), 0.0, Measure::PSI.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("psf"), 0.0, Measure::PSF.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("ksi"), 0.0, Measure::KSI.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("ksf"), 0.0, Measure::KSF.GetConvFactor(), 0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Density
-   BEGIN_NEWUNIT( CComBSTR("Density"), 1,-3,0,0,0 );
-      NEWUNIT( CComBSTR("kg/m^3"),    0.0, 1.0,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("slug/ft^3"), 0.0, 515.378818393, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("lb/ft^3"),   0.0, 16.018463374,  0.0, unitsUS );
-   END_NEWUNIT();
+      // Unit Weight
+      BEGIN_NEWUNITTYPE( CComBSTR("UnitWeight"), 1,-3,-3,0,0 );
+         NEWUNIT( CComBSTR("N/m^3"), 0.0, Measure::NewtonPerMeter3.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("pci"),   0.0, Measure::PCI.GetConvFactor(),             0.0, unitsUS );
+         NEWUNIT( CComBSTR("pcf"),   0.0, Measure::PCF.GetConvFactor(),             0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Force
-   BEGIN_NEWUNIT( CComBSTR("Force"), 1,1,-2,0,0 );
-      NEWUNIT( CComBSTR("N"),   0.0, 1.0,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("kN"),  0.0, 1.0e+03,       0.0, unitsSI );
-      NEWUNIT( CComBSTR("lbf"), 0.0, 4.44822161525, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("kip"), 0.0, 4448.22161525, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("ton"), 0.0, 8896.44323052, 0.0, unitsUS );
-   END_NEWUNIT();
+      // Density
+      BEGIN_NEWUNITTYPE( CComBSTR("Density"), 1,-3,0,0,0 );
+         NEWUNIT( CComBSTR("kg/m^3"),    0.0, Measure::KgPerMeter3.GetConvFactor(),  0.0, unitsSI );
+         NEWUNIT( CComBSTR("slug/ft^3"), 0.0, Measure::SlugPerFeet3.GetConvFactor(), 0.0, unitsUS );
+         NEWUNIT( CComBSTR("lb/ft^3"),   0.0, Measure::LbmPerFeet3.GetConvFactor(),  0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Force Per Length
-   BEGIN_NEWUNIT( CComBSTR("ForcePerLength"), 1,0,-2,0,0 );
-      NEWUNIT( CComBSTR("N/m"),    0.0, 1.0,           0.0, unitsSI );
-      NEWUNIT( CComBSTR("N/mm"),   0.0, 1.0e+03,       0.0, unitsSI );
-      NEWUNIT( CComBSTR("lbf/ft"), 0.0, 14.5939029372, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("lbf/in"), 0.0, 175.126835246, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("kip/ft"), 0.0, 14593.9029372, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("kip/in"), 0.0, 175126.835246, 0.0, unitsUS );
-   END_NEWUNIT();
+      // Force
+      BEGIN_NEWUNITTYPE( CComBSTR("Force"), 1,1,-2,0,0 );
+         NEWUNIT( CComBSTR("N"),   0.0, Measure::Newton.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("kN"),  0.0, Measure::Kilonewton.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("lbf"), 0.0, Measure::Pound.GetConvFactor(),      0.0, unitsUS );
+         NEWUNIT( CComBSTR("kip"), 0.0, Measure::Kip.GetConvFactor(),        0.0, unitsUS );
+         NEWUNIT( CComBSTR("ton"), 0.0, Measure::Ton.GetConvFactor(),        0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Moment
-   BEGIN_NEWUNIT( CComBSTR("Moment"), 1,2,-2,0,0 );
-      NEWUNIT( CComBSTR("N-m"),    0.0, 1.0,            0.0, unitsSI );
-      NEWUNIT( CComBSTR("N-mm"),   0.0, 1.0e-03,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("kN-m"),   0.0, 1.0e+03,        0.0, unitsSI );
-      NEWUNIT( CComBSTR("lbf-in"), 0.0, 0.112984829028, 0.0, unitsUS );
-      NEWUNIT( CComBSTR("lbf-ft"), 0.0, 1.35581794833,  0.0, unitsUS );
-      NEWUNIT( CComBSTR("kip-ft"), 0.0, 1355.81794833,  0.0, unitsUS );
-      NEWUNIT( CComBSTR("kip-in"), 0.0, 112.984829028,  0.0, unitsUS );
-   END_NEWUNIT();
+      // Force Per Length
+      BEGIN_NEWUNITTYPE( CComBSTR("ForcePerLength"), 1,0,-2,0,0 );
+         NEWUNIT( CComBSTR("N/m"),    0.0, Measure::NewtonPerMeter.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("N/mm"),   0.0, Measure::NewtonPerMillimeter.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("lbf/ft"), 0.0, Measure::LbfPerFoot.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("lbf/in"), 0.0, Measure::LbfPerInch.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("kip/ft"), 0.0, Measure::KipPerFoot.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("kip/in"), 0.0, Measure::KipPerInch.GetConvFactor(),         0.0, unitsUS );
+      END_NEWUNITTYPE();
 
-   // Thermal expansion
-   BEGIN_NEWUNIT( CComBSTR("ThermalExpansion"), 0,0,0,-1,0 );
-      NEWUNIT( CComBSTR("1/C"),   0.0, 1.0,   0.0, unitsAll );
-      NEWUNIT( CComBSTR("1/F"),   0.0, 5./9., 0.0, unitsAll );
-   END_NEWUNIT();
+      // Moment
+      BEGIN_NEWUNITTYPE( CComBSTR("Moment"), 1,2,-2,0,0 );
+         NEWUNIT( CComBSTR("N-m"),    0.0, Measure::NewtonMeter.GetConvFactor(),     0.0, unitsSI );
+         NEWUNIT( CComBSTR("N-mm"),   0.0, Measure::NewtonMillimeter.GetConvFactor(),0.0, unitsSI );
+         NEWUNIT( CComBSTR("kN-m"),   0.0, Measure::KilonewtonMeter.GetConvFactor(), 0.0, unitsSI );
+         NEWUNIT( CComBSTR("lbf-in"), 0.0, Measure::InchLbf.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("lbf-ft"), 0.0, Measure::PoundFeet.GetConvFactor(),       0.0, unitsUS );
+         NEWUNIT( CComBSTR("kip-ft"), 0.0, Measure::KipFeet.GetConvFactor(),         0.0, unitsUS );
+         NEWUNIT( CComBSTR("kip-in"), 0.0, Measure::KipInch.GetConvFactor(),         0.0, unitsUS );
+      END_NEWUNITTYPE();
+
+      // Thermal expansion
+      BEGIN_NEWUNITTYPE( CComBSTR("ThermalExpansion"), 0,0,0,-1,0 );
+         NEWUNIT( CComBSTR("1/C"), 0.0, Measure::PerCelsius.GetConvFactor(),    0.0, unitsAll );
+         NEWUNIT( CComBSTR("1/F"), 0.0, Measure::PerFahrenheit.GetConvFactor(), 0.0, unitsAll );
+      END_NEWUNITTYPE();
+   }
+   catch (WBFL::Units::XUnit&)
+   {
+      return E_FAIL;
+   }
 
    return S_OK;
 }
@@ -387,13 +384,25 @@ STDMETHODIMP CUnitTypes::Add(BSTR label,Float64 m,Float64 l,Float64 t,Float64 k,
    if ( found != m_coll.end() )
       return CComCoClass<CUnitTypes>::Error(IDS_E_UNITTYPEALREADYDEFINED,IDH_E_UNITTYPEALREADYDEFINED, GetHelpFile(),IID_IUnitTypes, UNITS_E_UNITTYPEALREADYDEFINED );
 
+   // Register in the shared catalog before creating the COM object, so nothing needs to be unwound if this
+   // fails (it shouldn't, given the uniqueness check above, but the catalog is the authoritative check).
+   std::_tstring strLabel( OLE2T(label) );
+   try
+   {
+      m_pUnitCatalog->AddUnitType(strLabel, m, l, t, k, a);
+   }
+   catch (WBFL::Units::XUnit&)
+   {
+      return CComCoClass<CUnitTypes>::Error(IDS_E_UNITTYPEALREADYDEFINED,IDH_E_UNITTYPEALREADYDEFINED, GetHelpFile(),IID_IUnitTypes, UNITS_E_UNITTYPEALREADYDEFINED );
+   }
+
    // OK, this is a new unit type for this server
    CComObject<CUnitType>* pUnitType;
    HRESULT hr = CComObject<CUnitType>::CreateInstance( &pUnitType );
    if ( FAILED(hr) )
       return E_FAIL;
 
-   pUnitType->Init(m_pUnitServer,label,m,l,t,k,a);
+   pUnitType->Init(m_pUnitServer,m_pUnitCatalog,label,m,l,t,k,a);
    
    CComPtr<IUnitType> unitType;
    pUnitType->QueryInterface(&unitType);
@@ -409,7 +418,6 @@ STDMETHODIMP CUnitTypes::Add(BSTR label,Float64 m,Float64 l,Float64 t,Float64 k,
 
    // Hookup to the connection point
    DWORD dwCookie;
-   std::_tstring strLabel( OLE2T(label) );
    hr = unitType.Advise( GetUnknown(), IID_IUnitTypeEvents, &dwCookie );
    ATLASSERT(SUCCEEDED(hr));
    m_Cookies.insert( std::make_pair(strLabel,dwCookie) );

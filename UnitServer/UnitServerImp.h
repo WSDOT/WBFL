@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,7 @@
 #include "Unit.h"
 #include <vector>
 #include "WbflUnitServerCP.h"
+#include <Units\DynamicUnitTypeManager.h>
 
 interface IUnitType;
 
@@ -70,6 +71,11 @@ public:
 
    HRESULT FinalConstruct();
    void FinalRelease();
+
+   // Not part of the public COM interface - internal C++ access to the single catalog of built-in and
+   // dynamically-added unit types/units, shared with CUnitTypes/CUnits/CUnitType so both sources of unit
+   // definitions live in one place.
+   WBFL::Units::DynamicUnitTypeManager* GetUnitCatalog() { return &m_UnitCatalog; }
 
 DECLARE_REGISTRY_RESOURCEID(IDR_UNITSERVER)
 DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -156,6 +162,10 @@ public:
 
 private:
    bool m_bIsLocked;
+
+   // The single, shared catalog backing every built-in and dynamically-added unit type/unit. Seeded from
+   // WBFL::Units::Measure:: constants in CUnitTypes::InitDefaultUnits() at FinalConstruct time.
+   WBFL::Units::DynamicUnitTypeManager m_UnitCatalog;
 
    // Used in ConvertFromBaseUnits and ConvertToBaseUnits
    // Caching pointers here so that they don't have to be allocated for every conversion (which are many)

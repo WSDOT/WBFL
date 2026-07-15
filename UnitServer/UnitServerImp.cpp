@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,9 @@
 #include "Helper.h"
 #include <MathEx.h>
 #include <algorithm>
+#include <Units\DynamicPhysical.h>
+#include <Units\Convert.h>
+#include <Units\XUnit.h>
 
 
 class RollBack
@@ -68,8 +71,6 @@ private:
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnitServerImp
-
-HRESULT check_dimensionality( IUnitType* pFromUnitType, IUnitType* pToUnitType );
 
 HRESULT CUnitServerImp::GetUnitType(BSTR bstrLabel,IUnitType** ppUnitType)
 {
@@ -125,6 +126,7 @@ HRESULT CUnitServerImp::FinalConstruct()
    m_pUnitTypes = pUnitTypes; // Assignment operator calls AddRef();
 
    pUnitTypes->SetUnitServer( this );
+   pUnitTypes->SetUnitCatalog( &m_UnitCatalog );
    if (FAILED(pUnitTypes->InitDefaultUnits()))
    {
       m_pUnitTypes.Release();
@@ -404,20 +406,8 @@ STDMETHODIMP CUnitServerImp::Convert( Float64 from, IUnit* pFromUnit, IUnit* pTo
    CHECK_IN(pToUnit);
    CHECK_RETVAL(pTo);
 
-	// TODO: Add your implementation code here
    Float64 pre1, cf1, post1;
    Float64 pre2, cf2, post2;
-
-   CComPtr<IUnitType> pFromUnitType;
-   pFromUnit->get_UnitType( &pFromUnitType );
-
-   CComPtr<IUnitType> pToUnitType;
-   pToUnit->get_UnitType( &pToUnitType );
-
-   if ( FAILED( check_dimensionality( pFromUnitType, pToUnitType ) ) )
-   {
-      return Error( IDS_E_UNITTYPEMISMATCH,IDH_E_UNITTYPEMISMATCH, GetHelpFile(), IID_IUnitServer, UNITS_E_UNITTYPEMISMATCH );
-   }
 
    pFromUnit->get_PreTerm( &pre1 );
    pFromUnit->get_ConvFactor( &cf1 );
@@ -429,8 +419,8 @@ STDMETHODIMP CUnitServerImp::Convert( Float64 from, IUnit* pFromUnit, IUnit* pTo
    pToUnit->get_PostTerm( &post2 );
    _ASSERTE( !IsZero(cf2,1e-20) );
 
-   // if there is not exactly one dimensionality that is exactly equal to 1,
-   // then zero out the pre and post terms. (I don't know why, but it works)
+   CComPtr<IUnitType> pFromUnitType;
+   pFromUnit->get_UnitType( &pFromUnitType );
 
    Float64 m,l,t,k,a;
    pFromUnitType->get_Mass(&m);
@@ -438,13 +428,16 @@ STDMETHODIMP CUnitServerImp::Convert( Float64 from, IUnit* pFromUnit, IUnit* pTo
    pFromUnitType->get_Time(&t);
    pFromUnitType->get_Temperature(&k);
    pFromUnitType->get_Angle(&a);
+
+   // if there is not exactly one dimensionality that is exactly equal to 1,
+   // then zero out the pre and post terms. (I don't know why, but it works)
    short cOnes = 0; // Number of dimensionalities are equal to 1
    cOnes += IsEqual(m,1.0,1e-10) ? 1 : 0;
    cOnes += IsEqual(l,1.0,1e-10) ? 1 : 0;
    cOnes += IsEqual(t,1.0,1e-10) ? 1 : 0;
    cOnes += IsEqual(k,1.0,1e-10) ? 1 : 0;
    cOnes += IsEqual(a,1.0,1e-10) ? 1 : 0;
-   
+
    if ( cOnes != 1 )
    {
       pre1  = 0.0;
@@ -453,13 +446,36 @@ STDMETHODIMP CUnitServerImp::Convert( Float64 from, IUnit* pFromUnit, IUnit* pTo
       pre2  = 0.0;
       post2 = 0.0;
    }
-   
-   Float64 temp;
 
-   temp = ( from + pre1 ) * cf1 + post1;
-   temp = ( temp - post2 ) / cf2 - pre2;
+   CComPtr<IUnitType> pToUnitType;
+   pToUnit->get_UnitType( &pToUnitType );
 
-   *pTo = temp;
+   Float64 m2,l2,t2,k2,a2;
+   pToUnitType->get_Mass(&m2);
+   pToUnitType->get_Length(&l2);
+   pToUnitType->get_Time(&t2);
+   pToUnitType->get_Temperature(&k2);
+   pToUnitType->get_Angle(&a2);
+
+   // Delegate the actual conversion math (and the dimension-compatibility check that used to be
+   // check_dimensionality()) to WBFLUnits. These two DynamicPhysical values are transient/untagged -
+   // constructed fresh for every conversion call - and necessarily duplicate a compile-time dimension for
+   // any built-in unit, so the "duplicates a compile-time dimension" diagnostic is suppressed here as it is
+   // in CUnitTypes::InitDefaultUnits().
+#if defined _DEBUG
+   WBFL::Units::DynamicPhysical::SuppressDuplicateDimensionWarningScope suppressWarnings;
+#endif
+   WBFL::Units::DynamicPhysical fromPhysical(m, l, t, k, a, pre1, cf1, post1, _T(""));
+   WBFL::Units::DynamicPhysical toPhysical(m2, l2, t2, k2, a2, pre2, cf2, post2, _T(""));
+
+   try
+   {
+      *pTo = WBFL::Units::Convert(from, fromPhysical, toPhysical);
+   }
+   catch (WBFL::Units::XUnit&)
+   {
+      return Error( IDS_E_UNITTYPEMISMATCH,IDH_E_UNITTYPEMISMATCH, GetHelpFile(), IID_IUnitServer, UNITS_E_UNITTYPEMISMATCH );
+   }
 
 	return S_OK;
 }
@@ -586,36 +602,3 @@ STDMETHODIMP CUnitServerImp::ConvertFromBaseUnits( Float64 val, IUnit* pToUnit, 
 	return S_OK;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// Helper methods
-
-HRESULT check_dimensionality( IUnitType* pFromUnitType, IUnitType* pToUnitType )
-{
-   Float64 m1, l1, t1, k1, a1;
-   Float64 m2, l2, t2, k2, a2;
-
-   pFromUnitType->get_Mass(&m1);
-   pFromUnitType->get_Length(&l1);
-   pFromUnitType->get_Time(&t1);
-   pFromUnitType->get_Temperature(&k1);
-   pFromUnitType->get_Angle(&a1);
-
-   pToUnitType->get_Mass(&m2);
-   pToUnitType->get_Length(&l2);
-   pToUnitType->get_Time(&t2);
-   pToUnitType->get_Temperature(&k2);
-   pToUnitType->get_Angle(&a2);
-
-   if ( m1 != m2 )
-      return E_FAIL;
-   if ( l1 != l2 )
-      return E_FAIL;
-   if ( t1 != t2 )
-      return E_FAIL;
-   if ( k1 != k2 )
-      return E_FAIL;
-   if ( a1 != a2 )
-      return E_FAIL;
-
-   return S_OK;
-}

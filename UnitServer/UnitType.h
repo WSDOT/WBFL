@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,7 @@
 #include "resource.h"       // main symbols
 #include <vector>
 #include "WbflUnitServerCP.h"
+#include <Units\DynamicUnitTypeManager.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnitType
@@ -53,7 +54,7 @@ public:
    {
    }
 
-   void Init(IUnitServer* pUnitServer, BSTR bstrLabel, Float64 m,Float64 l,Float64 t,Float64 k,Float64 a);
+   void Init(IUnitServer* pUnitServer, WBFL::Units::DynamicUnitTypeManager* pUnitCatalog, BSTR bstrLabel, Float64 m,Float64 l,Float64 t,Float64 k,Float64 a);
    HRESULT AddUnit(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTerm,UnitSystemType unitSystem);
    HRESULT FinalConstruct();
    void FinalRelease();
@@ -142,6 +143,7 @@ private:
    CComPtr<IUnits> m_pUnits;
    IUnitServer* m_pUnitServer; // Weak Reference
    CComPtr<IUnitServer> m_pUnitServerStrong;
+   WBFL::Units::DynamicUnitTypeManager* m_pUnitCatalog = nullptr; // Weak reference, owned by CUnitServerImp
 
    CComBSTR m_bstrLabel;
    Float64 m_Mass;

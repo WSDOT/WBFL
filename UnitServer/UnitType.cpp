@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,12 +34,13 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CUnitType
-void CUnitType::Init( IUnitServer* pUnitServer, BSTR bstrLabel, Float64 m,Float64 l,Float64 t,Float64 k,Float64 a)
+void CUnitType::Init( IUnitServer* pUnitServer, WBFL::Units::DynamicUnitTypeManager* pUnitCatalog, BSTR bstrLabel, Float64 m,Float64 l,Float64 t,Float64 k,Float64 a)
 {
    ATLASSERT( pUnitServer != 0 );
    ATLASSERT( bstrLabel != 0 );
 
    m_pUnitServer = pUnitServer;
+   m_pUnitCatalog = pUnitCatalog;
 
    m_Mass   = m;
    m_Length = l;
@@ -52,6 +53,7 @@ void CUnitType::Init( IUnitServer* pUnitServer, BSTR bstrLabel, Float64 m,Float6
    CComObject<CUnits>* pUnits;
    CComObject<CUnits>::CreateInstance( &pUnits );
    pUnits->Init( m_pUnitServer, this );
+   pUnits->SetUnitCatalog( m_pUnitCatalog );
    pUnits->QueryInterface( IID_IUnits, (void**)&m_pUnits );
 
    // Hookup to the connection point

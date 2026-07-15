@@ -1258,16 +1258,8 @@
   </object>
   <ul>
     <li><object type="text/sitemap">
-      <param name="Name" value="Convert Example">
-      <param name="Local" value="Examples\Convert_Example.htm">
-    </object>
-    <li><object type="text/sitemap">
       <param name="Name" value="Custom Base Units">
       <param name="Local" value="Examples\Custom_Base_Units.htm">
-    </object>
-    <li><object type="text/sitemap">
-      <param name="Name" value="UnitSystemDemo">
-      <param name="Local" value="Examples\UnitSystemDemo.htm">
     </object>
     </ul>
 </ul>

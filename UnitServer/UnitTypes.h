@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,6 +32,7 @@
 #include <map>
 #include <string>
 #include "WbflUnitServerCP.h"
+#include <Units\DynamicUnitTypeManager.h>
 
 using UnitTypeEnum = CComEnumOnSTL<IEnumVARIANT, &IID_IEnumVARIANT, VARIANT, _Copy<VARIANT>, std::vector<CComVariant> >;
 using IUnitTypeCollection = ICollectionOnSTLImpl<IUnitTypes,std::vector<CComVariant>,VARIANT,_Copy<VARIANT>,UnitTypeEnum>;
@@ -63,6 +64,9 @@ public:
 
    void SetUnitServer(IUnitServer* pUnitServer)
    { m_pUnitServer = pUnitServer; }
+
+   void SetUnitCatalog(WBFL::Units::DynamicUnitTypeManager* pUnitCatalog)
+   { m_pUnitCatalog = pUnitCatalog; }
 
    HRESULT InitDefaultUnits();
 
@@ -150,6 +154,7 @@ private:
    IUnitServer* m_pUnitServer; // Weak reference
    CComPtr<IUnitServer> m_pUnitServerStrong; // Strong reference
    std::map<std::_tstring,DWORD> m_Cookies; // Map of unit type name to connection cookie
+   WBFL::Units::DynamicUnitTypeManager* m_pUnitCatalog = nullptr; // Weak reference, owned by CUnitServerImp
 
    void UnadviseUnitType(IUnitType* pUnitType);
    void UnadviseAll();

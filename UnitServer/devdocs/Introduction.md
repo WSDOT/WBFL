@@ -24,8 +24,6 @@ There are several general concepts used consistently throughout the WBFL Unit Se
 
 \subpage WBFL_UnitServer_DisplayUnits
 
-\subpage WBFL_UnitServer_Examples
-
 \subpage WBFL_UnitServer_UnitConversions
 
 \subpage WBFL_UnitServer_UnitModes

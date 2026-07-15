@@ -32,6 +32,14 @@ using namespace WBFL::Units;
 #if defined _DEBUG
 namespace
 {
+   // Nesting-safe suppression counter for SuppressDuplicateDimensionWarningScope. Zero (the default) means
+   // the diagnostic is active; non-zero means it's suppressed.
+   //
+   // TODO: this counter, and SuppressDuplicateDimensionWarningScope in DynamicPhysical.h, exist only as a
+   // workaround for WBFLUnitServer's facade over WBFLUnits. Remove both once WBFLUnitServer is obsoleted
+   // and removed from WBFL.
+   int g_SuppressDuplicateDimensionWarningCount = 0;
+
    struct KnownDimension
    {
       Float64 Mass;
@@ -86,18 +94,33 @@ m_PreTerm(preTerm), m_ConvFactor(cf), m_PostTerm(postTerm), m_UnitTag(tag)
    CHECK(cf != 0.0);
 
 #if defined _DEBUG
-   for (const auto& known : g_KnownDimensions)
+   if (g_SuppressDuplicateDimensionWarningCount == 0)
    {
-      bool bMatch = (m_Mass == known.Mass && m_Length == known.Length && m_Time == known.Time && m_Temperature == known.Temperature && m_Angle == known.Angle);
-      WARN(bMatch, _T("DynamicPhysical \"") << m_UnitTag.c_str() << _T("\" has the same dimensionality as the compile-time unit type WBFL::Units::") << known.Name
-         << _T(". Consider using that type, and the Measure catalog, instead of DynamicPhysical."));
-      if (bMatch)
+      for (const auto& known : g_KnownDimensions)
       {
-         break;
+         bool bMatch = (m_Mass == known.Mass && m_Length == known.Length && m_Time == known.Time && m_Temperature == known.Temperature && m_Angle == known.Angle);
+         WARN(bMatch, _T("DynamicPhysical \"") << m_UnitTag.c_str() << _T("\" has the same dimensionality as the compile-time unit type WBFL::Units::") << known.Name
+            << _T(". Consider using that type, and the Measure catalog, instead of DynamicPhysical."));
+         if (bMatch)
+         {
+            break;
+         }
       }
    }
 #endif // _DEBUG
 }
+
+#if defined _DEBUG
+DynamicPhysical::SuppressDuplicateDimensionWarningScope::SuppressDuplicateDimensionWarningScope()
+{
+   ++g_SuppressDuplicateDimensionWarningCount;
+}
+
+DynamicPhysical::SuppressDuplicateDimensionWarningScope::~SuppressDuplicateDimensionWarningScope()
+{
+   --g_SuppressDuplicateDimensionWarningCount;
+}
+#endif // _DEBUG
 
 bool DynamicPhysical::operator==(const DynamicPhysical& other) const
 {

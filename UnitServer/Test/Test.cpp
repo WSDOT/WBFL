@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Unit Test - Test driver for WBFLUnits library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -48,6 +48,7 @@
 #include "TestDocUnitSystem.h"
 #include "TestCustomBaseUnits.h"
 
+#include <System\Checks.h>
 
 
 CComModule _Module;
@@ -55,6 +56,12 @@ CComModule _Module;
 int main(int argc, TCHAR* argv[])
 {
    ::CoInitialize(nullptr);
+
+   // DynamicPhysical's debug-only "duplicates a compile-time unit" diagnostic (and any other WARN()-based
+   // diagnostic) defaults to popping up a blocking message box (Diagnostics::bWarnPopup defaults to true).
+   // Disable that here so this console test run never gets stuck waiting on a dialog; the
+   // OutputDebugString-based message still fires normally.
+   DIAG_WARNPOPUP(false);
 
    {
       CTestUnitServer::Test();

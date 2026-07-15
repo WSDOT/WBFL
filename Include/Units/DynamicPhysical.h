@@ -115,6 +115,25 @@ namespace WBFL
       #if defined _DEBUG
          bool AssertValid() const;
          void Dump(WBFL::Debug::LogContext& os) const;
+
+         /// RAII helper that suppresses the constructor's "duplicates a compile-time dimension" diagnostic
+         /// for the lifetime of the scope (nests correctly if more than one is alive at once). Intended for
+         /// callers, such as a bulk-seeding routine that is known to be intentionally mirroring compile-time
+         /// dimensions on purpose (e.g. populating a catalog meant to hold both built-in and run-time-defined
+         /// unit types uniformly), not for general use - the diagnostic exists to catch accidental
+         /// duplication, and constructing this scope around ordinary code defeats that purpose.
+         ///
+         /// \todo This exists only to accommodate WBFLUnitServer's facade over WBFLUnits (CUnitTypes::
+         /// InitDefaultUnits() seeds a DynamicUnitTypeManager with a DynamicPhysical for every built-in unit,
+         /// all of which necessarily duplicate a compile-time dimension by design). Remove this class, and
+         /// g_SuppressDuplicateDimensionWarningCount in DynamicPhysical.cpp, once WBFLUnitServer is obsoleted
+         /// and removed from WBFL.
+         class UNITSCLASS SuppressDuplicateDimensionWarningScope
+         {
+         public:
+            SuppressDuplicateDimensionWarningScope();
+            ~SuppressDuplicateDimensionWarningScope();
+         };
       #endif // _DEBUG
 
       private:

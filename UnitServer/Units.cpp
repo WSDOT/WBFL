@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -31,6 +31,7 @@
 #include "Unit.h"
 #include "Helper.h"
 #include <algorithm>
+#include <Units\XUnit.h>
 
 
 
@@ -113,6 +114,24 @@ STDMETHODIMP CUnits::Add(BSTR bstrTag,Float64 preTerm,Float64 cf,Float64 postTer
    if ( found != m_coll.end() )
    {
       return CComCoClass<CUnits>::Error(IDS_E_UNITALREADYDEFINED,IDH_E_UNITALREADYDEFINED, GetHelpFile(),IID_IUnits, UNITS_E_UNITALREADYDEFINED );
+   }
+
+   // Register in the shared catalog before creating the COM object, so nothing needs to be unwound if this
+   // fails (it shouldn't, given the uniqueness check above, but the catalog is the authoritative check).
+   {
+      USES_CONVERSION;
+      CComBSTR bstrTypeLabel;
+      m_pUnitType->get_Label(&bstrTypeLabel);
+      std::_tstring strTypeLabel( OLE2T(bstrTypeLabel) );
+      std::_tstring strTag( OLE2T(bstrTag) );
+      try
+      {
+         m_pUnitCatalog->AddUnit(strTypeLabel, strTag, preTerm, cf, postTerm);
+      }
+      catch (WBFL::Units::XUnit&)
+      {
+         return CComCoClass<CUnits>::Error(IDS_E_UNITALREADYDEFINED,IDH_E_UNITALREADYDEFINED, GetHelpFile(),IID_IUnits, UNITS_E_UNITALREADYDEFINED );
+      }
    }
 
    CComObject<CUnit>* pUnit;

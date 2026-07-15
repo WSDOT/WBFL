@@ -1394,16 +1394,6 @@
     <param name="Local" value="Concepts\Unit_Conversions.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Convert Example">
-    <param name="Name" value="Convert Example">
-    <param name="Local" value="Examples\Convert_Example.htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="UnitSystemDemo">
-    <param name="Name" value="UnitSystemDemo">
-    <param name="Local" value="Examples\UnitSystemDemo.htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="Base Units Set">
     <param name="Name" value="Base Units Set">
     <param name="Local" value="Run Time Errors\Base_Units_Set.htm">

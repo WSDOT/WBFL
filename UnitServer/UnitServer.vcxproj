@@ -243,6 +243,11 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\Units\Units.vcxproj">
+      <Project>{9f2be387-53f3-4ed3-b343-f49f803e73df}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AnnotatedDisplayUnitFormatter.cpp" />
