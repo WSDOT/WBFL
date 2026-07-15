@@ -32,6 +32,8 @@
 #include <Units/AnnotatedDisplayUnitFormatter.h>
 #include <Units/AutoSystem.h>
 #include <Units/Convert.h>
+#include <Units/DynamicPhysical.h>
+#include <Units/DynamicUnitTypeManager.h>
 #include <Units/Measure.h>
 #include <Units/PhysicalT.h>
 #include <Units/StationFormat.h>

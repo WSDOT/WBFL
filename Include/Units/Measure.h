@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -41,6 +41,7 @@ namespace WBFL
          static const Mass Kilogram;
          static const Mass Gram;
          static const Mass MetricTon;
+         static const Mass Megagram;
          static const Mass Slug;
          static const Mass PoundMass;
          static const Mass KSlug;
@@ -151,6 +152,7 @@ namespace WBFL
          static const Moment KilonewtonMeter;
          static const Moment NewtonMillimeter;
          static const Moment InchLbf;
+         static const Moment PoundFeet;
          static const Moment KipFeet;
          static const Moment KipInch;
 
@@ -178,6 +180,9 @@ namespace WBFL
          static const Velocity MeterPerSecond;
          static const Velocity MilePerHour;
          static const Velocity FeetPerSecond;
+
+         static const ThermalExpansion PerCelsius;
+         static const ThermalExpansion PerFahrenheit;
       };
    };
 };

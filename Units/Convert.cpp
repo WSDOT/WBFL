@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,7 +23,18 @@
 
 #include <Units\UnitsLib.h>
 #include <Units\Convert.h>
+#include <Units\XUnit.h>
 
+
+Float64 WBFL::Units::Convert(Float64 value, const DynamicPhysical& from, const DynamicPhysical& to)
+{
+   if (!from.IsSameDimension(to))
+   {
+      THROW(XUnit, Reason::DimensionMismatch);
+   }
+
+   return to.ConvertTo(from.ConvertFrom(value));
+}
 
 void WBFL::Units::convert_from(Float64* pValue, Float64 cf, Float64 dim)
 {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,6 +30,7 @@ using namespace WBFL::Units;
 const Mass Measure::Kilogram   ( 1.000,         _T("kg")   );
 const Mass Measure::Gram       ( 0.001,         _T("g")    ); 
 const Mass Measure::MetricTon  ( 1.0e03,        _T("MT") );
+const Mass Measure::Megagram   ( 1.0e03,        _T("Mg") );
 const Mass Measure::Slug       ( 14.5939029372, _T("slug") );
 const Mass Measure::PoundMass  ( 0.45359237,    _T("lbm")  );
 const Mass Measure::KSlug      ( 14593.9029372, _T("kslug") );
@@ -133,6 +134,7 @@ const Moment Measure::NewtonMeter     ( 1.0,            _T("N-m")    );
 const Moment Measure::KilonewtonMeter ( 1.0e03,         _T("kN-m")   );
 const Moment Measure::NewtonMillimeter( 1.0e-03,        _T("N-mm")   );
 const Moment Measure::InchLbf         ( 0.112984829028, _T("in-lbf") );
+const Moment Measure::PoundFeet       ( 1.3558179483314004, _T("lbf-ft") );
 const Moment Measure::KipFeet         ( 1355.8179483314004,  _T("kip-ft") );
 const Moment Measure::KipInch         ( 112.984829028, _T("kip-in") );
 
@@ -165,3 +167,6 @@ const Velocity Measure::KilometerPerHour(0.2777777777777777, _T("Km/h"));
 const Velocity Measure::MeterPerSecond(  1.0,                _T("m/s"));
 const Velocity Measure::MilePerHour(     0.44704,            _T("MPH"));
 const Velocity Measure::FeetPerSecond(   0.3048,             _T("ft/s"));
+
+const ThermalExpansion Measure::PerCelsius   ( 1.0, _T("1/C") );
+const ThermalExpansion Measure::PerFahrenheit( 9./5., _T("1/F") );

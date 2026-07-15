@@ -28,6 +28,10 @@ namespace UnitsUnitTest
 			Assert::IsTrue(IsEqual(Convert(0.0, Measure::Celsius, Measure::Fahrenheit), 32.0));
 			Assert::IsTrue(IsEqual(Convert(32.0, Measure::Fahrenheit, Measure::Celsius), 0.0));
 
+			// steel's coefficient of thermal expansion, commonly tabulated as ~11.7e-6/C or ~6.5e-6/F
+			Assert::IsTrue(IsEqual(Convert(11.7e-6, Measure::PerCelsius, Measure::PerFahrenheit), 6.5e-6, 0.05e-6));
+			Assert::IsTrue(IsEqual(Convert(6.5e-6, Measure::PerFahrenheit, Measure::PerCelsius), 11.7e-6, 0.05e-6));
+
 			Assert::IsTrue(IsEqual(Convert(1.0, Measure::NewtonMeter2, Measure::LbfFoot2), 2.419823));
 			Assert::IsTrue(IsEqual(Convert(1.0, Measure::NewtonMeter2, Measure::LbfInch2), 348.45452));
 			Assert::IsTrue(IsEqual(Convert(1.0, Measure::NewtonMeter2, Measure::KipInch2), 0.348455));

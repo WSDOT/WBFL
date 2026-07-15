@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -193,6 +193,7 @@ namespace WBFL
    DECLARE_PHYSICAL_UNIT(  0,-10,  0,  0,  0, PerLength );
    DECLARE_PHYSICAL_UNIT( 10, 30,-20,  0,  0, ForceLength2 );  // Used for E*I
    DECLARE_PHYSICAL_UNIT(  0, 10,-10,  0,  0, Velocity );
+   DECLARE_PHYSICAL_UNIT(  0,  0,  0,-10,  0, ThermalExpansion );
 
    // Other aliases
    using Area = Length2;

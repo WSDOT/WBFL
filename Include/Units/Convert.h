@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,11 +26,27 @@
 #include <Units\UnitsExp.h>
 #include <Units\PhysicalT.h>
 #include <Units\System.h>
+#include <Units\DynamicPhysical.h>
+#include <Units\XUnit.h>
 
 namespace WBFL
 {
    namespace Units
    {
+      /// Returns true if a and b have the same mass, length, time, temperature, and angle dimensionality.
+      /// Works for any pair of types exposing MassDim()/LengthDim()/TimeDim()/TemperatureDim()/AngleDim()
+      /// accessors, so it can compare two compile-time-dimensioned units (PhysicalT/PhysicalExT aliases),
+      /// two DynamicPhysical units, or one of each.
+      template <class T1, class T2>
+      inline bool IsSameDimension(const T1& a, const T2& b)
+      {
+         return a.MassDim() == b.MassDim()
+             && a.LengthDim() == b.LengthDim()
+             && a.TimeDim() == b.TimeDim()
+             && a.TemperatureDim() == b.TemperatureDim()
+             && a.AngleDim() == b.AngleDim();
+      }
+
       /// Converts a value between units of measure
       template <class T>
       inline Float64 Convert(Float64 value,const T& from, const T& to)
@@ -38,6 +54,43 @@ namespace WBFL
          return to.ConvertTo(from.ConvertFrom(value));
       }
 
+      /// Converts a value between two dynamically-dimensioned units of measure. Unlike the templated
+      /// Convert() overload above, from and to are not guaranteed by the compiler to have the same
+      /// dimensionality (DynamicPhysical's dimensionality is a run-time value), so this overload checks
+      /// dimensional compatibility itself and throws WBFL::Units::XUnit, with reason
+      /// XUnit::Reason::DimensionMismatch, if from and to do not have the same dimensionality (see
+      /// DynamicPhysical::IsSameDimension()).
+      Float64 UNITSFUNC Convert(Float64 value, const DynamicPhysical& from, const DynamicPhysical& to);
+
+      /// Converts a value from a compile-time-dimensioned unit of measure to a dynamically-dimensioned
+      /// unit of measure. Since DynamicPhysical's dimensionality isn't known until run time, this overload
+      /// checks dimensional compatibility itself and throws WBFL::Units::XUnit, with reason
+      /// XUnit::Reason::DimensionMismatch, if from and to do not have the same dimensionality.
+      template <class T>
+      inline Float64 Convert(Float64 value, const T& from, const DynamicPhysical& to)
+      {
+         if (!IsSameDimension(from, to))
+         {
+            THROW(XUnit, Reason::DimensionMismatch);
+         }
+
+         return to.ConvertTo(from.ConvertFrom(value));
+      }
+
+      /// Converts a value from a dynamically-dimensioned unit of measure to a compile-time-dimensioned
+      /// unit of measure. Since DynamicPhysical's dimensionality isn't known until run time, this overload
+      /// checks dimensional compatibility itself and throws WBFL::Units::XUnit, with reason
+      /// XUnit::Reason::DimensionMismatch, if from and to do not have the same dimensionality.
+      template <class T>
+      inline Float64 Convert(Float64 value, const DynamicPhysical& from, const T& to)
+      {
+         if (!IsSameDimension(from, to))
+         {
+            THROW(XUnit, Reason::DimensionMismatch);
+         }
+
+         return to.ConvertTo(from.ConvertFrom(value));
+      }
 
       /// Converts a value. This method is not intended to be called by external users but must be exported to support the System Unit conversion functions.
       void UNITSFUNC convert_from(Float64* pValue, Float64 cf, Float64 dim);
@@ -60,29 +113,29 @@ namespace WBFL
          const Mass& um = System::GetMassUnit();
          convert_from(&value,
             um.GetConvFactor(),
-            T::MassDim());
+            to.MassDim());
 
          const Length& ul = System::GetLengthUnit();
          convert_from(&value,
             ul.GetConvFactor(),
-            T::LengthDim());
+            to.LengthDim());
 
          const Time& ut = System::GetTimeUnit();
          convert_from(&value,
             ut.GetConvFactor(),
-            T::TimeDim());
+            to.TimeDim());
 
          const Temperature& uk = System::GetTemperatureUnit();
          convert_from(&value,
             uk.GetPreTerm(),
             uk.GetConvFactor(),
             uk.GetPostTerm(),
-            T::TemperatureDim());
+            to.TemperatureDim());
 
          const Angle& ua = System::GetAngleUnit();
          convert_from(&value,
             ua.GetConvFactor(),
-            T::AngleDim());
+            to.AngleDim());
 
          return to.ConvertTo(value);
       }
@@ -99,29 +152,29 @@ namespace WBFL
          const Mass& um = System::GetMassUnit();
          convert_to(&value,
             um.GetConvFactor(),
-            T::MassDim());
+            from.MassDim());
 
          const Length& ul = System::GetLengthUnit();
          convert_to(&value,
             ul.GetConvFactor(),
-            T::LengthDim());
+            from.LengthDim());
 
          const Time& ut = System::GetTimeUnit();
          convert_to(&value,
             ut.GetConvFactor(),
-            T::TimeDim());
+            from.TimeDim());
 
          const Temperature& uk = System::GetTemperatureUnit();
          convert_to(&value,
             uk.GetPreTerm(),
             uk.GetConvFactor(),
             uk.GetPostTerm(),
-            T::TemperatureDim());
+            from.TemperatureDim());
 
          const Angle& ua = System::GetAngleUnit();
          convert_to(&value,
             ua.GetConvFactor(),
-            T::AngleDim());
+            from.AngleDim());
 
          return from.ConvertFrom(value);
       }

@@ -33,6 +33,7 @@ namespace UnitsUnitTest
 			Check(Measure::Kilogram, 1.000, _T("kg"));
 			Check(Measure::Gram, 0.001, _T("g"));
 			Check(Measure::MetricTon, 1.0e03, _T("MT"));
+			Check(Measure::Megagram, 1.0e03, _T("Mg"));
 			Check(Measure::Slug, 14.5939029372, _T("slug"));
 			Check(Measure::PoundMass, 0.45359237, _T("lbm"));
 			Check(Measure::KSlug, 14593.9029372, _T("kslug"));
@@ -136,6 +137,7 @@ namespace UnitsUnitTest
 			Check(Measure::KilonewtonMeter,1.0e03, _T("kN-m"));
 			Check(Measure::NewtonMillimeter,1.0e-03, _T("N-mm"));
 			Check(Measure::InchLbf,0.112984829028, _T("in-lbf"));
+			Check(Measure::PoundFeet,1.3558179483314004, _T("lbf-ft"));
 			Check(Measure::KipFeet,1355.8179483314004, _T("kip-ft"));
 			Check(Measure::KipInch,112.984829028, _T("kip-in"));
 
@@ -168,6 +170,9 @@ namespace UnitsUnitTest
 			Check(Measure::MeterPerSecond,1.0, _T("m/s"));
 			Check(Measure::MilePerHour,0.44704, _T("MPH"));
 			Check(Measure::FeetPerSecond,0.3048, _T("ft/s"));
+
+			Check(Measure::PerCelsius,1.0, _T("1/C"));
+			Check(Measure::PerFahrenheit,9. / 5., _T("1/F"));
 		}
 	};
 }

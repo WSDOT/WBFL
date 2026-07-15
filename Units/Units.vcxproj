@@ -189,6 +189,8 @@
   <ItemGroup>
     <ClCompile Include="AnnotatedDisplayUnitFormatter.cpp" />
     <ClCompile Include="AutoSystem.cpp" />
+    <ClCompile Include="DynamicPhysical.cpp" />
+    <ClCompile Include="DynamicUnitTypeManager.cpp" />
     <ClCompile Include="IndirectMeasure.cpp" />
     <ClCompile Include="Library.cpp" />
     <ClCompile Include="main.cpp">
@@ -207,6 +209,8 @@
     <ClInclude Include="..\Include\Units\AutoLib.h" />
     <ClInclude Include="..\Include\Units\AutoSystem.h" />
     <ClInclude Include="..\Include\Units\Convert.h" />
+    <ClInclude Include="..\Include\Units\DynamicPhysical.h" />
+    <ClInclude Include="..\Include\Units\DynamicUnitTypeManager.h" />
     <ClInclude Include="..\Include\Units\IndirectMeasure.h" />
     <ClInclude Include="..\Include\Units\Library.h" />
     <ClInclude Include="..\Include\Units\LibraryT.h" />

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Units - Unit conversion and system unit management service
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,16 @@ namespace WBFL
       class UNITSCLASS XUnit : public WBFL::System::XBase
       {
       public:
-         enum class Reason { BadStationFormat };
+         enum class Reason
+         {
+            BadStationFormat,        ///< StationFormat::FromString was given a string that isn't a validly formatted station
+
+            DimensionMismatch,       ///< Attempted to convert between two DynamicPhysical objects that don't have the same dimensionality
+            UnitTypeAlreadyDefined,  ///< DynamicUnitTypeManager::AddUnitType was called with a name that is already in use
+            UnitTypeNotFound,        ///< A DynamicUnitTypeManager operation referenced a unit type name that hasn't been defined
+            UnitAlreadyDefined,      ///< DynamicUnitTypeManager::AddUnit was called with a tag that is already in use within the unit type
+            UnitNotFound             ///< A DynamicUnitTypeManager operation referenced a unit tag that hasn't been defined within the unit type
+         };
 
          XUnit(Reason reason,const std::_tstring& file,Uint32 line);
 
