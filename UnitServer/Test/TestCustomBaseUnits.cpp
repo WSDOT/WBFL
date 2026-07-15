@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Unit Test - Test driver for WBFLUnits library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -158,7 +158,7 @@ void CTestCustomBaseUnits::Test()
    TRY_TEST(IsEqual(val,1.0),true);
 
    TRY_TEST(convert->ConvertToBaseUnits(1.0,CComBSTR("N-mm"),&val),S_OK);
-   TRY_TEST(IsEqual(val,1.0),true);
+   TRY_TEST(IsEqual(val,1.0e-06),true);
 
 
 
@@ -175,5 +175,5 @@ void CTestCustomBaseUnits::Test()
    TRY_TEST(IsEqual(val,1.0),true);
 
    TRY_TEST(convert->ConvertFromBaseUnits(1.0,CComBSTR("N-mm"),&val),S_OK);
-   TRY_TEST(IsEqual(val,1.0),true);
+   TRY_TEST(IsEqual(val,1.0e06),true);
 }

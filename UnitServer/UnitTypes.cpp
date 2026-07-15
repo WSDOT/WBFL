@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // UnitServer - Unit Conversion and Display Unit Management Library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -270,7 +270,7 @@ HRESULT CUnitTypes::InitDefaultUnits()
    // Moment
    BEGIN_NEWUNIT( CComBSTR("Moment"), 1,2,-2,0,0 );
       NEWUNIT( CComBSTR("N-m"),    0.0, 1.0,            0.0, unitsSI );
-      NEWUNIT( CComBSTR("N-mm"),   0.0, 1.0e+03,        0.0, unitsSI );
+      NEWUNIT( CComBSTR("N-mm"),   0.0, 1.0e-03,        0.0, unitsSI );
       NEWUNIT( CComBSTR("kN-m"),   0.0, 1.0e+03,        0.0, unitsSI );
       NEWUNIT( CComBSTR("lbf-in"), 0.0, 0.112984829028, 0.0, unitsUS );
       NEWUNIT( CComBSTR("lbf-ft"), 0.0, 1.35581794833,  0.0, unitsUS );
