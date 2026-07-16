@@ -24,6 +24,7 @@
 #include <Units\UnitsLib.h>
 #include <Units\DynamicUnitTypeManager.h>
 #include <Units\XUnit.h>
+#include <System\Checks.h>
 #include <algorithm>
 
 
@@ -174,6 +175,64 @@ const DynamicPhysical& DynamicUnitTypeManager::GetUnit(const std::_tstring& unit
       THROW(XUnit, Reason::UnitNotFound);
    }
    return found->second;
+}
+
+void DynamicUnitTypeManager::SetBaseUnits(const std::_tstring& massTag, const std::_tstring& lengthTag, const std::_tstring& timeTag, const std::_tstring& temperatureTag, const std::_tstring& angleTag)
+{
+   // Validate before committing any of them, so a bad tag leaves the previous base units (if any) intact.
+   GetUnit(_T("Mass"), massTag);
+   GetUnit(_T("Length"), lengthTag);
+   GetUnit(_T("Time"), timeTag);
+   GetUnit(_T("Temperature"), temperatureTag);
+   GetUnit(_T("Angle"), angleTag);
+
+   m_MassBaseTag = massTag;
+   m_LengthBaseTag = lengthTag;
+   m_TimeBaseTag = timeTag;
+   m_TemperatureBaseTag = temperatureTag;
+   m_AngleBaseTag = angleTag;
+   m_bHasBaseUnits = true;
+}
+
+bool DynamicUnitTypeManager::HasBaseUnits() const
+{
+   return m_bHasBaseUnits;
+}
+
+DynamicPhysical DynamicUnitTypeManager::GetBaseUnit(const std::_tstring& unitTypeName) const
+{
+   PRECONDITION(m_bHasBaseUnits);
+
+   const DynamicUnitTypeDimension dim = GetUnitTypeDimension(unitTypeName); // throws UnitTypeNotFound if undefined
+
+   const DynamicPhysical& massUnit = GetUnit(_T("Mass"), m_MassBaseTag);
+   const DynamicPhysical& lengthUnit = GetUnit(_T("Length"), m_LengthBaseTag);
+   const DynamicPhysical& timeUnit = GetUnit(_T("Time"), m_TimeBaseTag);
+   const DynamicPhysical& temperatureUnit = GetUnit(_T("Temperature"), m_TemperatureBaseTag);
+   const DynamicPhysical& angleUnit = GetUnit(_T("Angle"), m_AngleBaseTag);
+
+   Float64 cf = pow(massUnit.GetConvFactor(), dim.Mass)
+              * pow(lengthUnit.GetConvFactor(), dim.Length)
+              * pow(timeUnit.GetConvFactor(), dim.Time)
+              * pow(temperatureUnit.GetConvFactor(), dim.Temperature)
+              * pow(angleUnit.GetConvFactor(), dim.Angle);
+
+   Float64 pre = 0.0;
+   Float64 post = 0.0;
+   if (dim.Temperature == 1.0)
+   {
+      pre = temperatureUnit.GetPreTerm();
+      post = temperatureUnit.GetPostTerm();
+   }
+
+#if defined _DEBUG
+   // This composite base unit necessarily duplicates one of WBFLUnits' compile-time dimensions (that's the
+   // whole point - unitTypeName is always one of the built-in dimensions seeded by
+   // WBFL::Units::UnitsXML::InitDefaultUnits()), so suppress DynamicPhysical's "duplicate dimension"
+   // diagnostic for this construction.
+   DynamicPhysical::SuppressDuplicateDimensionWarningScope suppressWarnings;
+#endif
+   return DynamicPhysical(dim.Mass, dim.Length, dim.Time, dim.Temperature, dim.Angle, pre, cf, post, unitTypeName);
 }
 
 DynamicUnitTypeManager::UnitTypeEntry& DynamicUnitTypeManager::GetUnitTypeEntry(const std::_tstring& name)

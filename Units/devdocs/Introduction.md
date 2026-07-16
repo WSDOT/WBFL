@@ -3,9 +3,10 @@ WBFL Units {#WBFL_Units}
 Introduction
 ------------
 
-The WBFL Units library provides four basic services: general unit conversion, conversion to and from an
-application's or component's internal system units, conversion and management of display units, and
-(for the rare case where a unit's dimensionality isn't known until run time) dynamically-defined units.
+The WBFL Units library provides five basic services: general unit conversion, conversion to and from an
+application's or component's internal system units, conversion and management of display units, (for the rare
+case where a unit's dimensionality isn't known until run time) dynamically-defined units, and exchanging
+unit-tagged values with XML documents via a shared units-declaration schema.
 
 General Unit Conversions
 ------------------------
@@ -128,3 +129,63 @@ Float64 valueInMps = Convert(60.0, mgr.GetUnit(_T("Velocity"), _T("fps")), mgr.G
 
 Prefer `PhysicalT`/`PhysicalExT` and the `Measure` catalog whenever a unit's dimensionality is known at
 compile time - reach for `DynamicPhysical`/`DynamicUnitTypeManager` only when it isn't.
+
+XML Units-of-Measure Exchange
+------------------------------
+Applications sometimes need to read - or write - numeric values from an XML document whose author may have
+used a different unit of measure than the application's own system units: a length that might be tagged
+`unit="ft"` in one document and `unit="m"` in another, or simply assumed to already be in whatever base units
+the document declares. `WBFL::Units::UnitsXML` (`Units\UnitsXML.h`), together with the `WBFLUnits.xsd` schema
+(`WBFL\Units\Schema\WBFLUnits.xsd`, namespace `http://www.wsdot.wa.gov/WBFL/Units`), provides this: a
+`<UnitsDeclaration>` element that any XML document format can import and embed, and the C++ support to read
+it and convert the values it accompanies into your application's own units.
+
+`<UnitsDeclaration>` has two, both optional, parts:
+- `<ConsistentUnits>` names the document's base unit, one tag each, for the five fundamental dimensions -
+  mass, length, time, temperature, and angle. Every value in the document that doesn't carry an explicit
+  `unit` attribute is assumed to already be expressed in these units (or, if `<ConsistentUnits>` is absent,
+  in kg/m/sec/Celsius/radian).
+- `<ExtendedUnits>` adds unit types and/or units of measure beyond WBFLUnits' own built-in catalog (the same
+  Mass/Length/Time/Temperature/Angle-derived types and units `UnitsXML::InitDefaultUnits()` seeds - e.g.
+  Length's "m"/"ft"/"in"/... or Pressure's "Pa"/"psi"/...), for documents that need a unit WBFLUnits doesn't
+  already define.
+
+A document's own schema imports `WBFLUnits.xsd` to embed a `<UnitsDeclaration>` element wherever it needs one
+- see `BEToolbox\BEToolboxXML\Curvel_Version_2.0.xsd` for an example. The generated C++ binding for that
+element is a `WBFL::Units::UnitsDeclarationType`; reading it and converting a document's values into your own
+units looks like this:
+
+~~~
+using namespace WBFL::Units;
+
+// pDeclaration is the <UnitsDeclaration> element parsed from the XML document (nullptr if the document
+// doesn't have one). CreateUnitTypeManager() seeds the built-in catalog, applies <ExtendedUnits> and
+// <ConsistentUnits> if pDeclaration has them, and otherwise defaults the document's base units to
+// kg/m/sec/C/rad.
+DynamicUnitTypeManager docUnitManager = UnitsXML::CreateUnitTypeManager(pDeclaration);
+
+// yourUnitManager represents the units *you* want the document's values converted into. CreateSystemUnitManager()
+// builds one from WBFL::Units::System's current system units, matching however your application already
+// manages units elsewhere.
+DynamicUnitTypeManager yourUnitManager = UnitsXML::CreateSystemUnitManager();
+
+// lengthValue is a schema-bound value from the document (e.g. a WBFL::Units::LengthValueType). After this
+// call it has been converted in place from the document's units to yourUnitManager's units, and any explicit
+// unit attribute it carried has been cleared.
+UnitsXML::ConvertBetweenBaseUnits(lengthValue, docUnitManager, yourUnitManager);
+~~~
+
+`UnitsXML::CreateUnitTypeManager()` is a convenience wrapper around two lower-level calls, useful directly
+when you need finer control - for example, to seed one manager and then initialize it from several documents
+in turn:
+
+~~~
+using namespace WBFL::Units;
+
+DynamicUnitTypeManager mgr;
+UnitsXML::InitDefaultUnits(mgr); // seed the built-in unit types/units every document implicitly starts with
+if (pDeclaration != nullptr)
+{
+   UnitsXML::Initialize(pDeclaration, mgr); // apply this document's <ExtendedUnits>/<ConsistentUnits>
+}
+~~~

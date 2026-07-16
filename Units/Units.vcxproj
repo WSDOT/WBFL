@@ -32,16 +32,19 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(XSDDIR)\etc\vc-10.0\xsd-cxx-tree.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
     <Import Project="..\WBFL.props" />
+    <Import Project="..\XSD.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -59,6 +62,16 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;Units\UnitsExp.h&gt;" --cxx-prologue "#include &lt;Units\UnitsLib.h&gt;"</AdditionalOptions>
+      <OutDir>.\Schema</OutDir>
+      <CharType>1</CharType>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
+    </CXX_Tree_Mapping_Rule>
     <CustomBuildStep>
       <Command />
     </CustomBuildStep>
@@ -72,7 +85,11 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDUNITSLIB;NDEBUG;_WINDOWS;WIN32;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- _HAS_AUTO_PTR_ETC=1 project-wide: needed by the UnitsXML/xsd-cxx-generated schema code (see
+           the ConformanceMode comment below); defined here, not just on those files, so std::basic_string's
+           ABI stays identical across every object file in this DLL and its consumers (a per-file-only define
+           previously caused an ODR/LNK2005 clash against files built without it). -->
+      <PreprocessorDefinitions>BUILDUNITSLIB;NDEBUG;_WINDOWS;WIN32;_AFXDLL;_HAS_AUTO_PTR_ETC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -86,7 +103,10 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <ConformanceMode>true</ConformanceMode>
+      <!-- false, not true: CodeSynthesis xsd-cxx 3.3's generated/runtime code (Schema\WBFLUnits.cxx,
+           UnitsXML.cpp) relies on unqualified lookup of dependent base class members, which
+           /permissive- (ConformanceMode=true) correctly rejects per two-phase name lookup. -->
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -109,19 +129,31 @@
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\Lib/Units.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command />
+      <Message>Copying Apache Files</Message>
+      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CXX_Tree_Mapping_Rule>
+      <AdditionalOptions> --hxx-prologue "#include &lt;Units\UnitsExp.h&gt;" --cxx-prologue "#include &lt;Units\UnitsLib.h&gt;"</AdditionalOptions>
+      <OutDir>.\Schema</OutDir>
+      <CharType>1</CharType>
+      <GenSerialization>true</GenSerialization>
+      <GenDoxygen>false</GenDoxygen>
+      <GenIntellisense>true</GenIntellisense>
+      <ExportSymbol>UNITSCLASS</ExportSymbol>
+      <CxxStd>1</CxxStd>
+    </CXX_Tree_Mapping_Rule>
     <CustomBuildStep>
       <Command />
     </CustomBuildStep>
@@ -136,7 +168,11 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BUILDUNITSLIB;_WINDOWS;_DEBUG;WIN32;_AFXDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <!-- _HAS_AUTO_PTR_ETC=1 project-wide: needed by the UnitsXML/xsd-cxx-generated schema code (see
+           the ConformanceMode comment below); defined here, not just on those files, so std::basic_string's
+           ABI stays identical across every object file in this DLL and its consumers (a per-file-only define
+           previously caused an ODR/LNK2005 clash against files built without it). -->
+      <PreprocessorDefinitions>BUILDUNITSLIB;_WINDOWS;_DEBUG;WIN32;_AFXDLL;_HAS_AUTO_PTR_ETC=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -150,7 +186,10 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <ConformanceMode>true</ConformanceMode>
+      <!-- false, not true: CodeSynthesis xsd-cxx 3.3's generated/runtime code (Schema\WBFLUnits.cxx,
+           UnitsXML.cpp) relies on unqualified lookup of dependent base class members, which
+           /permissive- (ConformanceMode=true) correctly rejects per two-phase name lookup. -->
+      <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -174,13 +213,15 @@
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3D.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\..\..\Lib/Units.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command />
+      <Message>Copying Apache Files</Message>
+      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -203,6 +244,8 @@
     <ClCompile Include="System.cpp" />
     <ClCompile Include="UnitValueNumericalFormatTools.cpp" />
     <ClCompile Include="XUnit.cpp" />
+    <ClCompile Include="UnitsXML.cpp" />
+    <ClCompile Include="Schema\WBFLUnits.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\Units\AnnotatedDisplayUnitFormatter.h" />
@@ -215,6 +258,7 @@
     <ClInclude Include="..\Include\Units\Library.h" />
     <ClInclude Include="..\Include\Units\LibraryT.h" />
     <ClInclude Include="..\Include\Units\Measure.h" />
+    <ClInclude Include="..\Include\Units\UnitsXML.h" />
     <ClInclude Include="..\Include\Units\PhysicalT.h" />
     <ClInclude Include="..\Include\Units\StationFormat.h" />
     <ClInclude Include="..\Include\Units\System.h" />
@@ -224,6 +268,7 @@
     <ClInclude Include="..\Include\Units\UnitValueNumericalFormatTools.h" />
     <ClInclude Include="..\Include\Units\XUnit.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Schema\WBFLUnits.hxx" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="Units.def" />
@@ -237,7 +282,11 @@
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <CXX_Tree_Mapping_Rule Include="Schema\WBFLUnits.xsd" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(XSDDIR)\etc\vc-10.0\xsd-cxx-tree.targets" />
   </ImportGroup>
 </Project>

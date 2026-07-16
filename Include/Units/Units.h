@@ -43,3 +43,4 @@
 #include <Units/Library.h>
 #include <Units/LibraryT.h>
 #include <Units/UnitValueNumericalFormatTools.h>
+#include <Units/UnitsXML.h>

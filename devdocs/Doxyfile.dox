@@ -2423,6 +2423,7 @@ TAGFILES               = ../COGO/devdocs/WBFLCogo.tag=../../../COGO/devdocs/API/
                          ../RCCapacity/devdocs/WBFLRCCapacity.tag=../../../RCCapacity/devdocs/API/html \
                          ../Geometry/devdocs/WBFLGeometry.tag=../../../Geometry/devdocs/API/html \
                          ../UnitServer/devdocs/WBFLUnitServer.tag=../../../UnitServer/devdocs/API/html \
+                         ../Units/devdocs/WBFLUnits.tag=../../../Units/devdocs/API/html \
                          ../WBFLTools/devdocs/WBFLTools.tag=../../../WBFLTools/devdocs/API/html \
                          ../Reporter/devdocs/WBFLReporter.tag=../../../Reporter/devdocs/API/html \
                          ../GeomModel/devdocs/GeomModel.tag=../../../GeomModel/devdocs/API/html \

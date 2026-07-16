@@ -1,21 +1,21 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://www.wsdot.wa.gov/WBFL/Units"
            xmlns:bxu="http://www.wsdot.wa.gov/WBFL/Units">
   <xs:annotation>
     <xs:documentation>
-      This schema defines the WBFL UnitServer protocol for units.
+      This schema defines the WBFL Units protocol for units, known as UnitsXML.
     </xs:documentation>
   </xs:annotation>
 
-  <!-- 
+  <!--
 Data Types for units of measure. These will generally be used as attributes such as
 
 <xs:complexType name="LengthValueType">
    <xs:simpleContent>
       <xs:extension base="xs:double">
-         <xs:attribute name="UnitOfMeasure" type="lengthUnitType" use="optional"/> 
+         <xs:attribute name="UnitOfMeasure" type="lengthUnitType" use="optional"/>
       </xs:extension>
    </xs:simpleContent>
 </xs:complexType>
@@ -237,7 +237,7 @@ Data Types for units of measure. These will generally be used as attributes such
   <xs:complexType name="ConsistentUnitsType">
     <xs:annotation>
       <xs:documentation>
-        Defines the default units of measure for all of the data in an OpenBridgeML document
+        Defines the default units of measure for all of the data in a UnitsXML document
         The attribute values must be one of UnitOfMeasure values defined in the UnitLibrary element
       </xs:documentation>
     </xs:annotation>
@@ -318,7 +318,7 @@ Data Types for units of measure. These will generally be used as attributes such
   <xs:complexType name="ExtendedUnitTypeType">
     <xs:annotation>
       <xs:documentation>
-        Extendes the OpenBridgeML standard unit types
+        Extendes the UnitsXML standard unit types
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -330,7 +330,7 @@ Data Types for units of measure. These will generally be used as attributes such
   <xs:complexType name="ExtendedUnitsType">
     <xs:annotation>
       <xs:documentation>
-        Defines unit types and units of measure that extend the OpenBridgeML standard unit types and units of measure
+        Defines unit types and units of measure that extend the UnitsXML standard unit types and units of measure
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -342,14 +342,14 @@ Data Types for units of measure. These will generally be used as attributes such
   <xs:complexType name="UnitsDeclarationType">
     <xs:annotation>
       <xs:documentation>
-        Declares the units of measure used in an OpenBridgeML instance document.
+        Declares the units of measure used in a UnitsXML instance document.
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="ExtendedUnits"   type="bxu:ExtendedUnitsType"   minOccurs="0" maxOccurs="1">
         <xs:annotation>
           <xs:documentation>
-            Extends the OpenBridgeML standard unit types and units of measure
+            Extends the UnitsXML standard unit types and units of measure
           </xs:documentation>
         </xs:annotation>
       </xs:element>

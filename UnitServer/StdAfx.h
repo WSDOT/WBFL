@@ -47,15 +47,6 @@ extern CComModule _Module;
 #include <WbflAtlExt.h> // WBFL ATL Extensions
 #include <MathEx.h>
 
-// must include this here so that the DLL linkage, and exported template methods, are included before we generate our own template methods
-// users of this DLL will not link because of std::basic_string<>
-// Moving this #include here resolved the issue
-#if defined USING_OPENBRIDGEML
-#include <OpenBridgeML_Units.hxx>
-#else
-#include <WBFLUnitServer.hxx>
-#endif // USING_OPENBRIDGEML
-
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.
 

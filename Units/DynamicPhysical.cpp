@@ -34,10 +34,6 @@ namespace
 {
    // Nesting-safe suppression counter for SuppressDuplicateDimensionWarningScope. Zero (the default) means
    // the diagnostic is active; non-zero means it's suppressed.
-   //
-   // TODO: this counter, and SuppressDuplicateDimensionWarningScope in DynamicPhysical.h, exist only as a
-   // workaround for WBFLUnitServer's facade over WBFLUnits. Remove both once WBFLUnitServer is obsoleted
-   // and removed from WBFL.
    int g_SuppressDuplicateDimensionWarningCount = 0;
 
    struct KnownDimension

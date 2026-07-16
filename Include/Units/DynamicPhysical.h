@@ -123,11 +123,10 @@ namespace WBFL
          /// unit types uniformly), not for general use - the diagnostic exists to catch accidental
          /// duplication, and constructing this scope around ordinary code defeats that purpose.
          ///
-         /// \todo This exists only to accommodate WBFLUnitServer's facade over WBFLUnits (CUnitTypes::
-         /// InitDefaultUnits() seeds a DynamicUnitTypeManager with a DynamicPhysical for every built-in unit,
-         /// all of which necessarily duplicate a compile-time dimension by design). Remove this class, and
-         /// g_SuppressDuplicateDimensionWarningCount in DynamicPhysical.cpp, once WBFLUnitServer is obsoleted
-         /// and removed from WBFL.
+         /// Used by WBFL::Units::UnitsXML::InitDefaultUnits(), which seeds a DynamicUnitTypeManager with
+         /// a DynamicPhysical for every built-in unit (all of which necessarily duplicate a compile-time
+         /// dimension by design), and by DynamicUnitTypeManager::GetBaseUnit(), whose composite base unit
+         /// for a built-in unit type necessarily does the same.
          class UNITSCLASS SuppressDuplicateDimensionWarningScope
          {
          public:

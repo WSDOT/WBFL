@@ -50,7 +50,7 @@ namespace WBFL
       /// by a name, such as "Length" or "Force". Once a unit type has been added with AddUnitType(), any
       /// number of units of measure sharing that dimensionality can be added to it with AddUnit(), each
       /// identified within the unit type by its own tag, such as "ft" or "m". This mirrors the way an
-      /// application (or a document format, such as WBFLUnitServer's OpenBridgeML XML persistence) might
+      /// application (or a document format, such as WBFLUnitServer's UnitsXML persistence) might
       /// need to define custom unit types and units of measure whose dimensionality isn't known until run
       /// time.
       ///
@@ -145,6 +145,28 @@ namespace WBFL
          /// ClearUnitTypes for the same unit type.
          const DynamicPhysical& GetUnit(const std::_tstring& unitTypeName, const std::_tstring& tag) const;
 
+         /// Designates this manager's base (consistent) units, one tag for each of the five fundamental
+         /// dimensions - mirrors UnitsXML's <ConsistentUnits> declaration. Each tag must name a unit
+         /// already registered under the built-in "Mass"/"Length"/"Time"/"Temperature"/"Angle" unit type
+         /// (see WBFL::Units::UnitsXML::InitDefaultUnits()). Throws XUnit with reason
+         /// XUnit::Reason::UnitTypeNotFound if one of those five unit types hasn't been defined, or
+         /// XUnit::Reason::UnitNotFound if one of the tags hasn't been defined within it.
+         void SetBaseUnits(const std::_tstring& massTag, const std::_tstring& lengthTag, const std::_tstring& timeTag, const std::_tstring& temperatureTag, const std::_tstring& angleTag);
+
+         /// Returns true if SetBaseUnits() has been called.
+         bool HasBaseUnits() const;
+
+         /// Returns this manager's base (consistent) unit for the named unit type's dimensionality: the
+         /// product of the five base units set by SetBaseUnits(), each raised to the power of its exponent
+         /// in unitTypeName's dimensionality (e.g. Pressure's base unit is massBase^1 * lengthBase^-1 *
+         /// timeBase^-2). Temperature's pre/post conversion terms are carried through only when
+         /// unitTypeName's temperature exponent is exactly 1 (matching WBFL::Units::convert_from()/
+         /// convert_to()'s convention - a value that is temperature raised to any other power, such as
+         /// ThermalExpansion, is a pure ratio with no pre/post term). Throws XUnit with reason
+         /// XUnit::Reason::UnitTypeNotFound if unitTypeName hasn't been defined. SetBaseUnits() must have
+         /// been called first.
+         DynamicPhysical GetBaseUnit(const std::_tstring& unitTypeName) const;
+
       private:
          struct UnitTypeEntry
          {
@@ -155,6 +177,13 @@ namespace WBFL
 
          std::map<std::_tstring, UnitTypeEntry> m_UnitTypes;
          std::vector<std::_tstring> m_UnitTypeOrder; ///< insertion order of m_UnitTypes' keys
+
+         bool m_bHasBaseUnits{ false };
+         std::_tstring m_MassBaseTag;
+         std::_tstring m_LengthBaseTag;
+         std::_tstring m_TimeBaseTag;
+         std::_tstring m_TemperatureBaseTag;
+         std::_tstring m_AngleBaseTag;
 
          UnitTypeEntry& GetUnitTypeEntry(const std::_tstring& name);
          const UnitTypeEntry& GetUnitTypeEntry(const std::_tstring& name) const;
