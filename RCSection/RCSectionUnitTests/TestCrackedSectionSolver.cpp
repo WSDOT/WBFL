@@ -283,17 +283,23 @@ namespace RCSectionUnitTest
          solver.SetTolerance(0.001);
          solver.SetSection(section);
 
-         auto solution = solver.Solve(0.0);
+         // NOTE: naAngle must be M_PI here (not 0.0, as the other scenarios in this file use).
+         // This scenario places the tension reinforcement near the TOP of the section (a
+         // hogging/negative-moment configuration), so the section must be rotated 180 degrees
+         // before slicing to match this solver's bottom-tension convention. Parity case: see
+         // WBFL\RCCapacity\RCCapacityTest\CrackedSectionSolverTest.cpp::TestTeeBeam3, which solves
+         // the same geometry at naAngle = M_PI and produces matching results.
+         auto solution = solver.Solve(M_PI);
 
          auto pntCG = solution->GetCentroid();
          Assert::IsTrue(IsEqual(pntCG.X(), 0.0));
-         Assert::IsTrue(IsEqual(pntCG.Y(), 107.04622433399285));
+         Assert::IsTrue(IsEqual(pntCG.Y(), -11.7814581385));
 
          auto props = solution->GetElasticProperties();
          Assert::IsTrue(IsEqual(pntCG.Y(), props.GetCentroid().Y()));
 
-         Assert::IsTrue(IsEqual(props.GetEA(), 235238.51006959871));
-         Assert::IsTrue(IsEqual(props.GetEIxx(), 144517.55768585205));
+         Assert::IsTrue(IsEqual(props.GetEA(), 1251805.8138490967));
+         Assert::IsTrue(IsEqual(props.GetEIxx(), 708414513.8077645302));
       }
 	};
 }

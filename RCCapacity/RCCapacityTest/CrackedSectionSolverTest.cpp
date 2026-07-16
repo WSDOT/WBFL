@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -445,6 +445,13 @@ void CCrackedSectionSolverTest::TestTeeBeam2()
 void CCrackedSectionSolverTest::TestTeeBeam3()
 {
    // Tee beam with neutral axis in beam
+   //
+   // NOTE: this scenario places the tension reinforcement near the TOP of the section (a
+   // hogging/negative-moment configuration), so Solve() is called with naAngle = M_PI to rotate
+   // the section 180 degrees before slicing, matching this solver's bottom-tension convention.
+   // Parity case: see WBFL\RCSection\RCSectionUnitTests\TestCrackedSectionSolver.cpp::TestTeeBeam3,
+   // which solves the same geometry and (once naAngle = M_PI is used there too) produces matching
+   // results.
    CHRException hr;
 
    CComPtr<IUnitServer> unit_server;

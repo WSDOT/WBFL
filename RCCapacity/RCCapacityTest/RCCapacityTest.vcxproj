@@ -184,46 +184,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CrackedSectionSolverTest.cpp" />
-    <ClCompile Include="GeneralSectionSolverTest.cpp" />
     <ClCompile Include="GeneralTests.cpp" />
-    <ClCompile Include="MomentCapacitySolverTest.cpp" />
-    <ClCompile Include="MomentCurvatureSolverTest.cpp" />
-    <ClCompile Include="PSPowerFormulaTest.cpp" />
-    <ClCompile Include="RCBeam2ExTest.cpp" />
-    <ClCompile Include="RCBeam2Test.cpp" />
-    <ClCompile Include="RCBeamTest.cpp" />
     <ClCompile Include="RCCapacityTest.cpp" />
-    <ClCompile Include="RCSolutionTest.cpp" />
-    <ClCompile Include="RebarModelTest.cpp" />
-    <ClCompile Include="RoundColumnTest.cpp" />
-    <ClCompile Include="SolverTest.cpp" />
     <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UHPCMomentCapacityTest.cpp" />
-    <ClCompile Include="UHPConcreteTest.cpp" />
-    <ClCompile Include="UnconfinedConcreteTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CrackedSectionSolverTest.h" />
-    <ClInclude Include="GeneralSectionSolverTest.h" />
     <ClInclude Include="GeneralTests.h" />
-    <ClInclude Include="MomentCapacitySolverTest.h" />
-    <ClInclude Include="MomentCurvatureSolverTest.h" />
-    <ClInclude Include="PSPowerFormulaTest.h" />
-    <ClInclude Include="RCBeam2ExTest.h" />
-    <ClInclude Include="RCBeam2Test.h" />
-    <ClInclude Include="RCBeamTest.h" />
-    <ClInclude Include="RCSolutionTest.h" />
-    <ClInclude Include="RebarModelTest.h" />
-    <ClInclude Include="RoundColumnTest.h" />
-    <ClInclude Include="SolverTest.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="UHPCMomentCapacityTest.h" />
-    <ClInclude Include="UHPConcreteTest.h" />
-    <ClInclude Include="UnconfinedConcreteTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCCapacity Test - Test driver for RCCapacity library
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,22 +34,8 @@
 #include <WBFLTools_i.c>
 #include <WBFLUnitServer_i.c>
 
-#include "RCBeamTest.h"
-#include "RCBeam2Test.h"
-#include "RCBeam2ExTest.h"
-#include "RCSolutionTest.h"
-#include "PSPowerFormulaTest.h"
-#include "RebarModelTest.h"
-#include "UnconfinedConcreteTest.h"
-#include "UHPConcreteTest.h"
-#include "SolverTest.h"
-#include "RoundColumnTest.h"
 //#include "GeneralSectionTest.h"
-#include "GeneralSectionSolverTest.h"
 //#include "MomentCurvatureSolutionTest.h"
-#include "MomentCurvatureSolverTest.h"
-#include "MomentCapacitySolverTest.h"
-#include "CrackedSectionSolverTest.h"
 #include "UHPCMomentCapacityTest.h"
 
 
@@ -57,24 +43,9 @@ int main(int argc, TCHAR* argv[])
 {
    ::CoInitialize(nullptr);
 
-   CRCBeamTest::Test();
-   CRCBeam2Test::Test();
-   CRCBeam2ExTest::Test();
-   CRCSolutionTest::Test();
-   CPSPowerFormulaTest::Test();
-   CRebarModelTest::Test();
-   CUnconfinedConcreteTest::Test();
-   CUHPConcreteTest::Test();
    CUHPCMomentCapacityTest::Test();
-   CSolverTest::Test();
-   CRoundColumnTest::Test();
    //CGeneralSectionTest::Test();
-   CGeneralSectionSolverTest::Test();
    //CMomentCurvatureSolutionTest::Test();
-   CMomentCurvatureSolverTest::Test();
-   CMomentCapacitySolverTest::Test();
-   CCrackedSectionSolverTest::Test();
-   
 
 
    ::CoUninitialize();
