@@ -70,5 +70,111 @@ namespace RCSectionUnitTest
             Assert::IsTrue(IsEqual(datum[i].M, M, 0.0001));
          }
       }
+
+      TEST_METHOD(TestDefaultConstructor)
+      {
+         CircularColumn column;
+         Assert::IsTrue(IsEqual(column.GetDiameter(), 72.0));
+         Assert::IsTrue(IsEqual(column.GetCover(), 2.0));
+         Assert::IsTrue(IsEqual(column.GetAs(), 10.0));
+         Assert::IsTrue(IsEqual(column.GetFc(), 4.0));
+         Assert::IsTrue(IsEqual(column.GetFy(), 60.0));
+         Assert::IsTrue(IsEqual(column.GetEs(), 29000.0));
+      }
+
+      TEST_METHOD(TestSettersGetters)
+      {
+         CircularColumn column;
+
+         column.SetDiameter(48.0);
+         Assert::IsTrue(IsEqual(column.GetDiameter(), 48.0));
+
+         column.SetCover(2.5);
+         Assert::IsTrue(IsEqual(column.GetCover(), 2.5));
+
+         column.SetAs(8.0);
+         Assert::IsTrue(IsEqual(column.GetAs(), 8.0));
+
+         column.SetFc(5.0);
+         Assert::IsTrue(IsEqual(column.GetFc(), 5.0));
+
+         column.SetFy(75.0);
+         Assert::IsTrue(IsEqual(column.GetFy(), 75.0));
+
+         column.SetEs(28000.0);
+         Assert::IsTrue(IsEqual(column.GetEs(), 28000.0));
+      }
+
+      TEST_METHOD(TestStressBlockFactor)
+      {
+         CircularColumn column;
+
+         // default is a ConstantStressBlockFactor(0.85, 0.85)
+         Assert::IsTrue(IsEqual(column.GetStressBlockFactor()->GetIntensityFactor(), 0.85));
+         Assert::IsTrue(IsEqual(column.GetStressBlockFactor()->GetDepthFactor(), 0.85));
+
+         std::shared_ptr<const StressBlockFactor> variable(std::make_shared<VariableStressBlockFactor>(0.85, 4.0, 0.65, 10.0, 0.65));
+         column.SetStressBlockFactor(variable);
+         Assert::IsTrue(column.GetStressBlockFactor() == variable);
+         Assert::IsTrue(IsEqual(column.GetStressBlockFactor()->GetDepthFactor(), 0.65));
+      }
+
+      TEST_METHOD(TestFactoredResistance)
+      {
+         // Verify the factored curve is the unfactored curve scaled by the documented
+         // phi = ForceIntoRange(0.75, 0.75 + 0.15*(et-ecl)/(etl-ecl), 0.90) at each point,
+         // where et is computed from the same depth-to-neutral-axis (w) the solver uses internally.
+         Float64 diameter = 72.0, cover = 3.0;
+         CircularColumn column(diameter, cover, 10, 4, 60, 29000);
+
+         IndexType nSteps = 37;
+         Float64 ecl = 0.002, etl = 0.005;
+
+         std::vector<std::pair<Float64, Float64>> unfactored, factored;
+         column.ComputeInteraction(nSteps, ecl, etl, unfactored, factored);
+
+         Assert::IsTrue(unfactored.size() == nSteps);
+         Assert::IsTrue(factored.size() == nSteps);
+
+         Float64 step_size = 2 * diameter / nSteps;
+         for (IndexType i = 0; i < nSteps; i++)
+         {
+            Float64 w = (i + 1) * step_size;
+            Float64 et = 0.003 * ((diameter - cover) / w - 1);
+            Float64 phi = 0.75 + 0.15 * (et - ecl) / (etl - ecl);
+            phi = ::ForceIntoRange(0.75, phi, 0.9);
+
+            Assert::IsTrue(IsEqual(factored[i].first, unfactored[i].first * phi, 0.0001));
+            Assert::IsTrue(IsEqual(factored[i].second, unfactored[i].second * phi, 0.0001));
+            Assert::IsTrue(0.75 <= phi && phi <= 0.90);
+         }
+      }
+
+      TEST_METHOD(TestDegenerateGeometry)
+      {
+         // As = 0 -- no steel contribution, concrete-only interaction curve. Should not throw.
+         CircularColumn noSteel(72, 3, 0.0, 4, 60, 29000);
+         auto results = noSteel.ComputeInteraction(10);
+         Assert::IsTrue(results.size() == 10);
+
+         // cover >= diameter/2 -- degenerate reinforcement ring radius (r2 <= 0). Should not throw.
+         CircularColumn thinCore(72, 40, 10, 4, 60, 29000);
+         auto results2 = thinCore.ComputeInteraction(10);
+         Assert::IsTrue(results2.size() == 10);
+      }
+
+      TEST_METHOD(TestZeroStepsClamp)
+      {
+         // nSteps == 0 previously divided by zero (2*diameter/nSteps); it is now clamped up to 1
+         CircularColumn column(72, 3, 10, 4, 60, 29000);
+
+         auto results = column.ComputeInteraction(0);
+         Assert::IsTrue(results.size() == 1);
+
+         std::vector<std::pair<Float64, Float64>> unfactored, factored;
+         column.ComputeInteraction(0, 0.002, 0.005, unfactored, factored);
+         Assert::IsTrue(unfactored.size() == 1);
+         Assert::IsTrue(factored.size() == 1);
+      }
 	};
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -442,11 +442,12 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
    // This method assumes increasing the difference between min and max will yield the desired range.
    // However, when the controlling strain is not at the extreme edges of the section the range can
    // grow infinitely. In these cases, the actual range is smaller than the initial guess.
-   // Win the MaxStrain limit is reach, the initial guess is reduced by a factor of 100 (see code at end of this method)
+   // When the MaxStrain limit is reach, the initial guess is reduced by a factor of 100 (see code at end of this method)
    Float64 MaxStrain = 10.00; // this limit is established by trial and error - it may not be optimized.
 
    bool bReset = false; // reset state - if the solution isn't converging, reset the parameters and try again - this can only happen once
    bool bDone = false;
+   IndexType iter = 0;
    while (!bDone)
    {
       UpdateStrainPlane(angle, k_or_ec, strainLocation, solutionMethod, eo_lower);
@@ -491,6 +492,18 @@ void MomentCapacitySolverImpl::GetNeutralAxisParameterRange(Float64 k_or_ec, Flo
             eo_upper = *peo_upper / 100;
          }
          else
+         {
+            THROW_RCSECTION(_T("Solution not found - neutral axis not bounded"));
+         }
+      }
+
+      // Backstop for FixedCurvature/FixedCompressionStrain/FixedTensionStrain: the MaxStrain
+      // escape above only applies to FixedStrain, so those three methods have no other bound on
+      // this loop. Cap total iterations so a non-convergent case throws instead of hanging.
+      if (!bDone)
+      {
+         iter++;
+         if (m_MaxIter <= iter)
          {
             THROW_RCSECTION(_T("Solution not found - neutral axis not bounded"));
          }

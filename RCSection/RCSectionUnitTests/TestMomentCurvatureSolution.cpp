@@ -49,6 +49,19 @@ namespace RCSectionUnitTest
 			Assert::AreEqual(0.01, solution.GetCurvature(0));
 			Assert::AreEqual(0.02, solution.GetCurvature(1));
 			Assert::AreEqual(0.04, solution.GetCurvature(2));
+
+			// GetCapacitySolution(idx) must return the same solution step as the corresponding
+			// GetMoment/GetCurvature accessors, after points have been sorted by curvature
+			for (IndexType i = 0; i < solution.GetPointCount(); i++)
+			{
+				const auto& capacitySolution = solution.GetCapacitySolution(i);
+				Assert::AreEqual(solution.GetCurvature(i), capacitySolution.GetCurvature());
+				Assert::AreEqual(solution.GetMoment(i), capacitySolution.GetM());
+			}
+
+			// GetIncrementalStrainPlane(idx) must not crash and must return the plane stored at that step
+			const auto& plane = solution.GetIncrementalStrainPlane(0);
+			Assert::AreEqual(0.0, plane.GetZ(0, 0));
 		}
 	};
 }

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -122,6 +122,7 @@ namespace WBFL
          m_bgStress = bgStress;
          m_fgMaterial = fgMaterial;
          m_bgMaterial = bgMaterial;
+         m_bExceededStrainLimit = bExceededStrainLimit;
       }
 
       IndexType GeneralSectionSliceImpl::GetShapeIndex() const

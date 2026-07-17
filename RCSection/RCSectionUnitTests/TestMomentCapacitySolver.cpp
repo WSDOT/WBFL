@@ -1111,5 +1111,157 @@ namespace RCSectionUnitTest
          ec = incrementalStrainPlane.get().GetZ(0.00, H / 2);
          Assert::IsTrue(IsEqual(ec, ecu));
       }
+
+      TEST_METHOD(TestNeutralAxisNotBounded)
+      {
+         // base units of kip and ksi
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         Float64 H = WBFL::Units::ConvertToSysUnits(4, WBFL::Units::Measure::Feet);
+         Float64 W = WBFL::Units::ConvertToSysUnits(2, WBFL::Units::Measure::Feet);
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(H);
+         beam.SetWidth(W);
+
+         Float64 Ab = 1.27;
+         WBFL::Geometry::GenericShape bar1(Ab, WBFL::Geometry::Point2d((W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar2(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar3(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), -(H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar4(Ab, WBFL::Geometry::Point2d((W / 2 - 2), -(H / 2 - 2)));
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 2"), bar2, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 3"), bar3, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 4"), bar4, rebar, nullptr, nullptr, 1.0);
+
+         MomentCapacitySolver solver;
+         solver.SetSlices(10);
+         solver.SetSliceGrowthFactor(3);
+         solver.SetTolerance(0.001);
+         solver.SetSection(section);
+
+         // this section's tension/compression capacity is on the order of a few hundred to a few
+         // thousand kip - a target Fz several orders of magnitude beyond that cannot be bounded
+         auto solve = [&solver]() { solver.Solve(1.0e8, 0.00, -0.003, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
+
+      TEST_METHOD(TestDidNotConverge)
+      {
+         // base units of kip and ksi
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         Float64 H = WBFL::Units::ConvertToSysUnits(4, WBFL::Units::Measure::Feet);
+         Float64 W = WBFL::Units::ConvertToSysUnits(2, WBFL::Units::Measure::Feet);
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(H);
+         beam.SetWidth(W);
+
+         Float64 Ab = 1.27;
+         WBFL::Geometry::GenericShape bar1(Ab, WBFL::Geometry::Point2d((W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar2(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar3(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), -(H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar4(Ab, WBFL::Geometry::Point2d((W / 2 - 2), -(H / 2 - 2)));
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 2"), bar2, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 3"), bar3, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 4"), bar4, rebar, nullptr, nullptr, 1.0);
+
+         MomentCapacitySolver solver;
+         solver.SetSlices(10);
+         solver.SetSliceGrowthFactor(3);
+         solver.SetSection(section);
+         // an unreachable tolerance combined with a single-iteration budget forces the outer
+         // false-position search to exhaust its iterations without satisfying equilibrium
+         solver.SetTolerance(0.0);
+         solver.SetMaxIterations(1);
+
+         auto solve = [&solver]() { solver.Solve(0.00, 0.00, -0.003, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
+
+      TEST_METHOD(TestZeroCapacitySection)
+      {
+         // base units of kip and ksi
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(24);
+         beam.SetWidth(12);
+
+         // a shape with no foreground material contributes zero force/moment capacity in
+         // both the pure-tension and pure-compression limit states
+         section->AddShape(_T("Void"), beam, nullptr, nullptr, nullptr, 1.0, true);
+
+         MomentCapacitySolver solver;
+         solver.SetSlices(10);
+         solver.SetSection(section);
+
+         // Current (documented, not fixed in this pass) behavior: MomentCapacitySolverImpl::Solve
+         // detects the all-zero tension/compression capacity limits and returns a default-constructed
+         // MomentCapacitySolution rather than throwing. That default solution's underlying
+         // GeneralSectionSolution is null, so calling most other getters (GetFz, GetMx, etc.) on it
+         // would dereference a null pointer - only the fact that Solve succeeds without throwing is
+         // verified here.
+         auto solution = solver.Solve(0.00, 0.00, -0.003, 0.0, MomentCapacitySolver::SolutionMethod::FixedCompressionStrain);
+         Assert::IsTrue(solution != nullptr);
+      }
+
+      TEST_METHOD(TestNeutralAxisBracketingIsBoundedForFixedCurvature)
+      {
+         // Regression test: GetNeutralAxisParameterRange's bracket-widening loop previously had
+         // no iteration cap for SolutionMethod::FixedCurvature (only FixedStrain was protected),
+         // so a non-convergent case would hang instead of throwing. A tiny iteration budget forces
+         // the (now shared) cap to trip, proving FixedCurvature is bounded too.
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         Float64 H = WBFL::Units::ConvertToSysUnits(4, WBFL::Units::Measure::Feet);
+         Float64 W = WBFL::Units::ConvertToSysUnits(2, WBFL::Units::Measure::Feet);
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(H);
+         beam.SetWidth(W);
+
+         Float64 Ab = 1.27;
+         WBFL::Geometry::GenericShape bar1(Ab, WBFL::Geometry::Point2d((W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar2(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), (H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar3(Ab, WBFL::Geometry::Point2d(-(W / 2 - 2), -(H / 2 - 2)));
+         WBFL::Geometry::GenericShape bar4(Ab, WBFL::Geometry::Point2d((W / 2 - 2), -(H / 2 - 2)));
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 2"), bar2, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 3"), bar3, rebar, nullptr, nullptr, 1.0);
+         section->AddShape(_T("Bar 4"), bar4, rebar, nullptr, nullptr, 1.0);
+
+         MomentCapacitySolver solver;
+         solver.SetSlices(10);
+         solver.SetSliceGrowthFactor(3);
+         solver.SetSection(section);
+         solver.SetMaxIterations(1);
+
+         auto solve = [&solver]() { solver.Solve(0.00, 0.00, 0.0001, 0.0, MomentCapacitySolver::SolutionMethod::FixedCurvature); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
 	};
 }

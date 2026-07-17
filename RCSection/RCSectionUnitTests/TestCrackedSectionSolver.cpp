@@ -301,5 +301,81 @@ namespace RCSectionUnitTest
          Assert::IsTrue(IsEqual(props.GetEA(), 1251805.8138490967));
          Assert::IsTrue(IsEqual(props.GetEIxx(), 708414513.8077645302));
       }
+
+      TEST_METHOD(TestNonConvergence)
+      {
+         // work in KSI units
+         WBFL::Units::AutoSystem as;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         Float64 H = 100;
+         Float64 W = 20;
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(H);
+         beam.SetWidth(W);
+         beam.SetLocatorPoint(WBFL::Geometry::Shape::LocatorPoint::BottomCenter, WBFL::Geometry::Point2d(0, 0));
+
+         Float64 radius = sqrt(1.27 / M_PI);
+         WBFL::Geometry::Circle bar1(WBFL::Geometry::Point2d(0, 2), radius);
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, nullptr, nullptr, 1.0);
+
+         CrackedSectionSolver solver;
+         solver.SetSlices(10);
+         solver.SetSection(section);
+         // an unreachable tolerance forces the false-position search to exhaust its iteration budget
+         solver.SetTolerance(0.0);
+         solver.SetMaxIterations(1);
+
+         auto solve = [&solver]() { solver.Solve(0.0); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
+
+      TEST_METHOD(TestToleranceAndMaxIterationsAccessors)
+      {
+         CrackedSectionSolver solver;
+         solver.SetTolerance(0.005);
+         Assert::IsTrue(IsEqual(solver.GetTolerance(), 0.005));
+
+         solver.SetMaxIterations(25);
+         Assert::IsTrue(solver.GetMaxIterations() == 25);
+      }
+
+      TEST_METHOD(TestConcreteOnlySection)
+      {
+         // degenerate section: no reinforcement, single slice
+         WBFL::Units::AutoSystem as;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+
+         Float64 H = 100;
+         Float64 W = 20;
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(H);
+         beam.SetWidth(W);
+         beam.SetLocatorPoint(WBFL::Geometry::Shape::LocatorPoint::BottomCenter, WBFL::Geometry::Point2d(0, 0));
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+
+         CrackedSectionSolver solver;
+         solver.SetSlices(1);
+         solver.SetTolerance(0.001);
+         solver.SetSection(section);
+
+         auto solution = solver.Solve(0.0);
+         const auto& pntCG = solution->GetCentroid();
+         // symmetric about the vertical axis regardless of where the neutral axis settles
+         Assert::IsTrue(IsEqual(pntCG.X(), 0.0));
+         // some concrete area must remain engaged - the solver must not degenerate to a zero-stiffness section
+         auto props = solution->GetElasticProperties();
+         Assert::IsTrue(0.0 < props.GetEA());
+      }
 	};
 }

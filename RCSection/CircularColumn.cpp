@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -136,6 +136,11 @@ void ComputeInteractionCurve(const CircularColumn& column, IndexType nSteps, Flo
    Float64 fc = column.GetFc();
    Float64 fy = column.GetFy();
    Float64 Es = column.GetEs();
+
+   if (nSteps < 1)
+   {
+      nSteps = 1;
+   }
 
    Float64 step_size = 2 * diameter / nSteps;
 

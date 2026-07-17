@@ -203,5 +203,63 @@ namespace RCSectionUnitTest
             Assert::IsTrue(IsEqual(datum[i].second, M));
          }
       }
+
+      TEST_METHOD(TestAccessors)
+      {
+         MomentCurvatureSolver solver;
+
+         solver.SetSlices(15);
+         Assert::IsTrue(solver.GetSlices() == 15);
+
+         solver.SetSliceGrowthFactor(2.5);
+         Assert::IsTrue(IsEqual(solver.GetSliceGrowthFactor(), 2.5));
+
+         solver.SetTolerance(0.0025);
+         Assert::IsTrue(IsEqual(solver.GetTolerance(), 0.0025));
+
+         solver.SetMaxIterations(30);
+         Assert::IsTrue(solver.GetMaxIterations() == 30);
+
+         solver.SetInitialCurvatureStep(0.00001);
+         Assert::IsTrue(IsEqual(solver.GetInitialCurvatureStep(), 0.00001));
+      }
+
+      TEST_METHOD(TestUnboundedCurvatureIsCapped)
+      {
+         // Regression test: Solve()'s outer curvature-stepping loop previously had no cap other
+         // than a material eventually exceeding its strain limit. An absurdly tiny curvature step
+         // means MAX_CURVATURE_STEPS worth of steps accumulate essentially zero total curvature,
+         // so the (real, non-degenerate) section never approaches failure - proving the new
+         // iteration cap throws instead of hanging.
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(8 * 12);
+         beam.SetWidth(4 * 12);
+
+         WBFL::Geometry::Circle bar1(WBFL::Geometry::Point2d(22, 46), 0.37424);
+         WBFL::Geometry::Circle bar2(WBFL::Geometry::Point2d(-22, 46), 0.37424);
+         WBFL::Geometry::Circle bar3(WBFL::Geometry::Point2d(-22, -46), 0.37424);
+         WBFL::Geometry::Circle bar4(WBFL::Geometry::Point2d(22, -46), 0.37424);
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 2"), bar2, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 3"), bar3, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 4"), bar4, rebar, concrete, nullptr, 1.0);
+
+         MomentCurvatureSolver solver;
+         solver.SetSlices(10);
+         solver.SetSection(section);
+         solver.SetInitialCurvatureStep(1.0e-12);
+
+         auto solve = [&solver]() { solver.Solve(0.0, 0.0); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
 	};
 }

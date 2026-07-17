@@ -85,5 +85,75 @@ namespace RCSectionUnitTest
          Assert::IsTrue(IsEqual(solution->GetCompressionResultant(), -7005.3630229066785));
          Assert::IsTrue(IsEqual(solution->GetTensionResultant(), 52.799708841892233));
       }
+
+      TEST_METHOD(TestExceededStrainLimits)
+      {
+         // work in KSI units
+         WBFL::Units::AutoSystem as;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+
+         WBFL::Geometry::Rectangle beam;
+         beam.SetHeight(8 * 12);
+         beam.SetWidth(4 * 12);
+
+         WBFL::Geometry::Circle bar1(WBFL::Geometry::Point2d(22, 46), 0.37424);
+         WBFL::Geometry::Circle bar2(WBFL::Geometry::Point2d(-22, 46), 0.37424);
+         WBFL::Geometry::Circle bar3(WBFL::Geometry::Point2d(-22, -46), 0.37424);
+         WBFL::Geometry::Circle bar4(WBFL::Geometry::Point2d(22, -46), 0.37424);
+
+         section->AddShape(_T("Beam"), beam, concrete, nullptr, nullptr, 1.0, true);
+         section->AddShape(_T("Bar 1"), bar1, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 2"), bar2, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 3"), bar3, rebar, concrete, nullptr, 1.0);
+         section->AddShape(_T("Bar 4"), bar4, rebar, concrete, nullptr, 1.0);
+
+         GeneralSectionSolver solver;
+         solver.SetSlices(10);
+         solver.SetSection(section);
+
+         // small imposed strain, well within elastic range - strain limits should not be exceeded
+         WBFL::Geometry::Point3d p1a(-1000, 0, 0);
+         WBFL::Geometry::Point3d p2a(1000, 0, 0);
+         WBFL::Geometry::Point3d p3a(0, 48, -0.0005);
+         WBFL::Geometry::Plane3d smallStrainPlane(p1a, p2a, p3a);
+         auto smallStrainSolution = solver.Solve(smallStrainPlane);
+         Assert::IsFalse(smallStrainSolution->ExceededStrainLimits());
+
+         // large imposed strain, well beyond the concrete crushing strain - strain limits should be exceeded
+         WBFL::Geometry::Point3d p1b(-1000, 0, 0);
+         WBFL::Geometry::Point3d p2b(1000, 0, 0);
+         WBFL::Geometry::Point3d p3b(0, 48, -0.02);
+         WBFL::Geometry::Plane3d largeStrainPlane(p1b, p2b, p3b);
+         auto largeStrainSolution = solver.Solve(largeStrainPlane);
+         Assert::IsTrue(largeStrainSolution->ExceededStrainLimits());
+      }
+
+      TEST_METHOD(TestEmptySection)
+      {
+         // Regression test: a section with no primary shape (either zero shapes, or shapes with
+         // none marked primary) previously hit a PRECONDITION violation inside UpdateNeutralAxis
+         // (GetInitialStrain(INVALID_INDEX)) - undefined behavior in a Release build. Solve() now
+         // detects this up front and throws a clear XRCSection instead.
+         WBFL::Units::AutoSystem as;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<GeneralSection> section(std::make_shared<GeneralSection>());
+
+         WBFL::Geometry::Point3d p1(-1000, 0, 0);
+         WBFL::Geometry::Point3d p2(1000, 0, 0);
+         WBFL::Geometry::Point3d p3(0, 48, -0.003);
+         WBFL::Geometry::Plane3d strainPlane(p1, p2, p3);
+
+         GeneralSectionSolver solver;
+         solver.SetSlices(10);
+         solver.SetSection(section);
+
+         auto solve = [&solver, &strainPlane]() { solver.Solve(strainPlane); };
+         Assert::ExpectException<WBFL::RCSection::XRCSection>(solve);
+      }
 	};
 }

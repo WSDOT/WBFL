@@ -58,6 +58,23 @@ namespace RCSectionUnitTest
 			const auto& sp = solution.GetSolutionPoint(0);
 			Assert::AreEqual(20.0, sp.GetFz());
 			Assert::AreEqual(0.01, sp.GetCurvature());
+
+			// direct check of GetNeutralAxisDirection(index) against the known line directions,
+			// after sorting ascending by that same direction
+			Assert::AreEqual(0.0, solution.GetNeutralAxisDirection(0));                 // Line2d((0,0),(10,0))
+			Assert::IsTrue(IsEqual(solution.GetNeutralAxisDirection(1), atan(0.5)));     // Line2d((0,0),(10,5))
+			Assert::IsTrue(IsEqual(solution.GetNeutralAxisDirection(2), M_PI / 4));      // Line2d((0,0),(10,10))
+		}
+
+		TEST_METHOD(TestEmptySolution)
+		{
+			InteractionCurveSolution solution;
+			Assert::AreEqual((IndexType)0, solution.GetSolutionPointCount());
+
+			// sorting an empty solution must not crash
+			solution.SortByFz();
+			solution.SortByNeutralAxisDirection();
+			Assert::AreEqual((IndexType)0, solution.GetSolutionPointCount());
 		}
 	};
 }

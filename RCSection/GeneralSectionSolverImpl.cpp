@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,6 +23,7 @@
 
 #include <RCSection/RCSectionLib.h>
 #include "GeneralSectionSolverImpl.h"
+#include <RCSection/XRCSection.h>
 #include <GeomModel/ShapeProperties.h>
 #include <GeomModel/GeomOp2d.h>
 #include <GeomModel/Primitives3d.h>
@@ -89,6 +90,14 @@ Float64 GeneralSectionSolverImpl::GetSliceGrowthFactor() const
 
 std::unique_ptr<GeneralSectionSolution> GeneralSectionSolverImpl::Solve(const WBFL::Geometry::Plane3d& incrementalStrainPlane) const
 {
+   if (m_Section->GetPrimaryShapeIndex() == INVALID_INDEX)
+   {
+      // UpdateNeutralAxis (called from DecomposeSection below) unconditionally reads the initial
+      // strain of the primary shape. A section with no shapes, or with shapes but none marked
+      // primary, has no valid index here - fail clearly instead of hitting that PRECONDITION.
+      THROW_RCSECTION(_T("Solution not found - section has no primary shape"));
+   }
+
    std::vector<std::unique_ptr<GeneralSectionSlice>> slices;
 
    DecomposeSection(incrementalStrainPlane);
@@ -265,6 +274,9 @@ void GeneralSectionSolverImpl::DecomposeSection(const WBFL::Geometry::Plane3d& i
    Float64 angle = GetNeutralAxisAngle();
 
    // We are going to need a bounding box
+   // Only explicitly assigned inside the loop below when shapeIdx==0; for an empty section
+   // (GetShapeCount()==0) this stays at Rect2d's documented zero-initialized default, and the
+   // shape/slice loops below both run zero times, so an empty section resolves safely to zero slices.
    WBFL::Geometry::Rect2d bounding_box;
 
    // ... and something to hold the rotated shapes in

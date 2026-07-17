@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,6 +26,7 @@
 #include <RCSection/XRCSection.h>
 
 #define MAX_FAIL 4
+#define MAX_CURVATURE_STEPS 10000
 
 using namespace WBFL::RCSection;
 
@@ -96,6 +97,10 @@ std::unique_ptr<MomentCurvatureSolution> MomentCurvatureSolverImpl::Solve(Float6
    Uint32 nFail = 0;
    Float64 k = 0;
    bool bSucceeded = true;
+   IndexType nSteps = 0;
+   // this loop normally terminates when AnalyzeSection eventually fails MAX_FAIL times in a row
+   // (a strain limit gets exceeded). A section/material combination that never trips a strain
+   // limit has no other bound, so MAX_CURVATURE_STEPS caps total iterations as a backstop.
    while (bSucceeded)
    {
       bSucceeded = AnalyzeSection(Fz, angle, k, solution);
@@ -106,6 +111,15 @@ std::unique_ptr<MomentCurvatureSolution> MomentCurvatureSolverImpl::Solve(Float6
          nFail++;
       }
       k += GetCurvatureIncrement(nFail);
+
+      if (bSucceeded)
+      {
+         nSteps++;
+         if (MAX_CURVATURE_STEPS <= nSteps)
+         {
+            THROW_RCSECTION(_T("Solution not found - strain limit was never reached"));
+         }
+      }
    }
    return solution;
 }

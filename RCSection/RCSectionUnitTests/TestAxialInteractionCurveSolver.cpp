@@ -100,5 +100,45 @@ namespace RCSectionUnitTest
             Assert::IsTrue(IsEqual(P, datumY[i].second));
          }
       }
+
+      TEST_METHOD(TestMinimumStepsClamp)
+      {
+         WBFL::Units::AutoSystem au;
+         WBFL::Units::System::SetSystemUnits(WBFL::Units::Measure::_12KSlug, WBFL::Units::Measure::Inch, WBFL::Units::Measure::Second, WBFL::Units::Measure::Fahrenheit, WBFL::Units::Measure::Degree);
+
+         std::shared_ptr<WBFL::Materials::UnconfinedConcreteModel> concrete(std::make_shared<WBFL::Materials::UnconfinedConcreteModel>(_T("Concrete"), 4.0));
+         std::shared_ptr<WBFL::Materials::RebarModel> rebar(std::make_shared<WBFL::Materials::RebarModel>(_T("Rebar"), 60.0, 29000.0, 0.11));
+         auto section = SectionBuilder::RectangularColumn(12, 18, 2.38, 4, 4, 0.79, concrete, rebar, true);
+
+         AxialInteractionCurveSolver solver;
+         solver.SetSection(section);
+
+         // requesting fewer than 3 steps is clamped up to 3
+         auto solution = solver.Solve(0, 1);
+         Assert::IsTrue(solution->GetSolutionPointCount() == 3);
+
+         solution = solver.Solve(0, 2);
+         Assert::IsTrue(solution->GetSolutionPointCount() == 3);
+
+         solution = solver.Solve(0, 0);
+         Assert::IsTrue(solution->GetSolutionPointCount() == 3);
+      }
+
+      TEST_METHOD(TestAccessors)
+      {
+         AxialInteractionCurveSolver solver;
+
+         solver.SetSlices(15);
+         Assert::IsTrue(solver.GetSlices() == 15);
+
+         solver.SetSliceGrowthFactor(2.0);
+         Assert::IsTrue(IsEqual(solver.GetSliceGrowthFactor(), 2.0));
+
+         solver.SetTolerance(0.005);
+         Assert::IsTrue(IsEqual(solver.GetTolerance(), 0.005));
+
+         solver.SetMaxIterations(40);
+         Assert::IsTrue(solver.GetMaxIterations() == 40);
+      }
 	};
 }
