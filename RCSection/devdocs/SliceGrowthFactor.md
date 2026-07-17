@@ -1,8 +1,8 @@
 Slice Growth Factor {#WBFL_RCSection_SliceGrowthFactor}
 ========================================================
-GeneralSection objects are discretized into fiber based "slices". Slice heights do not need to be uniform. Comptational efficiency can be gained, without loss of accuracy, using larger slices in areas where a material stress-strain model is constant.
+GeneralSection objects are discretized into fiber based "slices". Slice heights do not need to be uniform. Computational efficiency can be gained, without loss of accuracy, using larger slices in areas where a material stress-strain model is constant.
 
-For a conventional reinforced concrete section model, it is advantagous to have thinner slices in the compression region and wider (and thus fewer) slices in the tension region because the tension region does not contribute to capacity.
+For a conventional reinforced concrete section model, it is advantageous to have thinner slices in the compression region and wider (and thus fewer) slices in the tension region because the tension region does not contribute to capacity.
 
 The slice growth factor causes the height of each slice will get progressively larger (or smaller) over the depth of the section. The slices heights are such that the height of the last slice is a multiple of the height of the first slice. The slice heights vary linearly.
 

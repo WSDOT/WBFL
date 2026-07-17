@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,11 +28,14 @@ namespace WBFL
 {
    namespace RCSection
    {
-      /// Model of a simple reinforced concrete T-Beam.
+      /// Model of a simple reinforced concrete T-Beam, consumed by RCSolver::Solve() to compute
+      /// moment capacity via the LRFD strain-compatibility closed-form equations.
       class RCSCLASS RCBeam
       {
       public:
          RCBeam() = default;
+
+         /// Constructs a fully-initialized RCBeam. See Init() for parameter descriptions.
          RCBeam(Float64 fcBeam,
             Float64 fcSlab,
             Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax, Float64 dps, Float64 dpsMax)
@@ -42,12 +45,26 @@ namespace WBFL
 
          RCBeam(const RCBeam& other) = default;
          ~RCBeam() = default;
-         
+
          RCBeam& operator=(const RCBeam& other) = default;
 
-         void Init(Float64 fcBeam,
-            Float64 fcSlab,
-            Float64 fpy, Float64 fpu, Float64 fy, Float64 Aps, Float64 As, Float64 hf, Float64 b, Float64 bw, Float64 ds, Float64 dsMax,Float64 dps, Float64 dpsMax)
+         /// Initializes all properties of the T-Beam
+         void Init(
+            Float64 fcBeam, ///< Compressive strength of the web (beam) concrete
+            Float64 fcSlab, ///< Compressive strength of the flange (slab) concrete
+            Float64 fpy, ///< Yield strength of prestressing strand
+            Float64 fpu, ///< Ultimate tensile strength of prestressing strand
+            Float64 fy, ///< Yield strength of mild tension reinforcement
+            Float64 Aps, ///< Area of prestressing strand
+            Float64 As, ///< Area of mild tension reinforcement
+            Float64 hf, ///< Depth of the flange (slab)
+            Float64 b, ///< Effective width of the flange (slab)
+            Float64 bw, ///< Width of the web
+            Float64 ds, ///< Depth to the centroid of the mild tension reinforcement
+            Float64 dsMax, ///< Depth to the extreme layer of mild tension reinforcement, furthest from the compression face. Used to compute the net tensile strain.
+            Float64 dps, ///< Depth to the centroid of the prestressing strand
+            Float64 dpsMax ///< Depth to the extreme layer of prestressing strand, furthest from the compression face. Used to compute the net tensile strain.
+         )
          {
             m_fcBeam = fcBeam;
             m_fcSlab = fcSlab;
@@ -65,45 +82,59 @@ namespace WBFL
             m_dpsMax = dpsMax;
          }
 
+         /// Depth to the centroid of the prestressing strand
          Float64 GetDps() const { return m_dps; }
          void SetDps(Float64 dps) { m_dps = dps; }
 
+         /// Depth to the extreme layer of prestressing strand, furthest from the compression face
          Float64 GetDpsMax() const { return m_dpsMax; }
          void SetDpsMax(Float64 dps) { m_dpsMax = dps; }
 
+         /// Depth to the centroid of the mild tension reinforcement
          Float64 GetDs() const { return m_ds; }
          void SetDs(Float64 ds) { m_ds = ds; }
 
+         /// Depth to the extreme layer of mild tension reinforcement, furthest from the compression face
          Float64 GetDsMax() const { return m_dsMax; }
          void SetDsMax(Float64 ds) { m_dsMax = ds; }
 
+         /// Compressive strength of the web (beam) concrete
          Float64 GetFcBeam() const { return m_fcBeam; }
          void SetFcBeam(Float64 fc) { m_fcBeam = fc; }
 
+         /// Compressive strength of the flange (slab) concrete
          Float64 GetFcSlab() const { return m_fcSlab; }
          void SetFcSlab(Float64 fc) { m_fcSlab = fc; }
 
+         /// Yield strength of prestressing strand
          Float64 GetFpy() const { return m_fpy; }
          void SetFpy(Float64 fpy) { m_fpy = fpy; }
 
+         /// Ultimate tensile strength of prestressing strand
          Float64 GetFpu() const { return m_fpu; }
          void SetFpu(Float64 fpu) { m_fpu = fpu; }
 
+         /// Area of prestressing strand
          Float64 GetAps() const { return m_Aps; }
          void SetAps(Float64 aps) { m_Aps = aps; }
 
+         /// Yield strength of mild tension reinforcement
          Float64 GetFy() const { return m_fy; }
          void SetFy(Float64 fy) { m_fy = fy; }
 
+         /// Area of mild tension reinforcement
          Float64 GetAs() const { return m_As; }
          void SetAs(Float64 as) { m_As = as; }
 
+         /// Depth of the flange (slab)
          Float64 GetHf() const { return m_hf; }
          void setHf(Float64 hf) { m_hf = hf; }
 
+         /// Width of the web
          Float64 GetBw() const { return m_bw; }
          void SetBw(Float64 bw) { m_bw = bw; }
 
+         /// Effective width of the flange (slab)
          Float64 GetB() const { return m_b; }
          void SetB(Float64 b) { m_b = b; }
 

@@ -4,7 +4,7 @@ This topic discuss some of the internal implementation details of the RCSection 
 
 Pimpl Idiom
 ------------
-The pimpl idiom is used throught this library. The idea of the pimple idiom is to shield users of this library from the internal implementation details. Changes in implementation should not effect users of this library and should not necessitate compling when the internal implementation details are modified.
+The pimpl idiom is used throughout this library. The idea of the pimpl idiom is to shield users of this library from the internal implementation details. Changes in implementation should not affect users of this library and should not necessitate recompiling when the internal implementation details are modified.
 
 * https://docs.microsoft.com/en-us/cpp/cpp/pimpl-for-compile-time-encapsulation-modern-cpp
 * https://www.geeksforgeeks.org/pimpl-idiom-in-c-with-examples/

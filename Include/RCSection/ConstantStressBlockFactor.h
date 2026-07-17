@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,7 +39,10 @@ namespace WBFL
          
          ConstantStressBlockFactor& operator=(const ConstantStressBlockFactor& other) = default;
 
+         /// Sets the stress block intensity factor (alpha1)
          void SetIntensityFactor(Float64 alpha1) { m_Alpha1 = alpha1; }
+
+         /// Sets the stress block depth factor (beta1)
          void SetDepthFactor(Float64 beta1) { m_Beta1 = beta1; }
 
          virtual Float64 GetIntensityFactor() const override

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,6 +37,10 @@ namespace WBFL
          RCSolver() = delete;
          ~RCSolver() = delete;
 
+         /// Computes the nominal moment capacity of an RCBeam using the LRFD strain-compatibility
+         /// closed-form equations (as opposed to the iterative fiber-based analysis used by
+         /// MomentCapacitySolver). Intended for simple rectangular or T-beam sections where the
+         /// full generality of a GeneralSection model is not needed.
          static RCSolution Solve(const RCBeam& beam);
       };
    };

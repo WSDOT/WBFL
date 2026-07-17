@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,11 +28,14 @@ namespace WBFL
 {
    namespace RCSection
    {
-      /// Moment capacity solution for an RCBeam
+      /// Moment capacity solution for an RCBeam, computed by RCSolver::Solve()
       class RCSCLASS RCSolution
       {
       public:
          RCSolution() = default;
+
+         /// Constructs a fully-initialized RCSolution. See the individual Get/Set methods for
+         /// descriptions of each value.
          RCSolution(Float64 Mn,Float64 c,Float64 alpha1,Float64 beta1,Float64 fps,Float64 et)
          {
             m_Mn = Mn;
@@ -45,24 +48,31 @@ namespace WBFL
 
          RCSolution(const RCSolution& other) = default;
          ~RCSolution() = default;
-         
+
          RCSolution& operator=(const RCSolution& other) = default;
 
+         /// Nominal moment capacity
          void SetMn(Float64 Mn) { m_Mn = Mn; }
          Float64 GetMn() const { return m_Mn; }
 
+         /// Depth to the neutral axis
          void SetC(Float64 c) { m_c = c; }
          Float64 GetC() const { return m_c;  }
 
+         /// Stress block intensity factor (\f$ \alpha_1 \f$)
          void SetAlpha1(Float64 alpha1) { m_Alpha1 = alpha1; }
          Float64 GetAlpha1() const { return m_Alpha1; }
 
+         /// Stress block depth factor (\f$ \beta_1 \f$)
          void SetBeta1(Float64 beta1) { m_Beta1 = beta1; }
          Float64 GetBeta1() const { return m_Beta1; }
 
+         /// Stress in the prestressing strand at nominal moment capacity
          void SetFps(Float64 fps) { m_fps = fps; }
          Float64 GetFps() const { return m_fps; }
 
+         /// Net tensile strain in the extreme layer of reinforcement, used to classify the
+         /// section as tension-controlled, compression-controlled, or in the transition zone
          void Set_et(Float64 et) { m_et = et; }
          Float64 Get_et() const { return m_et; }
 

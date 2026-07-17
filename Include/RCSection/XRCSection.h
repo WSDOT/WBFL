@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,13 +37,25 @@ namespace WBFL
       public:
          XRCSection() = default;
          XRCSection(const XRCSection&) = default;
+
+         /// Constructs the exception. Prefer the THROW_RCSECTION(reason) macro over calling this
+         /// directly - it supplies the file and line automatically.
          XRCSection(const std::_tstring& lpszReason, const std::_tstring& file, Uint32 line);
          virtual ~XRCSection() = default;
 
          XRCSection& operator=(const XRCSection&) = default;
 
+         /// Performs a polymorphic re-throw of *this, preserving the concrete exception type.
+         /// Use this to re-throw a previously-caught XRCSection (e.g. after catching it as a
+         /// reference to its WBFL::System::XBase base class) without slicing it.
          virtual void Throw() const override;
+
+         /// Always returns 0. XRCSection does not use distinct numeric reason codes - the
+         /// human-readable reason string is available from GetErrorMessage() instead.
          virtual Int32 GetReason() const noexcept override;
+
+         /// Returns the base class error message with the reason string supplied at construction
+         /// (typically via THROW_RCSECTION) appended
          virtual std::_tstring GetErrorMessage() const override;
 
       private:

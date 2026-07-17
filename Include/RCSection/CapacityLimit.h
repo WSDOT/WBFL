@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // RCSection - Reinforced concrete section analysis modeling
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,6 +28,10 @@ namespace WBFL
 {
    namespace RCSection
    {
+      /// The resultant force state (axial force, biaxial moments, and strain at the origin) at a
+      /// governing capacity limit of a section, such as the maximum compression or maximum
+      /// tension force that can be applied. Returned by GetCompressionLimit()/GetTensionLimit()
+      /// on the interaction curve and moment capacity solvers.
       struct RCSCLASS CapacityLimit
       {
          Float64 Fz{ 0.0 }; ///< Maximum axial force (tension or compression)
