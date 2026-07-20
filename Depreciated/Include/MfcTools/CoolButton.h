@@ -5,9 +5,11 @@
 // CoolButton.h : header file
 //
 
-#if WINVER >= 0x0600 || _WIN32_WINNT >= 0x600
-#pragma message("Target platform is Windows Vista. Consider using CSplitButton instead of CCoolButton")
-#endif
+// This class has been retired from the live MfcTools library (WBFL\MfcTools) and
+// moved here for reference only. CCoolButton predates, and was intended to provide
+// the same functionality as, the native Win32/MFC split button (BS_SPLITBUTTON /
+// CSplitButton, available since Windows Vista). All production call sites have been
+// migrated to CSplitButton; do not use CCoolButton in new code.
 
 /////////////////////////////////////////////////////////////////////////////
 // CCoolButton window
@@ -44,7 +46,7 @@ protected:
      UINT          m_nID1;
      UINT          m_nID2;
      COLORREF     m_crMask;
-     HBITMAP          m_hbmpDisabled;     
+     HBITMAP          m_hbmpDisabled;
      HMODULE          m_themeLib;          // handle to UxTheme.dll
      BOOL          m_bOverControl;     // is the mouse over us?
      BOOL          m_bTracking;     // are we tracking the mouse

@@ -1,0 +1,5 @@
+; MfcTools.def : Declares the module parameters for the DLL.
+
+LIBRARY      "WBFLMfcTools.dll"
+EXPORTS
+    ; Explicit exports can go here

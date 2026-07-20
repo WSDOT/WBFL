@@ -14,12 +14,12 @@ const int nDropBtnWidth =   16;
 /////////////////////////////////////////////////////////////////////////////
 // CCoolButton
 // ========
-// 
+//
 // To Use:
 // 1.     In the RC file, create the button as BS_OWNERDRAW.
 //          Optionally, create a Bitmap resource 16x15 Pixels
 //          - normal default size for a toolbar bitmap.
-// 
+//
 // 2.     in the header for the dialog class:
 //               #include "CoolBtn.h"
 //          then create the necessary button widgets in the //{{AFX_DATA() section:
@@ -60,9 +60,9 @@ const int nDropBtnWidth =   16;
 //
 // FUNCTION:        CCoolButton
 //
-// DESCRIPTION:     
+// DESCRIPTION:
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -93,9 +93,9 @@ CCoolButton::CCoolButton()
 //
 // FUNCTION:        ~CCoolButton
 //
-// DESCRIPTION:     
+// DESCRIPTION:
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -134,7 +134,7 @@ END_MESSAGE_MAP()
 //
 // DESCRIPTION:     Set the IDs
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -150,7 +150,7 @@ BOOL CCoolButton::SetIDs( UINT nID1, UINT nID2 )
 
 ////////////////////////////////////////////////////////////////////////////////
 
-UINT CCoolButton::OnGetDlgCode() 
+UINT CCoolButton::OnGetDlgCode()
 {
      UINT nCode = CButton::OnGetDlgCode();
      nCode |= (m_bActAsDefaultBtn ? DLGC_DEFPUSHBUTTON : DLGC_UNDEFPUSHBUTTON);
@@ -176,7 +176,7 @@ LRESULT CCoolButton::OnSetStyle(WPARAM wParam, LPARAM lParam)
 //
 // DESCRIPTION:     Called in response to draw the button
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -187,13 +187,13 @@ LRESULT CCoolButton::OnSetStyle(WPARAM wParam, LPARAM lParam)
 #ifdef USE_THEMES
 typedef HTHEME(__stdcall *PFNOPENTHEMEDATA)(HWND hwnd, LPCWSTR pszClassList);
 typedef HRESULT(__stdcall *PFNCLOSETHEMEDATA)(HTHEME hTheme);
-typedef HRESULT(__stdcall *PFNDRAWTHEMEBACKGROUND)(HTHEME hTheme, HDC hdc, 
+typedef HRESULT(__stdcall *PFNDRAWTHEMEBACKGROUND)(HTHEME hTheme, HDC hdc,
      int iPartId, int iStateId, const RECT *pRect, OPTIONAL const RECT *pClipRect);
-typedef HRESULT(__stdcall *PFNGETTHEMEBACKGROUNDCONTENTRECT)(HTHEME hTheme, HDC hdc, 
+typedef HRESULT(__stdcall *PFNGETTHEMEBACKGROUNDCONTENTRECT)(HTHEME hTheme, HDC hdc,
      int iPartId, int iStateId, const RECT *pRect, RECT *pContentRect);
 #endif
 
-void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS) 
+void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS)
 {
      if (lpDIS->CtlType != ODT_BUTTON)
           return;
@@ -240,14 +240,14 @@ void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS)
                GetProcAddress(m_themeLib, "DrawThemeBackground");
           if(!pDrawThemeBackground)
                return;
-          hr = (pDrawThemeBackground)(hTheme, hDC, 
+          hr = (pDrawThemeBackground)(hTheme, hDC,
                BP_PUSHBUTTON, iState, &rc, 0);
           if(hr != S_OK)
                return;
 
           // get rect to put content in
           RECT rcContent;
-          PFNGETTHEMEBACKGROUNDCONTENTRECT pGetThemeBackgroundContentRect = 
+          PFNGETTHEMEBACKGROUNDCONTENTRECT pGetThemeBackgroundContentRect =
                (PFNGETTHEMEBACKGROUNDCONTENTRECT)
                GetProcAddress(m_themeLib, "GetThemeBackgroundContentRect");
           if(!pGetThemeBackgroundContentRect)
@@ -303,14 +303,14 @@ void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS)
           {
                pDC->FrameRect(&lpDIS->rcItem,CBrush::FromHandle((HBRUSH)GetStockObject(BLACK_BRUSH)));
                if (m_bPushed && !m_bMenuPushed)
-                    pDC->FrameRect(&btnRect,CBrush::FromHandle((HBRUSH)GetStockObject(BLACK_BRUSH))); 
+                    pDC->FrameRect(&btnRect,CBrush::FromHandle((HBRUSH)GetStockObject(BLACK_BRUSH)));
           }
 
 
           ////////////////////////////////////////
           // State Focus                                    //
           ////////////////////////////////////////
-          if (lpDIS->itemState & ODS_FOCUS || m_bPushed) 
+          if (lpDIS->itemState & ODS_FOCUS || m_bPushed)
           {
                pDC->FrameRect(&lpDIS->rcItem,CBrush::FromHandle((HBRUSH)GetStockObject(BLACK_BRUSH)));
                if (!m_bMenuPushed)
@@ -414,7 +414,7 @@ void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS)
      // Drop down state                              //
      ////////////////////////////////////////
      if (m_bMenuPushed && !bDisabled)
-     {      
+     {
           rectSplit.InflateRect(1,1);
           pDC->DrawEdge(rectSplit,BDR_SUNKENOUTER, BF_RECT);
      }
@@ -432,10 +432,10 @@ void CCoolButton::DrawItem(DRAWITEMSTRUCT* lpDIS)
 //
 // FUNCTION:        DrawArrow
 //
-// DESCRIPTION:     Draws drop down arrow, we could use DrawFrameControl - a bit too 
+// DESCRIPTION:     Draws drop down arrow, we could use DrawFrameControl - a bit too
 //                     messy
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -451,7 +451,7 @@ void CCoolButton::DrawArrow(CDC* pDC,CPoint ArrowTip)
 
    ArrowTip -= CPoint(1,1);
    pDC->MoveTo(ArrowTip);
-   
+
    ptDest = ArrowTip;
    ptDest += CPoint(3,0);
    pDC->LineTo(ptDest);
@@ -477,9 +477,9 @@ void CCoolButton::DrawArrow(CDC* pDC,CPoint ArrowTip)
 // FUNCTION:        OnLButtonDown
 //
 // DESCRIPTION:     handles button pressed state, including drop down menu
-//                     
 //
-// NOTES:               
+//
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -487,7 +487,7 @@ void CCoolButton::DrawArrow(CDC* pDC,CPoint ArrowTip)
 // L Brasington     03/06/06     2.0          Rewritten as CCoolButton
 //
 ////////////////////////////////////////////////////////////////////////////////
-void CCoolButton::OnLButtonDown(UINT nFlags, CPoint point) 
+void CCoolButton::OnLButtonDown(UINT nFlags, CPoint point)
 {
      SetFocus();
      if (m_bMenuPushed)
@@ -544,9 +544,9 @@ BOOL CCoolButton::OnMenuBtn()
 // FUNCTION:        OnLButtonUp
 //
 // DESCRIPTION:     Redraws button in normal state
-//                     
 //
-// NOTES:               
+//
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -568,7 +568,7 @@ void CCoolButton::ClearButtonPushed()
      }
 }
 
-void CCoolButton::OnLButtonUp(UINT nFlags, CPoint point) 
+void CCoolButton::OnLButtonUp(UINT nFlags, CPoint point)
 {
      ClearButtonPushed();
      CButton::OnLButtonUp(nFlags, point);
@@ -579,9 +579,9 @@ void CCoolButton::OnLButtonUp(UINT nFlags, CPoint point)
 // FUNCTION:        OnMouseMove
 //
 // DESCRIPTION:     Tracks mouse whilst pressed
-//                     
 //
-// NOTES:               
+//
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -604,7 +604,7 @@ LRESULT CCoolButton::OnMouseLeave(WPARAM wparam, LPARAM lparam)
      return 0;
 }
 
-void CCoolButton::OnMouseMove(UINT nFlags, CPoint point) 
+void CCoolButton::OnMouseMove(UINT nFlags, CPoint point)
 {
      if (m_bPushed)
      {
@@ -622,8 +622,8 @@ void CCoolButton::OnMouseMove(UINT nFlags, CPoint point)
           tme.hwndTrack = m_hWnd;
           tme.dwFlags = TME_LEAVE|TME_HOVER;
           tme.dwHoverTime = 1;
-          m_bTracking = _TrackMouseEvent(&tme) != FALSE;          
-     }     
+          m_bTracking = _TrackMouseEvent(&tme) != FALSE;
+     }
      CButton::OnMouseMove(nFlags, point);
 }
 
@@ -632,9 +632,9 @@ void CCoolButton::OnMouseMove(UINT nFlags, CPoint point)
 // FUNCTION:        SetButtonImage
 //
 // DESCRIPTION:     Sets the button image, COLORREF crMask specifics the transparency
-//                     color                     
+//                     color
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -644,7 +644,7 @@ void CCoolButton::OnMouseMove(UINT nFlags, CPoint point)
 BOOL CCoolButton::SetButtonImage(UINT nResourceId, COLORREF crMask)
 {
      // The ID must exist also as a bitmap resource!!!
-     m_btnImage.LoadBitmap(nResourceId);   
+     m_btnImage.LoadBitmap(nResourceId);
      m_btnImage.GetObject(sizeof m_bm, &m_bm);
      m_IL.Create( nResourceId, m_bm.bmWidth, 1, crMask );
      m_bLoaded = TRUE;
@@ -661,13 +661,13 @@ BOOL CCoolButton::SetButtonImage(UINT nResourceId, COLORREF crMask)
      return m_bLoaded;
 }
 
-void CCoolButton::OnSetFocus(CWnd* pOldWnd) 
+void CCoolButton::OnSetFocus(CWnd* pOldWnd)
 {
      CButton::OnSetFocus(pOldWnd);
      Invalidate();
 }
 
-void CCoolButton::OnKillFocus(CWnd* pNewWnd) 
+void CCoolButton::OnKillFocus(CWnd* pNewWnd)
 {
      CButton::OnKillFocus(pNewWnd);
 }
@@ -678,17 +678,17 @@ void CCoolButton::OnKillFocus(CWnd* pNewWnd)
 //
 // DESCRIPTION:     Called when system colors change, force a button redraw
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
 // NT ALMOND     210100     1.0                  Origin
 //
 ////////////////////////////////////////////////////////////////////////////////
-void CCoolButton::OnSysColorChange() 
+void CCoolButton::OnSysColorChange()
 {
      CButton::OnSysColorChange();
-     Invalidate();     
+     Invalidate();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -697,7 +697,7 @@ void CCoolButton::OnSysColorChange()
 //
 // DESCRIPTION:     Helper function to test for menu button hit...
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -725,7 +725,7 @@ BOOL CCoolButton::HitMenuBtn(CPoint point)
 //
 // DESCRIPTION:     Adds a menu item and id to our menu.
 //
-// NOTES:               
+// NOTES:
 //
 // MAINTENANCE:
 // Name:             Date:        Version:     Notes:
@@ -740,7 +740,7 @@ BOOL CCoolButton::AddMenuItem(UINT nMenuId,const CString strMenu, UINT nMenuFlag
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void CCoolButton::OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) 
+void CCoolButton::OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
      switch ( nChar )
      {
@@ -748,7 +748,7 @@ void CCoolButton::OnSysKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
           OnMenuBtn();
           break;
      }
-     
+
      CWnd::OnSysKeyDown(nChar, nRepCnt, nFlags);
 }
 

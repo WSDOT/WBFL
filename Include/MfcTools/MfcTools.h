@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // MfcTools - Extension library for MFC
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -46,7 +46,6 @@
 #include <MfcTools\CacheEdit.h>
 #include <MfcTools\CacheCheckBox.h>
 #include <MfcTools\CacheComboBox.h>
-#include <MfcTools\CoolButton.h>
 #include <MfcTools\StaticSplitter.h>
 #include <MfcTools\WSDOTCalculationSheet.h>
 #include <MfcTools\LoadModifiersDlg.h>

@@ -22,9 +22,6 @@
     <ClCompile Include="CogoDDX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CoolButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CustomDDX.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,9 +142,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\MfcTools\CogoDDX.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\MfcTools\CoolButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\MfcTools\CustomDDX.h">

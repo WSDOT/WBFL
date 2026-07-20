@@ -199,7 +199,6 @@
     <ClCompile Include="ChoiceListDlg.cpp" />
     <ClCompile Include="choosedirdlg.cpp" />
     <ClCompile Include="CogoDDX.cpp" />
-    <ClCompile Include="CoolButton.cpp" />
     <ClCompile Include="CustomDDX.cpp" />
     <ClCompile Include="ddxfile.cpp" />
     <ClCompile Include="ddxfolder.cpp" />
@@ -251,7 +250,6 @@
     <ClInclude Include="..\Include\MfcTools\CacheEdit.h" />
     <ClInclude Include="..\Include\MfcTools\choosedirdlg.h" />
     <ClInclude Include="..\Include\MfcTools\CogoDDX.h" />
-    <ClInclude Include="..\Include\MfcTools\CoolButton.h" />
     <ClInclude Include="..\Include\MfcTools\CustomDDX.h" />
     <ClInclude Include="..\Include\MfcTools\ddxfile.h" />
     <ClInclude Include="..\Include\MfcTools\ddxfolder.h" />
