@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -34,7 +34,7 @@ LibraryEntry::LibraryEntry(const LibraryEntry& rOther)
 
 LibraryEntry::~LibraryEntry()
 {
-   CHECKX(!m_RefCnt,_T("Can't destroy an entry until all references are gone"));
+   CHECKX(!m_UsageRefCnt,_T("Can't destroy an entry until all references are gone"));
 }
 
 LibraryEntry& LibraryEntry::operator=(const LibraryEntry& rOther)
@@ -65,36 +65,36 @@ bool LibraryEntry::Edit(bool allowEditing,int nPage)
 
 void LibraryEntry::SetLibrary(const ILibrary* pLibrary)
 {
-   m_pLibrary = pLibrary;
+   m_pLibrary = pLibrary ? pLibrary->weak_from_this() : std::weak_ptr<const ILibrary>();
 }
 
 const ILibrary* LibraryEntry::GetLibrary() const
 {
-   return m_pLibrary;
+   return m_pLibrary.lock().get();
 }
 
 Uint32 LibraryEntry::AddRef() const
 {
-   m_RefCnt++;
-   return m_RefCnt;
+   m_UsageRefCnt++;
+   return m_UsageRefCnt;
 }
 
 Uint32 LibraryEntry::Release() const
 {
-   CHECKX(0 < m_RefCnt,_T("Reference count cannot be negative"));
+   CHECKX(0 < m_UsageRefCnt,_T("Reference count cannot be negative"));
 
    // just some safety code for release builds
-   if ( m_RefCnt == 0 )
-      m_RefCnt++;
+   if ( m_UsageRefCnt == 0 )
+      m_UsageRefCnt++;
 
-   m_RefCnt--;
+   m_UsageRefCnt--;
 
-   return m_RefCnt;
+   return m_UsageRefCnt;
 }
 
 Uint32 LibraryEntry::GetRefCount() const
 {
-   return m_RefCnt;
+   return m_UsageRefCnt;
 }
 
 bool LibraryEntry::IsEditingEnabled() const

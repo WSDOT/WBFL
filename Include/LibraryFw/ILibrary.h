@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,11 +23,13 @@
 
 #pragma once
 
+#include <memory>
+#include <set>
+
 #include <LibraryFw\LibraryFwExp.h>
 #include <LibraryFw\LibraryEntry.h>
 #include <System\IStructuredSave.h>
 #include <System\IStructuredLoad.h>
-#include <set>
 
 namespace WBFL
 {
@@ -51,7 +53,7 @@ namespace WBFL
       /// All entries use counted pointer schemes. You must make calls to AddRef/Release
       /// on the entries every time you reference the entry. LookupEntry automatically
       /// makes a call to AddRef() when it is called.
-      class LIBRARYFWCLASS ILibrary
+      class LIBRARYFWCLASS ILibrary : public std::enable_shared_from_this<ILibrary>
       {
       public:
          virtual ~ILibrary() = default;
@@ -119,7 +121,12 @@ namespace WBFL
 
          virtual EntryRemoveOutcome RemoveEntry( LPCTSTR key ) = 0;
 
-         /// @brief Remove all entries. Will assert if entries have outstanding references
+         /// @brief Remove all entries. This unconditionally clears every entry, even
+         /// those with outstanding references (see AddRef/Release/GetRefCount) --
+         /// unlike RemoveEntry(), this does not refuse to remove a referenced entry.
+         /// If any cleared entry still has outstanding references, a non-blocking
+         /// WARN() diagnostic is raised (see System\Checks.h); this does not stop
+         /// or alter the clear.
          virtual void RemoveAll() = 0;
 
          /// @brief Save to structured storage

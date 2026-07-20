@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,15 +39,21 @@ namespace WBFL
          std::_tstring EntryName; // name of the library entry
          bool bEditable;        // true if the entry can be edited
 
+         // Intentionally compares LibName only (groups records by library). Do NOT
+         // change to = default -- a defaulted operator< does a full lexicographic
+         // compare of all 3 fields, which is not the same ordering.
          bool operator<(const EntryUsageRecord& other) const
          {
             return LibName < other.LibName;
          }
 
+         // Not defaulted: not every project that transitively includes this header
+         // builds at /std:c++20 (defaulting comparison operators requires it -- MSVC
+         // C7589), e.g. BEToolbox.vcxproj and PGSuper\KDOTExport\KDOTExport.vcxproj.
          bool operator==(const EntryUsageRecord& other) const
          {
             return (LibName == other.LibName)
-               && (EntryName == other.EntryName) 
+               && (EntryName == other.EntryName)
                && (bEditable == other.bEditable);
          }
       };
@@ -63,9 +69,15 @@ namespace WBFL
 
          LibraryManager& operator=(const LibraryManager&) = delete;
 
-         /// @brief Add a new library to the list. The library manager takes ownership of 
+         /// @brief Add a new library to the list. The library manager takes ownership of
          /// the pointer and will delete it. Hence, you must create the library on
          /// the heap.
+         ///
+         /// Call this BEFORE adding any entries to pLibrary. An entry's back-pointer
+         /// to its owning library (LibraryEntry::GetLibrary()) is captured from
+         /// pLibrary at the moment the entry is added; if an entry is added before
+         /// pLibrary is registered here, that entry's GetLibrary() will return
+         /// nullptr permanently, even after this call.
          IndexType AddLibrary(ILibrary* pLibrary);
 
          /// @brief Get manager's name
@@ -94,10 +106,13 @@ namespace WBFL
 
          /// @brief Clears all entries from all contained libraries. This function can
          /// be dangerous because it will try to delete entries regardless if
-         /// they have outstanding references.
+         /// they have outstanding references (see ILibrary::RemoveAll(), which this
+         /// calls for every library -- a non-blocking WARN() diagnostic is raised
+         /// per-library if any cleared entry still has outstanding references).
          virtual void ClearAllEntries();
 
-         /// @brief Clears libraries from collection
+         /// @brief Clears libraries from collection. Calls ClearAllEntries() first,
+         /// so the same outstanding-reference WARN() diagnostic applies here too.
          virtual void ClearLibraries();
 
          /// @brief set flags to enable (or disable) editing for all entries in all libraries

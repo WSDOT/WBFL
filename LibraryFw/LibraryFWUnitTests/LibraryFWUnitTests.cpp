@@ -104,5 +104,95 @@ namespace LibraryFWUnitTests
             std::_tcout << rex.GetErrorMessage() << std::endl;
          }
       }
+
+      TEST_METHOD(BackPointerBasic)
+      {
+         using LibType = Library<TestEntry, 0>;
+         auto* pLib = new LibType(_T("BP_LIB1"), _T("BackPointer Lib 1"));
+         LibraryManager mgr;
+         mgr.AddLibrary(pLib);
+
+         pLib->NewEntry(_T("X"));
+         const LibraryEntry* pEntry = pLib->GetEntry(_T("X"));
+         Assert::IsNotNull(pEntry);
+         Assert::IsNotNull(pEntry->GetLibrary());
+         Assert::IsTrue(pEntry->GetLibrary() == static_cast<const ILibrary*>(pLib));
+      }
+
+      TEST_METHOD(BackPointerFailsSafeAfterCloneAndLibraryDestruction)
+      {
+         using LibType = Library<TestEntry, 0>;
+         std::unique_ptr<LibraryEntry> clone;
+         {
+            auto* pLib = new LibType(_T("BP_LIB2"), _T("BackPointer Lib 2"));
+            LibraryManager mgr;
+            mgr.AddLibrary(pLib);
+
+            pLib->NewEntry(_T("Y"));
+            clone = pLib->CreateEntryClone(_T("Y"));
+            Assert::IsNotNull(clone.get());
+            // still valid while the source library/manager is alive
+            Assert::IsNotNull(clone->GetLibrary());
+         } // mgr (and pLib) destroyed here - clone outlives its source library
+
+         // must fail safe (nullptr), not dangle, now that the source library is gone
+         Assert::IsNull(clone->GetLibrary());
+      }
+
+      TEST_METHOD(BackPointerNullIfEntryAddedBeforeLibraryRegistered)
+      {
+         // documented limitation: weak_from_this() is permanently expired for
+         // entries added before the owning Library is itself registered via
+         // LibraryManager::AddLibrary()
+         using LibType = Library<TestEntry, 0>;
+         auto* pLib = new LibType(_T("BP_LIB3"), _T("BackPointer Lib 3"));
+         pLib->NewEntry(_T("Pre")); // added BEFORE AddLibrary
+
+         LibraryManager mgr;
+         mgr.AddLibrary(pLib);
+
+         pLib->NewEntry(_T("Post")); // added AFTER AddLibrary
+
+         const LibraryEntry* pPre = pLib->GetEntry(_T("Pre"));
+         const LibraryEntry* pPost = pLib->GetEntry(_T("Post"));
+         Assert::IsNotNull(pPre);
+         Assert::IsNotNull(pPost);
+         Assert::IsNull(pPre->GetLibrary());
+         Assert::IsNotNull(pPost->GetLibrary());
+      }
+
+      TEST_METHOD(CopyConstructDoesNotInheritSourceRefCount)
+      {
+         TestEntry src;
+         src.AddRef();
+         src.AddRef();
+         Assert::IsTrue(src.GetRefCount() == 2);
+
+         TestEntry copy(src);
+         Assert::IsTrue(copy.GetRefCount() == 0);   // a copy is not yet referenced by anyone
+         Assert::IsTrue(src.GetRefCount() == 2);     // source is unaffected by being copied from
+
+         src.Release();
+         src.Release();
+      }
+
+      TEST_METHOD(AssignmentLeavesRefCountUnchangedOnBothSides)
+      {
+         TestEntry a;
+         a.AddRef();
+         a.AddRef();
+
+         TestEntry b;
+         b.AddRef();
+
+         b = a;
+
+         Assert::IsTrue(b.GetRefCount() == 1);   // unchanged by the assignment
+         Assert::IsTrue(a.GetRefCount() == 2);   // unchanged by the assignment
+
+         a.Release();
+         a.Release();
+         b.Release();
+      }
 	};
 }

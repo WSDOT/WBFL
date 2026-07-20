@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -81,6 +81,9 @@ namespace WBFL
          /// already exists.
          bool NewEntry(LPCTSTR key)
          {
+            WARN(GetLibraryManager() == nullptr,
+               _T("NewEntry() called before this Library was registered via LibraryManager::AddLibrary() -- this entry's GetLibrary() will return nullptr"));
+
             if ( IsReservedName(key) )
             {
                return false;
@@ -107,6 +110,9 @@ namespace WBFL
          /// @brief Add an entry based on another. key must be unique. Returns false if failed.
          bool AddEntry( const T& rNewValue, LPCTSTR key, bool bAddRef = false )
          {
+            WARN(GetLibraryManager() == nullptr,
+               _T("AddEntry() called before this Library was registered via LibraryManager::AddLibrary() -- this entry's GetLibrary() will return nullptr"));
+
             if ( IsReservedName(key) )
             {
                return false;
@@ -118,7 +124,7 @@ namespace WBFL
             if (!pentry)
             {
                // doesn't exist - add it
-               LibItem apentry( new T(rNewValue) );
+               LibItem apentry( std::make_shared<T>(rNewValue) );
                if ( bAddRef )
                {
                   apentry->AddRef();
@@ -139,6 +145,9 @@ namespace WBFL
          /// Returns false if unsuccessful.
          bool CloneEntry(LPCTSTR key, LPCTSTR newkey)
          {
+            WARN(GetLibraryManager() == nullptr,
+               _T("CloneEntry() called before this Library was registered via LibraryManager::AddLibrary() -- the new entry's GetLibrary() will return nullptr"));
+
             if ( IsReservedName(newkey) )
             {
                return false;
@@ -349,9 +358,24 @@ namespace WBFL
             }
          }
 
-         /// @brief Remove all entries. Will assert if entries have outstanding references
+         /// @brief Remove all entries. This unconditionally clears every entry, even
+         /// those with outstanding references -- unlike RemoveEntry(), this does not
+         /// refuse to remove a referenced entry. If any cleared entry still has
+         /// outstanding references, a non-blocking WARN() diagnostic is raised (see
+         /// System\Checks.h); this does not stop or alter the clear.
          void RemoveAll()
          {
+            bool bAnyReferenced = false;
+            for (const auto& entry : m_EntryList)
+            {
+               if (0 < entry.second->GetRefCount())
+               {
+                  bAnyReferenced = true;
+                  break;
+               }
+            }
+            WARN(bAnyReferenced, _T("RemoveAll() is clearing one or more entries that still have outstanding references"));
+
             m_EntryList.clear();
          }
 

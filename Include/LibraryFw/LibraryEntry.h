@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LibraryFW - Framework for implementing library features in programs
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include <LibraryFw\LibraryFwExp.h>
 #include <LibraryFw/LibraryHints.h>
 
@@ -38,12 +40,27 @@ namespace WBFL
    {
       class ILibrary;
 
-      /// @brief abstract base class for library entries. 
+      /// @brief abstract base class for library entries.
       /// this class provides a base implementation for library entries.
+      ///
+      /// AddRef()/Release()/GetRefCount() are an application-level "is this entry
+      /// currently referenced by external model data" usage counter, layered on top
+      /// of (and independent from) the std::shared_ptr machinery that actually owns
+      /// entry memory (see Library::m_EntryList / LibraryManager::m_Libraries).
+      /// Despite the COM-style naming, this counter has nothing to do with object
+      /// lifetime/deletion -- see Release()'s doc comment below.
       class LIBRARYFWCLASS LibraryEntry
       {
       public:
          LibraryEntry() = default;
+
+         // Copy ctor/operator=/dtor are intentionally hand-written, not = default.
+         // CopyValuesAndAttributes() deliberately excludes m_UsageRefCnt (a copy/assignment
+         // target must never inherit the source's "in use" count). A defaulted copy
+         // ctor or operator= would copy m_UsageRefCnt too, reviving the exact bug this
+         // hand-written code prevents. The dtor is user-declared only for its
+         // CHECKX(!m_UsageRefCnt,...) diagnostic and must stay virtual regardless (this is
+         // a polymorphic base). Do not "modernize" these to = default.
          LibraryEntry(const LibraryEntry& rOther);
 
          virtual ~LibraryEntry();
@@ -66,7 +83,10 @@ namespace WBFL
          /// @brief Set a pointer back to our library
          void SetLibrary(const ILibrary* pLibrary);
 
-         /// @brief Return a pointer to our library
+         /// @brief Return a pointer to our library, or nullptr if the library has
+         /// been destroyed, or if this entry was added to its library before that
+         /// library was itself registered with a LibraryManager via AddLibrary()
+         /// (see AddLibrary()'s doc comment).
          const ILibrary* GetLibrary() const;
 
          /// @brief Increment the reference count by one
@@ -100,8 +120,8 @@ namespace WBFL
 
       private:
          std::_tstring       m_Name;
-         const ILibrary* m_pLibrary = nullptr;
-         mutable Uint32 m_RefCnt = 0;
+         std::weak_ptr<const ILibrary> m_pLibrary;
+         mutable Uint32 m_UsageRefCnt = 0;
          bool              m_IsEditingEnabled = true;
          bool m_bCanCopy = true;
 
