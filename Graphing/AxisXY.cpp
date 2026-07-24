@@ -370,7 +370,7 @@ void AxisXY::SetNiceAxisRange(Float64 leftVal, Float64 rightVal,bool bOffsetZero
    }
    else // (m_Scale == INTEGRAL )
    {
-      ATLASSERT(false); // INTEGRAL mode cannot be used with Nice axis range
+      CHECK(false); // INTEGRAL mode cannot be used with Nice axis range
    }
 }
 

@@ -163,7 +163,7 @@ void ShapeDrawStrategy::DrawHighlight(std::shared_ptr<const iPointDisplayObject>
 
 void ShapeDrawStrategy::DrawDragImage(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC, const std::shared_ptr < const iCoordinateMap> map, const POINT& dragStart, const POINT& dragPoint) const
 {
-   ATLASSERT(false); // not implemented
+   CHECK(false); // not implemented
 //   map->LPtoWP(dragPoint.x, dragPoint.y, &m_CachePoint);
 //
 //   CRect r = pDO->GetBoundingBox();

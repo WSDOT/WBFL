@@ -138,7 +138,7 @@ ReportDescription ReportBuilderManager::GetReportDescription(LPCTSTR strReportNa
 ReportDescription ReportBuilderManager::GetReportDescription(const std::_tstring& strReportName) const
 {
    auto pRptBuilder = GetReportBuilder(strReportName);
-   ATLASSERT( pRptBuilder != nullptr ); // report builder not found
+   CHECK( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetReportDescription();
 }
@@ -151,7 +151,7 @@ const CBitmap* ReportBuilderManager::GetMenuBitmap(LPCTSTR strReportName)
 const CBitmap* ReportBuilderManager::GetMenuBitmap(const std::_tstring& strReportName)
 {
    std::shared_ptr<ReportBuilder> pRptBuilder = GetReportBuilder(strReportName);
-   ATLASSERT( pRptBuilder != nullptr ); // report builder not found
+   CHECK( pRptBuilder != nullptr ); // report builder not found
 
    return pRptBuilder->GetMenuBitmap();
 }

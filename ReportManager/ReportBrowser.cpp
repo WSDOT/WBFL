@@ -82,7 +82,7 @@ ReportBrowser::~ReportBrowser()
 void ReportBrowser::UpdateReport(std::shared_ptr<rptReport>& pReport,bool bRefresh)
 {
    std::_tofstream ofile( m_Filename.c_str() );
-   ATLASSERT( ofile.is_open() == true );
+   CHECK( ofile.is_open() == true );
 
    Uint32 logPixX;
    Uint32 logPixY;
@@ -113,7 +113,7 @@ bool ReportBrowser::Initialize(HWND hwnd, DWORD dwStyle, const std::shared_ptr<c
    AFX_MANAGE_STATE(AfxGetAppModuleState());
 
    // Did you forget something?  This method needs a pointer to a rptReport
-   ATLASSERT( pReport != nullptr );
+   CHECK( pReport != nullptr );
 
    m_pRptMgr = pRptMgr;
    m_pRptSpec = pRptSpec;

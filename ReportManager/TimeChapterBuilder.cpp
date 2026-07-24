@@ -47,7 +47,7 @@ bool TimeChapterBuilder::Select() const
 
 rptChapter* TimeChapterBuilder::Build(const std::shared_ptr<const ReportSpecification>& pRptSpec,Uint16 level) const
 {
-   ATLASSERT(false); // don't call this method
+   CHECK(false); // don't call this method
    rptChapter* pChapter = new rptChapter(GetName());
    rptParagraph* pPara = new rptParagraph;
    *pPara << _T("DON'T CALL THE STANDARD BUILD METHOD") << rptNewLine;

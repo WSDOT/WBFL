@@ -98,7 +98,7 @@ void CRebarMaterialComboBox::GetMaterial(WBFL::Materials::Rebar::Type* pType,WBF
       case 5:  *pType = WBFL::Materials::Rebar::Type::A706;  *pGrade = WBFL::Materials::Rebar::Grade::Grade80;  break;
       case 6:  *pType = WBFL::Materials::Rebar::Type::A1035; *pGrade = WBFL::Materials::Rebar::Grade::Grade100; break;
       default:
-         ATLASSERT(false); // should never get here
+         CHECK(false); // should never get here
       }
 }
 
@@ -117,7 +117,7 @@ void CRebarMaterialComboBox::SetMaterial(WBFL::Materials::Rebar::Type type,WBFL:
          curSel = 3;
 #if defined _DEBUG
       else
-         ATLASSERT(false); // should never get here
+         CHECK(false); // should never get here
 #endif
    }
    else if ( type == WBFL::Materials::Rebar::Type::A706 )
@@ -128,7 +128,7 @@ void CRebarMaterialComboBox::SetMaterial(WBFL::Materials::Rebar::Type type,WBFL:
          curSel = 5;
 #if defined _DEBUG
       else
-         ATLASSERT(false); // should never get here
+         CHECK(false); // should never get here
 #endif
    }
    else if ( type == WBFL::Materials::Rebar::Type::A1035 )
@@ -137,12 +137,12 @@ void CRebarMaterialComboBox::SetMaterial(WBFL::Materials::Rebar::Type type,WBFL:
          curSel = 6;
 #if defined _DEBUG
       else
-         ATLASSERT(false); // should never get here
+         CHECK(false); // should never get here
 #endif
    }
    else
    {
-      ATLASSERT(false); // should never get here
+      CHECK(false); // should never get here
       curSel = CB_ERR;
    }
 
@@ -156,6 +156,6 @@ void CRebarMaterialComboBox::SetMaterial(WBFL::Materials::Rebar::Type type,WBFL:
 void CRebarMaterialComboBox::PreSubclassWindow()
 {
    CComboBox::PreSubclassWindow();
-   ATLASSERT( !(GetStyle() & CBS_SORT) ); // make sure sort style is turned off
+   CHECK( !(GetStyle() & CBS_SORT) ); // make sure sort style is turned off
    Initialize();
 }

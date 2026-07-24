@@ -127,7 +127,7 @@ void GraphXY::GetDataSeriesPoints(IndexType cookie, DataSeries* pvPoints) const
    }
    else
    {
-      ATLASSERT(0);
+      CHECK(0);
    }
 }
 

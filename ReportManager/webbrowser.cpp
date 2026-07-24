@@ -130,7 +130,7 @@ BOOL CWebBrowser::Create(LPCTSTR pszWindowName, DWORD dwStyle,
 
     // Disable drag and drop - we are a child, we can't handle drops
     hr = _Browser->put_RegisterAsDropTarget(VARIANT_FALSE);
-    ATLASSERT(SUCCEEDED(hr));
+    CHECK(SUCCEEDED(hr));
 
 	// navigate to initial blank page
 

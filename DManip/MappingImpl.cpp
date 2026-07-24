@@ -72,7 +72,7 @@ Mapping::~Mapping()
    if (!m_Stack.empty())
    {
       IndexType siz = m_Stack.size();
-      ATLASSERT(false);
+      CHECK(false);
    }
 }
 
@@ -346,7 +346,7 @@ void Mapping::TPtoWP(LONG tx,LONG ty,Float64* wx,Float64* wy) const
 
 void Mapping::LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty) const
 {
-   ATLASSERT(!m_Stack.empty());
+   CHECK(!m_Stack.empty());
    const StackFrame& item = m_Stack.front();
 
    *tx = round_to_nearest_whole_number( item.m_TextCoordMapperX.GetA(lx) );
@@ -355,7 +355,7 @@ void Mapping::LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty) const
 
 void Mapping::TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly) const
 {
-   ATLASSERT(!m_Stack.empty());
+   CHECK(!m_Stack.empty());
    const StackFrame& item = m_Stack.front();
 
    *lx = round_to_nearest_whole_number( item.m_TextCoordMapperX.GetB(tx) );
@@ -377,14 +377,14 @@ CSize Mapping::GetTextExtent(const CDisplayView* pView, const LOGFONT& font, LPC
 {
    if (m_Stack.empty())
    {
-      ATLASSERT(false);
+      CHECK(false);
       return CSize(1440, 144);
    }
 
    // get most recent dc from stack
    CDC* pdc = m_Stack.front().m_pDC;
    ASSERT_VALID(pdc);
-   ATLASSERT(pdc->m_hAttribDC);
+   CHECK(pdc->m_hAttribDC);
 
    LOGFONT lf = font;
    pView->ScaleFont(lf);

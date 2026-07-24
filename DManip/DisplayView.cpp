@@ -502,7 +502,7 @@ void CDisplayView::Zoom(Float64 factor, bool reDraw)
 {
    if (factor<=0.0)
    {
-      ATLASSERT(false);
+      CHECK(false);
       return;
    }
    
@@ -533,7 +533,7 @@ void CDisplayView::ScaleFont(LOGFONT& lfFont) const
    HMONITOR hMonitor = MonitorFromWindow(GetSafeHwnd(), MONITOR_DEFAULTTONEAREST);
    UINT Xdpi, Ydpi;
    HRESULT hr = GetDpiForMonitor(hMonitor, MDT_DEFAULT, &Xdpi, &Ydpi);
-   ATLASSERT(Xdpi == Ydpi);
+   CHECK(Xdpi == Ydpi);
 
    lfFont.lfHeight = MulDiv(lfFont.lfHeight, Xdpi, USER_DEFAULT_SCREEN_DPI);
 }

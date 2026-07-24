@@ -134,18 +134,18 @@ void Tool::DrawDragImage(CDC* pDC, std::shared_ptr<const iCoordinateMap> map, co
          m_MemDC.SelectObject(m_Bitmap);
 
          BOOL st = m_MemDC.BitBlt(0,0,SZ,SZ,pDC,newPoint.x, newPoint.y,SRCCOPY);
-         ATLASSERT(st);
+         CHECK(st);
          m_First = false;
       }
       else
       {
          // draw saved location
          BOOL st =pDC->BitBlt(m_OldPoint.x, m_OldPoint.y, SZ, SZ, &m_MemDC, 0,0, SRCCOPY);
-         ATLASSERT(st);
+         CHECK(st);
 
          // save new location
          st = m_MemDC.BitBlt(0,0,SZ,SZ,pDC,newPoint.x, newPoint.y,SRCCOPY);
-         ATLASSERT(st);
+         CHECK(st);
       }
 
       m_OldPoint = newPoint;

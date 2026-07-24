@@ -46,8 +46,8 @@ int randomWithin(const RangeType & range, int seed)
    seed = size_t(seed * 9301 + 49297) % 233280;
    Float64 rnd   = seed / 233280.0;
    auto   r     = floor(min + rnd * (max - min));
-   ATLASSERT(r >= 0);
-   ATLASSERT(min <= r && max >= r);
+   CHECK(r >= 0);
+   CHECK(min <= r && max >= r);
    return int(r);
 }
 
