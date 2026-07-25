@@ -106,8 +106,8 @@
       <AdditionalIncludeDirectories>\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>Win32</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -160,8 +160,8 @@
       <AdditionalIncludeDirectories>\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -214,8 +214,8 @@
       <AdditionalIncludeDirectories>\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>Win32</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
@@ -264,8 +264,8 @@
       <AdditionalIncludeDirectories>\ARP\WBFL\Include;\ARP\WBFL\RegFreeCOM\$(Configuration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(ProjectName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>

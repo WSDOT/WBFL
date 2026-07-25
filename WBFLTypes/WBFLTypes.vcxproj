@@ -60,11 +60,11 @@
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>_IA64_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <GenerateTypeLibrary>false</GenerateTypeLibrary>
       <TypeLibraryName />
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName).h</HeaderFileName>
     </Midl>
     <PostBuildEvent>
       <Command />
@@ -79,11 +79,11 @@
     </CustomBuildStep>
     <Midl>
       <PreprocessorDefinitions>_IA64_;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(ARPDIR)\WBFL\RegFreeCOM\$(Platform)\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <GenerateTypeLibrary>false</GenerateTypeLibrary>
       <TypeLibraryName />
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName).h</HeaderFileName>
     </Midl>
     <PostBuildEvent>
       <Command />

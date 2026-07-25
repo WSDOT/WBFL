@@ -74,11 +74,11 @@
       </Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(ARPDIR)\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -144,11 +144,11 @@
       </Outputs>
     </CustomBuildStep>
     <Midl>
-      <AdditionalIncludeDirectories>..\Include;$(SolutionDir)RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Include;$(ARPDIR)\WBFL\RegFreeCOM\$(Configuration)\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
-      <HeaderFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(SolutionDir)Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(ProjectName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
