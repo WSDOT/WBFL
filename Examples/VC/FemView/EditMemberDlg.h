@@ -10,7 +10,7 @@ class CEditMemberDlg : public CDialog
 {
 // Construction
 public:
-	CEditMemberDlg(IFem2dModel* pModel,BOOL bMbrIDReadOnly = FALSE,CWnd* pParent = NULL);   // standard constructor
+	CEditMemberDlg(WBFL::FEA2D::Model* pModel,BOOL bMbrIDReadOnly = FALSE,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CEditMemberDlg)
@@ -34,7 +34,7 @@ public:
 
 // Implementation
 protected:
-   CComPtr<IFem2dModel> m_Model;
+   WBFL::FEA2D::Model* m_Model;
    BOOL m_bMbrIDReadOnly;
 
 	// Generated message map functions

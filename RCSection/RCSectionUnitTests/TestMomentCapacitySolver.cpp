@@ -5,7 +5,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::RCSection;
 
-namespace RCSectionUnitTest
+namespace RCSectionUnitTests
 {
 	TEST_CLASS(TestMomentCapacitySolver)
 	{

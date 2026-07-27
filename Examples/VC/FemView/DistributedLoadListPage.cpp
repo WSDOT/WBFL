@@ -50,51 +50,36 @@ BOOL CDistributedLoadListPage::OnInitDialog()
    m_ctrlList.InsertColumn(8,_T("We"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComPtr<IFem2dLoadingCollection> loadings;
-   pParent->m_pFem2d->get_Loadings(&loadings);
 
    CString strOrientation[] = {_T("Global"),_T("Member"),_T("GlobalProjected")};
    CString strDirection[] = {_T("X"),_T("Y")};
 
    int listIdx = 0;
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = pParent->m_pFem2d->GetLoadingCount();
    for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(idx,&loading);
+      WBFL::FEA2D::Loading* loading = pParent->m_pFem2d->FindLoadingByIndex(idx);
 
-      CComPtr<IFem2dDistributedLoadCollection> loads;
-      loading->get_DistributedLoads(&loads);
-      IndexType nLoads;
-      loads->get_Count(&nLoads);
+      IndexType nLoads = loading->GetDistributedLoadCount();
       for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
-         CComPtr<IFem2dDistributedLoad> load;
-         loads->get_Item(ldIdx,&load);
+         WBFL::FEA2D::DistributedLoad* load = loading->FindDistributedLoadByIndex(ldIdx);
 
-         IDType ID;
-         load->get_ID(&ID);
+         IDType ID = load->GetID();
 
-         MemberIDType mbrID;
-         load->get_MemberID(&mbrID);
+         MemberIDType mbrID = load->GetMemberID();
 
-         Fem2dLoadDirection direction;
-         load->get_Direction(&direction);
+         WBFL::FEA2D::LoadDirection direction = load->GetDirection();
 
-         Fem2dLoadOrientation orientation;
-         load->get_Orientation(&orientation);
+         WBFL::FEA2D::LoadOrientation orientation = load->GetOrientation();
 
-         LoadCaseIDType loadID;
-         load->get_Loading(&loadID);
+         LoadCaseIDType loadID = load->GetLoadingID();
 
-         Float64 Start,End;
-         load->get_StartLocation(&Start);
-         load->get_EndLocation(&End);
+         Float64 Start = load->GetStartLocation();
+         Float64 End = load->GetEndLocation();
 
-         Float64 Ws, We;
-         load->get_WStart(&Ws);
-         load->get_WEnd(&We);
+         Float64 Ws = load->GetWStart();
+         Float64 We = load->GetWEnd();
 
          m_ctrlList.InsertItem(listIdx,_T("Load"));
 
@@ -105,10 +90,10 @@ BOOL CDistributedLoadListPage::OnInitDialog()
          str.Format(_T("%d"),mbrID);
          m_ctrlList.SetItemText(listIdx,1,str);
 
-         str.Format(_T("%s"),strDirection[direction]);
+         str.Format(_T("%s"),strDirection[static_cast<int>(direction)]);
          m_ctrlList.SetItemText(listIdx,2,str);
 
-         str.Format(_T("%s"),strOrientation[orientation]);
+         str.Format(_T("%s"),strOrientation[static_cast<int>(orientation)]);
          m_ctrlList.SetItemText(listIdx,3,str);
 
          str.Format(_T("%d"),loadID);

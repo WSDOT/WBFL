@@ -29,7 +29,7 @@ private:
    std::vector<Point2d> m_DummyPoints;
 };
 
-namespace GeomModelUnitTest
+namespace GeomModelUnitTests
 {
 	TEST_CLASS(TestCompositeShape)
 	{

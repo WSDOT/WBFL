@@ -2,12 +2,18 @@
 //
 
 #include <iostream>
+#include <fcntl.h>
+#include <io.h>
 #include <CoordGeom/CoordGeom.h>
 
 using namespace WBFL::COGO;
 
 int main()
 {
+    // Write wide characters (e.g. the degree symbol in Angle/Direction::AsString) straight through as
+    // UTF-16 instead of narrowing them with the "C" locale, which mangles anything above ASCII
+    _setmode(_fileno(stdout), _O_U16TEXT);
+
     // This example is based on the Sunshine Subdivision Lot 18 Example in the ICES COGO manual
     Model model;
     

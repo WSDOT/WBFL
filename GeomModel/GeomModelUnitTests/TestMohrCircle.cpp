@@ -17,14 +17,14 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 //    The solution was to use the /FORCE:MULTIPLE option on the linker
 //    There are still LNK4006 warnings, but they seem to be incidental
 //
-// To see the linker settings, Right click on GeomModelUnitTest project and select Properties.
+// To see the linker settings, Right click on GeomModelUnitTests project and select Properties.
 // Configuration Properties > Linker > General > Additional Library Directories: Added $(ARPDIR)\WBFL\GeomModel\$(Platform)\$(Configuration)
 // Configuration Properties > Linker > Input > Additional Dependencies: Added main.obj;MohrCircle.obj
 // Configuraiton Properties > Linker > Command Line: Added /FORCE:MULTIPLE
 
 #include "..\GeomModel\MohrCircle.h"
 
-namespace GeomModelUnitTest
+namespace GeomModelUnitTests
 {
 	TEST_CLASS(TestMohrCircle)
 	{

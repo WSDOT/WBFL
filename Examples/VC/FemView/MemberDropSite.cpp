@@ -241,27 +241,19 @@ void CMemberDropSite::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffec
          auto pDispObj = GetDisplayObject();
          IDType mbrID = pDispObj->GetID();
 
-         CComPtr<IFem2dModel> model = m_pDoc->m_Model;
+         WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
          CAddPointLoadDlg dlg(model,TRUE);
 
          dlg.m_MbrID = mbrID;
          if ( dlg.DoModal() == IDOK )
          {
-            CComPtr<IFem2dLoadingCollection> loadings;
-            model->get_Loadings(&loadings);
-
-            CComPtr<IFem2dLoading> loading;
-            loadings->get_Item(dlg.m_LoadingID,&loading);
-
-            CComPtr<IFem2dPointLoadCollection> pointLoads;
-            loading->get_PointLoads(&pointLoads);
+            WBFL::FEA2D::Loading* loading = model->FindLoadingByIndex(dlg.m_LoadingID);
 
             try
             {
-               CComPtr<IFem2dPointLoad> ptLoad;
-               IndexType count;
-               pointLoads->get_Count(&count);
-               pointLoads->Create(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,lotGlobal,&ptLoad);
+               IndexType count = loading->GetPointLoadCount();
+               loading->CreatePointLoad(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,WBFL::FEA2D::LoadOrientation::Global);
+               m_pDoc->OnLoadingChanged(loading->GetID());
             }
             catch(...)
             {
@@ -295,32 +287,20 @@ void CMemberDropSite::OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffec
       //////////////// END HERE
 
       // Create a new load in the fem model
-      CComPtr<IFem2dLoadingCollection> loadings;
-      m_pDoc->m_Model->get_Loadings(&loadings);
-      CComPtr<IFem2dLoading> loading;
-      loadings->Find(pEvents->m_Loading,&loading);
+      WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+      WBFL::FEA2D::Loading* loading = model->FindLoading(pEvents->m_Loading);
       if ( loading == NULL )
       {
-         loadings->Create(pEvents->m_Loading,&loading);
+         loading = &model->CreateLoading(pEvents->m_Loading);
       }
 
-      CComPtr<IFem2dPointLoadCollection> ptLoads;
-      loading->get_PointLoads(&ptLoads);
-      IndexType id;
-      ptLoads->get_Count(&id);
+      IndexType id = loading->GetPointLoadCount();
 
       try
       {
-         CComPtr<IFem2dPointLoad> ptLoad;
-         ptLoads->Create(id,m_DispObj.lock()->GetID(), pEvents->m_Location, pEvents->m_Fx, pEvents->m_Fy, pEvents->m_Mz, pEvents->m_Orientation, &ptLoad);
+         loading->CreatePointLoad(id,m_DispObj.lock()->GetID(), pEvents->m_Location, pEvents->m_Fx, pEvents->m_Fy, pEvents->m_Mz, pEvents->m_Orientation);
+         m_pDoc->OnLoadingChanged(loading->GetID());
       }
-      //catch(_com_error& error)
-      //{
-      //   CComPtr<IErrorInfo> einfo = error.ErrorInfo();
-      //   CComBSTR bstrDescription;
-      //   einfo->GetDescription(&bstrDescription);
-      //   AfxMessageBox(CString(bstrDescription));
-      //}
       catch(...)
       {
          AfxMessageBox(_T("Failed to create load"));
@@ -346,48 +326,40 @@ void CMemberDropSite::Highlight(CDC* pDC,BOOL bHighlite)
 
 void CMemberDropSite::DeleteMember(IDType mbrID)
 {
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
-
-   MemberIDType removedID;
-   members->Remove(mbrID,atID,&removedID);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+   model->RemoveMember(mbrID);
+   m_pDoc->OnModelChanged();
 }
 
 void CMemberDropSite::EditMember(IDType mbrID)
 {
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
-   CComPtr<IFem2dMember> mbr;
-   members->Find(mbrID,&mbr);
+   WBFL::FEA2D::Member* mbr = model->FindMember(mbrID);
    ASSERT(mbr != NULL);
 //   ASSERT(mbrID == mbr->ID);
 
    CEditMemberDlg dlg(model,TRUE);
-   mbr->get_ID(&dlg.m_MbrID);
-   VARIANT_BOOL bIsReleased;
-   mbr->IsReleased(metStart,mbrReleaseMz,&bIsReleased);
-   dlg.m_bReleaseMzAtStart = bIsReleased == VARIANT_TRUE ? TRUE : FALSE;
-   mbr->IsReleased(metEnd,mbrReleaseMz,&bIsReleased);
-   dlg.m_bReleaseMzAtEnd = bIsReleased == VARIANT_TRUE ? TRUE : FALSE;
-   mbr->get_EA(&dlg.m_EA);
-   mbr->get_EI(&dlg.m_EI);
-   JointIDType jntID;
-   mbr->get_StartJoint(&jntID);
+   dlg.m_MbrID = mbr->GetID();
+   dlg.m_bReleaseMzAtStart = mbr->IsReleased(WBFL::FEA2D::MemberEndType::Start,WBFL::FEA2D::MemberReleaseType::Mz) ? TRUE : FALSE;
+   dlg.m_bReleaseMzAtEnd   = mbr->IsReleased(WBFL::FEA2D::MemberEndType::End,  WBFL::FEA2D::MemberReleaseType::Mz) ? TRUE : FALSE;
+   dlg.m_EA = mbr->GetEA();
+   dlg.m_EI = mbr->GetEI();
+   JointIDType jntID = mbr->GetStartJoint();
    dlg.m_StartJoint = jntID-1;
 
-   mbr->get_EndJoint(&jntID);
+   jntID = mbr->GetEndJoint();
    dlg.m_EndJoint = jntID-1;
 
    if ( dlg.DoModal() == IDOK )
    {
-      mbr->ReleaseEnd(metStart, dlg.m_bReleaseMzAtStart ? mbrReleaseMz : mbrReleaseNone);
-      mbr->ReleaseEnd(metEnd,   dlg.m_bReleaseMzAtEnd   ? mbrReleaseMz : mbrReleaseNone);
-      mbr->put_EA(dlg.m_EA);
-      mbr->put_EI(dlg.m_EI);
-      mbr->put_StartJoint( dlg.m_StartJoint + 1 );
-      mbr->put_EndJoint(   dlg.m_EndJoint   + 1 );
+      mbr->ReleaseEnd(WBFL::FEA2D::MemberEndType::Start, dlg.m_bReleaseMzAtStart ? WBFL::FEA2D::MemberReleaseType::Mz : WBFL::FEA2D::MemberReleaseType::None);
+      mbr->ReleaseEnd(WBFL::FEA2D::MemberEndType::End,   dlg.m_bReleaseMzAtEnd   ? WBFL::FEA2D::MemberReleaseType::Mz : WBFL::FEA2D::MemberReleaseType::None);
+      mbr->SetEA(dlg.m_EA);
+      mbr->SetEI(dlg.m_EI);
+      mbr->SetStartJoint( dlg.m_StartJoint + 1 );
+      mbr->SetEndJoint(   dlg.m_EndJoint   + 1 );
+
+      m_pDoc->OnModelChanged();
    }
 }

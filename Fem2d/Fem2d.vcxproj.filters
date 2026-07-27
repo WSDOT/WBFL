@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="BEAM.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DistributedLoad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -37,9 +34,6 @@
     <ClCompile Include="LoadingCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MATRIX.CPP">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Member.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -70,14 +64,8 @@
     <ClCompile Include="StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SymBandedMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BEAM.H">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CircularChild.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -126,12 +114,6 @@
     <ClInclude Include="LoadingCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MATRIX.H">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MbrLoad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Member.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -165,16 +147,7 @@
     <ClInclude Include="Resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RESULT.H">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StdAfx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stlTools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SymBandedMatrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

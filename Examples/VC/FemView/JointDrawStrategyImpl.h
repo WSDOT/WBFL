@@ -10,7 +10,7 @@ public:
    {;}
 
    // iJointDrawStrategy
-   void SetJoint(IFem2dJoint* jnt) override;
+   void SetJoint(WBFL::FEA2D::Joint* jnt) override;
 
    // iDrawPointStrategy
    void Draw(std::shared_ptr<const iPointDisplayObject> pDO, CDC* pDC) const override;
@@ -20,7 +20,7 @@ public:
 
 private:
    CFEA2DDoc* m_pDoc;
-   CComPtr<IFem2dJoint> m_Joint;
+   WBFL::FEA2D::Joint* m_Joint;
 
     void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color,const WBFL::Geometry::Point2d& loc) const;
 };

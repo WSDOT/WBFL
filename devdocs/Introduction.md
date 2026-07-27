@@ -8,7 +8,7 @@ The WBFL consists of the Engineering Services Layer and the Applications Service
 The Engineering Services Layer (ESL) provides libraries for building engineering applications. The libraries include
 * \subpage WBFL_CoordGeom - Coordinate geometry modeling
 * EngTools - Engineering tools such as Mohr's circle and biaxial strain plane modeling
-* Fem2d - 2D, plane frame, finite element analysis
+* \subpage WBFL_FEA2D - 2D, plane frame, finite element analysis
 * GenericBridge - Generic bridge modeling
 * GenericBridgeTools - Tools for manipulating and extracting data from a generic bridge model
 * GeometricPrimitives - Geometric primitives such as points, lines, and shapes

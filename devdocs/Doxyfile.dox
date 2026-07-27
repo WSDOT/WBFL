@@ -2582,7 +2582,8 @@ TAGFILES               = ../COGO/devdocs/WBFLCogo.tag=../../../COGO/devdocs/API/
                          ../CoordGeom/devdocs/CoordGeom.tag=../../../CoordGeom/devdocs/API/html \
                          ../RCSection/devdocs/RCSection.tag=../../../RCSection/devdocs/API/html \
                          ../Stability/devdocs/Stability.tag=../../../Stability/devdocs/API/html \
-                         ../Roark/devdocs/RoarkBeams.tag=../../../Roark/devdocs/API/html
+                         ../Roark/devdocs/RoarkBeams.tag=../../../Roark/devdocs/API/html \
+                         ../FEA2D/devdocs/FEA2D.tag=../../../FEA2D/devdocs/API/html
 
 # When a file name is specified after GENERATE_TAGFILE, Doxygen will create a
 # tag file that is based on the input files it reads. See section "Linking to

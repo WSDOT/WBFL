@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,7 @@
 
 STDMETHODIMP CJointDeflectionCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IFem2dJointDeflectionCollection
 	};
@@ -46,54 +46,70 @@ STDMETHODIMP CJointDeflectionCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CJointDeflectionCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading)
+void CJointDeflectionCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::Loading* pCoreLoading)
 {
    ATLASSERT(pLoading!=0);
 
    InitParent(pParent); // CCircularChild implementation
-   InitCollection(pParent,pEvents,pLoading);
+   InitCollection(pParent,pEvents,pLoading,pCoreLoading);
+}
+
+void CJointDeflectionCollection::AdoptCore(WBFL::FEA2D::JointDisplacement* pCore)
+{
+   ATLASSERT(pCore!=0);
+
+   CComObject<CJointDeflection>* pjnt;
+   HRESULT hr = CComObject<CJointDeflection>::CreateInstance( &pjnt );
+   ATLASSERT(SUCCEEDED(hr));
+
+   CComPtr<IFem2dJointDeflection> item(pjnt);
+
+   pjnt->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   std::pair<ContainerIteratorType,bool> st;
+   st = m_coll.insert(ContainerValueType(pCore->GetID(), item));
+   ATLASSERT(st.second);
 }
 
 STDMETHODIMP CJointDeflectionCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/JointIDType jointID, /*[in]*/Float64 Dx, /*[in]*/Float64 Dy, /*[in]*/Float64 Rz, /*[out, retval]*/ IFem2dJointDeflection** ppJointDeflection)
 {
    CHECK_RETOBJ(ppJointDeflection);
-   HRESULT hr = E_FAIL;
 
-   // see if a joint load with our id already exists
-   ContainerIteratorType it = m_coll.find(id);
-   if (it != m_coll.end())
+   WBFL::FEA2D::JointDisplacement* pCore;
+   try
    {
-      // exists - return error
-      return CComCoClass<CJointDeflectionCollection, &CLSID_Fem2dJointDeflectionCollection>::Error(IDS_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS, IDH_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS,GetHelpFile(), IID_IFem2dJointDeflection, FEM2D_E_JOINT_DISP_WITH_ID_ALREADY_EXISTS);
+      pCore = &m_pCoreLoading->CreateJointDisplacement(id, jointID, Dx, Dy, Rz);
    }
-   else
+   catch (const WBFL::FEA2D::XFEA2D& ex)
    {
-      // create a new joint load
-      CComObject<CJointDeflection>* pjnt;
-      hr = CComObject<CJointDeflection>::CreateInstance( &pjnt );
-      if (FAILED(hr))
-         return hr;
-
-      *ppJointDeflection = pjnt;
-      (*ppJointDeflection)->AddRef(); // for client
-
-      pjnt->Init(m_pModel, m_pEvents, m_pLoading, id, jointID, Dx, Dy, Rz);
-
-      // insert new joint
-      std::pair<ContainerIteratorType,bool> st;
-      st = m_coll.insert(ContainerValueType(id, *ppJointDeflection));
-      if (!st.second)
-      {
-         ATLASSERT(false); // insert failed - better check why
-         return E_FAIL;
-      }
-
-      LoadCaseIDType loadingID;
-      m_pLoading->get_ID(&loadingID);
-      m_pEvents->OnJointDeflectionAdded(id,loadingID);
+      return ReportFem2dError(ex, CLSID_Fem2dJointDeflectionCollection, IID_IFem2dJointDeflection);
    }
 
-	return hr;
+   // create the COM wrapper
+   CComObject<CJointDeflection>* pjnt;
+   HRESULT hr = CComObject<CJointDeflection>::CreateInstance( &pjnt );
+   if (FAILED(hr))
+      return hr;
+
+   *ppJointDeflection = pjnt;
+   (*ppJointDeflection)->AddRef(); // for client
+
+   pjnt->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   // insert new joint
+   std::pair<ContainerIteratorType,bool> st;
+   st = m_coll.insert(ContainerValueType(id, *ppJointDeflection));
+   if (!st.second)
+   {
+      ATLASSERT(false); // insert failed - better check why
+      return E_FAIL;
+   }
+
+   LoadCaseIDType loadingID;
+   m_pLoading->get_ID(&loadingID);
+   m_pEvents->OnJointDeflectionAdded(id,loadingID);
+
+	return S_OK;
 }
 
 STDMETHODIMP CJointDeflectionCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
@@ -101,6 +117,8 @@ STDMETHODIMP CJointDeflectionCollection::Remove(IndexType IDorIndex, Fem2dAccess
    HRESULT hr = JointDeflectionCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))
    {
+      m_pCoreLoading->RemoveJointDisplacement(*pid);
+
       // send event up the pipe
       LoadCaseIDType loadingID;
       m_pLoading->get_ID(&loadingID);
@@ -117,6 +135,8 @@ STDMETHODIMP CJointDeflectionCollection::Clear()
       HRESULT hr = JointDeflectionCollImpl::Clear();
       if (SUCCEEDED(hr))
       {
+         m_pCoreLoading->ClearJointDisplacements();
+
          // send event up the pipe
          LoadCaseIDType loadingID;
          m_pLoading->get_ID(&loadingID);

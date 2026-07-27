@@ -185,6 +185,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FEA2D\FEA2D.vcxproj">
+      <Project>{D745ADBC-E840-4A4B-A94F-6738E008A91E}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\LRFD\LRFD.vcxproj">
       <Project>{262ce7a1-072b-4578-b45c-75546fa4c384}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

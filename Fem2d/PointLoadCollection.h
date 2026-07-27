@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -39,9 +39,8 @@ class ModelEvents;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPointLoadCollection
-class ATL_NO_VTABLE CPointLoadCollection : 
+class ATL_NO_VTABLE CPointLoadCollection :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
-   // public CComRefCountTracer<CPointLoadCollection,CCircularChild<IFem2dModel, CComSingleThreadModel> >,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CPointLoadCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public PointLoadCollImpl
@@ -57,7 +56,11 @@ public:
 
    // IMPORTANT!!!
    // Init must be called once and only once by creator
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading);
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::Loading* pCoreLoading);
+
+   // Wraps an already-existing core PointLoad (discovered while rehydrating
+   // COM wrappers after CModel::Load()).
+   void AdoptCore(WBFL::FEA2D::PointLoad* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 

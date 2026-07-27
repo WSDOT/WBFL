@@ -283,6 +283,7 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)htmlhelp\%(Filename).hh;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="..\Include\WBFLTools\LogContext.h" />
+    <ClInclude Include="..\Include\WBFLTools\ComStructuredStorageAdapter.h" />
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h" />
     <ClInclude Include="ARPNotice.h" />
     <ClInclude Include="BstrArray.h" />

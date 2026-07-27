@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Beams;
 
-namespace RoarkUnitTest
+namespace RoarkUnitTests
 {
 	TEST_CLASS(TestCompositeBeam)
 	{

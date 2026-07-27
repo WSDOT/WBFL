@@ -72,7 +72,7 @@ std::shared_ptr<WBFL::COGO::BridgeFramingGeometry> CreateBridgeGeometry(Float64 
    return bridge;
 }
 
-namespace CoordGeomUnitTest
+namespace CoordGeomUnitTests
 {
 	TEST_CLASS(TestBridgeFramingGeometry)
 	{

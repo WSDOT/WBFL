@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -42,8 +42,10 @@ class CMember;
 
 /////////////////////////////////////////////////////////////////////////////
 // CLoading
-class ATL_NO_VTABLE CLoading : 
-	//public CComRefCountTracer<CLoading,CCircularChild<IFem2dModel, CComSingleThreadModel> >,
+// Thin COM facade over WBFL::FEA2D::Loading. ApplyLoads (the fixed-end-force
+// assembly step of the stiffness solver) is gone - it lives inside
+// WBFL::FEA2D::Loading/Model now, private to FEA2D's own StiffnessAnalysis.
+class ATL_NO_VTABLE CLoading :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CLoading,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
@@ -51,18 +53,14 @@ class ATL_NO_VTABLE CLoading :
 {
 public:
    CLoading():
-   m_ID(0),
-   m_pModel(0)
+   m_pModel(0),
+   m_pCore(0)
 	{
 	}
 
    virtual ~CLoading();
 
-   HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, LoadCaseIDType id);
-
-   // IStructuredStorage - sort of
-   STDMETHOD(Load)(IStructuredLoad2 *load);
-   STDMETHOD(Save)(IStructuredSave2 *save);
+   HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, WBFL::FEA2D::Loading* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -84,9 +82,10 @@ public:
 	STDMETHOD(get_DistributedLoads)(/*[out, retval]*/ IFem2dDistributedLoadCollection* *pVal) override;
 	STDMETHOD(get_ID)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
 
-private:
-   LoadCaseIDType m_ID;
+   // non-COM accessor for CModel's rehydrate-after-Load() walk
+   WBFL::FEA2D::Loading* GetCore() const noexcept { return m_pCore; }
 
+private:
    using PointLoads = CComObject<CPointLoadCollection>;
    using PointLoadIterator = PointLoads::iterator;
    using JointLoads = CComObject<CJointLoadCollection>;
@@ -105,11 +104,7 @@ private:
    PointLoads*         m_pPointLoads;
 
    ModelEvents*           m_pModel;
-
-private:
-   // Fem-related functions
-   void ApplyLoads(CModel *model);
-   void ApplyLoads(CMember *member);
+   WBFL::FEA2D::Loading* m_pCore; // non-owning; owned by the FEA2D core Model
 
    friend CModel;
 

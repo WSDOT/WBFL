@@ -42,32 +42,22 @@ void CEditMbrLength::OnChanged(std::shared_ptr<iDisplayObject> pDO)
 
    // Compute the new coordinates of the member end joint.
    MemberIDType mbrID = pDO->GetID();
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
-   CComPtr<IFem2dMember> mbr;
-   members->Find(mbrID,&mbr);
+   WBFL::FEA2D::Member* mbr = model->FindMember(mbrID);
 
-   JointIDType startJntID, endJntID;
-   mbr->get_StartJoint(&startJntID);
-   mbr->get_EndJoint(&endJntID);
+   JointIDType startJntID = mbr->GetStartJoint();
+   JointIDType endJntID = mbr->GetEndJoint();
 
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
+   WBFL::FEA2D::Joint* startJnt = model->FindJoint(startJntID);
+   WBFL::FEA2D::Joint* endJnt = model->FindJoint(endJntID);
 
-   CComPtr<IFem2dJoint> startJnt, endJnt;
-   joints->Find(startJntID,&startJnt);
-   joints->Find(endJntID,&endJnt);
+   Float64 startX = startJnt->GetX();
+   Float64 startY = startJnt->GetY();
 
-   Float64 startX, startY;
-   startJnt->get_X(&startX);
-   startJnt->get_Y(&startY);
+   Float64 endX = endJnt->GetX();
+   Float64 endY = endJnt->GetY();
 
-   Float64 endX, endY;
-   endJnt->get_X(&endX);
-   endJnt->get_Y(&endY);
-   
    double angle = atan2(endY - startY, endX - startX);
    double dx = length * cos(angle);
    double dy = length * sin(angle);
@@ -75,8 +65,10 @@ void CEditMbrLength::OnChanged(std::shared_ptr<iDisplayObject> pDO)
    endX = startX + dx;
    endY = startY + dy;
 
-   endJnt->put_X(endX);
-   endJnt->put_Y(endY);
+   endJnt->SetX(endX);
+   endJnt->SetY(endY);
+
+   m_pDoc->OnModelChanged();
 }
 
 void CEditMbrLength::OnDragMoved(std::shared_ptr<iDisplayObject> pDO,const WBFL::Geometry::Size2d& offset)

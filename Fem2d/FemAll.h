@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,6 +29,9 @@
 #pragma once
 
 #include <string>
+
+#include <FEA2D/Model.h>
+#include <FEA2D/XFEA2D.h>
 
 // This include file has stuff that is needed by all fem files
 
@@ -74,4 +77,21 @@ inline void CheckLoadOrientation(Fem2dLoadOrientation orientation)
       THROW_IDS(IDS_E_INVALID_LOAD_ORIENTATION,FEM2D_E_INVALID_LOAD_ORIENTATION,IDH_E_INVALID_LOAD_ORIENTATION);
    }
 }
+
+// Translates a caught WBFL::FEA2D::XFEA2D into the matching FEM2D_E_* HRESULT
+// and reports it through ISupportErrorInfo, exactly as the legacy hand-written
+// FEM2D_E_* throw sites used to. XFEA2D::ReasonCode values are numerically
+// identical to the FEM2D_E_* HRESULT codes by design (see XFEA2D.h), so no
+// per-code lookup table is needed - only the message text and help-topic ID
+// are approximated (the message comes from XFEA2D::GetErrorMessage() instead
+// of the original per-code string resource; the specific help-topic ID is not
+// reproduced, only the help file). Neither of those are part of the tested
+// contract - callers care about the HRESULT.
+inline HRESULT ReportFem2dError(const WBFL::FEA2D::XFEA2D& ex, REFCLSID clsid, REFIID iid)
+{
+   HRESULT hr = MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, static_cast<WORD>(ex.GetReasonCode()));
+   CComBSTR msg(ex.GetErrorMessage().c_str());
+   return AtlReportError(clsid, msg, iid, hr);
+}
+
 #endif // FEM2D_FEMALL_H_

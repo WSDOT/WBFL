@@ -212,9 +212,11 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\FEA2D\FEA2D.vcxproj">
+      <Project>{D745ADBC-E840-4A4B-A94F-6738E008A91E}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BEAM.CPP" />
     <ClCompile Include="DistributedLoad.cpp" />
     <ClCompile Include="DistributedLoadCollection.cpp" />
     <ClCompile Include="Fem2d.cpp" />
@@ -226,7 +228,6 @@
     <ClCompile Include="JointLoadCollection.cpp" />
     <ClCompile Include="Loading.cpp" />
     <ClCompile Include="LoadingCollection.cpp" />
-    <ClCompile Include="MATRIX.CPP" />
     <ClCompile Include="Member.cpp" />
     <ClCompile Include="MemberCollection.cpp" />
     <ClCompile Include="MemberStrain.cpp" />
@@ -240,7 +241,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SymBandedMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fem2d.def" />
@@ -267,7 +267,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)HtmlHelp\%(Filename).hh;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="..\Include\Fem2dErrors.h" />
-    <ClInclude Include="BEAM.H" />
     <ClInclude Include="CircularChild.h" />
     <ClInclude Include="ComKeyedCollection.h" />
     <ClInclude Include="DistributedLoad.h" />
@@ -283,8 +282,6 @@
     <ClInclude Include="JointLoadCollection.h" />
     <ClInclude Include="Loading.h" />
     <ClInclude Include="LoadingCollection.h" />
-    <ClInclude Include="MATRIX.H" />
-    <ClInclude Include="MbrLoad.h" />
     <ClInclude Include="Member.h" />
     <ClInclude Include="MemberCollection.h" />
     <ClInclude Include="MemberStrain.h" />
@@ -296,10 +293,7 @@
     <ClInclude Include="PointLoad.h" />
     <ClInclude Include="PointLoadCollection.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="RESULT.H" />
     <ClInclude Include="StdAfx.h" />
-    <ClInclude Include="stlTools.h" />
-    <ClInclude Include="SymBandedMatrix.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

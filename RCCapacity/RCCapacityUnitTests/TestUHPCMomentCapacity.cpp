@@ -15,7 +15,7 @@ namespace
    }
 }
 
-namespace RCCapacityUnitTest
+namespace RCCapacityUnitTests
 {
 	TEST_CLASS(TestUHPCMomentCapacity)
 	{

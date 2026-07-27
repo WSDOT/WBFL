@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FEA2D", "FEA2D.vcxproj", "{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLFem2d", "..\..\..\Fem2d\Fem2d.vcxproj", "{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FemView", "FemView.vcxproj", "{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLGeometry", "..\..\..\Geometry\Geometry.vcxproj", "{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}"
 EndProject
@@ -19,7 +17,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLSystem", "..\..\..\Syst
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLTypes", "..\..\..\WBFLTypes\WBFLTypes.vcxproj", "{B8CDD36E-37AB-484A-953B-864A2A431147}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DManip", "..\..\..\DManip\DManip.vcxproj", "{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLDManip", "..\..\..\DManip\DManip.vcxproj", "{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLCoordGeom", "..\..\..\CoordGeom\CoordGeom.vcxproj", "{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WBFLFEA2D", "..\..\..\FEA2D\FEA2D.vcxproj", "{D745ADBC-E840-4A4B-A94F-6738E008A91E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +33,6 @@ Global
 		{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}.Debug|x64.Build.0 = Debug|x64
 		{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}.Release|x64.ActiveCfg = Release|x64
 		{37423D4B-C9DE-4B90-BAE8-5F1B3A7FA07D}.Release|x64.Build.0 = Release|x64
-		{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}.Debug|x64.ActiveCfg = Debug|x64
-		{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}.Debug|x64.Build.0 = Debug|x64
-		{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}.Release|x64.ActiveCfg = Release|x64
-		{9D5FEEEE-54D4-4719-A60D-D68E0943E2C0}.Release|x64.Build.0 = Release|x64
 		{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}.Debug|x64.ActiveCfg = Debug|x64
 		{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}.Debug|x64.Build.0 = Debug|x64
 		{16E889A9-E3B0-4541-85B2-3A4D98FCCB59}.Release|x64.ActiveCfg = Release|x64
@@ -63,6 +61,14 @@ Global
 		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Debug|x64.Build.0 = Debug|x64
 		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x64.ActiveCfg = Release|x64
 		{D1F33FFC-EBCE-46F2-936C-3F7F0465D8C9}.Release|x64.Build.0 = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x64.ActiveCfg = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Debug|x64.Build.0 = Debug|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x64.ActiveCfg = Release|x64
+		{7EA2E3A4-A83A-412C-831A-057E9EC9E73C}.Release|x64.Build.0 = Release|x64
+		{D745ADBC-E840-4A4B-A94F-6738E008A91E}.Debug|x64.ActiveCfg = Debug|x64
+		{D745ADBC-E840-4A4B-A94F-6738E008A91E}.Debug|x64.Build.0 = Debug|x64
+		{D745ADBC-E840-4A4B-A94F-6738E008A91E}.Release|x64.ActiveCfg = Release|x64
+		{D745ADBC-E840-4A4B-A94F-6738E008A91E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

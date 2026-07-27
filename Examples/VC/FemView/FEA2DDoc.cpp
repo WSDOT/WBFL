@@ -10,6 +10,9 @@
 
 #include <MathEx.h>
 #include <Units\Units.h>
+#include <System\FileStream.h>
+#include <System\StructuredSaveXml.h>
+#include <System\StructuredLoadXml.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -35,33 +38,16 @@ BEGIN_MESSAGE_MAP(CFEA2DDoc, CDocument)
    ON_COMMAND(ID_GTSTRUDL,&CFEA2DDoc::OnGTStrudl)
 END_MESSAGE_MAP()
 
-BEGIN_DISPATCH_MAP(CFEA2DDoc,CDocument)
-   DISP_FUNCTION(CFEA2DDoc,"OnModelChanged",OnModelChanged,VT_EMPTY,VTS_NONE)
-   DISP_FUNCTION(CFEA2DDoc,"OnLoadingChanged",OnModelChanged,VT_EMPTY,VTS_I4)
-END_DISPATCH_MAP()
-
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc construction/destruction
-LPUNKNOWN CFEA2DDoc::GetInterfaceHook(const void* piid)
-{
-   if ( ::IsEqualIID(__uuidof(IFem2dModelEvents), *(IID*)piid) )
-      return GetInterface(&IID_IUnknown);
-   else
-      return NULL;
-}
 
 CFEA2DDoc::CFEA2DDoc()
 {
-   EnableAutomation();
-   m_Model.CoCreateInstance(CLSID_Fem2dModel);
-   IUnknown* pUnk = GetInterface(&IID_IUnknown);
-   AfxConnectionAdvise(m_Model,__uuidof(IFem2dModelEvents),pUnk,TRUE,&m_dwCookie);
+   m_Model = std::make_unique<WBFL::FEA2D::Model>();
 }
 
 CFEA2DDoc::~CFEA2DDoc()
 {
-   IUnknown* pUnk = GetInterface(&IID_IUnknown);
-   AfxConnectionUnadvise(m_Model,__uuidof(IFem2dModelEvents),pUnk,TRUE,m_dwCookie);
 }
 
 BOOL CFEA2DDoc::OnNewDocument()
@@ -110,37 +96,35 @@ void CFEA2DDoc::Dump(CDumpContext& dc) const
 /////////////////////////////////////////////////////////////////////////////
 // CFEA2DDoc commands
 
-BOOL CFEA2DDoc::OnOpenDocument(LPCTSTR lpszPathName) 
+BOOL CFEA2DDoc::OnOpenDocument(LPCTSTR lpszPathName)
 {
 //	if (!CDocument::OnOpenDocument(lpszPathName))
 //		return FALSE;
-	
+
 	// TODO: Add your specialized creation code here
-   CComPtr<IStructuredLoad2> pLoad;
-   pLoad.CoCreateInstance(CLSID_StructuredLoad2);
+   WBFL::System::FileStream file;
+   file.open(lpszPathName, /*read=*/true);
+   WBFL::System::StructuredLoadXml load;
+   load.BeginLoad(&file);
 
-   CComQIPtr<IStructuredStorage2> pSS(m_Model);
+   m_Model->Load(&load);
 
-   pLoad->Open(CComBSTR(lpszPathName));
+   load.EndLoad();
 
-   pSS->Load(pLoad);
-
-   pLoad->Close();
-	
 	return TRUE;
 }
 
-BOOL CFEA2DDoc::OnSaveDocument(LPCTSTR lpszPathName) 
+BOOL CFEA2DDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 	// TODO: Add your specialized code here and/or call the base class
-   CComPtr<IStructuredSave2> pSave;
-   pSave.CoCreateInstance(CLSID_StructuredSave2);
-   pSave->Open(CComBSTR(lpszPathName));
+   WBFL::System::FileStream file;
+   file.open(lpszPathName, /*read=*/false);
+   WBFL::System::StructuredSaveXml save;
+   save.BeginSave(&file);
 
-   CComQIPtr<IStructuredStorage2> pSS(m_Model);
-   pSS->Save(pSave);
+   m_Model->Save(&save);
 
-   pSave->Close();
+   save.EndSave();
 
    SetModifiedFlag(FALSE);
 
@@ -148,62 +132,30 @@ BOOL CFEA2DDoc::OnSaveDocument(LPCTSTR lpszPathName)
 //	return CDocument::OnSaveDocument(lpszPathName);
 }
 
-//STDMETHODIMP CFEA2DDoc::XModelEvents::OnModelChanged()
-//{
-//   return raw_OnModelChanged();
-//}
-//
-//STDMETHODIMP CFEA2DDoc::XModelEvents::OnLoadingChanged(long id)
-//{
-//   return raw_OnLoadingChanged(id);
-//}
-//
-//STDMETHODIMP CFEA2DDoc::XModelEvents::raw_OnModelChanged()
-//{
-//   METHOD_PROLOGUE(CFEA2DDoc,ModelEvents);
-//   pThis->SetModifiedFlag(TRUE);
-//   pThis->UpdateAllViews(0,1,0);
-//   return S_OK;
-//}
-//
-//STDMETHODIMP CFEA2DDoc::XModelEvents::raw_OnLoadingChanged(long id)
-//{
-//   METHOD_PROLOGUE(CFEA2DDoc,ModelEvents);
-//    pThis->SetModifiedFlag(TRUE);
-//  pThis->UpdateAllViews(0,2,0);
-//   return S_OK;
-//}
-
-BOOL CFEA2DDoc::OnModelChanged()
+void CFEA2DDoc::OnModelChanged()
 {
    SetModifiedFlag(TRUE);
    UpdateAllViews(0,1,0);
-   return S_OK;
 }
 
-BOOL CFEA2DDoc::OnLoadingChanged(long id)
+void CFEA2DDoc::OnLoadingChanged(LoadCaseIDType id)
 {
    SetModifiedFlag(TRUE);
    UpdateAllViews(0,2,0);
-   return S_OK;
 }
 
 void CFEA2DDoc::OnViewModelProperties()
 {
    // TODO: Add your command handler code here
    CModelPropertiesDlg dlg(_T("Model Properties"));
-   dlg.m_pFem2d = m_Model;
+   dlg.m_pFem2d = m_Model.get();
    dlg.DoModal();
 }
 
 void CFEA2DDoc::OnGTStrudl()
 {
-   USES_CONVERSION;
-   CComBSTR bstrName;
-   m_Model->get_Name(&bstrName);
-
    CString strName;
-   strName.Format(_T("%s.gti"),OLE2T(bstrName));
+   strName.Format(_T("%s.gti"),m_Model->GetName().c_str());
 
    std::_tofstream ofile(strName);
 
@@ -213,20 +165,14 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Joint Coordinates
    ofile << _T("JOINT COORDINATES GLOBAL") << std::endl;
-   CComPtr<IFem2dJointCollection> joints;
-   m_Model->get_Joints(&joints);
-   IndexType nJoints;
-   joints->get_Count(&nJoints);
+   IndexType nJoints = m_Model->GetJointCount();
    for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
-      CComPtr<IFem2dJoint> joint;
-      joints->get_Item(jntIdx,&joint);
-      Float64 x,y;
-      joint->get_X(&x);
-      joint->get_Y(&y);
+      WBFL::FEA2D::Joint* joint = m_Model->FindJointByIndex(jntIdx);
+      Float64 x = joint->GetX();
+      Float64 y = joint->GetY();
 
-      JointIDType id;
-      joint->get_ID(&id);
+      JointIDType id = joint->GetID();
 
       x = ::ConvertFromSysUnits(x, Measure::Feet);
       y = ::ConvertFromSysUnits(y, Measure::Feet);
@@ -237,16 +183,11 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("STATUS SUPPORT");
    for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
-      CComPtr<IFem2dJoint> joint;
-      joints->get_Item(jntIdx,&joint);
+      WBFL::FEA2D::Joint* joint = m_Model->FindJointByIndex(jntIdx);
 
-      VARIANT_BOOL bSupport;
-      joint->IsSupport(&bSupport);
-
-      if ( bSupport == VARIANT_TRUE )
+      if ( joint->IsSupport() )
       {
-         JointIDType id;
-         joint->get_ID(&id);
+         JointIDType id = joint->GetID();
 
          ofile << _T(" ") << ID(id);
       }
@@ -257,36 +198,30 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("JOINT RELEASES") << std::endl;
    for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
-      CComPtr<IFem2dJoint> joint;
-      joints->get_Item(jntIdx,&joint);
+      WBFL::FEA2D::Joint* joint = m_Model->FindJointByIndex(jntIdx);
 
-      VARIANT_BOOL bSupport;
-      joint->IsSupport(&bSupport);
-
-      if ( bSupport == VARIANT_TRUE )
+      if ( joint->IsSupport() )
       {
-         JointIDType id;
-         joint->get_ID(&id);
+         JointIDType id = joint->GetID();
 
-         VARIANT_BOOL bFx, bFy, bMz;
-         joint->IsDofReleased(jrtFx,&bFx);
-         joint->IsDofReleased(jrtFy,&bFy);
-         joint->IsDofReleased(jrtMz,&bMz);
+         bool bFx = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fx);
+         bool bFy = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fy);
+         bool bMz = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Mz);
 
-         if (bFx == VARIANT_TRUE || bFy == VARIANT_TRUE || bMz == VARIANT_TRUE)
+         if (bFx || bFy || bMz)
          {
             ofile << ID(id);
-            if (bFx == VARIANT_TRUE)
+            if (bFx)
             {
                ofile << _T(" FORCE X");
             }
 
-            if (bFy == VARIANT_TRUE)
+            if (bFy)
             {
                ofile << _T(" FORCE Y");
             }
 
-            if (bMz == VARIANT_TRUE)
+            if (bMz)
             {
                ofile << _T(" MOMENT Z");
             }
@@ -298,21 +233,15 @@ void CFEA2DDoc::OnGTStrudl()
 
    // Member Incidences
    ofile << _T("MEMBER INCIDENCES") << std::endl;
-   CComPtr<IFem2dMemberCollection> members;
-   m_Model->get_Members(&members);
-   IndexType nMembers;
-   members->get_Count(&nMembers);
+   IndexType nMembers = m_Model->GetMemberCount();
    for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
-      CComPtr<IFem2dMember> member;
-      members->get_Item(mbrIdx,&member);
+      WBFL::FEA2D::Member* member = m_Model->FindMemberByIndex(mbrIdx);
 
-      MemberIDType mbrID;
-      member->get_ID(&mbrID);
+      MemberIDType mbrID = member->GetID();
 
-      JointIDType startJnt, endJnt;
-      member->get_StartJoint(&startJnt);
-      member->get_EndJoint(&endJnt);
+      JointIDType startJnt = member->GetStartJoint();
+      JointIDType endJnt = member->GetEndJoint();
 
       ofile << ID(mbrID) << _T(" ") << ID(startJnt) << _T(" ") << ID(endJnt) << std::endl;
    }
@@ -321,46 +250,42 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("MEMBER RELEASES") << std::endl;
    for (IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++)
    {
-      CComPtr<IFem2dMember> member;
-      members->get_Item(mbrIdx, &member);
+      WBFL::FEA2D::Member* member = m_Model->FindMemberByIndex(mbrIdx);
 
-      MemberIDType mbrID;
-      member->get_ID(&mbrID);
+      MemberIDType mbrID = member->GetID();
 
-      VARIANT_BOOL bReleaseStartFx, bReleaseEndFx;
-      member->IsReleased(metStart, mbrReleaseFx, &bReleaseStartFx);
-      member->IsReleased(metEnd, mbrReleaseFx, &bReleaseEndFx);
+      bool bReleaseStartFx = member->IsReleased(WBFL::FEA2D::MemberEndType::Start, WBFL::FEA2D::MemberReleaseType::Fx);
+      bool bReleaseEndFx   = member->IsReleased(WBFL::FEA2D::MemberEndType::End,   WBFL::FEA2D::MemberReleaseType::Fx);
 
-      VARIANT_BOOL bReleaseStartMz, bReleaseEndMz;
-      member->IsReleased(metStart, mbrReleaseMz, &bReleaseStartMz);
-      member->IsReleased(metEnd, mbrReleaseMz, &bReleaseEndMz);
+      bool bReleaseStartMz = member->IsReleased(WBFL::FEA2D::MemberEndType::Start, WBFL::FEA2D::MemberReleaseType::Mz);
+      bool bReleaseEndMz   = member->IsReleased(WBFL::FEA2D::MemberEndType::End,   WBFL::FEA2D::MemberReleaseType::Mz);
 
-      if (bReleaseStartFx == VARIANT_TRUE || bReleaseEndFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE)
+      if (bReleaseStartFx || bReleaseEndFx || bReleaseStartMz || bReleaseEndMz)
       {
          ofile << ID(mbrID);
-         if (bReleaseStartFx == VARIANT_TRUE || bReleaseStartMz == VARIANT_TRUE)
+         if (bReleaseStartFx || bReleaseStartMz)
          {
             ofile << _T(" START");
-            if (bReleaseStartFx == VARIANT_TRUE)
+            if (bReleaseStartFx)
             {
                ofile << _T(" FORCE X");
             }
 
-            if (bReleaseStartMz == VARIANT_TRUE)
+            if (bReleaseStartMz)
             {
                ofile << _T(" MOMENT Z");
             }
          }
 
-         if (bReleaseEndFx == VARIANT_TRUE || bReleaseEndMz == VARIANT_TRUE)
+         if (bReleaseEndFx || bReleaseEndMz)
          {
             ofile << _T(" END");
-            if (bReleaseEndFx == VARIANT_TRUE)
+            if (bReleaseEndFx)
             {
                ofile << _T(" FORCE X");
             }
 
-            if (bReleaseEndMz == VARIANT_TRUE)
+            if (bReleaseEndMz)
             {
                ofile << _T(" MOMENT Z");
             }
@@ -377,15 +302,12 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("$ E will be set to 1.0 below.") << std::endl;
    for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
-      CComPtr<IFem2dMember> member;
-      members->get_Item(mbrIdx,&member);
+      WBFL::FEA2D::Member* member = m_Model->FindMemberByIndex(mbrIdx);
 
-      MemberIDType mbrID;
-      member->get_ID(&mbrID);
+      MemberIDType mbrID = member->GetID();
 
-      Float64 EA, EI;
-      member->get_EA(&EA);
-      member->get_EI(&EI);
+      Float64 EA = member->GetEA();
+      Float64 EI = member->GetEI();
 
       // (ksi)*(in2) = kip
       EA = ::ConvertFromSysUnits(EA, Measure::Kip);
@@ -407,41 +329,27 @@ void CFEA2DDoc::OnGTStrudl()
    ofile << _T("UNITS FEET KIP DEG FAH") << std::endl;
 
    // Loads
-   CComPtr<IFem2dLoadingCollection> loadings;
-   m_Model->get_Loadings(&loadings);
-
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = m_Model->GetLoadingCount();
    for ( IndexType ldIdx = 0; ldIdx < nLoadings; ldIdx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(ldIdx,&loading);
+      WBFL::FEA2D::Loading* loading = m_Model->FindLoadingByIndex(ldIdx);
 
-      LoadCaseIDType lcID;
-      loading->get_ID(&lcID);
+      LoadCaseIDType lcID = loading->GetID();
 
       ofile << _T("LOADING ") << ID(abs((int)lcID)) << std::endl;
       ofile << _T("MEMBER LOADS") << std::endl;
 
-      CComPtr<IFem2dDistributedLoadCollection> distLoads;
-      loading->get_DistributedLoads(&distLoads);
-
-      IndexType nLoads;
-      distLoads->get_Count(&nLoads);
-
+      IndexType nLoads = loading->GetDistributedLoadCount();
       for ( IndexType idx = 0; idx < nLoads; idx++ )
       {
-         CComPtr<IFem2dDistributedLoad> load;
-         distLoads->get_Item(idx,&load);
+         WBFL::FEA2D::DistributedLoad* load = loading->FindDistributedLoadByIndex(idx);
 
-         MemberIDType mbrID;
-         load->get_MemberID(&mbrID);
+         MemberIDType mbrID = load->GetMemberID();
 
-         Float64 xStart, xEnd, wStart, wEnd;
-         load->get_StartLocation(&xStart);
-         load->get_EndLocation(&xEnd);
-         load->get_WStart(&wStart);
-         load->get_WEnd(&wEnd);
+         Float64 xStart = load->GetStartLocation();
+         Float64 xEnd   = load->GetEndLocation();
+         Float64 wStart = load->GetWStart();
+         Float64 wEnd   = load->GetWEnd();
 
          xStart = ::ConvertFromSysUnits(xStart, Measure::Feet);
          xEnd = ::ConvertFromSysUnits(xEnd, Measure::Feet);
@@ -461,23 +369,16 @@ void CFEA2DDoc::OnGTStrudl()
          }
       }
 
-
-      CComPtr<IFem2dPointLoadCollection> pointLoads;
-      loading->get_PointLoads(&pointLoads);
-
-      pointLoads->get_Count(&nLoads);
-
-      for ( IndexType idx = 0; idx < nLoads; idx++ )
+      IndexType nPtLoads = loading->GetPointLoadCount();
+      for ( IndexType idx = 0; idx < nPtLoads; idx++ )
       {
-         CComPtr<IFem2dPointLoad> load;
-         pointLoads->get_Item(idx,&load);
+         WBFL::FEA2D::PointLoad* load = loading->FindPointLoadByIndex(idx);
 
-         MemberIDType mbrID;
-         load->get_MemberID(&mbrID);
+         MemberIDType mbrID = load->GetMemberID();
 
-         Float64 Fx, Fy, Mz, X;
+         Float64 Fx, Fy, Mz;
          load->GetForce(&Fx,&Fy,&Mz);
-         load->get_Location(&X);
+         Float64 X = load->GetLocation();
 
          X = ::ConvertFromSysUnits(X, Measure::Feet);
          Fy = ::ConvertToSysUnits(Fy, Measure::Kip);

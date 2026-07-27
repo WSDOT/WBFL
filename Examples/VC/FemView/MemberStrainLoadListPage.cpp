@@ -48,42 +48,29 @@ BOOL CMemberStrainLoadListPage::OnInitDialog()
    m_ctrlList.InsertColumn(6,_T("r*10^6"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComPtr<IFem2dLoadingCollection> loadings;
-   pParent->m_pFem2d->get_Loadings(&loadings);
 
    int listIdx = 0;
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = pParent->m_pFem2d->GetLoadingCount();
    for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(idx,&loading);
+      WBFL::FEA2D::Loading* loading = pParent->m_pFem2d->FindLoadingByIndex(idx);
 
-      CComPtr<IFem2dMemberStrainCollection> loads;
-      loading->get_MemberStrains(&loads);
-      IndexType nLoads;
-      loads->get_Count(&nLoads);
+      IndexType nLoads = loading->GetMemberStrainCount();
       for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
-         CComPtr<IFem2dMemberStrain> load;
-         loads->get_Item(ldIdx,&load);
+         WBFL::FEA2D::MemberStrain* load = loading->FindMemberStrainByIndex(ldIdx);
 
-         IDType ID;
-         load->get_ID(&ID);
+         IDType ID = load->GetID();
 
-         MemberIDType mbrID;
-         load->get_MemberID(&mbrID);
+         MemberIDType mbrID = load->GetMemberID();
 
-         LoadCaseIDType loadID;
-         load->get_Loading(&loadID);
+         LoadCaseIDType loadID = load->GetLoadingID();
 
-         Float64 Start,End;
-         load->get_StartLocation(&Start);
-         load->get_EndLocation(&End);
+         Float64 Start = load->GetStartLocation();
+         Float64 End = load->GetEndLocation();
 
-         Float64 axial,curvature;
-         load->get_AxialStrain(&axial);
-         load->get_CurvatureStrain(&curvature);
+         Float64 axial = load->GetAxialStrain();
+         Float64 curvature = load->GetCurvatureStrain();
 
          m_ctrlList.InsertItem(listIdx,_T("Load"));
 

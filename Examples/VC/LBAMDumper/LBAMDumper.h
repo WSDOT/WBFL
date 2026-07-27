@@ -30,6 +30,10 @@
 #error this stub requires an updated version of <rpcndr.h>
 #endif /* __RPCNDR_H_VERSION__ */
 
+
+#ifndef __LBAMDumper_h__
+#define __LBAMDumper_h__
+
 #if defined(_MSC_VER) && (_MSC_VER >= 1020)
 #pragma once
 #endif
@@ -417,4 +421,7 @@ LBAMResponseDumper;
 #ifdef __cplusplus
 }
 #endif
+
+#endif
+
 

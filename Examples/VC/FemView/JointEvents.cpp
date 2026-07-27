@@ -37,30 +37,24 @@ void CJointEvents::OnDragMoved(std::shared_ptr<iDisplayObject> pDO, const WBFL::
    // Move the joint and the display object
    JointIDType id = pDO->GetID();
 
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   CComPtr<IFem2dJoint> jnt;
-   joints->Find(id,&jnt);
-
-   JointIDType jntID;
-   jnt->get_ID(&jntID);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+   WBFL::FEA2D::Joint* jnt = model->FindJoint(id);
 
    ASSERT(jnt != NULL);
-   ASSERT(id == jntID);
+   ASSERT(id == jnt->GetID());
 
-   Float64 x,y;
-   jnt->get_X(&x);
-   jnt->get_Y(&y);
+   Float64 x = jnt->GetX();
+   Float64 y = jnt->GetY();
 
    auto [dx,dy] = offset.GetDimensions();
 
    x += dx;
    y += dy;
 
-   jnt->put_X(x);
-   jnt->put_Y(y);
+   jnt->SetX(x);
+   jnt->SetY(y);
+
+   m_pDoc->OnModelChanged();
 
    auto jntRep = std::dynamic_pointer_cast<iPointDisplayObject>(pDO);
    ASSERT(jntRep != NULL);
@@ -203,69 +197,52 @@ void CJointEvents::OnDrop(std::shared_ptr<iDisplayObject> pDO,std::shared_ptr<iD
 
 void CJointEvents::EditJoint(IDType jntID)
 {
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   CComPtr<IFem2dJoint> jnt;
-   joints->Find(jntID,&jnt);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+   WBFL::FEA2D::Joint* jnt = model->FindJoint(jntID);
 
    ASSERT(jnt != NULL);
 //   ASSERT(jntID == jnt->ID);
 
    CEditJointDlg dlg;
-   VARIANT_BOOL bIsReleased;
-   jnt->IsDofReleased(jrtFx,&bIsReleased);
-   dlg.m_bSupportFx = bIsReleased == VARIANT_TRUE ? FALSE : TRUE;
+   dlg.m_bSupportFx = jnt->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fx) ? FALSE : TRUE;
+   dlg.m_bSupportFy = jnt->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fy) ? FALSE : TRUE;
+   dlg.m_bSupportMz = jnt->IsDofReleased(WBFL::FEA2D::JointReleaseType::Mz) ? FALSE : TRUE;
 
-   jnt->IsDofReleased(jrtFy,&bIsReleased);
-   dlg.m_bSupportFy = bIsReleased == VARIANT_TRUE ? FALSE : TRUE;
-
-   jnt->IsDofReleased(jrtMz,&bIsReleased);
-   dlg.m_bSupportMz = bIsReleased == VARIANT_TRUE ? FALSE : TRUE;
-
-   jnt->get_X(&dlg.m_X);
-   jnt->get_Y(&dlg.m_Y);
-   jnt->get_ID(&dlg.m_JntID);
+   dlg.m_X = jnt->GetX();
+   dlg.m_Y = jnt->GetY();
+   dlg.m_JntID = jnt->GetID();
 
    if ( dlg.DoModal() )
    {
-      jnt->put_X(dlg.m_X);
-      jnt->put_Y(dlg.m_Y);
+      jnt->SetX(dlg.m_X);
+      jnt->SetY(dlg.m_Y);
 
       if ( dlg.m_bSupportFx || dlg.m_bSupportFy || dlg.m_bSupportMz )
       {
          jnt->Support();
          if ( !dlg.m_bSupportFx )
-            jnt->ReleaseDof(jrtFx);
+            jnt->ReleaseDof(WBFL::FEA2D::JointReleaseType::Fx);
 
          if ( !dlg.m_bSupportFy )
-            jnt->ReleaseDof(jrtFy);
+            jnt->ReleaseDof(WBFL::FEA2D::JointReleaseType::Fy);
 
          if ( !dlg.m_bSupportMz )
-            jnt->ReleaseDof(jrtMz);
+            jnt->ReleaseDof(WBFL::FEA2D::JointReleaseType::Mz);
       }
+
+      m_pDoc->OnModelChanged();
    }
 }
 
 void CJointEvents::DeleteJoint(IDType jntID)
 {
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
-   CComPtr<IFem2dJoint> joint;
-   joints->Find(jntID,&joint);
-
-   CComPtr<IIDArray> mbrIDs;
-   joint->get_Members(&mbrIDs);
-
-   IndexType count;
-   mbrIDs->get_Count(&count);
-   if ( count == 0 )
+   std::vector<MemberIDType> mbrIDs = model->GetAttachedMembers(jntID);
+   if ( mbrIDs.empty() )
    {
-      JointIDType removedID;
-      joints->Remove(jntID,atID,&removedID);
+      model->RemoveJoint(jntID);
+      m_pDoc->OnModelChanged();
    }
    else
    {

@@ -19,7 +19,7 @@ CJointDrawStrategyImpl::CJointDrawStrategyImpl(CFEA2DDoc* pDoc)
    m_pDoc = pDoc;
 }
 
-void CJointDrawStrategyImpl::SetJoint(IFem2dJoint* joint)
+void CJointDrawStrategyImpl::SetJoint(WBFL::FEA2D::Joint* joint)
 {
    m_Joint = joint;
 }
@@ -55,37 +55,20 @@ void CJointDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayOb
    Draw(pDO,pDC,RGB(255,0,0),dragPoint);
 
    // Draw the members that attach to the joint
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
    JointIDType jntID = pDO->GetID();
-   CComPtr<IFem2dJoint> joint;
-   joints->Find(jntID,&joint);
 
-   CComPtr<IIDArray> mbrIDs;
-   joint->get_Members(&mbrIDs);
-
-   IndexType count;
-   mbrIDs->get_Count(&count);
-   for ( IndexType i = 0; i < count; i++ )
+   std::vector<MemberIDType> mbrIDs = model->GetAttachedMembers(jntID);
+   for ( MemberIDType mbrID : mbrIDs )
    {
-      MemberIDType mbrID;
-      mbrIDs->get_Item(i,&mbrID);
+      WBFL::FEA2D::Member* member = model->FindMember(mbrID);
 
-      CComPtr<IFem2dMember> member;
-      members->Find(mbrID,&member);
+      JointIDType startJntID = member->GetStartJoint();
+      JointIDType endJntID = member->GetEndJoint();
 
-      JointIDType startJntID, endJntID;
-      member->get_StartJoint(&startJntID);
-      member->get_EndJoint(&endJntID);
-
-      CComPtr<IFem2dJoint> startJoint, endJoint;
-      joints->Find(startJntID,&startJoint);
-      joints->Find(endJntID,  &endJoint);
+      WBFL::FEA2D::Joint* startJoint = model->FindJoint(startJntID);
+      WBFL::FEA2D::Joint* endJoint = model->FindJoint(endJntID);
 
       CPoint start, end;
       if ( startJntID == jntID )
@@ -94,9 +77,8 @@ void CJointDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayOb
       }
       else
       {
-         Float64 x,y;
-         startJoint->get_X(&x);
-         startJoint->get_Y(&y);
+         Float64 x = startJoint->GetX();
+         Float64 y = startJoint->GetY();
          map->WPtoLP(x,y,&start.x,&start.y);
       }
 
@@ -106,9 +88,8 @@ void CJointDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayOb
       }
       else
       {
-         Float64 x,y;
-         endJoint->get_X(&x);
-         endJoint->get_Y(&y);
+         Float64 x = endJoint->GetX();
+         Float64 y = endJoint->GetY();
          map->WPtoLP(x,y,&end.x,&end.y);
       }
 
@@ -119,9 +100,8 @@ void CJointDrawStrategyImpl::DrawDragImage(std::shared_ptr<const iPointDisplayOb
 
 WBFL::Geometry::Rect2d CJointDrawStrategyImpl::GetBoundingBox(std::shared_ptr<const iPointDisplayObject> pDO) const
 {
-   Float64 px, py;
-   m_Joint->get_X(&px);
-   m_Joint->get_Y(&py);
+   Float64 px = m_Joint->GetX();
+   Float64 py = m_Joint->GetY();
 
    auto pDL = pDO->GetDisplayList();
    auto pDispMgr = pDL->GetDisplayMgr();
@@ -159,29 +139,23 @@ void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO
    CPen pen(PS_SOLID,1,color);
    CPen* pOldPen = pDC->SelectObject(&pen);
 
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
    JointIDType jntID = pDO->GetID();
-   CComPtr<IFem2dJoint> joint;
-   joints->Find(jntID,&joint);
+   WBFL::FEA2D::Joint* joint = model->FindJoint(jntID);
 
 
    CFont font;
    font.CreatePointFont(80, _T("Arial"), pDC);
    CFont* old_font = pDC->SelectObject(&font);
-   JointIDType id;
-   joint->get_ID(&id);
+   JointIDType id = joint->GetID();
    CString strnum;
    strnum.Format(_T("%d"), id);
    pDC->SetTextAlign(TA_BOTTOM | TA_CENTER);
    pDC->TextOut(cx, cy + hgt / 5, strnum);
    pDC->SelectObject(old_font);
 
-   VARIANT_BOOL bIsSupport;
-   joint->IsSupport(&bIsSupport);
-   if ( bIsSupport == VARIANT_FALSE )
+   if ( !joint->IsSupport() )
    {
       // Not a support... Draw an O and return
       //CRect rect(cx-wid/5,cy-hgt/5,cx+wid/5,cy+hgt/5);
@@ -190,22 +164,17 @@ void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO
 
       pDC->MoveTo(cx,cy-hgt/5);
       pDC->LineTo(cx,cy+hgt/5);
-      
+
       pDC->SelectObject(pOldPen);
       return;
    }
 
    // This is a support... Found out which DOF are actually supported
-   VARIANT_BOOL bFxReleased;
-   joint->IsDofReleased(jrtFx,&bFxReleased);
+   bool bFxReleased = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fx);
+   bool bFyReleased = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Fy);
+   bool bMzReleased = joint->IsDofReleased(WBFL::FEA2D::JointReleaseType::Mz);
 
-   VARIANT_BOOL bFyReleased;
-   joint->IsDofReleased(jrtFy,&bFyReleased);
-
-   VARIANT_BOOL bMzReleased;
-   joint->IsDofReleased(jrtMz,&bMzReleased);
-
-   if ( bFxReleased == VARIANT_FALSE )
+   if ( !bFxReleased )
    {
       // Supported in the X direction
       pDC->MoveTo(cx-wid,cy+5);
@@ -218,7 +187,7 @@ void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO
       pDC->LineTo(cx,cy+5);
    }
 
-   if ( bFyReleased == VARIANT_FALSE )
+   if ( !bFyReleased )
    {
       // Supported in the Y direction
       pDC->MoveTo(cx,cy+hgt+5);
@@ -231,7 +200,7 @@ void CJointDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject> pDO
       pDC->LineTo(cx,cy+5);
    }
 
-   if ( bMzReleased == VARIANT_FALSE )
+   if ( !bMzReleased )
    {
       // Moment support
       pDC->Arc(CRect(CPoint(cx-wid/2,cy-hgt/2),CSize(wid,hgt)),

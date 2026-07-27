@@ -4,7 +4,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace RCCapacityUnitTest
+namespace RCCapacityUnitTests
 {
 	TEST_CLASS(TestMomentCapacitySolver)
 	{

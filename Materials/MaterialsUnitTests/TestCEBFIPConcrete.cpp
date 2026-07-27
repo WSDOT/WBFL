@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Materials;
 
-namespace MaterialsUnitTest
+namespace MaterialsUnitTests
 {
 	TEST_CLASS(TestCEBFIPConcrete)
 	{

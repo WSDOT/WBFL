@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -29,20 +29,23 @@
 
 #include "resource.h"       // main symbols
 #include "CircularChild.h"
-#include "MbrLoad.h"
 
 class ModelEvents;
 /////////////////////////////////////////////////////////////////////////////
 // CDistributedLoad
-class ATL_NO_VTABLE CDistributedLoad : 
+// Thin COM facade over WBFL::FEA2D::DistributedLoad. The legacy MbrLoad
+// interface is gone - see the note in PointLoad.h.
+class ATL_NO_VTABLE CDistributedLoad :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CDistributedLoad,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
-	public IFem2dDistributedLoad,
-   public MbrLoad
+	public IFem2dDistributedLoad
 {
 public:
-   CDistributedLoad()
+   CDistributedLoad():
+   m_pModel(0),
+   m_pLoading(0),
+   m_pCore(0)
 	{
 	}
 
@@ -50,11 +53,7 @@ public:
 	{
 	}
 
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, MemberIDType memberID=-1, Fem2dLoadDirection direction=loadDirFy, Float64 startLocation=0.0, Float64 endLocation=0.0, Float64 WStart=0.0, Float64 WEnd=0.0, Fem2dLoadOrientation orientation=lotMember);
-
-   // IStructuredStorage - sort of
-   STDMETHOD(Load)(IStructuredLoad2 *load);
-   STDMETHOD(Save)(IStructuredSave2 *save);
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::DistributedLoad* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -87,31 +86,8 @@ public:
 	STDMETHOD(get_Loading)(/*[out, retval]*/ LoadCaseIDType *pVal) override;
 
 private:
-   LoadIDType m_ID;
-   MemberIDType m_MemberID;
-   Fem2dLoadOrientation m_Orientation;
-   Fem2dLoadDirection m_Direction;
-   Float64 m_StartLocation;
-   Float64 m_EndLocation;
-   Float64 m_WEnd;
-   Float64 m_WStart;
-
    ModelEvents* m_pModel; // for sending events back to model
    IFem2dLoading* m_pLoading;
-
-public:
-   // Member functions for fe analysis
-   void GetForceVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 *vector);
-   void GetInternalForces(Float64 x,Float64 Length,Float64 Angle,Fem2dMbrFaceType face,Float64* pFx,Float64* pFy,Float64* pMz);
-   void GetDispVector(long leftBC,long rightBC,Float64 Length,Float64 Angle,Float64 EA,Float64 EI,Float64 *vector);
-   void GetDeflection(Float64 x,long leftBC,long rightBC,Float64 Length,Float64 Angle,
-                        Float64 EA,Float64 EI,
-                        Float64* pdx,Float64* pdy,Float64* prz);
-   void GetOriginForces(Float64 Length,Float64 Angle,Float64* pFx,Float64* pFy,Float64* pMz);
-
-private:
-   void CheckValid();
-   void GetLocalData(Float64 Angle,Float64 length, Float64* pStartLoc, Float64* pEndLoc, Float64* pWxStart,Float64* pWyStart,Float64* pWxEnd,Float64* pWyEnd);
-
+   WBFL::FEA2D::DistributedLoad* m_pCore; // non-owning; owned by the FEA2D core Loading
 };
 

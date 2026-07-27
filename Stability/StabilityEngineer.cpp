@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -24,8 +24,6 @@
 #include <Stability/StabilityLib.h>
 #include <Stability/StabilityEngineer.h>
 
-#include <WBFLFem2d_i.c>
-
 #include <array>
 #include <algorithm>
 
@@ -47,6 +45,7 @@
 #define THETA_MAX 0.4
 
 using namespace WBFL::Stability;
+using namespace WBFL::FEA2D;
 
 StabilityEngineer::StabilityEngineer()
 {
@@ -144,9 +143,9 @@ void StabilityEngineer::PrepareResults(const IGirder* pGirder,const IStabilityPr
    }
 }
 
-void StabilityEngineer::Analyze(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,Results& results,IFem2dModel** ppModel) const
+void StabilityEngineer::Analyze(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,Results& results,FEA2D::Model& model) const
 {
-   BuildModel(pGirder,pStabilityProblem,results,ppModel);
+   BuildModel(pGirder,pStabilityProblem,results,model);
 
    Float64 Lg = pGirder->GetGirderLength();
    Float64 Wg = results.Wg;
@@ -205,7 +204,7 @@ void StabilityEngineer::Analyze(const IGirder* pGirder,const IStabilityProblem* 
    results.Dra[+ImpactDirection::ImpactDown] = Dra;
 
    // lateral deflection due to full load applied laterally
-   Float64 zo = ComputeZo(pGirder,pStabilityProblem,*ppModel,results);
+   Float64 zo = ComputeZo(pGirder,pStabilityProblem,model,results);
 
    Float64 ImpactUp, ImpactDown;
    pStabilityProblem->GetImpact(&ImpactUp,&ImpactDown);
@@ -220,8 +219,8 @@ void StabilityEngineer::Analyze(const IGirder* pGirder,const IStabilityProblem* 
 
 void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStabilityProblem* pStabilityProblem,LiftingResults& results) const
 {
-   CComPtr<IFem2dModel> model;
-   Analyze(pGirder,pStabilityProblem,results,&model);
+   FEA2D::Model model;
+   Analyze(pGirder,pStabilityProblem,results,model);
 
    Float64 Lg = pGirder->GetGirderLength();
    Float64 Wg = results.Wg;
@@ -280,11 +279,10 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
    std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
    // Get deflection due to horizontal component of lifting cable force
-   CComQIPtr<IFem2dModelResults> femResults(model);
    // recall that the deflection is based on a unit force, so scale the value from the fem model by the actual force
    Float64 dx,dy1,dy2,rz;
-   femResults->ComputePOIDeflections(LCID_LIFT,m_StartPoi,lotMember,&dx,&dy1,&rz);
-   femResults->ComputePOIDeflections(LCID_LIFT,m_MidSpanPoi,lotMember,&dx,&dy2,&rz);
+   model.ComputePOIDeflections(LCID_LIFT,m_StartPoi,LoadOrientation::Member,&dx,&dy1,&rz);
+   model.ComputePOIDeflections(LCID_LIFT,m_MidSpanPoi,LoadOrientation::Member,&dx,&dy2,&rz);
    //results.dLift = results.Plift*(dy2 - dy1); // does not include impact... measured relative to the ends of the girder
 
    for ( IndexType i = 0; i < 3; i++ )
@@ -387,12 +385,12 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
 
       // Get forces from external loads
       Float64 fx,fy,mz;
-      femResults->ComputePOIForces(LCID_GIRDER,poiID,mftLeft,lotMember,&fx,&fy,&mz);
+      model.ComputePOIForces(LCID_GIRDER,poiID,MemberFaceType::Left,LoadOrientation::Member,&fx,&fy,&mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
-      femResults->ComputePOIForces(LCID_WIND,poiID,mftLeft,lotMember,&fx,&fy,&mz);
+      model.ComputePOIForces(LCID_WIND,poiID,MemberFaceType::Left,LoadOrientation::Member,&fx,&fy,&mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
@@ -796,8 +794,8 @@ void StabilityEngineer::AnalyzeLifting(const IGirder* pGirder,const ILiftingStab
 
 void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneEndSeatedStabilityProblem* pStabilityProblem, OneEndSeatedResults & results) const
 {
-   CComPtr<IFem2dModel> model;
-   Analyze(pGirder, pStabilityProblem, results, &model);
+   FEA2D::Model model;
+   Analyze(pGirder, pStabilityProblem, results, model);
 
    std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
@@ -929,7 +927,6 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
    }
 
    PoiIDType poiID = 0;
-   CComQIPtr<IFem2dModelResults> femResults(model);
    const auto& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
    IndexType analysisPointIdx = 0;
    for (const auto& pAnalysisPoint : vAnalysisPoints)
@@ -960,17 +957,17 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
       // Get forces from external loads
       Float64 fx, fy, mz;
-      femResults->ComputePOIForces(LCID_GIRDER, poiID, mftLeft, lotMember, &fx, &fy, &mz);
+      model.ComputePOIForces(LCID_GIRDER, poiID, MemberFaceType::Left, LoadOrientation::Member, &fx, &fy, &mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
-      femResults->ComputePOIForces(LCID_WIND, poiID, mftLeft, lotMember, &fx, &fy, &mz);
+      model.ComputePOIForces(LCID_WIND, poiID, MemberFaceType::Left, LoadOrientation::Member, &fx, &fy, &mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
-      femResults->ComputePOIForces(LCID_CF, poiID, mftLeft, lotMember, &fx, &fy, &mz);
+      model.ComputePOIForces(LCID_CF, poiID, MemberFaceType::Left, LoadOrientation::Member, &fx, &fy, &mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mcf = mz;
@@ -1385,8 +1382,8 @@ void StabilityEngineer::AnalyzeOneEndSeated(const IGirder * pGirder, const IOneE
 
 void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStabilityProblem* pStabilityProblem,HaulingResults& results) const
 {
-   CComPtr<IFem2dModel> model;
-   Analyze(pGirder,pStabilityProblem,results,&model);
+   FEA2D::Model model;
+   Analyze(pGirder,pStabilityProblem,results,model);
 
    std::shared_ptr<IAlternateTensStressDataProvider> pAlternateTensStressDataProvider = pGirder->GetAlternateTensStressDataProvider();
 
@@ -1487,7 +1484,6 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    } // next slope
 
    PoiIDType poiID = 0;
-   CComQIPtr<IFem2dModelResults> femResults(model);
    const auto& vAnalysisPoints = pStabilityProblem->GetAnalysisPoints();
    IndexType analysisPointIdx = 0;
    for( const auto& pAnalysisPoint : vAnalysisPoints)
@@ -1518,17 +1514,17 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
 
       // Get forces from external loads
       Float64 fx,fy,mz;
-      femResults->ComputePOIForces(LCID_GIRDER,poiID,mftLeft,lotMember,&fx,&fy,&mz);
+      model.ComputePOIForces(LCID_GIRDER,poiID,MemberFaceType::Left,LoadOrientation::Member,&fx,&fy,&mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mg = mz;
 
-      femResults->ComputePOIForces(LCID_WIND,poiID,mftLeft,lotMember,&fx,&fy,&mz);
+      model.ComputePOIForces(LCID_WIND,poiID,MemberFaceType::Left,LoadOrientation::Member,&fx,&fy,&mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mw = mz;
 
-      femResults->ComputePOIForces(LCID_CF,poiID,mftLeft,lotMember,&fx,&fy,&mz);
+      model.ComputePOIForces(LCID_CF,poiID,MemberFaceType::Left,LoadOrientation::Member,&fx,&fy,&mz);
       CHECK(IsZero(fx));
       mz = IsZero(mz) ? 0 : mz;
       sectionResult.Mcf = mz;
@@ -1984,18 +1980,9 @@ void StabilityEngineer::AnalyzeHauling(const IGirder* pGirder,const IHaulingStab
    } // next slope type
 }
 
-void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,Results& results,IFem2dModel** ppModel) const
+void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,Results& results,FEA2D::Model& model) const
 {
-   if (*ppModel)
-   {
-      (*ppModel)->Clear();
-   }
-   else
-   {
-      CComPtr<IFem2dModel> model;
-      model.CoCreateInstance(CLSID_Fem2dModel);
-      model.CopyTo(ppModel);
-   }
+   model.Clear();
 
    Float64 Lg = pGirder->GetGirderLength();
 
@@ -2081,24 +2068,22 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    JointIDType jntID = 0;
    JointIDType leftSupportJntID = INVALID_ID;
    JointIDType rightSupportJntID = INVALID_ID;
-   CComPtr<IFem2dJointCollection> joints;
-   (*ppModel)->get_Joints(&joints);
    for(const auto& X : vX)
    {
-      CComPtr<IFem2dJoint> jnt;
-      joints->Create(jntID,X,0,&jnt);
+      Joint& jnt = model.CreateJoint(jntID,X,0);
+
 
       if ( leftSupportJntID==INVALID_ID && IsEqual(X,leftSupportLoc,tolerance) )
       {
-         jnt->Support();
-         jnt->ReleaseDof(jrtFx);
-         jnt->ReleaseDof(jrtMz);
+         jnt.Support();
+         jnt.ReleaseDof(JointReleaseType::Fx);
+         jnt.ReleaseDof(JointReleaseType::Mz);
          leftSupportJntID = jntID;
       }
       else if (rightSupportJntID==INVALID_ID &&  IsEqual(X,rightSupportLoc,tolerance) )
       {
-         jnt->Support();
-         jnt->ReleaseDof(jrtMz);
+         jnt.Support();
+         jnt.ReleaseDof(JointReleaseType::Mz);
          rightSupportJntID = jntID;
       }
 
@@ -2118,54 +2103,26 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    Float64 EA = Ec*Ag;
    Float64 EI = Ec*(Ixx*Iyy - Ixy*Ixy) / Iyy;
 
-   CComPtr<IFem2dMemberCollection> members;
-   (*ppModel)->get_Members(&members);
-
    jntID = 1;
    MemberIDType mbrID = 0;
-   CComPtr<IFem2dMember> member;
    auto prevIter(vX.begin());
    auto iter = prevIter + 1;
    auto end(vX.end());
    for (; iter != end; iter++, jntID++, mbrID++)
    {
-      member.Release();
-      members->Create(mbrID, jntID - 1, jntID, EA, EI, &member);
+      model.CreateMember(mbrID, jntID - 1, jntID, EA, EI);
    }
 
    // Apply Loads
 
-   CComPtr<IFem2dLoadingCollection> loadings;
-   (*ppModel)->get_Loadings(&loadings);
+   Loading& swLoading = model.CreateLoading(LCID_GIRDER);
 
-   CComPtr<IFem2dLoading> swLoading;
-   loadings->Create(LCID_GIRDER,&swLoading);
+   Loading& cfLoading = model.CreateLoading(LCID_CF);
 
-   CComPtr<IFem2dLoading> cfLoading;
-   loadings->Create(LCID_CF,&cfLoading);
+   Loading& windLoading = model.CreateLoading(LCID_WIND);
 
-   CComPtr<IFem2dLoading> windLoading;
-   loadings->Create(LCID_WIND,&windLoading);
+   Loading& liftLoading = model.CreateLoading(LCID_LIFT);
 
-   CComPtr<IFem2dLoading> liftLoading;
-   loadings->Create(LCID_LIFT,&liftLoading);
-
-   CComPtr<IFem2dDistributedLoadCollection> swDistributedLoads;
-   swLoading->get_DistributedLoads(&swDistributedLoads);
-
-   CComPtr<IFem2dPointLoadCollection> swPointLoads;
-   swLoading->get_PointLoads(&swPointLoads);
-
-   CComPtr<IFem2dDistributedLoadCollection> cfDistributedLoads;
-   cfLoading->get_DistributedLoads(&cfDistributedLoads);
-
-   CComPtr<IFem2dDistributedLoadCollection> windDistributedLoads;
-   windLoading->get_DistributedLoads(&windDistributedLoads);
-
-   CComPtr<IFem2dJointLoadCollection> liftJointLoads;
-   liftLoading->get_JointLoads(&liftJointLoads);
-
-   CComPtr<IFem2dDistributedLoad> distLoad;
 
 
 
@@ -2224,8 +2181,8 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
 
       MemberIDType mbrIDStart, mbrIDEnd;
       Float64 xStart, xEnd;
-      FindMember(*ppModel, start, &mbrIDStart, &xStart);
-      FindMember(*ppModel, end, &mbrIDEnd, &xEnd);
+      FindMember(model, start, &mbrIDStart, &xStart);
+      FindMember(model, end, &mbrIDEnd, &xEnd);
 
       if (mbrIDStart == mbrIDEnd && IsEqual(xStart, xEnd))
       {
@@ -2284,22 +2241,15 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       if (mbrIDStart == mbrIDEnd)
       {
          // load is contained on a single member
-         distLoad.Release();
-         swDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -wStart, -wEnd, lotMember, &distLoad);
-
-         distLoad.Release();
-         cfDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -cfStart, -cfEnd, lotMember, &distLoad);
-
-         distLoad.Release();
-         windDistributedLoads->Create(loadID, mbrIDStart, loadDirFy, xStart, xEnd, -windStart, -windEnd, lotMember, &distLoad);
+         swLoading.CreateDistributedLoad(loadID, mbrIDStart, LoadDirection::Fy, xStart, xEnd, -wStart, -wEnd, LoadOrientation::Member);
+         cfLoading.CreateDistributedLoad(loadID, mbrIDStart, LoadDirection::Fy, xStart, xEnd, -cfStart, -cfEnd, LoadOrientation::Member);
+         windLoading.CreateDistributedLoad(loadID, mbrIDStart, LoadDirection::Fy, xStart, xEnd, -windStart, -windEnd, LoadOrientation::Member);
 
          loadID++;
       }
       else
       {
          // load straddles two or more members
-         CComPtr<IFem2dMember> mbr;
-         CComPtr<IFem2dJoint> jntStart, jntEnd;
          for (MemberIDType mbrID = mbrIDStart; mbrID <= mbrIDEnd; mbrID++)
          {
             Float64 w1self, w2self; // start and end load intensity on this member
@@ -2307,23 +2257,17 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
             Float64 w1wind, w2wind;
             Float64 x1, x2; // start and end load location from the start of this member
 
-            Float64 Lmbr;
-            mbr.Release();
-            members->Find(mbrID, &mbr);
-            mbr->get_Length(&Lmbr);
+            Member* mbr = model.FindMember(mbrID);
+            Float64 Lmbr = mbr->GetLength();
 
-            JointIDType jntIDStart, jntIDEnd;
-            mbr->get_StartJoint(&jntIDStart);
-            mbr->get_EndJoint(&jntIDEnd);
+            JointIDType jntIDStart = mbr->GetStartJoint();
+            JointIDType jntIDEnd = mbr->GetEndJoint();
 
-            jntStart.Release();
-            jntEnd.Release();
-            joints->Find(jntIDStart, &jntStart);
-            joints->Find(jntIDEnd, &jntEnd);
+            Joint* jntStart = model.FindJoint(jntIDStart);
+            Joint* jntEnd = model.FindJoint(jntIDEnd);
 
-            Float64 xMbrStart, xMbrEnd;
-            jntStart->get_X(&xMbrStart);
-            jntEnd->get_X(&xMbrEnd);
+            Float64 xMbrStart = jntStart->GetX();
+            Float64 xMbrEnd = jntEnd->GetX();
 
             if (mbrID == mbrIDStart)
             {
@@ -2358,14 +2302,9 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
             if (!IsEqual(x1, x2))
             {
                // no need to add the load if its length is 0
-               distLoad.Release();
-               swDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1self, -w2self, lotMember, &distLoad);
-
-               distLoad.Release();
-               cfDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1cf, -w2cf, lotMember, &distLoad);
-
-               distLoad.Release();
-               windDistributedLoads->Create(loadID, mbrID, loadDirFy, x1, x2, -w1wind, -w2wind, lotMember, &distLoad);
+               swLoading.CreateDistributedLoad(loadID, mbrID, LoadDirection::Fy, x1, x2, -w1self, -w2self, LoadOrientation::Member);
+               cfLoading.CreateDistributedLoad(loadID, mbrID, LoadDirection::Fy, x1, x2, -w1cf, -w2cf, LoadOrientation::Member);
+               windLoading.CreateDistributedLoad(loadID, mbrID, LoadDirection::Fy, x1, x2, -w1wind, -w2wind, LoadOrientation::Member);
 
                loadID++;
             }
@@ -2418,8 +2357,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
          Xprev = Xcurr;
       }
 
-      CComPtr<IFem2dPointLoad> ptLoad;
-      swPointLoads->Create(ptLoadID++,mbrID,Xmbr,0,P,0,lotMember,&ptLoad);
+      swLoading.CreatePointLoad(ptLoadID++,mbrID,Xmbr,0,P,0,LoadOrientation::Member);
 
       Wg += -P;
    }
@@ -2444,17 +2382,14 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
       pGirder->GetSectionProperties(rightSupportLoc,&Ag,&Ixx,&Iyy,&Ixy,&Xleft,&Ytop,&Hg,&Wtf,&Wbf);
       Float64 Mright = Ph*(Ytop + Yrc);
 
-      CComPtr<IFem2dJointLoad> leftJntLoad,rightJntLoad;
-      liftJointLoads->Create(0,leftSupportJntID,0.0,0.0,Mleft,&leftJntLoad);
-      liftJointLoads->Create(1,rightSupportJntID,0.0,0.0,Mright,&rightJntLoad);
+      liftLoading.CreateJointLoad(0,leftSupportJntID,0.0,0.0,Mleft);
+      liftLoading.CreateJointLoad(1,rightSupportJntID,0.0,0.0,Mright);
    }
 
 
    // Layout POIs
    // there is a 1 to 1 mapping between analysis points and poi IDs so there is no
    // need to keep an actual map
-   CComPtr<IFem2dPOICollection> pois;
-   (*ppModel)->get_POIs(&pois);
    PoiIDType poiID = 0;
 
    Float64 Xms = 0.5*(Lg + Ll - Lr); // mid-span location
@@ -2490,14 +2425,12 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
          Xprev = Xcurr;
       }
 
-      CComPtr<IFem2dPOI> poi;
-      pois->Create(poiID++,mbrID,Xmbr,&poi);
+      model.CreatePOI(poiID++,mbrID,Xmbr);
    }
 
    // put a poi at the start. it is used, along with the mid-span poi to compute deflections relative to the girder ends
-   CComPtr<IFem2dPOI> poi;
    m_StartPoi = poiID;
-   pois->Create(poiID++,0,0,&poi);
+   model.CreatePOI(poiID++,0,0);
 
 
    if (m_MidSpanPoi == INVALID_ID) 
@@ -2526,13 +2459,12 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
 
       m_MidSpanPoi = poiID;
 
-      CComPtr<IFem2dPOI> poi;
-      pois->Create(poiID++,mbrID,Xmbr,&poi);
+      model.CreatePOI(poiID++,mbrID,Xmbr);
    }
 
    CHECK(m_MidSpanPoi != INVALID_ID);
 
-   GetZoComputationMethod(pGirder,pStabilityProblem,*ppModel,results);
+   GetZoComputationMethod(pGirder,pStabilityProblem,model,results);
    if ( results.ZoMethod == CalculationMethod::Approximate )
    {
       // Create special POI for computing Zo
@@ -2591,8 +2523,7 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
             Xprev = Xcurr;
          }
 
-         CComPtr<IFem2dPOI> poi;
-         pois->Create(poiID--,mbrID,Xmbr,&poi);
+         model.CreatePOI(poiID--,mbrID,Xmbr);
       }
 
       poiID++;
@@ -2600,10 +2531,9 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
    }
 
    // capture girder dead load reactions
-   CComQIPtr<IFem2dModelResults> fem_results(*ppModel);
    Float64 Rx, Rleft, Rright, Rz;
-   fem_results->ComputeReactions(LCID_GIRDER, leftSupportJntID, &Rx, &Rleft, &Rz);
-   fem_results->ComputeReactions(LCID_GIRDER, rightSupportJntID, &Rx, &Rright, &Rz);
+   model.ComputeReactions(LCID_GIRDER, leftSupportJntID, &Rx, &Rleft, &Rz);
+   model.ComputeReactions(LCID_GIRDER, rightSupportJntID, &Rx, &Rright, &Rz);
    results.Rl = Rleft;
    results.Rr = Rright;
 }
@@ -2676,7 +2606,7 @@ Float64 StabilityEngineer::ComputeXcg(const IGirder* pGirder, const IStabilityPr
    return results.Xleft;
 }
 
-void StabilityEngineer::GetZoComputationMethod(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,IFem2dModel* pModel,Results& results) const
+void StabilityEngineer::GetZoComputationMethod(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,FEA2D::Model& model,Results& results) const
 {
    if ( pGirder->GetSectionCount() == 1 )
    {
@@ -2701,7 +2631,7 @@ void StabilityEngineer::GetZoComputationMethod(const IGirder* pGirder,const ISta
    }
 }
 
-Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,IFem2dModel* pModel,Results& results) const
+Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProblem* pStabilityProblem,FEA2D::Model& model,Results& results) const
 {
    Float64 Zo;
    if ( results.ZoMethod == CalculationMethod::Exact )
@@ -2731,7 +2661,6 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
    else
    {
       CHECK(m_FirstPoi - m_LastPoi + 1 == m_vPoi.size());
-      CComQIPtr<IFem2dModelResults> femResults(pModel);
       Float64 g = WBFL::Units::System::GetGravitationalAcceleration();
 
       const auto& concrete = pStabilityProblem->GetConcrete();
@@ -2759,8 +2688,8 @@ Float64 StabilityEngineer::ComputeZo(const IGirder* pGirder,const IStabilityProb
 
          // this is vertical deflection based on Ix...
          Float64 dx,dy1,dy2,rz;
-         femResults->ComputePOIDeflections(LCID_GIRDER,poiID1,lotMember,&dx,&dy1,&rz);
-         femResults->ComputePOIDeflections(LCID_GIRDER,poiID2,lotMember,&dx,&dy2,&rz);
+         model.ComputePOIDeflections(LCID_GIRDER,poiID1,LoadOrientation::Member,&dx,&dy1,&rz);
+         model.ComputePOIDeflections(LCID_GIRDER,poiID2,LoadOrientation::Member,&dx,&dy2,&rz);
 
          // we want lateral deflection based on Iy...
          dy1 *= Ixx1/Iyy1;
@@ -2788,59 +2717,41 @@ Float64 StabilityEngineer::ComputePz(Float64 velocity,Float64 Cd) const
    return Pz;
 }
 
-void StabilityEngineer::FindMember(IFem2dModel* pModel, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const
+void StabilityEngineer::FindMember(FEA2D::Model& model, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const
 {
-   CComPtr<IFem2dMemberCollection> members;
-   pModel->get_Members(&members);
+   IndexType mbrcnt = model.GetMemberCount();
 
-   IndexType mbrcnt;
-   members->get_Count(&mbrcnt);
-
-   CComPtr<IFem2dJointCollection> joints;
-   pModel->get_Joints(&joints);
-
-   CComPtr<IFem2dEnumMember> enumMembers;
-   members->get__EnumElements(&enumMembers);
-
-   IndexType idx = 0;
-   CComPtr<IFem2dJoint> j1, j2;
-   CComPtr<IFem2dMember> mbr;
-   while (enumMembers->Next(1, &mbr, nullptr) != S_FALSE)
+   for (IndexType idx = 0; idx < mbrcnt; idx++)
    {
-      JointIDType jntID1, jntID2;
-      mbr->get_StartJoint(&jntID1);
-      mbr->get_EndJoint(&jntID2);
+      Member* mbr = model.FindMemberByIndex(idx);
 
-      j1.Release();
-      j2.Release();
-      joints->Find(jntID1, &j1);
-      joints->Find(jntID2, &j2);
+      JointIDType jntID1 = mbr->GetStartJoint();
+      JointIDType jntID2 = mbr->GetEndJoint();
 
-      Float64 x1, x2;
-      j1->get_X(&x1);
-      j2->get_X(&x2);
+      Joint* j1 = model.FindJoint(jntID1);
+      Joint* j2 = model.FindJoint(jntID2);
+
+      Float64 x1 = j1->GetX();
+      Float64 x2 = j2->GetX();
 
       if (InRange(x1, distFromStartOfModel, x2))
       {
-         mbr->get_ID(pMbrID);
+         *pMbrID = mbr->GetID();
          *pDistFromStartOfMbr = distFromStartOfModel - x1;
          return;
       }
       else if (idx == 0 && distFromStartOfModel<x1) // next cases are for short cantilevers where fem model is not generated
       {
-         mbr->get_ID(pMbrID);
+         *pMbrID = mbr->GetID();
          *pDistFromStartOfMbr = 0.0;
          return;
       }
       else if ((idx == mbrcnt - 1) && (x2 < distFromStartOfModel))
       {
-         mbr->get_ID(pMbrID);
+         *pMbrID = mbr->GetID();
          *pDistFromStartOfMbr = x2 - x1;
          return;
       }
-
-      mbr.Release();
-      idx++;
    }
 
    CHECK(false); // didn't find a solution

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -25,7 +25,7 @@
 
 #include "resource.h"
 
-#include <WBFLFem2d.h>
+#include <FEA2D/Model.h>
 
 #include "WBFLLBAMAnalysis.h"
 #include "LBAMUtils.h"
@@ -203,9 +203,9 @@ public:
 
 
    // virtual functions to get poi results from underlying fem model
-   virtual void GetDeflection(LoadGroupIDType lgId, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
-   virtual void GetForce(LoadGroupIDType lgId, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
-   virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+   virtual void GetDeflection(LoadGroupIDType lgId, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz);
+   virtual void GetForce(LoadGroupIDType lgId, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight);
+   virtual void GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                   ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, Float64 deflZeroTolerance, 
                                   IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
                                   IInfluenceLine** pLeftShearInfl,  IInfluenceLine** pRightShearInfl,
@@ -264,9 +264,9 @@ public:
    void SetFemPoi(PoiIDType id);
    PoiIDType GetFemPoiID() const;
    void SetMemberLocationType(MemberLocationType type);
-   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
-   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
-   virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+   virtual void GetDeflection(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
+   virtual void GetForce(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
+   virtual void GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                   ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                   Float64 deflZeroTolerance, 
                                   IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
@@ -292,9 +292,9 @@ public:
    void SetFemPoiID(PoiIDType leftPoiID, PoiIDType rightPoiID);
    MemberIDType GetLeftPoiID() const;
    MemberIDType GetRightPoiID() const;
-   virtual void GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
-   virtual void GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
-   virtual void GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+   virtual void GetDeflection(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz) override;
+   virtual void GetForce(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight) override;
+   virtual void GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                   ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                   Float64 deflZeroTolerance, 
                                   IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
@@ -378,7 +378,7 @@ public:
 
    // Tests to see if there is already a POI at the specified location. If the result type is None
    // there is a POI there and pCoveredID holds the LBAMPoiID for that POI.
-   PoiCoveredRes IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance,PoiIDType* pCoveredID);
+   PoiCoveredRes IsPoiCovered(Float64 globalX, WBFL::FEA2D::Model* pFemModel, Float64 tolerance,PoiIDType* pCoveredID);
 
 private:
    SortedPoiMapTracker();

@@ -18,7 +18,7 @@ CPointLoadDrawStrategyImpl::CPointLoadDrawStrategyImpl()
 {
 }
 
-void CPointLoadDrawStrategyImpl::SetLoad(IFem2dPointLoad* load)
+void CPointLoadDrawStrategyImpl::SetLoad(WBFL::FEA2D::PointLoad* load)
 {
    m_Load = load;
 }
@@ -100,10 +100,9 @@ void CPointLoadDrawStrategyImpl::Draw(std::shared_ptr<const iPointDisplayObject>
    CPen pen(PS_SOLID,2,color);
    CPen* pOldPen = pDC->SelectObject(&pen);
 
-   Float64 fx,fy,mz;
-   m_Load->get_Fx(&fx);
-   m_Load->get_Fy(&fy);
-   m_Load->get_Mz(&mz);
+   Float64 fx = m_Load->GetFx();
+   Float64 fy = m_Load->GetFy();
+   Float64 mz = m_Load->GetMz();
 
    if ( !IsZero(fx) )
    {

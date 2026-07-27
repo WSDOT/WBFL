@@ -19,7 +19,7 @@ public:
 	CModelPropertiesDlg(LPCTSTR pszCaption, CWnd* pParentWnd = NULL, UINT iSelectPage = 0);
 	virtual ~CModelPropertiesDlg();
 
-   CComPtr<IFem2dModel> m_pFem2d;
+   WBFL::FEA2D::Model* m_pFem2d;
 
 protected:
 	DECLARE_MESSAGE_MAP()

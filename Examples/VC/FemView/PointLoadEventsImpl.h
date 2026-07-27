@@ -17,7 +17,7 @@ public:
    ~CPointLoadEventsImpl();
 
    // iPointLoadEvents
-   void InitFromLoad(IFem2dPointLoad* load) override;
+   void InitFromLoad(WBFL::FEA2D::PointLoad* load) override;
 
    // iDisplayObjectEvents
    bool OnLButtonDblClk(std::shared_ptr<iDisplayObject> pDO, UINT nFlags, const POINT& point) override;
@@ -51,7 +51,7 @@ public:
    IDType m_ID;
    MemberIDType m_MemberID;
    double m_Location;
-   Fem2dLoadOrientation m_Orientation;
+   WBFL::FEA2D::LoadOrientation m_Orientation;
    LoadCaseIDType m_Loading;
    double m_Fx;
    double m_Fy;

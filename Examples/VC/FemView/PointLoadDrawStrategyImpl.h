@@ -9,10 +9,10 @@ public:
    ~CPointLoadDrawStrategyImpl()
    {;}
 
-   void Init(IFem2dPointLoad* pLoad,COLORREF color);
+   void Init(WBFL::FEA2D::PointLoad* pLoad,COLORREF color);
 
    // iPointLoadDrawStrategy
-   void SetLoad(IFem2dPointLoad* load) override;
+   void SetLoad(WBFL::FEA2D::PointLoad* load) override;
    void SetColor(COLORREF color) override;
 
    // iDrawPointStrategy
@@ -23,7 +23,7 @@ public:
 
 private:
    void Draw(std::shared_ptr<const iPointDisplayObject> pDO,CDC* pDC,COLORREF color, const WBFL::Geometry::Point2d& loc) const;
-   CComPtr<IFem2dPointLoad> m_Load;
+   WBFL::FEA2D::PointLoad* m_Load;
    COLORREF m_Color;
 };
 

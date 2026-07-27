@@ -48,27 +48,19 @@ BOOL CJointListPage::OnInitDialog()
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
 
-   CComPtr<IFem2dJointCollection> joints;
-   pParent->m_pFem2d->get_Joints(&joints);
-
-   IndexType nJoints;
-   joints->get_Count(&nJoints);
+   IndexType nJoints = pParent->m_pFem2d->GetJointCount();
    for ( IndexType jntIdx = 0; jntIdx < nJoints; jntIdx++ )
    {
-      CComPtr<IFem2dJoint> joint;
-      joints->get_Item(jntIdx,&joint);
+      WBFL::FEA2D::Joint* joint = pParent->m_pFem2d->FindJointByIndex(jntIdx);
 
-      JointIDType ID;
-      joint->get_ID(&ID);
+      JointIDType ID = joint->GetID();
 
-      Float64 x,y;
-      joint->get_X(&x);
-      joint->get_Y(&y);
+      Float64 x = joint->GetX();
+      Float64 y = joint->GetY();
 
-      VARIANT_BOOL bSupportedFx, bSupportedFy, bSupportedMz;
-      joint->IsDofSupported(jrtFx,&bSupportedFx);
-      joint->IsDofSupported(jrtFy,&bSupportedFy);
-      joint->IsDofSupported(jrtMz,&bSupportedMz);
+      bool bSupportedFx = joint->IsDofSupported(WBFL::FEA2D::JointReleaseType::Fx);
+      bool bSupportedFy = joint->IsDofSupported(WBFL::FEA2D::JointReleaseType::Fy);
+      bool bSupportedMz = joint->IsDofSupported(WBFL::FEA2D::JointReleaseType::Mz);
 
       m_ctrlList.InsertItem((int)jntIdx,_T("Joint"));
       CString str;
@@ -79,13 +71,13 @@ BOOL CJointListPage::OnInitDialog()
       str.Format(_T("%f"),y);
       m_ctrlList.SetItemText((int)jntIdx,2,str);
 
-      str.Format(_T("%s"),bSupportedFx == VARIANT_TRUE ? _T("x") : _T(""));
+      str.Format(_T("%s"),bSupportedFx ? _T("x") : _T(""));
       m_ctrlList.SetItemText((int)jntIdx,3,str);
 
-      str.Format(_T("%s"),bSupportedFy == VARIANT_TRUE ? _T("x") : _T(""));
+      str.Format(_T("%s"),bSupportedFy ? _T("x") : _T(""));
       m_ctrlList.SetItemText((int)jntIdx,4,str);
 
-      str.Format(_T("%s"),bSupportedMz == VARIANT_TRUE ? _T("x") : _T(""));
+      str.Format(_T("%s"),bSupportedMz ? _T("x") : _T(""));
       m_ctrlList.SetItemText((int)jntIdx,5,str);
    }
 

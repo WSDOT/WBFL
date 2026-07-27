@@ -280,9 +280,8 @@ copy %(FullPath) $(ProjectDir)..\htmlhelp\LbamAnalysis.hh
     <ClInclude Include="StressResults.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Fem2d\Fem2d.vcxproj">
-      <Project>{9d5feeee-54d4-4719-a60d-d68e0943e2c0}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    <ProjectReference Include="..\..\FEA2D\FEA2D.vcxproj">
+      <Project>{D745ADBC-E840-4A4B-A94F-6738E008A91E}</Project>
     </ProjectReference>
     <ProjectReference Include="..\..\Geometry\Geometry.vcxproj">
       <Project>{16e889a9-e3b0-4541-85b2-3a4d98fccb59}</Project>

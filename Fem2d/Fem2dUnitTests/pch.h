@@ -1,0 +1,51 @@
+///////////////////////////////////////////////////////////////////////
+// Fem2D - Two-dimensional Beam Analysis Engine
+// Copyright � 1999-2026  Washington State Department of Transportation
+//                        Bridge and Structures Office
+//
+// This library is a part of the Washington Bridge Foundation Libraries
+// and was developed as part of the Alternate Route Project
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the Alternate Route Library Open Source License as
+// published by the Washington State Department of Transportation,
+// Bridge and Structures Office.
+//
+// This program is distributed in the hope that it will be useful,
+// but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+// PURPOSE.  See the Alternate Route Library Open Source License for more details.
+//
+// You should have received a copy of the Alternate Route Library Open Source License
+// along with this program; if not, write to the Washington State
+// Department of Transportation, Bridge and Structures Office,
+// P.O. Box 47340, Olympia, WA 98503, USA or e-mail
+// Bridge_Support@wsdot.wa.gov
+///////////////////////////////////////////////////////////////////////
+// pch.h
+//
+// This is the Phase 0 baseline regression suite for FEM2D (see
+// C:\Users\BriceR\.claude\plans\in-wbfl-there-is-cheerful-matsumoto.md).
+// It talks to WBFLFem2d.dll ONLY through the generated COM headers +
+// CoCreateInstance/CComPtr - never through Fem2d's own ATL implementation
+// headers - so it remains a valid regression oracle after Fem2d.vcxproj
+// is rewritten as a facade over FEA2D.
+
+#pragma once
+
+#define WIN32_LEAN_AND_MEAN
+#include <atlbase.h>
+extern CComModule _Module;
+#include <atlcom.h>
+
+#include "CppUnitTest.h"
+
+#include <WBFLTools.h>
+#include <WBFLFem2d.h>
+#include <Fem2dErrors.h>
+
+#include <MathEx.h>
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+#include "Fem2dTestUtil.h"

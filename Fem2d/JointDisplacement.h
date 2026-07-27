@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -33,7 +33,8 @@
 class ModelEvents;
 /////////////////////////////////////////////////////////////////////////////
 // CJointDeflection
-class ATL_NO_VTABLE CJointDeflection : 
+// Thin COM facade over WBFL::FEA2D::JointDisplacement.
+class ATL_NO_VTABLE CJointDeflection :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CJointDeflection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
@@ -41,13 +42,9 @@ class ATL_NO_VTABLE CJointDeflection :
 {
 public:
    CJointDeflection():
-   m_ID(0),
-   m_Dx(0),
-   m_Dy(0),
-   m_Rz(0),
-   m_JointID(0),
    m_pModel(0),
-   m_pLoading(0)
+   m_pLoading(0),
+   m_pCore(0)
 	{
 	}
 
@@ -55,11 +52,7 @@ public:
    {}
 
 
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, JointIDType jointID=-1, Float64 Dx=0.0, Float64 Dy=0.0, Float64 Rz=0.0);
-
-   // IStructuredStorage - sort of
-   STDMETHOD(Load)(IStructuredLoad2 *load);
-   STDMETHOD(Save)(IStructuredSave2 *save);
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::JointDisplacement* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -88,14 +81,9 @@ public:
 	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal) override;
 
 private:
-   LoadIDType m_ID;
-   Float64 m_Dx;
-   Float64 m_Dy;
-   Float64 m_Rz;
-   JointIDType m_JointID;
-
    ModelEvents* m_pModel; // for sending events back to model
    IFem2dLoading* m_pLoading;
+   WBFL::FEA2D::JointDisplacement* m_pCore; // non-owning; owned by the FEA2D core Loading
 
 };
 

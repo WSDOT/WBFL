@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::System;
 
-namespace SystemUnitTest
+namespace SystemUnitTests
 {
 	TEST_CLASS(TestColorConverter)
 	{

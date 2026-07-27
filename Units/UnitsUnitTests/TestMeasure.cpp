@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Units;
 
-namespace UnitsUnitTest
+namespace UnitsUnitTests
 {
 	TEST_CLASS(TestMeasure)
 	{

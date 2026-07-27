@@ -54,16 +54,11 @@ BOOL CResultsListPage::OnInitDialog()
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
 
    CComboBox* pcbLoadings = (CComboBox*)GetDlgItem(IDC_LOADING);
-   CComPtr<IFem2dLoadingCollection> loadings;
-   pParent->m_pFem2d->get_Loadings(&loadings);
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = pParent->m_pFem2d->GetLoadingCount();
    for ( IndexType loadingIdx = 0; loadingIdx < nLoadings; loadingIdx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(loadingIdx,&loading);
-      LoadCaseIDType id;
-      loading->get_ID(&id);
+      WBFL::FEA2D::Loading* loading = pParent->m_pFem2d->FindLoadingByIndex(loadingIdx);
+      LoadCaseIDType id = loading->GetID();
       CString strID;
       strID.Format(_T("%d"),id);
       int idx = pcbLoadings->AddString(strID);
@@ -83,23 +78,17 @@ void CResultsListPage::OnLoadingChanged()
    LoadCaseIDType lcid = (LoadCaseIDType)(pcbLoading->GetItemData(curSel));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComQIPtr<IFem2dModelResults> results(pParent->m_pFem2d);
+   WBFL::FEA2D::Model* model = pParent->m_pFem2d;
 
-   CComPtr<IFem2dMemberCollection> members;
-   pParent->m_pFem2d->get_Members(&members);
-
-   IndexType nMembers;
-   members->get_Count(&nMembers);
+   IndexType nMembers = model->GetMemberCount();
    for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
-      CComPtr<IFem2dMember> member;
-      members->get_Item(mbrIdx,&member);
-      MemberIDType mbrID;
-      member->get_ID(&mbrID);
+      WBFL::FEA2D::Member* member = model->FindMemberByIndex(mbrIdx);
+      MemberIDType mbrID = member->GetID();
 
       Float64 FxStart,FyStart,MzStart;
       Float64 FxEnd,  FyEnd,  MzEnd;
-      results->ComputeMemberForces(lcid,mbrID,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
+      model->ComputeMemberForces(lcid,mbrID,WBFL::FEA2D::LoadOrientation::Member,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
 
       int col = 0;
 
@@ -126,7 +115,7 @@ void CResultsListPage::OnLoadingChanged()
       str.Format(_T("%f"),MzEnd);
       m_ctrlList.SetItemText((int)mbrIdx,col++,str);
 
-      results->ComputeMemberDeflections(lcid,mbrID,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
+      model->ComputeMemberDeflections(lcid,mbrID,&FxStart,&FyStart,&MzStart,&FxEnd,&FyEnd,&MzEnd);
       str.Format(_T("%f"),FyStart);
       m_ctrlList.SetItemText((int)mbrIdx,col++,str);
       str.Format(_T("%f"),FyEnd);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -32,7 +32,8 @@
 #include "WBFLLBAM.h"
 #include "LBAMUtils.h"
 
-#include <WBFLFem2d.h>
+#include <FEA2D/Model.h>
+#include <FEA2D/XFEA2D.h>
 
 #include <WBFLTools.h>
 
@@ -157,7 +158,7 @@ private:
    ILoadGroupOrder* m_pLoadGroupOrder;
    bool             m_bForcesModel;    // model is either for force or deflection calculations
 
-   CComPtr<IFem2dModel> m_pFem2d;
+   std::unique_ptr<WBFL::FEA2D::Model> m_pFem2d;
    Float64 m_LayoutTolerance;
    Float64 m_PoiTolerance;
 
@@ -284,12 +285,11 @@ private:
    void LayoutTemporarySupportNodes(SpanIndexType spanIdx, Float64 tempSupportLocation, ITemporarySupport* pSupport, SubNodeLocs* pNodeLocs);
 
    void GenerateFemModel(SuperNodeLocs* pNodeLocs);
-   void GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection*  pJoints, IFem2dMemberCollection* pMembers, MemberIDType* pNextFemMemberID);
-   void GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection*  pJoints, IFem2dMemberCollection* pMembers, MemberIDType* pNextFemMemberID);
-   void GenerateSupportFemModel(SubNodeLocs* psnl, IFem2dJointCollection*  pJoints, IFem2dMemberCollection* pMembers, ElementLayoutVec* pLayoutVec, MemberIDType* pNextFemMemberID);
-   void CheckFemModelStability(SuperNodeLocs* pNodeLocs,  IFem2dJointCollection*  pJoints, IFem2dMemberCollection* pMembers);
+   void GenerateSuperstructureFemModel(SuperNodeLocs* pNodeLocs, MemberIDType* pNextFemMemberID);
+   void GenerateSubstructureFemModel(SuperNodeLocs* pNodeLocs, MemberIDType* pNextFemMemberID);
+   void GenerateSupportFemModel(SubNodeLocs* psnl, ElementLayoutVec* pLayoutVec, MemberIDType* pNextFemMemberID);
+   void CheckFemModelStability(SuperNodeLocs* pNodeLocs);
 
-   void ClearPOIs(IFem2dPOICollection* femPois);
    void CreateSpanPOI(PoiIDType poiID, SpanIndexType spanIdx, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateSsmPOI(PoiIDType poiID, IndexType ssmbrIdx, Float64 mbrLoc, IPOI* poi=nullptr);
    void CreateSupportPOI(PoiIDType poiID, SupportIDType supportID, Float64 mbrLoc, IPOI* poi=nullptr);
@@ -302,11 +302,11 @@ private:
    void GetSegmentCrossSectionAtLocation(MemberType mbrType, MemberIDType lbamMbrID, Float64 lbamMbrLoc, ISegmentCrossSection* *leftSps, ISegmentCrossSection* *rightSps);
 
    void GenerateLoadsForLoadGroup(BSTR loadGroup);
-   void GeneratePointLoadsForLoadGroup(BSTR loadGroup, IFem2dLoading* femLoading, bool* wereLoadsApplied);
-   void GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, IFem2dLoading* femLoading, bool* wereLoadsApplied);
-   void GenerateStrainLoadsForLoadGroup(BSTR loadGroup, IFem2dLoading* femLoading, bool* wereLoadsApplied);
-   void GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, IFem2dLoading* femLoading, bool* wereLoadsApplied);
-   void GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, IFem2dLoading* femLoading, bool* wereLoadsApplied);
+   void GeneratePointLoadsForLoadGroup(BSTR loadGroup, WBFL::FEA2D::Loading* femLoading, bool* wereLoadsApplied);
+   void GenerateDistributedLoadsForLoadGroup(BSTR loadGroup, WBFL::FEA2D::Loading* femLoading, bool* wereLoadsApplied);
+   void GenerateStrainLoadsForLoadGroup(BSTR loadGroup, WBFL::FEA2D::Loading* femLoading, bool* wereLoadsApplied);
+   void GenerateTemperatureLoadsForLoadGroup(BSTR loadGroup, WBFL::FEA2D::Loading* femLoading, bool* wereLoadsApplied);
+   void GenerateSettlementLoadsForLoadGroup(BSTR loadGroup, WBFL::FEA2D::Loading* femLoading, bool* wereLoadsApplied);
 
    void GetFemMembersForLBAMMember(MemberType mbrType, MemberIDType mbrId, const ElementLayoutVec* *pMbrList );
    Float64 GetLBAMMemberLength(MemberType mbrType, MemberIDType mbrId);
@@ -321,15 +321,15 @@ private:
    void GetFemMemberLocationAlongMemberList( Float64 globalLoc, Float64 leftEnd, Float64 rightEnd, ElementLayoutVec& memberList, 
                                              MemberLocationType* locType, MemberIDType* pmemberId, Float64* pfemLoc);
 
-   void GenDistributedLoadAlongElements(IFem2dDistributedLoadCollection* femDistrLoads,
+   void GenDistributedLoadAlongElements(WBFL::FEA2D::Loading* pFemLoading,
                                         LoadOrientation orientation, LoadDirection direction,
-                                        Float64 startLocation, Float64 endLocation, 
-                                        Float64 mbrLength, Float64 wStart, Float64 wEnd, 
+                                        Float64 startLocation, Float64 endLocation,
+                                        Float64 mbrLength, Float64 wStart, Float64 wEnd,
                                         const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID);
 
-   void GenStrainLoadAlongElements(IFem2dMemberStrainCollection* pFemStrainLoads,
-                                   Float64 startLocation, Float64 endLocation, 
-                                   Float64 mbrLength, Float64 axial_strain, Float64 curvature, 
+   void GenStrainLoadAlongElements(WBFL::FEA2D::Loading* pFemLoading,
+                                   Float64 startLocation, Float64 endLocation,
+                                   Float64 mbrLength, Float64 axial_strain, Float64 curvature,
                                    const ElementLayoutVec* pfemMbrList, LoadIDType* lastLoadID);
 
    void DealWithFem2dExceptions();

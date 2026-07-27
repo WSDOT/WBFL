@@ -74,6 +74,9 @@
       <AdditionalDependencies>main.obj;MohrCircle.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE /IGNORE:4006</AdditionalOptions>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(ARPDIR)\WBFL\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -97,6 +100,9 @@
       <AdditionalDependencies>main.obj;MohrCircle.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/FORCE:MULTIPLE /IGNORE:4006</AdditionalOptions>
     </Link>
+    <Manifest>
+      <AdditionalManifestFiles>$(ARPDIR)\WBFL\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="TestArc.cpp" />

@@ -6,7 +6,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Beams;
 
-namespace RoarkUnitTest
+namespace RoarkUnitTests
 {
    void Test_Numerical(const WBFL::Beams::RoarkBeam& beam)
    {

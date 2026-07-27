@@ -13,9 +13,7 @@
 #include <DManip\DManip.h>
 #include "Fea2dGuid.c"
 
-#include <WBFLFem2d_i.c>
 #include <WBFLGeometry_i.c>
-#include <WBFLTools_i.c>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

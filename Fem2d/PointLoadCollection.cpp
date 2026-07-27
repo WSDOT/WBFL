@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,7 @@
 
 STDMETHODIMP CPointLoadCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IFem2dPointLoadCollection
 	};
@@ -46,53 +46,68 @@ STDMETHODIMP CPointLoadCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CPointLoadCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading)
+void CPointLoadCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::Loading* pCoreLoading)
 {
    ATLASSERT(pLoading!=0);
 
    InitParent(pParent); // CCircularChild implementation
-   InitCollection(pParent, pEvents, pLoading);  // for C++ event handlers
+   InitCollection(pParent, pEvents, pLoading, pCoreLoading);  // for C++ event handlers
+}
+
+void CPointLoadCollection::AdoptCore(WBFL::FEA2D::PointLoad* pCore)
+{
+   ATLASSERT(pCore!=0);
+
+   CComObject<CPointLoad>* ppl;
+   HRESULT hr = CComObject<CPointLoad>::CreateInstance( &ppl );
+   ATLASSERT(SUCCEEDED(hr));
+
+   CComPtr<IFem2dPointLoad> item(ppl);
+
+   ppl->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(pCore->GetID(), item )) );
+   ATLASSERT(st.second);
 }
 
 STDMETHODIMP CPointLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberIDType memberID, /*[in]*/Float64 location, /*[in]*/Float64 Fx, /*[in]*/Float64 Fy, /*[in]*/Float64 Mz, Fem2dLoadOrientation orientation, /*[out, retval]*/ IFem2dPointLoad** ppPointLoad)
 {
    CHECK_RETOBJ(ppPointLoad);
-   HRESULT hr = E_FAIL;
 
-   // see if a Point load with our id already exists
-   ContainerIteratorType it( m_coll.find(id) );
-   if (it != m_coll.end())
+   WBFL::FEA2D::PointLoad* pCore;
+   try
    {
-      // exists - return error
-      return CComCoClass<CPointLoadCollection, &CLSID_Fem2dPointLoadCollection>::Error(IDS_E_POINT_LOAD_WITH_ID_ALREADY_EXISTS, IDH_E_POINT_LOAD_WITH_ID_ALREADY_EXISTS, GetHelpFile(), IID_IFem2dPointLoadCollection, FEM2D_E_POINT_LOAD_WITH_ID_ALREADY_EXISTS);
+      pCore = &m_pCoreLoading->CreatePointLoad(id, memberID, location, Fx, Fy, Mz, static_cast<WBFL::FEA2D::LoadOrientation>(orientation));
    }
-   else
+   catch (const WBFL::FEA2D::XFEA2D& ex)
    {
-      // create a new Point load
-      CComObject<CPointLoad>* ppl;
-      hr = CComObject<CPointLoad>::CreateInstance( &ppl );
-      if (FAILED(hr))
-         return hr;
-
-      *ppPointLoad = ppl;
-      (*ppPointLoad)->AddRef(); // for client
-
-      ppl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, location, Fx, Fy, Mz, orientation);
-
-      // insert new Point
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppPointLoad )) );
-      if (!st.second)
-      {
-         ATLASSERT(false); // insert failed - better check why
-         return E_FAIL;
-      }
-
-      LoadCaseIDType loadingID;
-      m_pLoading->get_ID(&loadingID);
-      m_pEvents->OnPointLoadAdded(id,loadingID);
+      return ReportFem2dError(ex, CLSID_Fem2dPointLoadCollection, IID_IFem2dPointLoadCollection);
    }
 
-	return hr;
+   // create the COM wrapper
+   CComObject<CPointLoad>* ppl;
+   HRESULT hr = CComObject<CPointLoad>::CreateInstance( &ppl );
+   if (FAILED(hr))
+      return hr;
+
+   *ppPointLoad = ppl;
+   (*ppPointLoad)->AddRef(); // for client
+
+   ppl->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   // insert new Point
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppPointLoad )) );
+   if (!st.second)
+   {
+      ATLASSERT(false); // insert failed - better check why
+      return E_FAIL;
+   }
+
+   LoadCaseIDType loadingID;
+   m_pLoading->get_ID(&loadingID);
+   m_pEvents->OnPointLoadAdded(id,loadingID);
+
+	return S_OK;
 }
 
 STDMETHODIMP CPointLoadCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
@@ -100,6 +115,8 @@ STDMETHODIMP CPointLoadCollection::Remove(IndexType IDorIndex, Fem2dAccessType A
    HRESULT hr = PointLoadCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))
    {
+      m_pCoreLoading->RemovePointLoad(*pid);
+
       // send event up the pipe
       LoadCaseIDType loadingID;
       m_pLoading->get_ID(&loadingID);
@@ -116,6 +133,8 @@ STDMETHODIMP CPointLoadCollection::Clear()
       HRESULT hr = PointLoadCollImpl::Clear();
       if (SUCCEEDED(hr))
       {
+         m_pCoreLoading->ClearPointLoads();
+
          // send event up the pipe
          LoadCaseIDType loadingID;
          m_pLoading->get_ID(&loadingID);

@@ -10,7 +10,7 @@ class CAddPointLoadDlg : public CDialog
 {
 // Construction
 public:
-   CAddPointLoadDlg(IFem2dModel* model,BOOL bMbrIDReadOnly = FALSE,CWnd* pParent = NULL);   // standard constructor
+   CAddPointLoadDlg(WBFL::FEA2D::Model* model,BOOL bMbrIDReadOnly = FALSE,CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CAddPointLoadDlg)
@@ -33,7 +33,7 @@ public:
 
 // Implementation
 protected:
-   CComPtr<IFem2dModel> m_Model;
+   WBFL::FEA2D::Model* m_Model;
    BOOL m_bMbrIDReadOnly;
 
 	// Generated message map functions

@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -38,10 +38,9 @@ using JointCollImpl = CModelCollection<IFem2dJointCollection, IFem2dJoint, CJoin
 
 /////////////////////////////////////////////////////////////////////////////
 // CJointCollection
-class ATL_NO_VTABLE CJointCollection : 
+class ATL_NO_VTABLE CJointCollection :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
-   //public CComRefCountTracer<CJointCollection,CCircularChild<IFem2dModel, CComSingleThreadModel> >,
-	public ISupportErrorInfo, 
+	public ISupportErrorInfo,
    public IObjectSafetyImpl<CJointCollection,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public JointCollImpl
 {
@@ -56,7 +55,11 @@ public:
 
    // IMPORTANT!!!
    // OnCreate must be called once and only once by creator
-   void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents);
+   void OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, WBFL::FEA2D::Model* pCoreModel);
+
+   // Wraps an already-existing core Joint (discovered while rehydrating
+   // COM wrappers after CModel::Load()).
+   void AdoptCore(WBFL::FEA2D::Joint* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 

@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -33,22 +33,21 @@
 class ModelEvents;
 /////////////////////////////////////////////////////////////////////////////
 // CJointLoad
-class ATL_NO_VTABLE CJointLoad : 
+// Thin COM facade over WBFL::FEA2D::JointLoad. Holds no state of its own -
+// every getter/setter delegates to the non-owning core pointer, and setters
+// fire the legacy ON_LOAD_CHANGED event only when the core mutator reports
+// an actual change (mirroring the original m_Fx != newVal guard).
+class ATL_NO_VTABLE CJointLoad :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
-   //public CComRefCountTracer<CJointLoad, CCircularChild<IFem2dModel, CComSingleThreadModel> >,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CJointLoad,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
 	public IFem2dJointLoad
 {
 public:
    CJointLoad():
-   m_ID(0),
-   m_Fx(0),
-   m_Fy(0),
-   m_Mz(0),
-   m_JointID(0),
    m_pModel(0),
-   m_pLoading(0)
+   m_pLoading(0),
+   m_pCore(0)
 	{
 	}
 
@@ -56,11 +55,10 @@ public:
    {;}
 
 
-   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, LoadIDType ID, JointIDType jointID=-1, Float64 Fx=0.0, Float64 Fy=0.0, Float64 Mz=0.0);
-
-   // IStructuredStorage - sort of
-   STDMETHOD(Load)(IStructuredLoad2 *load);
-   STDMETHOD(Save)(IStructuredSave2 *save);
+   // Binds this facade to an already-existing FEA2D core JointLoad - either
+   // one just created via Loading::CreateJointLoad(), or one discovered while
+   // rehydrating the COM wrappers after CModel::Load().
+   void Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::JointLoad* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -89,14 +87,9 @@ public:
 	STDMETHOD(get_ID)(/*[out, retval]*/ LoadIDType *pVal) override;
 
 private:
-   LoadIDType m_ID;
-   Float64 m_Fx;
-   Float64 m_Fy;
-   Float64 m_Mz;
-   JointIDType m_JointID;
-
    ModelEvents* m_pModel; // for sending events back to model
    IFem2dLoading* m_pLoading;
+   WBFL::FEA2D::JointLoad* m_pCore; // non-owning; owned by the FEA2D core Loading
 
 };
 

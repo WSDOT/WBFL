@@ -47,37 +47,26 @@ BOOL CMemberListPage::OnInitDialog()
    m_ctrlList.InsertColumn(7,_T("EI"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComPtr<IFem2dMemberCollection> members;
-   pParent->m_pFem2d->get_Members(&members);
-
-   IndexType nMembers;
-   members->get_Count(&nMembers);
+   IndexType nMembers = pParent->m_pFem2d->GetMemberCount();
    for ( IndexType mbrIdx = 0; mbrIdx < nMembers; mbrIdx++ )
    {
-      CComPtr<IFem2dMember> mbr;
-      members->get_Item(mbrIdx,&mbr);
+      WBFL::FEA2D::Member* mbr = pParent->m_pFem2d->FindMemberByIndex(mbrIdx);
 
-      MemberIDType ID;
-      mbr->get_ID(&ID);
+      MemberIDType ID = mbr->GetID();
 
-      JointIDType startID, endID;
-      mbr->get_StartJoint(&startID);
-      mbr->get_EndJoint(&endID);
+      JointIDType startID = mbr->GetStartJoint();
+      JointIDType endID = mbr->GetEndJoint();
 
-      Float64 length;
-      mbr->get_Length(&length);
+      Float64 length = mbr->GetLength();
 
-      VARIANT_BOOL bStartReleaseFx, bEndReleaseFx;
-      mbr->IsReleased(metStart,mbrReleaseFx,&bStartReleaseFx);
-      mbr->IsReleased(metEnd,  mbrReleaseFx,&bEndReleaseFx);
+      bool bStartReleaseFx = mbr->IsReleased(WBFL::FEA2D::MemberEndType::Start,WBFL::FEA2D::MemberReleaseType::Fx);
+      bool bEndReleaseFx   = mbr->IsReleased(WBFL::FEA2D::MemberEndType::End,  WBFL::FEA2D::MemberReleaseType::Fx);
 
-      VARIANT_BOOL bStartReleaseMz, bEndReleaseMz;
-      mbr->IsReleased(metStart,mbrReleaseMz,&bStartReleaseMz);
-      mbr->IsReleased(metEnd,  mbrReleaseMz,&bEndReleaseMz);
+      bool bStartReleaseMz = mbr->IsReleased(WBFL::FEA2D::MemberEndType::Start,WBFL::FEA2D::MemberReleaseType::Mz);
+      bool bEndReleaseMz   = mbr->IsReleased(WBFL::FEA2D::MemberEndType::End,  WBFL::FEA2D::MemberReleaseType::Mz);
 
-      Float64 EA, EI;
-      mbr->get_EA(&EA);
-      mbr->get_EI(&EI);
+      Float64 EA = mbr->GetEA();
+      Float64 EI = mbr->GetEI();
 
       m_ctrlList.InsertItem((int)mbrIdx,_T("Member"));
       CString str;
@@ -93,10 +82,10 @@ BOOL CMemberListPage::OnInitDialog()
       str.Format(_T("%f"),length);
       m_ctrlList.SetItemText((int)mbrIdx,3,str);
 
-      str.Format(_T("%s%s"),bStartReleaseFx == VARIANT_TRUE ? _T("Fx") : _T(""),bStartReleaseMz == VARIANT_TRUE ? _T("Mz") : _T(""));
+      str.Format(_T("%s%s"),bStartReleaseFx ? _T("Fx") : _T(""),bStartReleaseMz ? _T("Mz") : _T(""));
       m_ctrlList.SetItemText((int)mbrIdx,4,str);
 
-      str.Format(_T("%s%s"),bEndReleaseFx == VARIANT_TRUE ? _T("Fx") : _T(""),bEndReleaseMz == VARIANT_TRUE ? _T("Mz") : _T(""));
+      str.Format(_T("%s%s"),bEndReleaseFx ? _T("Fx") : _T(""),bEndReleaseMz ? _T("Mz") : _T(""));
       m_ctrlList.SetItemText((int)mbrIdx,5,str);
 
       str.Format(_T("%f"),EA);

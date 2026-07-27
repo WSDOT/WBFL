@@ -15,7 +15,7 @@ static char THIS_FILE[] = __FILE__;
 // CAddPointLoadDlg dialog
 
 
-CAddPointLoadDlg::CAddPointLoadDlg(IFem2dModel* pModel,BOOL bMbrIDReadOnly,CWnd* pParent /*=NULL*/)
+CAddPointLoadDlg::CAddPointLoadDlg(WBFL::FEA2D::Model* pModel,BOOL bMbrIDReadOnly,CWnd* pParent /*=NULL*/)
 	: CDialog(CAddPointLoadDlg::IDD, pParent)
 {
    m_Model = pModel;
@@ -60,18 +60,13 @@ BOOL CAddPointLoadDlg::OnInitDialog()
 	
    // Populate the loading combobox
    CComboBox* pLoadings = (CComboBox*)GetDlgItem(IDC_LOADINGS);
-   CComPtr<IFem2dLoadingCollection> loadings;
-   m_Model->get_Loadings(&loadings);
-   IndexType count;
-   loadings->get_Count(&count);
+   IndexType count = m_Model->GetLoadingCount();
    for ( IndexType i = 0; i < count; i++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(i,&loading);
+      WBFL::FEA2D::Loading* loading = m_Model->FindLoadingByIndex(i);
 
       CString strID;
-      LoadCaseIDType ID;
-      loading->get_ID(&ID);
+      LoadCaseIDType ID = loading->GetID();
       strID.Format(_T("%d"),ID);
       pLoadings->AddString(strID);
    }

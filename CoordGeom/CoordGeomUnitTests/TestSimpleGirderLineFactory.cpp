@@ -6,7 +6,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::COGO;
 using namespace WBFL::Geometry;
 
-namespace CoordGeomUnitTest
+namespace CoordGeomUnitTests
 {
 	TEST_CLASS(TestSimpleGirderLineFactory)
 	{

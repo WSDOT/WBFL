@@ -73,8 +73,7 @@
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(ARPDIR)\WBFL\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -98,8 +97,7 @@
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
-      <AdditionalManifestFiles>
-      </AdditionalManifestFiles>
+      <AdditionalManifestFiles>$(ARPDIR)\WBFL\RegFreeCOM\WBFL.manifest</AdditionalManifestFiles>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>

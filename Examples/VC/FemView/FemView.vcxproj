@@ -229,6 +229,11 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\FEA2D\FEA2D.vcxproj">
+      <Project>{D745ADBC-E840-4A4B-A94F-6738E008A91E}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,7 @@
 
 STDMETHODIMP CMemberStrainCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IFem2dMemberStrainCollection
 	};
@@ -46,51 +46,66 @@ STDMETHODIMP CMemberStrainCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CMemberStrainCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading)
+void CMemberStrainCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::Loading* pCoreLoading)
 {
    InitParent(pParent); // CCircularChild implementation
-   InitCollection(pParent,pEvents,pLoading);  // for C++ event handlers
+   InitCollection(pParent,pEvents,pLoading,pCoreLoading);  // for C++ event handlers
+}
+
+void CMemberStrainCollection::AdoptCore(WBFL::FEA2D::MemberStrain* pCore)
+{
+   ATLASSERT(pCore!=0);
+
+   CComObject<CMemberStrain>* pstrn;
+   HRESULT hr = CComObject<CMemberStrain>::CreateInstance( &pstrn );
+   ATLASSERT(SUCCEEDED(hr));
+
+   CComPtr<IFem2dMemberStrain> item(pstrn);
+
+   pstrn->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(pCore->GetID(), item )) );
+   ATLASSERT(st.second);
 }
 
 STDMETHODIMP CMemberStrainCollection::Create(/*[in]*/LoadIDType id,  /*[in]*/MemberIDType memberID, /*[in]*/Float64 start,/*[in]*/ Float64 end,/*[in]*/Float64 axialStrain, /*[in]*/Float64 curvatureStrain, /*[out, retval]*/ IFem2dMemberStrain** ppMemberStrain)
 {
    CHECK_RETOBJ(ppMemberStrain);
-   HRESULT hr = E_FAIL;
 
-   // see if a joint load with our id already exists
-   ContainerIteratorType it( m_coll.find(id) );
-   if (it != m_coll.end())
+   WBFL::FEA2D::MemberStrain* pCore;
+   try
    {
-      // exists - return error
-      return CComCoClass<CMemberStrainCollection, &CLSID_Fem2dMemberStrainCollection>::Error(IDS_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS, IDH_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS, GetHelpFile(), IID_IFem2dMemberStrain, FEM2D_E_MEMBER_STRAIN_WITH_ID_ALREADY_EXISTS);
+      pCore = &m_pCoreLoading->CreateMemberStrain(id, memberID, start, end, axialStrain, curvatureStrain);
    }
-   else
+   catch (const WBFL::FEA2D::XFEA2D& ex)
    {
-      // create a new joint load
-      CComObject<CMemberStrain>* pstrn;
-      hr = CComObject<CMemberStrain>::CreateInstance( &pstrn );
-      if (FAILED(hr))
-         return hr;
-
-      *ppMemberStrain = pstrn;
-      (*ppMemberStrain)->AddRef(); // for client
-
-      pstrn->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, start, end, axialStrain, curvatureStrain);
-
-      // insert new load
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppMemberStrain )) );
-      if (!st.second)
-      {
-         ATLASSERT(false); // insert failed - better check why
-         return E_FAIL;
-      }
-
-      LoadCaseIDType loadingID;
-      m_pLoading->get_ID(&loadingID);
-      m_pEvents->OnMemberStrainAdded(id,loadingID);
+      return ReportFem2dError(ex, CLSID_Fem2dMemberStrainCollection, IID_IFem2dMemberStrain);
    }
 
-	return hr;
+   // create the COM wrapper
+   CComObject<CMemberStrain>* pstrn;
+   HRESULT hr = CComObject<CMemberStrain>::CreateInstance( &pstrn );
+   if (FAILED(hr))
+      return hr;
+
+   *ppMemberStrain = pstrn;
+   (*ppMemberStrain)->AddRef(); // for client
+
+   pstrn->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   // insert new load
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppMemberStrain )) );
+   if (!st.second)
+   {
+      ATLASSERT(false); // insert failed - better check why
+      return E_FAIL;
+   }
+
+   LoadCaseIDType loadingID;
+   m_pLoading->get_ID(&loadingID);
+   m_pEvents->OnMemberStrainAdded(id,loadingID);
+
+	return S_OK;
 }
 
 STDMETHODIMP CMemberStrainCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
@@ -98,6 +113,8 @@ STDMETHODIMP CMemberStrainCollection::Remove(IndexType IDorIndex, Fem2dAccessTyp
    HRESULT hr = MemberStrainCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))
    {
+      m_pCoreLoading->RemoveMemberStrain(*pid);
+
       // send event up the pipe
       LoadCaseIDType loadingID;
       m_pLoading->get_ID(&loadingID);
@@ -114,6 +131,8 @@ STDMETHODIMP CMemberStrainCollection::Clear()
       HRESULT hr = MemberStrainCollImpl::Clear();
       if (SUCCEEDED(hr))
       {
+         m_pCoreLoading->ClearMemberStrains();
+
          // send event up the pipe
          LoadCaseIDType loadingID;
          m_pLoading->get_ID(&loadingID);

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // Stability
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -35,7 +35,7 @@
 #include <Stability/HaulingCheckArtifact.h>
 #include <Stability/OneEndSeatedCheckArtifact.h>
 
-#include <WBFLFem2d.h>
+#include <FEA2D/Model.h>
 
 #include <WBFLGenericBridge.h>
 
@@ -85,10 +85,10 @@ namespace WBFL
          void PrepareResults(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results) const;
 
          // builds the FEM model
-         void BuildModel(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results, IFem2dModel** ppModel) const;
+         void BuildModel(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results, FEA2D::Model& model) const;
 
          // Common analysis code
-         void Analyze(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results, IFem2dModel** ppModel) const;
+         void Analyze(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results, FEA2D::Model& model) const;
 
          void AnalyzeOneEndSeated(const IGirder * pGirder, const IOneEndSeatedStabilityProblem * pStabilityProblem, OneEndSeatedResults & results) const;
 
@@ -102,14 +102,14 @@ namespace WBFL
          Float64 ComputeXcg(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, Results& results) const;
 
          // Determines how to compute Zo
-         void GetZoComputationMethod(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, IFem2dModel* pModel, Results& results) const;
+         void GetZoComputationMethod(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, FEA2D::Model& model, Results& results) const;
 
          // Computes Zo by either a closed form exact solution or by numerical integration
-         Float64 ComputeZo(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, IFem2dModel* pModel, Results& results) const;
+         Float64 ComputeZo(const IGirder* pGirder, const IStabilityProblem* pStabilityProblem, FEA2D::Model& model, Results& results) const;
 
          Float64 ComputePz(Float64 velocity, Float64 Cd) const;
 
-         void FindMember(IFem2dModel* pModel, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const;
+         void FindMember(FEA2D::Model& model, Float64 distFromStartOfModel, MemberIDType* pMbrID, Float64* pDistFromStartOfMbr) const;
       };
    }
 }

@@ -2,6 +2,6 @@
 
 interface iJointDrawStrategy
 {
-   virtual void SetJoint(IFem2dJoint* jnt) = 0;
+   virtual void SetJoint(WBFL::FEA2D::Joint* jnt) = 0;
 };
 

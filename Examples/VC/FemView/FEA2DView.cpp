@@ -97,7 +97,7 @@ void CFEA2DView::OnInitialUpdate()
    CDManipClientDC dc(this);
 
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
 
    auto dispMgr = GetDisplayMgr();
 
@@ -129,16 +129,13 @@ void CFEA2DView::OnInitialUpdate()
 
    ScaleToFit();
 
-   USES_CONVERSION;
-   CComBSTR name;
-   model->get_Name(&name);
-   SetWindowText(OLE2T(name));
+   SetWindowText(model->GetName().c_str());
 }
 
 void CFEA2DView::BuildJointDisplayObjects()
 {
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
 
    auto dispMgr = GetDisplayMgr();
    auto pDL = dispMgr->FindDisplayList(JNT_LIST);
@@ -146,20 +143,14 @@ void CFEA2DView::BuildJointDisplayObjects()
 
    auto factory = dispMgr->GetDisplayObjectFactory(0);
 
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   IndexType nJnts;
-   joints->get_Count(&nJnts);
+   IndexType nJnts = model->GetJointCount();
 
    for ( IndexType jnt = 0; jnt < nJnts; jnt++ )
    {
-      CComPtr<IFem2dJoint> joint;
-      joints->get_Item(jnt,&joint);
+      WBFL::FEA2D::Joint* joint = model->FindJointByIndex(jnt);
 
-      Float64 x,y;
-      joint->get_X(&x);
-      joint->get_Y(&y);
+      Float64 x = joint->GetX();
+      Float64 y = joint->GetY();
 
       WBFL::Geometry::Point2d point(x, y);
 
@@ -172,12 +163,11 @@ void CFEA2DView::BuildJointDisplayObjects()
 
       ptDispObj->SetPosition(point,FALSE,FALSE);
 
-      JointIDType ID;
-      joint->get_ID(&ID);
+      JointIDType ID = joint->GetID();
       ptDispObj->SetID(ID);
 
-      joint->get_X(&x);
-      joint->get_Y(&y);
+      x = joint->GetX();
+      y = joint->GetY();
 
       CString strToolTipText;
       strToolTipText.Format(_T("Joint %d (%f,%f)"),ID,x,y);
@@ -190,8 +180,8 @@ void CFEA2DView::BuildJointDisplayObjects()
 void CFEA2DView::BuildMemberDisplayObjects()
 {
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
-   
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
+
    auto dispMgr = GetDisplayMgr();
 
    auto pDL = dispMgr->FindDisplayList(MBR_LIST);
@@ -199,45 +189,31 @@ void CFEA2DView::BuildMemberDisplayObjects()
 
    // Connect display objects representing joints with
    // line display objects
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
-
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   IndexType nMembers;
-   members->get_Count(&nMembers);
+   IndexType nMembers = model->GetMemberCount();
    for ( IndexType mbr = 0; mbr < nMembers; mbr++ )
    {
-      CComPtr<IFem2dMember> pMbr;
-      members->get_Item(mbr,&pMbr);
+      WBFL::FEA2D::Member* pMbr = model->FindMemberByIndex(mbr);
 
-      JointIDType startJntID, endJntID;
-      pMbr->get_StartJoint(&startJntID);
-      pMbr->get_EndJoint(&endJntID);
+      JointIDType startJntID = pMbr->GetStartJoint();
+      JointIDType endJntID = pMbr->GetEndJoint();
 
-      CComPtr<IFem2dJoint> pStartJnt, pEndJnt;
-      joints->Find(startJntID,&pStartJnt);
-      joints->Find(endJntID,  &pEndJnt);
+      WBFL::FEA2D::Joint* pStartJnt = model->FindJoint(startJntID);
+      WBFL::FEA2D::Joint* pEndJnt = model->FindJoint(endJntID);
 
       auto mbrRep = LineDisplayObject::Create();
 
-      MemberIDType mbrID;
-      pMbr->get_ID(&mbrID);
+      MemberIDType mbrID = pMbr->GetID();
       mbrRep->SetID(mbrID);
 
       auto drawStrategy = SimpleDrawLineStrategy::Create();
       mbrRep->SetDrawLineStrategy(drawStrategy);
 
-      VARIANT_BOOL bIsReleased;
-      pMbr->IsReleased(metStart,mbrReleaseMz,&bIsReleased);
-      if ( bIsReleased == VARIANT_TRUE )
+      if ( pMbr->IsReleased(WBFL::FEA2D::MemberEndType::Start,WBFL::FEA2D::MemberReleaseType::Mz) )
          drawStrategy->SetBeginType(PointType::Circle);
 
-      pMbr->IsReleased(metEnd,mbrReleaseMz,&bIsReleased);
-      if ( bIsReleased == VARIANT_TRUE )
+      if ( pMbr->IsReleased(WBFL::FEA2D::MemberEndType::End,WBFL::FEA2D::MemberReleaseType::Mz) )
          drawStrategy->SetEndType(PointType::Circle);
-      
+
       auto connector = std::dynamic_pointer_cast<iConnector>(mbrRep);
 
       auto startPlug = connector->GetStartPlug();
@@ -250,26 +226,24 @@ void CFEA2DView::BuildMemberDisplayObjects()
       std::shared_ptr<iSocket> socket;
       WBFL::Geometry::Point2d point;
 
-      Float64 x,y;
-      pStartJnt->get_X(&x);
-      pStartJnt->get_Y(&y);
+      Float64 x = pStartJnt->GetX();
+      Float64 y = pStartJnt->GetY();
 
       point.Move(x,y);
       socket = startConnectable->AddSocket(0,point);
-      
+
       DWORD dwCookie = socket->Connect(startPlug);
 
       auto endConnectable = std::dynamic_pointer_cast<iConnectable>(pEndJntRep);
 
-      pEndJnt->get_X(&x);
-      pEndJnt->get_Y(&y);
+      x = pEndJnt->GetX();
+      y = pEndJnt->GetY();
 
       point.Move(x,y);
       socket = endConnectable->AddSocket(0,point);
       dwCookie = socket->Connect(endPlug);
 
       CString strToolTip;
-      pMbr->get_ID(&mbrID);
       strToolTip.Format(_T("Member %d"),mbrID);
       mbrRep->SetToolTipText(strToolTip);
 
@@ -292,7 +266,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
    IndexType colorCount = sizeof(colors)/sizeof(COLORREF);
 
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
 
    auto dispMgr = GetDisplayMgr();
 
@@ -301,16 +275,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
 
    auto factory = dispMgr->GetDisplayObjectFactory(0);
 
-   CComPtr<IFem2dMemberCollection> members;
-   model->get_Members(&members);
-
-   CComPtr<IFem2dJointCollection> joints;
-   model->get_Joints(&joints);
-
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
-   IndexType cLoadings;
-   loadings->get_Count(&cLoadings);
+   IndexType cLoadings = model->GetLoadingCount();
    for ( IndexType i = 0; i < cLoadings; i++ )
    {
       // Determine the color
@@ -321,53 +286,39 @@ void CFEA2DView::BuildLoadDisplayObjects()
       }
       COLORREF color = colors[clrIdx];
 
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(i,&loading);
+      WBFL::FEA2D::Loading* loading = model->FindLoadingByIndex(i);
 
-      CComPtr<IFem2dPointLoadCollection> ptLoads;
-      loading->get_PointLoads(&ptLoads);
-
-      IndexType cPtLoads;
-      ptLoads->get_Count(&cPtLoads);
+      IndexType cPtLoads = loading->GetPointLoadCount();
 
       for ( IndexType j = 0; j < cPtLoads; j++ )
       {
-         CComPtr<IFem2dPointLoad> ptLoad;
-         ptLoads->get_Item(j,&ptLoad);
+         WBFL::FEA2D::PointLoad* ptLoad = loading->FindPointLoadByIndex(j);
 
-         MemberIDType mbrID;
-         ptLoad->get_MemberID(&mbrID);
+         MemberIDType mbrID = ptLoad->GetMemberID();
 
-         CComPtr<IFem2dMember> mbr;
-         members->Find(mbrID,&mbr);
+         WBFL::FEA2D::Member* mbr = model->FindMember(mbrID);
 
-         JointIDType startJntID, endJntID;
-         mbr->get_StartJoint(&startJntID);
-         mbr->get_EndJoint(&endJntID);
+         JointIDType startJntID = mbr->GetStartJoint();
+         JointIDType endJntID = mbr->GetEndJoint();
 
-         CComPtr<IFem2dJoint> startJoint,endJoint;
-         joints->Find(startJntID,&startJoint);
-         joints->Find(endJntID,&endJoint);
+         WBFL::FEA2D::Joint* startJoint = model->FindJoint(startJntID);
+         WBFL::FEA2D::Joint* endJoint = model->FindJoint(endJntID);
 
-         Float64 startX, startY;
-         startJoint->get_X(&startX);
-         startJoint->get_Y(&startY);
+         Float64 startX = startJoint->GetX();
+         Float64 startY = startJoint->GetY();
 
          WBFL::Geometry::Point2d startPoint(startX, startY);
 
-         Float64 endX, endY;
-         endJoint->get_X(&endX);
-         endJoint->get_Y(&endY);
+         Float64 endX = endJoint->GetX();
+         Float64 endY = endJoint->GetY();
 
          WBFL::Geometry::Point2d endPoint(endX, endY);
 
          double angle = atan2(endY - startY, endX - startX);
 
-         double mbrLength;
-         mbr->get_Length(&mbrLength);
+         double mbrLength = mbr->GetLength();
 
-         double location;
-         ptLoad->get_Location(&location);
+         double location = ptLoad->GetLocation();
          if ( location < 0 ) // fractional load
             location = -1*location*mbrLength;
 
@@ -375,7 +326,7 @@ void CFEA2DView::BuildLoadDisplayObjects()
 
          auto dispObj = factory->Create(CPointLoadEventsImpl::ms_Format,NULL);
          auto ptDispObj = std::dynamic_pointer_cast<iPointDisplayObject>(dispObj);
-         
+
          auto ds = ptDispObj->GetDrawingStrategy();
          auto strategy = std::dynamic_pointer_cast<iPointLoadDrawStrategy>(ds);
          strategy->SetLoad(ptLoad);
@@ -385,11 +336,9 @@ void CFEA2DView::BuildLoadDisplayObjects()
          auto events = std::dynamic_pointer_cast<iPointLoadEvents>(sink);
          events->InitFromLoad(ptLoad);
 
-         LoadIDType loadID;
-         ptLoad->get_ID(&loadID);
+         LoadIDType loadID = ptLoad->GetID();
 
-         LoadCaseIDType loadcaseID;
-         loading->get_ID(&loadcaseID);
+         LoadCaseIDType loadcaseID = loading->GetID();
 
          ptDispObj->SetPosition(point,FALSE,FALSE);
          ptDispObj->SetID(loadID);
@@ -581,17 +530,13 @@ void CFEA2DView::OnMouseMove(UINT nFlags, CPoint point)
 	CDisplayView::OnMouseMove(nFlags, point);
 }
 
-void CFEA2DView::OnLoadsCreateLoading() 
+void CFEA2DView::OnLoadsCreateLoading()
 {
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
 
    CCreateLoadingDlg dlg;
-   IndexType count;
-   loadings->get_Count(&count);
-   dlg.m_ID = count;
+   dlg.m_ID = model->GetLoadingCount();
 
    if ( dlg.DoModal() == IDOK )
    {
@@ -600,8 +545,8 @@ void CFEA2DView::OnLoadsCreateLoading()
       try
       {
          // An error will occur if the loading already exists
-         CComPtr<IFem2dLoading> loading;
-         loadings->Create(id,&loading);
+         model->CreateLoading(id);
+         pDoc->OnLoadingChanged(id);
       }
       catch (...)
       {
@@ -610,30 +555,22 @@ void CFEA2DView::OnLoadsCreateLoading()
    }
 }
 
-void CFEA2DView::OnLoadsAddPointLoad() 
+void CFEA2DView::OnLoadsAddPointLoad()
 {
    CFEA2DDoc* pDoc = GetDocument();
-   CComPtr<IFem2dModel> model = pDoc->m_Model;
-
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
+   WBFL::FEA2D::Model* model = pDoc->m_Model.get();
 
    CAddPointLoadDlg dlg(model);
 
    if ( dlg.DoModal() == IDOK )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(dlg.m_LoadingID,&loading);
-
-      CComPtr<IFem2dPointLoadCollection> pointLoads;
-      loading->get_PointLoads(&pointLoads);
+      WBFL::FEA2D::Loading* loading = model->FindLoadingByIndex(dlg.m_LoadingID);
 
       try
       {
-         IndexType count;
-         pointLoads->get_Count(&count);
-         CComPtr<IFem2dPointLoad> ptLoad;
-         pointLoads->Create(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,lotGlobal,&ptLoad);
+         IndexType count = loading->GetPointLoadCount();
+         loading->CreatePointLoad(count,dlg.m_MbrID,dlg.m_Location,dlg.m_Fx,dlg.m_Fy,dlg.m_Mz,WBFL::FEA2D::LoadOrientation::Global);
+         pDoc->OnLoadingChanged(loading->GetID());
       }
       catch(...)
       {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -273,17 +273,17 @@ PoiMap::~PoiMap()
 
 
    // virtual functions to get poi results from underlying fem model
-void PoiMap::GetDeflection(LoadGroupIDType lgId, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
+void PoiMap::GetDeflection(LoadGroupIDType lgId, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
 {
    ATLASSERT(false); // should not ask for this from search-only poi
 }
 
-void PoiMap::GetForce(LoadGroupIDType lgId, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
+void PoiMap::GetForce(LoadGroupIDType lgId, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
 {
    ATLASSERT(false); // should not ask for this from search-only poi
 }
 
-void PoiMap::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+void PoiMap::GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, Float64 deflZeroTolerance, 
                                IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
                                IInfluenceLine** pLeftShearInfl,  IInfluenceLine** pRightShearInfl,
@@ -467,48 +467,37 @@ void PoiMapToFemPoi::SetMemberLocationType(MemberLocationType type)
    m_MemberLocationType=type;
 }
 
-void PoiMapToFemPoi::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
+void PoiMapToFemPoi::GetDeflection(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
 {
-   CComQIPtr<IFem2dModelResults> results(pFemMdl);
-
    // results map directly to member ends
    PoiIDType fem_poi_id = GetFemPoiID();
 
    // information is at poi - just get it
-   results->ComputePOIDeflections(loadGroupID, fem_poi_id, lotGlobal, leftDx, leftDy, leftRz);
+   pFemMdl->ComputePOIDeflections(loadGroupID, fem_poi_id, WBFL::FEA2D::LoadOrientation::Global, leftDx, leftDy, leftRz);
    *rightDx = *leftDx;
    *rightDy = *leftDy;
    *rightRz = *leftRz;
 }
 
-void PoiMapToFemPoi::GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
+void PoiMapToFemPoi::GetForce(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
 {
    // translate orientation
-   Fem2dLoadOrientation fem_or;
+   WBFL::FEA2D::LoadOrientation fem_or;
    if (Orientation==roGlobal)
-	   fem_or = lotGlobal;
+	   fem_or = WBFL::FEA2D::LoadOrientation::Global;
    else if (Orientation==roMember)
-	   fem_or = lotMember;
+	   fem_or = WBFL::FEA2D::LoadOrientation::Member;
    else
       THROW_HR(E_FAIL);
-
-   // forces map directly to fem poi
-   CComQIPtr<IFem2dModelResults> results(pFemMdl);
 
    // get results directly from fem poi
    PoiIDType fem_poi_id = GetFemPoiID();
 
-   HRESULT hr;
-   hr = results->ComputePOIForces(loadGroupID, fem_poi_id, mftLeft, fem_or, fxLeft, fyLeft, mzLeft);
-   if (FAILED(hr) )
-      THROW_HR(hr);
-
-   hr = results->ComputePOIForces(loadGroupID, fem_poi_id, mftRight, fem_or, fxRight, fyRight, mzRight);
-   if (FAILED(hr) )
-      THROW_HR(hr);
+   pFemMdl->ComputePOIForces(loadGroupID, fem_poi_id, WBFL::FEA2D::MemberFaceType::Left, fem_or, fxLeft, fyLeft, mzLeft);
+   pFemMdl->ComputePOIForces(loadGroupID, fem_poi_id, WBFL::FEA2D::MemberFaceType::Right, fem_or, fxRight, fyRight, mzRight);
 }
 
-void PoiMapToFemPoi::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+void PoiMapToFemPoi::GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                Float64 deflZeroTolerance, 
                                IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
@@ -640,10 +629,8 @@ MemberIDType PoiMapToFemMbr::GetRightPoiID() const
    return m_RightPoiID;
 }
 
-void PoiMapToFemMbr::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
+void PoiMapToFemMbr::GetDeflection(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, Float64* leftDx, Float64* leftDy, Float64* leftRz, Float64* rightDx, Float64* rightDy, Float64* rightRz)
 {
-   CComQIPtr<IFem2dModelResults> results(pFemMdl);
-
    // results map directly to member ends
    PoiIDType left_fem_poi_id  = GetLeftPoiID();
    PoiIDType right_fem_poi_id = GetRightPoiID();
@@ -652,12 +639,12 @@ void PoiMapToFemMbr::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFe
    // information is at poi - just get it
    if ( left_fem_poi_id != INVALID_ID )
    {
-      results->ComputePOIDeflections(loadGroupID, left_fem_poi_id, lotGlobal, leftDx, leftDy, leftRz);
+      pFemMdl->ComputePOIDeflections(loadGroupID, left_fem_poi_id, WBFL::FEA2D::LoadOrientation::Global, leftDx, leftDy, leftRz);
    }
 
    if ( right_fem_poi_id != INVALID_ID )
    {
-      results->ComputePOIDeflections(loadGroupID, right_fem_poi_id, lotGlobal, rightDx, rightDy, rightRz);
+      pFemMdl->ComputePOIDeflections(loadGroupID, right_fem_poi_id, WBFL::FEA2D::LoadOrientation::Global, rightDx, rightDy, rightRz);
    }
 
    if ( left_fem_poi_id == INVALID_ID )
@@ -675,37 +662,29 @@ void PoiMapToFemMbr::GetDeflection(LoadGroupIDType loadGroupID, IFem2dModel* pFe
    }
 }
 
-void PoiMapToFemMbr::GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
+void PoiMapToFemMbr::GetForce(LoadGroupIDType loadGroupID, WBFL::FEA2D::Model* pFemMdl, ResultsOrientation Orientation, Float64* fxLeft, Float64* fyLeft, Float64* mzLeft, Float64* fxRight, Float64* fyRight, Float64* mzRight)
 {
    // translate orientation
-   Fem2dLoadOrientation fem_or;
+   WBFL::FEA2D::LoadOrientation fem_or;
    if (Orientation==roGlobal)
-	   fem_or = lotGlobal;
+	   fem_or = WBFL::FEA2D::LoadOrientation::Global;
    else if (Orientation==roMember)
-	   fem_or = lotMember;
+	   fem_or = WBFL::FEA2D::LoadOrientation::Member;
    else
       THROW_HR(E_FAIL);
-
-   // forces map directly to fem poi
-   CComQIPtr<IFem2dModelResults> results(pFemMdl);
 
    // get results directly from fem poi
    PoiIDType left_fem_poi_id  = GetLeftPoiID();
    PoiIDType right_fem_poi_id = GetRightPoiID();
 
-   HRESULT hr;
    if ( left_fem_poi_id != INVALID_ID )
    {
-      hr = results->ComputePOIForces(loadGroupID, left_fem_poi_id, mftLeft, fem_or, fxLeft, fyLeft, mzLeft);
-      if (FAILED(hr) )
-         THROW_HR(hr);
+      pFemMdl->ComputePOIForces(loadGroupID, left_fem_poi_id, WBFL::FEA2D::MemberFaceType::Left, fem_or, fxLeft, fyLeft, mzLeft);
    }
 
    if ( right_fem_poi_id != INVALID_ID )
    {
-      hr = results->ComputePOIForces(loadGroupID, right_fem_poi_id, mftRight, fem_or, fxRight, fyRight, mzRight);
-      if (FAILED(hr) )
-         THROW_HR(hr);
+      pFemMdl->ComputePOIForces(loadGroupID, right_fem_poi_id, WBFL::FEA2D::MemberFaceType::Right, fem_or, fxRight, fyRight, mzRight);
    }
 
    if ( left_fem_poi_id == INVALID_ID )
@@ -724,7 +703,7 @@ void PoiMapToFemMbr::GetForce(LoadGroupIDType loadGroupID, IFem2dModel* pFemMdl,
 }
 
 
-void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& influenceLoadSet,
+void PoiMapToFemMbr::GetInfluenceLines(WBFL::FEA2D::Model* pFemMdl, InfluenceLoadSet& influenceLoadSet,
                                ResultsOrientation forceOrientation,  Float64 forceZeroTolerance, 
                                Float64 deflZeroTolerance, 
                                IInfluenceLine** pLeftAxialInfl,  IInfluenceLine** pRightAxialInfl,
@@ -767,42 +746,25 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    PoiIDType left_fem_poi_id  = GetLeftPoiID();
    PoiIDType right_fem_poi_id = GetRightPoiID();
 
-   CComPtr<IFem2dPOICollection> pois;
-   pFemMdl->get_POIs(&pois);
-   
    ATLASSERT(left_fem_poi_id != INVALID_ID || right_fem_poi_id != INVALID_ID); // one of these must be valid
 
    VARIANT_BOOL vbIsSupport;
 
-   CComPtr<IFem2dMemberCollection> members;
-   pFemMdl->get_Members(&members);
-
    if ( left_fem_poi_id != INVALID_ID )
    {
-      CComPtr<IFem2dPOI> leftPoi;
-      pois->Find(left_fem_poi_id,&leftPoi);
-      MemberIDType leftMbrID;
-      leftPoi->get_MemberID(&leftMbrID);
-      CComPtr<IFem2dMember> leftMbr;
-      members->Find(leftMbrID,&leftMbr);
+      WBFL::FEA2D::POI* leftPoi = pFemMdl->FindPOI(left_fem_poi_id);
+      MemberIDType leftMbrID = leftPoi->GetMemberID();
+      WBFL::FEA2D::Member* leftMbr = pFemMdl->FindMember(leftMbrID);
 
-      JointIDType jointID;
-      leftMbr->get_EndJoint(&jointID);
+      JointIDType jointID = leftMbr->GetEndJoint();
 
-      CComPtr<IFem2dJointCollection> joints;
-      pFemMdl->get_Joints(&joints);
+      WBFL::FEA2D::Joint* joint = pFemMdl->FindJoint(jointID);
 
-      CComPtr<IFem2dJoint> joint;
-      joints->Find(jointID,&joint);
-
-      joint->IsSupport(&vbIsSupport);
+      vbIsSupport = joint->IsSupport() ? VARIANT_TRUE : VARIANT_FALSE;
 
       if ( vbIsSupport == VARIANT_FALSE )
       {
-         CComPtr<IIDArray> memberIDs;
-         joint->get_Members(&memberIDs);
-         IndexType nMembersAtJoint;
-         memberIDs->get_Count(&nMembersAtJoint);
+         IndexType nMembersAtJoint = pFemMdl->GetAttachedMembers(jointID).size();
          if ( 2 < nMembersAtJoint )
          {
             // there is 3 or more members at the joint... we have a column
@@ -813,30 +775,19 @@ void PoiMapToFemMbr::GetInfluenceLines(IFem2dModel* pFemMdl, InfluenceLoadSet& i
    }
    else
    {
-      CComPtr<IFem2dPOI> rightPoi;
-      pois->Find(right_fem_poi_id,&rightPoi);
-      MemberIDType rightMbrID;
-      rightPoi->get_MemberID(&rightMbrID);
-      CComPtr<IFem2dMember> rightMbr;
-      members->Find(rightMbrID,&rightMbr);
+      WBFL::FEA2D::POI* rightPoi = pFemMdl->FindPOI(right_fem_poi_id);
+      MemberIDType rightMbrID = rightPoi->GetMemberID();
+      WBFL::FEA2D::Member* rightMbr = pFemMdl->FindMember(rightMbrID);
 
-      JointIDType jointID;
-      rightMbr->get_StartJoint(&jointID);
+      JointIDType jointID = rightMbr->GetStartJoint();
 
-      CComPtr<IFem2dJointCollection> joints;
-      pFemMdl->get_Joints(&joints);
+      WBFL::FEA2D::Joint* joint = pFemMdl->FindJoint(jointID);
 
-      CComPtr<IFem2dJoint> joint;
-      joints->Find(jointID,&joint);
-
-      joint->IsSupport(&vbIsSupport);
+      vbIsSupport = joint->IsSupport() ? VARIANT_TRUE : VARIANT_FALSE;
 
       if ( vbIsSupport == VARIANT_FALSE )
       {
-         CComPtr<IIDArray> memberIDs;
-         joint->get_Members(&memberIDs);
-         IndexType nMembersAtJoint;
-         memberIDs->get_Count(&nMembersAtJoint);
+         IndexType nMembersAtJoint = pFemMdl->GetAttachedMembers(jointID).size();
          if ( 2 < nMembersAtJoint )
          {
             // there is 3 or more members at the joint... we have a column
@@ -1058,7 +1009,7 @@ bool SortedPoiMapTracker::IsPoiAtNextLocation(Float64 nextX, Float64* foundX)
    }
 }
 
-SortedPoiMapTracker::PoiCoveredRes SortedPoiMapTracker::IsPoiCovered(Float64 globalX, IFem2dPOICollection* pFemPois, Float64 tolerance,IDType* pCoveringID)
+SortedPoiMapTracker::PoiCoveredRes SortedPoiMapTracker::IsPoiCovered(Float64 globalX, WBFL::FEA2D::Model* pFemModel, Float64 tolerance,IDType* pCoveringID)
 {
    // loop until we get to (or pass) the location
    *pCoveringID = INVALID_ID;

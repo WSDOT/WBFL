@@ -48,43 +48,30 @@ BOOL CPointLoadListPage::OnInitDialog()
    m_ctrlList.InsertColumn(7,_T("Mz"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComPtr<IFem2dLoadingCollection> loadings;
-   pParent->m_pFem2d->get_Loadings(&loadings);
 
    CString strOrientation[] = {_T("Global"),_T("Member"),_T("GlobalProjected")};
 
    int listIdx = 0;
 
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = pParent->m_pFem2d->GetLoadingCount();
    for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(idx,&loading);
+      WBFL::FEA2D::Loading* loading = pParent->m_pFem2d->FindLoadingByIndex(idx);
 
-      CComPtr<IFem2dPointLoadCollection> loads;
-      loading->get_PointLoads(&loads);
-      IndexType nLoads;
-      loads->get_Count(&nLoads);
+      IndexType nLoads = loading->GetPointLoadCount();
       for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
-         CComPtr<IFem2dPointLoad> load;
-         loads->get_Item(ldIdx,&load);
+         WBFL::FEA2D::PointLoad* load = loading->FindPointLoadByIndex(ldIdx);
 
-         IDType ID;
-         load->get_ID(&ID);
+         IDType ID = load->GetID();
 
-         MemberIDType mbrID;
-         load->get_MemberID(&mbrID);
+         MemberIDType mbrID = load->GetMemberID();
 
-         Float64 location;
-         load->get_Location(&location);
+         Float64 location = load->GetLocation();
 
-         Fem2dLoadOrientation orientation;
-         load->get_Orientation(&orientation);
+         WBFL::FEA2D::LoadOrientation orientation = load->GetOrientation();
 
-         LoadCaseIDType loadID;
-         load->get_Loading(&loadID);
+         LoadCaseIDType loadID = load->GetLoadingID();
 
          Float64 fx,fy,mz;
          load->GetForce(&fx,&fy,&mz);
@@ -101,7 +88,7 @@ BOOL CPointLoadListPage::OnInitDialog()
          str.Format(_T("%f"),location);
          m_ctrlList.SetItemText(listIdx,2,str);
 
-         str.Format(_T("%s"),strOrientation[orientation]);
+         str.Format(_T("%s"),strOrientation[static_cast<int>(orientation)]);
          m_ctrlList.SetItemText(listIdx,3,str);
 
          str.Format(_T("%d"),loadID);

@@ -13,7 +13,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-   CComPtr<IFem2dModel> m_Model;
+   std::unique_ptr<WBFL::FEA2D::Model> m_Model;
 
 // Operations
 public:
@@ -36,9 +36,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-protected:
-   DWORD m_dwCookie;
-
 // Generated message map functions
 protected:
 	//{{AFX_MSG(CFEA2DDoc)
@@ -46,12 +43,14 @@ protected:
 		//    DO NOT EDIT what you see in these blocks of generated code !
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-   LPUNKNOWN GetInterfaceHook(const void*);
-
-   DECLARE_DISPATCH_MAP()
-   BOOL OnModelChanged();
-   BOOL OnLoadingChanged(long loadingID);
 public:
+   // WBFL::FEA2D::Model doesn't fire change notifications itself (unlike
+   // the old IFem2dModelEvents connection point) - callers that mutate the
+   // model call these directly afterward. OnModelChanged() is for
+   // structural changes (joints/members/loadings added or removed);
+   // OnLoadingChanged() is for changes confined to one loading's loads.
+   void OnModelChanged();
+   void OnLoadingChanged(LoadCaseIDType loadingID);
    afx_msg void OnViewModelProperties();
    afx_msg void OnGTStrudl();
 };

@@ -46,34 +46,23 @@ BOOL CJointLoadListPage::OnInitDialog()
    m_ctrlList.InsertColumn(5,_T("Mz"));
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
-   CComPtr<IFem2dLoadingCollection> loadings;
-   pParent->m_pFem2d->get_Loadings(&loadings);
 
    int listIdx = 0;
-   IndexType nLoadings;
-   loadings->get_Count(&nLoadings);
+   IndexType nLoadings = pParent->m_pFem2d->GetLoadingCount();
    for ( IndexType idx = 0; idx < nLoadings; idx++ )
    {
-      CComPtr<IFem2dLoading> loading;
-      loadings->get_Item(idx,&loading);
+      WBFL::FEA2D::Loading* loading = pParent->m_pFem2d->FindLoadingByIndex(idx);
 
-      CComPtr<IFem2dJointLoadCollection> loads;
-      loading->get_JointLoads(&loads);
-      IndexType nLoads;
-      loads->get_Count(&nLoads);
+      IndexType nLoads = loading->GetJointLoadCount();
       for ( IndexType ldIdx = 0; ldIdx < nLoads; ldIdx++ )
       {
-         CComPtr<IFem2dJointLoad> load;
-         loads->get_Item(ldIdx,&load);
+         WBFL::FEA2D::JointLoad* load = loading->FindJointLoadByIndex(ldIdx);
 
-         IDType ID;
-         load->get_ID(&ID);
+         IDType ID = load->GetID();
 
-         JointIDType jntID;
-         load->get_JointID(&jntID);
+         JointIDType jntID = load->GetJointID();
 
-         LoadCaseIDType loadID;
-         load->get_Loading(&loadID);
+         LoadCaseIDType loadID = load->GetLoadingID();
 
          Float64 fx,fy,mz;
          load->GetForce(&fx,&fy,&mz);

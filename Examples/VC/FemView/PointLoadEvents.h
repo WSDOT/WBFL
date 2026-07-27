@@ -2,6 +2,6 @@
 
 interface iPointLoadEvents
 {
-   virtual void InitFromLoad(IFem2dPointLoad* load) = 0;
+   virtual void InitFromLoad(WBFL::FEA2D::PointLoad* load) = 0;
 };
 

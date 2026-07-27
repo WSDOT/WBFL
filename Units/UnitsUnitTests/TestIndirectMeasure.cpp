@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Units;
 
-namespace UnitsUnitTest
+namespace UnitsUnitTests
 {
 	template <typename MeasureData,typename MeasureType>
 	void Check(const MeasureData& md,const MeasureType& mt)

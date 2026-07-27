@@ -5,7 +5,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::COGO;
 
-namespace CoordGeomUnitTest
+namespace CoordGeomUnitTests
 {
 	TEST_CLASS(TestCompoundCurve)
 	{

@@ -45,24 +45,16 @@ BOOL CPoiListPage::OnInitDialog()
 
    CModelPropertiesDlg* pParent = (CModelPropertiesDlg*)GetParent();
 
-   CComPtr<IFem2dPOICollection> POIs;
-   pParent->m_pFem2d->get_POIs(&POIs);
-
-   IndexType nPoi;
-   POIs->get_Count(&nPoi);
+   IndexType nPoi = pParent->m_pFem2d->GetPOICount();
    for ( IndexType poiIdx = 0; poiIdx < nPoi; poiIdx++ )
    {
-      CComPtr<IFem2dPOI> poi;
-      POIs->get_Item(poiIdx,&poi);
+      WBFL::FEA2D::POI* poi = pParent->m_pFem2d->FindPOIByIndex(poiIdx);
 
-      PoiIDType ID;
-      poi->get_ID(&ID);
+      PoiIDType ID = poi->GetID();
 
-      MemberIDType mbrID;
-      poi->get_MemberID(&mbrID);
+      MemberIDType mbrID = poi->GetMemberID();
 
-      Float64 location;
-      poi->get_Location(&location);
+      Float64 location = poi->GetLocation();
 
       m_ctrlList.InsertItem((int)poiIdx,_T("POI"));
       CString str;

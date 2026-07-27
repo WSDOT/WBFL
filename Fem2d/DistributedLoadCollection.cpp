@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,7 @@
 
 STDMETHODIMP CDistributedLoadCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IFem2dDistributedLoadCollection
 	};
@@ -46,54 +46,68 @@ STDMETHODIMP CDistributedLoadCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CDistributedLoadCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading)
+void CDistributedLoadCollection::Init(IFem2dModel* pParent, ModelEvents* pEvents, IFem2dLoading* pLoading, WBFL::FEA2D::Loading* pCoreLoading)
 {
    ATLASSERT(pLoading!=0);
-   m_pLoading = pLoading;
 
    InitParent(pParent); // CCircularChild implementation
-   InitCollection(pParent, pEvents, pLoading);  // for C++ event handlers
+   InitCollection(pParent, pEvents, pLoading, pCoreLoading);  // for C++ event handlers
+}
+
+void CDistributedLoadCollection::AdoptCore(WBFL::FEA2D::DistributedLoad* pCore)
+{
+   ATLASSERT(pCore!=0);
+
+   CComObject<CDistributedLoad>* pdl;
+   HRESULT hr = CComObject<CDistributedLoad>::CreateInstance( &pdl );
+   ATLASSERT(SUCCEEDED(hr));
+
+   CComPtr<IFem2dDistributedLoad> item(pdl);
+
+   pdl->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(pCore->GetID(), item)) );
+   ATLASSERT(st.second);
 }
 
 STDMETHODIMP CDistributedLoadCollection::Create(/*[in]*/LoadIDType id, /*[in]*/MemberIDType memberID, /*[in]*/Fem2dLoadDirection direction, /*[in]*/Float64 startLocation,/*[in]*/Float64 endLocation, /*[in]*/Float64 Wstart, /*[in]*/Float64 Wend, /*[in,optional,defaultvalue(lotMember)]*/ Fem2dLoadOrientation orientation,/*[out, retval]*/ IFem2dDistributedLoad** ppDistributedLoad)
 {
    CHECK_RETOBJ(ppDistributedLoad);
-   HRESULT hr = E_FAIL;
 
-   // see if a load with our id already exists
-   ContainerIteratorType it( m_coll.find(id) );
-   if (it != m_coll.end())
+   WBFL::FEA2D::DistributedLoad* pCore;
+   try
    {
-      // exists - return error
-      return CComCoClass<CDistributedLoadCollection, &CLSID_Fem2dDistributedLoadCollection>::Error(IDS_E_DIST_LOAD_WITH_ID_ALREADY_EXISTS, IDH_E_DIST_LOAD_WITH_ID_ALREADY_EXISTS, GetHelpFile(), IID_IFem2dDistributedLoadCollection, FEM2D_E_DIST_LOAD_WITH_ID_ALREADY_EXISTS);
+      pCore = &m_pCoreLoading->CreateDistributedLoad(id, memberID, static_cast<WBFL::FEA2D::LoadDirection>(direction), startLocation, endLocation, Wstart, Wend, static_cast<WBFL::FEA2D::LoadOrientation>(orientation));
    }
-   else
+   catch (const WBFL::FEA2D::XFEA2D& ex)
    {
-      // create a new load
-      CComObject<CDistributedLoad>* pdl;
-      hr = CComObject<CDistributedLoad>::CreateInstance( &pdl );
-      if (FAILED(hr))
-         return hr;
-
-      *ppDistributedLoad = pdl;
-      (*ppDistributedLoad)->AddRef(); // for client
-
-      pdl->Init(m_pModel, m_pEvents, m_pLoading, id, memberID, direction, startLocation, endLocation, Wstart, Wend, orientation);
-
-      // insert new 
-      std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppDistributedLoad)) );
-      if (!st.second)
-      {
-         ATLASSERT(false); // insert failed - better check why
-         return E_FAIL;
-      }
-
-      LoadCaseIDType loadingID;
-      m_pLoading->get_ID(&loadingID);
-      m_pEvents->OnDistributedLoadAdded(id,loadingID);
+      return ReportFem2dError(ex, CLSID_Fem2dDistributedLoadCollection, IID_IFem2dDistributedLoadCollection);
    }
 
-	return hr;
+   // create the COM wrapper
+   CComObject<CDistributedLoad>* pdl;
+   HRESULT hr = CComObject<CDistributedLoad>::CreateInstance( &pdl );
+   if (FAILED(hr))
+      return hr;
+
+   *ppDistributedLoad = pdl;
+   (*ppDistributedLoad)->AddRef(); // for client
+
+   pdl->Init(m_pModel, m_pEvents, m_pLoading, pCore);
+
+   // insert new
+   std::pair<ContainerIteratorType,bool> st( m_coll.insert(ContainerValueType(id, *ppDistributedLoad)) );
+   if (!st.second)
+   {
+      ATLASSERT(false); // insert failed - better check why
+      return E_FAIL;
+   }
+
+   LoadCaseIDType loadingID;
+   m_pLoading->get_ID(&loadingID);
+   m_pEvents->OnDistributedLoadAdded(id,loadingID);
+
+	return S_OK;
 }
 
 STDMETHODIMP CDistributedLoadCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadIDType* pid)
@@ -101,6 +115,8 @@ STDMETHODIMP CDistributedLoadCollection::Remove(IndexType IDorIndex, Fem2dAccess
    HRESULT hr = DistributedLoadCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))
    {
+      m_pCoreLoading->RemoveDistributedLoad(*pid);
+
       // send event up the pipe
       LoadCaseIDType loadingID;
       m_pLoading->get_ID(&loadingID);
@@ -117,6 +133,8 @@ STDMETHODIMP CDistributedLoadCollection::Clear()
       HRESULT hr = DistributedLoadCollImpl::Clear();
       if (SUCCEEDED(hr))
       {
+         m_pCoreLoading->ClearDistributedLoads();
+
          // send event up the pipe
          LoadCaseIDType loadingID;
          m_pLoading->get_ID(&loadingID);

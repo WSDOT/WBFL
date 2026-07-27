@@ -15,7 +15,7 @@ static char THIS_FILE[] = __FILE__;
 // CEditMemberDlg dialog
 
 
-CEditMemberDlg::CEditMemberDlg(IFem2dModel* pModel,BOOL bMbrIDReadOnly,CWnd* pParent /*=NULL*/)
+CEditMemberDlg::CEditMemberDlg(WBFL::FEA2D::Model* pModel,BOOL bMbrIDReadOnly,CWnd* pParent /*=NULL*/)
 	: CDialog(CEditMemberDlg::IDD, pParent)
 {
    m_Model = pModel;
@@ -63,18 +63,12 @@ BOOL CEditMemberDlg::OnInitDialog()
    CComboBox* pStart = (CComboBox*)GetDlgItem(IDC_STARTJNT);
    CComboBox* pEnd = (CComboBox*)GetDlgItem(IDC_ENDJNT);
 
-   CComPtr<IFem2dJointCollection> joints;
-   m_Model->get_Joints(&joints);
-
-   IndexType count;
-   joints->get_Count(&count);
+   IndexType count = m_Model->GetJointCount();
    for ( IndexType i = 0; i < count; i++ )
    {
-      CComPtr<IFem2dJoint> jnt;
-      joints->get_Item(i,&jnt);
+      WBFL::FEA2D::Joint* jnt = m_Model->FindJointByIndex(i);
 
-      JointIDType ID;
-      jnt->get_ID(&ID);
+      JointIDType ID = jnt->GetID();
 
       CString strJntID;
       strJntID.Format(_T("%d"),ID);

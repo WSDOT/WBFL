@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,8 @@ class ModelEvents;
 
 /////////////////////////////////////////////////////////////////////////////
 // CPOI
-class ATL_NO_VTABLE CPOI : 
+// Thin COM facade over WBFL::FEA2D::POI.
+class ATL_NO_VTABLE CPOI :
 	public CCircularChild<IFem2dModel, CComSingleThreadModel>,
 	public ISupportErrorInfo,
    public IObjectSafetyImpl<CPOI,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>,
@@ -42,9 +43,8 @@ class ATL_NO_VTABLE CPOI :
 {
 public:
    CPOI():
-   m_ID(0),
-   m_MemberID(0),
-   m_Location(0.0)
+   m_pModel(0),
+   m_pCore(0)
 	{
 	}
 
@@ -53,12 +53,9 @@ public:
 
 
    // IMPORTANT!!!
-   // OnCreate must be called once and only once by creator.
-   HRESULT OnCreate(IFem2dModel* pModel, ModelEvents* pEvents, PoiIDType ID, MemberIDType memberID=-1, Float64 location=0.0);
-
-   // IStructuredStorage - sort of
-   STDMETHOD(Load)(IStructuredLoad2 *load);
-   STDMETHOD(Save)(IStructuredSave2 *save);
+   // OnCreate must be called once and only once by creator. The core POI
+   // must already exist (location validation happens in Model::CreatePOI).
+   void OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, WBFL::FEA2D::POI* pCore);
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -80,11 +77,8 @@ public:
 	STDMETHOD(get_ID)(/*[out, retval]*/ PoiIDType *pVal) override;
 
 private:
-   PoiIDType m_ID;
-   MemberIDType m_MemberID;
-   Float64 m_Location;
-
    ModelEvents* m_pModel; // for sending events back to model
+   WBFL::FEA2D::POI* m_pCore; // non-owning; owned by the FEA2D core Model
 
 };
 

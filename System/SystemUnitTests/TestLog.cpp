@@ -5,7 +5,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 using namespace WBFL::Debug;
 
-namespace SystemUnitTest
+namespace SystemUnitTests
 {
 	class TestLogContextType : public LogContext
 	{

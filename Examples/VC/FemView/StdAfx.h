@@ -27,7 +27,7 @@
 #include <DManip\DManip.h>
 #include <WBFLDebug.h>
 
-#include <WBFLFem2d.h>
+#include <FEA2D\Model.h>
 #include "JointDrawStrategy.h"
 #include "PointLoadDrawStrategy.h"
 #include "PointLoadEvents.h"

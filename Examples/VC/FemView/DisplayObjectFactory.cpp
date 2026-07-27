@@ -79,18 +79,10 @@ std::shared_ptr<WBFL::DManip::iDisplayObject> CDisplayObjectFactory::Create(CLIP
          // rebuild the display object from the data source
          loadRep->OnDrop(source);
 
-         CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-         CComPtr<IFem2dLoadingCollection> loadings;
-         model->get_Loadings(&loadings);
+         WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+         WBFL::FEA2D::Loading* loading = model->FindLoading(events->m_Loading);
 
-         CComPtr<IFem2dLoading> loading;
-         loadings->Find(events->m_Loading,&loading);
-
-         CComPtr<IFem2dPointLoadCollection> ptLoads;
-         loading->get_PointLoads(&ptLoads);
-
-         CComPtr<IFem2dPointLoad> ptLoad;
-         ptLoads->Find(events->m_ID,&ptLoad);
+         WBFL::FEA2D::PointLoad* ptLoad = loading->FindPointLoad(events->m_ID);
 
          draw_strategy->SetLoad(ptLoad);
       }

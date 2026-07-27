@@ -5,7 +5,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Stability;
 
-namespace StabilityUnitTest
+namespace StabilityUnitTests
 {
 	TEST_CLASS(TestPCIHaulingExamples)
 	{

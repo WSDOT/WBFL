@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // LBAM Analysis - Longitindal Bridge Analysis Model
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -39,11 +39,6 @@
 #include <WBFLTools_i.c>
 #include <WBFLLoading_i.c>
 #include <WBFLGeometry_i.c>
-
-//#include <WBFLFem2d_i.c>
-// RAB: I can't get this DLL to link unless this CLSID is defined explicitly here
-//      If the CLSID for Fem2dModel changes, it must be changed here as well
-DEFINE_GUID(CLSID_Fem2dModel,0x807A6236,0xAE89,0x11D4,0xAF,0x38,0x00,0x10,0x5A,0x9A,0xF9,0x85);
 
 #include "LoadGroupResponse.h"
 #include "Result3Ds.h"

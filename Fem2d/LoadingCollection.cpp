@@ -1,19 +1,19 @@
 ///////////////////////////////////////////////////////////////////////
 // Fem2D - Two-dimensional Beam Analysis Engine
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
 // and was developed as part of the Alternate Route Project
 //
 // This program is free software; you can redistribute it and/or modify
-// it under the terms of the Alternate Route Library Open Source License as 
+// it under the terms of the Alternate Route Library Open Source License as
 // published by the Washington State Department of Transportation,
 // Bridge and Structures Office.
 //
 // This program is distributed in the hope that it will be useful,
 // but is distributed AS IS, WITHOUT ANY WARRANTY; without even the
-// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+// implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 // PURPOSE.  See the Alternate Route Library Open Source License for more details.
 //
 // You should have received a copy of the Alternate Route Library Open Source License
@@ -34,7 +34,7 @@
 
 STDMETHODIMP CLoadingCollection::InterfaceSupportsErrorInfo(REFIID riid)
 {
-	static const IID* arr[] = 
+	static const IID* arr[] =
 	{
 		&IID_IFem2dLoadingCollection
 	};
@@ -46,51 +46,69 @@ STDMETHODIMP CLoadingCollection::InterfaceSupportsErrorInfo(REFIID riid)
 	return S_FALSE;
 }
 
-void CLoadingCollection::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents)
+void CLoadingCollection::OnCreate(IFem2dModel* pParent, ModelEvents* pEvents, WBFL::FEA2D::Model* pCoreModel)
 {
    InitParent(pParent); // CCircularChild implementation
-   InitCollection(pParent,pEvents);  // for C++ event handlers
+   InitCollection(pParent,pEvents,pCoreModel);  // for C++ event handlers
+}
+
+CLoading* CLoadingCollection::AdoptCore(WBFL::FEA2D::Loading* pCore)
+{
+   ATLASSERT(pCore!=0);
+
+   CComObject<CLoading>* ploading;
+   HRESULT hr = CComObject<CLoading>::CreateInstance( &ploading );
+   ATLASSERT(SUCCEEDED(hr));
+
+   CComPtr<IFem2dLoading> item(ploading);
+
+   hr = ploading->OnCreate(m_pModel, m_pEvents, pCore);
+   ATLASSERT(SUCCEEDED(hr));
+
+   std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(pCore->GetID(), item)) );
+   ATLASSERT(st.second);
+
+   return ploading;
 }
 
 STDMETHODIMP CLoadingCollection::Create(/*[in]*/LoadCaseIDType id,IFem2dLoading* *ppLoading)
 {
    CHECK_RETOBJ(ppLoading);
-   HRESULT hr = E_FAIL;
 
-   // see if a joint load with our id already exists
-   ContainerIteratorType it( m_coll.find(id) );
-   if (it != m_coll.end())
+   WBFL::FEA2D::Loading* pCore;
+   try
    {
-      // exists - return error
-      return CComCoClass<CLoadingCollection, &CLSID_Fem2dLoadingCollection>::Error(IDS_E_LOADING_WITH_ID_ALREADY_EXISTS, IDH_E_LOADING_WITH_ID_ALREADY_EXISTS, GetHelpFile(), IID_IFem2dLoading, FEM2D_E_LOADING_WITH_ID_ALREADY_EXISTS);
+      pCore = &m_pCoreModel->CreateLoading(id);
    }
-   else
+   catch (const WBFL::FEA2D::XFEA2D& ex)
    {
-      // create a new loading
-      CComObject<CLoading>* ploading;
-      hr = CComObject<CLoading>::CreateInstance( &ploading );
-      if (FAILED(hr))
-         return hr;
-
-      *ppLoading = ploading;
-      (*ppLoading)->AddRef(); // for client
-
-      hr = ploading->OnCreate(m_pModel,m_pEvents, id);
-      if (FAILED(hr))
-         return hr;
-
-      // insert new joint
-      std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(id, *ppLoading)) );
-      if (!st.second)
-      {
-         ATLASSERT(false); // insert failed - better check why
-         return E_FAIL;
-      }
-
-      m_pEvents->OnLoadingAdded(id);
+      return ReportFem2dError(ex, CLSID_Fem2dLoadingCollection, IID_IFem2dLoading);
    }
 
-	return hr;
+   // create the COM wrapper
+   CComObject<CLoading>* ploading;
+   HRESULT hr = CComObject<CLoading>::CreateInstance( &ploading );
+   if (FAILED(hr))
+      return hr;
+
+   *ppLoading = ploading;
+   (*ppLoading)->AddRef(); // for client
+
+   hr = ploading->OnCreate(m_pModel,m_pEvents, pCore);
+   if (FAILED(hr))
+      return hr;
+
+   // insert new joint
+   std::pair<ContainerIteratorType,bool> st ( m_coll.insert(ContainerValueType(id, *ppLoading)) );
+   if (!st.second)
+   {
+      ATLASSERT(false); // insert failed - better check why
+      return E_FAIL;
+   }
+
+   m_pEvents->OnLoadingAdded(id);
+
+	return S_OK;
 }
 
 STDMETHODIMP CLoadingCollection::Remove(IndexType IDorIndex, Fem2dAccessType AccessMethod, LoadCaseIDType* pid)
@@ -98,6 +116,8 @@ STDMETHODIMP CLoadingCollection::Remove(IndexType IDorIndex, Fem2dAccessType Acc
    HRESULT hr = LoadingCollImpl::Remove(IDorIndex, AccessMethod, pid);
    if (SUCCEEDED(hr))
    {
+      m_pCoreModel->RemoveLoading(*pid);
+
       // send event up the pipe
       m_pEvents->OnLoadingRemoved(*pid);
    }
@@ -119,6 +139,8 @@ STDMETHODIMP CLoadingCollection::RemoveIDLessThan(LoadCaseIDType idMax)
          it->second.Release();
          it = m_coll.erase(it);
 
+         m_pCoreModel->RemoveLoading(id);
+
          // send event up the pipe
          m_pEvents->OnLoadingRemoved(id);
       }
@@ -131,7 +153,6 @@ STDMETHODIMP CLoadingCollection::RemoveIDLessThan(LoadCaseIDType idMax)
    return S_OK;
 }
 
-
 STDMETHODIMP CLoadingCollection::Clear()
 {
    if (!m_coll.empty())
@@ -139,6 +160,8 @@ STDMETHODIMP CLoadingCollection::Clear()
       HRESULT hr = LoadingCollImpl::Clear();
       if (SUCCEEDED(hr))
       {
+         m_pCoreModel->ClearLoadings();
+
          // send event up the pipe
          m_pEvents->OnLoadingsCleared();
       }

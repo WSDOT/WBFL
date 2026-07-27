@@ -28,18 +28,18 @@ CPointLoadEventsImpl::~CPointLoadEventsImpl()
 {
 }
 
-void CPointLoadEventsImpl::InitFromLoad(IFem2dPointLoad* load)
+void CPointLoadEventsImpl::InitFromLoad(WBFL::FEA2D::PointLoad* load)
 {
    if ( load )
    {
-      load->get_ID(&m_ID);
-      load->get_MemberID(&m_MemberID);
-      load->get_Location(&m_Location);
-      load->get_Orientation(&m_Orientation);
-      load->get_Loading(&m_Loading);
-      load->get_Fx(&m_Fx);
-      load->get_Fy(&m_Fy);
-      load->get_Mz(&m_Mz);
+      m_ID = load->GetID();
+      m_MemberID = load->GetMemberID();
+      m_Location = load->GetLocation();
+      m_Orientation = load->GetOrientation();
+      m_Loading = load->GetLoadingID();
+      m_Fx = load->GetFx();
+      m_Fy = load->GetFy();
+      m_Mz = load->GetMz();
    }
 }
 
@@ -60,18 +60,12 @@ void CPointLoadEventsImpl::OnMoved(std::shared_ptr<iDisplayObject> pDO)
    // deleting the display object that represents the load that was moved.
    ASSERT( m_ID == pDO->GetID() );
 
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
+   WBFL::FEA2D::Loading* loading = model->FindLoading(m_Loading);
 
-   CComPtr<IFem2dLoading> loading;
-   loadings->Find(m_Loading,&loading);
+   loading->RemovePointLoad(m_ID);
 
-   CComPtr<IFem2dPointLoadCollection> ptLoads;
-   loading->get_PointLoads(&ptLoads);
-   
-   LoadIDType removedID;
-   ptLoads->Remove(m_ID,atID,&removedID);
+   m_pDoc->OnLoadingChanged(m_Loading);
 }
 
 void CPointLoadEventsImpl::OnCopied(std::shared_ptr<iDisplayObject> pDO)
@@ -197,8 +191,8 @@ bool CPointLoadEventsImpl::PrepareForDrag(std::shared_ptr<iDisplayObject> pDO,st
    pSink->Write(ms_Format,&location,sizeof(location));
 
    // orientation
-   Fem2dLoadOrientation orient = m_Orientation;
-   pSink->Write(ms_Format,&orient,sizeof(Fem2dLoadOrientation));
+   WBFL::FEA2D::LoadOrientation orient = m_Orientation;
+   pSink->Write(ms_Format,&orient,sizeof(WBFL::FEA2D::LoadOrientation));
 
    // fx, fy, mz;
    double val;
@@ -238,8 +232,8 @@ void CPointLoadEventsImpl::OnDrop(std::shared_ptr<iDisplayObject> pDO,std::share
    m_Location = location;
 
    // orientation
-   Fem2dLoadOrientation orient;
-   pSource->Read(ms_Format,&orient,sizeof(Fem2dLoadOrientation));
+   WBFL::FEA2D::LoadOrientation orient;
+   pSource->Read(ms_Format,&orient,sizeof(WBFL::FEA2D::LoadOrientation));
    m_Orientation = orient;
 
    // fx, fy, mz;
@@ -256,50 +250,35 @@ void CPointLoadEventsImpl::OnDrop(std::shared_ptr<iDisplayObject> pDO,std::share
 
 void CPointLoadEventsImpl::EditLoad(IDType loadingID,IDType loadID)
 {
-   CComPtr<IFem2dModel> model = m_pDoc->m_Model;
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
    CAddPointLoadDlg dlg(model,TRUE);
 
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
+   WBFL::FEA2D::Loading* loading = model->FindLoading(loadingID);
 
-   CComPtr<IFem2dLoading> loading;
-   loadings->Find(loadingID,&loading);
+   WBFL::FEA2D::PointLoad* ptLoad = loading->FindPointLoad(loadID);
 
-   CComPtr<IFem2dPointLoadCollection> ptLoads;
-   loading->get_PointLoads(&ptLoads);
+   dlg.m_MbrID = ptLoad->GetMemberID();
+   dlg.m_LoadingID = ptLoad->GetLoadingID();
 
-   CComPtr<IFem2dPointLoad> ptLoad;
-   ptLoads->Find(loadID,&ptLoad);
-
-   ptLoad->get_MemberID(&dlg.m_MbrID);
-   LoadCaseIDType lcID;
-   ptLoad->get_Loading(&lcID);
-   dlg.m_LoadingID = lcID;
-
-   ptLoad->get_Fx(&dlg.m_Fx);
-   ptLoad->get_Fy(&dlg.m_Fy);
-   ptLoad->get_Mz(&dlg.m_Mz);
-   ptLoad->get_Location(&dlg.m_Location);
+   dlg.m_Fx = ptLoad->GetFx();
+   dlg.m_Fy = ptLoad->GetFy();
+   dlg.m_Mz = ptLoad->GetMz();
+   dlg.m_Location = ptLoad->GetLocation();
 
    if ( dlg.DoModal() == IDOK )
    {
       ptLoad->SetForce(dlg.m_Fx,dlg.m_Fy,dlg.m_Mz);
+      m_pDoc->OnLoadingChanged(loadingID);
    }
 }
 
 void CPointLoadEventsImpl::DeleteLoad(IDType loadingID,IDType loadID)
 {
-   CComPtr<IFem2dModel>model = m_pDoc->m_Model;
+   WBFL::FEA2D::Model* model = m_pDoc->m_Model.get();
 
-   CComPtr<IFem2dLoadingCollection> loadings;
-   model->get_Loadings(&loadings);
+   WBFL::FEA2D::Loading* loading = model->FindLoading(loadingID);
 
-   CComPtr<IFem2dLoading> loading;
-   loadings->Find(loadingID,&loading);
+   loading->RemovePointLoad(loadID);
 
-   CComPtr<IFem2dPointLoadCollection> ptLoads;
-   loading->get_PointLoads(&ptLoads);
-
-   LoadIDType removedID;
-   ptLoads->Remove(loadID,atID,&removedID);
+   m_pDoc->OnLoadingChanged(loadingID);
 }

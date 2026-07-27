@@ -4,7 +4,7 @@
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace WBFL::Geometry;
 
-namespace GeomModelUnitTest
+namespace GeomModelUnitTests
 {
 	TEST_CLASS(TestPlateGirder)
 	{
