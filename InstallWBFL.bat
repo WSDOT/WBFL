@@ -24,9 +24,9 @@ IF "%1" == "Win32" (
 
 IF "%1" == "x64" (
    IF "%2" == "Release" (
-   xcopy /y/d %ARPDIR%\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll %3 
+   xcopy /y/d %ARPDIR%\WBFL\Apache\XERCESCPKG-324-X64-VC143\bin\xerces-c-3.2.dll %3
    ) ELSE (
-   xcopy /y/d %ARPDIR%\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll %3 
+   xcopy /y/d %ARPDIR%\WBFL\Apache\XERCESCPKG-324-X64-VC143\bin\xerces-c-3.2d.dll %3
    )
 )
 

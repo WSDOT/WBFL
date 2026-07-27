@@ -23,10 +23,10 @@ static char THIS_FILE[] = __FILE__;
 //////////////////////////////////////////////////////////////////////
 using namespace std;
 
-static std::_tstring LoToString(LoadOrientation or)
+static std::_tstring LoToString(LoadOrientation orient)
 {
    std::_tstring sor;
-   switch (or)
+   switch (orient)
    {
    case loGlobal:
          sor = _T("Global");
@@ -866,8 +866,8 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
          hr = dl->get_MemberID(&mid);
          MemberType mtype;
          hr = dl->get_MemberType(&mtype);
-         LoadOrientation or;
-         hr = dl->get_Orientation(&or);
+         LoadOrientation orient;
+         hr = dl->get_Orientation(&orient);
          LoadDirection dir;
          hr = dl->get_Direction(&dir);
          double sloc, eloc;
@@ -878,7 +878,7 @@ static void DumpDistrLoadData(std::_tostream& os, ILBAMModel* model)
          hr = dl->get_WEnd(&wend);
 
          os<<left<<_T(" ")<<setw(25)<<W2A(stage)<<setw(25)<<W2A(loadgroup)<<setw(20)<<MTToString(mtype)<<setw(8)
-           <<right<<setw(10)<<mid<<_T(" ")<<left<<setw(7)<<LoToString(or)<<setw(3)<<LdToString(dir)
+           <<right<<setw(10)<<mid<<_T(" ")<<left<<setw(7)<<LoToString(orient)<<setw(3)<<LdToString(dir)
            <<right<<setw(12)<<sloc<<setw(12)<<eloc<<setw(12)<<wstart<<setw(12)<<wend<<endl;
       }
    }

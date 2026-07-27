@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -331,6 +331,7 @@ void StructuredLoadXml_Impl::BeginLoad(IStream* pis)
 void StructuredLoadXml_Impl::EndLoad()
 {
    PRECONDITION( m_pIStream );
+   bool bWasWarnPopupEnabled = WBFL::Debug::Diagnostics::IsWarnPopupEnabled();
    WBFL::Debug::Diagnostics::EnableWarnPopup(false);
    WARN(m_Level!=0,"Error: BeginUnit-EndUnit mismatch in structured load");
 #if defined _DEBUG
@@ -342,7 +343,7 @@ void StructuredLoadXml_Impl::EndLoad()
       //WATCH(_T("Open Unit: ") << item.Name);
    }
 #endif
-   WBFL::Debug::Diagnostics::EnableWarnPopup(true);
+   WBFL::Debug::Diagnostics::EnableWarnPopup(bWasWarnPopupEnabled);
 
    // free up com resources
    m_pIStream->Release();

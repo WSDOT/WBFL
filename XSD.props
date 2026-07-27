@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
   </ImportGroup>
@@ -8,12 +8,46 @@
     <ExecutablePath>$(XSDDIR)\bin;$(ExecutablePath)</ExecutablePath>
     <IncludePath>$(XSDDIR)\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <!-- Xalan-C++ 1.12.0 links against the binaries checked into WBFL's own git history
+       (WBFL\Apache\XALANCPKG-112-324-X64-VC143) rather than a separate per-machine SDK/env var -
+       see WBFL\Setup-XsdCxxBuildEnvironment.ps1 for the history of why. Every project here that
+       uses xsd-cxx/Xerces-C++ either uses Xalan-C++ too or is unaffected by also having its
+       include/lib path available (inert if unused - confirmed empirically: HC_CABLE.exe already
+       links Xalan-C_1.lib via this exact mechanism without using a single symbol from it, and
+       dumpbin shows no resulting runtime dependency), so it's simplest to keep this all in one
+       file rather than split "projects that need Xerces" from "projects that need Xerces AND
+       Xalan" across two property sheets. -->
   <ItemDefinitionGroup>
     <CXX_Tree_Mapping_Rule />
     <CXX_Tree_Mapping_Rule>
       <CxxStd>0</CxxStd>
       <CharType>1</CharType>
     </CXX_Tree_Mapping_Rule>
+    <!-- Every project that imports this props file gets $(XSDDIR)\include (Xerces-C++ headers)
+         and WBFL\Apache\XALANCPKG-112-324-X64-VC143\include (Xalan-C++ headers) on its path, so
+         any translation unit here can reach xercesc/xalanc headers directly or transitively (e.g.
+         via a generated xsd-cxx schema header, or via another project's header like Curvel.h).
+         xercesc/util/Xerces_autoconf_config.hpp #errors out unless LIBXERCES_C_STATIC or
+         LIBXERCES_C_SHARED is defined. Every project in this ecosystem links the shared/dynamic
+         xerces-c(d).dll.lib, never the static xerces-c.lib, so SHARED is always the right answer
+         here - defining it centrally means new projects (and the ones only found by actually
+         hitting this error - BEToolbox, PGSuperVBent) don't need to add it themselves. -->
+    <ClCompile>
+      <PreprocessorDefinitions>LIBXERCES_C_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <!-- Config-conditional because the Release/Debug Xerces-C++ and Xalan-C++ import libs are
+       different files ("d"-suffixed for Debug). -->
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalDependencies>$(XSDDIR)\lib\xerces-c.dll.lib;$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\lib\Xalan-C_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>$(XSDDIR)\lib\xerces-cd.dll.lib;$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\lib\Xalan-C_1D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
