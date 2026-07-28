@@ -14,6 +14,20 @@
       <CxxStd>0</CxxStd>
       <CharType>1</CharType>
     </CXX_Tree_Mapping_Rule>
+    <ClCompile>
+      <PreprocessorDefinitions>LIBXERCES_C_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Link>
+      <AdditionalDependencies>$(XSDDIR)\lib\xerces-c.dll.lib;$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\lib\Xalan-C_1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>$(XSDDIR)\lib\xerces-cd.dll.lib;$(ARPDIR)\WBFL\Apache\XALANCPKG-112-324-X64-VC143\lib\Xalan-C_1D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

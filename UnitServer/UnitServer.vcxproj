@@ -129,7 +129,6 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
-      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3D.lib</AdditionalDependencies>
       <ImageHasSafeExceptionHandlers>
       </ImageHasSafeExceptionHandlers>
       <OptimizeReferences>false</OptimizeReferences>
@@ -142,7 +141,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copying Apache Files</Message>
-      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1D.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
+      <Command>xcopy /y/d "$(XSDDIR)\bin\xerces-c-3.2d.dll" $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <OutputManifestFile>$(TargetPath).manifest</OutputManifestFile>
@@ -222,7 +221,6 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX64</TargetMachine>
       <AllowIsolation>true</AllowIsolation>
-      <AdditionalDependencies>..\Apache\XERCESCPKG-31-X64-VC100\lib\xerces-c_3.lib</AdditionalDependencies>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
     </Link>
     <Bscmake>
@@ -231,7 +229,7 @@
     </Bscmake>
     <PostBuildEvent>
       <Message>Copying Apache Files</Message>
-      <Command>xcopy /y/d $(ARPDIR)\WBFL\Apache\XERCESCPKG-31-X64-VC100\bin\xerces-c_3_1.dll $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
+      <Command>xcopy /y/d "$(XSDDIR)\bin\xerces-c-3.2.dll" $(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</Command>
     </PostBuildEvent>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
