@@ -80,8 +80,8 @@
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <OutputDirectory />
-      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(Configuration)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(Configuration)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\Include;..\Include\$(Platform);..\Include\$(Configuration);$(VCToolInstallDir)atlmfc\src\mfc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -151,8 +151,8 @@
       <TargetEnvironment>X64</TargetEnvironment>
       <TypeLibraryName>$(OutDir)$(TargetName).tlb</TypeLibraryName>
       <OutputDirectory />
-      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName).h</HeaderFileName>
-      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(TargetName)_i.c</InterfaceIdentifierFileName>
+      <HeaderFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(Configuration)\$(TargetName).h</HeaderFileName>
+      <InterfaceIdentifierFileName>$(ARPDIR)\WBFL\Include\$(Platform)\$(Configuration)\$(TargetName)_i.c</InterfaceIdentifierFileName>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>

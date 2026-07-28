@@ -6,7 +6,7 @@
   <PropertyGroup>
     <SourcePath>$(SourcePath)</SourcePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(BOOSTDIR);$(ARPDIR)\WBFL\Include;$(ARPDIR)\WBFL\Include\$(Platform);$(IncludePath)</IncludePath>
+    <IncludePath>$(BOOSTDIR);$(ARPDIR)\WBFL\Include;$(ARPDIR)\WBFL\Include\$(Platform)\$(Configuration);$(ARPDIR)\WBFL\Include\$(Platform);$(IncludePath)</IncludePath>
     <LibraryPath>$(BOOSTDIR)\stage\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup>
