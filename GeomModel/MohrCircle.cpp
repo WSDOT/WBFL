@@ -22,8 +22,10 @@
 ///////////////////////////////////////////////////////////////////////
 
 #include <GeomModel/GeomModelLib.h>
-#include "MohrCircle.h"
+#include <GeomModel/MohrCircle.h>
 #include <MathEx.h>
+
+using namespace WBFL::Geometry;
 
 MohrCircle::MohrCircle() :
    m_Sii(0.0),

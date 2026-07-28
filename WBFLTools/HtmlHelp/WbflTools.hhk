@@ -5,11 +5,6 @@
 </object>
 <ul>
   <li><object type="text/sitemap">
-    <param name="Name" value="Mohr's Circle">
-    <param name="Name" value="Mohr's Circle">
-    <param name="Local" value="Mohr's_Circle.htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="VT_UI4">
     <param name="Name" value="Property">
     <param name="Local" value="StrStorage\Property2.htm">
@@ -112,26 +107,6 @@
     <param name="Local" value="StrStorage\Error_initializing_the_XML_parser.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Syy">
-    <param name="Name" value="ComputeSyy Method (Mohr Circle Object)">
-    <param name="Local" value="ComputeSyy_Method_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="Sii Property">
-    <param name="Name" value="Sii Property (Mohr Circle Object)">
-    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="PMohrCircle-&gt;put_Sii">
-    <param name="Name" value="Sii Property (Mohr Circle Object)">
-    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="PMohrCircle-&gt;get_Sii">
-    <param name="Name" value="Sii Property (Mohr Circle Object)">
-    <param name="Local" value="Sii_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="EndUnit Method">
     <param name="Name" value="EndUnit">
     <param name="Local" value="StrStorage\EndUnit2.htm">
@@ -161,11 +136,6 @@
     <param name="Local" value="StrStorage\TopVersion.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Sxx">
-    <param name="Name" value="ComputeSxx Method (Mohr Circle Object)">
-    <param name="Local" value="ComputeSxx_Method_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="EndOfStorage Method">
     <param name="Name" value="EndOfStorage">
     <param name="Local" value="StrStorage\EndOfStorage2.htm">
@@ -193,11 +163,6 @@
     <param name="Local" value="StrStorage\Open2.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Center Property">
-    <param name="Name" value="Center Property (Mohr Circle Object)">
-    <param name="Local" value="Center_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="ShowAgain Property">
     <param name="Name" value="ShowAgain Property (ARP Notice Object)">
     <param name="Local" value="ShowAgain_Property_(ARP_Notice_Object).htm">
@@ -218,26 +183,11 @@
     <param name="Local" value="StrStorage\Class_is_not_registered_on_this_computer..htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Radius Property">
-    <param name="Name" value="Radius Property (Mohr Circle Object)">
-    <param name="Local" value="Radius_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="BeginUnit Method">
     <param name="Name" value="BeginUnit">
     <param name="Local" value="StrStorage\BeginUnit2.htm">
     <param name="Name" value="BeginUnit">
     <param name="Local" value="StrStorage\BeginUnitSave.htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="Sij Property">
-    <param name="Name" value="Sij Property (Mohr Circle Object)">
-    <param name="Local" value="Sij_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="PrincipleDirection Property">
-    <param name="Name" value="PrincipleDirection Property (Mohr Cirlce Object)">
-    <param name="Local" value="PrincipleDirection_Property_(Mohr_Cirlce_Object).htm">
   </object>
   <li><object type="text/sitemap">
     <param name="Name" value="StructuredSave2">
@@ -283,11 +233,6 @@
     <param name="Local" value="StrStorage\Close.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Tmax Property">
-    <param name="Name" value="Tmax Property (Mohr Circle Object)">
-    <param name="Local" value="Tmax_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="EndUnit">
     <param name="Name" value="EndUnit">
     <param name="Local" value="StrStorage\EndUnitSave.htm">
@@ -325,11 +270,6 @@
     <param name="Local" value="Disclaimer.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Smin Property">
-    <param name="Name" value="Smin Property (Mohr Circle Object)">
-    <param name="Local" value="Smin_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="BeginUnit">
     <param name="Name" value="You must define at least one Unit">
     <param name="Local" value="StrStorage\You_must_define_at_least_one_Unit.htm">
@@ -343,16 +283,6 @@
     <param name="Name" value="StructuredLoad">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Mohr Circle Equations">
-    <param name="Name" value="Mohr Circle Equations">
-    <param name="Local" value="Mohr_Circle_Equations.htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="Smax Property">
-    <param name="Name" value="Smax Property (Mohr Circle Object)">
-    <param name="Local" value="Smax_Property_(Mohr_Circle_Object).htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="Special Note For Visual Basic Class Authors">
     <param name="Name" value="Special Notes For Visual Basic Class Authors">
     <param name="Local" value="StrStorage\Special_Notes_For_Visual_Basic_Class_Authors.htm">
@@ -360,10 +290,4 @@
   <li><object type="text/sitemap">
     <param name="Name" value="IStructuredStorage">
   </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="ComputeSxy Method">
-    <param name="Name" value="ComputeSxy Method (Mohr Circle Object)">
-    <param name="Local" value="ComputeSxy_Method_(Mohr_Circle_Object).htm">
-  </object>
-</ul>
-</html>
+  

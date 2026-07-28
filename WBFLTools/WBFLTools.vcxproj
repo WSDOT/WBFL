@@ -223,7 +223,6 @@
     <ClCompile Include="LngArray.cpp" />
     <ClCompile Include="LogContext.cpp" />
     <ClCompile Include="LogFile.cpp" />
-    <ClCompile Include="MohrCircle.cpp" />
     <ClCompile Include="ProgressMonitorDlg.cpp" />
     <ClCompile Include="ProgressMonitorWindow.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -246,7 +245,6 @@
     <None Include="IndexArray.rgs" />
     <None Include="LngArray.rgs" />
     <None Include="LogFile.rgs" />
-    <None Include="MohrCircle.rgs" />
     <None Include="ProgressMonitor.rgs" />
     <None Include="ProgressMonitorWindow.rgs" />
     <None Include="StrLoad.rgs" />
@@ -296,7 +294,6 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
     <ClInclude Include="LegalWizStep2.h" />
     <ClInclude Include="LngArray.h" />
     <ClInclude Include="LogFile.h" />
-    <ClInclude Include="MohrCircle.h" />
     <ClInclude Include="ProgressMonitorDlg.h" />
     <ClInclude Include="ProgressMonitorWindow.h" />
     <ClInclude Include="Resource.h" />

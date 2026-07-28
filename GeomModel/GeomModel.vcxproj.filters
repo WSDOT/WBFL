@@ -216,7 +216,7 @@
     <ClInclude Include="..\Include\GeomModel\SectionComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MohrCircle.h">
+    <ClInclude Include="..\Include\GeomModel\MohrCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\GeomModel\Arc.h">

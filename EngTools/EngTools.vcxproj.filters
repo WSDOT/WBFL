@@ -4,9 +4,6 @@
     <ClCompile Include="BiaxialBeamStrain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MohrCircle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -58,9 +55,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EngTools\EngToolsLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\EngTools\MohrCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EngTools\PrandtlMembraneSolution.h">

@@ -37,7 +37,6 @@
 
 #include "WBFLTools_i.c"
 #include "ARPNotice.h"
-#include "MohrCircle.h"
 #include "StrSave.h"
 #include "StrLoad.h"
 #include "StructuredSave2.h"
@@ -58,7 +57,6 @@ CComModule _Module;
 
 BEGIN_OBJECT_MAP(ObjectMap)
 OBJECT_ENTRY(CLSID_ARPNotice, CARPNotice)
-OBJECT_ENTRY(CLSID_MohrCircle, CMohrCircle)
 OBJECT_ENTRY(CLSID_StructuredSave, CStrSave)
 OBJECT_ENTRY(CLSID_StructuredLoad, CStrLoad)
 OBJECT_ENTRY(CLSID_StructuredSave2, CStructuredSave2)

@@ -297,7 +297,7 @@
     <ClInclude Include="..\Include\GeomModel\VoidedSlab2.h" />
     <ClInclude Include="..\Include\GeomModel\XGeometry.h" />
     <ClInclude Include="Helpers.h" />
-    <ClInclude Include="MohrCircle.h" />
+    <ClInclude Include="..\Include\GeomModel\MohrCircle.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>

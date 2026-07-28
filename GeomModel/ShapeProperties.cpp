@@ -24,7 +24,7 @@
 #include <GeomModel/GeomModelLib.h>
 #include <GeomModel/ShapeProperties.h>
 
-#include "MohrCircle.h"
+#include <GeomModel/MohrCircle.h>
 #include <MathEx.h>
 #include <iostream>
 

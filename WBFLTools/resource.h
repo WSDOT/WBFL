@@ -33,7 +33,6 @@
 #define IDR_ARPNOTICE                   102
 #define IDS_E_OPENING_FILE              102
 #define IDS_STRLOAD_E_CANTOPEN          102
-#define IDR_MOHRCIRCLE                  103
 #define IDS_E_BEGIN_END_UNIT_MISMATCH   103
 #define IDR_STRUCTUREDSAVE2             104
 #define IDS_E_BAD_WRITE                 104

@@ -28,7 +28,6 @@
 
 #include "stdafx.h"
 
-#include "TestMohrCircle.h"
 #include "TestStructuredStorage2.h"
 
 #include <initguid.h>
@@ -68,7 +67,6 @@ int main(int argc, LPTSTR  argv[])
 {
    ::CoInitialize(nullptr);
 
-   CTestMohrCircle::Test();
    CTestStructuredStorage2::Test();
    
    ::CoUninitialize();

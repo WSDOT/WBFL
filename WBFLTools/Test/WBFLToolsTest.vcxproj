@@ -201,13 +201,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Test.cpp" />
-    <ClCompile Include="TestMohrCircle.cpp" />
     <ClCompile Include="TestStructuredStorage2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="StorageTest\PCompositeShape.h" />
-    <ClInclude Include="TestMohrCircle.h" />
     <ClInclude Include="TestStructuredStorage2.h" />
   </ItemGroup>
   <ItemGroup>

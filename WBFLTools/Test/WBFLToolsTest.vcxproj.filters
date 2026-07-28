@@ -7,9 +7,6 @@
     <ClCompile Include="Test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestMohrCircle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestStructuredStorage2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -19,9 +16,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestMohrCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestStructuredStorage2.h">

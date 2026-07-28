@@ -30,7 +30,7 @@
 #include <GeomModel/LineSegment2d.h>
 #include <GeomModel/Circle2d.h>
 #include <MathEx.h>
-#include "MohrCircle.h"
+#include <GeomModel/MohrCircle.h>
 
 using namespace WBFL::Geometry;
 

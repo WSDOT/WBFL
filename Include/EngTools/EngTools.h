@@ -28,7 +28,6 @@
 #endif
 
 #include <EngTools/BiaxialBeamStrain.h>
-#include <EngTools/MohrCircle.h>
 #include <EngTools/Bearing.h>
 #include <EngTools/BearingLoads.h>
 #include <EngTools/BearingCalculator.h>

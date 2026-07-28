@@ -3,26 +3,9 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-// This test class tests the internal MohrCircle from the GeomModel DLL
-// This class is not exported so it is a little more complicated to test
-// The following was done to set up the testing
-// 1. Added the MohrCircle.obj file to the project
-//    See https://learn.microsoft.com/en-us/visualstudio/test/how-to-write-unit-tests-for-cpp-dlls?view=vs-2022#objectRef
-//    "To link the tests to the object or library files"
-// 2. This created an LNK2011 error.
-//    https://learn.microsoft.com/en-us/cpp/error-messages/tool-errors/linker-tools-error-lnk2011
-//    The solution was to also link to main.obj, which is generated with the precompiled header information
-// 3. This created LNK2005 and LNK1169 errors
-//    https://learn.microsoft.com/en-us/cpp/error-messages/tool-errors/linker-tools-error-lnk1169
-//    The solution was to use the /FORCE:MULTIPLE option on the linker
-//    There are still LNK4006 warnings, but they seem to be incidental
-//
-// To see the linker settings, Right click on GeomModelUnitTests project and select Properties.
-// Configuration Properties > Linker > General > Additional Library Directories: Added $(ARPDIR)\WBFL\GeomModel\$(Platform)\$(Configuration)
-// Configuration Properties > Linker > Input > Additional Dependencies: Added main.obj;MohrCircle.obj
-// Configuraiton Properties > Linker > Command Line: Added /FORCE:MULTIPLE
+#include <GeomModel/MohrCircle.h>
 
-#include "..\GeomModel\MohrCircle.h"
+using namespace WBFL::Geometry;
 
 namespace GeomModelUnitTests
 {
@@ -139,6 +122,33 @@ namespace GeomModelUnitTests
          Assert::AreEqual(c9.GetSmax(), 15.45, 0.1);
          Assert::AreEqual(c9.GetSmin(), 1.897, 0.1);
          Assert::AreEqual(c9.GetPrincipalDirection(), ToRadians(-37.7), 0.1);
+      }
+
+      TEST_METHOD(Test10)
+      {
+         // Ported from the former WBFLTools COM MohrCircle test suite
+         MohrCircle c10(12, 4, 3);
+         Assert::AreEqual(c10.GetCenter(), 8.0, 0.001);
+         Assert::AreEqual(c10.GetRadius(), 5.0, 0.001);
+         Assert::AreEqual(c10.GetSmax(), 13.0, 0.001);
+         Assert::AreEqual(c10.GetSmin(), 3.0, 0.001);
+         Assert::AreEqual(c10.GetTmax(), 5.0, 0.001);
+         Assert::AreEqual(c10.GetPrincipalDirection(), ToRadians(18.43), 0.02);
+
+         Float64 sii, sjj, sij;
+         std::tie(sii, sjj, sij) = c10.ComputeState(ToRadians(15.0));
+         Assert::AreEqual(sii, 12.964, 0.002);
+         Assert::AreEqual(sjj, 3.036, 0.002);
+         Assert::AreEqual(sij, 0.598, 0.002);
+      }
+
+      TEST_METHOD(Test11)
+      {
+         // Ported from the former WBFLTools COM MohrCircle test suite.
+         // Special case: zero radius (Sii == Sjj, Sij == 0) - principal direction is defined to be 0.
+         MohrCircle c11(10, 10, 0);
+         Assert::AreEqual(c11.GetRadius(), 0.0, 0.001);
+         Assert::AreEqual(c11.GetPrincipalDirection(), 0.0, 0.001);
       }
 	};
 }

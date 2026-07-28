@@ -31,9 +31,6 @@
     <ClCompile Include="LngArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MohrCircle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ProgressMonitorDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -97,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LngArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MohrCircle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ProgressMonitorDlg.h">
@@ -172,9 +166,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="LngArray.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="MohrCircle.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ProgressMonitor.rgs">

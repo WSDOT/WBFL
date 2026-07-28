@@ -680,13 +680,6 @@
    </file>
    <file name="WBFLTools.dll"
          hashalg="SHA1">
-      <comClass clsid="{E590D201-FF47-11D2-8CDF-F43C3928A334}"
-                tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
-                description="MohrCircle Class"
-                threadingModel="Apartment"
-                progid="Geometry.MohrCircle">
-         <progid>Geometry.MohrCircle.1</progid>
-      </comClass>
       <comClass clsid="{27F9E280-7102-11D3-89BB-006097C68A9C}"
                 tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                 description="ARPNotice Class"

@@ -383,88 +383,6 @@ library WBFLTools
       );
    };
 
-   /// Mohr's circle computations
-   ///
-   /// Mohr's circle equations
-   /// \f[ Center = \left( \frac{\sigma_{ii} + \sigma_{jj}}{2} \right) \f]
-   /// \f[ Radius = \sqrt{ \left( \frac{\sigma_{ii} - \sigma_{jj}}{2} \right)^2 + \sigma_{ij}^2} \f]
-   /// \f[ \sigma_{Max/Min} = \left( \frac{\sigma_{ii} + \sigma_{jj}}{2} \right) \pm \sqrt{ \left( \frac{\sigma_{ii} - \sigma_{jj}}{2} \right)^2 + \sigma_{ij}^2} \f]
-   /// \f[ \tan{2\theta_p} = \frac{2\sigma_{ij}}{\sigma_{ii} - \sigma_{jj}} \f]
-   ///
-   /// Stress Transformations
-   /// \f[ \sigma_{xx} = \frac{\sigma_{ii} + \sigma_{jj}}{2} + \frac{\sigma_{ii} - \sigma_{jj}}{2}\cos{2\theta} + \sigma_{ij}\sin{2\theta} \f]
-   /// \f[ \sigma_{xy} = -\frac{\sigma_{ii} - \sigma_{jj}}{2}\sin{2\theta} + \sigma_{ij}\cos{2\theta} \f]
-   /// \f[ \sigma_{xx} + \sigma_{yy} = \sigma_{ii} + \sigma_{jj} \f]
-   ///
-   /// Strain Transformations
-   /// \f[ \epsilon_{xx} = \frac{\epsilon_{ii} + \epsilon_{jj}}{2} + \frac{\epsilon_{ii} - \epsilon_{jj}}{2}\cos{2\theta} + \frac{\epsilon_{ij}}{2}\sin{2\theta} \f]
-   /// \f[ \frac{\epsilon_{xy}}{2} = -\frac{\epsilon_{ii} - \epsilon_{jj}}{2}\sin{2\theta} + \frac{\epsilon_{ij}}{2}\cos{2\theta} \f]
-   /// \f[ \epsilon_{xx} + \epsilon_{yy} = \epsilon_{ii} + \epsilon_{jj} \f]
-   ///
-   /// Inertial Transformations
-   /// \f[ I_{xx} = \frac{I_{ii} + I_{jj}}{2} + \frac{I_{ii} - I_{jj}}{2}\cos{2\theta} + I_{ij}\sin{2\theta} \f]
-   /// \f[ I_{xy} = -\frac{I_{ii} - I_{jj}}{2}\sin{2\theta} + I_{ij}\cos{2\theta} \f]
-   /// \f[ I_{xx} + I_{yy} = I_{ii} + I_{jj} \f]
-   ///
-   /// \note For strains transformations, you must divide the shearing strain by 2.0 before using. Computing shear strains must be multipled by 2.0
-   [
-		object,
-		uuid(E590D200-FF47-11D2-8CDF-F43C3928A334),
-		oleautomation,
-		helpstring("IMohrCircle Interface"),
-		pointer_default(unique)
-	]
-	interface IMohrCircle : IUnknown
-	{
-      /// Stress in the "i" direction
-		[propget, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([out, retval] Float64 *sii);
-		[propput, helpcontext(IDH_MohrCircle_Sii),helpstring("property Sii")] HRESULT Sii([in] Float64 sii);
-
-      /// Stress in the "j" direction
-		[propget, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([out, retval] Float64 *sjj);
-		[propput, helpcontext(IDH_MohrCircle_Sjj),helpstring("property Sjj")] HRESULT Sjj([in] Float64 sjj);
-
-      /// Shear stress
-		[propget, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([out, retval] Float64 *sij);
-		[propput, helpcontext(IDH_MohrCircle_Sij),helpstring("property Sij")] HRESULT Sij([in] Float64 sij);
-
-      /// Normal stress the corresponds to the center of the circle
-		[propget, helpcontext(IDH_MohrCircle_Center),helpstring("property Center")] HRESULT Center([out, retval] Float64 *center);
-
-      /// Radius of the circle
-		[propget, helpcontext(IDH_MohrCircle_Radius),helpstring("property Radius")] HRESULT Radius([out, retval] Float64 *radius);
-
-      /// Direction of the principle axes. The direction is measured counter-clockwise from the positive i direction, in radians.
-		[propget, helpcontext(IDH_MohrCircle_PrincipleDirection),helpstring("property PrincipleDirection")] HRESULT PrincipleDirection([out, retval] Float64 *dir);
-
-      /// Maximum principle normal stress
-		[propget, helpcontext(IDH_MohrCircle_Smax),helpstring("property Smax")] HRESULT Smax([out, retval] Float64 *Smax);
-
-      /// Minimum principle normal stress
-      [propget, helpcontext(IDH_MohrCircle_Smin),helpstring("property Smin")] HRESULT Smin([out, retval] Float64 *Smin);
-
-      /// Maximum shear stress
-      [propget, helpcontext(IDH_MohrCircle_Tmax),helpstring("property Tmax")] HRESULT Tmax([out, retval] Float64 *Tmax);
-
-      /// Computes the state of stress at a given angle
-		[helpcontext(IDH_MohrCircle_ComputeState),helpstring("method ComputeState")] 
-      HRESULT ComputeState(
-         [in] Float64 angle, ///< angle of stress plane
-         [out] Float64* S11, ///< normal stress in direction 1
-         [out] Float64* S22, ///< normal stress in direction 2
-         [out] Float64* S12 ///< shear stress
-      );
-
-      /// Computes the normal stress in the X-direction for the specified orientation of the stress plane.
-		[helpcontext(IDH_MohrCircle_ComputeSxx),helpstring("method ComputeSxx")] HRESULT ComputeSxx([in] Float64 angle,[out,retval]Float64* sxx);
-
-      /// Computes the shear stress for the specified orientation of the stress plane.
-      [helpcontext(IDH_MohrCircle_ComputeSxy),helpstring("method ComputeSxy")] HRESULT ComputeSxy([in] Float64 angle,[out,retval]Float64* sxy);
-
-      /// Computes the normal stress in the Y-direction for the specified orientation of the stress plane.
-      [helpcontext(IDH_MohrCircle_ComputeSyy),helpstring("method ComputeSyy")] HRESULT ComputeSyy([in] Float64 angle,[out,retval]Float64* syy);
-	};
-
    /// Alternate Route Project license notification tool.
    ///
    /// This object is a Wizard that displays the Alternate Route Project license and disclaimers to the user of an Alternate Route Project application. If you develop an Alternate Route Project application, we ask that you use this object to display the license notice whenever the program starts.
@@ -1278,18 +1196,6 @@ library WBFLTools
       HRESULT Reserve([in]IndexType count);
    };
 
-
-   /// A Mohr's Circle object.
-   /// Implements the IMohrCircle interface
-   [
-		uuid(E590D201-FF47-11D2-8CDF-F43C3928A334),
-      helpcontext(IDH_MohrCircle),
-		helpstring("MohrCircle Class")
-	]
-	coclass MohrCircle
-	{
-		[default] interface IMohrCircle;
-	};
 
    /// Alternate Route Project license notification tool.
    ///

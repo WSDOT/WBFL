@@ -102,7 +102,6 @@ IDR_DISCLAIMER          TEXT                    "Disclaimer.txt"
 //
 
 IDR_ARPNOTICE           REGISTRY                "ARPNotice.rgs"
-IDR_MOHRCIRCLE          REGISTRY                "MohrCircle.rgs"
 IDR_STRLOAD             REGISTRY                "StrLoad.rgs"
 IDR_STRSAVE             REGISTRY                "StrSave.rgs"
 IDR_STRUCTUREDSAVE2     REGISTRY                "StructuredSave2.rgs"
