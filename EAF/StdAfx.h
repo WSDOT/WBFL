@@ -73,7 +73,10 @@ extern CComModule _Module;
 // #import is not compatible with the /MP compiler option
 // https://devblogs.microsoft.com/cppblog/recommendations-to-speed-c-builds-in-visual-studio/ recommends moving
 // #import directives into the PCH
+#pragma warning(push)
+#pragma warning(disable: 4192 4278) // benign: mshtml.tlb redeclares types/macros already defined by windows.h/afxwin.h
 #import <mshtml.tlb>
+#pragma warning(pop)
 
 
 //{{AFX_INSERT_LOCATION}}

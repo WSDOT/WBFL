@@ -111,7 +111,6 @@
       <AllowIsolation>true</AllowIsolation>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <OptimizeReferences>false</OptimizeReferences>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -179,7 +178,6 @@
       <OptimizeReferences>false</OptimizeReferences>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <ForceFileOutput>MultiplyDefinedSymbolOnly</ForceFileOutput>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>

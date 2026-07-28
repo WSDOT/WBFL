@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -310,7 +310,7 @@ std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
    auto result = m_pBroker->AddAgent(m_pDocProxyAgent);
    if (result.first == false)
    {
-      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
       result.second.component.dll = AfxGetApp()->m_pszExeName;
       result.second.reason += _T(" - could not add EAFDocProxyAgent to broker");
       errors.push_back(result.second);
@@ -319,7 +319,7 @@ std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
    result = m_pBroker->LoadAgent(CLSID_SysAgent);
    if (result.first == false)
    {
-      AFX_MANAGE_STATE(AfxGetStaticModuleState());
+      AFX_MANAGE_STATE(AfxGetAppModuleState());
       result.second.component.dll = AfxGetApp()->m_pszExeName;
       result.second.reason += _T(" - could not add System Agent to broker");
       errors.push_back(result.second);
@@ -332,7 +332,7 @@ std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
       auto result = m_pBroker->AddAgent(graph_manager_agent);
       if(result.first == false)
       {
-         AFX_MANAGE_STATE(AfxGetStaticModuleState());
+         AFX_MANAGE_STATE(AfxGetAppModuleState());
          result.second.component.dll = AfxGetApp()->m_pszExeName;
          result.second.reason += _T(" - could not add GraphManagerAgent to broker");
          errors.push_back(result.second);
@@ -346,7 +346,7 @@ std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
       auto result = m_pBroker->AddAgent(report_manager_agent);
       if (result.first == false)
       {
-         AFX_MANAGE_STATE(AfxGetStaticModuleState());
+         AFX_MANAGE_STATE(AfxGetAppModuleState());
          result.second.component.dll = AfxGetApp()->m_pszExeName;
          result.second.reason += _T(" - could not add ReportManagerAgent to broker");
          errors.push_back(result.second);
