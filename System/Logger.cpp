@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -50,7 +50,9 @@ std::string get_time()
 {
    std::ostringstream os;
    time_t now = time(nullptr);
-   os << std::put_time(localtime(&now), "%F %T");
+   std::tm tm{};
+   localtime_s(&tm, &now);
+   os << std::put_time(&tm, "%F %T");
    return os.str();
 }
 
