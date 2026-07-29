@@ -1779,42 +1779,93 @@ library WBFLGenericBridge
    ]
    interface ILinearCrossBeam : ICrossBeam
    {
-      [propput, helpstring("property H1")] HRESULT H1([in]Float64 H1);
-      [propget, helpstring("property H1")] HRESULT H1([out,retval]Float64* pH1);
+	  // Depth at left end of cross beam
+      [propput, helpstring("property H1L")] HRESULT H1L([in]Float64 H1L);
+	  [propget, helpstring("property H1L")] HRESULT H1L([out, retval]Float64* pH1L);
 
-      [propput, helpstring("property H2")] HRESULT H2([in]Float64 H2);
-      [propget, helpstring("property H2")] HRESULT H2([out,retval]Float64* pH2);
+	  // Depth at right end of cross beam
+      [propput, helpstring("property H1R")] HRESULT H1R([in]Float64 H1R);
+      [propget, helpstring("property H1R")] HRESULT H1R([out,retval]Float64* pH1R);
 
-      [propput, helpstring("property H3")] HRESULT H3([in]Float64 H3);
-      [propget, helpstring("property H3")] HRESULT H3([out,retval]Float64* pH3);
+	  // Depth of upper cross-beam
+      [propput, helpstring("property HU")] HRESULT HU([in]Float64 HU);
+      [propget, helpstring("property HU")] HRESULT HU([out,retval]Float64* pHU);
 
-      [propput, helpstring("property H4")] HRESULT H4([in]Float64 H4);
-      [propget, helpstring("property H4")] HRESULT H4([out,retval]Float64* pH4);
+	  // Edge taper length at left end of cross beam
+      [propput, helpstring("property X1L")] HRESULT X1L([in]Float64 X1L);
+      [propget, helpstring("property X1L")] HRESULT X1L([out,retval]Float64* pX1L);
 
-      [propput, helpstring("property H5")] HRESULT H5([in]Float64 H4);
-      [propget, helpstring("property H5")] HRESULT H5([out,retval]Float64* pH4);
+	  // Edge taper length at right end of cross beam
+      [propput, helpstring("property X1R")] HRESULT X1R([in]Float64 X1R);
+      [propget, helpstring("property X1R")] HRESULT X1R([out,retval]Float64* pX1R);
 
-      [propput, helpstring("property X1")] HRESULT X1([in]Float64 X1);
-      [propget, helpstring("property X1")] HRESULT X1([out,retval]Float64* pX1);
-
-      [propput, helpstring("property X2")] HRESULT X2([in]Float64 X2);
-      [propget, helpstring("property X2")] HRESULT X2([out,retval]Float64* pX2);
-
-      [propput, helpstring("property X3")] HRESULT X3([in]Float64 X3);
-      [propget, helpstring("property X3")] HRESULT X3([out,retval]Float64* pX3);
-
-      [propput, helpstring("property X4")] HRESULT X4([in]Float64 X4);
-      [propget, helpstring("property X4")] HRESULT X4([out,retval]Float64* pX4);
-
+	  // Lower cross beam width
       [propput, helpstring("property W1")] HRESULT W1([in]Float64 W1);
       [propget, helpstring("property W1")] HRESULT W1([out,retval]Float64* pW1);
 
+	  // Upper cross beam width
       [propput, helpstring("property W2")] HRESULT W2([in]Float64 W2);
       [propget, helpstring("property W2")] HRESULT W2([out,retval]Float64* pW2);
 
-      [propput, helpstring("property R")] HRESULT R([in]Float64 R);
-      [propget, helpstring("property R")] HRESULT R([out,retval]Float64* pR);
    };
+
+   [
+	   object,
+	   uuid(12131C9A-EA5A-4570-854E-6FDE055CD12F),
+	   oleautomation,
+	   helpstring("IBasicCrossBeam Interface"),
+	   pointer_default(unique)
+   ]
+   interface IBasicCrossBeam : ILinearCrossBeam
+   {
+	   // Bottom surface taper depth at left end of cross beam
+	   [propput, helpstring("property H2L")] HRESULT H2L([in]Float64 H2L);
+	   [propget, helpstring("property H2L")] HRESULT H2L([out, retval]Float64* pH2L);
+
+	   // Bottom surface taper depth at right end of cross beam
+	   [propput, helpstring("property H2R")] HRESULT H2R([in]Float64 H2R);
+	   [propget, helpstring("property H2R")] HRESULT H2R([out, retval]Float64* pH2R);
+
+	   // Bottom surface taper length at left end of cross beam
+	   [propput, helpstring("property X2L")] HRESULT X2L([in]Float64 X2L);
+	   [propget, helpstring("property X2L")] HRESULT X2L([out, retval]Float64* pX2L);
+
+	   // Bottom surface taper length at right end of cross beam
+	   [propput, helpstring("property X2R")] HRESULT X2R([in]Float64 X2R);
+	   [propget, helpstring("property X2R")] HRESULT X2R([out, retval]Float64* pX2R);
+   }
+
+   //[
+	  // object,
+	  // uuid(),
+	  // oleautomation,
+	  // helpstring("IScallopedCrossBeam Interface"),
+	  // pointer_default(unique)
+   //]
+   //interface IScallopedCrossBeam : ILinearCrossBeam
+   //{
+	  // [propput, helpstring("property R")] HRESULT R([in]Float64 R);
+	  // [propget, helpstring("property R")] HRESULT R([out, retval]Float64* pR);
+
+	  // [propput, helpstring("property D")] HRESULT D([in]Float64 D);
+	  // [propget, helpstring("property D")] HRESULT D([out, retval]Float64* pD);
+   //}
+
+   //[
+	  // object,
+	  // uuid(76F9F59F-F4E4-45AC-A48E-DFB14A4BAE1D),
+	  // oleautomation,
+	  // helpstring("IPointDefinedCrossBeam Interface"),
+	  // pointer_default(unique)
+   //]
+   //interface IPointDefinedCrossBeam : ILinearCrossBeam
+   //{
+	  // /// Sets the points with a collection of Point2d objects to the polygon
+	  // [helpstring("method SetPoints"), helpcontext(IDH_IPolyShape_AddPoints)]
+	  // HRESULT SetPoints(
+		 //  [in] IPoint2dCollection* pPoints ///< the points in the collection define the polygon
+	  // );
+   //}
 
    [
 		object,
@@ -2792,13 +2843,13 @@ library WBFLGenericBridge
 		[default] interface IBearingLayout;
 	};
 	[
-		uuid(0ABE6940-BC27-4E91-8FF0-5A1CD2243153),
+		uuid(B817D7C1-2AA6-407A-943D-9134D7185439),
       noncreatable,
-      helpstring("LinearCrossBeam Class")
+      helpstring("BasicCrossBeam Class")
 	]
-	coclass LinearCrossBeam
+	coclass BasicCrossBeam
 	{
-		[default] interface ILinearCrossBeam;
+		[default] interface IBasicCrossBeam;
 	};
 	[
 		uuid(6AF46A10-C19E-438F-B69D-8AB743748CED),

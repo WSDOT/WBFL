@@ -1245,9 +1245,9 @@
      <comClass clsid="{C86CAC8A-4986-4234-8E44-7C77561BCD6B}"
           tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
           description="BearingLayout Class"></comClass>
-     <comClass clsid="{0ABE6940-BC27-4E91-8FF0-5A1CD2243153}"
+     <comClass clsid="{B817D7C1-2AA6-407A-943D-9134D7185439}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
-                description="LinearCrossBeam Class"></comClass>
+                description="BasicCrossBeam Class"></comClass>
       <comClass clsid="{6AF46A10-C19E-438F-B69D-8AB743748CED}"
                 tlbid="{44ECDFCD-A740-4B05-8139-7AB55E18AA92}"
                 description="Pier Class"></comClass>

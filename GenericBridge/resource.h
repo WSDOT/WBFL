@@ -50,8 +50,8 @@
 #define IDR_POINTOFINTERESTCOLLECTION   123
 #define IDR_COLUMN                      125
 #define IDR_COLUMNCOLLECTION            126
-#define IDR_COLUMNLAYOUT               127
-#define IDR_LINEARCROSSBEAM                   128
+#define IDR_COLUMNLAYOUT                127
+#define IDR_BASICCROSSBEAM              128
 #define IDR_TRANSVERSEPIERDESCRIPTION   129
 #define IDR_POINTLOAD                   130
 #define IDR_FSHAPEBARRIER               131

@@ -73,7 +73,7 @@
     <ClCompile Include="ItemDataManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LinearCrossBeam.cpp">
+    <ClCompile Include="BasicCrossBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LinearTendonSegment.cpp">
@@ -294,7 +294,7 @@
     <ClInclude Include="ItemDataManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinearCrossBeam.h">
+    <ClInclude Include="BasicCrossBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LinearTendonSegment.h">
@@ -534,7 +534,7 @@
     <None Include="GirderSpacing.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="LinearCrossBeam.rgs">
+    <None Include="BasicCrossBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="LinearTendonSegment.rgs">

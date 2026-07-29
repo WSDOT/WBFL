@@ -268,7 +268,7 @@
     <ClCompile Include="GenericBridgeImpl.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="ItemDataManager.cpp" />
-    <ClCompile Include="LinearCrossBeam.cpp" />
+    <ClCompile Include="BasicCrossBeam.cpp" />
     <ClCompile Include="LinearTendonSegment.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MultiWebSection.cpp" />
@@ -351,7 +351,7 @@
     <None Include="GenericBridge.def" />
     <None Include="GenericBridge.rgs" />
     <None Include="GirderSpacing.rgs" />
-    <None Include="LinearCrossBeam.rgs" />
+    <None Include="BasicCrossBeam.rgs" />
     <None Include="LinearTendonSegment.rgs" />
     <None Include="Material.rgs" />
     <None Include="MultiWebSection.rgs" />
@@ -445,7 +445,7 @@
     <ClInclude Include="GenericBridgeImpl.h" />
     <ClInclude Include="GirderSections.h" />
     <ClInclude Include="ItemDataManager.h" />
-    <ClInclude Include="LinearCrossBeam.h" />
+    <ClInclude Include="BasicCrossBeam.h" />
     <ClInclude Include="LinearTendonSegment.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="MultiWebSection.h" />

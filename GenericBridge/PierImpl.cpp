@@ -96,9 +96,9 @@ Float64 CPierImpl::GetDelta()
       m_Delta = Xcl - Xxb; // Xxb + delta = Xcl
       m_Delta = IsZero(m_Delta) ? 0 : m_Delta;
 
-      CComQIPtr<ILinearCrossBeam> cb(m_CrossBeam);
+      CComQIPtr<IBasicCrossBeam> cb(m_CrossBeam);
       Float64 X2;
-      cb->get_X2(&X2);
+      cb->get_X1L(&X2);
       m_Delta += X2;
 
       m_bIsDirty = false;
