@@ -13,6 +13,13 @@
     <Link>
       <AdditionalLibraryDirectories>$(ARPDIR)\WBFL\RegFreeCOM\$(PlatformName)\$(ConfigurationName)</AdditionalLibraryDirectories>
     </Link>
+    <Midl>
+      <!-- Every .idl in this solution transitively imports WBFLPrimitiveTypes.h (via WBFLTypes.idl).
+           MIDL_PASS hides that header's C++-only regions (using-declarations, inline functions, a
+           couple of typedefs MIDL can't parse) from MIDL's own parser while leaving them visible to
+           normal C++ compiles. Defined here, once, so every project's Midl step picks it up. -->
+      <PreprocessorDefinitions>MIDL_PASS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

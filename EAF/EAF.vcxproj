@@ -205,10 +205,6 @@
       <Project>{46e8a2d3-73e4-4300-a27c-f186444b198e}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\WBFLTypes\WBFLTypes.vcxproj">
-      <Project>{b8cdd36e-37ab-484a-953b-864a2a431147}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />

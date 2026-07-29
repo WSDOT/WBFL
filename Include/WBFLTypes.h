@@ -22,47 +22,13 @@
 ///////////////////////////////////////////////////////////////////////
 #pragma once
 
-#if defined VBA_BUILD
-#if defined _WIN64
+#include <WBFLPrimitiveTypes.h>
 
-#if defined _DEBUG
-#include <x64\VBA_Debug\_WBFLTypes.h>
-#else // _DEBUG
-#include <x64\VBA_Release\_WBFLTypes.h>
-#endif // _DEBUG
-
-#else // _WIN64
-
-#if defined _DEBUG
-#include <Win32\VBA_Debug\_WBFLTypes.h>
-#else // _DEBUG
-#include <Win32\VBA_Release\_WBFLTypes.h>
-#endif // _DEBUG
-
-#endif // _WIN64
-
-#else // VBA_BUILD
-
-#if defined _WIN64
-
-#if defined _DEBUG
-#include <x64\Debug\_WBFLTypes.h>
-#else
-#include <x64\Release\_WBFLTypes.h>
-#endif
-
-#else
-
-#if defined _DEBUG
-#include <Win32\Debug\_WBFLTypes.h>
-#else
-#include <Win32\Release\_WBFLTypes.h>
-#endif
-
-#endif // _WIN64
-
-#endif // VBA_BUILD
-
+// Previously reached transitively via the MIDL-generated _WBFLTypes.h's #include of
+// rpc.h (which unconditionally pulls in windows.h). WBFLPrimitiveTypes.h no longer
+// goes through MIDL/rpc.h for a plain C++ compile, so this is included explicitly
+// here to preserve that behavior for the many consumers that relied on it.
+#include <windows.h>
 
 #include <algorithm>
 #include <utility>

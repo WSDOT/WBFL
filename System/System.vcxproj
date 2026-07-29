@@ -265,12 +265,6 @@
     <ClInclude Include="..\Include\WBFLDebug.h" />
     <ClInclude Include="..\Include\WbflTypes.h" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WBFLTypes\WBFLTypes.vcxproj">
-      <Project>{b8cdd36e-37ab-484a-953b-864a2a431147}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
