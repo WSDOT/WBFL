@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.PointDefinedCrossBeam.1 = s 'PointDefinedCrossBeam Class'
+	{
+		CLSID = s '{1CB1FC11-8A5B-4AB4-826D-6F1352F5EAEE}'
+	}
+	WBFLGenericBridge.PointDefinedCrossBeam = s 'PointDefinedCrossBeam Class'
+	{
+		CLSID = s '{1CB1FC11-8A5B-4AB4-826D-6F1352F5EAEE}'
+		CurVer = s 'WBFLGenericBridge.PointDefinedCrossBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {1CB1FC11-8A5B-4AB4-826D-6F1352F5EAEE} = s 'PointDefinedCrossBeam Class'
+		{
+			ProgID = s 'WBFLGenericBridge.PointDefinedCrossBeam.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.PointDefinedCrossBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

@@ -1835,37 +1835,36 @@ library WBFLGenericBridge
 	   [propget, helpstring("property X2R")] HRESULT X2R([out, retval]Float64* pX2R);
    }
 
-   //[
-	  // object,
-	  // uuid(),
-	  // oleautomation,
-	  // helpstring("IScallopedCrossBeam Interface"),
-	  // pointer_default(unique)
-   //]
-   //interface IScallopedCrossBeam : ILinearCrossBeam
-   //{
-	  // [propput, helpstring("property R")] HRESULT R([in]Float64 R);
-	  // [propget, helpstring("property R")] HRESULT R([out, retval]Float64* pR);
+   [
+	   object,
+	   uuid(BD5F70BF-EFAB-40C6-BDFF-3AD8DDBA80C2),
+	   oleautomation,
+	   helpstring("IScallopedCrossBeam Interface"),
+	   pointer_default(unique)
+   ]
+   interface IScallopedCrossBeam : ILinearCrossBeam
+   {
+	   [propput, helpstring("property R")] HRESULT R([in]Float64 R);
+	   [propget, helpstring("property R")] HRESULT R([out, retval]Float64* pR);
 
-	  // [propput, helpstring("property D")] HRESULT D([in]Float64 D);
-	  // [propget, helpstring("property D")] HRESULT D([out, retval]Float64* pD);
-   //}
+	   [propput, helpstring("property D")] HRESULT D([in]Float64 D);
+	   [propget, helpstring("property D")] HRESULT D([out, retval]Float64* pD);
+   }
 
-   //[
-	  // object,
-	  // uuid(76F9F59F-F4E4-45AC-A48E-DFB14A4BAE1D),
-	  // oleautomation,
-	  // helpstring("IPointDefinedCrossBeam Interface"),
-	  // pointer_default(unique)
-   //]
-   //interface IPointDefinedCrossBeam : ILinearCrossBeam
-   //{
-	  // /// Sets the points with a collection of Point2d objects to the polygon
-	  // [helpstring("method SetPoints"), helpcontext(IDH_IPolyShape_AddPoints)]
-	  // HRESULT SetPoints(
-		 //  [in] IPoint2dCollection* pPoints ///< the points in the collection define the polygon
-	  // );
-   //}
+   [
+	   object,
+	   uuid(76F9F59F-F4E4-45AC-A48E-DFB14A4BAE1D),
+	   oleautomation,
+	   helpstring("IPointDefinedCrossBeam Interface"),
+	   pointer_default(unique)
+   ]
+   interface IPointDefinedCrossBeam : ILinearCrossBeam
+   {
+	   [helpstring("method SetPoints")]
+	   HRESULT SetPoints(
+		   [in] IPoint2dCollection* pPoints
+	   );
+   }
 
    [
 		object,
@@ -2850,6 +2849,24 @@ library WBFLGenericBridge
 	coclass BasicCrossBeam
 	{
 		[default] interface IBasicCrossBeam;
+	};
+	[
+		uuid(AF50789F-EFCA-423B-AC2C-84165B3AAF19),
+      noncreatable,
+      helpstring("ScallopedCrossBeam Class")
+	]
+	coclass ScallopedCrossBeam
+	{
+		[default] interface IScallopedCrossBeam;
+	};
+	[
+		uuid(1CB1FC11-8A5B-4AB4-826D-6F1352F5EAEE),
+      noncreatable,
+      helpstring("PointDefinedCrossBeam Class")
+	]
+	coclass PointDefinedCrossBeam
+	{
+		[default] interface IPointDefinedCrossBeam;
 	};
 	[
 		uuid(6AF46A10-C19E-438F-B69D-8AB743748CED),

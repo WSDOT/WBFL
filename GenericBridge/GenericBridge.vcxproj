@@ -281,6 +281,7 @@
     <ClCompile Include="Pier.cpp" />
     <ClCompile Include="PierCollection.cpp" />
     <ClCompile Include="PierImpl.cpp" />
+    <ClCompile Include="PointDefinedCrossBeam.cpp" />
     <ClCompile Include="PrecastSlab.cpp" />
     <ClCompile Include="PrestressingStrand.cpp" />
     <ClCompile Include="PrismaticSuperstructureMemberSegment.cpp" />
@@ -291,6 +292,7 @@
     <ClCompile Include="RebarRowPattern.cpp" />
     <ClCompile Include="RebarSection.cpp" />
     <ClCompile Include="RebarSectionItem.cpp" />
+    <ClCompile Include="ScallopedCrossBeam.cpp" />
     <ClCompile Include="Segment.cpp" />
     <ClCompile Include="SegmentItem.cpp" />
     <ClCompile Include="Segments.cpp" />
@@ -366,6 +368,7 @@
     <None Include="PCIDeckedBulbTeeSection.rgs" />
     <None Include="Pier.rgs" />
     <None Include="PierCollection.rgs" />
+    <None Include="PointDefinedCrossBeam.rgs" />
     <None Include="PrecastSlab.rgs" />
     <None Include="PrestressingStrand.rgs" />
     <None Include="PrismaticSuperstructureMemberSegment.rgs" />
@@ -376,6 +379,7 @@
     <None Include="RebarRowPattern.rgs" />
     <None Include="RebarSection.rgs" />
     <None Include="RebarSectionItem.rgs" />
+    <None Include="ScallopedCrossBeam.rgs" />
     <None Include="Segment.rgs" />
     <None Include="SegmentCrossSection.rgs" />
     <None Include="SegmentItem.rgs" />
@@ -458,6 +462,7 @@
     <ClInclude Include="Pier.h" />
     <ClInclude Include="PierCollection.h" />
     <ClInclude Include="PierImpl.h" />
+    <ClInclude Include="PointDefinedCrossBeam.h" />
     <ClInclude Include="PrecastSlab.h" />
     <ClInclude Include="PrestressingStrand.h" />
     <ClInclude Include="PrismaticSuperstructureMemberSegment.h" />
@@ -469,6 +474,7 @@
     <ClInclude Include="RebarSection.h" />
     <ClInclude Include="RebarSectionItem.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ScallopedCrossBeam.h" />
     <ClInclude Include="Segment.h" />
     <ClInclude Include="SegmentItem.h" />
     <ClInclude Include="Segments.h" />
