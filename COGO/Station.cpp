@@ -127,7 +127,7 @@ STDMETHODIMP CStation::AsString(UnitModeType unitMode,VARIANT_BOOL vbIncludeStat
 {
    USES_CONVERSION;
    auto strStation = m_Station.AsString(unitMode == umUS ? WBFL::Units::StationFormats::US : WBFL::Units::StationFormats::SI, vbIncludeStationZone == VARIANT_TRUE);
-   *station = CComBSTR(strStation.c_str());
+   *station = CComBSTR(strStation.c_str()).Detach();
    return S_OK;
 }
 
