@@ -680,13 +680,6 @@
    </file>
    <file name="WBFLTools.dll"
          hashalg="SHA1">
-      <comClass clsid="{27F9E280-7102-11D3-89BB-006097C68A9C}"
-                tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
-                description="ARPNotice Class"
-                threadingModel="Apartment"
-                progid="WBFLTools.ARPNotice">
-         <progid>WBFLTools.ARPNotice.1</progid>
-      </comClass>
       <comClass clsid="{043B36E6-64EE-11D5-B017-00105A9AF985}"
                 tlbid="{B9507D8C-7100-11D3-89BB-006097C68A9C}"
                 description="StructuredSave2 Class"

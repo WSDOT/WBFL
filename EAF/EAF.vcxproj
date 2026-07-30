@@ -252,6 +252,9 @@
     <ClCompile Include="Help.cpp" />
     <ClCompile Include="EAFHelpWindow.cpp" />
     <ClCompile Include="EAFHelpWindowThread.cpp" />
+    <ClCompile Include="EAFLegalNoticeWiz.cpp" />
+    <ClCompile Include="EAFLegalNoticeStep1.cpp" />
+    <ClCompile Include="EAFLegalNoticeStep2.cpp" />
     <ClCompile Include="EAFLicensePlateChildFrame.cpp" />
     <ClCompile Include="MacroTxn.cpp" />
     <ClCompile Include="EAFMainFrame.cpp" />
@@ -304,6 +307,11 @@
     <None Include="res\Working.avi" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="res\AROSL.txt" />
+    <Text Include="res\ARLOSL.txt" />
+    <Text Include="res\Disclaimer.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="EAF.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -320,6 +328,9 @@
     <ClInclude Include="..\Include\EAF\EventSinkManager.h" />
     <ClInclude Include="..\Include\EAF\EAF.h" />
     <ClInclude Include="..\Include\EAF\EAFAboutDlg.h" />
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeWiz.h" />
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeStep1.h" />
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeStep2.h" />
     <ClInclude Include="..\Include\EAF\AcceleratorTable.h" />
     <ClInclude Include="..\Include\EAF\EAFApp.h" />
     <ClInclude Include="..\Include\EAF\PluginApp.h" />

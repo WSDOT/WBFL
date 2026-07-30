@@ -141,11 +141,6 @@
     <param name="Local" value="StrStorage\EndOfStorage2.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="Terms">
-    <param name="Name" value="License Agreement">
-    <param name="Local" value="AROSL.htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="Examples">
     <param name="Name" value="Examples">
     <param name="Local" value="Examples.htm">
@@ -161,11 +156,6 @@
     <param name="Local" value="StrStorage\OpenSave.htm">
     <param name="Name" value="Open">
     <param name="Local" value="StrStorage\Open2.htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="ShowAgain Property">
-    <param name="Name" value="ShowAgain Property (ARP Notice Object)">
-    <param name="Local" value="ShowAgain_Property_(ARP_Notice_Object).htm">
   </object>
   <li><object type="text/sitemap">
     <param name="Name" value="Structured Storage Objects">
@@ -238,11 +228,6 @@
     <param name="Local" value="StrStorage\EndUnitSave.htm">
   </object>
   <li><object type="text/sitemap">
-    <param name="Name" value="AcceptanceType">
-    <param name="Name" value="AcceptanceType">
-    <param name="Local" value="AcceptanceType.htm">
-  </object>
-  <li><object type="text/sitemap">
     <param name="Name" value="Support">
     <param name="Name" value="Com objects must support the IPersist interface">
     <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
@@ -263,11 +248,6 @@
     <param name="Name" value="IPersist interface">
     <param name="Name" value="Com objects must support the IPersist interface">
     <param name="Local" value="StrStorage\Com_objects_must_support_the_IPersist_interface.htm">
-  </object>
-  <li><object type="text/sitemap">
-    <param name="Name" value="Disclaimer">
-    <param name="Name" value="Disclaimer">
-    <param name="Local" value="Disclaimer.htm">
   </object>
   <li><object type="text/sitemap">
     <param name="Name" value="BeginUnit">

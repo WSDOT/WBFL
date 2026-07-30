@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="ARPNotice.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BstrArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -17,15 +14,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IndexArray.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LegalWiz.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LegalWizStep1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LegalWizStep2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LngArray.cpp">
@@ -66,9 +54,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ARPNotice.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BstrArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -82,15 +67,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IndexArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LegalWiz.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LegalWizStep1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LegalWizStep2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LngArray.h">
@@ -147,9 +123,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="WBFLTools.def" />
-    <None Include="ARPNotice.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="BstrArray.rgs">
       <Filter>Resource Files</Filter>
     </None>
@@ -192,11 +165,6 @@
     <None Include="LogFile.rgs">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ARLOSL.txt" />
-    <Text Include="AROSL.txt" />
-    <Text Include="Disclaimer.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">

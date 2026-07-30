@@ -74,7 +74,7 @@ BEGIN
             VALUE "FileDescription", "WBFLTools Module"
             VALUE "FileVersion", "9.1.0.1"
             VALUE "InternalName", "WBFLTools"
-            VALUE "LegalCopyright", "Copyright © 1999-2025, Washington State Department of Transportation, All Rights Reserved"
+            VALUE "LegalCopyright", "Copyright ï¿½ 1999-2025, Washington State Department of Transportation, All Rights Reserved"
             VALUE "OriginalFilename", "WBFLTools.DLL"
             VALUE "ProductName", "WBFL"
             VALUE "ProductVersion", "9.1.0.1"
@@ -89,19 +89,9 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// TEXT
-//
-
-IDR_AROSL               TEXT                    "AROSL.txt"
-IDR_ARLOSL              TEXT                    "ARLOSL.txt"
-IDR_DISCLAIMER          TEXT                    "Disclaimer.txt"
-
-/////////////////////////////////////////////////////////////////////////////
-//
 // REGISTRY
 //
 
-IDR_ARPNOTICE           REGISTRY                "ARPNotice.rgs"
 IDR_STRLOAD             REGISTRY                "StrLoad.rgs"
 IDR_STRSAVE             REGISTRY                "StrSave.rgs"
 IDR_STRUCTUREDSAVE2     REGISTRY                "StructuredSave2.rgs"
@@ -120,23 +110,6 @@ IDR_LOGFILE             REGISTRY                "LogFile.rgs"
 //
 // Dialog
 //
-
-IDD_LICENSEWIZ_1 DIALOG  0, 0, 298, 144
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
-CAPTION "License Agreement"
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_LIC_TEXT,7,7,284,130,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL | NOT WS_TABSTOP
-END
-
-IDD_LICENSEWIZ_2 DIALOG  0, 0, 294, 141
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
-CAPTION "Disclaimer"
-FONT 8, "MS Sans Serif"
-BEGIN
-    EDITTEXT        IDC_DISCLAIMER,7,7,280,115,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
-    CONTROL         "Don't show me this again.",IDC_CHECK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,126,280,8
-END
 
 IDD_PROGRESSMONITORDLG DIALOG  0, 0, 186, 92
 STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION

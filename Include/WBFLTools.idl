@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -121,22 +121,6 @@ library WBFLTools
 {
 	importlib("stdole32.tlb");
 	importlib("stdole2.tlb");
-
-   /// Constant defining the license agreement type
-   typedef [public,helpstring("enum LicenseType"),helpcontext(IDH_LicenseType),uuid(AB6DF408-C7B1-11D3-8A1D-006097C68A9C)] 
-   enum 
-   {
-      ltAROSL = 1, ///< Alternate Route Open Source License
-      ltARLOSL = 2 ///< Alternate Route Library Open Source License
-   } LicenseType;
-
-   /// Constant indicating the user's acceptance of the license agreement
-   typedef [public,helpstring("enum AcceptanceType"),helpcontext(IDH_AcceptanceType),uuid(AB6DF409-C7B1-11D3-8A1D-006097C68A9C)] 
-   enum 
-   {
-      atAccept = 1, ///< The user accepts the license agreement
-      atReject = 2  ///< The user rejects the license agreement
-   } AcceptanceType;
 
    /// Interface for loading data that was saved to file storage with IStructuredSave
    [
@@ -382,33 +366,6 @@ library WBFLTools
          [in] DWORD dwCookie ///< a cookie that identifies a log file
       );
    };
-
-   /// Alternate Route Project license notification tool.
-   ///
-   /// This object is a Wizard that displays the Alternate Route Project license and disclaimers to the user of an Alternate Route Project application. If you develop an Alternate Route Project application, we ask that you use this object to display the license notice whenever the program starts.
-   [
-		object,
-		uuid(27F9E27F-7102-11D3-89BB-006097C68A9C),
-		oleautomation,
-		helpstring("IARPNotice Interface"),
-		pointer_default(unique)
-	]
-	interface IARPNotice : IUnknown
-	{
-      /// Displays the Alternate Route Project license notice.
-		[helpcontext(IDH_ArpNotice_Show),helpstring("method Show")] 
-      HRESULT Show(
-         [in] VARIANT_BOOL bGiveChoice, ///< Specifies if the notice should give the user a choice of accepting the license. If VARIANT_TRUE, the last step of the wizard will have an "I Accept" button and a "Cancel", otherwise it will have a "Finish" button.
-         [in] LicenseType lt, ///< Indicates which license to display
-         [out,retval] AcceptanceType* lResult ///< Result indicating the user's acceptance of the license agreement. If lResult is atAccept, the user has accepted the license (the "I Accept" or "Finish" button was pressed). If lResult is atReject, the user has not accepted the license (the "Cancel" button was pressed).
-      );
-
-      /// State of the "Don't show me this again" check box on the Disclaimer page
-      ///
-      /// It is your responsibility to save the state of the "Don't show me this again" check box between uses of this object. This includes saving the state between application runs. The system registry is a good place to save this information.
-		[propget, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([out, retval] VARIANT_BOOL *pVal);
-		[propput, helpcontext(IDH_ArpNotice_ShowAgain),helpstring("property ShowAgain")] HRESULT ShowAgain([in] VARIANT_BOOL newVal);
-	};
 
    /// Interface for objects that provide error logging services.
    ///
@@ -1196,20 +1153,6 @@ library WBFLTools
       HRESULT Reserve([in]IndexType count);
    };
 
-
-   /// Alternate Route Project license notification tool.
-   ///
-   /// This object is a Wizard that displays the Alternate Route Project license and disclaimers to the user of an Alternate Route Project application. If you develop an Alternate Route Project application, we ask that you use this object to display the license notice whenever the program starts.
-   /// Implements the IARPNotice interface.
-   [
-		uuid(27F9E280-7102-11D3-89BB-006097C68A9C),
-		helpcontext(IDH_ArpNotice),
-		helpstring("ARPNotice Class")
-	]
-	coclass ARPNotice
-	{
-		[default] interface IARPNotice;
-	};
 
    /// Object that loads information from file storage that was previous saved with the IStructuredSave interface.
    ///

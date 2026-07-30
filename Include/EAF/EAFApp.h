@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,6 +36,7 @@
 #include <EAF\EAFSplashScreen.h>
 #include <EAF\EAFCommandLineInfo.h>
 #include <EAF\EAFMDISnapper.h>
+#include <EAF\EAFLegalNoticeWiz.h>
 
 #include <WBFLTools.h>
 
@@ -106,7 +107,7 @@ public:
    UINT GetLocalMachineInt(LPCTSTR lpszSection, LPCTSTR lpszEntry,int nDefault);
    CString GetLocalMachineString(LPCTSTR lpszSection, LPCTSTR lpszEntry,LPCTSTR lpszDefault);
 
-   AcceptanceType ShowLegalNoticeAtStartup(void);
+   EAFAcceptanceType ShowLegalNoticeAtStartup(void);
    CString GetAppLocation() const;
 
    std::vector<CString> GetSearchDirectories() const;
@@ -298,8 +299,8 @@ private:
    WBFL::System::Date m_LastRunDate;
 
    // Manages legal notice at application start up
-	AcceptanceType ShowLegalNotice(VARIANT_BOOL bGiveChoice = VARIANT_FALSE);
-   VARIANT_BOOL m_bShowLegalNotice;
+	EAFAcceptanceType ShowLegalNotice(BOOL bGiveChoice = FALSE);
+   BOOL m_bShowLegalNotice;
 
    // Display Units
    void InitDisplayUnits();

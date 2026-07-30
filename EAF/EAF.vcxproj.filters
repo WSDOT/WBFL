@@ -19,6 +19,15 @@
     <ClCompile Include="EAFAboutDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EAFLegalNoticeWiz.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EAFLegalNoticeStep1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EAFLegalNoticeStep2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="AcceleratorTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -289,6 +298,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFAboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeWiz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeStep1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\EAFLegalNoticeStep2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\AcceleratorTable.h">
@@ -669,5 +687,10 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\Working.avi" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\AROSL.txt" />
+    <Text Include="res\ARLOSL.txt" />
+    <Text Include="res\Disclaimer.txt" />
   </ItemGroup>
 </Project>

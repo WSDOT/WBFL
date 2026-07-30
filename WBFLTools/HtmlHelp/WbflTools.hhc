@@ -305,59 +305,6 @@
         </object>
         </ul>
       </ul>
-    <li><object type="text/sitemap">
-      <param name="Name" value="ARP Notice">
-    </object>
-    <ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="ARP Notice">
-        <param name="Local" value="ARP_Notice.htm">
-      </object>
-      <li><object type="text/sitemap">
-        <param name="Name" value="License Agreement">
-        <param name="Local" value="License_Agreement.htm">
-      </object>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Disclaimer">
-        <param name="Local" value="Disclaimer.htm">
-      </object>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Using the Alternate Route Project notice in your Applications">
-        <param name="Local" value="Using_the_Alternate_Route_Project_notice_in_your_Applications.htm">
-      </object>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Properties">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="ShowAgain">
-          <param name="Local" value="ShowAgain_Property_(ARP_Notice_Object).htm">
-        </object>
-        </ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="Methods">
-      </object>
-      <ul>
-        <li><object type="text/sitemap">
-          <param name="Name" value="Show">
-          <param name="Local" value="Show_Method_(ARP_Notice_Object).htm">
-        </object>
-        </ul>
-      </ul>
-    <li><object type="text/sitemap">
-      <param name="Name" value="Constants">
-    </object>
-    <ul>
-      <li><object type="text/sitemap">
-        <param name="Name" value="AcceptanceType">
-        <param name="Local" value="AcceptanceType.htm">
-      </object>
-      <li><object type="text/sitemap">
-        <param name="Name" value="LicenseType">
-        <param name="Local" value="LicenseType.htm">
-      </object>
-      </ul>
-    </ul>
   <li><object type="text/sitemap">
     <param name="Name" value="Progress Monitoring Objects and Interfaces">
     <param name="Local" value="ProgressMonitor\Progress_Monitoring_Objects_and_Interfaces.htm">

@@ -117,14 +117,22 @@
 #define IDR_ANIMATE                     1002
 #define IDC_PROGRESS                    1003
 #define IDC_ANIMATE                     1004
+#define IDR_AROSL                       160
+#define IDR_ARLOSL                      161
+#define IDR_DISCLAIMER                  162
+#define IDD_LICENSEWIZ_1                163
+#define IDD_LICENSEWIZ_2                164
+#define IDC_LIC_TEXT                    1041
+#define IDC_DISCLAIMER                  1042
+#define IDC_CHECK                       1043
 
 // Next default values for new objects
-// 
+//
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        154
+#define _APS_NEXT_RESOURCE_VALUE        165
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           1015
 #endif
 #endif

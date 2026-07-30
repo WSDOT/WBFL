@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFLTools - Utility Tools for the WBFL
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -30,7 +30,6 @@
 #define IDS_PROJNAME                    100
 #define IDS_E_INITIALIZING_THE_PARSER   101
 #define IDS_STRSAVE_E_INITIALIZING_THE_PARSER 101
-#define IDR_ARPNOTICE                   102
 #define IDS_E_OPENING_FILE              102
 #define IDS_STRLOAD_E_CANTOPEN          102
 #define IDS_E_BEGIN_END_UNIT_MISMATCH   103
@@ -68,21 +67,13 @@
 #define IDR_DBLARRAY                    121
 #define IDR_BSTRARRAY                   122
 #define IDR_UNKARRAY                    123
-#define IDR_AROSL                       131
-#define IDR_ARLOSL                      132
 #define IDR_LOGFILE                     133
-#define IDD_LICENSEWIZ_1                133
-#define IDD_LICENSEWIZ_2                134
-#define IDR_DISCLAIMER                  135
 #define IDR_IDARRAY                     136
 #define IDR_INDEXARRAY                  137
 #define IDR_ERRORLOG                    150
 #define IDC_MESSAGE                     201
 #define IDC_PROGRESS1                   202
 #define IDC_CANCEL_PROGRESS             1005
-#define IDC_DISCLAIMER                  1006
-#define IDC_CHECK                       1007
-#define IDC_LIC_TEXT                    1008
 #define IDS_E_BADWRITE                  1512
 #define IDS_E_INVALIDFORMAT             1513
 #define IDS_E_BADREAD                   1514

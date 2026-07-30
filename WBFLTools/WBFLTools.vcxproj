@@ -211,15 +211,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ARPNotice.cpp" />
     <ClCompile Include="BstrArray.cpp" />
     <ClCompile Include="DblArray.cpp" />
     <ClCompile Include="ErrorLog.cpp" />
     <ClCompile Include="IDArray.cpp" />
     <ClCompile Include="IndexArray.cpp" />
-    <ClCompile Include="LegalWiz.cpp" />
-    <ClCompile Include="LegalWizStep1.cpp" />
-    <ClCompile Include="LegalWizStep2.cpp" />
     <ClCompile Include="LngArray.cpp" />
     <ClCompile Include="LogContext.cpp" />
     <ClCompile Include="LogFile.cpp" />
@@ -237,7 +233,6 @@
     <ClCompile Include="WBFLTools.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ARPNotice.rgs" />
     <None Include="BstrArray.rgs" />
     <None Include="DblArray.rgs" />
     <None Include="ErrorLog.rgs" />
@@ -283,15 +278,11 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
     <ClInclude Include="..\Include\WBFLTools\LogContext.h" />
     <ClInclude Include="..\Include\WBFLTools\ComStructuredStorageAdapter.h" />
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h" />
-    <ClInclude Include="ARPNotice.h" />
     <ClInclude Include="BstrArray.h" />
     <ClInclude Include="DblArray.h" />
     <ClInclude Include="ErrorLog.h" />
     <ClInclude Include="IDArray.h" />
     <ClInclude Include="IndexArray.h" />
-    <ClInclude Include="LegalWiz.h" />
-    <ClInclude Include="LegalWizStep1.h" />
-    <ClInclude Include="LegalWizStep2.h" />
     <ClInclude Include="LngArray.h" />
     <ClInclude Include="LogFile.h" />
     <ClInclude Include="ProgressMonitorDlg.h" />
@@ -304,11 +295,6 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
     <ClInclude Include="StructuredSave2.h" />
     <ClInclude Include="ToolsUtils.h" />
     <ClInclude Include="UnkArray.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ARLOSL.txt" />
-    <Text Include="AROSL.txt" />
-    <Text Include="Disclaimer.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -27,21 +27,6 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>Disclaimer.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Show_Method_(ARP_Notice_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ShowAgain_Property_(ARP_Notice_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>ComputeState_Method_(Mohr_Circle_Object).htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
@@ -97,32 +82,12 @@
 			<frameset>0</frameset>
 		</topic>
 		<topic>
-			<name>License_Agreement.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>Using_the_Alternate_Route_Project_notice_in_your_Applications.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
 			<name>Mohr_Circle_Equations.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
 		<topic>
 			<name>Examples.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>AcceptanceType.htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>LicenseType.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>
@@ -143,11 +108,6 @@
 		</topic>
 		<topic>
 			<name>ComputeSxx_Method_(Mohr_Circle_Object).htm</name>
-			<comments></comments>
-			<frameset>0</frameset>
-		</topic>
-		<topic>
-			<name>ARP_Notice.htm</name>
 			<comments></comments>
 			<frameset>0</frameset>
 		</topic>

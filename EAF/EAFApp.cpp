@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -87,7 +87,7 @@ IMPLEMENT_DYNAMIC(CEAFApp, CWinApp)
 CEAFApp::CEAFApp() :
 m_strWindowPlacementFormat("%u,%u,%d,%d,%d,%d,%d,%d,%d,%d")
 {
-   m_bShowLegalNotice = VARIANT_TRUE;
+   m_bShowLegalNotice = TRUE;
    m_bTipsEnabled = false;
    m_bUseOnlineDocumentation = TRUE;
    m_bCommandLineMode = FALSE;
@@ -257,7 +257,7 @@ BOOL CEAFApp::InitInstance()
    if ( !cmdInfo.m_bCommandLineMode )
    {
       // Show legal notice if not in command line mode
-      if ( ShowLegalNoticeAtStartup() == atReject )
+      if ( ShowLegalNoticeAtStartup() == EAFAcceptanceType::Reject )
          return FALSE; // License was not accepted
    }
 
@@ -405,11 +405,11 @@ void CEAFApp::RegistryInit()
    CString strLegalNotice = GetProfileString(_T("Settings"),_T("LegalNotice"),strDefaultLegalNotice);
    if ( strLegalNotice.CompareNoCase(_T("On")) == 0 )
    {
-      m_bShowLegalNotice = VARIANT_TRUE;
+      m_bShowLegalNotice = TRUE;
    }
    else
    {
-      m_bShowLegalNotice = VARIANT_FALSE;
+      m_bShowLegalNotice = FALSE;
    }
 
    // the "default" time of last run will be the install time less one day so that if the
@@ -428,7 +428,7 @@ void CEAFApp::RegistryInit()
 
 void CEAFApp::RegistryExit()
 {
-   VERIFY(WriteProfileString( _T("Settings"),_T("LegalNotice"),m_bShowLegalNotice == VARIANT_TRUE ? _T("On") : _T("Off") ));
+   VERIFY(WriteProfileString( _T("Settings"),_T("LegalNotice"),m_bShowLegalNotice ? _T("On") : _T("Off") ));
 
    WBFL::System::Time time;
    WriteProfileInt(_T("Settings"),_T("LastRun"),time.Seconds());
@@ -1691,32 +1691,26 @@ HKEY CEAFApp::GetUninstallRegistryKey()
 	return hUninstallKey;
 }
 
-AcceptanceType CEAFApp::ShowLegalNoticeAtStartup(void)
+EAFAcceptanceType CEAFApp::ShowLegalNoticeAtStartup(void)
 {
-   if ( m_bShowLegalNotice == VARIANT_TRUE )
+   if ( m_bShowLegalNotice )
    {
-      return ShowLegalNotice(VARIANT_TRUE);
+      return ShowLegalNotice(TRUE);
    }
 
-   return atAccept;
+   return EAFAcceptanceType::Accept;
 }
 
-AcceptanceType CEAFApp::ShowLegalNotice(VARIANT_BOOL bGiveChoice)
+EAFAcceptanceType CEAFApp::ShowLegalNotice(BOOL bGiveChoice)
 {
-   CComPtr<IARPNotice> pNotice;
-   if ( FAILED(pNotice.CoCreateInstance(CLSID_ARPNotice) ) )
-   {
-      // There was an error creating the legal notice
-      m_bShowLegalNotice = VARIANT_TRUE;
-      return atAccept;
-   }
+   CWnd* pWnd = AfxGetMainWnd();
+   CEAFLegalNoticeWiz wiz(pWnd, EAFLicenseType::AROSL);
+   wiz.GiveChoice(bGiveChoice);
+   wiz.ShowLegalNoticeAgain(m_bShowLegalNotice);
+   INT_PTR result = wiz.DoModal();
+   m_bShowLegalNotice = wiz.ShowLegalNoticeAgain();
 
-   pNotice->put_ShowAgain( m_bShowLegalNotice );
-   AcceptanceType accept;
-   pNotice->Show(bGiveChoice,ltAROSL,&accept);
-   pNotice->get_ShowAgain(&m_bShowLegalNotice);
-
-   return accept;
+   return (result == IDCANCEL) ? EAFAcceptanceType::Reject : EAFAcceptanceType::Accept;
 }
 
 CString CEAFApp::GetDocumentationSetName()

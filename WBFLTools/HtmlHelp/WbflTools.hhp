@@ -19,7 +19,6 @@ Flat=No
 NewWindow="WBFL Tools","WbflTools.hhc","WbflTools.hhk","","",,,,,0x420,0,0x200e,[0,0,800,600],0x0,0x0,,0,0,0
 
 [FILES]
-ARP_Notice.htm
 Mohr's_Circle.htm
 Sii_Property_(Mohr_Circle_Object).htm
 Sjj_Property_(Mohr_Circle_Object).htm
@@ -31,8 +30,6 @@ Smax_Property_(Mohr_Circle_Object).htm
 Smin_Property_(Mohr_Circle_Object).htm
 Tmax_Property_(Mohr_Circle_Object).htm
 ComputeState_Method_(Mohr_Circle_Object).htm
-ShowAgain_Property_(ARP_Notice_Object).htm
-Show_Method_(ARP_Notice_Object).htm
 Welcome.htm
 StrStorage\Class_is_not_registered_on_this_computer..htm
 StrStorage\Close.htm
@@ -40,13 +37,8 @@ ComputeSxx_Method_(Mohr_Circle_Object).htm
 ComputeSyy_Method_(Mohr_Circle_Object).htm
 ComputeSxy_Method_(Mohr_Circle_Object).htm
 AROSL.htm
-LicenseType.htm
-AcceptanceType.htm
 Examples.htm
 Mohr_Circle_Equations.htm
-Using_the_Alternate_Route_Project_notice_in_your_Applications.htm
-License_Agreement.htm
-Disclaimer.htm
 StrStorage\BeginUnitSave.htm
 StrStorage\You_must_define_at_least_one_Unit.htm
 StrStorage\Save2.htm
