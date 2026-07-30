@@ -343,6 +343,9 @@ Win32/
 /bin/License.rtf
 /[Bb]in # exclude all other bin folders
 *.txt
+!EAF/res/AROSL.txt #license text embedded as an EAF resource, not a generated/output file
+!EAF/res/ARLOSL.txt
+!EAF/res/Disclaimer.txt
 **/devdocs/_build/
 **/devdocs/API/
 
