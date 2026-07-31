@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright Â© 1999-2022  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -63,21 +63,6 @@ public:
    }
 
    Float64 Increment;
-};
-
-// Increments a value...
-// Use with std::generate to fill a container with sequential values
-// std::vector<int> myContainer;
-// myContainer.resize(theSize);
-// std::generate(myContainer.begin(),myContainer.end(),IncrementValue<int>(0));
-// myContainer will contain 0,1,2,3,...,theSize-1
-template<class T>
-class IncrementValue
-{
-public:
-   T current;
-   IncrementValue(const T& start) : current(start) {}
-   T operator()(){return current++;}
 };
 
 // Functor class for giving tolerance for finding floats in map containers
