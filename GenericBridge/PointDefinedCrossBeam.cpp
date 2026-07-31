@@ -807,23 +807,14 @@ HRESULT CPointDefinedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoi
 
       m_BXBProfile.Release();
       m_BXBProfile.CoCreateInstance(CLSID_Point2dCollection);
-      for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
+
+      IndexType nPierPoints;
+	  m_PierPoints->get_Count(&nPierPoints);
+      for (IndexType idx = 0 ; idx < nPierPoints ; idx++)
       {
-         CComPtr<IPoint2d> pnt;
-         lxbProfile->get_Item(idx, &pnt);
-         Float64 X;
-         pnt->get_X(&X);
-         if (InRange(Xlt, X, Xrt))
-         {
-            // X is between tapers
-            CComPtr<IPoint2d> pntBXB;
-            pnt->Clone(&pntBXB);
-
-            Float64 dy = ::LinInterp(X - Xs, dyL, dyR, dX);
-
-            pntBXB->Offset(0, -dy);
-            m_BXBProfile->Insert(0, pntBXB);
-         }
+          CComPtr<IPoint2d> xbPoint;
+		  m_PierPoints->get_Item(idx, &xbPoint);
+          m_BXBProfile->Add(xbPoint);
       }
 
       Float64 Xltcl, Xrtcl;
