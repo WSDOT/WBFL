@@ -273,6 +273,7 @@
     <ClCompile Include="EAFTemplateGroup.cpp" />
     <ClCompile Include="ProgressDlg.cpp" />
     <ClCompile Include="ProgressThread.cpp" />
+    <ClCompile Include="ProgressWindow.cpp" />
     <ClCompile Include="ReportManagerAgent.cpp" />
     <ClCompile Include="ToolBar.cpp" />
     <ClCompile Include="Transaction.cpp" />
@@ -423,6 +424,7 @@
     <ClInclude Include="NewProjectDlg.h" />
     <ClInclude Include="ProgressDlg.h" />
     <ClInclude Include="ProgressThread.h" />
+    <ClInclude Include="..\Include\EAF\ProgressWindow.h" />
     <ClInclude Include="ReportButton.h" />
     <ClInclude Include="ReportManagerAgent.h" />
     <ClInclude Include="Resource.h" />

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -40,7 +40,6 @@
 #include "EAFDocProxyAgent.h"
 #include "GraphManagerAgent.h"
 #include "ReportManagerAgent.h"
-#include <../Core/CLSID.h>
 
 #include <WBFLTools_i.c>
 #include <WBFLUnitServer_i.c>

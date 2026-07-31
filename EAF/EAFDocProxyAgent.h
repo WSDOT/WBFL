@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -37,8 +37,8 @@
 #include <EAF\EAFTransactions.h>
 #include <EAF\EAFProjectLog.h>
 #include <EAF\EAFProgress.h>
-
-//#include "ProgressThread.h"
+#include <EAF\EAFCommandLineInfo.h>
+#include <EAF\ProgressWindow.h>
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ class CEAFDocProxyAgent : public WBFL::EAF::Agent,
    public IEAFDisplayUnits,
    public IEAFStatusCenter,
    public IEAFTransactions,
-   //public IEAFProgress, // This isn't working here, so it is implemented by SysAgent in WBFLCore.dll
+   public IEAFProgress,
    public IEAFProjectLog
 {
 public:
@@ -258,14 +258,14 @@ public:
 public:
    void LogMessage( LPCTSTR lpszMsg ) override;
 
-//// IEAFProgress
-//public:
-//   HRESULT CreateProgressWindow(DWORD dwMask, UINT nDelay) override;
-//   HRESULT Init(short begin, short end, short inc) override;
-//   HRESULT Increment() override;
-//   HRESULT UpdateMessage(LPCTSTR msg) override;
-//   HRESULT Continue() override;
-//   HRESULT DestroyProgressWindow() override;
+// IEAFProgress
+public:
+   HRESULT CreateProgressWindow(DWORD dwMask, UINT nDelay) override;
+   HRESULT Init(short begin, short end, short inc) override;
+   HRESULT Increment() override;
+   HRESULT UpdateMessage(LPCTSTR msg) override;
+   HRESULT Continue() override;
+   HRESULT DestroyProgressWindow() override;
 
 protected:
    EAF_DECLARE_AGENT_DATA;
@@ -273,13 +273,12 @@ protected:
    CEAFBrokerDocument* m_pDoc;
    CEAFMainFrame* m_pMainFrame;
 
-   //CProgressThread* m_pThread = nullptr;
-   //Int16 m_cProgressRef = 0; // progress thread ref count
-   //HRESULT ValidateThread();
-   //std::vector<std::_tstring> m_MessageStack;
-   //std::_tstring m_LastMessage;
+   std::unique_ptr<WBFL::EAF::ProgressWindow> m_pProgressWindow;
+   Int16 m_cProgressRef = 0; // progress window nesting depth
+   std::vector<std::_tstring> m_MessageStack;
+   std::_tstring m_LastMessage;
 
-   //CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
+   CEAFCommandLineInfo::CommandLineDisplayMode m_CommandLineDisplayMode;  // display mode if in command line mode
 
    bool IsLogFileOpen();
    void OpenLogFile();

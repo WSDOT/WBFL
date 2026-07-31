@@ -253,6 +253,9 @@
     <ClCompile Include="ProgressThread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ProgressWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Agent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -343,6 +346,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\AutoProgress.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\EAF\ProgressWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Include\EAF\EAFBrokerDocument.h">

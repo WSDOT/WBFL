@@ -31,7 +31,6 @@
 #include <EAF\AutoProgress.h>
 #include "EAFDocProxyAgent.h"
 #include <AgentTools.h>
-#include <../Core/CLSID.h>
 
 #include "GraphManagerAgent.h"
 #include "ReportManagerAgent.h"
@@ -181,17 +180,6 @@ CATID CEAFBrokerDocument::GetExtensionAgentCategoryID()
 
 BOOL CEAFBrokerDocument::Init()
 {
-   // Hard code the system agent component information here instead of having a manifest
-   // that implementers need to remember to load. This is not idea, but it works. The root
-   // cause problem is the Progress Window doesn't work in this DLL so it didn't get moved
-   // from the WBFLCore.DLL (we wanted to eliminate WBFLCore.DLL all together when removing
-   // COM Component Categories, but it didn't work).
-   WBFL::EAF::ComponentInfo info;
-   info.clsid = CLSID_SysAgent;
-   info.dll = _T("WBFLCore.dll");
-   info.name = _T("System Agent");
-   WBFL::EAF::ComponentManager::GetInstance().RegisterComponent(info);
-
    if ( !CreateBroker() )
    {
       InitFailMessage();
@@ -313,15 +301,6 @@ std::pair<bool, WBFL::EAF::AgentErrors> CEAFBrokerDocument::LoadSpecialAgents()
       AFX_MANAGE_STATE(AfxGetAppModuleState());
       result.second.component.dll = AfxGetApp()->m_pszExeName;
       result.second.reason += _T(" - could not add EAFDocProxyAgent to broker");
-      errors.push_back(result.second);
-   }
-
-   result = m_pBroker->LoadAgent(CLSID_SysAgent);
-   if (result.first == false)
-   {
-      AFX_MANAGE_STATE(AfxGetAppModuleState());
-      result.second.component.dll = AfxGetApp()->m_pszExeName;
-      result.second.reason += _T(" - could not add System Agent to broker");
       errors.push_back(result.second);
    }
 

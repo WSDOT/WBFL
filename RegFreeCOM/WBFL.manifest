@@ -970,22 +970,6 @@
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
    </file>
-   <file name="WBFLCore.dll"
-         hashalg="SHA1">
-      <comClass clsid="{C0E926D1-2620-11D2-8EB0-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="Broker Class"></comClass>
-      <comClass clsid="{CF37B1E5-F9B8-4E78-B8B3-B91E326131CD}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="Broker2 Class"></comClass>
-      <comClass clsid="{D71212B0-2BEF-11D2-8EB3-006097DF3C68}"
-                tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-                description="SysAgent Class"></comClass>
-      <typelib tlbid="{D820A190-2BE4-11D2-8EB3-006097DF3C68}"
-               version="1.1"
-               helpdir=""
-               flags="HASDISKIMAGE"></typelib>
-   </file>
    <file name="WBFLGenericBridgeTools.dll"
          hashalg="SHA1">
       <comClass clsid="{A757985C-CC7F-4789-B3F3-03BCCED77970}" tlbid="{B7AEBB77-85BC-4FB0-BD1F-1078DB8FF85E}"

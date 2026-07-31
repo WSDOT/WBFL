@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -60,28 +60,10 @@ bool CEAFDocProxyAgent::Init()
 {
    EAF_AGENT_INIT;
 
-   // An attempt was made to implement IEAFProgress in DocProxyAgent so the WBFLCore DLL could be eliminated. There were problems with resources.
-   // The progress window dialog could not be created because the resource handle was invalid. I suspect this is because EAF is an MFC Extension DLL.
-   // All the code related to IEAFProgress is still in DocProxyAgent, but commented out.
-   // Try again later, but for now IEAFProgress is implemented in WBFLCore.DLL SysAgent
-   //m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
-   //return SUCCEEDED(ValidateThread());
+   m_CommandLineDisplayMode = EAFGetApp()->GetCommandLineMode();
 
    return true;
 }
-//
-//HRESULT CEAFDocProxyAgent::ValidateThread()
-//{
-//   if (m_pThread == nullptr)
-//   {
-//      AFX_MANAGE_STATE(AfxGetStaticModuleState());
-//
-//      // Run the progress window in a UI thread
-//      m_pThread = (CProgressThread*)AfxBeginThread(RUNTIME_CLASS(CProgressThread));
-//      ATLASSERT(m_pThread != nullptr);
-//   }
-//   return S_OK;
-//}
 
 bool CEAFDocProxyAgent::RegisterInterfaces()
 {
@@ -96,7 +78,7 @@ bool CEAFDocProxyAgent::RegisterInterfaces()
    REGISTER_INTERFACE(IEAFStatusCenter);
    REGISTER_INTERFACE(IEAFTransactions);
    REGISTER_INTERFACE(IEAFProjectLog);
-   //REGISTER_INTERFACE(IEAFProgress);
+   REGISTER_INTERFACE(IEAFProgress);
 
    return true;
 }
@@ -109,23 +91,13 @@ bool CEAFDocProxyAgent::ShutDown()
    CEAFApp* pApp = EAFGetApp();
    pApp->RemoveUnitModeListener(this);
 
-   //if (m_pThread != nullptr)
-   //{
-   //   m_pThread->PostThreadMessage(WM_KILLTHREAD, 0, 0);
-   //   DWORD result = ::WaitForSingleObject(m_pThread->m_hThread, 10000/*INFINITE*/); // wait for thread to terminate
-   //   if (result == WAIT_TIMEOUT || result == WAIT_FAILED)
-   //   {
-   //      ATLASSERT(false); // for some reason, the WM_KILLTHREAD message never got to the message handler
-   //      m_pThread->OnKillThread(0, 0);
-   //   }
-   //}
-   //m_pThread = nullptr;
+   m_pProgressWindow.reset();
 
-   //if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
-   //{
-   //   // echo message when app is finished
-   //   std::cout << "Finished." << std::endl;
-   //}
+   if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+   {
+      // echo message when app is finished
+      std::cout << "Finished." << std::endl;
+   }
    return true;
 }
 
@@ -669,185 +641,135 @@ void CEAFDocProxyAgent::LogMessage( LPCTSTR lpszMsg )
    WBFL::System::Logger::Info(lpszMsg);
 }
 
-//STDMETHODIMP CEAFDocProxyAgent::CreateProgressWindow(DWORD dwMask, UINT nDelay)
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      // do nothing if UI is not to be shown
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return PROGRESS_E_CREATE;
-//      }
+//////////////////////////////////////////////////////////////////////////////////
+// IEAFProgress implementation
 //
-//      m_cProgressRef++;
-//
-//      if (1 == m_cProgressRef)
-//      {
-//         CWnd* pMainWnd = nullptr;
-//         {
-//            AFX_MANAGE_STATE(AfxGetAppModuleState());
-//            pMainWnd = AfxGetMainWnd();
-//         }
-//
-//         HRESULT hr = m_pThread->CreateProgressWindow(pMainWnd, dwMask, nDelay);
-//         ATLASSERT(SUCCEEDED(hr));
-//         if (FAILED(hr))
-//         {
-//            m_cProgressRef--;
-//            return PROGRESS_E_CREATE;
-//         }
-//      }
-//
-//      // Save last message that was issued by the previous window
-//      if (0 < m_LastMessage.size())
-//      {
-//         m_MessageStack.push_back(m_LastMessage);
-//      }
-//      else
-//      {
-//         UpdateMessage(_T("Working..."));
-//      }
-//
-//      return S_OK;
-//   }
-//}
-//
-//STDMETHODIMP CEAFDocProxyAgent::Init(short begin, short end, short inc)
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      // do nothing if UI is not to be shown
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return E_FAIL;
-//      }
-//      m_pThread->Init(begin, end, inc);
-//      return S_OK;
-//   }
-//}
-//
-//STDMETHODIMP CEAFDocProxyAgent::Increment()
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      // do nothing if UI is not to be shown
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return E_FAIL;
-//      }
-//      m_pThread->Increment();
-//      return S_OK;
-//   }
-//}
-//
-//STDMETHODIMP CEAFDocProxyAgent::UpdateMessage(LPCTSTR msg)
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
-//      {
-//         // Don't show "Working...". There are 10's of thousands
-//         int result = lstrcmp(msg, _T("Wor"));
-//         if (result != 0)
-//         {
-//            std::cout << CStringA(msg) << std::endl;
-//         }
-//      }
-//
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return E_FAIL;
-//      }
-//
-//      m_LastMessage = msg;
-//      m_pThread->UpdateMessage(msg);
-//
-//      return S_OK;
-//   }
-//}
-//
-//STDMETHODIMP CEAFDocProxyAgent::Continue()
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      // do nothing if UI is not to be shown
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return E_FAIL;
-//      }
-//
-//      return m_pThread->Continue() ? S_OK : S_FALSE;
-//   }
-//}
-//
-//STDMETHODIMP CEAFDocProxyAgent::DestroyProgressWindow()
-//{
-//   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
-//   {
-//      // do nothing if UI is not to be shown
-//      return S_OK;
-//   }
-//   else
-//   {
-//      // must have a valid thread before we can do anything else
-//      if (FAILED(ValidateThread()))
-//      {
-//         return E_FAIL;
-//      }
-//
-//#if defined _DEBUG
-//      if (0 < m_cProgressRef)
-//      {
-//         // if there is at least one creater of the progress window
-//         // the thread had better still be alive
-//         ATLASSERT(m_pThread != nullptr);
-//      }
-//#endif
-//
-//      m_cProgressRef--;
-//      ATLASSERT(0 <= m_cProgressRef);
-//
-//      if (m_cProgressRef == 0)
-//      {
-//         m_pThread->ResetContinueState();
-//         m_pThread->DestroyProgressWindow();
-//      }
-//      else
-//      {
-//         // restore message from previous window in stack
-//         if (!m_MessageStack.empty())
-//         {
-//            m_LastMessage = m_MessageStack.back();
-//            m_MessageStack.pop_back();
-//            m_pThread->UpdateMessage(m_LastMessage.c_str());
-//         }
-//      }
-//
-//      return S_OK;
-//   }
-//}
+// Backed by WBFL::EAF::ProgressWindow, which is itself a stand-alone class with
+// no broker/agent dependency. This agent just adds the nesting/ref-count and
+// command-line-mode behavior that IEAFProgress callers expect.
+STDMETHODIMP CEAFDocProxyAgent::CreateProgressWindow(DWORD dwMask, UINT nDelay)
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      // do nothing if UI is not to be shown
+      return S_OK;
+   }
+   else
+   {
+      m_cProgressRef++;
+
+      if (1 == m_cProgressRef)
+      {
+         m_pProgressWindow = std::make_unique<WBFL::EAF::ProgressWindow>(m_pMainFrame, dwMask, nDelay);
+      }
+
+      // Save last message that was issued by the previous window
+      if (0 < m_LastMessage.size())
+      {
+         m_MessageStack.push_back(m_LastMessage);
+      }
+      else
+      {
+         UpdateMessage(_T("Working..."));
+      }
+
+      return S_OK;
+   }
+}
+
+STDMETHODIMP CEAFDocProxyAgent::Init(short begin, short end, short inc)
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      // do nothing if UI is not to be shown
+      return S_OK;
+   }
+   else
+   {
+      m_pProgressWindow->Init(begin, end, inc);
+      return S_OK;
+   }
+}
+
+STDMETHODIMP CEAFDocProxyAgent::Increment()
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      // do nothing if UI is not to be shown
+      return S_OK;
+   }
+   else
+   {
+      m_pProgressWindow->Increment();
+      return S_OK;
+   }
+}
+
+STDMETHODIMP CEAFDocProxyAgent::UpdateMessage(LPCTSTR msg)
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      if (m_CommandLineDisplayMode == CEAFCommandLineInfo::cldEchoProgress)
+      {
+         // Don't show "Working...". There are 10's of thousands
+         int result = lstrcmp(msg, _T("Wor"));
+         if (result != 0)
+         {
+            std::cout << CStringA(msg) << std::endl;
+         }
+      }
+
+      return S_OK;
+   }
+   else
+   {
+      m_LastMessage = msg;
+      m_pProgressWindow->UpdateMessage(msg);
+
+      return S_OK;
+   }
+}
+
+STDMETHODIMP CEAFDocProxyAgent::Continue()
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      // do nothing if UI is not to be shown
+      return S_OK;
+   }
+   else
+   {
+      return m_pProgressWindow->Continue() ? S_OK : S_FALSE;
+   }
+}
+
+STDMETHODIMP CEAFDocProxyAgent::DestroyProgressWindow()
+{
+   if (m_CommandLineDisplayMode != CEAFCommandLineInfo::cldDefault)
+   {
+      // do nothing if UI is not to be shown
+      return S_OK;
+   }
+   else
+   {
+      m_cProgressRef--;
+      ATLASSERT(0 <= m_cProgressRef);
+
+      if (m_cProgressRef == 0)
+      {
+         m_pProgressWindow.reset();
+      }
+      else
+      {
+         // restore message from previous window in stack
+         if (!m_MessageStack.empty())
+         {
+            m_LastMessage = m_MessageStack.back();
+            m_MessageStack.pop_back();
+            m_pProgressWindow->UpdateMessage(m_LastMessage.c_str());
+         }
+      }
+
+      return S_OK;
+   }
+}

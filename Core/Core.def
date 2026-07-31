@@ -1,5 +1,0 @@
-; Core.def : Declares the module parameters.
-
-LIBRARY      "WBFLCore.DLL"
-
-EXPORTS
