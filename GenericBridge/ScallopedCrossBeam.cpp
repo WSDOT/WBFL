@@ -970,28 +970,6 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
       m_BXBProfile.Release();
       m_BXBProfile.CoCreateInstance(CLSID_Point2dCollection);
 
-	  ////////////////////////////////////////////////////////////////////////////////////// make specific for scalloped; see BridgeAgentImp::GetBottomXBeamProfile
-
-      //for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
-      //{
-      //   CComPtr<IPoint2d> pnt;
-      //   lxbProfile->get_Item(idx, &pnt);
-      //   Float64 X;
-      //   pnt->get_X(&X);
-      //   if (InRange(Xlt, X, Xrt))
-      //   {
-      //      // X is between tapers
-      //      CComPtr<IPoint2d> pntBXB;
-      //      pnt->Clone(&pntBXB);
-
-      //      Float64 dy = ::LinInterp(X - Xs, dyL, dyR, dX);
-
-      //      pntBXB->Offset(0, -dy);
-      //      m_BXBProfile->Insert(0, pntBXB);
-      //   }
-      //}
-
-
       CComPtr<IColumnLayout> columnLayout;
       m_pPier->get_ColumnLayout(&columnLayout);
       IndexType nCols;
