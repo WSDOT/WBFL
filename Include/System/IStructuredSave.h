@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -84,6 +84,12 @@ namespace WBFL
 
          /// Write a bool property
          virtual void Property(LPCTSTR name, bool value) = 0;
+
+         /// Writes a raw XML string representing an entire unit (as previously captured by
+         /// WBFL::System::IStructuredLoad::GetUnit) verbatim into the current storage, without
+         /// needing to understand its schema. Used to round-trip data whose owner isn't available
+         /// at save time (e.g. an extension agent's data when that agent isn't currently loaded).
+         virtual void PutUnit(LPCTSTR xml) = 0;
       };
    };
 };

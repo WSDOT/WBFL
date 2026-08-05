@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // System - WBFL low level system services
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -111,7 +111,7 @@ namespace WBFL
          /// Write a bool property
          virtual void Property(LPCTSTR name, bool value) override;
 
-         virtual void PutUnit(LPCTSTR xml);
+         virtual void PutUnit(LPCTSTR xml) override;
 
       private:
          std::unique_ptr<StructuredSaveXml_Impl> m_pImp;

@@ -26,6 +26,7 @@
 #include <EAF\Agent.h>
 #include <EAF\ComponentManager.h>
 #include <EAF\EAFUtilities.h>
+#include <WBFLTools\StructuredStorageComAdapter.h>
 
 DIAG_DEFINE_GROUP(Broker, DIAG_GROUP_ENABLE, 0);
 
@@ -385,7 +386,8 @@ WBFL::EAF::Broker::LoadResult Broker::Load(IStructuredLoad* pStrLoad)
          auto persist = std::dynamic_pointer_cast<IAgentPersist>(agent);
          if (persist)
          {
-            auto load_result = persist->Load(pStrLoad);
+            CStructuredLoad native_load(pStrLoad);
+            auto load_result = persist->Load(&native_load);
             if (max_result < load_result)
                max_result = load_result;
 
@@ -500,7 +502,8 @@ Broker::LoadResult Broker::LoadOldFormat(IStructuredLoad* strLoad)
       auto pPersist = std::dynamic_pointer_cast<IAgentPersist>(pAgent);
       if (pPersist)
       {
-         result = pPersist->Load(strLoad);
+         CStructuredLoad native_load(strLoad);
+         result = pPersist->Load(&native_load);
          // When we had the old data format there was only one agent
          // that persisted data. Now we have extension agents that can also 
          // implement the IAgentPersist interface and will get called if they are loaded.
@@ -762,7 +765,8 @@ bool Broker::SaveAgentData(IStructuredSave* pStrSave, Agents::iterator begin, Ag
          // capture the class id of the agent
          pStrSave->put_Property(_T("CLSID"), CComVariant(strCLSID));
 
-         if (!persist->Save(pStrSave)) // agent to save its own data
+         CStructuredSave native_save(pStrSave);
+         if (!persist->Save(&native_save)) // agent to save its own data
             return false;
 
          pStrSave->EndUnit(); // end of "Agent" unit

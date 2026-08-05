@@ -92,6 +92,14 @@ public:
    virtual void Property(LPCTSTR name, ULONG value) override { PutVariantProperty(name, CComVariant(value)); }
    virtual void Property(LPCTSTR name, bool value) override { PutVariantProperty(name, CComVariant(value)); }
 
+   /// IStructuredSave2 has no raw-unit-passthrough equivalent - throws. WBFL::FEA2D::Model's
+   /// persistence code never calls this.
+   virtual void PutUnit(LPCTSTR xml) override
+   {
+      UNREFERENCED_PARAMETER(xml);
+      THROW(WBFL::System::XStructuredSave, Unspecified);
+   }
+
 private:
    CComPtr<IStructuredSave2> m_psave;
 

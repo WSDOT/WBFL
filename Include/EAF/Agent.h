@@ -28,10 +28,9 @@
 #include <EAF\EAFStatusCenter.h>
 #include <EAF\Broker.h>
 #include <EAF\EAFTypes.h>
+#include <System\IStructuredLoad.h>
+#include <System\IStructuredSave.h>
 #include <memory>
-
-interface IStructuredLoad;
-interface IStructuredSave;
 
 namespace WBFL
 {
@@ -106,14 +105,14 @@ namespace WBFL
       {
       public:
          /// @brief Called to load the agent's data
-         /// @param pStrLoad 
-         /// @return 
-         virtual WBFL::EAF::Broker::LoadResult Load(IStructuredLoad* pStrLoad) = 0;
+         /// @param pStrLoad
+         /// @return
+         virtual WBFL::EAF::Broker::LoadResult Load(WBFL::System::IStructuredLoad* pStrLoad) = 0;
 
          /// @brief Called to save the agent's data
-         /// @param pStrSave 
-         /// @return 
-         virtual bool Save(IStructuredSave* pStrSave) = 0;
+         /// @param pStrSave
+         /// @return
+         virtual bool Save(WBFL::System::IStructuredSave* pStrSave) = 0;
       };
 
       /// @brief Interface to be implemented by agents that integrate with the application's user interface

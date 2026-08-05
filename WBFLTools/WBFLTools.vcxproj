@@ -277,6 +277,7 @@ copy %(FullPath) $(ProjectDir)htmlhelp\%(Filename).hh
     </CustomBuild>
     <ClInclude Include="..\Include\WBFLTools\LogContext.h" />
     <ClInclude Include="..\Include\WBFLTools\ComStructuredStorageAdapter.h" />
+    <ClInclude Include="..\Include\WBFLTools\StructuredStorageComAdapter.h" />
     <ClInclude Include="..\Include\WBFLTools\WBFLToolsExp.h" />
     <ClInclude Include="BstrArray.h" />
     <ClInclude Include="DblArray.h" />
