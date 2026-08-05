@@ -62,8 +62,8 @@ namespace WBFL
          /// Returns the report name
          LPCTSTR GetName() const;
 
-         /// Adds a title page builder to generate the report's title page
-         void AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder);
+         /// Sets the title page builder used to generate the report's title page
+         void SetTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder);
 
          /// Returns the title page builder
          std::shared_ptr<TitlePageBuilder> GetTitlePageBuilder();

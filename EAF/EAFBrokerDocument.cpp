@@ -1145,7 +1145,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             {
                std::shared_ptr<WBFL::Reporting::TitlePageBuilder> pntp( ptp->Clone() );
                pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
-               newBuilder->AddTitlePageBuilder(pntp);
+               newBuilder->SetTitlePageBuilder(pntp);
             }
 
             // Use custom menu bitmap

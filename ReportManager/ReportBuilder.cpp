@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -62,7 +62,7 @@ bool ReportBuilder::IncludeTimingChapter() const
    return m_bIncludeTimingChapter;
 }
 
-void ReportBuilder::AddTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder)
+void ReportBuilder::SetTitlePageBuilder(std::shared_ptr<TitlePageBuilder> pTitlePageBuilder)
 {
    m_pTitlePageBuilder = pTitlePageBuilder;
 }
