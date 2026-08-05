@@ -6,3 +6,17 @@ The WBFL EAF Library provides an Extensible Application Framework. The framework
 > Implementation note
 > Classes that inherit from the MFC framework start with the "CEAF" prefix which is similar ot the MFC "C" and "CMFC" prefixes. The other classes belong to the WBFL::EAF namespace.
 
+@subpage WBFL_EAF_COM
+
+@subpage WBFL_EAF_UIIntegration
+
+@subpage WBFL_EAF_Reporting
+
+@subpage WBFL_EAF_Graphing
+
+@subpage WBFL_EAF_DataPersistence
+
+@subpage WBFL_EAF_Documentation
+
+@subpage WBFL_EAF_CommandLine
+

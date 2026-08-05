@@ -4,6 +4,14 @@ The WBFL Tools Structured Storage services provides a convienent method of stori
 
 Structured Storage arranges data in hierarchical storage units of key-value pairs. Storage units can be versioned to facilitate future changes and backwards compatiblity with previously created storage files.
 
+> Note
+> This page documents the COM `IStructuredStorage2`/`IStructuredSave2`/`IStructuredLoad2` interfaces
+> specifically (the OLE-Automation-friendly variants shown below). `WBFL::EAF::IAgentPersist` - the
+> interface an Agent implements to persist its own data - uses a different, native C++ interface
+> pair, `WBFL::System::IStructuredLoad`/`IStructuredSave`, with the same units-and-versioning concept
+> but type-overloaded `Property()` accessors instead of a `VARIANT`-based `get_Property`/
+> `put_Property`. See the WBFL EAF devdocs' Data Persistence page for that interface specifically.
+
 The following pseudo-code example illustrates how to add structured storage capabilities to your objects.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
