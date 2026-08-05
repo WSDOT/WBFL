@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -28,6 +28,9 @@
 #include "stdafx.h"
 #include <EAF\EAFAutoCalcDoc.h>
 #include <EAF\EAFAutoCalcView.h>
+#include <EAF\EAFBrokerDocument.h>
+#include <EAF\EAFUIIntegration.h>
+#include <AgentTools.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -48,14 +51,25 @@ void CEAFAutoCalcDocMixin::SetDocument(CEAFDocument* pDoc)
 
 void CEAFAutoCalcDocMixin::CreateAcceleratorKeys()
 {
-   m_pDocument->GetAcceleratorTable()->AddAccelKey(FVIRTKEY,           VK_F5, EAFID_AUTOCALC_UPDATENOW,nullptr);
-   m_pDocument->GetAcceleratorTable()->AddAccelKey(FCONTROL | FVIRTKEY,VK_U,  EAFID_AUTOCALC_UPDATENOW,nullptr);
+   // This mixin is always used by a broker-based document (CEAFBrokerDocument), so go through the
+   // broker-registered IEAFAcceleratorTable rather than reaching CEAFMainFrame's accelerator table
+   // directly - see WBFL EAF UI Integration devdocs.
+   auto* pBrokerDoc = dynamic_cast<CEAFBrokerDocument*>(m_pDocument);
+   ATLASSERT(pBrokerDoc);
+   auto pBroker = pBrokerDoc->GetBroker();
+   GET_IFACE2(pBroker,IEAFAcceleratorTable,pAccelTable);
+   pAccelTable->AddAccelKey(FVIRTKEY,           VK_F5, EAFID_AUTOCALC_UPDATENOW,nullptr);
+   pAccelTable->AddAccelKey(FCONTROL | FVIRTKEY,VK_U,  EAFID_AUTOCALC_UPDATENOW,nullptr);
 }
 
 void CEAFAutoCalcDocMixin::RemoveAcceleratorKeys()
 {
-   m_pDocument->GetAcceleratorTable()->RemoveAccelKey(FVIRTKEY,           VK_F5);
-   m_pDocument->GetAcceleratorTable()->RemoveAccelKey(FCONTROL | FVIRTKEY,VK_U );
+   auto* pBrokerDoc = dynamic_cast<CEAFBrokerDocument*>(m_pDocument);
+   ATLASSERT(pBrokerDoc);
+   auto pBroker = pBrokerDoc->GetBroker();
+   GET_IFACE2(pBroker,IEAFAcceleratorTable,pAccelTable);
+   pAccelTable->RemoveAccelKey(FVIRTKEY,           VK_F5);
+   pAccelTable->RemoveAccelKey(FCONTROL | FVIRTKEY,VK_U );
 }
 
 /////////////////////////////////////////////////////////////////////////////
