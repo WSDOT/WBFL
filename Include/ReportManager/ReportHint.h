@@ -28,7 +28,7 @@
 
 namespace WBFL
 {
-	namespace Reporting
+	namespace ReportMgr
 	{
 		/// Represents a hint that indicates how something has changed. Used by ChapterBuilders
 		/// to determine of a chapter needs to be updated.

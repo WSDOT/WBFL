@@ -45,11 +45,11 @@ namespace WBFL
       public:
          ReportManagerAgent() : Agent()
          {
-            m_pRptMgr = WBFL::Reporting::ReportBuilderManager::Create();
+            m_pRptMgr = WBFL::ReportMgr::ReportBuilderManager::Create();
          }
 
       private:
-         std::shared_ptr<WBFL::Reporting::ReportBuilderManager> m_pRptMgr;
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilderManager> m_pRptMgr;
 
          // Agent
       public:
@@ -59,24 +59,24 @@ namespace WBFL
 
          // IReportManager
       public:
-         void AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder) override;
+         void AddReportBuilder(std::shared_ptr<WBFL::ReportMgr::ReportBuilder>& pReportBuilder) override;
          IndexType GetReportBuilderCount(bool bIncludeHidden) const override;
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) override;
          std::vector<std::_tstring> GetReportNames(bool bIncludeHidden) const override;
-         WBFL::Reporting::ReportDescription GetReportDescription(LPCTSTR strReportName) override;
-         WBFL::Reporting::ReportDescription GetReportDescription(const std::_tstring& strReportName) override;
+         WBFL::ReportMgr::ReportDescription GetReportDescription(LPCTSTR strReportName) override;
+         WBFL::ReportMgr::ReportDescription GetReportDescription(const std::_tstring& strReportName) override;
          const CBitmap* GetMenuBitmap(LPCTSTR strReportName) override;
          const CBitmap* GetMenuBitmap(const std::_tstring& strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) override;
-         std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> GetReportSpecificationBuilder(const WBFL::Reporting::ReportDescription& rptDesc) override;
-         void SetReportBrowserType(WBFL::Reporting::ReportBrowser::Type browserType) override;
-         WBFL::Reporting::ReportBrowser::Type GetReportBrowserType() const;
-         std::shared_ptr<WBFL::Reporting::ReportBrowser> CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder) override;
-         INT_PTR DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> GetReportSpecificationBuilder(LPCTSTR strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> GetReportSpecificationBuilder(const std::_tstring& strReportName) override;
+         std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> GetReportSpecificationBuilder(const WBFL::ReportMgr::ReportDescription& rptDesc) override;
+         void SetReportBrowserType(WBFL::ReportMgr::ReportBrowser::Type browserType) override;
+         WBFL::ReportMgr::ReportBrowser::Type GetReportBrowserType() const;
+         std::shared_ptr<WBFL::ReportMgr::ReportBrowser> CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pRptSpecBuilder) override;
+         INT_PTR DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pRptSpecBuilder) override;
       };
    };
 };

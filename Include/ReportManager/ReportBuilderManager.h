@@ -33,7 +33,7 @@ class rptReport;
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// Managers of all the report builders
       class REPORTMANAGERCLASS ReportBuilderManager : public std::enable_shared_from_this<ReportBuilderManager>

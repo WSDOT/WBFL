@@ -27,7 +27,7 @@
 #include <ReportManager\ReportSpecification.h>
 #include <ReportManager\ReportBrowser.h>
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 /// MFC Dialog that allows the user to configure a report
 class CReportDlg : public CDialog

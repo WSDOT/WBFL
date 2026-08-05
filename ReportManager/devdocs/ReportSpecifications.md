@@ -1,6 +1,6 @@
 Report Specifications {#WBFL_Reporting_Specifications}
 ========================================================
-A `WBFL::Reporting::ReportBuilder` (see \ref WBFL_Reporting "Introduction") turns a
+A `WBFL::ReportMgr::ReportBuilder` (see \ref WBFL_Reporting "Introduction") turns a
 `ReportSpecification` into a `WBFL::Reports::Report` by running the report's `TitlePageBuilder` and
 its selected `ChapterBuilder`s. This page is about the specification itself - what it is, who
 builds it, and how a third-party report plugs into that machinery. Chapter authoring and report
@@ -10,7 +10,7 @@ build orchestration are not covered here - see `ChapterBuilder`
 "Introduction" - not part of ReportManager and out of scope here.
 
 ## ReportSpecification
-`WBFL::Reporting::ReportSpecification` (`Include\ReportManager\ReportSpecification.h`) is a plain
+`WBFL::ReportMgr::ReportSpecification` (`Include\ReportManager\ReportSpecification.h`) is a plain
 data object: report name/title, an ordered list of `ChapterInfo` (chapter key + reporting level),
 and header/footer text. It answers "what to report on and how", as opposed to `ReportBuilder`,
 which answers "how to render it". A `ReportSpecification` is produced fresh every time a report is
@@ -18,7 +18,7 @@ generated or regenerated - `ReportBuilder::CreateReport` and `ReportBuilder::Nee
 one as a parameter rather than the report holding this state itself.
 
 ## ReportDescription and chapter selection
-`WBFL::Reporting::ReportDescription` (`Include\ReportManager\ReportDescription.h`) is the catalog a
+`WBFL::ReportMgr::ReportDescription` (`Include\ReportManager\ReportDescription.h`) is the catalog a
 `ReportSpecificationBuilder` uses when building a `ReportSpecification`. It's derived from a
 report's registered `ChapterBuilder`s (`ReportBuilder::GetReportDescription()`), and its
 `ChapterInfo` entries (key, name, max level, default-selected) are what populate a chapter-picker
@@ -27,7 +27,7 @@ description's own defaults, or a UI-collected list of `ChapterInfo`/chapter keys
 `ReportSpecification`.
 
 ## ReportSpecificationBuilder
-`WBFL::Reporting::ReportSpecificationBuilder` (`Include\ReportManager\ReportSpecificationBuilder.h`)
+`WBFL::ReportMgr::ReportSpecificationBuilder` (`Include\ReportManager\ReportSpecificationBuilder.h`)
 is a strategy object with two virtual methods:
 ~~~
 virtual std::shared_ptr<ReportSpecification> CreateReportSpec(const ReportDescription& rptDesc, std::shared_ptr<ReportSpecification> pRptSpec) const;

@@ -27,7 +27,7 @@
 
 #include "WebBrowser.h"
 
-class IEReportView : public WBFL::Reporting::IReportView
+class IEReportView : public WBFL::ReportMgr::IReportView
 {
 public:
    IEReportView();

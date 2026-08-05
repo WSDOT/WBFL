@@ -32,10 +32,10 @@
 #include <Reporter\HtmlHelper.h>
 #include <ReportManager\ReportBrowser.h>
 
-class EdgeReportView : public WBFL::Reporting::IReportView
+class EdgeReportView : public WBFL::ReportMgr::IReportView
 {
 public:
-   EdgeReportView(WBFL::Reporting::ReportBrowser* parentReportBrowser);
+   EdgeReportView(WBFL::ReportMgr::ReportBrowser* parentReportBrowser);
 
    virtual ~EdgeReportView() {;}
 
@@ -72,7 +72,7 @@ public:
    void OnEdit() { m_pParentReportBrowser->Edit(true); }
 
 private:
-   WBFL::Reporting::ReportBrowser* m_pParentReportBrowser; // need access to our parents functions
+   WBFL::ReportMgr::ReportBrowser* m_pParentReportBrowser; // need access to our parents functions
    HWND m_hwndParent; // handle of parent window
    std::_tstring m_strRawURI; // caches the URI of file
 

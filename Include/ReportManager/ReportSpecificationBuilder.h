@@ -29,7 +29,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// A class to create a ReportSpecification based on a ReportDescription
       class REPORTMANAGERCLASS ReportSpecificationBuilder  

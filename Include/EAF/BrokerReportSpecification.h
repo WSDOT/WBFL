@@ -31,7 +31,7 @@ namespace WBFL
    namespace EAF
    {
       class EAFCLASS BrokerReportSpecification :
-         public WBFL::Reporting::ReportSpecification
+         public WBFL::ReportMgr::ReportSpecification
       {
       public:
          BrokerReportSpecification(const std::_tstring& strReportName, std::weak_ptr<WBFL::EAF::Broker> pBroker);

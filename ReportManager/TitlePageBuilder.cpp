@@ -26,7 +26,7 @@
 #include <ReportManager\TitlePageBuilder.h>
 
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 TitlePageBuilder::TitlePageBuilder(LPCTSTR title) :
 m_Title(title)

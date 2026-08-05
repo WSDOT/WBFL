@@ -28,7 +28,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// Used by the ReportBuilder to create a report. 
       /// A ReportSpecification defines the chapters that are to be included in a report and the reporting level.

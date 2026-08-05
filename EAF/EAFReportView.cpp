@@ -152,7 +152,7 @@ int CEAFReportView::OnCreate(LPCREATESTRUCT lpCreateStruct)
    return 0;
 }
 
-bool CEAFReportView::InitReport(std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::InitReport(std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pSpecBuilder)
 {
    m_pReportSpec = pSpec;
    if ( !m_pReportSpec )
@@ -170,7 +170,7 @@ bool CEAFReportView::CreateReport(IndexType rptIdx,BOOL bPromptForSpec)
    return CreateReport(rptIdx,m_pReportSpec,m_pRptSpecBuilder);
 }
 
-bool CEAFReportView::CreateReport(IndexType rptIdx, std::shared_ptr<WBFL::Reporting::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pSpecBuilder)
+bool CEAFReportView::CreateReport(IndexType rptIdx, std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pSpecBuilder)
 {
    if ( !InitReport(pSpec,pSpecBuilder) )
       return false;
@@ -224,8 +224,8 @@ void CEAFReportView::CreateReportSpecification(IndexType rptIdx,BOOL bPromptForS
             // Turn off the error message so the user doesn't see it
             CEAFMainFrame* pFrame = EAFGetMainFrame();
             pFrame->DisableFailCreateMessage();
-            m_pReportSpec = std::shared_ptr<WBFL::Reporting::ReportSpecification>();
-            m_pRptSpecBuilder = std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder>();
+            m_pReportSpec = std::shared_ptr<WBFL::ReportMgr::ReportSpecification>();
+            m_pRptSpecBuilder = std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder>();
             return;
          }
       }
@@ -237,7 +237,7 @@ void CEAFReportView::CreateReportSpecification(IndexType rptIdx,BOOL bPromptForS
    }
 
    auto pRptBuilder = GetReportBuilder(rptName);
-   WBFL::Reporting::ReportDescription rptDesc = pRptBuilder->GetReportDescription();
+   WBFL::ReportMgr::ReportDescription rptDesc = pRptBuilder->GetReportDescription();
 
    m_pRptSpecBuilder = pRptBuilder->GetReportSpecificationBuilder();
    if ( bPromptForSpec )
@@ -262,7 +262,7 @@ void CEAFReportView::CreateReportSpecification(IndexType rptIdx,BOOL bPromptForS
    }
 }
 
-HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
+HRESULT CEAFReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint)
 {
    if ( m_pReportSpec == nullptr )
       return S_OK;
@@ -493,17 +493,17 @@ void CEAFReportView::OnUpdate(CView* pSender, LPARAM lHint, CObject* pHint)
    // Something has changed to invalidate the report
    m_bInvalidReport = true;
 
-   std::unique_ptr<WBFL::Reporting::ReportHint> pRptHint( TranslateHint(pSender,lHint,pHint) );
-   std::shared_ptr<WBFL::Reporting::ReportHint> hint(pRptHint.release());
+   std::unique_ptr<WBFL::ReportMgr::ReportHint> pRptHint( TranslateHint(pSender,lHint,pHint) );
+   std::shared_ptr<WBFL::ReportMgr::ReportHint> hint(pRptHint.release());
    UpdateNow(hint);
 }
 
-WBFL::Reporting::ReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint)
+WBFL::ReportMgr::ReportHint* CEAFReportView::TranslateHint(CView* pSender, LPARAM lHint, CObject* pHint)
 {
    return nullptr;
 }
 
-void CEAFReportView::UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
+void CEAFReportView::UpdateNow(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint)
 {
    if ( CEAFReportView::ms_bIsUpdatingReport )
    {
@@ -750,7 +750,7 @@ std::vector<std::_tstring> CEAFReportView::GetReportNames()
    }
 }
 
-std::shared_ptr<const WBFL::Reporting::ReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName) const
+std::shared_ptr<const WBFL::ReportMgr::ReportBuilder> CEAFReportView::GetReportBuilder(const std::_tstring& strRptName) const
 {
    if ( m_pReportBuilderMgr )
    {
@@ -762,7 +762,7 @@ std::shared_ptr<const WBFL::Reporting::ReportBuilder> CEAFReportView::GetReportB
    }
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, DWORD dwStyle,const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::ReportMgr::ReportBrowser> CEAFReportView::CreateReportBrowser(HWND hwndParent, DWORD dwStyle,const std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    if ( m_pReportBuilderMgr )
    {
@@ -779,7 +779,7 @@ void CEAFReportView::NotifyReportButtonWasClicked()
    EditReport();
 }
 
-std::shared_ptr<const WBFL::Reporting::ReportSpecification> CEAFReportView::GetReportSpecification() const
+std::shared_ptr<const WBFL::ReportMgr::ReportSpecification> CEAFReportView::GetReportSpecification() const
 {
    return m_pReportSpec;
 }

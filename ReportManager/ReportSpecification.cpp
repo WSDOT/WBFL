@@ -26,7 +26,7 @@
 #include <ReportManager\ReportSpecification.h>
 
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 ReportSpecification::ReportSpecification(const std::_tstring& strReportName) :
    m_ReportName(strReportName)

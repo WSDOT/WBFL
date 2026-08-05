@@ -147,7 +147,7 @@ void CEAFAutoCalcReportView::UpdateNow()
    CEAFReportView::UpdateNow(nullptr);
 }
 
-void CEAFAutoCalcReportView::UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
+void CEAFAutoCalcReportView::UpdateNow(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint)
 {
    // Update is forced by the user
    CEAFReportView::UpdateNow(pHint);
@@ -198,7 +198,7 @@ void CEAFAutoCalcReportView::RefreshReport()
    }
 }
 
-HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint)
+HRESULT CEAFAutoCalcReportView::UpdateReportBrowser(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint)
 {
    HRESULT hr = CEAFReportView::UpdateReportBrowser(pHint);
 

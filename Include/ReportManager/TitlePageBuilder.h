@@ -30,7 +30,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// A factory class to create a Title Page chapter for a report
       class REPORTMANAGERCLASS TitlePageBuilder  

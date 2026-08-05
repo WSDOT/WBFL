@@ -5,11 +5,11 @@ registering and unregistering in `IntegrateWithReporting`.
 
 ## Registering a report
 `IEAFReportManager::AddReportBuilder` (`Include\EAF\EAFReportManager.h`) registers a new report,
-assembled from a `WBFL::Reporting::ReportBuilder` with a title page builder, a report specification
+assembled from a `WBFL::ReportMgr::ReportBuilder` with a title page builder, a report specification
 builder, and one or more chapter builders:
 ~~~
 GET_IFACE(IEAFReportManager, pRptMgr);
-auto pRptBuilder = std::make_shared<WBFL::Reporting::ReportBuilder>(_T("My Report"));
+auto pRptBuilder = std::make_shared<WBFL::ReportMgr::ReportBuilder>(_T("My Report"));
 pRptBuilder->SetTitlePageBuilder(std::make_shared<CMyTitlePageBuilder>());
 pRptBuilder->AddChapterBuilder(std::make_shared<CMyChapterBuilder>());
 pRptMgr->AddReportBuilder(pRptBuilder);

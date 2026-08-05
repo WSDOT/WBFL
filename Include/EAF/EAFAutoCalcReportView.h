@@ -60,7 +60,7 @@ public:
 // Implementation
 public:
    virtual void UpdateNow() override;
-   virtual void UpdateNow(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint) override;
+   virtual void UpdateNow(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint) override;
    virtual void EditReport() override;
 	virtual void RefreshReport(); // called from EditReport when the report needs to be refreshed
 
@@ -75,7 +75,7 @@ protected:
 protected:
 	//{{AFX_MSG(CEAFAutoCalcReportView)
 	//}}AFX_MSG
-   virtual HRESULT UpdateReportBrowser(const std::shared_ptr<const WBFL::Reporting::ReportHint>& pHint) override;
+   virtual HRESULT UpdateReportBrowser(const std::shared_ptr<const WBFL::ReportMgr::ReportHint>& pHint) override;
 
 	DECLARE_MESSAGE_MAP()
 };

@@ -32,7 +32,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       class ChapterBuilder;
       class ReportSpecification;

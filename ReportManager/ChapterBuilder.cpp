@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include <ReportManager\ChapterBuilder.h>
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 LPCTSTR ChapterBuilder::GetKey() const
 {

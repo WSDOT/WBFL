@@ -29,7 +29,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// A specialized chapter builder that records and displays the amount of time it takes to create a report
       /// This chapter builder may be useful for debugging and improving performance

@@ -27,7 +27,7 @@
 #include <Reporter\Reporter.h>
 #include "ReportDlg.h"
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 std::shared_ptr<ReportBuilderManager> ReportBuilderManager::Create()
 {

@@ -42,7 +42,7 @@ CLSID ReportManagerAgent::GetCLSID() const
 //
 // IReportManager
 //
-void ReportManagerAgent::AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>& pReportBuilder)
+void ReportManagerAgent::AddReportBuilder(std::shared_ptr<WBFL::ReportMgr::ReportBuilder>& pReportBuilder)
 {
    m_pRptMgr->AddReportBuilder(pReportBuilder);
 }
@@ -52,22 +52,22 @@ IndexType ReportManagerAgent::GetReportBuilderCount(bool bIncludeHidden) const
    return m_pRptMgr->GetReportBuilderCount(bIncludeHidden);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBuilder> ReportManagerAgent::GetReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportBuilder> ReportManagerAgent::GetReportBuilder(LPCTSTR strReportName)
 {
    return m_pRptMgr->GetReportBuilder(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBuilder> ReportManagerAgent::GetReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportBuilder> ReportManagerAgent::GetReportBuilder(const std::_tstring& strReportName)
 {
    return m_pRptMgr->GetReportBuilder(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBuilder> ReportManagerAgent::RemoveReportBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportBuilder> ReportManagerAgent::RemoveReportBuilder(LPCTSTR strReportName)
 {
    return m_pRptMgr->RemoveReportBuilder(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBuilder> ReportManagerAgent::RemoveReportBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportBuilder> ReportManagerAgent::RemoveReportBuilder(const std::_tstring& strReportName)
 {
    return m_pRptMgr->RemoveReportBuilder(strReportName);
 }
@@ -77,12 +77,12 @@ std::vector<std::_tstring> ReportManagerAgent::GetReportNames(bool bIncludeHidde
    return m_pRptMgr->GetReportNames(bIncludeHidden);
 }
 
-WBFL::Reporting::ReportDescription ReportManagerAgent::GetReportDescription(LPCTSTR strReportName)
+WBFL::ReportMgr::ReportDescription ReportManagerAgent::GetReportDescription(LPCTSTR strReportName)
 {
    return m_pRptMgr->GetReportDescription(strReportName);
 }
 
-WBFL::Reporting::ReportDescription ReportManagerAgent::GetReportDescription(const std::_tstring& strReportName)
+WBFL::ReportMgr::ReportDescription ReportManagerAgent::GetReportDescription(const std::_tstring& strReportName)
 {
    return m_pRptMgr->GetReportDescription(strReportName);
 }
@@ -97,37 +97,37 @@ const CBitmap* ReportManagerAgent::GetMenuBitmap(const std::_tstring& strReportN
    return m_pRptMgr->GetMenuBitmap(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(LPCTSTR strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(LPCTSTR strReportName)
 {
    return m_pRptMgr->GetReportSpecificationBuilder(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(const std::_tstring& strReportName)
+std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(const std::_tstring& strReportName)
 {
    return m_pRptMgr->GetReportSpecificationBuilder(strReportName);
 }
 
-std::shared_ptr<WBFL::Reporting::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(const WBFL::Reporting::ReportDescription& rptDesc)
+std::shared_ptr<WBFL::ReportMgr::ReportSpecificationBuilder> ReportManagerAgent::GetReportSpecificationBuilder(const WBFL::ReportMgr::ReportDescription& rptDesc)
 {
    return m_pRptMgr->GetReportSpecificationBuilder(rptDesc);
 }
 
-void ReportManagerAgent::SetReportBrowserType(WBFL::Reporting::ReportBrowser::Type browserType)
+void ReportManagerAgent::SetReportBrowserType(WBFL::ReportMgr::ReportBrowser::Type browserType)
 {
    m_pRptMgr->SetReportBrowserType(browserType);
 }
 
-WBFL::Reporting::ReportBrowser::Type ReportManagerAgent::GetReportBrowserType() const
+WBFL::ReportMgr::ReportBrowser::Type ReportManagerAgent::GetReportBrowserType() const
 {
    return m_pRptMgr->GetReportBrowserType();
 }
 
-std::shared_ptr<WBFL::Reporting::ReportBrowser> ReportManagerAgent::CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+std::shared_ptr<WBFL::ReportMgr::ReportBrowser> ReportManagerAgent::CreateReportBrowser(HWND hwndParent, DWORD dwStyle, const std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    return m_pRptMgr->CreateReportBrowser(hwndParent, dwStyle, pRptSpec, pRptSpecBuilder);
 }
 
-INT_PTR ReportManagerAgent::DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::Reporting::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::Reporting::ReportSpecificationBuilder>& pRptSpecBuilder)
+INT_PTR ReportManagerAgent::DisplayReportDialog(DWORD flags, const std::shared_ptr<WBFL::ReportMgr::ReportSpecification>& pRptSpec, const std::shared_ptr<const WBFL::ReportMgr::ReportSpecificationBuilder>& pRptSpecBuilder)
 {
    return m_pRptMgr->DisplayReportDialog(flags,pRptSpec,pRptSpecBuilder);
 }

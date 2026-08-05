@@ -46,7 +46,7 @@ static void CheckFailure(HRESULT hr, CString const& message)
 #define CHECK_FAILURE                        CHECK_FAILURE_FILE_LINE(__FILE__, __LINE__)
 #define CHECK_FAILURE_BOOL(value)            CHECK_FAILURE((value) ? S_OK : E_UNEXPECTED)
 
-EdgeReportView::EdgeReportView(WBFL::Reporting::ReportBrowser* parentReportBrowser):
+EdgeReportView::EdgeReportView(WBFL::ReportMgr::ReportBrowser* parentReportBrowser):
    m_pParentReportBrowser(parentReportBrowser)
 {
 }

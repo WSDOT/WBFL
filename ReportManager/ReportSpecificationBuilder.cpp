@@ -27,7 +27,7 @@
 #include "ReportSpecDlg.h"
 
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 // declaration of free functions
 std::shared_ptr<ReportSpecification> DoCreateReportSpec(const ReportDescription& rptDesc, const std::vector<ChapterInfo>& vChInfo);

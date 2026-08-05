@@ -31,7 +31,7 @@ class rptChapter;
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// Abstract factory to create rptChapter objects
       class REPORTMANAGERCLASS ChapterBuilder  

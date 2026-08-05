@@ -28,7 +28,7 @@
 #include <ReportManager\TimeChapterBuilder.h>
 #include <Reporter\Reporter.h>
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 ReportBuilder::ReportBuilder(LPCTSTR strName,bool bHidden,bool bIncludeTimingChapter) :
 m_Name(strName),

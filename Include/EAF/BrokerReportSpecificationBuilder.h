@@ -32,7 +32,7 @@ namespace WBFL
    namespace EAF
    {
       class EAFCLASS BrokerReportSpecificationBuilder :
-         public WBFL::Reporting::ReportSpecificationBuilder
+         public WBFL::ReportMgr::ReportSpecificationBuilder
       {
       public:
          BrokerReportSpecificationBuilder(std::weak_ptr<WBFL::EAF::Broker> pBroker);
@@ -40,8 +40,8 @@ namespace WBFL
          
          inline std::shared_ptr<WBFL::EAF::Broker> GetBroker() const { return m_pBroker.lock(); }
 
-         virtual std::shared_ptr<WBFL::Reporting::ReportSpecification> CreateReportSpec(const WBFL::Reporting::ReportDescription& rptDesc, std::shared_ptr<WBFL::Reporting::ReportSpecification> pRptSpec) const override;
-         virtual std::shared_ptr<WBFL::Reporting::ReportSpecification> CreateDefaultReportSpec(const WBFL::Reporting::ReportDescription& rptDesc) const override;
+         virtual std::shared_ptr<WBFL::ReportMgr::ReportSpecification> CreateReportSpec(const WBFL::ReportMgr::ReportDescription& rptDesc, std::shared_ptr<WBFL::ReportMgr::ReportSpecification> pRptSpec) const override;
+         virtual std::shared_ptr<WBFL::ReportMgr::ReportSpecification> CreateDefaultReportSpec(const WBFL::ReportMgr::ReportDescription& rptDesc) const override;
 
 
       protected:

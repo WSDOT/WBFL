@@ -26,7 +26,7 @@
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       class REPORTMANAGERCLASS IReportView
       {

@@ -33,7 +33,7 @@ class rptReport;
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       /// Creates a rptReport based using the associated ChapterBuilder and ReportSpecification
       class REPORTMANAGERCLASS ReportBuilder  

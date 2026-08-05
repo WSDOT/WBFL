@@ -27,7 +27,7 @@
 using namespace WBFL::EAF;
 
 BrokerReportSpecification::BrokerReportSpecification(const std::_tstring& strReportName, std::weak_ptr<WBFL::EAF::Broker> pBroker) :
-   WBFL::Reporting::ReportSpecification(strReportName)
+   WBFL::ReportMgr::ReportSpecification(strReportName)
 {
    SetBroker(pBroker);
 }
@@ -42,5 +42,5 @@ bool BrokerReportSpecification::IsValid() const
    if ( !m_pBroker.lock() )
       return false;
 
-   return WBFL::Reporting::ReportSpecification::IsValid();
+   return WBFL::ReportMgr::ReportSpecification::IsValid();
 }

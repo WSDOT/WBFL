@@ -34,7 +34,7 @@ class TweakIESettings;
 
 namespace WBFL
 {
-   namespace Reporting
+   namespace ReportMgr
    {
       class ReportBuilderManager;
 

@@ -28,7 +28,7 @@
 #include <Reporter\RcFlowModifier.h>
 
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 LPCTSTR TimeChapterBuilder::GetName() const
 {

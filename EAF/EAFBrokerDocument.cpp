@@ -345,7 +345,7 @@ void CEAFBrokerDocument::InitAgents()
       GET_IFACE(IEAFReportManager, reportManager);
       CEAFApp* pApp = EAFGetApp();
       auto strBrowserType = pApp->GetProfileString(_T("Settings"), _T("ReportBrowser"), _T("IE"));
-      WBFL::Reporting::ReportBrowser::Type browserType = (strBrowserType.CompareNoCase(_T("IE")) == 0 ? WBFL::Reporting::ReportBrowser::Type::IE : WBFL::Reporting::ReportBrowser::Type::Edge);
+      WBFL::ReportMgr::ReportBrowser::Type browserType = (strBrowserType.CompareNoCase(_T("IE")) == 0 ? WBFL::ReportMgr::ReportBrowser::Type::IE : WBFL::ReportMgr::ReportBrowser::Type::Edge);
       reportManager->SetReportBrowserType(browserType);
    }
 
@@ -1114,7 +1114,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
          if (itfnd == m_BuiltInReportNames.end())
          {
             // Remove report if it's not built in. ptr release should delete it.
-            std::shared_ptr<WBFL::Reporting::ReportBuilder> ptr = reportManager->RemoveReportBuilder(rName.c_str());
+            std::shared_ptr<WBFL::ReportMgr::ReportBuilder> ptr = reportManager->RemoveReportBuilder(rName.c_str());
          }
 
          itn++;
@@ -1132,18 +1132,18 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
       if ( itfnd == m_BuiltInReportNames.end() )
       {
          // get parent report
-         std::shared_ptr<WBFL::Reporting::ReportBuilder> pParentBuilder = reportManager->GetReportBuilder(rCustom.m_ParentReportName);
+         std::shared_ptr<WBFL::ReportMgr::ReportBuilder> pParentBuilder = reportManager->GetReportBuilder(rCustom.m_ParentReportName);
          if (pParentBuilder)
          {
             // found parent. Now we can create new builder for custom
-            std::shared_ptr<WBFL::Reporting::ReportBuilder> newBuilder( std::make_shared<WBFL::Reporting::ReportBuilder>(rCustom.m_ReportName.c_str()));
+            std::shared_ptr<WBFL::ReportMgr::ReportBuilder> newBuilder( std::make_shared<WBFL::ReportMgr::ReportBuilder>(rCustom.m_ReportName.c_str()));
             newBuilder->SetReportSpecificationBuilder( pParentBuilder->GetReportSpecificationBuilder() );
 
             // Title page
-            std::shared_ptr<WBFL::Reporting::TitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
+            std::shared_ptr<WBFL::ReportMgr::TitlePageBuilder> ptp = pParentBuilder->GetTitlePageBuilder();
             if (ptp)
             {
-               std::shared_ptr<WBFL::Reporting::TitlePageBuilder> pntp( ptp->Clone() );
+               std::shared_ptr<WBFL::ReportMgr::TitlePageBuilder> pntp( ptp->Clone() );
                pntp->SetReportTitle( rCustom.m_ReportName.c_str() );
                newBuilder->SetTitlePageBuilder(pntp);
             }
@@ -1156,7 +1156,7 @@ void CEAFBrokerDocument::IntegrateCustomReports(bool bFirst)
             std::vector<std::_tstring>::iterator itChapName = rCustom.m_Chapters.begin();
             while(itChapName != rCustom.m_Chapters.end())
             {
-               std::shared_ptr<WBFL::Reporting::ChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
+               std::shared_ptr<WBFL::ReportMgr::ChapterBuilder> pChapterB( pParentBuilder->GetChapterBuilder( itChapName->c_str() ) );
                if ( pChapterB )
                {
                   newBuilder->AddChapterBuilder( pChapterB );

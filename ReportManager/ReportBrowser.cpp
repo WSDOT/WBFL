@@ -35,7 +35,7 @@
 #include "IEReportView.h"
 #include "EdgeReportView.h"
 
-using namespace WBFL::Reporting;
+using namespace WBFL::ReportMgr;
 
 void to_upper( std::_tstring::iterator begin,std::_tstring::iterator end)
 {
