@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManagerAgent - Provides report manager as an Agent
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -29,15 +29,31 @@
 // {61C524E8-7D77-4345-8954-B53539516BEB}
 DEFINE_GUID(IID_IEAFReportManager,
    0x61c524e8, 0x7d77, 0x4345, 0x89, 0x54, 0xb5, 0x35, 0x39, 0x51, 0x6b, 0xeb);
+/// @brief Registry of the application's reports. An extension agent uses this to add a brand new
+/// report, or to look up one of the host's existing reports and modify its chapters (see
+/// WBFL::Reporting::ReportBuilder::InsertChapterBuilder/RemoveChapterBuilder).
 class IEAFReportManager
 {
 public:
+   /// @brief Adds a new report to the application. pReportBuilder is moved-from/emptied by this call.
    virtual void AddReportBuilder(std::shared_ptr<WBFL::Reporting::ReportBuilder>&pReportBuilder) = 0;
+
+   /// @brief Number of registered reports
    virtual IndexType GetReportBuilderCount(bool bIncludeHidden = false) const = 0;
+
+   /// @brief Looks up a registered report by name - including reports registered by other
+   /// agents/extension agents. Use WBFL::Reporting::ReportBuilder::InsertChapterBuilder or
+   /// RemoveChapterBuilder on the result to add or remove chapters from an existing report.
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(LPCTSTR strReportName) = 0;
+   /// @copydoc IEAFReportManager::GetReportBuilder(LPCTSTR)
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> GetReportBuilder(const std::_tstring& strReportName) = 0;
+
+   /// @brief Unregisters and returns a report by name
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(LPCTSTR strReportName) = 0;
+   /// @copydoc IEAFReportManager::RemoveReportBuilder(LPCTSTR)
    virtual std::shared_ptr<WBFL::Reporting::ReportBuilder> RemoveReportBuilder(const std::_tstring& strReportName) = 0;
+
+   /// @brief Names of all registered reports
    virtual std::vector<std::_tstring> GetReportNames(bool bIncludeHidden = false) const = 0;
    virtual WBFL::Reporting::ReportDescription GetReportDescription(LPCTSTR strReportName) = 0;
    virtual WBFL::Reporting::ReportDescription GetReportDescription(const std::_tstring& strReportName) = 0;

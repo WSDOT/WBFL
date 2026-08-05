@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // ReportManager - Manages report definitions
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -68,16 +68,24 @@ namespace WBFL
          /// Returns the title page builder
          std::shared_ptr<TitlePageBuilder> GetTitlePageBuilder();
 
-         /// Adds a chapter builder to generate a chapter for the report
+         /// Adds a chapter builder to generate a chapter for the report. Appends to the end of the
+         /// report's existing chapters - use IEAFReportManager::GetReportBuilder to get a handle on
+         /// another agent's already-registered report before calling this, if extending it rather
+         /// than building a brand new one.
          void AddChapterBuilder(std::shared_ptr<ChapterBuilder> pChapterBuilder);
 
-         /// Inserts a chapter builder after the chapter builder with the specified key
+         /// Inserts a chapter builder into this report after the chapter builder with the specified
+         /// key. This is how an extension agent adds a chapter to a report defined by another
+         /// agent: look the report up by name with IEAFReportManager::GetReportBuilder, then call
+         /// this on the result.
          bool InsertChapterBuilder(
             std::shared_ptr<ChapterBuilder> pChapterBuilder, ///< A new chapter builder
             LPCTSTR strKey ///< Chapter builder key of the chapter builder after which the new chapter builder is inserted
          );
 
-         /// Removes a chapter builder with the specified key
+         /// Removes a chapter builder with the specified key. This is how an extension agent
+         /// removes a chapter from a report defined by another agent - look the report up by name
+         /// with IEAFReportManager::GetReportBuilder, then call this on the result.
          /// \return true if successful
          bool RemoveChapterBuilder(LPCTSTR strKey);
 

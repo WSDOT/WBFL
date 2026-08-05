@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -36,24 +36,28 @@
 // Use this interface to register and create views
 
 // {2ED5504D-7D5B-4d39-BCE0-9F4A1DDCA481}
-DEFINE_GUID(IID_IEAFViewRegistrar, 
+DEFINE_GUID(IID_IEAFViewRegistrar,
 0x2ed5504d, 0x7d5b, 0x4d39, 0xbc, 0xe0, 0x9f, 0x4a, 0x1d, 0xdc, 0xa4, 0x81);
+/// @brief Registers a custom CView/CFrameWnd pair so an extension agent can open its own views,
+/// the same way PGSuper's built-in report and graph views are opened.
 interface IEAFViewRegistrar
 {
-   // Registers a view class and its associated frame class. Returns the view key
+   /// @brief Registers a view class and its associated frame class.
+   /// @return A view key used with the other IEAFViewRegistrar methods and with CreateView.
    virtual long RegisterView(UINT nResourceID,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback,CRuntimeClass* pFrameClass,CRuntimeClass* pViewClass,HMENU hSharedMenu=nullptr,int maxViewCount = -1) = 0;
 
-   // Removes a previously registered view
+   /// @brief Removes a previously registered view
    virtual void RemoveView(long key) = 0;
 
-   // Creates a view. pData is a pointer to user defined view creation data. During view creation
-   // the view class can get access to the creation data from the active document template
+   /// @brief Creates an instance of a registered view. pData is a pointer to user defined view
+   /// creation data; the view class can get access to it from the active document template
+   /// during view creation.
    virtual CView* CreateView(long key,LPVOID pData=0) = 0;
 
-   // Calls OnUpdate for a registered view
+   /// @brief Calls OnUpdate for a registered view
    virtual void UpdateRegisteredView(long key,CView* pSender,LPARAM lHint,CObject* pHint) = 0;
 
-   // Returns all instances of a registered view
+   /// @brief Returns all open instances of a registered view
    virtual std::vector<CView*> GetRegisteredView(long key) = 0;
 };
 
@@ -63,13 +67,17 @@ interface IEAFViewRegistrar
 // Use this interface to get access to the main menu object
 
 // {35A2295C-C062-4bfe-B86F-86A6333C2D7B}
-DEFINE_GUID(IID_IEAFMainMenu, 
+DEFINE_GUID(IID_IEAFMainMenu,
 0x35a2295c, 0xc062, 0x4bfe, 0xb8, 0x6f, 0x86, 0xa6, 0x33, 0x3c, 0x2d, 0x7b);
 struct __declspec(uuid("{35A2295C-C062-4bfe-B86F-86A6333C2D7B}")) IEAFMainMenu;
+/// @brief Gives an extension agent access to the application's main menu so it can add its own
+/// menus/commands, and lets it build ad-hoc context menus.
 interface IEAFMainMenu
 {
-   // returns the applications main menu
+   /// @brief Returns the application's main menu
    virtual std::shared_ptr<WBFL::EAF::Menu> GetMainMenu() = 0;
+
+   /// @brief Creates a new, empty context (popup) menu
    virtual std::shared_ptr<WBFL::EAF::Menu> CreateContextMenu() = 0;
 };
 
@@ -79,18 +87,20 @@ interface IEAFMainMenu
 // Use this interface to create toolbars
 
 // {F8D84C5E-DEE9-4bfb-9C97-D4EEEAD610A6}
-DEFINE_GUID(IID_IEAFToolbars, 
+DEFINE_GUID(IID_IEAFToolbars,
 0xf8d84c5e, 0xdee9, 0x4bfb, 0x9c, 0x97, 0xd4, 0xee, 0xea, 0xd6, 0x10, 0xa6);
 struct __declspec(uuid("{F8D84C5E-DEE9-4bfb-9C97-D4EEEAD610A6}")) IEAFToolbars;
+/// @brief Lets an extension agent create and manage its own toolbars.
 interface IEAFToolbars
 {
-   // Creates a new, empty toolbar. Returns the Toolbar ID
+   /// @brief Creates a new, empty toolbar.
+   /// @return The new toolbar's ID
    virtual UINT CreateToolBar(LPCTSTR lpszName) = 0;
 
-   // Returns a previously created toolbar
+   /// @brief Returns a previously created toolbar by ID
    virtual std::shared_ptr<WBFL::EAF::ToolBar> GetToolBar(UINT toolbarID) = 0;
 
-   // Destroys a toolbar by ID
+   /// @brief Destroys a toolbar by ID
    virtual void DestroyToolBar(UINT toolbarID) = 0;
 };
 
@@ -100,21 +110,22 @@ interface IEAFToolbars
 // Use this interface to manage accelerator table entries
 
 // {2D663F88-1B17-4d1b-9DE8-8CD06050E2C2}
-DEFINE_GUID(IID_IEAFAcceleratorTable, 
+DEFINE_GUID(IID_IEAFAcceleratorTable,
 0x2d663f88, 0x1b17, 0x4d1b, 0x9d, 0xe8, 0x8c, 0xd0, 0x60, 0x50, 0xe2, 0xc2);
 struct __declspec(uuid("{2D663F88-1B17-4d1b-9DE8-8CD06050E2C2}")) IEAFAcceleratorTable;
+/// @brief Lets an extension agent add keyboard-accelerator entries for its own commands.
 interface IEAFAcceleratorTable
 {
-   // Adds an accelerator table
+   /// @brief Adds an entire accelerator table
    virtual BOOL AddAccelTable(HACCEL hAccel,std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
-   // Adds an accelerator key
+   /// @brief Adds a single accelerator key
    virtual BOOL AddAccelKey(BYTE fVirt,WORD key,WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
-   // Removes an accelerator key by command
+   /// @brief Removes an accelerator key by command ID
    virtual BOOL RemoveAccelKey(WORD cmd, std::shared_ptr<WBFL::EAF::ICommandCallback> pCallback) = 0;
 
-   // Removes an accelerator key by key combination
+   /// @brief Removes an accelerator key by key combination
    virtual BOOL RemoveAccelKey(BYTE fVirt,WORD key) = 0;
 };
 

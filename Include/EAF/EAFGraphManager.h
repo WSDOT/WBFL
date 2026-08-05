@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GraphManagerAgent - Provides Graph manager as an Agent
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -26,20 +26,37 @@
 #include <Graphing/GraphBuilder.h>
 
 // {FBA71046-0C05-4946-83DD-4C71A973C18D}
-DEFINE_GUID(IID_IEAFGraphManager, 
+DEFINE_GUID(IID_IEAFGraphManager,
 0xfba71046, 0xc05, 0x4946, 0x83, 0xdd, 0x4c, 0x71, 0xa9, 0x73, 0xc1, 0x8d);
+/// @brief Registry of the application's graphs. An extension agent uses this to add its own graphs
+/// to the Graphs menu/view.
 class IEAFGraphManager
 {
 public:
+   /// @brief Controls whether registered graphs are listed alphabetically (true) or in registration order (false)
    virtual void SortByName(bool bSort) = 0;
+
+   /// @brief Adds a new graph, copying pRptBuilder
    virtual bool AddGraphBuilder(const WBFL::Graphing::GraphBuilder& pRptBuilder) = 0;
+   /// @brief Adds a new graph, taking ownership of pGraphBuilder
    virtual bool AddGraphBuilder(std::unique_ptr<WBFL::Graphing::GraphBuilder>&& pGraphBuilder) = 0;
+
+   /// @brief Number of registered graphs
    virtual IndexType GetGraphBuilderCount() const = 0;
+
+   /// @brief Looks up a registered graph by index
    virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(IndexType index) = 0;
+   /// @brief Looks up a registered graph by name - including graphs registered by other agents/extension agents
    virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(LPCTSTR strGraphName) = 0;
+   /// @copydoc IEAFGraphManager::GetGraphBuilder(LPCTSTR)
    virtual WBFL::Graphing::GraphBuilder& GetGraphBuilder(const std::_tstring& strGraphName) = 0;
+
+   /// @brief Unregisters and returns a graph by name
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(LPCTSTR strGraphName) = 0;
+   /// @copydoc IEAFGraphManager::RemoveGraphBuilder(LPCTSTR)
    virtual std::unique_ptr<WBFL::Graphing::GraphBuilder> RemoveGraphBuilder(const std::_tstring& strGraphName) = 0;
+
+   /// @brief Names of all registered graphs
    virtual std::vector<std::_tstring> GetGraphNames() const = 0;
    virtual const CBitmap* GetMenuBitmap(LPCTSTR strGraphName) = 0;
    virtual const CBitmap* GetMenuBitmap(const std::_tstring& strGraphName) = 0;
