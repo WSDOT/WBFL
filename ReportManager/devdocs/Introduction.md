@@ -16,6 +16,8 @@ ReportBuilder objects create WBFL::Reports::Report objects based on a user suppl
 
 A ReportSpecification defines the chapters to be included in a report, chapter reporting level, and other report content such as headers and footers.
 
+@subpage WBFL_Reporting_Specifications
+
 Dependencies
 ------------
 The ReportManager library has additional dependencies for the WebView2 browser control. 
