@@ -68,9 +68,13 @@ public:
     virtual DROPEFFECT CanDrop(COleDataObject* pDataObject, DWORD dwKeyState, const WBFL::Geometry::Point2d& point);
     virtual void OnDropped(COleDataObject* pDataObject, DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
 
+    bool IsDraggable();
+
 protected:
 
     void SetWorldViewRect(const WBFL::Geometry::Rect2d& rect);
+
+	void DisableDragDrop();
 
     // current mapping
     std::shared_ptr<WBFL::DManip::iMapping>        m_pMapping;
@@ -84,6 +88,8 @@ protected:
 
     bool m_IsPrinting;
     CRect m_PrintingRect;
+
+    bool m_bDraggable = true;
 
 
 public:

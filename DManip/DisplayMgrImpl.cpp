@@ -72,10 +72,13 @@ void DisplayMgr::SetDisplay(CDisplay* pDisp)
 
    m_pDisp = pDisp;
 
-   // If this VERIFY fails, you most likely initialized COM with
-   // CoInitialize instead of OleInitialize. You must use
-   // OleInitialize for drag and drop to work
-   VERIFY( m_DropTarget.Register(m_pDisp->GetWnd()) );
+   if (m_pDisp->IsDraggable())
+   {
+       // If this VERIFY fails, you most likely initialized COM with
+       // CoInitialize instead of OleInitialize. You must use
+       // OleInitialize for drag and drop to work
+       VERIFY(m_DropTarget.Register(m_pDisp->GetWnd()));
+   }
 }
 
 CDisplay* DisplayMgr::GetDisplay()

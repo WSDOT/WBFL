@@ -67,8 +67,8 @@ CDisplayWnd::CDisplayWnd()
 {
    m_pDispMgr = WBFL::DManip::DisplayMgr::Create();
 
-   // do NOT call SetDisplay here - window not created yet, registration fails
-   m_pDispMgr->SetDisplay(this);////////////// be careful. This is in OnCreaate (although never called)
+   this->DisableDragDrop(); // disable drag and drop for this window
+   m_pDispMgr->SetDisplay(this);////////////// be careful. This is in OnCreaate (although never called in CWnd)
 
    auto task_factory = std::make_shared<WBFL::DManip::TaskFactory>();
    m_pDispMgr->SetTaskFactory(task_factory);

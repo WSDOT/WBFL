@@ -90,6 +90,16 @@ void CDisplay::SetWorldViewRect(const WBFL::Geometry::Rect2d& rect)
 	m_pMapping->SetWorldExt(rect.Width(), rect.Height());
 }
 
+void CDisplay::DisableDragDrop()
+{
+	m_bDraggable = false;
+}
+
+bool CDisplay::IsDraggable()
+{
+	return m_bDraggable;
+}
+
 void CDisplay::Zoom(CRect rect, bool reDraw)
 {
 	rect.NormalizeRect();
