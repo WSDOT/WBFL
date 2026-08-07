@@ -96,10 +96,16 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias se
 
       if (m_InteriorPierXs >= 0 && !IsZero(m_WebThickeningWidth))
       {
-         Float64 deltaW;
-         ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
-            m_WebThickeningLength, m_WebThickeningTransitionLength, &deltaW);
-         ::AdjustForWebThickening(newBeam, deltaW);
+         Float64 T1; newBeam->get_T1(&T1);
+         Float64 T2; newBeam->get_T2(&T2);
+         Float64 T = max(T1, T2);
+         if (m_WebThickeningWidth > T)
+         {
+            Float64 tWeb;
+            ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
+               m_WebThickeningLength, m_WebThickeningTransitionLength, &tWeb);
+            ::AdjustForWebThickening(newBeam, tWeb);
+         }
       }
 
       CComPtr<IPoint2d> pnt;

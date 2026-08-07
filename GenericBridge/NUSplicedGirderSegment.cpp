@@ -96,10 +96,14 @@ HRESULT CNUSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias section
 
       if (m_InteriorPierXs >= 0 && !IsZero(m_WebThickeningWidth))
       {
-         Float64 deltaW;
-         ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
-            m_WebThickeningLength, m_WebThickeningTransitionLength, &deltaW);
-         ::AdjustForWebThickening(newBeam, deltaW);
+         Float64 nominalT; newBeam->get_T(&nominalT);
+         if (m_WebThickeningWidth > nominalT)
+         {
+            Float64 tWeb;
+            ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
+               m_WebThickeningLength, m_WebThickeningTransitionLength, &tWeb);
+            ::AdjustForWebThickening(newBeam, tWeb);
+         }
       }
 
       CComPtr<IPoint2d> pnt;

@@ -141,8 +141,6 @@
     <None Include="res\ReportManager.rc2">
       <Filter>Resource Files</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

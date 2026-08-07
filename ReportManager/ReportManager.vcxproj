@@ -212,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="ReportManager.def" />
+    <None Include="packages.config" />
     <None Include="res\ReportManager.rc2" />
   </ItemGroup>
   <ItemGroup>
@@ -268,5 +269,5 @@
   </Target>
   <PropertyGroup>
     <WebView2LoaderPreference>Static</WebView2LoaderPreference>
-</PropertyGroup>
+  </PropertyGroup>
 </Project>

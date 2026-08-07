@@ -72,10 +72,10 @@ void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Fl
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
 Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs,Float64 Ls,Float64 precamber);
 
-void WBFLGENERICBRIDGEFUNC GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 thickeningWidth, Float64 thickeningLength, Float64 transitionLength, Float64* pDeltaW);
-void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam* pBeam, Float64 deltaW);
-void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam2* pBeam, Float64 deltaW);
-void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(INUBeam* pBeam, Float64 deltaW);
+void WBFLGENERICBRIDGEFUNC GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 maxTWeb, Float64 thickeningLength, Float64 transitionLength, Float64* pTWeb);
+void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam* pBeam, Float64 tWeb);
+void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam2* pBeam, Float64 tWeb);
+void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(INUBeam* pBeam, Float64 tWeb);
 
 Float64 WBFLGENERICBRIDGEFUNC ComputeHaunchDepthAlongSegment(Float64 distAlongSegment, Float64 segmentLength, const std::vector<Float64>& vHaunchDepths);
 
