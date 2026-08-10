@@ -20,3 +20,5 @@ The WBFL EAF Library provides an Extensible Application Framework. The framework
 
 @subpage WBFL_EAF_CommandLine
 
+@subpage WBFL_EAF_StartPage
+

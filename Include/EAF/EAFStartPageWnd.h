@@ -29,11 +29,10 @@
 
 /////////////////////////////////////////////////////////////////////////////
 // CEAFStartPageWnd frame
-//
-// Base class for the main frame start page. Derive your start page window
-// class from this base and create it in your override of 
-// CEAFMainFrame::CreateStartPage
 
+/// @brief Base class for the main frame start page. Derive your start page window
+/// class from this base and create it in your override of
+/// CEAFMainFrame::CreateStartPage
 class EAFCLASS CEAFStartPageWnd : public CMDIChildWnd
 {
 public:

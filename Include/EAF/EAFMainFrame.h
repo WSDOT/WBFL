@@ -82,9 +82,21 @@ public:
    void ShowMainFrameToolBar();
 
    // Start Page handling
+
+   /// @brief Sets whether the start page should remain open when HideStartPage() is called
+   /// @param bKeepOpen TRUE to keep the start page open, FALSE to allow it to be hidden
+   /// @return The previous value of this setting
    BOOL KeepStartPageOpen(BOOL bKeepOpen);
+
+   /// @brief Indicates whether the start page is kept open when HideStartPage() is called
+   /// @return TRUE if the start page is kept open, otherwise FALSE
    BOOL KeepStartPageOpen() const;
+
+   /// @brief Shows the start page. The first call creates the start page window by calling
+   /// CreateStartPage(); subsequent calls simply un-hide the existing window
    void ShowStartPage();
+
+   /// @brief Hides the start page window, unless KeepStartPageOpen() is set to TRUE
    void HideStartPage();
 
    UINT CreateToolBar(LPCTSTR lpszName, std::shared_ptr<WBFL::EAF::PluginCommandManager> pCmdMgr);
@@ -160,10 +172,28 @@ protected:
    virtual CEAFStatusBar* CreateStatusBar();
    virtual CToolBar* CreateMainFrameToolBar();
 
+   /// @brief Creates the start page window. Override this method in your CEAFMainFrame-derived
+   /// main frame class to supply a CEAFStartPageWnd-derived window for your application's start
+   /// page. Construct the window but do not call Create() on it - the framework does that for
+   /// you. The default implementation returns nullptr, meaning the application has no start page.
+   /// @return The start page window, or nullptr if the application has no start page
    virtual std::shared_ptr<CEAFStartPageWnd> CreateStartPage();
+
+private:
+   /// @brief Lays out the start page window within the main frame's client area. Called
+   /// automatically by the framework; not intended to be overridden.
    void ResizeStartPage();
+
+   /// @brief Closes and releases the start page window. Called automatically by the framework;
+   /// not intended to be overridden.
    void DestroyStartPage();
+
+   /// @brief The start page window created by CreateStartPage(), or nullptr if the application
+   /// has no start page or the start page has not yet been created
    std::shared_ptr<CEAFStartPageWnd> m_pStartPageWnd;
+
+   /// @brief Indicates whether the start page should remain open (visible) when HideStartPage()
+   /// is called
    BOOL m_bKeepStartPageOpen;
 
 
