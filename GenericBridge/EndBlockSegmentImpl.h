@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // GenericBridge - Generic Bridge Modeling Framework
-// Copyright © 1999-2026, Washington State Department of Transportation, All Rights Reserved
+// Copyright ï¿½ 1999-2026, Washington State Department of Transportation, All Rights Reserved
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -538,9 +538,9 @@ public:
       // CL Pier   End of segment
       // |         |       CL Bearing
       // | (0,0)   |       |
-      // *         +-------+---------------\  
+      // *         +-------+---------------\
       // |         |       .               /
-      // |         +-------+---------------\  
+      // |         +-------+---------------\
       //
       //          Elevation View
 
