@@ -1157,11 +1157,6 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
          CComPtr<IGirderLine> girderLine;
          segment->get_GirderLine(&girderLine);
 
-         if (segIdx == 0 )
-         {
-            girderLine->get_BearingOffset(etStart,&brgOffset);
-            girderLine->get_EndDistance(etStart,&endDist);
-         }
 
          // get station range for segment
          // can't use pier stations because they don't account for skew and offset from alignment
@@ -1183,11 +1178,18 @@ STDMETHODIMP CSectionCutTool::CreateBridgeSection(IGenericBridge* bridge,Float64
 
          if ( ::InRange(startStation,target_station,endStation) )
          {
-            Float64 dist_from_start_of_segment = target_station - startStation;
+            Float64 dist_from_start_of_segment = target_station - startStation; // this is distance in stations, need distance along segment
+
+            Float64 fra = dist_from_start_of_segment / (endStation - startStation); // use the same proportion to get the distance along the girder line
+
+            Float64 Lg;
+            girderLine->get_GirderLength(&Lg); // this is actually the segment.
+
+            Float64 Xs = fra * Lg; // distace along segment
 
             // Create a noncomposite section for the segment that is being cut
             CComPtr<ISection> girder_section;
-            CreateNoncompositeSection(bridge,ssMbrID,segIdx,dist_from_start_of_segment,sectionBias,cstBridge,stageIdx,spmGross,&girder_section);
+            CreateNoncompositeSection(bridge,ssMbrID,segIdx,Xs,sectionBias,cstBridge,stageIdx,spmGross,&girder_section);
 
             if ( girder_section == nullptr )
             {
