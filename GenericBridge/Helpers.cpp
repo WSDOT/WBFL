@@ -743,7 +743,7 @@ Float64 ComputePrecamber(Float64 Xs, Float64 Ls, Float64 precamber)
    return (4 * precamber / Ls)*Xs*(1 - Xs / Ls);
 }
 
-void GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 maxTWeb, Float64 thickeningLength, Float64 transitionLength, Float64* pTWeb)
+void GetWebThickeningWidth(Float64 Xs, Float64 Xpier, SectionBias sectionBias, Float64 maxTWeb, Float64 thickeningLength, Float64 transitionLength, Float64* pTWeb)
 {
    *pTWeb = 0.0;
    if (IsZero(maxTWeb))
@@ -752,13 +752,36 @@ void GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 maxTWeb, Float64 t
    }
 
    Float64 d = fabs(Xs - Xpier);
-   if (d <= thickeningLength)
+   if (d < thickeningLength)
    {
+      // in full thickening zone
       *pTWeb = maxTWeb;
    }
-   else if (!IsZero(transitionLength) && d <= thickeningLength + transitionLength)
+   else
    {
-      *pTWeb = maxTWeb * (1.0 - (d - thickeningLength) / transitionLength);
+      if (IsZero(transitionLength))
+      {
+         // need to account for jump
+         if (IsEqual(d, thickeningLength))
+         {
+            if (Xpier-Xs > 0.0)
+            {
+               *pTWeb = sectionBias == sbLeft ? 0.0 : maxTWeb;
+            }
+            else
+            {
+               *pTWeb = sectionBias == sbLeft ? maxTWeb : 0.0;
+            }
+         }
+         else
+         {
+            *pTWeb = 0.0;
+         }
+      }
+      else if (d <= thickeningLength + transitionLength)
+      {
+         *pTWeb = maxTWeb * (1.0 - (d - thickeningLength) / transitionLength);
+      }
    }
 }
 
@@ -784,6 +807,7 @@ void AdjustForWebThickening(INUBeam* pBeam, Float64 tWeb)
 {
    if (IsZero(tWeb)) return;
 
+   // Logic for web thickening is the same as for end blocks
    pBeam->put_EndBlock(tWeb);
 }
 

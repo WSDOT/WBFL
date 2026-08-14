@@ -102,7 +102,7 @@ HRESULT CFlangedSplicedGirderSegment::GetPrimaryShape(Float64 Xs, SectionBias se
          if (m_WebThickeningWidth > T)
          {
             Float64 tWeb;
-            ::GetWebThickeningWidth(Xs, m_InteriorPierXs, m_WebThickeningWidth,
+            ::GetWebThickeningWidth(Xs, m_InteriorPierXs, sectionBias, m_WebThickeningWidth,
                m_WebThickeningLength, m_WebThickeningTransitionLength, &tWeb);
             ::AdjustForWebThickening(newBeam, tWeb);
          }

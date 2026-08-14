@@ -72,7 +72,7 @@ void WBFLGENERICBRIDGEFUNC AdjustForVariableDepth(INUBeam* pBeam, Float64 Hg, Fl
 Float64 WBFLGENERICBRIDGEFUNC ComputeTopFlangeThickening(Float64 Xs, Float64 Ls, ThickeningType thickeningType, Float64 tft);
 Float64 WBFLGENERICBRIDGEFUNC ComputePrecamber(Float64 Xs,Float64 Ls,Float64 precamber);
 
-void WBFLGENERICBRIDGEFUNC GetWebThickeningWidth(Float64 Xs, Float64 Xpier, Float64 maxTWeb, Float64 thickeningLength, Float64 transitionLength, Float64* pTWeb);
+void WBFLGENERICBRIDGEFUNC GetWebThickeningWidth(Float64 Xs, Float64 Xpier, SectionBias sectionBias, Float64 maxTWeb, Float64 thickeningLength, Float64 transitionLength, Float64* pTWeb);
 void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam* pBeam, Float64 tWeb);
 void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(IPrecastBeam2* pBeam, Float64 tWeb);
 void WBFLGENERICBRIDGEFUNC AdjustForWebThickening(INUBeam* pBeam, Float64 tWeb);
