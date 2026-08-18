@@ -28,5 +28,5 @@
 #include <targetver.h>
 
 #ifndef _WBFL_VERSION
-#define _WBFL_VERSION 903 // version 9.0.3
+#define _WBFL_VERSION 904 // version 9.0.4
 #endif 
