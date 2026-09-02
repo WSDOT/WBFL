@@ -212,6 +212,9 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\RCCapacity\RCCapacity.vcxproj">
+      <Project>{49cf0439-37d0-434b-a40c-629932b9a74b}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AlternativeTensileStressCalculator.cpp" />
