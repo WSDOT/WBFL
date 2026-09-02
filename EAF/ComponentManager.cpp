@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright Â© 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -143,12 +143,12 @@ bool ComponentManager::IsClassOfCategory(CLSID clsid, CATID catid) const
 }
 
 template <class T>
-typename boost::dll::detail::import_type<T>::type get_factory_method(const boost::dll::fs::path& lib,
+boost::dll::detail::import_type<T> get_factory_method(const boost::dll::fs::path& lib,
    boost::dll::load_mode::type mode = boost::dll::load_mode::default_mode)
 {
-   typedef typename boost::dll::detail::import_type<T>::base_type type;
+   using type = boost::dll::detail::import_type<T>;
 
-   boost::shared_ptr<boost::dll::shared_library> p = boost::make_shared<boost::dll::shared_library>(lib, mode);
+   auto p = boost::dll::detail::make_shared<boost::dll::shared_library>(lib, mode);
    auto f = p->get<T*>("create_class_object");
    if (f == nullptr)
    {
