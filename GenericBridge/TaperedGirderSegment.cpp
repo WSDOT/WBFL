@@ -438,9 +438,9 @@ STDMETHODIMP CTaperedGirderSegment::get_Profile(VARIANT_BOOL bIncludeClosure,ISh
    // CL Pier   Start of segment
    // |         |       CL Bearing
    // |(0,0)    |       |
-   // *         +-------+---------------\  
+   // *         +-------+---------------\
    // |         |       .               /
-   // |         +-------+---------------\  
+   // |         +-------+---------------\
    //
    //          Elevation View
 
