@@ -461,6 +461,8 @@ library WBFLGenericBridge
 		[propput, helpstring("property Name")] HRESULT Name([in] BSTR name);
 		[propget, helpstring("property UltimateStrength")] HRESULT UltimateStrength([out,retval] Float64* fpu);
 		[propput, helpstring("property UltimateStrength")] HRESULT UltimateStrength([in] Float64 fpu);
+		[propget, helpstring("property Es")] HRESULT Es([out, retval]Float64* Es);
+		[propput, helpstring("property Es")] HRESULT Es([in]Float64 Es);
 		[propget, helpstring("property YieldStrength")] HRESULT YieldStrength([out,retval] Float64* fpy);
 		[propput, helpstring("property YieldStrength")] HRESULT YieldStrength([in] Float64 fpy);
 		[propget, helpstring("property NominalDiameter")] HRESULT NominalDiameter([out,retval] Float64* db);

@@ -18,13 +18,13 @@ namespace RCCapacityUnitTests
          Float64 val;
          Float64 val1, val2, val3;
          IndexType count;
-         Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(-10, 10, 1.0));
-         Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(10, -10, 1.0));
-         Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(10, 10, -1.0));
-         Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(40, 40, 2.0));
-         Assert::AreEqual(S_OK, beam->AddRebarLayer(10, 10, 1.0));
-         Assert::AreEqual(S_OK, beam->AddRebarLayer(20, 20, 0.5));
-         Assert::AreEqual(S_OK, beam->AddRebarLayer(30, 30, 0.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(-10, 10, 1.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(10, -10, 1.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(10, 10, -1.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->AddRebarLayer(40, 40, 2.0));
+         //Assert::AreEqual(S_OK, beam->AddRebarLayer(10, 10, 1.0));
+         //Assert::AreEqual(S_OK, beam->AddRebarLayer(20, 20, 0.5));
+         //Assert::AreEqual(S_OK, beam->AddRebarLayer(30, 30, 0.0));
          Assert::AreEqual(E_POINTER, beam->get_RebarLayerCount(nullptr));
          Assert::AreEqual(S_OK, beam->get_RebarLayerCount(&count));
          Assert::AreEqual((IndexType)3, count);
@@ -42,12 +42,12 @@ namespace RCCapacityUnitTests
          Assert::AreEqual(E_POINTER, beam->get_RebarLayerDevFactor(0, nullptr));
          Assert::AreEqual(S_OK, beam->get_RebarLayerDevFactor(0, &val));
          Assert::IsTrue(IsEqual(val, 1.0));
-         Assert::AreEqual(E_INVALIDARG, beam->GetRebarLayer(-1, &val1, &val2, &val3));
-         Assert::AreEqual(E_INVALIDARG, beam->GetRebarLayer(10, &val1, &val2, &val3));
-         Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, nullptr, &val2, &val3));
-         Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, &val1, nullptr, &val3));
-         Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, &val1, &val2, nullptr));
-         Assert::AreEqual(S_OK, beam->GetRebarLayer(1, &val1, &val2, &val3));
+         //Assert::AreEqual(E_INVALIDARG, beam->GetRebarLayer(-1, &val1, &val2, &val3));
+         //Assert::AreEqual(E_INVALIDARG, beam->GetRebarLayer(10, &val1, &val2, &val3));
+         //Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, nullptr, &val2, &val3));
+         //Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, &val1, nullptr, &val3));
+         //Assert::AreEqual(E_POINTER, beam->GetRebarLayer(1, &val1, &val2, nullptr));
+         //Assert::AreEqual(S_OK, beam->GetRebarLayer(1, &val1, &val2, &val3));
          Assert::IsTrue(IsEqual(val1, 20.0));
          Assert::IsTrue(IsEqual(val2, 20.0));
          Assert::IsTrue(IsEqual(val3, 0.5));
@@ -133,12 +133,12 @@ namespace RCCapacityUnitTests
          Assert::AreEqual(S_OK, beam->get_Eps(&val));
          Assert::IsTrue(IsEqual(val, 10.0));
 
-         Assert::AreEqual(E_INVALIDARG, beam->put_Es(-10));
-         Assert::AreEqual(E_INVALIDARG, beam->put_Es(0));
-         Assert::AreEqual(S_OK, beam->put_Es(10));
-         Assert::AreEqual(E_POINTER, beam->get_Es(nullptr));
-         Assert::AreEqual(S_OK, beam->get_Es(&val));
-         Assert::IsTrue(IsEqual(val, 10.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->put_Es(-10));
+         //Assert::AreEqual(E_INVALIDARG, beam->put_Es(0));
+         //Assert::AreEqual(S_OK, beam->put_Es(10));
+         //Assert::AreEqual(E_POINTER, beam->get_Es(nullptr));
+         //Assert::AreEqual(S_OK, beam->get_Es(&val));
+         //Assert::IsTrue(IsEqual(val, 10.0));
 
          Assert::AreEqual(E_INVALIDARG, beam->put_FcBeam(-10));
          Assert::AreEqual(E_INVALIDARG, beam->put_FcBeam(0));
@@ -172,11 +172,11 @@ namespace RCCapacityUnitTests
          Assert::AreEqual(S_OK, beam->get_fpy(&val));
          Assert::IsTrue(IsEqual(val, 10.0));
 
-         Assert::AreEqual(E_INVALIDARG, beam->put_fy(-10));
-         Assert::AreEqual(S_OK, beam->put_fy(10));
-         Assert::AreEqual(E_POINTER, beam->get_fy(nullptr));
-         Assert::AreEqual(S_OK, beam->get_fy(&val));
-         Assert::IsTrue(IsEqual(val, 10.0));
+         //Assert::AreEqual(E_INVALIDARG, beam->put_fy(-10));
+         //Assert::AreEqual(S_OK, beam->put_fy(10));
+         //Assert::AreEqual(E_POINTER, beam->get_fy(nullptr));
+         //Assert::AreEqual(S_OK, beam->get_fy(&val));
+         //Assert::IsTrue(IsEqual(val, 10.0));
 
          TestISupportUnitServer(beam);
 

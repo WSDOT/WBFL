@@ -196,7 +196,7 @@ void RCBeamToRCBeam2Ex(IRCBeam* rcbeam,IRCBeam2Ex** rcbeam2)
 
    rcbeam->get_ds(&ds);
    rcbeam->get_As(&As);
-   (*rcbeam2)->AddRebarLayer(ds,As,1.0);
+   (*rcbeam2)->AddRebarLayer(ds,As,0,0,1.0); // fix
 
    rcbeam->get_dps(&dps);
    rcbeam->get_Aps(&Aps);
@@ -248,11 +248,9 @@ void RCBeam2ToRCBeam2Ex(IRCBeam2* rcbeam,IRCBeam2Ex** rcbeam2)
    Float64 fy;
    rcbeam->get_fpy(&fpy);
    rcbeam->get_fpu(&fpu);
-   rcbeam->get_fy(&fy);
 
    (*rcbeam2)->put_fpy(fpy);
    (*rcbeam2)->put_fpu(fpu);
-   (*rcbeam2)->put_fy(fy);
 
    Float64 fpe;
    Float64 fcSlab, fcBeam;
@@ -262,9 +260,9 @@ void RCBeam2ToRCBeam2Ex(IRCBeam2* rcbeam,IRCBeam2Ex** rcbeam2)
    rcbeam->get_RebarLayerCount(&nRebarLayers);
    for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
-      Float64 ds,As,devFactor;
-      rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
-      (*rcbeam2)->AddRebarLayer(ds,As,devFactor);
+      Float64 ds,As,Es,fy,devFactor;
+      rcbeam->GetRebarLayer(rebar,&ds,&As,&Es,&fy,&devFactor);
+      (*rcbeam2)->AddRebarLayer(ds,As,Es,fy,devFactor);
    }
 
    IndexType nStrandLayers;

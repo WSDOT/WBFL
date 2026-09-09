@@ -71,7 +71,6 @@ END_COM_MAP()
    VARIANT_BOOL m_bCflangeOverhangOnly;
 
    void InitStrandModel(IStressStrain** model,Float64 fpu,Float64 Eps);
-   void InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es);
 
 // IRCSolver
 public:
@@ -93,8 +92,8 @@ public:
 	STDMETHOD(put_IsCflangeOverhangOnly)(/*[in]*/ VARIANT_BOOL newVal) override;
    STDMETHOD(putref_StrandModel)(/*[in]*/ IStressStrain* model) override;
    STDMETHOD(get_StrandModel)(/*[out,retval]*/ IStressStrain* *model) override;
-   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model) override;
-   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain* *model) override;
    STDMETHOD(put_UnitMode)(/*[in]*/ SpecUnitType unitMode) override;
    STDMETHOD(get_UnitMode)(/*[out,retval]*/ SpecUnitType* unitMode) override;
+   STDMETHOD(putref_RebarModel)(/*[in]*/ IStressStrain* model) override;
+   STDMETHOD(get_RebarModel)(/*[out,retval]*/ IStressStrain** model) override;
 };

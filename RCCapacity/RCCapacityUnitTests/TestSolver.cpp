@@ -258,8 +258,8 @@ namespace RCCapacityUnitTests
          As = 4 * 0.31;
          convert->ConvertToBaseUnits(As, CComBSTR("in^2"), &As);
 
-         beam->AddRebarLayer(ds, As, 1.0);
-         beam->AddRebarLayer(ds, As, 0.2);
+         beam->AddRebarLayer(ds, As, 0, 0, 1.0);
+         beam->AddRebarLayer(ds, As, 0, 0, 0.2);
 
          CComPtr<IRCSolutionEx> solution;
 
@@ -291,7 +291,7 @@ namespace RCCapacityUnitTests
 
          // Strands not developed, no capacity
          beam->AddStrandLayer(dps, Aps, 0.0);
-         beam->AddRebarLayer(ds, As, 0.0);
+         beam->AddRebarLayer(ds, As, 0, 0, 0.0);
 
          solution.Release();
 
