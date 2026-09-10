@@ -196,7 +196,7 @@ void RCBeamToRCBeam2Ex(IRCBeam* rcbeam,IRCBeam2Ex** rcbeam2)
 
    rcbeam->get_ds(&ds);
    rcbeam->get_As(&As);
-   (*rcbeam2)->AddRebarLayer(ds,As,0,0,1.0); // fix
+   (*rcbeam2)->AddRebarLayer(ds,As, WBFL::Units::ConvertToSysUnits(29000, WBFL::Units::Measure::KSI),fy,1.0);
 
    rcbeam->get_dps(&dps);
    rcbeam->get_Aps(&Aps);
