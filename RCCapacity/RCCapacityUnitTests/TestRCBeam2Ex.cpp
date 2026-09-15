@@ -50,7 +50,9 @@ namespace RCCapacityUnitTests
          Assert::AreEqual(S_OK, beam->GetRebarLayer(1, &val1, &val2, &val3, &val4, &val5));
          Assert::IsTrue(IsEqual(val1, 20.0));
          Assert::IsTrue(IsEqual(val2, 20.0));
-         Assert::IsTrue(IsEqual(val3, 0.5));
+         Assert::IsTrue(IsEqual(val3, 1.99948e+11));
+         Assert::IsTrue(IsEqual(val4, 4.137e+8));
+         Assert::IsTrue(IsEqual(val5, 0.5));
          Assert::AreEqual(E_INVALIDARG, beam->RemoveRebarLayer(-1));
          Assert::AreEqual(E_INVALIDARG, beam->RemoveRebarLayer(10));
          Assert::AreEqual(S_OK, beam->RemoveRebarLayer(1));
