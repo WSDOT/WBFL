@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -174,10 +174,13 @@ protected:
 
    /// @brief Creates the start page window. Override this method in your CEAFMainFrame-derived
    /// main frame class to supply a CEAFStartPageWnd-derived window for your application's start
-   /// page. Construct the window but do not call Create() on it - the framework does that for
-   /// you. The default implementation returns nullptr, meaning the application has no start page.
+   /// page. Construct the window with "new" but do not call Create() on it - the framework does
+   /// that for you. Ownership passes to the framework, which follows MFC's normal convention for
+   /// frame windows: the window deletes itself (via the inherited CFrameWnd::PostNcDestroy())
+   /// when it is destroyed. The default implementation returns nullptr, meaning the application
+   /// has no start page.
    /// @return The start page window, or nullptr if the application has no start page
-   virtual std::shared_ptr<CEAFStartPageWnd> CreateStartPage();
+   virtual CEAFStartPageWnd* CreateStartPage();
 
 private:
    /// @brief Lays out the start page window within the main frame's client area. Called
@@ -189,8 +192,9 @@ private:
    void DestroyStartPage();
 
    /// @brief The start page window created by CreateStartPage(), or nullptr if the application
-   /// has no start page or the start page has not yet been created
-   std::shared_ptr<CEAFStartPageWnd> m_pStartPageWnd;
+   /// has no start page or the start page has not yet been created. Non-owning: the window
+   /// owns itself per MFC convention and is torn down via DestroyWindow() in DestroyStartPage().
+   CEAFStartPageWnd* m_pStartPageWnd;
 
    /// @brief Indicates whether the start page should remain open (visible) when HideStartPage()
    /// is called

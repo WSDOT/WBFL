@@ -9,14 +9,20 @@ has no start page at all. Content is supplied by overriding a single hook on you
 ## Supplying start page content
 `CEAFMainFrame::CreateStartPage()` (`Include\EAF\EAFMainFrame.h`) is the hook:
 ~~~
-virtual std::shared_ptr<CEAFStartPageWnd> CreateStartPage();
+virtual CEAFStartPageWnd* CreateStartPage();
 ~~~
 It is `protected` and `virtual` - override it in your `CEAFMainFrame`-derived main frame class and
-return a `shared_ptr` to a `CEAFStartPageWnd`-derived window, or `nullptr` if your application has no
-start page. The base implementation simply returns `nullptr`.
+return a pointer to a `new`-allocated `CEAFStartPageWnd`-derived window, or `nullptr` if your
+application has no start page. The base implementation simply returns `nullptr`.
 
 Construct the window, but don't call `Create()` on it yourself - the framework does that for you
 after your override returns, as part of `ShowStartPage()` (see below).
+
+Ownership of the returned window passes to the framework, which follows MFC's normal convention
+for frame windows rather than a smart pointer: the window deletes itself (via the inherited
+`CFrameWnd::PostNcDestroy()`) when it is destroyed. Don't wrap it in a `std::shared_ptr` /
+`std::unique_ptr` or otherwise `delete` it yourself - that would race with, or duplicate, MFC's own
+cleanup.
 
 `CEAFStartPageWnd` (`Include\EAF\EAFStartPageWnd.h`) is the base class to derive your start page
 window from:
@@ -26,9 +32,9 @@ class CMyStartPageWnd : public CEAFStartPageWnd
    // populate the window's contents, e.g. in OnCreate/PreCreateWindow
 };
 
-std::shared_ptr<CEAFStartPageWnd> CMyMainFrame::CreateStartPage()
+CEAFStartPageWnd* CMyMainFrame::CreateStartPage()
 {
-   return std::make_shared<CMyStartPageWnd>();
+   return new CMyStartPageWnd();
 }
 ~~~
 
