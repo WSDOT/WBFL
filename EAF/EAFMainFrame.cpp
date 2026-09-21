@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // EAF - Extensible Application Framework
-// Copyright © 1999-2026  Washington State Department of Transportation
+// Copyright ï¿½ 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -148,7 +148,7 @@ CToolBar* CEAFMainFrame::CreateMainFrameToolBar()
    return pToolBar;
 }
 
-std::shared_ptr<CEAFStartPageWnd> CEAFMainFrame::CreateStartPage()
+CEAFStartPageWnd* CEAFMainFrame::CreateStartPage()
 {
    return nullptr;
 }
@@ -157,7 +157,11 @@ void CEAFMainFrame::DestroyStartPage()
 {
    if (m_pStartPageWnd)
    {
-      m_pStartPageWnd->PostMessage(WM_CLOSE, 0, 0);
+      // DestroyWindow() is synchronous and, per normal MFC frame window convention,
+      // deletes the CEAFStartPageWnd object itself (via the inherited
+      // CFrameWnd::PostNcDestroy()) before returning. m_pStartPageWnd is only a
+      // non-owning pointer, so we just clear it here - we must not dereference it again.
+      m_pStartPageWnd->DestroyWindow();
       m_pStartPageWnd = nullptr;
    }
 }
