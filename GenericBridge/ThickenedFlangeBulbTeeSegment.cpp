@@ -413,9 +413,9 @@ STDMETHODIMP CThickenedFlangeBulbTeeSegment::get_Profile(VARIANT_BOOL bIncludeCl
    // CL Pier   Start of segment
    // |         |       CL Bearing
    // |(0,0)    |       |
-   // *         +-------+---------------\  
+   // *         +-------+---------------\
    // |         |       .               /
-   // |         +-------+---------------\  
+   // |         +-------+---------------\
    // |         |endDist|
    // |         |<----->|
    // |                 |
