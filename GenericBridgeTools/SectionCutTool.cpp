@@ -398,11 +398,8 @@ STDMETHODIMP CSectionCutTool::CreateRightBarrierSection(IGenericBridge* bridge,F
    return S_OK;
 }
 
-STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,VARIANT_BOOL bIncludeHaunch,IShape** shape)
+HRESULT CSectionCutTool::CreateSlabTop(IGenericBridge* bridge, Float64 station, IDirection* pDirection, IPolyShape* slab_shape, SlabCut* pCut)
 {
-   CHECK_IN(bridge);
-   CHECK_RETOBJ(shape);
-
    CComPtr<IBridgeGeometry> bridgeGeometry;
    bridge->get_BridgeGeometry(&bridgeGeometry);
 
@@ -454,9 +451,6 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
    CComQIPtr<IOverlaySlab> overlay(deck);
    ATLASSERT(cip != nullptr || sip != nullptr || overlay != nullptr);
 
-   // create the deck shape object
-   CComPtr<IPolyShape> slab_shape;
-   slab_shape.CoCreateInstance(CLSID_PolyShape);
 
    // get left and right deck edge points
    CComPtr<IPoint2d> pntLeftDeckEdge, pntRightDeckEdge;
@@ -581,6 +575,73 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
 
    // Left Edge - bottom of deck
    slab_shape->AddPoint(left_deck_offset,elev - overhang_depth[qcbLeft]);
+
+   pCut->alignment = alignment;
+   pCut->profile = profile;
+   pCut->surfaceID = surfaceID;
+   pCut->alignmentPointIdx = alignmentPointIdx;
+   pCut->objStation = objStation;
+   pCut->dirCutLine = dirCutLine;
+   pCut->dirCutLineValue = dirCutLineValue;
+   pCut->bIsNormal = bIsNormal;
+   pCut->nRidgePoints = nRidgePoints;
+   pCut->surfaceProfile = surfaceProfile;
+   pCut->gross_depth = gross_depth;
+   pCut->overhang_depth = overhang_depth;
+   pCut->overhang_taper = overhang_taper;
+   pCut->left_deck_offset = left_deck_offset;
+   pCut->right_deck_offset = right_deck_offset;
+
+   return S_OK;
+}
+
+void CSectionCutTool::OffsetForWearingSurface(IGenericBridge* bridge, IShape* pShape)
+{
+   // if there is a wearing surface that is not a future overlay,
+   // lower the deck because the finished grade is the top of the wearing surface
+   VARIANT_BOOL vbHasFutureOverlay;
+   bridge->HasFutureOverlay(&vbHasFutureOverlay);
+   StageIndexType wearingSurfaceStage;
+   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
+   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
+   {
+      Float64 wearing_surface_depth;
+      bridge->get_WearingSurfaceDepth(&wearing_surface_depth);
+
+      CComQIPtr<IXYPosition> position(pShape);
+      position->Offset(0, -wearing_surface_depth);
+   }
+}
+
+STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 station,IDirection* pDirection,VARIANT_BOOL bIncludeHaunch,IShape** shape)
+{
+   CHECK_IN(bridge);
+   CHECK_RETOBJ(shape);
+
+   // create the deck shape object
+   CComPtr<IPolyShape> slab_shape;
+   slab_shape.CoCreateInstance(CLSID_PolyShape);
+
+   // top of the slab, from the bottom of the right edge to the bottom of the left edge
+   SlabCut cut;
+   HRESULT hr = CreateSlabTop(bridge, station, pDirection, slab_shape, &cut);
+   if (FAILED(hr))
+      return hr;
+
+   const auto& profile = cut.profile;
+   IDType surfaceID = cut.surfaceID;
+   IndexType alignmentPointIdx = cut.alignmentPointIdx;
+   const auto& objStation = cut.objStation;
+   const auto& dirCutLine = cut.dirCutLine;
+   Float64 dirCutLineValue = cut.dirCutLineValue;
+   bool bIsNormal = cut.bIsNormal;
+   IndexType nRidgePoints = cut.nRidgePoints;
+   const auto& surfaceProfile = cut.surfaceProfile;
+   Float64 gross_depth = cut.gross_depth;
+   const auto& overhang_depth = cut.overhang_depth;
+   const auto& overhang_taper = cut.overhang_taper;
+   Float64 left_deck_offset = cut.left_deck_offset;
+   Float64 right_deck_offset = cut.right_deck_offset;
 
    // work left to right across bottom of deck back to the bottom-right corner
    if ( bIncludeHaunch == VARIANT_TRUE )
@@ -747,7 +808,10 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                         }
                         else
                         {
-                           slab_shape->AddPoint(x23 - dx - xfillet, el23 - dy); // 1
+                           // the gross depth is measured vertically, so point 1 is gross depth below the deck directly above it
+                           Float64 el1;
+                           profile->Elevation(surfaceID, CComVariant(girderPoint.objGirderStation), x23 - dx - xfillet, &el1);
+                           slab_shape->AddPoint(x23 - dx - xfillet, el1 - dy); // 1
                            slab_shape->AddPoint(x23 - dx, el23 - dy - yfillet); // 2
                         }
                      }
@@ -822,7 +886,10 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
                      else
                      {
                         slab_shape->AddPoint(x45 + dx, el45 - dy - yfillet); // 5
-                        slab_shape->AddPoint(x45 + dx + xfillet, el45 - dy); // 6
+                        // the gross depth is measured vertically, so point 6 is gross depth below the deck directly above it
+                        Float64 el6;
+                        profile->Elevation(surfaceID, CComVariant(girderPoint.objGirderStation), x45 + dx + xfillet, &el6);
+                        slab_shape->AddPoint(x45 + dx + xfillet, el6 - dy); // 6
                      }
                   }
                }
@@ -867,24 +934,448 @@ STDMETHODIMP CSectionCutTool::CreateSlabShape(IGenericBridge* bridge,Float64 sta
       }
    }
 
-   // if there is a wearing surface that is not a future overlay,
-   // lower the deck because the finished grade is the top of the wearing surface
-   VARIANT_BOOL vbHasFutureOverlay;
-   bridge->HasFutureOverlay(&vbHasFutureOverlay);
-   StageIndexType wearingSurfaceStage;
-   bridge->get_WearingSurfaceStage(&wearingSurfaceStage);
-   if (wearingSurfaceStage != INVALID_INDEX && vbHasFutureOverlay == VARIANT_FALSE)
-   {
-      Float64 wearing_surface_depth;
-      bridge->get_WearingSurfaceDepth(&wearing_surface_depth);
-
-      CComQIPtr<IXYPosition> position(slab_shape);
-      position->Offset(0, -wearing_surface_depth);
-   }
+   OffsetForWearingSurface(bridge, CComQIPtr<IShape>(slab_shape));
 
    slab_shape.QueryInterface(shape);
 
    return S_OK;
+}
+
+STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bridge, Float64 station, IDirection* pDirection, IShape** shape)
+{
+   CHECK_IN(bridge);
+   CHECK_RETOBJ(shape);
+
+   CComPtr<IPolyShape> slab_shape;
+   slab_shape.CoCreateInstance(CLSID_PolyShape);
+
+   // top of the slab, from the bottom of the right edge to the bottom of the left edge
+   SlabCut cut;
+   HRESULT hr = CreateSlabTop(bridge, station, pDirection, slab_shape, &cut);
+   if (FAILED(hr))
+      return hr;
+
+   // ridge points, left to right, offset measured along the cut line from the alignment
+   std::vector<std::pair<Float64, Float64>> ridge_points;
+   for (IndexType ridgePointIdx = 0; ridgePointIdx < cut.nRidgePoints; ridgePointIdx++)
+   {
+      Float64 offset, elev;
+      if (cut.bIsNormal)
+         cut.profile->GetRidgePointOffsetAndElevation(cut.surfaceID, CComVariant(cut.objStation), cut.alignmentPointIdx, ridgePointIdx, &offset, &elev);
+      else
+         cut.surfaceProfile->GetSurfacePointElevation(ridgePointIdx, &offset, &elev);
+
+      if (::InRange(cut.left_deck_offset, offset, cut.right_deck_offset))
+         ridge_points.emplace_back(offset, elev);
+   }
+
+   GirderPointRecord left_girder, right_girder;
+   bool bGirders = GetExteriorGirderPoint(bridge, cut.objStation, cut.dirCutLine, ltLeftExteriorGirder, &left_girder) &&
+                   GetExteriorGirderPoint(bridge, cut.objStation, cut.dirCutLine, ltRightExteriorGirder, &right_girder) &&
+                   left_girder.cutLineOffset < right_girder.cutLineOffset;
+   if (!bGirders)
+   {
+      // no girders, the bottom of the slab parallels the top of the slab
+      for (const auto& [offset, elev] : ridge_points)
+         slab_shape->AddPoint(offset, elev - cut.gross_depth);
+   }
+   else
+   {
+      // the haunch geometry of the outer mating surface of an exterior girder, where the cut line crosses the girder line
+      struct MatingSurfaceCut
+      {
+         Float64 x23, x45; // left and right edges of the mating surface
+         Float64 el23, el45, elcl; // deck elevation above the edges and center of the mating surface
+         Float64 el3, el4; // top of girder at the edges of the mating surface
+         Float64 xfillet;
+         Float64 haunch;
+         Float64 tf; // minimum top flange thickness
+         Float64 skew;
+         CComPtr<IStation> objGirderStation;
+      };
+
+      auto get_mating_surface = [&](const GirderPointRecord& girderPoint, bool bFirst) -> MatingSurfaceCut
+         {
+            CComPtr<ISuperstructureMember> ssmbr;
+            bridge->get_SuperstructureMember(girderPoint.girderID, &ssmbr);
+
+            CComPtr<ISuperstructureMemberSegment> segment;
+            ssmbr->get_Segment(girderPoint.segIdx, &segment);
+
+            Float64 segment_length;
+            segment->get_Length(&segment_length);
+            Float64 Xs = ::ForceIntoRange(0.0, girderPoint.Xs, segment_length); // the girder line is extended beyond the end of the segment
+
+            Float64 orientation;
+            segment->get_Orientation(&orientation);
+
+            CComPtr<IShape> girder_shape;
+            segment->get_GirderShape(Xs, sbLeft, cstBridge, &girder_shape);
+            CComQIPtr<IGirderSection> girder_section(girder_shape);
+
+            CComPtr<IGirderLine> girderLine;
+            segment->get_GirderLine(&girderLine);
+            CComPtr<IDirection> objGirderLineDirection;
+            girderLine->get_Direction(&objGirderLineDirection);
+            Float64 dirGirderLine;
+            objGirderLineDirection->get_Value(&dirGirderLine);
+
+            MatingSurfaceCut ms;
+            ms.objGirderStation = girderPoint.objGirderStation;
+            ms.skew = fabs(cut.dirCutLineValue - (dirGirderLine + PI_OVER_2));
+            Float64 cos_skew = cos(ms.skew);
+
+            girder_section->get_MinTopFlangeThickness(&ms.tf);
+            segment->ComputeHaunchDepth(Xs, &ms.haunch);
+
+            FilletShape fillet_shape;
+            segment->get_FilletShape(&fillet_shape);
+            ms.xfillet = 0;
+            if (fillet_shape == flsAngled)
+               segment->get_Fillet(&ms.xfillet);
+
+            Float64 elclg; // elevation at CL of girder
+            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), girderPoint.normalOffset, &elclg);
+
+            MatingSurfaceIndexType nMatingSurfaces;
+            girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
+            MatingSurfaceIndexType msIdx = (bFirst ? 0 : nMatingSurfaces - 1);
+
+            Float64 ms_width, ms_location;
+            girder_section->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
+            girder_section->get_MatingSurfaceLocation(msIdx, VARIANT_FALSE, &ms_location);
+            ms_width /= cos_skew;
+            ms_location /= cos_skew;
+
+            Float64 xcl = girderPoint.cutLineOffset + ms_location;
+            ms.x23 = xcl - ms_width / 2;
+            ms.x45 = xcl + ms_width / 2;
+            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), ms.x23, &ms.el23);
+            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), ms.x45, &ms.el45);
+            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), xcl, &ms.elcl);
+
+            ms.el3 = elclg - cut.gross_depth - ms.haunch + (ms_location - ms_width / 2) * orientation;
+            ms.el4 = elclg - cut.gross_depth - ms.haunch + (ms_location + ms_width / 2) * orientation;
+            return ms;
+         };
+
+      auto elevation = [&](const MatingSurfaceCut& ms, Float64 x)
+         {
+            Float64 elev;
+            cut.profile->Elevation(cut.surfaceID, CComVariant(ms.objGirderStation), x, &elev);
+            return elev;
+         };
+
+      // left exterior girder: overhang soffit to the outer top corner of the girder, then to the inner fillet
+      auto left = get_mating_surface(left_girder, true);
+      if (cut.overhang_taper[qcbLeft] == dotNone)
+      {
+         slab_shape->AddPoint(left.x23, left.el23 - cut.overhang_depth[qcbLeft]);
+      }
+      else if (cut.overhang_taper[qcbLeft] == dotBottomTopFlange)
+      {
+         Float64 dy = cut.gross_depth + left.haunch - (left.elcl - left.el23) + left.tf;
+         Float64 slope;
+         cut.profile->CrossSlope(cut.surfaceID, CComVariant(left.objGirderStation), left.x23, &slope);
+         Float64 dx = slope * left.tf / cos(left.skew);
+         slab_shape->AddPoint(left.x23 - dx, left.el23 - dy);
+      }
+      slab_shape->AddPoint(left.x23, left.el3); // outer top corner of girder (3)
+      Float64 x6 = left.x45 + left.xfillet;
+      slab_shape->AddPoint(x6, elevation(left, x6) - cut.gross_depth); // inner fillet (6)
+
+      // right exterior girder
+      auto right = get_mating_surface(right_girder, false);
+      Float64 x1 = right.x23 - right.xfillet;
+
+      // between the girders, the bottom of the slab is the gross depth below the top
+      for (const auto& [offset, elev] : ridge_points)
+      {
+         if (x6 < offset && offset < x1)
+            slab_shape->AddPoint(offset, elev - cut.gross_depth);
+      }
+
+      // right exterior girder: from the inner fillet to the outer top corner of the girder, then the overhang soffit
+      slab_shape->AddPoint(x1, elevation(right, x1) - cut.gross_depth); // inner fillet (1)
+      slab_shape->AddPoint(right.x45, right.el4); // outer top corner of girder (4)
+      if (cut.overhang_taper[qcbRight] == dotNone)
+      {
+         slab_shape->AddPoint(right.x45, right.el45 - cut.overhang_depth[qcbRight]);
+      }
+      else if (cut.overhang_taper[qcbRight] == dotBottomTopFlange)
+      {
+         Float64 dy = cut.gross_depth + right.haunch - (right.elcl - right.el45) + right.tf;
+         Float64 slope;
+         cut.profile->CrossSlope(cut.surfaceID, CComVariant(right.objGirderStation), right.x45, &slope);
+         Float64 dx = slope * right.tf / cos(right.skew);
+         slab_shape->AddPoint(right.x45 + dx, right.el45 - dy);
+      }
+   }
+
+   CComQIPtr<IShape> result(slab_shape);
+   OffsetForWearingSurface(bridge, result);
+   return result.CopyTo(shape);
+}
+
+STDMETHODIMP CSectionCutTool::CreateHaunchShape(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, IndexType matingSurfaceIdx, IShape** shape)
+{
+   CHECK_IN(bridge);
+   CHECK_RETOBJ(shape);
+
+   CComPtr<IBridgeDeck> deck;
+   bridge->get_Deck(&deck);
+   if (deck == nullptr)
+      return E_FAIL;
+
+   Float64 gross_depth;
+   deck->get_GrossDepth(&gross_depth);
+
+   CComPtr<ISuperstructureMember> ssmbr;
+   bridge->get_SuperstructureMember(ssMbrID, &ssmbr);
+   if (ssmbr == nullptr)
+      return E_INVALIDARG;
+
+   CComPtr<ISuperstructureMemberSegment> segment;
+   ssmbr->get_Segment(segIdx, &segment);
+   if (segment == nullptr)
+      return E_INVALIDARG;
+
+   LocationType location;
+   ssmbr->get_LocationType(&location);
+
+   CComPtr<IBridgeGeometry> bridgeGeometry;
+   bridge->get_BridgeGeometry(&bridgeGeometry);
+   IDType profileID, surfaceID;
+   bridgeGeometry->get_ProfileID(&profileID);
+   bridgeGeometry->get_SurfaceID(&surfaceID);
+
+   CComPtr<IAlignment> alignment;
+   GetAlignment(bridge, &alignment);
+   CComPtr<IProfile> profile;
+   alignment->GetProfile(profileID, &profile);
+
+   // point on the CL segment at Xs, and the normal to the segment, to the right
+   CComPtr<IGirderLine> girderLine;
+   segment->get_GirderLine(&girderLine);
+   CComPtr<IPoint2d> pntStart;
+   girderLine->get_EndPoint(etStart, &pntStart);
+   CComPtr<IDirection> objGirderLineDirection;
+   girderLine->get_Direction(&objGirderLineDirection);
+   Float64 dir;
+   objGirderLineDirection->get_Value(&dir);
+   Float64 sx, sy;
+   pntStart->Location(&sx, &sy);
+   Float64 px = sx + Xs * cos(dir), py = sy + Xs * sin(dir);
+   Float64 nx = sin(dir), ny = -cos(dir);
+
+   // elevation of the top of the deck at x from the CL segment
+   CComPtr<IPoint2d> pnt;
+   pnt.CoCreateInstance(CLSID_Point2d);
+   auto elevation = [&](Float64 x)
+      {
+         pnt->Move(px + x * nx, py + x * ny);
+         CComPtr<IStation> objStation;
+         Float64 offset;
+         alignment->StationAndOffset(pnt, &objStation, &offset);
+         Float64 elev;
+         profile->Elevation(surfaceID, CComVariant(objStation), offset, &elev);
+         return elev;
+      };
+
+   Float64 orientation;
+   segment->get_Orientation(&orientation);
+
+   CComPtr<IShape> girder_shape;
+   segment->get_GirderShape(Xs, sbLeft, cstGirder, &girder_shape);
+   CComQIPtr<IGirderSection> girder_section(girder_shape);
+   if (girder_section == nullptr)
+      return E_FAIL;
+
+   MatingSurfaceIndexType nMatingSurfaces;
+   girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
+   if (nMatingSurfaces <= matingSurfaceIdx)
+      return E_INVALIDARG;
+
+   Float64 haunch;
+   segment->ComputeHaunchDepth(Xs, &haunch);
+
+   FilletShape fillet_shape;
+   segment->get_FilletShape(&fillet_shape);
+   Float64 xfillet = 0;
+   if (fillet_shape == flsAngled)
+      segment->get_Fillet(&xfillet);
+   Float64 yfillet = Min(xfillet, haunch); // don't draw fillet deeper than the haunch depth
+
+   Float64 ms_width, ms_location;
+   girder_section->get_MatingSurfaceWidth(matingSurfaceIdx, VARIANT_FALSE, &ms_width);
+   girder_section->get_MatingSurfaceLocation(matingSurfaceIdx, VARIANT_FALSE, &ms_location);
+   Float64 x23 = ms_location - ms_width / 2;
+   Float64 x45 = ms_location + ms_width / 2;
+
+   Float64 elclg = elevation(0.0);
+   Float64 el_top_girder = elclg - gross_depth - haunch; // top of girder at its CL
+
+   // the outer side of the outer mating surface of an exterior girder meets the bottom of the slab
+   // (CreateSlabShapeWithoutHaunches) at the top corner of the girder, so there is nothing to add on that side
+   bool bLeftExterior = (location == ltLeftExteriorGirder && matingSurfaceIdx == 0);
+   bool bRightExterior = (location == ltRightExteriorGirder && matingSurfaceIdx == nMatingSurfaces - 1);
+
+   CComPtr<IPolyShape> haunch_shape;
+   haunch_shape.CoCreateInstance(CLSID_PolyShape);
+
+   //    --------1\      /6------
+   //             2      5
+   //             |      |
+   //             3------4
+   if (!bLeftExterior)
+   {
+      if (0 < xfillet)
+      {
+         haunch_shape->AddPoint(x23 - xfillet, elevation(x23 - xfillet) - gross_depth); // 1
+         haunch_shape->AddPoint(x23, elevation(x23) - gross_depth - yfillet); // 2
+      }
+      else
+      {
+         haunch_shape->AddPoint(x23, elevation(x23) - gross_depth); // 1,2
+      }
+   }
+
+   // top of the girder (3 to 4), from the mating surface profile if the section has one
+   CComPtr<IPoint2dCollection> matingSurfaceProfile;
+   bool bHasMSProfile = (FAILED(girder_section->get_MatingSurfaceProfile(matingSurfaceIdx, VARIANT_FALSE, &matingSurfaceProfile)) || matingSurfaceProfile == nullptr) ? false : true;
+   if (bHasMSProfile)
+   {
+      CComQIPtr<IXYPosition> position(girder_section);
+      CComPtr<IPoint2d> pntTC;
+      position->get_LocatorPoint(lpTopCenter, &pntTC);
+      Float64 xtc, ytc;
+      pntTC->Location(&xtc, &ytc);
+
+      CComPtr<IEnumPoint2d> enum_points;
+      matingSurfaceProfile->get__Enum(&enum_points);
+      CComPtr<IPoint2d> msPoint;
+      while (enum_points->Next(1, &msPoint, nullptr) != S_FALSE)
+      {
+         if (!IsZero(orientation))
+            msPoint->RotateEx(pntTC, orientation);
+         Float64 x, y;
+         msPoint->Location(&x, &y);
+         haunch_shape->AddPoint(x - xtc, el_top_girder + (y - ytc));
+         msPoint.Release();
+      }
+   }
+   else
+   {
+      haunch_shape->AddPoint(x23, el_top_girder + x23 * orientation); // 3
+      haunch_shape->AddPoint(x45, el_top_girder + x45 * orientation); // 4
+   }
+
+   if (!bRightExterior)
+   {
+      if (0 < xfillet)
+      {
+         haunch_shape->AddPoint(x45, elevation(x45) - gross_depth - yfillet); // 5
+         haunch_shape->AddPoint(x45 + xfillet, elevation(x45 + xfillet) - gross_depth); // 6
+      }
+      else
+      {
+         haunch_shape->AddPoint(x45, elevation(x45) - gross_depth); // 5,6
+      }
+   }
+
+   CComQIPtr<IShape> result(haunch_shape);
+   OffsetForWearingSurface(bridge, result);
+   return result.CopyTo(shape);
+}
+
+bool CSectionCutTool::GetExteriorGirderPoint(IGenericBridge* pBridge, IStation* pStation, IDirection* pDirection, LocationType location, GirderPointRecord* pRecord)
+{
+   CComPtr<IAlignment> alignment;
+   GetAlignment(pBridge, &alignment);
+
+   CComPtr<IPoint2d> pntAlignment;
+   alignment->LocatePoint(CComVariant(pStation), omtAlongDirection, 0.0, CComVariant(pDirection), &pntAlignment);
+   Float64 ax, ay;
+   pntAlignment->Location(&ax, &ay);
+
+   Float64 cutDir;
+   pDirection->get_Value(&cutDir);
+   Float64 ux = cos(cutDir), uy = sin(cutDir);
+
+   CComPtr<IEnumSuperstructureMembers> enumMbrs;
+   pBridge->get__EnumSuperstructureMembers(&enumMbrs);
+
+   // Each span (group) has its own girders, so there are several girders at this location. Use the segment whose
+   // girder line the cut line crosses, or the nearest one with its girder line extended (cut beyond the ends of the girders)
+   bool bFound = false;
+   Float64 best_distance = Float64_Max;
+   CComPtr<ISuperstructureMember> mbr;
+   while (enumMbrs->Next(1, &mbr, nullptr) != S_FALSE)
+   {
+      LocationType locationType;
+      mbr->get_LocationType(&locationType);
+      if (locationType != location)
+      {
+         mbr.Release();
+         continue;
+      }
+
+      IndexType nSegments;
+      mbr->get_SegmentCount(&nSegments);
+      for (IndexType segIdx = 0; segIdx < nSegments; segIdx++)
+      {
+         CComPtr<ISuperstructureMemberSegment> segment;
+         mbr->get_Segment(segIdx, &segment);
+         CComPtr<IGirderLine> gdrLine;
+         segment->get_GirderLine(&gdrLine);
+         CComPtr<IPoint2d> pntStart, pntEnd;
+         gdrLine->get_EndPoint(etStart, &pntStart);
+         gdrLine->get_EndPoint(etEnd, &pntEnd);
+         Float64 sx, sy, ex, ey;
+         pntStart->Location(&sx, &sy);
+         pntEnd->Location(&ex, &ey);
+         Float64 L = sqrt((ex - sx) * (ex - sx) + (ey - sy) * (ey - sy));
+         if (IsZero(L))
+            continue;
+         Float64 dx = (ex - sx) / L, dy = (ey - sy) / L;
+
+         // solve start + t*d = alignment point + u*cut direction
+         Float64 det = -dx * uy + ux * dy;
+         if (IsZero(det))
+            continue; // cut line parallels the girder line
+         Float64 bx = ax - sx, by = ay - sy;
+         Float64 t = (-bx * uy + ux * by) / det;
+
+         Float64 distance = (t < 0 ? -t : (L < t ? t - L : 0.0)); // distance beyond the end of the segment
+         if (distance < best_distance)
+         {
+            best_distance = distance;
+
+            CComPtr<IPoint2d> pntIntersect;
+            pntIntersect.CoCreateInstance(CLSID_Point2d);
+            pntIntersect->Move(sx + t * dx, sy + t * dy);
+
+            CComPtr<IStation> objGirderStation;
+            Float64 normalOffset;
+            alignment->StationAndOffset(pntIntersect, &objGirderStation, &normalOffset);
+            Float64 cutLineOffset;
+            pntAlignment->DistanceEx(pntIntersect, &cutLineOffset);
+            cutLineOffset *= ::BinarySign(normalOffset);
+
+            mbr->get_ID(&pRecord->girderID);
+            pRecord->objGirderStation = objGirderStation;
+            pRecord->normalOffset = normalOffset;
+            pRecord->cutLineOffset = cutLineOffset;
+            pRecord->girderLocation = locationType;
+            pRecord->segIdx = segIdx;
+            pRecord->Xs = t;
+            bFound = true;
+         }
+      }
+      mbr.Release();
+   }
+
+   return bFound;
 }
 
 STDMETHODIMP CSectionCutTool::GetDeckProperties(IGenericBridge* bridge,IndexType nSectionsPerSpan,Float64* pSurfaceArea,Float64* pVolume)

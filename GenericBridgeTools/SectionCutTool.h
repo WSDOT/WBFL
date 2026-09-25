@@ -29,6 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include <vector>
+#include <array>
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -104,6 +105,10 @@ public:
    // creates a shape for the bridge deck
    STDMETHOD(CreateSlabShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[in]*/IDirection* pDirection,/*[in]*/ VARIANT_BOOL bIncludeHaunch,/*[out,retval]*/IShape** shape) override;
 
+   // creates a shape for the bridge deck without the haunches, and the shape of the haunch over one mating surface of a segment
+   STDMETHOD(CreateSlabShapeWithoutHaunches)(/*[in]*/IGenericBridge* bridge,/*[in]*/Float64 station,/*[in]*/IDirection* pDirection,/*[out,retval]*/IShape** shape) override;
+   STDMETHOD(CreateHaunchShape)(/*[in]*/IGenericBridge* bridge,/*[in]*/GirderIDType ssMbrID,/*[in]*/SegmentIndexType segIdx,/*[in]*/Float64 Xs,/*[in]*/IndexType matingSurfaceIdx,/*[out,retval]*/IShape** shape) override;
+
    STDMETHOD(CreateLongitudinalJointShapeBySSMbr)(/*[in]*/IGenericBridge* bridge, /*[in]*/GirderIDType ssMbrID, /*[in]*/Float64 Xgp, /*[in]*/SectionCoordinateSystemType coordinateSystem, /*[out]*/IShape** ppLeftJointShape, /*[out]*/IShape** ppRightJointShape);
    STDMETHOD(CreateLongitudinalJointShapeBySegment)(/*[in]*/IGenericBridge* bridge, /*[in]*/GirderIDType ssMbrID, /*[in]*/SegmentIndexType segIdx, /*[in]*/Float64 Xs, /*[in]*/SectionCoordinateSystemType coordinateSystem, /*[out]*/IShape** ppLeftJointShape,/*[out]*/IShape** ppRightJointShape);
 
@@ -147,5 +152,34 @@ private:
    };
 
    std::vector<CSectionCutTool::GirderPointRecord> GetGirderPoints(IGenericBridge* pBridge,IStation* pStation,IDirection* pDirection);
+
+   // the girder at a location (left or right exterior girder) where the cut line crosses its girder line. The girder line of the first
+   // or last segment is extended if the cut line is beyond the ends of the girder. Xs is then outside of the segment.
+   bool GetExteriorGirderPoint(IGenericBridge* pBridge, IStation* pStation, IDirection* pDirection, LocationType location, GirderPointRecord* pRecord);
+
+   // the cut through the top of the slab, from CreateSlabTop
+   struct SlabCut
+   {
+      CComPtr<IAlignment> alignment;
+      CComPtr<IProfile> profile;
+      IDType surfaceID;
+      IndexType alignmentPointIdx;
+      CComPtr<IStation> objStation;
+      CComPtr<IDirection> dirCutLine;
+      Float64 dirCutLineValue;
+      bool bIsNormal;
+      IndexType nRidgePoints;
+      CComPtr<ISurfaceProfile> surfaceProfile; // only if the cut is not normal to the alignment
+      Float64 gross_depth;
+      std::array<Float64, 2> overhang_depth;
+      std::array<DeckOverhangTaper, 2> overhang_taper;
+      Float64 left_deck_offset, right_deck_offset;
+   };
+
+   // adds the points on the top of the slab to slab_shape, from the bottom of the right edge to the bottom of the left edge
+   HRESULT CreateSlabTop(IGenericBridge* bridge, Float64 station, IDirection* pDirection, IPolyShape* slab_shape, SlabCut* pCut);
+
+   // lowers a slab shape by the depth of a wearing surface that is not a future overlay. The finished grade is the top of the wearing surface
+   void OffsetForWearingSurface(IGenericBridge* bridge, IShape* pShape);
 };
 

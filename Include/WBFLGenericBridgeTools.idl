@@ -193,6 +193,14 @@ library WBFLGenericBridgeTools
 
       [helpstring("method GetDeckProperties")] HRESULT GetDeckProperties([in]IGenericBridge* bridge,[in]IndexType nSectionsPerSpan,[out]Float64* pSurfaceArea,[out]Float64* pVolume);
 	   [helpstring("method GetStructuralHaunchDepth")] HRESULT GetStructuralHaunchDepth([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in]HaunchDepthMethod haunchMethod, [out,retval]Float64* pHaunchDepth);
+      // Creates the deck slab shape with the haunches left out. Between the girders, the bottom of the slab is the gross depth below the top of the deck.
+      // The overhang soffit ends at the outer top corner of the exterior girders and the bottom of the slab goes from there to the inner fillet
+      // of the girder. The exterior girder lines are extended when the cut is beyond the ends of the girders, so the shape has the same points
+      // at every cut. The haunch shapes (CreateHaunchShape) fill the space between this shape and the girders. Coordinates are the same as CreateSlabShape.
+      [helpstring("method CreateSlabShapeWithoutHaunches")] HRESULT CreateSlabShapeWithoutHaunches([in]IGenericBridge* bridge,[in]Float64 station,[in]IDirection* pDirection,[out,retval]IShape** shape);
+      // Creates the shape of the haunch over a mating surface of a segment, in a section normal to the segment at Xs. X is measured from the
+      // CL of the segment, normal to the segment, positive to the right looking from the start to the end of the segment. Y is elevation.
+      [helpstring("method CreateHaunchShape")] HRESULT CreateHaunchShape([in]IGenericBridge* bridge,[in]GirderIDType ssMbrID,[in]SegmentIndexType segIdx,[in]Float64 Xs,[in]IndexType matingSurfaceIdx,[out,retval]IShape** shape);
 	};
 
    // This interface tells how to move harped strands when they are offset
