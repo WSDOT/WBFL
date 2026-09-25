@@ -986,7 +986,7 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
             columnLayout->get_ColumnLocation(colIdx, &xCol);
 
             Float64 xPierCol;
-            m_pPier->ConvertCrossBeamToPierCoordinate(xCol, &xPierCol);
+            m_pPier->ConvertCrossBeamToPierCoordinate(xCol - m_X1L, &xPierCol);
 
             colStations.push_back(xPierCol);
         }
