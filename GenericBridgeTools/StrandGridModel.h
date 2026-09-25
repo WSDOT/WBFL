@@ -238,6 +238,7 @@ private:
    Float64 GetGirderDepthAdjustment(Float64 Xs, Float64 distToStartGrid, Float64 distBetweenGrids, IStrandGridFiller* pStartGridFiller = nullptr, IStrandGridFiller* pEndGridFiller = nullptr);
    HRESULT GetStraightStrandPositions(Float64 Xs, IIndexArray* fill, IPoint2dCollection** points);
    HRESULT GetHarpedStrandPositions(Float64 Xs, IIndexArray* fill, IPoint2dCollection** points);
+   HRESULT ComputeMaxHarpedStrandSlopeCore(Float64 Xs, IIndexArray* fill, Float64* slope);
    HRESULT GetTemporaryStrandPositions(Float64 Xs, IIndexArray* fill, IPoint2dCollection** points);
    HRESULT GetStrandPositions(Float64 Xs, Float64 distToStartGrid, Float64 distBetweenGrids, Float64 Lg, Float64 startPrecamber, Float64 endPrecamber, IIndexArray* startFill, IStrandGridFiller* pStartGridFiller, IIndexArray* endFill, IStrandGridFiller* pEndGridFiller, IPoint2dCollection** points);
 

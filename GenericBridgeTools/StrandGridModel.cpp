@@ -1150,16 +1150,72 @@ STDMETHODIMP CStrandGridModel::HarpedHpStrandBoundaryCheck(EndType endType,Float
    return hr;
 }
 
+namespace
+{
+   // Temporarily overrides a strand grid filler's vertical strand adjustment, restoring its real
+   // value when the guard goes out of scope. Used by ComputeMaxHarpedStrandSlopeEx() to evaluate a
+   // trial offset using the same grid state (and therefore the same code path) the real, committed
+   // offset uses, instead of a separate offset-swap formula.
+   class CScopedStrandGridOffset
+   {
+   public:
+      CScopedStrandGridOffset(IStrandGridFiller* pGrid, Float64 newOffset) : m_pGrid(pGrid)
+      {
+         m_pGrid->GetStrandAdjustment(&m_dx, &m_dy);
+         m_pGrid->SetStrandAdjustment(m_dx, newOffset);
+      }
+
+      ~CScopedStrandGridOffset()
+      {
+         m_pGrid->SetStrandAdjustment(m_dx, m_dy);
+      }
+
+      CScopedStrandGridOffset(const CScopedStrandGridOffset&) = delete;
+      CScopedStrandGridOffset& operator=(const CScopedStrandGridOffset&) = delete;
+
+   private:
+      CComPtr<IStrandGridFiller> m_pGrid;
+      Float64 m_dx, m_dy;
+   };
+}
+
 STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* slope)
 {
-   // NOTE: We tried to implement this with a call to ComputeMaxHarpedStrandSlopeEx, similar to what we did with Average slope
-   // but it didn't work well. That's not to say that it can't work well. The implemention requires more analysis
-   // that we have time to do right now. In the future, consider making this a call to ComputeMaxHarpedStrandSlopeEx with
-   // fill = nullptr and offsets = 0.0.
+   return ComputeMaxHarpedStrandSlopeCore(Xs, nullptr, slope);
+}
+
+STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlopeEx(Float64 Xs, IIndexArray* fill, Float64 startOffset, Float64 hp1Offset, Float64 hp2Offset, Float64 endOffset, Float64* slope)
+{
+   // Temporarily apply the trial offsets to the real grids and reuse
+   // ComputeMaxHarpedStrandSlopeCore's region-selection/precamber logic - the same logic
+   // ComputeMaxHarpedStrandSlope() uses for the real, committed configuration - instead of the
+   // previous, independently-implemented offset-swap formula this function used to compute here.
+   // That second implementation could silently disagree with the real one (confirmed: a girder
+   // whose real slope check failed still passed this "what if" check). Each guard restores its
+   // grid's real offset when it goes out of scope, regardless of how ComputeMaxHarpedStrandSlopeCore
+   // returns.
+   CScopedStrandGridOffset adjStart(m_HarpGridEnd[etStart], startOffset);
+   CScopedStrandGridOffset adjHp1(m_HarpGridHp[etStart], hp1Offset);
+   CScopedStrandGridOffset adjHp2(m_HarpGridHp[etEnd], hp2Offset);
+   CScopedStrandGridOffset adjEnd(m_HarpGridEnd[etEnd], endOffset);
+
+   return ComputeMaxHarpedStrandSlopeCore(Xs, fill, slope);
+}
+
+HRESULT CStrandGridModel::ComputeMaxHarpedStrandSlopeCore(Float64 Xs, IIndexArray* fill, Float64* slope)
+{
    CHECK_RETVAL(slope);
 
+   if (fill == nullptr)
+   {
+      // GetStrandPositionsEx() below resolves a null fill to the real, current fill internally
+      // (via GetHarpedStrandPositions()), but the strand count check just below needs a resolved
+      // fill up front since it queries a grid filler directly, which rejects a null fill.
+      m_HarpGridEnd[etStart]->get_StrandFill(&fill);
+   }
+
    StrandIndexType nStrands;
-   m_HarpGridEnd[etStart]->GetStrandCount(&nStrands);
+   m_HarpGridEnd[etStart]->GetStrandCountEx(fill, &nStrands);
    if (nStrands == 0)
    {
       *slope = DBL_MAX;
@@ -1189,8 +1245,8 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* s
    if ( ::IsLE(Xs,leftHP) )
    {
       ATLASSERT(leftEndHP <= Xs);
-      GetStrandPositions(Harped,leftEndHP,&start);
-      GetStrandPositions(Harped,leftHP, &end);
+      GetStrandPositionsEx(Harped,leftEndHP,fill,&start);
+      GetStrandPositionsEx(Harped,leftHP,fill,&end);
       run = leftHP - leftEndHP;
 
       // vertical position is in girder section coordinates... (measured down from top of girder)
@@ -1208,8 +1264,8 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* s
    else
    {
       ATLASSERT(Xs <= rightEndHP);
-      GetStrandPositions(Harped, rightHP,  &start);
-      GetStrandPositions(Harped, rightEndHP, &end);
+      GetStrandPositionsEx(Harped, rightHP,fill,&start);
+      GetStrandPositionsEx(Harped, rightEndHP,fill,&end);
       run = rightEndHP - rightHP;
 
       // vertical position is in girder section coordinates... (measured down from top of girder)
@@ -1257,131 +1313,6 @@ STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlope(Float64 Xs,Float64* s
       }
    }
 
-   return S_OK;
-}
-
-STDMETHODIMP CStrandGridModel::ComputeMaxHarpedStrandSlopeEx(Float64 Xs, IIndexArray* fill, Float64 startOffset, Float64 hp1Offset, Float64 hp2Offset, Float64 endOffset, Float64* slope)
-{
-   CHECK_RETVAL(slope);
-
-   StrandIndexType nStrands;
-   m_HarpGridEnd[etStart]->GetStrandCountEx(fill, &nStrands);
-   if ( nStrands == 0 )
-   {
-      *slope = DBL_MAX;
-      return S_OK;
-   }
-
-
-#if defined _DEBUG
-   Float64 gdrLength;
-   m_pGirder->get_GirderLength(&gdrLength);
-   ATLASSERT(0.0 <= Xs  && Xs <= gdrLength);
-#endif
-
-   Float64 leftEndHP, leftHP, rightHP, rightEndHP;
-   GetHarpingPointLocations(&leftHP, &rightHP);
-   GetEndHarpingPointLocations(&leftEndHP, &rightEndHP);
-
-   if (::IsLT(Xs, leftEndHP) || (::IsLT(leftHP, Xs) && ::IsLT(Xs, rightHP)) || ::IsLT(rightEndHP, Xs))
-   {
-      // point under consideration is outside of sloped region or between harp points
-      // strands are assumed to be horizonal
-      *slope = DBL_MAX;
-      return S_OK;
-   }
-
-   // strand positions - adjusted for current offset value
-   CComPtr<IPoint2dCollection> start, end;
-   Float64 dx, curr_start_offset, curr_end_offset;
-   Float64 start_offset, end_offset;
-   Float64 run; // as in rise over run
-   if ( ::IsLE(Xs,leftHP) )
-   {
-      m_HarpGridEnd[etStart]->GetStrandPositionsEx(fill, &start);
-      m_HarpGridHp[etStart]->GetStrandPositionsEx(fill, &end);
-
-      // need to subtract current offsets out so we can add our own
-      m_HarpGridEnd[etStart]->GetStrandAdjustment(&dx,&curr_start_offset);
-      m_HarpGridHp[etStart]->GetStrandAdjustment(&dx,&curr_end_offset);
-
-      start_offset = startOffset;
-      end_offset   = hp1Offset;
-
-      run = leftHP - leftEndHP;
-
-
-      // vertical position is in girder section coordinates... (measured down from top of girder)
-      // Change to a bottom up measurement based on a consistent datum at the bottom of the girder at the start
-      Float64 HgLeftEndHP = GetSectionHeight(leftEndHP);
-      Float64 HgLeftHP = GetSectionHeight(leftHP);
-
-      Float64 leftEndHPprecamber, leftHPprecamber;
-      m_pSegment->ComputePrecamber(leftEndHP, &leftEndHPprecamber);
-      m_pSegment->ComputePrecamber(leftHP, &leftHPprecamber);
-
-      start->Offset(0, HgLeftEndHP + leftEndHPprecamber);
-      end->Offset(0, HgLeftHP + leftHPprecamber);
-   }
-   else
-   {
-      m_HarpGridHp[etEnd]->GetStrandPositionsEx(fill, &start);
-      m_HarpGridEnd[etEnd]->GetStrandPositionsEx(fill, &end);
-
-      // need to subtract current offsets out so we can add our own
-      m_HarpGridHp[etEnd]->GetStrandAdjustment(&dx,&curr_start_offset);
-      m_HarpGridEnd[etEnd]->GetStrandAdjustment(&dx,&curr_end_offset);
-
-      start_offset = hp2Offset;
-      end_offset   = endOffset;
-
-      run = rightEndHP - rightHP;
-
-      // vertical position is in girder section coordinates... (measured down from top of girder)
-      // Change to a bottom up measurement based on a consistent datum at the bottom of the girder at the start
-      Float64 HgRightHP = GetSectionHeight(rightHP);
-      Float64 HgRightEndHP = GetSectionHeight(rightEndHP);
-
-      Float64 rightHPprecamber, rightEndHPprecamber;
-      m_pSegment->ComputePrecamber(rightHP, &rightHPprecamber);
-      m_pSegment->ComputePrecamber(rightEndHP, &rightEndHPprecamber);
-
-      start->Offset(0, HgRightHP + rightHPprecamber);
-      end->Offset(0, HgRightEndHP + rightEndHPprecamber);
-   }
-
-#if defined _DEBUG
-   IndexType nStrandStart,nStrandEnd;
-   start->get_Count(&nStrandStart);
-   end->get_Count(&nStrandEnd);
-   ATLASSERT(nStrandStart == nStrandEnd && nStrandStart == nStrands);
-#endif
-
-   *slope = DBL_MAX;
-   for ( StrandIndexType strandIdx = 0; strandIdx < nStrands; strandIdx++ )
-   {
-      CComPtr<IPoint2d> pntStart, pntEnd;
-      start->get_Item(strandIdx,&pntStart);
-      end->get_Item(strandIdx,&pntEnd);
-
-      Float64 ys, ye;
-      pntStart->get_Y(&ys);
-      pntEnd->get_Y(&ye);
-
-      Float64 rise = (ye - curr_end_offset + end_offset) - (ys - curr_start_offset + start_offset);
-
-      if (!IsZero(rise))
-      {
-         // Slope is in the format 1:n (rise:run)
-         // Positive slopes are upwards and towards the right
-         Float64 n = run/rise;
-         if ( MinIndex(fabs(*slope),fabs(n)) == 1 )
-         {
-            *slope = n;
-         }
-      }
-   }
-    
    return S_OK;
 }
 
