@@ -958,12 +958,6 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
 
         const Float64 Xs = Xl;
 
-        /*
-         * The scalloped layout uses exactly the same H1/X1 exterior side
-         * geometry as the other lower-cross-beam layouts.  These are the
-         * common bottom-left and bottom-right corner points after the side
-         * tapers.  Only the profile between these two points is scalloped.
-         */
         Float64 XbottomLeft = Xl + m_X1L;
         Float64 XbottomRight = Xr - m_X1R;
 
@@ -1019,12 +1013,6 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
 
             for (Float64 xCol : colStations)
             {
-                /*
-                 * D locates the top center of each column relative to the
-                 * local top of the lower cross beam.  It does not prescribe
-                 * the scallop apex.  The arc is determined only by its two
-                 * end points and m_R.
-                 */
                 const Float64 yCol =
                     LowerTopY(
                         xCol,
