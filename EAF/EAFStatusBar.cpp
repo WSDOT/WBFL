@@ -381,9 +381,9 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
    {
       // Status Center
       auto& status_center = pDoc->GetStatusCenter();
-      if ( status_center.IsEnabled() )
+      int idx = GetStatusPaneIndex();
+      if ( status_center.IsEnabled() && 0 <= idx && GetStatusBarCtrl().GetRect(idx,&rect) )
       {
-         GetStatusBarCtrl().GetRect(GetStatusPaneIndex(),&rect);
          if (rect.PtInRect(point))
          {
             PostMessage(WM_COMMAND,EAFID_VIEW_STATUSCENTER,0);
@@ -391,8 +391,9 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
       }
    }
 
-   GetStatusBarCtrl().GetRect(GetAutoSavePaneIndex(), &rect);
-   if (rect.PtInRect(point))
+   // a status bar may not have the AutoSave pane (e.g. the default status bar)
+   int idx = GetAutoSavePaneIndex();
+   if (0 <= idx && GetStatusBarCtrl().GetRect(idx, &rect) && rect.PtInRect(point))
    {
       CEAFApp* pApp = EAFGetApp();
       if (pApp)
@@ -407,10 +408,13 @@ void CEAFStatusBar::OnLButtonDblClk(UINT nFlags, CPoint point)
 void CEAFStatusBar::OnStatusChanged()
 {
    // the status changed so invalidated the status pane and force a redraw
+   int idx = GetStatusPaneIndex();
    CRect rect;
-   GetStatusBarCtrl().GetRect(GetStatusPaneIndex(),&rect);
-   InvalidateRect(rect);
-   UpdateWindow();
+   if ( 0 <= idx && GetStatusBarCtrl().GetRect(idx,&rect) ) // a status bar may not have the status pane
+   {
+      InvalidateRect(rect);
+      UpdateWindow();
+   }
 }
 
 void CEAFStatusBar::Reset()
@@ -440,7 +444,13 @@ void CEAFStatusBar::AutoSaveEnabled(BOOL bEnable)
 
 void CEAFStatusBar::AutoSaveSaving(BOOL bSaving)
 {
+   // A status bar may not have the AutoSave pane (the default status bar doesn't). The data recovery handler calls this
+   // at every AutoSave interval, even when AutoSave is off, so a missing pane must not be written to
    auto idx = GetAutoSavePaneIndex();
+   if (idx < 0)
+   {
+      return;
+   }
 
    if (bSaving)
    {
