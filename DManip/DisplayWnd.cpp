@@ -235,7 +235,8 @@ void CDisplayWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnLButtonDown(nFlags,logPoint) )
@@ -248,7 +249,8 @@ void CDisplayWnd::OnLButtonUp(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnLButtonUp(nFlags,logPoint) )
@@ -261,7 +263,8 @@ void CDisplayWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnLButtonDblClk(nFlags,logPoint) )
@@ -274,7 +277,8 @@ void CDisplayWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnRButtonDown(nFlags,logPoint) )
@@ -287,7 +291,8 @@ void CDisplayWnd::OnRButtonUp(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnRButtonUp(nFlags,logPoint) )
@@ -300,7 +305,8 @@ void CDisplayWnd::OnRButtonDblClk(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnRButtonDblClk(nFlags,logPoint) )
@@ -313,7 +319,8 @@ void CDisplayWnd::OnMouseMove(UINT nFlags, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnMouseMove(nFlags,logPoint) )
@@ -337,7 +344,8 @@ BOOL CDisplayWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 
 void CDisplayWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-   CClientDC dc(this);
+    CDManipClientDC dc(this);
+    SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    if ( !m_pDispMgr->OnKeyDown(nChar,nRepCnt,nFlags) )
       HandleKeyDown(nChar,nRepCnt,nFlags);
 
