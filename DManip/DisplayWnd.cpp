@@ -333,7 +333,8 @@ BOOL CDisplayWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint point)
 {
    // Convert the point to logical coordinates
    CPoint logPoint = point;
-   CClientDC dc(this);
+   CDManipClientDC dc(this);
+   SetMappingMode(WBFL::DManip::MapMode::Isotropic, false);
    dc.DPtoLP(&logPoint);
 
    if ( !m_pDispMgr->OnMouseWheel(nFlags,zDelta,logPoint) )
