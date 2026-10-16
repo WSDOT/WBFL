@@ -50,10 +50,12 @@ public:
    HRESULT FinalConstruct()
    {
       m_CompositeShape.CoCreateInstance(CLSID_CompositeShape);
-      HRESULT hr = m_Beam.CoCreateInstance(*pbeamclsid);
+      // a section that creates its beam directly does so first (its class may not be registered, and COM activation
+      // would load whatever DLL is registered for the CLSID); otherwise the beam comes from COM
+      HRESULT hr = CreateBeam(&m_Beam);
       if (FAILED(hr))
       {
-         CreateBeam(&m_Beam);
+         m_Beam.CoCreateInstance(*pbeamclsid);
       }
 
       CComQIPtr<IShape> beamShape(m_Beam);
