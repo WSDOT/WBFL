@@ -32,6 +32,13 @@
 
 using namespace WBFL::Geometry;
 
+namespace
+{
+   // sqrt(slope^2 + 1)/slope: the horizontal width of a web per unit of its thickness normal to the web. Written so a
+   // vertical web (slope DBL_MAX) gives 1 (the width is the thickness) instead of inf/DBL_MAX
+   inline Float64 HorizontalFactor(Float64 slope) { return copysign(sqrt(1 + 1 / (slope * slope)), slope); }
+}
+
 UBeam2::UBeam2()
 {
 }
@@ -267,14 +274,14 @@ Float64 UBeam2::GetWebLocation(WebIndexType webIdx) const
    GetPolygon(); // causes the shape to be updated, including m_Slope and m_T
 
    Float64 sign = (webIdx == 0) ? -1 : 1;
-   return sign * (m_D1 / m_Slope - 0.5 * m_T * sqrt(m_Slope * m_Slope + 1) / m_Slope + m_W1 / 2);
+   return sign * (m_D1 / m_Slope - 0.5 * m_T * HorizontalFactor(m_Slope) + m_W1 / 2);
 }
 
 Float64 UBeam2::GetWebSpacing() const
 {
    Float64 t = GetT();
 
-   return m_W1 - t * sqrt(m_Slope * m_Slope + 1) / m_Slope + 2 * m_D1 / m_Slope;
+   return m_W1 - t * HorizontalFactor(m_Slope) + 2 * m_D1 / m_Slope;
 }
 
 Float64 UBeam2::GetSlope(WebIndexType webIdx) const
@@ -398,7 +405,7 @@ Plane3d UBeam2::GetWebPlane(WebIndexType webIdx) const
    Float64 sign = (webIdx == 0 ? -1.0 : 1.0);
 
    Float64 x, y, z;
-   Float64 t = fabs((m_T/2)*(sqrt(slope*slope+1)/slope));
+   Float64 t = fabs((m_T/2)*HorizontalFactor(slope));
    x = 0;
    y = 0;
    z = sign*(m_W1/2 - t);

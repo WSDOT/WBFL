@@ -31,6 +31,49 @@ namespace GeomModelUnitTests
 			return beam;
 		}
 
+		TEST_METHOD(VerticalWebs)
+		{
+			// W2 = W1 + 2 W5 with W4 = 0: the webs are vertical, so the slope is DBL_MAX and the horizontal width of a web
+			// is its thickness. The outline is 48 in wide and deep with a 2 in x 2 in ledge at each top outer corner (W5, D5);
+			// the top flange (W6) reaches 1 in past the 7 in web, then slopes to it over 6 in (W7, D6)
+			UBeam2 beam;
+			beam.SetW1(48.0);
+			beam.SetW2(52.0);
+			beam.SetW3(12.0);
+			beam.SetW4(0.0);
+			beam.SetW5(2.0);
+			beam.SetW6(8.0);
+			beam.SetW7(1.0);
+			beam.SetD1(48.0);
+			beam.SetD2(6.0);
+			beam.SetD3(6.0);
+			beam.SetD4(0.0);
+			beam.SetD5(2.0);
+			beam.SetD6(6.0);
+			beam.SetC1(0.0);
+
+			auto points = beam.GetPolyPoints();
+			for (const auto& p : points)
+			{
+				Assert::IsTrue(std::isfinite(p.X()) && std::isfinite(p.Y()));
+			}
+			Assert::IsTrue(beam.GetBoundingBox() == Rect2d(-26.0, 0.0, 26.0, 48.0));
+
+			// 48 in square less the void between the webs (34 in wide above the bottom fillets, 12 in up, narrowing to 10 in
+			// at the top of the bottom flange, 6 in up), plus the two ledges, less the 1 in x 6 in triangles where the top
+			// flanges slope to the webs
+			auto props = beam.GetProperties();
+			Assert::IsTrue(IsEqual(props.GetArea(), 950.0, 0.001));
+			Assert::IsTrue(IsEqual(props.GetCentroid().X(), 0.0));
+			Assert::IsTrue(IsEqual(props.GetCentroid().Y(), (17692.0 - 6.0 * 46.0) / 950.0, 0.001));
+
+			// the webs are 7 in thick, so their centerlines are 3.5 in inside the outer faces
+			Assert::IsTrue(IsEqual(beam.GetT(), 7.0));
+			Assert::IsTrue(IsEqual(beam.GetWebLocation(0), -20.5));
+			Assert::IsTrue(IsEqual(beam.GetWebLocation(1), 20.5));
+			Assert::IsTrue(IsEqual(beam.GetWebSpacing(), 41.0));
+		}
+
 		TEST_METHOD(BoundingBox)
 		{
 			auto beam = GetTestBeam();

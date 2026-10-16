@@ -31,6 +31,13 @@
 
 using namespace WBFL::Geometry;
 
+namespace
+{
+   // sqrt(slope^2 + 1)/slope: the horizontal width of a web per unit of its thickness normal to the web. Written so a
+   // vertical web (slope DBL_MAX) gives 1 (the width is the thickness) instead of inf/DBL_MAX
+   inline Float64 HorizontalFactor(Float64 slope) { return copysign(sqrt(1 + 1 / (slope * slope)), slope); }
+}
+
 UBeam::UBeam()
 {
 }
@@ -278,13 +285,13 @@ Float64 UBeam::GetWebLocation(WebIndexType webIdx) const
    GetPolygon(); // causes the slope to be updated
    Float64 sign = (webIdx == 0) ? -1 : 1;
 
-   return sign * (m_D1 / m_Slope - 0.5 * m_T * sqrt(m_Slope * m_Slope + 1) / m_Slope + m_W1 / 2);
+   return sign * (m_D1 / m_Slope - 0.5 * m_T * HorizontalFactor(m_Slope) + m_W1 / 2);
 }
 
 Float64 UBeam::GetWebSpacing() const
 {
    GetPolygon(); // causes the slope to be updated
-   return m_W1 - m_T * sqrt(m_Slope * m_Slope + 1) / m_Slope + 2 * m_D1 / m_Slope;
+   return m_W1 - m_T * HorizontalFactor(m_Slope) + 2 * m_D1 / m_Slope;
 }
 
 void UBeam::DoOffset(const Size2d& delta)
@@ -318,7 +325,7 @@ Float64 UBeam::GetTopFlangeWidth(IndexType flangeIdx) const
    if (1 < flangeIdx) THROW_GEOMETRY(WBFL_GEOMETRY_E_INVALIDINDEX);
 
    GetPolygon(); // causes m_Slope to be updated
-   Float64 t = m_T*sqrt(m_Slope * m_Slope + 1)/ m_Slope;
+   Float64 t = m_T*HorizontalFactor(m_Slope);
    return (m_W4 + (m_D6 + m_D7) / m_Slope) + (m_W5 - (m_D4 + m_D5) / m_Slope) + t;
 }
 
@@ -380,7 +387,7 @@ Plane3d UBeam::GetWebPlane(WebIndexType webIdx) const
    Float64 sign = (webIdx == 0 ? -1.0 : 1.0);
 
    Float64 x, y, z;
-   Float64 t = fabs((m_T/2)*(sqrt(slope*slope+1)/slope));
+   Float64 t = fabs((m_T/2)*HorizontalFactor(slope));
    x = 0;
    y = 0;
    z = sign*(m_W1/2 - t);
@@ -445,7 +452,7 @@ void UBeam::OnUpdatePolygon(std::unique_ptr<Polygon>& polygon) const
 
    Float64 T = m_T;
    if (!IsZero(m_Slope))
-      T = m_T * sqrt(m_Slope * m_Slope + 1) / m_Slope;
+      T = m_T * HorizontalFactor(m_Slope);
 
    Float64 D4(m_D4), D5(m_D5), D6(m_D6), D7(m_D7);
    if (IsZero(m_W4))
