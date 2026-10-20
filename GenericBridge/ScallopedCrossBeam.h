@@ -29,6 +29,7 @@
 
 #include "resource.h"       // main symbols
 #include "ColumnLayout.h"
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////
 // CScallopedCrossBeam
@@ -71,6 +72,8 @@ private:
    Float64 m_H1L, m_H1R, m_HU;
    Float64 m_X1L, m_X1R;
    Float64 m_RL, m_RR;
+   std::vector<Float64> m_ColumnScallopDepths;
+   std::vector<Float64> m_ColumnScallopRadii;
    Float64 m_W1, m_W2;
    CComPtr<IRebarLayout> m_RebarLayout;
 
@@ -128,6 +131,11 @@ public:
    STDMETHOD(get_RL)(/*[out,retval]*/Float64* pRL) override;
    STDMETHOD(put_RR)(/*[in]*/Float64 RR) override;
    STDMETHOD(get_RR)(/*[out,retval]*/Float64* pRR) override;
+
+   STDMETHOD(put_ColumnScallopDepth)(ColumnIndexType colIdx, Float64 depth) override;
+   STDMETHOD(get_ColumnScallopDepth)(ColumnIndexType colIdx, Float64* depth) override;
+   STDMETHOD(put_ColumnScallopRadius)(ColumnIndexType colIdx, Float64 radius) override;
+   STDMETHOD(get_ColumnScallopRadius)(ColumnIndexType colIdx, Float64* radius) override;
 
 // IStructuredStorage2
 public:

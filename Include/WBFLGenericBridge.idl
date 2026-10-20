@@ -1851,6 +1851,13 @@ library WBFLGenericBridge
 
 	   [propput, helpstring("property RR")] HRESULT RR([in]Float64 RR);
 	   [propget, helpstring("property RR")] HRESULT RR([out, retval]Float64* pRR);
+
+       // Depth below the local top of the lower cross beam at column colIdx.
+       [propput] HRESULT ColumnScallopDepth([in]ColumnIndexType colIdx, [in]Float64 depth);
+       [propget] HRESULT ColumnScallopDepth([in]ColumnIndexType colIdx, [out, retval]Float64* depth);
+       // Radius of the bay from column colIdx to column colIdx + 1.
+       [propput] HRESULT ColumnScallopRadius([in]ColumnIndexType colIdx, [in]Float64 radius);
+       [propget] HRESULT ColumnScallopRadius([in]ColumnIndexType colIdx, [out, retval]Float64* radius);
    }
 
    [

@@ -581,6 +581,48 @@ STDMETHODIMP CScallopedCrossBeam::get_RL(/*[out,retval]*/Float64* pRL)
    return S_OK;
 }
 
+STDMETHODIMP CScallopedCrossBeam::put_ColumnScallopDepth(ColumnIndexType colIdx, Float64 depth)
+{
+   if (colIdx == INVALID_INDEX || !std::isfinite(depth) || depth <= 0.0)
+      return E_INVALIDARG;
+
+   if (colIdx >= m_ColumnScallopDepths.size())
+      m_ColumnScallopDepths.resize(colIdx + 1, 0.0);
+   m_ColumnScallopDepths[colIdx] = depth;
+   Invalidate();
+   return S_OK;
+}
+
+STDMETHODIMP CScallopedCrossBeam::get_ColumnScallopDepth(ColumnIndexType colIdx, Float64* depth)
+{
+   CHECK_RETVAL(depth);
+   if (colIdx >= m_ColumnScallopDepths.size())
+      return E_INVALIDARG;
+   *depth = m_ColumnScallopDepths[colIdx];
+   return S_OK;
+}
+
+STDMETHODIMP CScallopedCrossBeam::put_ColumnScallopRadius(ColumnIndexType colIdx, Float64 radius)
+{
+   if (colIdx == INVALID_INDEX || !std::isfinite(radius) || radius <= 0.0)
+      return E_INVALIDARG;
+
+   if (colIdx >= m_ColumnScallopRadii.size())
+      m_ColumnScallopRadii.resize(colIdx + 1, 0.0);
+   m_ColumnScallopRadii[colIdx] = radius;
+   Invalidate();
+   return S_OK;
+}
+
+STDMETHODIMP CScallopedCrossBeam::get_ColumnScallopRadius(ColumnIndexType colIdx, Float64* radius)
+{
+   CHECK_RETVAL(radius);
+   if (colIdx >= m_ColumnScallopRadii.size())
+      return E_INVALIDARG;
+   *radius = m_ColumnScallopRadii[colIdx];
+   return S_OK;
+}
+
 ////////////////////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
 STDMETHODIMP CScallopedCrossBeam::Load(IStructuredLoad2* load)
@@ -976,73 +1018,41 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
         IndexType nCols;
         columnLayout->get_ColumnCount(&nCols);
 
-        std::vector<Float64> colStations;
+        if (nCols > 0 &&
+            (m_ColumnScallopDepths.size() < nCols ||
+             m_ColumnScallopRadii.size() < nCols - 1))
+            return E_UNEXPECTED;
 
-        for (IndexType colIdx = 0;
-            colIdx < nCols;
-            ++colIdx)
-        {
-            Float64 xCol;
-            columnLayout->get_ColumnLocation(colIdx, &xCol);
-
-            Float64 xPierCol;
-            m_pPier->ConvertCrossBeamToPierCoordinate(xCol, &xPierCol);
-
-            colStations.push_back(xPierCol);
-        }
-
-        std::sort(
-            colStations.begin(),
-            colStations.end());
-
-        colStations.erase(
-            std::unique(
-                colStations.begin(),
-                colStations.end(),
-                [](Float64 a, Float64 b)
-                {
-                    return std::fabs(a - b) < 1.0e-8;
-                }),
-            colStations.end());
-
-        if (!colStations.empty())
+        if (nCols > 0)
         {
             Float64 xArc0 = XbottomLeft;
             Float64 yArc0 = YbottomLeft;
-            bool skipFirst = false;
 
-            for (Float64 xCol : colStations)
+            // Column order is also bay order. Do not sort stations separately
+            // from the depths and radii indexed by those columns.
+            for (ColumnIndexType colIdx = 0; colIdx < nCols; ++colIdx)
             {
-                const Float64 yCol =
-                    LowerTopY(
-                        xCol,
-                        Xs,
-                        Yl,
-                        Yr,
-                        lxbProfile) - m_RR;
+                Float64 xCol;
+                columnLayout->get_ColumnLocation(colIdx, &xCol);
+                Float64 xPierCol;
+                m_pPier->ConvertCrossBeamToPierCoordinate(xCol, &xPierCol);
+
+                const Float64 yCol = LowerTopY(
+                    xPierCol, Xs, Yl, Yr, lxbProfile) - m_ColumnScallopDepths[colIdx];
+                const Float64 radius = colIdx == 0
+                    ? m_RL : m_ColumnScallopRadii[colIdx - 1];
 
                 AddCircularArcByEndpoints(
-                    xArc0,
-                    yArc0,
-                    xCol,
-                    yCol,
-                    m_RL,
-                    skipFirst,
-                    m_BXBProfile);
+                    xArc0, yArc0, xPierCol, yCol, radius,
+                    colIdx != 0, m_BXBProfile);
 
-                xArc0 = xCol;
+                xArc0 = xPierCol;
                 yArc0 = yCol;
-                skipFirst = true;
             }
 
             AddCircularArcByEndpoints(
-                xArc0,
-                yArc0,
-                XbottomRight,
-                YbottomRight,
-                m_RL,
-                true,
-                m_BXBProfile);
+                xArc0, yArc0, XbottomRight, YbottomRight,
+                m_RR, true, m_BXBProfile);
         }
         else
         {
