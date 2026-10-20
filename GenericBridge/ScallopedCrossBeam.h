@@ -70,7 +70,7 @@ private:
    IPier* m_pPier; // weak reference
    Float64 m_H1L, m_H1R, m_HU;
    Float64 m_X1L, m_X1R;
-   Float64 m_R, m_D;
+   Float64 m_RL, m_RR;
    Float64 m_W1, m_W2;
    CComPtr<IRebarLayout> m_RebarLayout;
 
@@ -124,10 +124,10 @@ public:
    STDMETHOD(put_W2)(/*[in]*/Float64 W2) override;
    STDMETHOD(get_W2)(/*[out,retval]*/Float64* pW2) override;
 
-   STDMETHOD(put_R)(/*[in]*/Float64 R) override;
-   STDMETHOD(get_R)(/*[out,retval]*/Float64* pR) override;
-   STDMETHOD(put_D)(/*[in]*/Float64 D) override;
-   STDMETHOD(get_D)(/*[out,retval]*/Float64* pD) override;
+   STDMETHOD(put_RL)(/*[in]*/Float64 RL) override;
+   STDMETHOD(get_RL)(/*[out,retval]*/Float64* pRL) override;
+   STDMETHOD(put_RR)(/*[in]*/Float64 RR) override;
+   STDMETHOD(get_RR)(/*[out,retval]*/Float64* pRR) override;
 
 // IStructuredStorage2
 public:

@@ -42,8 +42,8 @@ HRESULT CScallopedCrossBeam::FinalConstruct()
    m_X1R = 0;
    m_W1 = 0;
    m_W2 = 0;
-   m_R = 0;
-   m_D = 0;
+   m_RL = 0;
+   m_RR = 0;
 
    HRESULT hr = m_RebarLayout.CoCreateInstance(CLSID_RebarLayout);
    if ( FAILED(hr) )
@@ -547,37 +547,37 @@ STDMETHODIMP CScallopedCrossBeam::get_W2(/*[out,retval]*/Float64* pW2)
    return S_OK;
 }
 
-STDMETHODIMP CScallopedCrossBeam::put_D(/*[in]*/Float64 D)
+STDMETHODIMP CScallopedCrossBeam::put_RR(/*[in]*/Float64 RR)
 {
-   if ( !IsEqual(m_D,D) )
+   if ( !IsEqual(m_RR,RR) )
    {
-      m_D = D;
+      m_RR = RR;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CScallopedCrossBeam::get_D(/*[out,retval]*/Float64* pD)
+STDMETHODIMP CScallopedCrossBeam::get_RR(/*[out,retval]*/Float64* pRR)
 {
-   CHECK_RETVAL(pD);
-   *pD = m_D;
+   CHECK_RETVAL(pRR);
+   *pRR = m_RR;
    return S_OK;
 }
 
-STDMETHODIMP CScallopedCrossBeam::put_R(/*[in]*/Float64 R)
+STDMETHODIMP CScallopedCrossBeam::put_RL(/*[in]*/Float64 RL)
 {
-   if ( !IsEqual(m_R,R) )
+   if ( !IsEqual(m_RL,RL) )
    {
-      m_R = R;
+      m_RL = RL;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CScallopedCrossBeam::get_R(/*[out,retval]*/Float64* pR)
+STDMETHODIMP CScallopedCrossBeam::get_RL(/*[out,retval]*/Float64* pRL)
 {
-   CHECK_RETVAL(pR);
-   *pR = m_R;
+   CHECK_RETVAL(pRL);
+   *pRL = m_RL;
    return S_OK;
 }
 
@@ -1019,14 +1019,14 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
                         Xs,
                         Yl,
                         Yr,
-                        lxbProfile) - m_D;
+                        lxbProfile) - m_RR;
 
                 AddCircularArcByEndpoints(
                     xArc0,
                     yArc0,
                     xCol,
                     yCol,
-                    m_R,
+                    m_RL,
                     skipFirst,
                     m_BXBProfile);
 
@@ -1040,7 +1040,7 @@ HRESULT CScallopedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints
                 yArc0,
                 XbottomRight,
                 YbottomRight,
-                m_R,
+                m_RL,
                 true,
                 m_BXBProfile);
         }

@@ -1846,11 +1846,11 @@ library WBFLGenericBridge
    ]
    interface IScallopedCrossBeam : ILinearCrossBeam
    {
-	   [propput, helpstring("property R")] HRESULT R([in]Float64 R);
-	   [propget, helpstring("property R")] HRESULT R([out, retval]Float64* pR);
+	   [propput, helpstring("property RL")] HRESULT RL([in]Float64 RL);
+	   [propget, helpstring("property RL")] HRESULT RL([out, retval]Float64* pRL);
 
-	   [propput, helpstring("property D")] HRESULT D([in]Float64 D);
-	   [propget, helpstring("property D")] HRESULT D([out, retval]Float64* pD);
+	   [propput, helpstring("property RR")] HRESULT RR([in]Float64 RR);
+	   [propget, helpstring("property RR")] HRESULT RR([out, retval]Float64* pRR);
    }
 
    [
