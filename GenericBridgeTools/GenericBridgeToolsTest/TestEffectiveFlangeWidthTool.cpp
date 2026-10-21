@@ -86,12 +86,12 @@ void CTestEffectiveFlangeWidthTool::TestPrecastGirderBridge()
    // No deck
    bridge.Release();
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,NO_DECK,true,&bridge);
-   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,1,25.0,&value),GBMT_E_NODECK);
+   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,::GetGirderLineID(0,1),25.0,&value),GBMT_E_NODECK);
 
    // Noncomposite deck
    bridge.Release();
    CreatePrecastGirderBridge(0.0,spanLengths,10.0,nGirderLines,shape,4.0,SIP_DECK,false,&bridge);
-   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,1,25.0,&value),GBMT_E_COMPOSITEDECK);
+   TRY_TEST(tool->EffectiveFlangeWidthBySSMbr(bridge,::GetGirderLineID(0,1),25.0,&value),GBMT_E_COMPOSITEDECK);
 
    // use a I-Beam for the shape
    bridge.Release();

@@ -43,6 +43,17 @@
 #include <map>
 #endif
 
+// A ridge point this close to a deck edge, or to a point of the bottom of the slab, is at that point. The slab shape
+// already has a point there, and two points at one place make a degenerate edge (and an invalid profile for solids
+// swept through the slab shapes, which need the same points at every section).
+static const Float64 g_RidgePointTolerance = 0.001; // 1 mm
+
+// true if x is between a and b, and not within g_RidgePointTolerance of either
+static bool IsStrictlyBetween(Float64 a, Float64 x, Float64 b)
+{
+   return a + g_RidgePointTolerance < x && x < b - g_RidgePointTolerance;
+}
+
 
 template <class T>
 HRESULT GetMaterial(T* pSlab, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionBias sectionBias, IMaterial** ppMaterial)
@@ -541,7 +552,7 @@ HRESULT CSectionCutTool::CreateSlabTop(IGenericBridge* bridge, Float64 station, 
          profile->GetRidgePointOffsetAndElevation(surfaceID,CComVariant(objStation),alignmentPointIdx,ridgePointIdx,&offset,&elev);
 
          // if the ridge point is between the edges of the deck, add it to the deck shape
-         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+         if ( IsStrictlyBetween(left_deck_offset,offset,right_deck_offset) ) // a ridge point at the deck edge is the edge point
          {
             slab_shape->AddPoint(offset,elev);
          }
@@ -551,8 +562,10 @@ HRESULT CSectionCutTool::CreateSlabTop(IGenericBridge* bridge, Float64 station, 
    {
       CComPtr<IDirection> reverse_alignment_normal;
       alignment_normal->Increment(CComVariant(M_PI), &reverse_alignment_normal);
+      // the skew angle of the surface profile is positive to the right: the cut line is the normal to the left turned
+      // clockwise by it (AngleBetween is this direction minus the other)
       CComPtr<IAngle> skew_angle;
-      dirCutLine->AngleBetween(reverse_alignment_normal, &skew_angle);
+      reverse_alignment_normal->AngleBetween(dirCutLine, &skew_angle);
       surface->CreateSurfaceProfileSectionCut(CComVariant(objStation),CComVariant(skew_angle),VARIANT_TRUE,&surfaceProfile);
       surfaceProfile->get_Count(&nRidgePoints); // this is the number of surface points
       for ( IndexType ridgePointIdx = nRidgePoints-1; ridgePointIdx != INVALID_INDEX; ridgePointIdx-- )
@@ -562,7 +575,7 @@ HRESULT CSectionCutTool::CreateSlabTop(IGenericBridge* bridge, Float64 station, 
          surfaceProfile->GetSurfacePointElevation(ridgePointIdx,&offset,&elev);
 
          // if the ridge point is between the edges of the deck, add it to the deck shape
-         if ( ::InRange(left_deck_offset,offset,right_deck_offset) )
+         if ( IsStrictlyBetween(left_deck_offset,offset,right_deck_offset) ) // a ridge point at the deck edge is the edge point
          {
             slab_shape->AddPoint(offset,elev);
          }
@@ -581,6 +594,7 @@ HRESULT CSectionCutTool::CreateSlabTop(IGenericBridge* bridge, Float64 station, 
    pCut->surfaceID = surfaceID;
    pCut->alignmentPointIdx = alignmentPointIdx;
    pCut->objStation = objStation;
+   pCut->pntAlignment = pntAlignment;
    pCut->dirCutLine = dirCutLine;
    pCut->dirCutLineValue = dirCutLineValue;
    pCut->bIsNormal = bIsNormal;
@@ -965,7 +979,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bri
       else
          cut.surfaceProfile->GetSurfacePointElevation(ridgePointIdx, &offset, &elev);
 
-      if (::InRange(cut.left_deck_offset, offset, cut.right_deck_offset))
+      if (IsStrictlyBetween(cut.left_deck_offset, offset, cut.right_deck_offset))
          ridge_points.emplace_back(offset, elev);
    }
 
@@ -993,6 +1007,40 @@ STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bri
          Float64 skew;
          CComPtr<IStation> objGirderStation;
       };
+
+      // the station and offset (normal to the alignment) of the point on the cut line at offset x along it
+      CComPtr<IPoint2d> pnt;
+      pnt.CoCreateInstance(CLSID_Point2d);
+      auto locate = [&](Float64 x, CComPtr<IStation>& objStation, Float64& offset)
+         {
+            Float64 ax, ay;
+            cut.pntAlignment->Location(&ax, &ay);
+            pnt->Move(ax - x * cos(cut.dirCutLineValue), ay - x * sin(cut.dirCutLineValue)); // the cut line points left and x is positive to the right
+            objStation.Release();
+            cut.alignment->StationAndOffset(pnt, &objStation, &offset);
+         };
+
+      // elevation of the top of the deck at x along the cut line
+      auto deck_elevation = [&](Float64 x)
+         {
+            CComPtr<IStation> objStation;
+            Float64 offset;
+            locate(x, objStation, offset);
+            Float64 elev;
+            cut.profile->Elevation(cut.surfaceID, CComVariant(objStation), offset, &elev);
+            return elev;
+         };
+
+      // cross slope of the deck at x along the cut line
+      auto cross_slope = [&](Float64 x)
+         {
+            CComPtr<IStation> objStation;
+            Float64 offset;
+            locate(x, objStation, offset);
+            Float64 slope;
+            cut.profile->CrossSlope(cut.surfaceID, CComVariant(objStation), offset, &slope);
+            return slope;
+         };
 
       auto get_mating_surface = [&](const GirderPointRecord& girderPoint, bool bFirst) -> MatingSurfaceCut
          {
@@ -1041,43 +1089,37 @@ STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bri
             girder_section->get_MatingSurfaceCount(&nMatingSurfaces);
             MatingSurfaceIndexType msIdx = (bFirst ? 0 : nMatingSurfaces - 1);
 
-            Float64 ms_width, ms_location;
+            Float64 ms_width, ms_location; // normal to the girder
             girder_section->get_MatingSurfaceWidth(msIdx, VARIANT_FALSE, &ms_width);
             girder_section->get_MatingSurfaceLocation(msIdx, VARIANT_FALSE, &ms_location);
-            ms_width /= cos_skew;
-            ms_location /= cos_skew;
 
-            Float64 xcl = girderPoint.cutLineOffset + ms_location;
-            ms.x23 = xcl - ms_width / 2;
-            ms.x45 = xcl + ms_width / 2;
-            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), ms.x23, &ms.el23);
-            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), ms.x45, &ms.el45);
-            cut.profile->Elevation(cut.surfaceID, CComVariant(girderPoint.objGirderStation), xcl, &ms.elcl);
-
+            // the top of the girder is sloped by its orientation normal to the girder
             ms.el3 = elclg - cut.gross_depth - ms.haunch + (ms_location - ms_width / 2) * orientation;
             ms.el4 = elclg - cut.gross_depth - ms.haunch + (ms_location + ms_width / 2) * orientation;
+
+            // along the cut line
+            Float64 xcl = girderPoint.cutLineOffset + ms_location / cos_skew;
+            ms.x23 = xcl - ms_width / cos_skew / 2;
+            ms.x45 = xcl + ms_width / cos_skew / 2;
+            ms.el23 = deck_elevation(ms.x23);
+            ms.el45 = deck_elevation(ms.x45);
+            ms.elcl = deck_elevation(xcl);
             return ms;
          };
 
-      auto elevation = [&](const MatingSurfaceCut& ms, Float64 x)
-         {
-            Float64 elev;
-            cut.profile->Elevation(cut.surfaceID, CComVariant(ms.objGirderStation), x, &elev);
-            return elev;
-         };
+      auto elevation = [&](const MatingSurfaceCut& /*ms*/, Float64 x) { return deck_elevation(x); };
 
       // left exterior girder: overhang soffit to the outer top corner of the girder, then to the inner fillet
       auto left = get_mating_surface(left_girder, true);
       if (cut.overhang_taper[qcbLeft] == dotNone)
       {
-         slab_shape->AddPoint(left.x23, left.el23 - cut.overhang_depth[qcbLeft]);
+         if (!IsEqual(left.el23 - cut.overhang_depth[qcbLeft], left.el3, g_RidgePointTolerance)) // else the soffit is at the top of the girder
+            slab_shape->AddPoint(left.x23, left.el23 - cut.overhang_depth[qcbLeft]);
       }
       else if (cut.overhang_taper[qcbLeft] == dotBottomTopFlange)
       {
          Float64 dy = cut.gross_depth + left.haunch - (left.elcl - left.el23) + left.tf;
-         Float64 slope;
-         cut.profile->CrossSlope(cut.surfaceID, CComVariant(left.objGirderStation), left.x23, &slope);
-         Float64 dx = slope * left.tf / cos(left.skew);
+         Float64 dx = cross_slope(left.x23) * left.tf / cos(left.skew);
          slab_shape->AddPoint(left.x23 - dx, left.el23 - dy);
       }
       slab_shape->AddPoint(left.x23, left.el3); // outer top corner of girder (3)
@@ -1091,7 +1133,7 @@ STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bri
       // between the girders, the bottom of the slab is the gross depth below the top
       for (const auto& [offset, elev] : ridge_points)
       {
-         if (x6 < offset && offset < x1)
+         if (IsStrictlyBetween(x6, offset, x1))
             slab_shape->AddPoint(offset, elev - cut.gross_depth);
       }
 
@@ -1100,14 +1142,13 @@ STDMETHODIMP CSectionCutTool::CreateSlabShapeWithoutHaunches(IGenericBridge* bri
       slab_shape->AddPoint(right.x45, right.el4); // outer top corner of girder (4)
       if (cut.overhang_taper[qcbRight] == dotNone)
       {
-         slab_shape->AddPoint(right.x45, right.el45 - cut.overhang_depth[qcbRight]);
+         if (!IsEqual(right.el45 - cut.overhang_depth[qcbRight], right.el4, g_RidgePointTolerance)) // else the soffit is at the top of the girder
+            slab_shape->AddPoint(right.x45, right.el45 - cut.overhang_depth[qcbRight]);
       }
       else if (cut.overhang_taper[qcbRight] == dotBottomTopFlange)
       {
          Float64 dy = cut.gross_depth + right.haunch - (right.elcl - right.el45) + right.tf;
-         Float64 slope;
-         cut.profile->CrossSlope(cut.surfaceID, CComVariant(right.objGirderStation), right.x45, &slope);
-         Float64 dx = slope * right.tf / cos(right.skew);
+         Float64 dx = cross_slope(right.x45) * right.tf / cos(right.skew);
          slab_shape->AddPoint(right.x45 + dx, right.el45 - dy);
       }
    }
@@ -3167,7 +3208,7 @@ HRESULT CSectionCutTool::CreateJointShapes(IGenericBridge* bridge, GirderIDType 
    return S_OK;
 }
 
-HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppSkewedShape)
+HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,Float64 xCenter,IShape* pShape,IShape** ppSkewedShape)
 {
    if ( IsZero(skewAngle) )
    {
@@ -3200,12 +3241,7 @@ HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppS
          VARIANT_BOOL bVoid;
          item->get_Void(&bVoid);
 
-         CComPtr<IRect2d> bbox;
-         shape->get_BoundingBox(&bbox);
-         CComPtr<IPoint2d> pntTC;
-         bbox->get_TopCenter(&pntTC);
-         Float64 xcl;
-         pntTC->get_X(&xcl);
+         Float64 xcl = xCenter;
 
          CComPtr<IPoint2dCollection> points;
          shape->get_PolyPoints(&points);
@@ -3234,12 +3270,7 @@ HRESULT CSectionCutTool::SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppS
    }
    else
    {
-      CComPtr<IRect2d> bbox;
-      pShape->get_BoundingBox(&bbox);
-      CComPtr<IPoint2d> pntTC;
-      bbox->get_TopCenter(&pntTC);
-      Float64 xcl;
-      pntTC->get_X(&xcl);
+      Float64 xcl = xCenter;
 
       CComPtr<IPoint2dCollection> points;
       pShape->get_PolyPoints(&points);
@@ -3375,8 +3406,10 @@ HRESULT CSectionCutTool::CreateBarrierShape(DirectionType side,IGenericBridge* b
    Float64 skewAngle = 0;
    objAngle->get_Value(&skewAngle);
 
+   // the barrier runs along the deck edge, so a skewed cut stretches it away from the deck edge (each point's distance
+   // from the deck edge normal to it becomes a distance along the cut line)
    CComPtr<IShape> skewedShape;
-   SkewShape(skewAngle,shape,&skewedShape);
+   SkewShape(skewAngle,deck_offset,shape,&skewedShape);
 
    skewedShape.CopyTo(ppShape);
 

@@ -330,16 +330,21 @@ void SurfaceImpl::ConfigureSurfaceProfile(std::shared_ptr<SurfaceProfile> surfac
 
    UpdateRidgeLines();
 
+   // The ridge lines of a sub-surface are offset paths of the whole alignment, so the cut line crosses each of them in every
+   // sub-surface. A ridge point is the crossing in the sub-surface whose station range contains it (the first or last
+   // sub-surface beyond the ends of the surface), so the profile has one surface point per ridge line, in ridge point order.
    IndexType nSubSurfaces = m_SurfaceTemplates.size();
    nSubSurfaces--;
    CHECK(m_RidgeLines.size() == nSubSurfaces);
-   for (IndexType subSurfaceIdx = 0; subSurfaceIdx < nSubSurfaces; subSurfaceIdx++)
+   if (nSubSurfaces == 0 || nSubSurfaces == INVALID_INDEX)
+      return;
+
+   IndexType nRidgeLines = m_RidgeLines.at(0).size();
+   for (IndexType ridgeLineIdx = 0; ridgeLineIdx < nRidgeLines; ridgeLineIdx++)
    {
-      const auto& vRidgeLines = m_RidgeLines[subSurfaceIdx];
-      IndexType nRidgeLines = vRidgeLines.size();
-      for (IndexType ridgeLineIdx = 0; ridgeLineIdx < nRidgeLines; ridgeLineIdx++)
+      for (IndexType subSurfaceIdx = 0; subSurfaceIdx < nSubSurfaces; subSurfaceIdx++)
       {
-         const auto& ridgeLine = vRidgeLines[ridgeLineIdx];
+         const auto& ridgeLine = m_RidgeLines.at(subSurfaceIdx).at(ridgeLineIdx);
 
          auto [bFound, point] = ridgeLine->Intersect(cutLine, point_on_alignment, true, true);
 
@@ -364,16 +369,24 @@ void SurfaceImpl::ConfigureSurfaceProfile(std::shared_ptr<SurfaceProfile> surfac
             }
          }
 
-         if (bFound)
-         {
-            auto [station, normal_offset] = alignment->StationAndOffset(point);
-            Float64 elev = GetProfile()->Elevation(GetSurface(), station, normal_offset);
+         if (!bFound)
+            continue;
 
-            Float64 cut_line_offset = point_on_alignment.Distance(point);
-            cut_line_offset *= ::BinarySign(normal_offset);
+         auto [station, normal_offset] = alignment->StationAndOffset(point);
 
-            surfaceProfile->CreateSurfacePoint(station, normal_offset, cut_line_offset, elev, point);
-         }
+         // the crossing is in this sub-surface if it's between its templates, or beyond the end of the surface
+         bool bAfterStart = (subSurfaceIdx == 0 || 0 <= alignment->CompareStations(m_SurfaceTemplates[subSurfaceIdx]->GetStation(), station));
+         bool bBeforeEnd = (subSurfaceIdx == nSubSurfaces - 1 || 0 <= alignment->CompareStations(station, m_SurfaceTemplates[subSurfaceIdx + 1]->GetStation()));
+         if (!bAfterStart || !bBeforeEnd)
+            continue;
+
+         Float64 elev = GetProfile()->Elevation(GetSurface(), station, normal_offset);
+
+         Float64 cut_line_offset = point_on_alignment.Distance(point);
+         cut_line_offset *= ::BinarySign(normal_offset);
+
+         surfaceProfile->CreateSurfacePoint(station, normal_offset, cut_line_offset, elev, point);
+         break;
       }
    }
 }

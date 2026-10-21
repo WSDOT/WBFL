@@ -39,5 +39,6 @@ public:
 private:
    static void TestPrecastGirderBridge();
    static void TestSplicedGirderBridge();
+   static void TestSkewedSlabTop();
 };
 
