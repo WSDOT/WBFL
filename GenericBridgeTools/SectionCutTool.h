@@ -131,7 +131,9 @@ private:
    HRESULT CreateGirderShape(IGenericBridge* bridge,GirderIDType ssMbrID,SegmentIndexType segIdx,Float64 Xs,SectionBias sectionBias, SectionCoordinateSystemType coordinateSystem,VARIANT_BOOL bIncludeDeck,HaunchDepthMethod haunchMethod, BOOL bFollowMatingSurfaceProfile,IShape** ppShape);
    HRESULT CreateJointShapes(IGenericBridge* bridge, GirderIDType ssMbrID, SegmentIndexType segIdx, Float64 Xs, SectionCoordinateSystemType coordinateSystem, IShape** ppLeftJointShape, IShape** ppRightJointShape);
    HRESULT LayoutRebar(ICompositeSectionEx* compositeSection,Float64 Econc,Float64 Dconc,IRebarSection* rebarSection,Float64 xTop,Float64 yTop,StageIndexType stageIdx,SectionPropertyMethod sectionPropMethod);
-   HRESULT SkewShape(Float64 skewAngle,IShape* pShape,IShape** ppSkewedShape);
+   // stretches a shape across a cut line skewed by skewAngle, about the vertical line at xCenter (a line on the shape that
+   // runs along the bridge, e.g. the deck edge for a barrier)
+   HRESULT SkewShape(Float64 skewAngle,Float64 xCenter,IShape* pShape,IShape** ppSkewedShape);
    HRESULT CreateBarrierShape(DirectionType side,IGenericBridge* bridge,Float64 station,IDirection* pDirection,IShape** ppShape);
    HRESULT ModelTendon(Float64 X, StageIndexType stageIdx, Float64 xTop, Float64 yTop, ITendon* pTendon, SectionPropertyMethod sectionPropMethod, Float64 Econc, Float64 Dconc, ICompositeSectionEx* pCompositeSection);
 
@@ -165,6 +167,7 @@ private:
       IDType surfaceID;
       IndexType alignmentPointIdx;
       CComPtr<IStation> objStation;
+      CComPtr<IPoint2d> pntAlignment; // where the cut line crosses the alignment
       CComPtr<IDirection> dirCutLine;
       Float64 dirCutLineValue;
       bool bIsNormal;

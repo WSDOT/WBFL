@@ -53,9 +53,9 @@ int main(int argc, TCHAR* argv[])
 
    ::CoInitialize(nullptr);
 
+   CTestSectionCutTool::Test(); // first: its new TestSkewedSlabTop runs before the older tests, which crash (they are out of date)
    CTestBridgeGeometryTool::Test();
    CTestEffectiveFlangeWidthTool::Test(); // also tests tributary width
-   CTestSectionCutTool::Test();
    CTestStrandPattern::Test();
    CTestPrecastGirder::Test();
 
@@ -210,20 +210,6 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
    //
    // Layout girder lines 
    //
-   CComPtr<IUniformSpacingLayoutLineFactory> layoutLineFactory;
-   layoutLineFactory.CoCreateInstance(CLSID_UniformSpacingLayoutLineFactory);
-   layoutLineFactory->put_AlignmentID(0);
-
-   CComPtr<IDblArray> startSpacing, endSpacing;
-   startSpacing.CoCreateInstance(CLSID_DblArray);
-   endSpacing.CoCreateInstance(CLSID_DblArray);
-
-   layoutLineFactory->put_StartSpacing(startSpacing);
-   layoutLineFactory->put_EndSpacing(endSpacing);
-
-   CComPtr<ISingleGirderLineFactory> girderLineFactory;
-   girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
-
    // Create layout lines and girder lines one span at a time (as each span has unique spacing)
    Float64 maxWidth = 0; // keep track of the max outside girder to outside girder width
 
@@ -234,6 +220,15 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
 
       SpacingIndexType nSpaces = spanDef.girderSpacing.size();
       GirderIndexType nGirders = nSpaces+1;
+
+      // the bridge geometry keeps the factories it is given (not copies), so each span gets its own factory and spacing
+      CComPtr<IUniformSpacingLayoutLineFactory> layoutLineFactory;
+      layoutLineFactory.CoCreateInstance(CLSID_UniformSpacingLayoutLineFactory);
+      layoutLineFactory->put_AlignmentID(0);
+
+      CComPtr<IDblArray> startSpacing, endSpacing;
+      startSpacing.CoCreateInstance(CLSID_DblArray);
+      endSpacing.CoCreateInstance(CLSID_DblArray);
 
       IDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0);
       layoutLineFactory->put_LayoutLineID(layoutLineID);
@@ -271,6 +266,9 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
 
       maxWidth = ::Max(maxWidth,startWidth,endWidth);
 
+      layoutLineFactory->put_StartSpacing(startSpacing);
+      layoutLineFactory->put_EndSpacing(endSpacing);
+
       // create the layout lines
       geometry->AddLayoutLineFactory(layoutLineFactory);
 
@@ -279,6 +277,8 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
       {
          GirderIDType gdrLineID  = ::GetGirderLineID(spanIdx,gdrIdx);
          IDType layoutLineID = ::GetGirderLayoutLineID(spanIdx*nGirders,0) + gdrIdx;
+         CComPtr<ISingleGirderLineFactory> girderLineFactory;
+         girderLineFactory.CoCreateInstance(CLSID_SingleGirderLineFactory);
          girderLineFactory->put_GirderLineID( gdrLineID ); // girder line ID
          girderLineFactory->put_LayoutLineID( layoutLineID ); // layout line used to layout this girder line
          girderLineFactory->put_Type(glChord);        // layout as a chord
@@ -286,10 +286,6 @@ void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDef
          girderLineFactory->put_EndPierID(endPierID);
          geometry->AddGirderLineFactory(girderLineFactory);
       }
-
-      // clear the spacing arrays for the next span
-      startSpacing->Clear();
-      endSpacing->Clear();
    }
 
 

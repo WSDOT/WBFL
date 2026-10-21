@@ -47,6 +47,7 @@ CTestSectionCutTool::~CTestSectionCutTool()
 
 void CTestSectionCutTool::Test()
 {
+   TestSkewedSlabTop();
    TestPrecastGirderBridge();
    TestSplicedGirderBridge();
 }
@@ -599,4 +600,87 @@ void CTestSectionCutTool::TestSplicedGirderBridge()
    eprops->get_Ytop(&Yt);
    H = Yb + Yt;
    TRY_TEST(IsEqual(H,10.0),true);
+}
+
+void CTestSectionCutTool::TestSkewedSlabTop()
+{
+   // A skewed cut through a roadway whose cross slope changes along the alignment. A ridge point on the top of the slab
+   // is the roadway where the cut line crosses the ridge line. (The surface profile was given the skew angle with the
+   // wrong sign, so it cut along the mirror image of the cut line and a ridge point had the roadway elevation at the
+   // mirrored station.)
+   CComPtr<ISectionCutTool> tool;
+   TRY_TEST(tool.CoCreateInstance(CLSID_SectionCutTool), S_OK);
+
+   std::vector<Float64> spanLengths{ 100, 200, 100 };
+   CComPtr<IShape> shape;
+   shape.CoCreateInstance(CLSID_FlangedGirderSection);
+   CComQIPtr<IFlangedGirderSection> fgs(shape);
+   DimensionWFG(fgs);
+
+   CComPtr<IGenericBridge> bridge;
+   CreatePrecastGirderBridge(0.0, spanLengths, 10.0, 5, shape, 3.0, CIP_DECK, true, &bridge);
+
+   CComPtr<IBridgeGeometry> geometry;
+   bridge->get_BridgeGeometry(&geometry);
+   CComPtr<IAlignment> alignment;
+   bridge->get_Alignment(&alignment);
+   CComPtr<IProfile> profile;
+   alignment->GetProfile(0, &profile);
+
+   // the roadway: the left lane, a 6 ft segment right of the alignment, and the right lane. The 6 ft segment's slope
+   // goes from 8% to -8% between stations -100 and 500 (the bridge is from 0 to 400)
+   CComPtr<ISurface> surface;
+   surface.CoCreateInstance(CLSID_Surface);
+   surface->put_SurfaceTemplateSegmentCount(3);
+   surface->put_AlignmentPoint(1);
+   surface->put_ProfileGradePoint(1);
+   TRY_TEST(profile->AddSurface(0, surface), S_OK);
+   for (auto [station, slope] : { std::make_pair(-100.0, 0.08), std::make_pair(500.0, -0.08) })
+   {
+      CComPtr<ISurfaceTemplate> surface_template;
+      surface->CreateSurfaceTemplate(CComVariant(station), &surface_template);
+      surface_template->UpdateSegmentParameters(0, 50.0, -0.02, tsHorizontal);
+      surface_template->UpdateSegmentParameters(1, 6.0, slope, tsHorizontal);
+      surface_template->UpdateSegmentParameters(2, 50.0, -0.02, tsHorizontal);
+   }
+   geometry->put_ProfileID(0);
+   geometry->put_SurfaceID(0);
+
+   // the alignment runs east, so the cut line skewed 30 degrees (the normal to the left turned clockwise) is at 60 degrees
+   Float64 station = 50.0;
+   Float64 skew = M_PI / 6;
+   CComPtr<IDirection> direction;
+   direction.CoCreateInstance(CLSID_Direction);
+   direction->put_Value(PI_OVER_2 - skew);
+
+   CComPtr<IShape> slab;
+   TRY_TEST(tool->CreateSlabShapeWithoutHaunches(bridge, station, direction, &slab), S_OK);
+
+   // the ridge point 6 ft right of the alignment, on the top of the slab, is 6/cos(skew) along the cut line
+   Float64 x_ridge = 6.0 / cos(skew);
+   CComPtr<IPoint2dCollection> points;
+   slab->get_PolyPoints(&points);
+   IndexType nPoints;
+   points->get_Count(&nPoints);
+   Float64 top = -DBL_MAX;
+   for (IndexType i = 0; i < nPoints; i++)
+   {
+      CComPtr<IPoint2d> point;
+      points->get_Item(i, &point);
+      Float64 x, y;
+      point->Location(&x, &y);
+      if (IsEqual(x, x_ridge))
+         top = Max(top, y);
+   }
+   TRY_TEST(top != -DBL_MAX, true);
+
+   // where the cut line crosses the ridge line: 6 ft right of the alignment, 6*tan(skew) back from the cut station
+   Float64 expected;
+   profile->Elevation(0, CComVariant(station - 6.0 * tan(skew)), 6.0, &expected);
+   TRY_TEST(IsEqual(top, expected), true);
+
+   // the mirrored station has a different elevation, so the test can tell them apart
+   Float64 mirrored;
+   profile->Elevation(0, CComVariant(station + 6.0 * tan(skew)), 6.0, &mirrored);
+   TRY_TEST(IsEqual(top, mirrored), false);
 }
