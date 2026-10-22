@@ -23,27 +23,23 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// LinearCrossBeam.cpp : Implementation of CLinearCrossBeam
+// PointDefinedCrossBeam.cpp : Implementation of CPointDefinedCrossBeam
 #include "stdafx.h"
 #include "WBFLGenericBridge.h"
-#include "LinearCrossBeam.h"
+#include "PointDefinedCrossBeam.h"
 #include <ComException.h>
 #include <Math\Math.h>
 
 
 /////////////////////////////////////////////////////////////////////////////
-// CLinearCrossBeam
-HRESULT CLinearCrossBeam::FinalConstruct()
+// CPointDefinedCrossBeam
+HRESULT CPointDefinedCrossBeam::FinalConstruct()
 {
-   m_H1 = 0;
-   m_H2 = 0;
-   m_H3 = 0;
-   m_H4 = 0;
-   m_H5 = 0;
-   m_X1 = 0;
-   m_X2 = 0;
-   m_X3 = 0;
-   m_X4 = 0;
+   m_H1L = 0;
+   m_H1R = 0;
+   m_HU = 0;
+   m_X1L = 0;
+   m_X1R = 0;
    m_W1 = 0;
    m_W2 = 0;
 
@@ -57,14 +53,16 @@ HRESULT CLinearCrossBeam::FinalConstruct()
 
    m_GeomUtil.CoCreateInstance(CLSID_GeomUtil);
 
+   m_PierPoints.CoCreateInstance(CLSID_Point2dCollection);
+
    return S_OK;
 }
 
-void CLinearCrossBeam::FinalRelease()
+void CPointDefinedCrossBeam::FinalRelease()
 {
 }
 
-void CLinearCrossBeam::Invalidate()
+void CPointDefinedCrossBeam::Invalidate()
 {
    m_UXBProfile->Clear();
    m_LXBProfile.Release();
@@ -75,12 +73,12 @@ void CLinearCrossBeam::Invalidate()
    m_bIsBXBDirty = true;
 }
 
-STDMETHODIMP CLinearCrossBeam::InterfaceSupportsErrorInfo(REFIID riid)
+STDMETHODIMP CPointDefinedCrossBeam::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 
 	{
 		&IID_ICrossBeam,
-      &IID_ILinearCrossBeam,
+      &IID_IPointDefinedCrossBeam,
       &IID_IStructuredStorage2,
 	};
 	for (int i = 0; i < sizeof(arr) / sizeof(arr[0]); i++)
@@ -93,7 +91,7 @@ STDMETHODIMP CLinearCrossBeam::InterfaceSupportsErrorInfo(REFIID riid)
 
 //////////////////////////////////////////////////////
 // ICrossBeam
-STDMETHODIMP CLinearCrossBeam::putref_Pier(IPier* pPier)
+STDMETHODIMP CPointDefinedCrossBeam::putref_Pier(IPier* pPier)
 {
    CHECK_IN(pPier);
    m_pPier = pPier;
@@ -101,7 +99,7 @@ STDMETHODIMP CLinearCrossBeam::putref_Pier(IPier* pPier)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Pier(IPier** ppPier)
+STDMETHODIMP CPointDefinedCrossBeam::get_Pier(IPier** ppPier)
 {
    CHECK_RETVAL(ppPier);
    if ( m_pPier )
@@ -112,7 +110,7 @@ STDMETHODIMP CLinearCrossBeam::get_Pier(IPier** ppPier)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Length(XBeamLocation location, Float64* length)
+STDMETHODIMP CPointDefinedCrossBeam::get_Length(XBeamLocation location, Float64* length)
 {
    CHECK_RETVAL(length);
 
@@ -134,13 +132,13 @@ STDMETHODIMP CLinearCrossBeam::get_Length(XBeamLocation location, Float64* lengt
    }
    else if (location == xblBottomXBeam)
    {
-      (*length) -= m_X2 + m_X4;
+      (*length) -= m_X1L + m_X1R;
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth)
+STDMETHODIMP CPointDefinedCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*/Float64 Xxb,/*[out,retval]*/Float64* pDepth)
 {
    CHECK_RETVAL(pDepth);
 
@@ -190,13 +188,13 @@ STDMETHODIMP CLinearCrossBeam::get_Depth(/*[in]*/StageIndexType stageIdx,/*[in]*
 
    if ( 0 < stageIdx && pierType == ptIntegral )
    {
-      *pDepth += m_H5;
+      *pDepth += m_HU;
    }
 
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_FullDepth(Float64 Xxb,Float64* pDepth)
+STDMETHODIMP CPointDefinedCrossBeam::get_FullDepth(Float64 Xxb,Float64* pDepth)
 {
    HRESULT hr = get_Depth(0,Xxb,pDepth);
    if ( FAILED(hr) )
@@ -204,11 +202,11 @@ STDMETHODIMP CLinearCrossBeam::get_FullDepth(Float64 Xxb,Float64* pDepth)
       return hr;
    }
 
-   (*pDepth) += m_H5;
+   (*pDepth) += m_HU;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Profile(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IShape** ppShape)
+STDMETHODIMP CPointDefinedCrossBeam::get_Profile(/*[in]*/StageIndexType stageIdx,/*[out,retval]*/IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -238,7 +236,7 @@ STDMETHODIMP CLinearCrossBeam::get_Profile(/*[in]*/StageIndexType stageIdx,/*[ou
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_TopSurface(StageIndexType stageIdx,IPoint2dCollection** ppPoints)
+STDMETHODIMP CPointDefinedCrossBeam::get_TopSurface(StageIndexType stageIdx,IPoint2dCollection** ppPoints)
 {
    if ( stageIdx == 0 )
    {
@@ -253,12 +251,12 @@ STDMETHODIMP CLinearCrossBeam::get_TopSurface(StageIndexType stageIdx,IPoint2dCo
    return E_FAIL;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_BottomSurface(StageIndexType stageIdx,IPoint2dCollection** ppPoints)
+STDMETHODIMP CPointDefinedCrossBeam::get_BottomSurface(StageIndexType stageIdx,IPoint2dCollection** ppPoints)
 {
    return GetBottomXBeamProfile(ppPoints);
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Surface(CrossBeamRebarDatum datum, Float64 offset, IPoint2dCollection** ppPoints)
+STDMETHODIMP CPointDefinedCrossBeam::get_Surface(CrossBeamRebarDatum datum, Float64 offset, IPoint2dCollection** ppPoints)
 {
    CComPtr<IPoint2dCollection> uxbProfile; // top of upper xbeam profile
    CComPtr<IPoint2dCollection> lxbProfile; // top of lower xbeam profile
@@ -357,73 +355,12 @@ STDMETHODIMP CLinearCrossBeam::get_Surface(CrossBeamRebarDatum datum, Float64 of
       (*ppPoints)->Insert(nPoints-1, pntIntersect);
    }
 
-   if (!IsZero(m_X1))
-   {
-      // there is a taper along the bottom of the xbeam
-      CComPtr<IPoint2d> pntLeft3;
-      bxbProfile->get_Item(1, &pntLeft3);
-
-      lsLeft->ThroughPoints(pntLeft2, pntLeft3);
-
-      CComPtr<IPoint2d> pnt1, pnt2;
-      (*ppPoints)->get_Item(0, &pnt1);
-      (*ppPoints)->get_Item(1, &pnt2);
-
-      CComPtr<IPoint2d> pnt1Clone, pnt2Clone;
-      pnt1->Clone(&pnt1Clone);
-      pnt2->Clone(&pnt2Clone);
-
-      CComPtr<ILineSegment2d> ls;
-      ls.CoCreateInstance(CLSID_LineSegment2d);
-      ls->ThroughPoints(pnt1Clone, pnt2Clone);
-
-      pntIntersect.Release();
-      if (m_GeomUtil->SegSegIntersect(lsLeft, ls, &pntIntersect) == S_OK)
-      {
-         // there was an intersection... replace the left point with
-         // the intersection point
-         (*ppPoints)->Remove(0);
-         (*ppPoints)->Insert(0, pntIntersect);
-      }
-   }
-
-   if (!IsZero(m_X3))
-   {
-      CComPtr<IPoint2d> pntRight3;
-      bxbProfile->get_Count(&nPoints);
-      bxbProfile->get_Item(nPoints - 2, &pntRight3);
-
-      lsRight->ThroughPoints(pntRight2, pntRight3);
-
-      CComPtr<IPoint2d> pnt1, pnt2;
-      (*ppPoints)->get_Count(&nPoints);
-      (*ppPoints)->get_Item(nPoints-2, &pnt1);
-      (*ppPoints)->get_Item(nPoints-1, &pnt2);
-
-      CComPtr<IPoint2d> pnt1Clone, pnt2Clone;
-      pnt1->Clone(&pnt1Clone);
-      pnt2->Clone(&pnt2Clone);
-
-      CComPtr<ILineSegment2d> ls;
-      ls.CoCreateInstance(CLSID_LineSegment2d);
-      ls->ThroughPoints(pnt1Clone, pnt2Clone);
-
-      pntIntersect.Release();
-      if (m_GeomUtil->SegSegIntersect(lsRight, ls, &pntIntersect) == S_OK)
-      {
-         // there was an intersection... replace the left point with
-         // the intersection point
-         (*ppPoints)->Remove(nPoints-1);
-         (*ppPoints)->Insert(nPoints-1, pntIntersect);
-      }
-   }
-
    (*ppPoints)->RemoveDuplicatePoints();
 
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_BasicShape(Float64 Xxb,IShape** ppShape)
+STDMETHODIMP CPointDefinedCrossBeam::get_BasicShape(Float64 Xxb,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -443,7 +380,7 @@ STDMETHODIMP CLinearCrossBeam::get_BasicShape(Float64 Xxb,IShape** ppShape)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_Shape(StageIndexType stageIdx,Float64 Xxb,IShape** ppShape)
+STDMETHODIMP CPointDefinedCrossBeam::get_Shape(StageIndexType stageIdx,Float64 Xxb,IShape** ppShape)
 {
    CHECK_RETOBJ(ppShape);
 
@@ -473,13 +410,13 @@ STDMETHODIMP CLinearCrossBeam::get_Shape(StageIndexType stageIdx,Float64 Xxb,ISh
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_RebarLayout(IRebarLayout** ppRebarLayout)
+STDMETHODIMP CPointDefinedCrossBeam::get_RebarLayout(IRebarLayout** ppRebarLayout)
 {
    CHECK_RETVAL(ppRebarLayout);
    return m_RebarLayout.CopyTo(ppRebarLayout);
 }
 
-STDMETHODIMP CLinearCrossBeam::putref_RebarLayout(IRebarLayout* pRebarLayout)
+STDMETHODIMP CPointDefinedCrossBeam::putref_RebarLayout(IRebarLayout* pRebarLayout)
 {
    m_RebarLayout.Release();
    if ( pRebarLayout )
@@ -490,161 +427,93 @@ STDMETHODIMP CLinearCrossBeam::putref_RebarLayout(IRebarLayout* pRebarLayout)
 }
 
 ////////////////////////////////////////////////////////////////////
-// ILinearCrossBeam implementation
-STDMETHODIMP CLinearCrossBeam::put_H1(/*[in]*/Float64 H1)
+// IPointDefinedCrossBeam implementation
+STDMETHODIMP CPointDefinedCrossBeam::put_H1L(/*[in]*/Float64 H1L)
 {
-   if ( !IsEqual(m_H1,H1) )
+   if ( !IsEqual(m_H1L,H1L) )
    {
-      m_H1 = H1;
+      m_H1L = H1L;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_H1(/*[out,retval]*/Float64* pH1)
+STDMETHODIMP CPointDefinedCrossBeam::get_H1L(/*[out,retval]*/Float64* pH1L)
 {
-   CHECK_RETVAL(pH1);
-   *pH1 = m_H1;
+   CHECK_RETVAL(pH1L);
+   *pH1L = m_H1L;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_H2(/*[in]*/Float64 H2)
+STDMETHODIMP CPointDefinedCrossBeam::put_H1R(/*[in]*/Float64 H1R)
 {
-   if ( !IsEqual(m_H2,H2) )
+   if ( !IsEqual(m_H1R,H1R) )
    {
-      m_H2 = H2;
+      m_H1R = H1R;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_H2(/*[out,retval]*/Float64* pH2)
+STDMETHODIMP CPointDefinedCrossBeam::get_H1R(/*[out,retval]*/Float64* pH1R)
 {
-   CHECK_RETVAL(pH2);
-   *pH2 = m_H2;
+   CHECK_RETVAL(pH1R);
+   *pH1R = m_H1R;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_H3(/*[in]*/Float64 H3)
+STDMETHODIMP CPointDefinedCrossBeam::put_HU(/*[in]*/Float64 HU)
 {
-   if ( !IsEqual(m_H3,H3) )
+   if ( !IsEqual(m_HU,HU) )
    {
-      m_H3 = H3;
+      m_HU = HU;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_H3(/*[out,retval]*/Float64* pH3)
+STDMETHODIMP CPointDefinedCrossBeam::get_HU(/*[out,retval]*/Float64* pHU)
 {
-   CHECK_RETVAL(pH3);
-   *pH3 = m_H3;
+   CHECK_RETVAL(pHU);
+   *pHU = m_HU;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_H4(/*[in]*/Float64 H4)
+STDMETHODIMP CPointDefinedCrossBeam::put_X1L(/*[in]*/Float64 X1L)
 {
-   if ( !IsEqual(m_H4,H4) )
+   if ( !IsEqual(m_X1L,X1L) )
    {
-      m_H4 = H4;
+      m_X1L = X1L;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_H4(/*[out,retval]*/Float64* pH4)
+STDMETHODIMP CPointDefinedCrossBeam::get_X1L(/*[out,retval]*/Float64* pX1L)
 {
-   CHECK_RETVAL(pH4);
-   *pH4 = m_H4;
+   CHECK_RETVAL(pX1L);
+   *pX1L = m_X1L;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_H5(/*[in]*/Float64 H5)
+STDMETHODIMP CPointDefinedCrossBeam::put_X1R(/*[in]*/Float64 X1R)
 {
-   if ( !IsEqual(m_H5,H5) )
+   if ( !IsEqual(m_X1R,X1R) )
    {
-      m_H5 = H5;
+      m_X1R = X1R;
       Invalidate();
    }
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_H5(/*[out,retval]*/Float64* pH5)
+STDMETHODIMP CPointDefinedCrossBeam::get_X1R(/*[out,retval]*/Float64* pX1R)
 {
-   CHECK_RETVAL(pH5);
-   *pH5 = m_H5;
+   CHECK_RETVAL(pX1R);
+   *pX1R = m_X1R;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_X1(/*[in]*/Float64 X1)
-{
-   if ( !IsEqual(m_X1,X1) )
-   {
-      m_X1 = X1;
-      Invalidate();
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::get_X1(/*[out,retval]*/Float64* pX1)
-{
-   CHECK_RETVAL(pX1);
-   *pX1 = m_X1;
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::put_X2(/*[in]*/Float64 X2)
-{
-   if ( !IsEqual(m_X2,X2) )
-   {
-      m_X2 = X2;
-      Invalidate();
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::get_X2(/*[out,retval]*/Float64* pX2)
-{
-   CHECK_RETVAL(pX2);
-   *pX2 = m_X2;
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::put_X3(/*[in]*/Float64 X3)
-{
-   if ( !IsEqual(m_X3,X3) )
-   {
-      m_X3 = X3;
-      Invalidate();
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::get_X3(/*[out,retval]*/Float64* pX3)
-{
-   CHECK_RETVAL(pX3);
-   *pX3 = m_X3;
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::put_X4(/*[in]*/Float64 X4)
-{
-   if ( !IsEqual(m_X4,X4) )
-   {
-      m_X4 = X4;
-      Invalidate();
-   }
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::get_X4(/*[out,retval]*/Float64* pX4)
-{
-   CHECK_RETVAL(pX4);
-   *pX4 = m_X4;
-   return S_OK;
-}
-
-STDMETHODIMP CLinearCrossBeam::put_W1(/*[in]*/Float64 W1)
+STDMETHODIMP CPointDefinedCrossBeam::put_W1(/*[in]*/Float64 W1)
 {
    if ( !IsEqual(m_W1,W1) )
    {
@@ -654,14 +523,14 @@ STDMETHODIMP CLinearCrossBeam::put_W1(/*[in]*/Float64 W1)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_W1(/*[out,retval]*/Float64* pW1)
+STDMETHODIMP CPointDefinedCrossBeam::get_W1(/*[out,retval]*/Float64* pW1)
 {
    CHECK_RETVAL(pW1);
    *pW1 = m_W1;
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::put_W2(/*[in]*/Float64 W2)
+STDMETHODIMP CPointDefinedCrossBeam::put_W2(/*[in]*/Float64 W2)
 {
    if ( !IsEqual(m_W2,W2) )
    {
@@ -671,36 +540,46 @@ STDMETHODIMP CLinearCrossBeam::put_W2(/*[in]*/Float64 W2)
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::get_W2(/*[out,retval]*/Float64* pW2)
+STDMETHODIMP CPointDefinedCrossBeam::get_W2(/*[out,retval]*/Float64* pW2)
 {
    CHECK_RETVAL(pW2);
    *pW2 = m_W2;
    return S_OK;
 }
 
+STDMETHODIMP CPointDefinedCrossBeam::SetPoints(IPoint2dCollection* pPoints)
+{
+    m_PierPoints.Release();
+    if (pPoints)
+    {
+        m_PierPoints = pPoints;
+    }
+    return S_OK;
+}
+
 ////////////////////////////////////////////////////////////////////
 // IStructuredStorage2 implementation
-STDMETHODIMP CLinearCrossBeam::Load(IStructuredLoad2* load)
+STDMETHODIMP CPointDefinedCrossBeam::Load(IStructuredLoad2* load)
 {
    CComVariant var;
 
-   load->BeginUnit(CComBSTR("LinearCrossBeam"));
+   load->BeginUnit(CComBSTR("PointDefinedCrossBeam"));
 
    VARIANT_BOOL bEnd;
    load->EndUnit(&bEnd);
    return S_OK;
 }
 
-STDMETHODIMP CLinearCrossBeam::Save(IStructuredSave2* save)
+STDMETHODIMP CPointDefinedCrossBeam::Save(IStructuredSave2* save)
 {
-   save->BeginUnit(CComBSTR("LinearCrossBeam"),1.0);
+   save->BeginUnit(CComBSTR("PointDefinedCrossBeam"),1.0);
 
    save->EndUnit();
    return S_OK;
 }
 
 ////////////////////////////////////////////////////////////////
-HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
+HRESULT CPointDefinedCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
@@ -727,8 +606,8 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints,boo
       Float64 deltaXl, deltaXr;
       GetUpperXBeamDeltas(&deltaXl, &deltaXr);
 
-      XxbStart += deltaXl - m_X2;
-      XxbEnd   += deltaXr + m_X4;
+      XxbStart += deltaXl - m_X1L;
+      XxbEnd   += deltaXr + m_X1R;
 
       // Start and end in pier coordinates (this is the coordinate system we need)
       Float64 XpStart, XpEnd;
@@ -791,7 +670,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamProfile(IPoint2dCollection** ppPoints,boo
    }
 }
 
-HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
+HRESULT CPointDefinedCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
@@ -823,7 +702,7 @@ HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,boo
       m_LXBProfile.CoCreateInstance(CLSID_Point2dCollection);
 
       // copy all points from the upper xbeam profile within the limits Xl and Xr
-      // to the lower xbeam profile, offsetting by H5
+      // to the lower xbeam profile, offsetting by HU
       for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
       {
          CComPtr<IPoint2d> pnt;
@@ -834,7 +713,7 @@ HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,boo
          {
             CComPtr<IPoint2d> pntLXB;
             pnt->Clone(&pntLXB);
-            pntLXB->Offset(0, -m_H5);
+            pntLXB->Offset(0, -m_HU);
             m_LXBProfile->Insert(0,pntLXB);
          }
       }
@@ -861,12 +740,12 @@ HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,boo
 
       CComPtr<IPoint2d> lxbTL;
       lxbTL.CoCreateInstance(CLSID_Point2d);
-      lxbTL->Move(Xl, Yl - m_H5);
+      lxbTL->Move(Xl, Yl - m_HU);
       m_LXBProfile->Insert(0, lxbTL);
 
       CComPtr<IPoint2d> lxbTR;
       lxbTR.CoCreateInstance(CLSID_Point2d);
-      lxbTR->Move(Xr, Yr - m_H5);
+      lxbTR->Move(Xr, Yr - m_HU);
       m_LXBProfile->Add(lxbTR);
 
       m_LXBProfile->RemoveDuplicatePoints();
@@ -884,7 +763,7 @@ HRESULT CLinearCrossBeam::GetLowerXBeamProfile(IPoint2dCollection** ppPoints,boo
    }
 }
 
-HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
+HRESULT CPointDefinedCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bool bClone)
 {
    CHECK_RETOBJ(ppPoints);
 
@@ -912,39 +791,30 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
       // interpolation parameters for depth of lower xbeam between tapers
       Float64 Xs = Xl;
       Float64 dX = Xr - Xl;
-      Float64 dyL = m_H1 + m_H2;
-      Float64 dyR = m_H3 + m_H4;
+      Float64 dyL = m_H1L;
+      Float64 dyR = m_H1R;
 
       // horizontal location of left/right tapers
-      Float64 Xlt = Xl + m_X1;
-      Float64 Xrt = Xr - m_X3;
+      Float64 Xlt = Xl;
+      Float64 Xrt = Xr;
 
       Xlt = IsZero(Xlt) ? 0 : Xlt;
       Xrt = IsZero(Xrt) ? 0 : Xrt;
 
       // horizontal location of left/right end points of bottom of xbeam
-      Xl += m_X2;
-      Xr -= m_X4;
+      Xl += m_X1L;
+      Xr -= m_X1R;
 
       m_BXBProfile.Release();
       m_BXBProfile.CoCreateInstance(CLSID_Point2dCollection);
-      for (IndexType idx = nPoints - 1; 0 <= idx && idx != INVALID_INDEX; idx--)
+
+      IndexType nPierPoints;
+	  m_PierPoints->get_Count(&nPierPoints);
+      for (IndexType idx = 0 ; idx < nPierPoints ; idx++)
       {
-         CComPtr<IPoint2d> pnt;
-         lxbProfile->get_Item(idx, &pnt);
-         Float64 X;
-         pnt->get_X(&X);
-         if (InRange(Xlt, X, Xrt))
-         {
-            // X is between tapers
-            CComPtr<IPoint2d> pntBXB;
-            pnt->Clone(&pntBXB);
-
-            Float64 dy = ::LinInterp(X - Xs, dyL, dyR, dX);
-
-            pntBXB->Offset(0, -dy);
-            m_BXBProfile->Insert(0, pntBXB);
-         }
+          CComPtr<IPoint2d> xbPoint;
+		  m_PierPoints->get_Item(idx, &xbPoint);
+          m_BXBProfile->Add(xbPoint);
       }
 
       Float64 Xltcl, Xrtcl;
@@ -963,37 +833,12 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
 
       CComPtr<IPoint2d> bxbL;
       bxbL.CoCreateInstance(CLSID_Point2d);
-      bxbL->Move(Xl, Yl - m_H1);
+      bxbL->Move(Xl, Yl - m_H1L);
       m_BXBProfile->Insert(0, bxbL);
-
-      if (!IsZero(m_H2) && !IsZero(m_X1))
-      {
-         // there is a taper on the left side
-         CComPtr<IPoint2d> bxbLT;
-         bxbLT.CoCreateInstance(CLSID_Point2d);
-
-         Float64 y;
-         bxbL->get_Y(&y);
-
-         bxbLT->Move(Xlt, y - m_H2);
-         m_BXBProfile->Insert(1, bxbLT);
-      }
-
-      if (!IsZero(m_H4) && !IsZero(m_X3))
-      {
-         // there is a taper on the right side
-         CComPtr<IPoint2d> bxbRT;
-         bxbRT.CoCreateInstance(CLSID_Point2d);
-
-         Float64 y = Yr - m_H3 - m_H4; // this is bxbR->Y - m_H4
-
-         bxbRT->Move(Xrt, y);
-         m_BXBProfile->Add(bxbRT);
-      }
 
       CComPtr<IPoint2d> bxbR;
       bxbR.CoCreateInstance(CLSID_Point2d);
-      bxbR->Move(Xr, Yr - m_H3);
+      bxbR->Move(Xr, Yr - m_H1R);
       m_BXBProfile->Add(bxbR);
 
       m_BXBProfile->RemoveDuplicatePoints();
@@ -1011,7 +856,7 @@ HRESULT CLinearCrossBeam::GetBottomXBeamProfile(IPoint2dCollection** ppPoints,bo
    }
 }
 
-HRESULT CLinearCrossBeam::GetLowerXBeamShape(Float64 Xxb,IShape** ppShape)
+HRESULT CPointDefinedCrossBeam::GetLowerXBeamShape(Float64 Xxb,IShape** ppShape)
 {
    Float64 Xcl;
    m_pPier->ConvertCrossBeamToCurbLineCoordinate(Xxb,&Xcl);
@@ -1035,7 +880,7 @@ HRESULT CLinearCrossBeam::GetLowerXBeamShape(Float64 Xxb,IShape** ppShape)
    CComQIPtr<IXYPosition> position(lowerXBeamShape);
    CComPtr<IPoint2d> pnt;
    position->get_LocatorPoint(lpTopCenter,&pnt);
-   pnt->Move(0,Y-m_H5);
+   pnt->Move(0,Y-m_HU);
    position->put_LocatorPoint(lpTopCenter,pnt);
 
    CComQIPtr<IShape> shape(lowerXBeamShape);
@@ -1044,7 +889,7 @@ HRESULT CLinearCrossBeam::GetLowerXBeamShape(Float64 Xxb,IShape** ppShape)
    return S_OK;
 }
 
-HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
+HRESULT CPointDefinedCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
 {
    Float64 Xcl;
    m_pPier->ConvertCrossBeamToCurbLineCoordinate(Xxb,&Xcl);
@@ -1103,7 +948,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
 
       CComPtr<IRectangle> leftUpperXBeamShape;
       leftUpperXBeamShape.CoCreateInstance(CLSID_Rect);
-      leftUpperXBeamShape->put_Height(m_H5);
+      leftUpperXBeamShape->put_Height(m_HU);
       leftUpperXBeamShape->put_Width(m_W2/2);
 
       CComQIPtr<IXYPosition> position(leftUpperXBeamShape);
@@ -1118,7 +963,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
       {
          CComPtr<IRectangle> rightUpperXBeamShape;
          rightUpperXBeamShape.CoCreateInstance(CLSID_Rect);
-         rightUpperXBeamShape->put_Height(m_H5);
+         rightUpperXBeamShape->put_Height(m_HU);
          rightUpperXBeamShape->put_Width(m_W2/2);
 
          position.Release();
@@ -1139,7 +984,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
    {
       CComPtr<IRectangle> upperXBeamShape;
       upperXBeamShape.CoCreateInstance(CLSID_Rect);
-      upperXBeamShape->put_Height(m_H5);
+      upperXBeamShape->put_Height(m_HU);
       upperXBeamShape->put_Width(m_W2);
 
       CComQIPtr<IXYPosition> position(upperXBeamShape);
@@ -1155,7 +1000,7 @@ HRESULT CLinearCrossBeam::GetUpperXBeamShape(Float64 Xxb,IShape** ppShape)
    return S_OK;
 }
 
-void CLinearCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft,Float64* pUXBright)
+void CPointDefinedCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft,Float64* pUXBright)
 {
    *pUXBleft = 0.0;
    *pUXBright = 0.0;
@@ -1163,8 +1008,8 @@ void CLinearCrossBeam::GetUpperXBeamDeltas(Float64* pUXBleft,Float64* pUXBright)
    m_pPier->get_Type(&pierType);
    if (pierType == ptIntegral)
    {
-      *pUXBleft = -m_X2*(m_H5) / m_H1;
-      *pUXBright = m_X4*(m_H5) / m_H3;
+      *pUXBleft = -m_X1L*(m_HU) / m_H1L;
+      *pUXBright = m_X1R*(m_HU) / m_H1R;
    }
 }
 

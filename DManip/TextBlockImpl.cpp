@@ -121,16 +121,16 @@ RECT TextBlock::GetLogicalBoundingBox() const
    CStringArray strArray;
    GetTextLines(strArray);
 
-   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto pDisp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
    
    CSize extents(0,0);
    for ( INT_PTR i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = map->GetTextExtent(pView, m_Font,str);
+      CSize size = map->GetTextExtent(pDisp, m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = map->GetTextExtent(pView, m_Font,_T("ABCDEFG\0"));
+         size = map->GetTextExtent(pDisp, m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -270,7 +270,7 @@ void TextBlock::SetText(LPCTSTR lpszText)
       if ( display_mgr )
       {
          CRect box = GetLogicalBoundingBox();
-         display_mgr->GetView()->InvalidateRect(box);
+         display_mgr->GetDisplay()->GetWnd()->InvalidateRect(box);
       }
    }
 }
@@ -374,8 +374,8 @@ void TextBlock::CreateFont(CFont& font,CDC* pDC)
    lfFont.lfEscapement  = text_angle;
    lfFont.lfOrientation = text_angle;
 
-   auto view = GetDisplayList()->GetDisplayMgr()->GetView();
-   view->ScaleFont(lfFont);
+   auto disp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
+   disp->ScaleFont(lfFont);
 
    font.CreatePointFontIndirect(&lfFont, pDC);
 }

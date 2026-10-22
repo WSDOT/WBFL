@@ -71,20 +71,20 @@ STDMETHODIMP CLRFDSolver2::get_StrandModel(IStressStrain* *model)
 
 STDMETHODIMP CLRFDSolver2::putref_RebarModel(IStressStrain* model)
 {
-   m_RebarModel = model;
-   return S_OK;
+    m_RebarModel = model;
+    return S_OK;
 }
 
-STDMETHODIMP CLRFDSolver2::get_RebarModel(IStressStrain* *model)
+STDMETHODIMP CLRFDSolver2::get_RebarModel(IStressStrain** model)
 {
-   CHECK_RETOBJ(model);
+    CHECK_RETOBJ(model);
 
-   (*model) = m_RebarModel;
+    (*model) = m_RebarModel;
 
-   if ( m_RebarModel )
-      (*model)->AddRef();
+    if (m_RebarModel)
+        (*model)->AddRef();
 
-   return S_OK;
+    return S_OK;
 }
 
 void CLRFDSolver2::InitStrandModel(IStressStrain** model,Float64 fpu,Float64 Eps)
@@ -96,19 +96,6 @@ void CLRFDSolver2::InitStrandModel(IStressStrain** model,Float64 fpu,Float64 Eps
 
    (*model) = pStrandModel;
    (*model)->AddRef();
-}
-
-void CLRFDSolver2::InitRebarModel(IStressStrain** model,Float64 fy,Float64 Es)
-{
-   CComObject<CRebarModel>* pRebarModel;
-   CComObject<CRebarModel>::CreateInstance(&pRebarModel);
-
-   (*model) = pRebarModel;
-   (*model)->AddRef();
-
-   CComQIPtr<IRebarModel> rebar_model(*model);
-
-   rebar_model->Init(fy,Es,0.11);
 }
 
 STDMETHODIMP CLRFDSolver2::put_UnitMode(SpecUnitType unitMode)
@@ -179,7 +166,7 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    Float64 fy;
    rcbeam->get_fpy(&fpy);
    rcbeam->get_fpu(&fpu);
-   rcbeam->get_fy(&fy);
+   rcbeam->get_fy(&fy); // don't get from beam
 
    Float64 Es, Eps;
    rcbeam->get_Es(&Es);
@@ -219,8 +206,8 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    Float64 Abar = 0;
    for (IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
-      Float64 ds, As, devFactor;
-      rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
+      Float64 ds, As, Es, fy, devFactor;
+      rcbeam->GetRebarLayer(rebar,&ds,&As,&Es,&fy,&devFactor);
       Abar += devFactor*As;
    }
 
@@ -266,11 +253,6 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    if ( !m_StrandModel )
    {
       InitStrandModel(&m_StrandModel,fpu,Eps);
-   }
-
-   if ( !m_RebarModel )
-   {
-      InitRebarModel(&m_RebarModel,fy,Es);
    }
 
    // setup clipping rectangle for clipping the beam object
@@ -320,12 +302,17 @@ STDMETHODIMP CLRFDSolver2::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       fs->Clear();
       for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
       {
-         Float64 ds, As, devFactor;
-         rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
+         Float64 ds, As, Es, fy, devFactor;
+         rcbeam->GetRebarLayer(rebar,&ds,&As,&Es,&fy,&devFactor);
+
+         CComObject<CRebarModel>* pRebarModel;
+         CComObject<CRebarModel>::CreateInstance(&pRebarModel);
+
+         pRebarModel->Init(fy, Es, 0.11);
 
          Float64 stress;
          Float64 es  = GetStrain(m_ec,ds,c_guess,0,Es);
-         m_RebarModel->ComputeStress(es,&stress);
+         pRebarModel->ComputeStress(es,&stress);
 
          Float64 maxRebarStress = devFactor * fy;
          if ( maxRebarStress < stress )

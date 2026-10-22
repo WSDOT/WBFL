@@ -73,7 +73,7 @@
     <ClCompile Include="ItemDataManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LinearCrossBeam.cpp">
+    <ClCompile Include="BasicCrossBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LinearTendonSegment.cpp">
@@ -214,6 +214,12 @@
     <ClCompile Include="CompositeHaunchDepthFunction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScallopedCrossBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointDefinedCrossBeam.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlignmentOffsetStrategy.h">
@@ -294,7 +300,7 @@
     <ClInclude Include="ItemDataManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LinearCrossBeam.h">
+    <ClInclude Include="BasicCrossBeam.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LinearTendonSegment.h">
@@ -447,6 +453,12 @@
     <ClInclude Include="CompositeHaunchDepthFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScallopedCrossBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointDefinedCrossBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="..\Include\WBFLGenericBridge.idl" />
@@ -534,7 +546,7 @@
     <None Include="GirderSpacing.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="LinearCrossBeam.rgs">
+    <None Include="BasicCrossBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="LinearTendonSegment.rgs">
@@ -694,6 +706,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="CompositeHaunchDepthFunction.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ScallopedCrossBeam.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="PointDefinedCrossBeam.rgs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

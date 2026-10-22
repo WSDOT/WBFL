@@ -123,9 +123,7 @@ HRESULT CBridgePier::ValidateOrientation(BSTR bstrOrientation)
 // IPier
 STDMETHODIMP CBridgePier::get_DeckProfile(/*[out,retval]*/IPoint2dCollection** ppPoints)
 {
-#pragma Reminder("IMPLEMENT")
-   ATLASSERT(false);
-   return E_NOTIMPL;
+	return m_PierImpl.get_DeckProfile(ppPoints);
 }
 
 STDMETHODIMP CBridgePier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
@@ -133,13 +131,6 @@ STDMETHODIMP CBridgePier::get_DeckThickness(/*[out,retval]*/Float64* pTDeck)
    CComPtr<IBridgeDeck> deck;
    m_pBridge->get_Deck(&deck);
    return deck->get_GrossDepth(pTDeck);
-}
-
-STDMETHODIMP CBridgePier::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
-{
-#pragma Reminder("IMPLEMENT")
-   ATLASSERT(false);
-   return E_NOTIMPL;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

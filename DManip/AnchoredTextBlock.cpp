@@ -23,7 +23,7 @@
 
 #include "pch.h"
 #include <DManip/AnchoredTextBlock.h>
-#include <DManip/DisplayView.h>
+#include <DManip/Display.h>
 
 using namespace WBFL::DManip;
 
@@ -53,12 +53,12 @@ void AnchoredTextBlock::Draw(CDC* pDC)
 
    auto pDL = GetDisplayList();
    auto pDM = pDL->GetDisplayMgr();
-   CDisplayView* pView = pDM->GetView();
-   CRect rClient = pView->GetViewRect();
+   CDisplay* pDisp = pDM->GetDisplay();
+   CRect rClient = pDisp->GetViewRect();
    CPoint topLeft = rClient.TopLeft();
 
    LOGFONT lf = m_Font;
-   pView->ScaleFont(lf);
+   pDisp->ScaleFont(lf);
 
    CFont font;
    font.CreatePointFontIndirect(&lf, pDC);
@@ -94,7 +94,7 @@ RECT AnchoredTextBlock::GetLogicalBoundingBox() const
    auto display_mgr = display_list->GetDisplayMgr();
    auto map = display_mgr->GetCoordinateMap();
 
-   const CDisplayView* pView = display_mgr->GetView();
+   const CDisplay* pDisp = display_mgr->GetDisplay();
 
    CStringArray strArray;
    GetTextLines(strArray);
@@ -103,10 +103,10 @@ RECT AnchoredTextBlock::GetLogicalBoundingBox() const
    for ( int i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = map->GetTextExtent(pView,m_Font,str);
+      CSize size = map->GetTextExtent(pDisp,m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = map->GetTextExtent(pView,m_Font,_T("ABCDEFG\0"));
+         size = map->GetTextExtent(pDisp,m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -116,7 +116,7 @@ RECT AnchoredTextBlock::GetLogicalBoundingBox() const
       extents.cy += size.cy;
    }
 
-   CRect rClient = pView->GetViewRect();
+   CRect rClient = pDisp->GetViewRect();
    CPoint topLeft = rClient.TopLeft();
 
    // Find the edges of the text block
@@ -170,7 +170,7 @@ void AnchoredTextBlock::SetText(LPCTSTR lpszText)
       if ( display_mgr )
       {
          CRect box = GetLogicalBoundingBox();
-         display_mgr->GetView()->InvalidateRect(box);
+         display_mgr->GetDisplay()->GetWnd()->InvalidateRect(box);
       }
    }
 }
