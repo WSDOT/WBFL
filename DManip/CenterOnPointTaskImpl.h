@@ -26,7 +26,7 @@
 #include "CenterOnPointFSM.h"
 #include <DManip/Task.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -38,7 +38,7 @@ namespace WBFL
       {
       public:
          CenterOnPointTask();
-         CenterOnPointTask(CDisplayView* pView);
+         CenterOnPointTask(CDisplay* pDisp);
          virtual ~CenterOnPointTask();
 
          // CenterOnPointTask methods (from CenterOnPointFSM)
@@ -67,7 +67,7 @@ namespace WBFL
          virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
       private:
-         CDisplayView* m_pView;
+         CDisplay* m_pDisp;
          CPoint m_Point;
          HCURSOR m_OldCursor;
       };

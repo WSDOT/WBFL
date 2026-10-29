@@ -132,23 +132,6 @@ STDMETHODIMP CRCBeam2::put_hf(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_fy(Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-
-   *pVal = m_Fy;
-	return S_OK;
-}
-
-STDMETHODIMP CRCBeam2::put_fy(Float64 newVal)
-{
-   if ( newVal < 0 )
-      return E_INVALIDARG;
-
-   m_Fy = newVal;
-	return S_OK;
-}
-
 STDMETHODIMP CRCBeam2::get_fpu(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -251,23 +234,6 @@ STDMETHODIMP CRCBeam2::put_h(Float64 newVal)
 	return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::get_Es(Float64 *pVal)
-{
-   CHECK_RETVAL(pVal);
-
-   *pVal = m_Es;
-   return S_OK;
-}
-
-STDMETHODIMP CRCBeam2::put_Es(Float64 newVal)
-{
-   if ( newVal < 0 || IsZero(newVal) )
-      return E_INVALIDARG;
-
-   m_Es = newVal;
-   return S_OK;
-}
-
 STDMETHODIMP CRCBeam2::get_Eps(Float64 *pVal)
 {
    CHECK_RETVAL(pVal);
@@ -285,7 +251,7 @@ STDMETHODIMP CRCBeam2::put_Eps(Float64 newVal)
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::AddRebarLayer(Float64 ds,Float64 As,Float64 devFactor)
+STDMETHODIMP CRCBeam2::AddRebarLayer(Float64 ds,Float64 As, Float64 Es, Float64 Fy, Float64 devFactor)
 {
    if ( IsLE(ds,0.0) )
       return E_INVALIDARG;
@@ -293,10 +259,16 @@ STDMETHODIMP CRCBeam2::AddRebarLayer(Float64 ds,Float64 As,Float64 devFactor)
    if ( As < 0 )
       return E_INVALIDARG;
 
+   if ( Es < 0 )
+      return E_INVALIDARG;
+
+   if ( Fy < 0 )
+      return E_INVALIDARG;
+
    if ( devFactor < 0 || 1.0 < devFactor)
       return E_INVALIDARG;
 
-   m_Rebar.emplace_back(ds,As,devFactor);
+   m_Rebar.emplace_back(ds,As,Es,Fy,devFactor);
 
    return S_OK;
 }
@@ -330,6 +302,28 @@ STDMETHODIMP CRCBeam2::get_RebarLayerSteel(IndexType index,Float64 * As)
    return S_OK;
 }
 
+STDMETHODIMP CRCBeam2::get_RebarLayerEs(IndexType index,Float64 * Es)
+{
+   CHECK_RETVAL(Es);
+   if ( !IsValidIndex(index,m_Rebar) )
+      return E_INVALIDARG;
+
+   *Es = m_Rebar[index].Es;
+
+   return S_OK;
+}
+
+STDMETHODIMP CRCBeam2::get_RebarLayerFy(IndexType index,Float64 * Fy)
+{
+   CHECK_RETVAL(Fy);
+   if ( !IsValidIndex(index,m_Rebar) )
+      return E_INVALIDARG;
+
+   *Fy = m_Rebar[index].Fy;
+
+   return S_OK;
+}
+
 STDMETHODIMP CRCBeam2::get_RebarLayerDevFactor(IndexType index,Float64 * devFactor)
 {
    CHECK_RETVAL(devFactor);
@@ -341,10 +335,12 @@ STDMETHODIMP CRCBeam2::get_RebarLayerDevFactor(IndexType index,Float64 * devFact
    return S_OK;
 }
 
-STDMETHODIMP CRCBeam2::GetRebarLayer(IndexType index,Float64 * ds,Float64 * As,Float64 * devFactor)
+STDMETHODIMP CRCBeam2::GetRebarLayer(IndexType index,Float64 * ds,Float64 * As,Float64 * Es,Float64 * Fy,Float64 * devFactor)
 {
    CHECK_RETVAL(ds);
    CHECK_RETVAL(As);
+   CHECK_RETVAL(Es);
+   CHECK_RETVAL(Fy);
    CHECK_RETVAL(devFactor);
 
    if ( !IsValidIndex(index,m_Rebar) )
@@ -352,6 +348,8 @@ STDMETHODIMP CRCBeam2::GetRebarLayer(IndexType index,Float64 * ds,Float64 * As,F
 
    *ds        = m_Rebar[index].ds;
    *As        = m_Rebar[index].As;
+   *Es        = m_Rebar[index].Es;
+   *Fy        = m_Rebar[index].Fy;
    *devFactor = m_Rebar[index].DevFactor;
 
    return S_OK;
@@ -384,7 +382,7 @@ STDMETHODIMP CRCBeam2::AddStrandLayer(Float64 dps,Float64 Aps,Float64 devFactor)
    if ( devFactor < 0 || 1.0 < devFactor)
       return E_INVALIDARG;
 
-   m_Strands.emplace_back(dps,Aps,devFactor);
+   m_Strands.emplace_back(dps,Aps,0,0,devFactor);
 
    return S_OK;
 }
@@ -485,7 +483,7 @@ STDMETHODIMP CRCBeam2::Save(IStructuredSave2* pSave)
 {
    CHECK_IN(pSave);
 
-   pSave->BeginUnit(CComBSTR("RCBeam"),1.0);
+   pSave->BeginUnit(CComBSTR("RCBeam"),2.0);
 
    pSave->put_Property(CComBSTR("b"),  CComVariant(m_b));
    pSave->put_Property(CComBSTR("hf"), CComVariant(m_hf));
@@ -499,6 +497,8 @@ STDMETHODIMP CRCBeam2::Save(IStructuredSave2* pSave)
    {
       pSave->put_Property(CComBSTR("ds"),CComVariant((*rebar_iter).ds));
       pSave->put_Property(CComBSTR("As"),CComVariant((*rebar_iter).As));
+	  pSave->put_Property(CComBSTR("Es"), CComVariant((*rebar_iter).Es)); //added in version 2
+      pSave->put_Property(CComBSTR("Fy"),CComVariant((*rebar_iter).Fy)); //added in version 2
       pSave->put_Property(CComBSTR("DevFactor"),CComVariant((*rebar_iter).DevFactor));
    }
    pSave->EndUnit();
@@ -514,7 +514,6 @@ STDMETHODIMP CRCBeam2::Save(IStructuredSave2* pSave)
    }
    pSave->EndUnit();
 
-   pSave->put_Property(CComBSTR("Es"), CComVariant(m_Es));
    pSave->put_Property(CComBSTR("Eps"),CComVariant(m_Eps));
 
    pSave->put_Property(CComBSTR("FcBeam"),CComVariant(m_FcBeam));
@@ -523,7 +522,6 @@ STDMETHODIMP CRCBeam2::Save(IStructuredSave2* pSave)
    pSave->put_Property(CComBSTR("fpu"),CComVariant(m_Fpu));
    pSave->put_Property(CComBSTR("fpe"),CComVariant(m_Fpe));
    pSave->put_Property(CComBSTR("fpy"),CComVariant(m_Fpy));
-   pSave->put_Property(CComBSTR("fy"), CComVariant(m_Fy));
 
    pSave->EndUnit();
 
@@ -565,6 +563,9 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
       return STRLOAD_E_INVALIDFORMAT;
    nRebarLayers = var.iVal;
 
+   Float64 version;
+   pLoad->get_Version(&version);
+
    for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
       Float64 ds, As, DevFactor;
@@ -576,16 +577,27 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
          return STRLOAD_E_INVALIDFORMAT;
       As = var.dblVal;
 
+      Float64 Es, Fy;
+
+	  if (version >= 2.0)
+      {    
+          if (FAILED(pLoad->get_Property(CComBSTR("Es"), &var)))
+              return STRLOAD_E_INVALIDFORMAT;
+          Es = var.dblVal;
+
+          if (FAILED(pLoad->get_Property(CComBSTR("Fy"), &var)))
+              return STRLOAD_E_INVALIDFORMAT;
+          Fy = var.dblVal;
+      }
+
       if ( FAILED(pLoad->get_Property(CComBSTR("DevFactor"),&var) ) )
          return STRLOAD_E_INVALIDFORMAT;
       DevFactor = var.dblVal;
       
-      m_Rebar.emplace_back(ds,As,DevFactor);
+      m_Rebar.emplace_back(ds,As,Es,Fy,DevFactor);
    }
 
    pLoad->EndUnit(&bEnd);
-
-
 
 
    m_Strands.clear();
@@ -611,16 +623,10 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
          return STRLOAD_E_INVALIDFORMAT;
       DevFactor = var.dblVal;
       
-      m_Strands.emplace_back(dps,Aps,DevFactor);
+      m_Strands.emplace_back(dps,Aps,0,0,DevFactor);
    }
 
    pLoad->EndUnit(&bEnd);
-
-
-
-   if ( FAILED(pLoad->get_Property(CComBSTR("Es"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   m_Es = var.dblVal;
 
    if ( FAILED(pLoad->get_Property(CComBSTR("Eps"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
@@ -645,10 +651,6 @@ STDMETHODIMP CRCBeam2::Load(IStructuredLoad2* pLoad)
    if ( FAILED(pLoad->get_Property(CComBSTR("fpy"),&var) ) )
       return STRLOAD_E_INVALIDFORMAT;
    m_Fpy = var.dblVal;
-
-   if ( FAILED(pLoad->get_Property(CComBSTR("fy"), &var) ) )
-      return STRLOAD_E_INVALIDFORMAT;
-   m_Fy = var.dblVal;
 
    pLoad->EndUnit(&bEnd);
 

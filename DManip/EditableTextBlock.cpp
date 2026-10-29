@@ -73,9 +73,9 @@ void EditableTextBlock::CreateEditControl()
    font.lfOrientation = 0;
 
    auto map = m_TextBlock->GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
-   auto view = m_TextBlock->GetDisplayList()->GetDisplayMgr()->GetView();
+   auto disp = m_TextBlock->GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
-   CDManipClientDC dc(view);
+   CDManipClientDC dc(disp);
 
    m_pFont = new CFont;
    m_pFont->CreatePointFontIndirect(&font);
@@ -110,7 +110,7 @@ void EditableTextBlock::CreateEditControl()
    else
       dwStyle |= ES_LEFT;
 
-   pEdit->Create(dwStyle,CRect(CPoint(lx,ly),ctrlSize),view,IDC_EDIT);
+   pEdit->Create(dwStyle,CRect(CPoint(lx,ly),ctrlSize),disp->GetWnd(), IDC_EDIT);
 
    pEdit->SetFont(m_pFont);
    pEdit->SetWindowText(strText);
@@ -208,8 +208,8 @@ bool EditableTextBlock::OnMouseMove(UINT nFlags,const POINT& point)
    {
       ATLTRACE("EditableTextBlock - Creating mouse over cursor tracking\n");
 
-      CDisplayView* pView = GetDisplayView();
-      HWND hwnd = pView->GetSafeHwnd();
+      CDisplay* pDisp = GetDisplay();
+      HWND hwnd = pDisp->GetWnd()->GetSafeHwnd();
 
       CRgn rgn;
       auto strategy = GetGravityWellStrategy();
@@ -301,9 +301,9 @@ EditableTextBlock::Format EditableTextBlock::GetFormat() const
 }
 
 /////////////////////////////////////////////////
-CDisplayView* EditableTextBlock::GetDisplayView()
+CDisplay* EditableTextBlock::GetDisplay()
 {
-   return m_TextBlock->GetDisplayList()->GetDisplayMgr()->GetView();
+   return m_TextBlock->GetDisplayList()->GetDisplayMgr()->GetDisplay();
 }
 
 CInplaceEdit* EditableTextBlock::GetEditObject()

@@ -176,9 +176,9 @@ WBFL::COGO::Station EditableStationTextBlock::GetEditedStation() const
    return editedValue;
 }
 
-CDisplayView* EditableStationTextBlock::GetDisplayView()
+CDisplay* EditableStationTextBlock::GetDisplay()
 {
-   return m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetView();
+   return m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetDisplay();
 }
 
 CInplaceEdit* EditableStationTextBlock::GetEditObject()

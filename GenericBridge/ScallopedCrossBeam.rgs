@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.ScallopedCrossBeam.1 = s 'ScallopedCrossBeam Class'
+	{
+		CLSID = s '{AF50789F-EFCA-423B-AC2C-84165B3AAF19}'
+	}
+	WBFLGenericBridge.ScallopedCrossBeam = s 'ScallopedCrossBeam Class'
+	{
+		CLSID = s '{AF50789F-EFCA-423B-AC2C-84165B3AAF19}'
+		CurVer = s 'WBFLGenericBridge.ScallopedCrossBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {AF50789F-EFCA-423B-AC2C-84165B3AAF19} = s 'ScallopedCrossBeam Class'
+		{
+			ProgID = s 'WBFLGenericBridge.ScallopedCrossBeam.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.ScallopedCrossBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

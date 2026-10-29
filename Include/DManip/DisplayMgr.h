@@ -27,7 +27,7 @@
 #include <DManip/DManipTypes.h>
 #include <DManip/CoordinateMap.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -58,9 +58,9 @@ namespace WBFL
 
          /// @brief Sets the associated view class
          /// @param pView 
-         virtual void SetView(CDisplayView* pView) = 0;
-         virtual CDisplayView* GetView() = 0;
-         virtual const CDisplayView* GetView() const = 0;
+         virtual void SetDisplay(CDisplay* pDisp) = 0;
+         virtual CDisplay* GetDisplay() = 0;
+         virtual const CDisplay* GetDisplay() const = 0;
 
          /// @brief Returns the coordinate mapping object
          /// @return 

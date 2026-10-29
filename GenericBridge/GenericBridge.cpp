@@ -60,7 +60,9 @@
 #include "Column.h"
 #include "ColumnLayout.h"
 #include "BearingLayout.h"
-#include "LinearCrossBeam.h"
+#include "BasicCrossBeam.h"
+#include "ScallopedCrossBeam.h"
+#include "PointDefinedCrossBeam.h"
 #include "Pier.h"
 
 #include "Material.h"
@@ -158,7 +160,9 @@ BEGIN_OBJECT_MAP(ObjectMap)
    OBJECT_ENTRY(CLSID_TendonCollection,CTendonCollection)
    OBJECT_ENTRY(CLSID_PrestressingStrand,CPrestressingStrand)
    OBJECT_ENTRY(CLSID_EdgePathStrategy,CEdgePathStrategy)
-   OBJECT_ENTRY(CLSID_LinearCrossBeam,CLinearCrossBeam)
+   OBJECT_ENTRY(CLSID_BasicCrossBeam,CBasicCrossBeam)
+   OBJECT_ENTRY(CLSID_ScallopedCrossBeam,CScallopedCrossBeam)
+   OBJECT_ENTRY(CLSID_PointDefinedCrossBeam,CPointDefinedCrossBeam)
    OBJECT_ENTRY(CLSID_Column,CColumn)
    OBJECT_ENTRY(CLSID_ColumnLayout,CColumnLayout)
    OBJECT_ENTRY(CLSID_BearingLayout,CBearingLayout)

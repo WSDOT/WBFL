@@ -72,8 +72,8 @@ void LocalDragDropTask::Start()
    startRect.SetRect(m_StartPoint,m_StartPoint);
    startRect.InflateRect(5,5,5,5);
 
-   CDisplayView* pView = m_pDispMgr->GetView();
-   pView->ClientToScreen(&startRect);
+   CDisplay* pDisp = m_pDispMgr->GetDisplay();
+   pDisp->GetWnd()->ClientToScreen(&startRect);
 
    DROPEFFECT de = ods.DoDragDrop(DROPEFFECT_COPY | DROPEFFECT_MOVE, &startRect);
 
@@ -233,8 +233,8 @@ DROPEFFECT LocalDragDropTask::DetermineDropEffect()
    auto dispObjs = m_pDispMgr->FindDisplayObjects(m_DragPoint);
    bool found = false;
 
-   CDisplayView* pView = m_pDispMgr->GetView();
-   CDManipClientDC dc(pView);
+   CDisplay* pDisp = m_pDispMgr->GetDisplay();
+   CDManipClientDC dc(pDisp);
 
    for(auto& dispObj : dispObjs)
    {
@@ -272,8 +272,8 @@ DROPEFFECT LocalDragDropTask::DetermineDropEffect()
       m_pDispMgr->UnregisterDropSite();
 
       // Ask the View if we can drop the payload on the canvas
-      CDisplayView* pView = m_pDispMgr->GetView();
-      de = pView->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
+      CDisplay* pDisp = m_pDispMgr->GetDisplay();
+      de = pDisp->CanDrop(m_pDataObject,m_dwKeyState,m_PointCache);
    }
 
    return de;

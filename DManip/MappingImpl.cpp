@@ -373,7 +373,7 @@ CSize Mapping::GetTextWindowExtent() const
    return CSize( abs(lex-lox), abs(ley-loy) );
 }
  
-CSize Mapping::GetTextExtent(const CDisplayView* pView, const LOGFONT& font, LPCTSTR lpszText) const
+CSize Mapping::GetTextExtent(const CDisplay* pView, const LOGFONT& font, LPCTSTR lpszText) const
 {
    if (m_Stack.empty())
    {

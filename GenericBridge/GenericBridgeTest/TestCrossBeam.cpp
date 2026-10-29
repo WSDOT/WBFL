@@ -29,6 +29,8 @@
 
 #include "stdafx.h"
 #include "TestCrossBeam.h"
+#include <PointDefinedArc.h>
+#include <limits>
 
 
 //////////////////////////////////////////////////////////////////////
@@ -47,6 +49,36 @@ CTestCrossBeam::~CTestCrossBeam()
 
 void CTestCrossBeam::Test()
 {
+   // Point-defined transitions: independent expected ordinates and invalid geometry.
+   WBFL::Geometry::PointDefinedArc arc;
+   TRY_TEST(arc.Initialize(0,0,10,0,10,true),true);
+   TRY_TEST(IsEqual(arc.Evaluate(5),10-std::sqrt(75.0)),true);
+   TRY_TEST(IsEqual(arc.Evaluate(0),0.0),true);
+   TRY_TEST(IsEqual(arc.Evaluate(10),0.0),true);
+   TRY_TEST(arc.IsBelowLine(0,2,10,2),true);
+   TRY_TEST(arc.IsBelowLine(0,1,10,1),false);
+   TRY_TEST(arc.Initialize(0,0,10,0,10,false),true);
+   TRY_TEST(IsEqual(arc.Evaluate(5),std::sqrt(75.0)-10),true);
+   TRY_TEST(arc.Initialize(0,0,10,0,5,true),true);
+   TRY_TEST(IsEqual(arc.Evaluate(5),5.0),true);
+   TRY_TEST(arc.Initialize(0,0,10,0,4.99,true),false);
+   TRY_TEST(arc.Initialize(0,0,0,1,10,true),false);
+   TRY_TEST(arc.Initialize(10,0,0,0,10,true),false);
+   TRY_TEST(arc.Initialize(0,0,10,10,8,true),false); // minor arc turns back in X
+   TRY_TEST(arc.Initialize(0,0,10,0,std::numeric_limits<double>::infinity(),true),false);
+   TRY_TEST(arc.Initialize(0,0,10,0,1e12,true),true);
+   TRY_TEST(std::abs(arc.Evaluate(5)-1.25e-11)<1e-20,true);
+   TRY_TEST(arc.Initialize(0,-3,10,-1,20,true),true);
+   double previous = 0;
+   for (int sample = 1; sample <= 100; ++sample)
+   {
+      double x,y;
+      arc.PointAtFraction(double(sample)/100,x,y);
+      TRY_TEST(x>previous,true);
+      TRY_TEST(std::abs(y-arc.Evaluate(x))<1e-10,true);
+      previous=x;
+   }
+
    //// Create a default bridge
    //CComPtr<IGenericBridge> bridge;
    //bridge.CoCreateInstance(CLSID_GenericBridge);

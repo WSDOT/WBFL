@@ -28,7 +28,7 @@
 #include <DManip/Task.h>
 #include <DManip/InplaceEdit.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -41,7 +41,7 @@ namespace WBFL
       {
       public:
 	      InplaceEditTask() = default;
-         InplaceEditTask(CDisplayView* pView, std::shared_ptr<iInplaceEditable> pEditable);
+         InplaceEditTask(CDisplay* pDisp, std::shared_ptr<iInplaceEditable> pEditable);
 	      virtual ~InplaceEditTask() = default;
 
 
@@ -71,7 +71,7 @@ namespace WBFL
          virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
       private:
-         CDisplayView* m_pView;
+         CDisplay* m_pDisp;
          std::shared_ptr<iInplaceEditable> m_pEditable;
 
          void CompleteTask();

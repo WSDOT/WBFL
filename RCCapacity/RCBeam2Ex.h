@@ -64,11 +64,13 @@ END_COM_MAP()
 private:
    struct Reinforcement
    {
-      Reinforcement(Float64 _ds,Float64 _As,Float64 _devFactor)
-      { ds = _ds; As = _As; DevFactor = _devFactor; }
+      Reinforcement(Float64 _ds,Float64 _As,Float64 _Es,Float64 _Fy,Float64 _devFactor)
+      { ds = _ds; As = _As; Es = _Es; Fy = _Fy; DevFactor = _devFactor; }
 
       Float64 ds;
       Float64 As;
+	  Float64 Es;
+	  Float64 Fy;
       Float64 DevFactor;
    };
 
@@ -76,11 +78,9 @@ private:
    Float64 m_FcSlab;
    Float64 m_Fpy;
    Float64 m_Fpu;
-   Float64 m_Fy;
    Float64 m_hf;
    Float64 m_b;
    Float64 m_Fpe;
-   Float64 m_Es;
    Float64 m_Eps;
    std::vector<Reinforcement> m_Rebar;
    std::vector<Reinforcement> m_Strands;
@@ -117,12 +117,12 @@ public:
 	STDMETHOD(get_Beam)(/*[out, retval]*/ IShape* *pVal) override;
 	STDMETHOD(putref_Beam)(/*[in]*/ IShape* newVal) override;
 
-   STDMETHOD(AddRebarLayer)(/*[in]*/ Float64 ds,/*[in]*/ Float64 As,/*[in]*/ Float64 devFactor) override;
+   STDMETHOD(AddRebarLayer)(/*[in]*/ Float64 ds,/*[in]*/ Float64 As,/*[in]*/ Float64 Es,/*[in]*/ Float64 fy,/*[in]*/ Float64 devFactor) override;
    STDMETHOD(get_RebarLayerCount)(/*[out,retval]*/ IndexType * count) override;
    STDMETHOD(get_RebarLayerDepth)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * ds) override;
    STDMETHOD(get_RebarLayerSteel)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * As) override;
    STDMETHOD(get_RebarLayerDevFactor)(/*[in]*/ IndexType index,/*[out,retval]*/ Float64 * devFactor) override;
-   STDMETHOD(GetRebarLayer)(/*[in]*/ IndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64* devFactor) override;
+   STDMETHOD(GetRebarLayer)(/*[in]*/ IndexType index,/*[out]*/ Float64 * ds, /*[out]*/ Float64 * As, /*[out]*/ Float64 * Es, /*[out]*/ Float64 * fy, /*[out]*/ Float64 * devFactor) override;
    STDMETHOD(RemoveRebarLayer)(/*[in]*/ IndexType index) override;
    STDMETHOD(ClearRebarLayers)() override;
 

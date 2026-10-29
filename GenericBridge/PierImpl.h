@@ -50,10 +50,13 @@ private:
 public:
    HRESULT put_Type(/*[in]*/PierType type);
    HRESULT get_Type(/*[out,retval]*/PierType* type);
+   HRESULT putref_DeckProfile(/*[in]*/IPoint2dCollection* ppPoints);
+   HRESULT get_DeckProfile(/*[out,retval]*/IPoint2dCollection** ppPoints);
    //HRESULT get_DeckElevation(/*[out,retval]*/Float64* pElev);
    //HRESULT get_CrownPointOffset(/*[out,retval]*/Float64* pCPO);
    //HRESULT get_CrownSlope(/*[in]*/DirectionType side,/*[out,retval]*/Float64* pSlope);
-   //HRESULT get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
+   HRESULT put_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/Float64 clo);
+   HRESULT get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO);
    HRESULT get_CurbToCurbWidth(/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pWcc);
    HRESULT putref_SkewAngle(/*[in]*/IAngle* pSkew);
    HRESULT get_SkewAngle(/*[out,retval]*/ IAngle* *skewAngle);
@@ -76,6 +79,8 @@ public:
 public:
    IPier* m_pPier; // weak reference
    PierType m_Type;
+   CComPtr<IPoint2dCollection> m_DeckProfile;
+   Float64 m_CurbLineOffset[2];
    CComPtr<IAngle> m_Skew;
    CComPtr<ICrossBeam> m_CrossBeam;
    CComPtr<IBearingLayout> m_BearingLayout;

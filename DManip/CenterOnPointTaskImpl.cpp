@@ -24,7 +24,7 @@
 #include "pch.h"
 #include "resource.h"
 #include "CenterOnPointTaskImpl.h"
-#include <DManip/DisplayView.h>
+#include <DManip/Display.h>
 
 using namespace WBFL::DManip;
 
@@ -32,9 +32,9 @@ CenterOnPointTask::CenterOnPointTask()
 {
 }
 
-CenterOnPointTask::CenterOnPointTask(CDisplayView* pView)
+CenterOnPointTask::CenterOnPointTask(CDisplay* pDisp)
 {
-   m_pView = pView;
+   m_pDisp = pDisp;
 }
 
 CenterOnPointTask::~CenterOnPointTask()
@@ -45,7 +45,7 @@ void CenterOnPointTask::Start()
 {
    AFX_MANAGE_STATE(AfxGetStaticModuleState());
 
-   m_pView->SetCapture();
+   m_pDisp->GetWnd()->SetCapture();
    HCURSOR hCursor = AfxGetApp()->LoadCursor(IDC_TARGET);
    ASSERT(hCursor != nullptr);
    m_OldCursor = ::SetCursor(hCursor);
@@ -77,7 +77,7 @@ void CenterOnPointTask::OnLButtonDown(UINT nFlags, const CPoint& point)
 
    MouseDown();
 
-   m_pView->GetDisplayMgr()->SetTask(nullptr);
+   m_pDisp->GetDisplayMgr()->SetTask(nullptr);
 }
 
 void CenterOnPointTask::OnRButtonDown(UINT nFlags, const CPoint& point)
@@ -100,7 +100,7 @@ void CenterOnPointTask::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
    if ( nChar == VK_ESCAPE )
    {
       EscKey();
-      m_pView->GetDisplayMgr()->SetTask(nullptr);
+      m_pDisp->GetDisplayMgr()->SetTask(nullptr);
    }
 }
 
@@ -150,7 +150,7 @@ void CenterOnPointTask::CenterOnPoint()
    SetCursor(m_OldCursor);
 
    // Ask the view to select objects in the rect
-   m_pView->CenterOnPoint(m_Point);
+   m_pDisp->CenterOnPoint(m_Point);
 }
 
 void CenterOnPointTask::FSMError(LPCTSTR t,LPCTSTR s)

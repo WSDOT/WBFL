@@ -27,7 +27,7 @@
 #include <DManip/InplaceEdit.h>
 #include <DManip/DisplayObject.h>
 
-class CDisplayView;
+class CDisplay;
 class CInplaceEdit;
 
 namespace WBFL
@@ -45,7 +45,7 @@ namespace WBFL
 	      virtual ~InplaceEditableDefaultImpl() = default;
 
          // Returns the CDisplayView canvas
-         virtual CDisplayView* GetDisplayView() = 0;
+         virtual CDisplay* GetDisplay() = 0;
          virtual CInplaceEdit* GetEditObject() = 0;
 
          // iInplaceEditable Implementation

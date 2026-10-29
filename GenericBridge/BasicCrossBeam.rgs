@@ -1,0 +1,26 @@
+HKCR
+{
+	WBFLGenericBridge.BasicCrossBeam.1 = s 'BasicCrossBeam Class'
+	{
+		CLSID = s '{B817D7C1-2AA6-407A-943D-9134D7185439}'
+	}
+	WBFLGenericBridge.BasicCrossBeam = s 'BasicCrossBeam Class'
+	{
+		CLSID = s '{B817D7C1-2AA6-407A-943D-9134D7185439}'
+		CurVer = s 'WBFLGenericBridge.BasicCrossBeam.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {B817D7C1-2AA6-407A-943D-9134D7185439} = s 'BasicCrossBeam Class'
+		{
+			ProgID = s 'WBFLGenericBridge.BasicCrossBeam.1'
+			VersionIndependentProgID = s 'WBFLGenericBridge.BasicCrossBeam'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			'TypeLib' = s '{44ECDFCD-A740-4B05-8139-7AB55E18AA92}'
+		}
+	}
+}

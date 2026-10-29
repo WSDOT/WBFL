@@ -51,7 +51,7 @@ void ViewTitle::Draw(CDC* pDC)
    if ( !IsVisible() ) // Don't draw if not visible
       return;
 
-   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto pDisp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
 //   // For debugging... Draw the gravity well
 //   CComPtr<iGravityWellStrategy> strategy;
@@ -71,14 +71,14 @@ void ViewTitle::Draw(CDC* pDC)
 //   pDC->FillRgn(&rgn,&brush);
 //   // End of debug code
 
-   CRect rClient = pView->GetViewRect();
+   CRect rClient = pDisp->GetViewRect();
 
    CPoint p;
    p.x = rClient.CenterPoint().x;
    p.y = rClient.top;
 
    LOGFONT lf = m_Font;
-   pView->ScaleFont(lf);
+   pDisp->ScaleFont(lf);
 
    CFont font;
    font.CreatePointFontIndirect(&lf, pDC);
@@ -110,10 +110,10 @@ void ViewTitle::Highlight(CDC* pDC,bool bHighlight)
 RECT ViewTitle::GetLogicalBoundingBox() const
 {
    auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
-   auto view = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto disp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
    CRect rClient;
-   view->GetClientRect(&rClient);
+   disp->GetWnd()->GetClientRect(&rClient);
 
    CPoint p;
    p.x = rClient.CenterPoint().x;
@@ -126,10 +126,10 @@ RECT ViewTitle::GetLogicalBoundingBox() const
    for ( int i = 0; i < strArray.GetSize(); i++ )
    {
       CString str = strArray.GetAt(i);
-      CSize size = map->GetTextExtent(view, m_Font,str);
+      CSize size = map->GetTextExtent(disp, m_Font,str);
 
       if ( size.cx == 0 || size.cy == 0 )
-         size = map->GetTextExtent(view,m_Font,_T("ABCDEFG\0"));
+         size = map->GetTextExtent(disp,m_Font,_T("ABCDEFG\0"));
 
       // capture the width of the widest line of text
       if ( extents.cx < size.cx )
@@ -179,7 +179,7 @@ void ViewTitle::SetText(LPCTSTR lpszText)
       if ( display_mgr )
       {
          CRect box = GetLogicalBoundingBox();
-         display_mgr->GetView()->InvalidateRect(box);
+         display_mgr->GetDisplay()->GetWnd()->InvalidateRect(box);
       }
    }
 }

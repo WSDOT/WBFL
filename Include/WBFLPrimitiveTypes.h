@@ -256,6 +256,7 @@ typedef IndexType StrandIndexType;
 typedef IndexType SpanIndexType;
 typedef IndexType GirderIndexType;
 typedef IndexType BearingIndexType;
+typedef IndexType PierPointIndexType;
 typedef IndexType PierIndexType;
 typedef IndexType ColumnIndexType;
 typedef IndexType GroupIndexType;

@@ -25,9 +25,7 @@
 #pragma once
 
 #include <DManip/DManipExp.h>
-#include <DManip/DisplayMgr.h>
-#include <DManip/CoordinateMap.h>
-#include <DManip/Mapping.h>
+#include <DManip/Display.h>
 
 class WBFL::DManip::iTask;
 class WBFL::DManip::TaskFactory;
@@ -35,7 +33,7 @@ class WBFL::DManip::TaskFactory;
 
 
 /// @brief The display view canvas.
-class DMANIPCLASS CDisplayView : public CScrollView
+class DMANIPCLASS CDisplayView : public CScrollView, public CDisplay
 {
 protected:
 	CDisplayView();           // protected constructor used by dynamic creation
@@ -43,14 +41,11 @@ protected:
 
 // Attributes
 public:
-   std::shared_ptr<WBFL::DManip::iDisplayMgr> GetDisplayMgr();
-   std::shared_ptr<const WBFL::DManip::iDisplayMgr> GetDisplayMgr() const;
-   CRect GetViewRect() const;
 
 // Operations
 public:
-   virtual DROPEFFECT CanDrop(COleDataObject* pDataObject,DWORD dwKeyState,const WBFL::Geometry::Point2d& point);
-   virtual void OnDropped(COleDataObject* pDataObject,DROPEFFECT dropEffect, const WBFL::Geometry::Point2d& point);
+
+
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -72,15 +67,8 @@ protected:
 
    void OnBeginPrinting(CDC* pDC, CPrintInfo* pInfo,CRect rcDraw);
 
-public:
-   // Virtual required to clean up DC for mapping functionality. This is called from OnPaint.
-   // If you need to override OnPaint, you MUST call this function after OnDraw.
-   // If you need a client DC, use the CDManipClientDC class defined below - it will take 
-   // care of the initialization and clean up for you.
-	virtual void OnCleanUpDC(CDC* pDC, CPrintInfo* pInfo = nullptr);
 
 public:
-   std::shared_ptr<const WBFL::DManip::iCoordinateMap> GetCoordinateMap() const;
 
    /// @brief Sets the mapping mode
    void SetMappingMode(WBFL::DManip::MapMode mm, bool reDraw=true);
@@ -89,24 +77,14 @@ public:
    /// @brief Scales the world space to fit within the window
    void ScaleToFit(bool reDraw=true);
 
-   /// @brief Pan such that the specified point is in the center of the client area.
-   void CenterOnPoint(CPoint center, bool reDraw=true);
-   void CenterOnPoint(const WBFL::Geometry::Point2d& wOrg, bool reDraw=true);
-
    /// @brief Activates a task whereby the user centers the canvas on a point by left button mouse click
    void ActivateCenterOnPointTask();
 
-   /// @brief Zooms the view to a rectangle
-   void Zoom(CRect rect, bool reDraw=true);
-   void Zoom(const WBFL::Geometry::Rect2d& rect, bool reDraw=true);
    /// @brief Zoomes the view by apply a scaling factor
    void Zoom(Float64 factor, bool reDraw=true);
 
    /// @brief Actives a task whereby the user zooms in on the canvas by drawing a rectangle with the mouse
    void ActivateZoomTask();
-
-   /// @brief Scales font size (point size) for high DPI devices
-   void ScaleFont(LOGFONT& lfFont) const;
 
 // Implementation
 protected:
@@ -142,16 +120,9 @@ protected:
    // by using the iMapping interface directly in your subclass
    void SetLogicalViewRect(int mapMode, CRect rect);
    RECT GetLogicalViewRect();
-   void SetWorldViewRect(const WBFL::Geometry::Rect2d& rect);
 
    CRect GetAdjustedLogicalViewRect();
    WBFL::Geometry::Rect2d GetAdjustedWorldViewRect();
-
-   std::shared_ptr<WBFL::DManip::iDisplayMgr>       m_pDispMgr;
-
-   // current mapping
-   std::shared_ptr<WBFL::DManip::iMapping>          m_pMapping;
-   std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pCoordinateMap;
 
    // different mappings for screen and printer. to be switched back
    // and forth at print time
@@ -159,9 +130,6 @@ protected:
    std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pPrinterCoordinateMap;
    std::shared_ptr<WBFL::DManip::iMapping>          m_pScreenMapping;
    std::shared_ptr<WBFL::DManip::iCoordinateMap>    m_pScreenCoordinateMap;
-
-   bool m_IsPrinting;
-   CRect m_PrintingRect;
 
    // Last resort event handler if display objects event sinks and display list event sinks
    // don't handle the event... default implementations do nothing. Override these methods
@@ -178,29 +146,4 @@ protected:
 	virtual void HandleContextMenu(CWnd* pWnd,CPoint logPoint);
 public:
    afx_msg void OnSize(UINT nType, int cx, int cy);
-};
-
-/////////////////////////////////////////////////////////////////////////////
-
-// Utility class for creating local client DC's. Use this class along with 
-// CDisplayView if you need a local DC and it will properly initialize mapping
-// and clean up after itself
-class CDManipClientDC : public CClientDC
-{
-public:
-
-   CDManipClientDC(CDisplayView* view):
-   m_pView(view),
-   CClientDC(view)
-   {
-      view->OnPrepareDC(this);
-   }
-
-   virtual ~CDManipClientDC()
-   {
-      m_pView->OnCleanUpDC(this);
-   }
-
-private:
-   CDisplayView* m_pView;
 };
