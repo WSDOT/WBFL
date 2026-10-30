@@ -53,6 +53,9 @@ namespace WBFL
             ~BearingProjectCriteria() = default;
 
             BearingAnalysisMethod AnalysisMethod = BearingAnalysisMethod::MethodB;
+            /// Sum absolute strain contributions in Method B combined shear strain checks.
+            /// When false, signed contributions are used; the cyclic factor remains 1.75.
+            bool bUseAbsoluteStrainSum = true;
             Float64 MinimumElastomerShearModulus = WBFL::Units::ConvertToSysUnits(0.080, WBFL::Units::Measure::KSI); ///< See LRFD 14.7.5.2
             Float64 MaximumElastomerShearModulus = WBFL::Units::ConvertToSysUnits(0.175, WBFL::Units::Measure::KSI); ///< See LRFD 14.7.5.2
 

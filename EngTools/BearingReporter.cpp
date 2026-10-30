@@ -1497,9 +1497,11 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	Float64 static_axial_Y_ss = brg_calc.GetStaticAxialSecondaryShearStrain(brg, brg_loads);
 	bool static_axial_Y_ss_check = artifact.StaticAxialSecondaryShearStrainCheck();
 
-	Float64 ss_X_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(brg, brg_loads);
+	const TCHAR* strainBar = criteria.bUseAbsoluteStrainSum ? _T("|") : _T("");
+
+	Float64 ss_X_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(brg, brg_loads, criteria.bUseAbsoluteStrainSum);
 	bool ss_X_combo_sum_check = artifact.PrimaryShearStrainComboSumCheck();
-	Float64 ss_Y_combo_sum = brg_calc.GetSecondaryShearStrainComboSum(brg, brg_loads);
+	Float64 ss_Y_combo_sum = brg_calc.GetSecondaryShearStrainComboSum(brg, brg_loads, criteria.bUseAbsoluteStrainSum);
 	bool ss_Y_combo_sum_check = artifact.SecondaryShearStrainComboSumCheck();
 
 	bool check_app_TL_stab_X = criteria.CheckApplicabilityTotalStressStabilityX();
@@ -1564,7 +1566,7 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 
 		es_cyclic_roty = brg_calc.GetCyclicRotationalPrimaryShearStrain(secondary_brg, secondary_brg_loads);
 
-		ss_Y_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(secondary_brg, secondary_brg_loads);
+		ss_Y_combo_sum = brg_calc.GetPrimaryShearStrainComboSum(secondary_brg, secondary_brg_loads, tArtifact->GetBearingDesignCriteria().bUseAbsoluteStrainSum);
 		ss_Y_combo_sum_check = tArtifact->PrimaryShearStrainComboSumCheck();
 
 		secondary_restraint_system_calc = brg_calc.GetRestraintSystemCDRatio(secondary_brg, secondary_brg_loads, spec);
@@ -1709,11 +1711,11 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 	*pPara << _T("Cyclic Displacement Shear Strain, ") << Sub2(symbol(gamma), _T("s,cy")) << _T(" = ") << es_cyclic_dispx << rptNewLine;
 
 	*pPara << Sub2(symbol(gamma), _T("combo")) << _T(" = (");
-	*pPara << Sub2(symbol(gamma), _T("a,st")) << _T(" + ") << Sub2(symbol(gamma), _T("r,st")) << _T(" + ") << Sub2(symbol(gamma), _T("s,st"));
-	*pPara << _T(") + 1.75 ") << symbol(TIMES) << _T(" (") << Sub2(symbol(gamma), _T("a,cy")) << _T(" + ");
-	*pPara << Sub2(symbol(gamma), _T("r,cy")) << _T(" + ") << Sub2(symbol(gamma), _T("s,cy")) << _T(") = (");
-	*pPara << static_axial_X_ss << _T(" + ") << es_rotx << _T(" + ") << Dsx << _T(") + 1.75 (");
-	*pPara << es_cyclic_axialx << _T(" + ") << es_cyclic_rotx << _T(" + ") << es_cyclic_dispx << _T(") = " << ss_X_combo_sum) << rptNewLine;
+	*pPara << strainBar << Sub2(symbol(gamma), _T("a,st")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("r,st")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("s,st")) << strainBar;
+	*pPara << _T(") + 1.75 ") << symbol(TIMES) << _T(" (") << strainBar << Sub2(symbol(gamma), _T("a,cy")) << strainBar << _T(" + ");
+	*pPara << strainBar << Sub2(symbol(gamma), _T("r,cy")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("s,cy")) << strainBar << _T(") = (");
+	*pPara << strainBar << static_axial_X_ss << strainBar << _T(" + ") << strainBar << es_rotx << strainBar << _T(" + ") << strainBar << Dsx << strainBar << _T(") + 1.75 (");
+	*pPara << strainBar << es_cyclic_axialx << strainBar << _T(" + ") << strainBar << es_cyclic_rotx << strainBar << _T(" + ") << strainBar << es_cyclic_dispx << strainBar << _T(") = ") << ss_X_combo_sum << rptNewLine;
 	*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|") << ss_X_combo_sum;
 	if (ss_X_combo_sum_check)
 	{
@@ -1812,11 +1814,11 @@ void BearingReporter::ReportBearingSpecificationCheckB(const WBFL::Units::Indire
 
 
 	*pPara << Sub2(symbol(gamma), _T("combo")) << _T(" = (");
-	*pPara << Sub2(symbol(gamma), _T("a,st")) << _T(" + ") << Sub2(symbol(gamma), _T("r,st")) << _T(" + ") << Sub2(symbol(gamma), _T("s,st"));
-	*pPara << _T(") + 1.75 ") << symbol(TIMES) << _T(" (") << Sub2(symbol(gamma), _T("a,cy")) << _T(" + ");
-	*pPara << Sub2(symbol(gamma), _T("r,cy")) << _T(" + ") << Sub2(symbol(gamma), _T("s,cy")) << _T(") = (");
-	*pPara << static_axial_Y_ss << _T(" + ") << es_roty << _T(" + ") << Dsy << _T(") + 1.75 (");
-	*pPara << es_cyclic_axialy << _T(" + ") << es_cyclic_roty << _T(" + ") << es_cyclic_dispy << _T(") = " << ss_Y_combo_sum) << rptNewLine;
+	*pPara << strainBar << Sub2(symbol(gamma), _T("a,st")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("r,st")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("s,st")) << strainBar;
+	*pPara << _T(") + 1.75 ") << symbol(TIMES) << _T(" (") << strainBar << Sub2(symbol(gamma), _T("a,cy")) << strainBar << _T(" + ");
+	*pPara << strainBar << Sub2(symbol(gamma), _T("r,cy")) << strainBar << _T(" + ") << strainBar << Sub2(symbol(gamma), _T("s,cy")) << strainBar << _T(") = (");
+	*pPara << strainBar << static_axial_Y_ss << strainBar << _T(" + ") << strainBar << es_roty << strainBar << _T(" + ") << strainBar << Dsy << strainBar << _T(") + 1.75 (");
+	*pPara << strainBar << es_cyclic_axialy << strainBar << _T(" + ") << strainBar << es_cyclic_roty << strainBar << _T(" + ") << strainBar << es_cyclic_dispy << strainBar << _T(") = ") << ss_Y_combo_sum << rptNewLine;
 	*pPara << symbol(RIGHT_SINGLE_ARROW) << _T("|") << ss_Y_combo_sum;
 	if (ss_Y_combo_sum_check)
 	{
