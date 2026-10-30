@@ -187,7 +187,7 @@ Float64 BearingCalculator::GetCyclicRotationalPrimaryShearStrain(const Bearing& 
 	return es;
 }
 
-Float64 BearingCalculator::GetPrimaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetPrimaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads, bool bUseAbsoluteStrainSum) const
 {
 	Float64 D = GetStaticDisplacementPrimaryShearStrain(brg, brg_loads);
 	Float64 es_axial = GetStaticAxialPrimaryShearStrain(brg, brg_loads);
@@ -195,6 +195,15 @@ Float64 BearingCalculator::GetPrimaryShearStrainComboSum(const Bearing& brg, con
 	Float64 es_cyclic_disp = GetCyclicDisplacementPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_axial = GetCyclicAxialPrimaryShearStrain(brg, brg_loads);
 	Float64 es_cyclic_rot = GetCyclicRotationalPrimaryShearStrain(brg, brg_loads);
+	if (bUseAbsoluteStrainSum)
+	{
+		D = abs(D);
+		es_axial = abs(es_axial);
+		es_rot = abs(es_rot);
+		es_cyclic_disp = abs(es_cyclic_disp);
+		es_cyclic_axial = abs(es_cyclic_axial);
+		es_cyclic_rot = abs(es_cyclic_rot);
+	}
 	Float64 esXcombo_sum = D + es_axial + es_rot + 1.75 * (es_cyclic_disp + es_cyclic_axial + es_cyclic_rot);
 	return  esXcombo_sum;
 }
@@ -246,7 +255,7 @@ Float64 BearingCalculator::GetCyclicRotationalSecondaryShearStrain(const Bearing
 	return 0;
 }
 
-Float64 BearingCalculator::GetSecondaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads) const
+Float64 BearingCalculator::GetSecondaryShearStrainComboSum(const Bearing& brg, const BearingLoads& brg_loads, bool bUseAbsoluteStrainSum) const
 {
 	Float64 es_disp_static = GetStaticDisplacementSecondaryShearStrain();
 	Float64 es_axial_static = GetStaticAxialSecondaryShearStrain(brg, brg_loads);
@@ -254,6 +263,15 @@ Float64 BearingCalculator::GetSecondaryShearStrainComboSum(const Bearing& brg, c
 	Float64 es_disp_cyclic = GetCyclicDisplacementSecondaryShearStrain();
 	Float64 es_axial_cyclic = GetCyclicAxialSecondaryShearStrain(brg, brg_loads);
 	Float64 es_rot_cyclic = GetCyclicRotationalSecondaryShearStrain(brg, brg_loads);
+	if (bUseAbsoluteStrainSum)
+	{
+		es_disp_static = abs(es_disp_static);
+		es_axial_static = abs(es_axial_static);
+		es_rot_static = abs(es_rot_static);
+		es_disp_cyclic = abs(es_disp_cyclic);
+		es_axial_cyclic = abs(es_axial_cyclic);
+		es_rot_cyclic = abs(es_rot_cyclic);
+	}
 	Float64 es = es_disp_static + es_axial_static + es_rot_static + 1.75 * (es_disp_cyclic + es_axial_cyclic + es_rot_cyclic);
 	return es;
 }
@@ -453,8 +471,8 @@ BearingResults BearingCalculator::AnalyzeBearing(const Bearing& bearing, const B
 	results.ElastomerElasticModulusMethodA = GetElastomerElasticModulusMethodA(bearing, spec);
 	results.StaticAxialPrimaryShearStrain = GetStaticAxialPrimaryShearStrain(bearing, loads);
 	results.StaticAxialSecondaryShearStrain = GetStaticAxialSecondaryShearStrain(bearing, loads);
-	results.PrimaryShearStrainComboSum = GetPrimaryShearStrainComboSum(bearing, loads);
-	results.SecondaryShearStrainComboSum = GetSecondaryShearStrainComboSum(bearing, loads);
+	results.PrimaryShearStrainComboSum = GetPrimaryShearStrainComboSum(bearing, loads, criteria.bUseAbsoluteStrainSum);
+	results.SecondaryShearStrainComboSum = GetSecondaryShearStrainComboSum(bearing, loads, criteria.bUseAbsoluteStrainSum);
 	results.TotalStress = GetTotalStress(bearing, loads);
 	results.RestraintSystemDCRatio = GetRestraintSystemCDRatio(bearing, loads, spec);
 	results.HydrostaticStress = GetHydrostaticStress(bearing, loads);

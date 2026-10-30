@@ -91,7 +91,7 @@ namespace WBFL
             /// @return Primary shear strain due to cyclic rotation 
             Float64 GetCyclicRotationalPrimaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Primary shear strain combination sum 
-            Float64 GetPrimaryShearStrainComboSum(const Bearing&, const BearingLoads&) const;
+            Float64 GetPrimaryShearStrainComboSum(const Bearing&, const BearingLoads&, bool bUseAbsoluteStrainSum = true) const;
             /// @return Secondary shear strain due to static shear displacement 
             Float64 GetStaticDisplacementSecondaryShearStrain() const;
             /// @return Secondary shear strain due to cyclic shear displacement 
@@ -105,7 +105,7 @@ namespace WBFL
             /// @return Secondary shear strain due to cyclic rotation 
             Float64 GetCyclicRotationalSecondaryShearStrain(const Bearing&, const BearingLoads&) const;
             /// @return Secondary shear strain combination sum 
-            Float64 GetSecondaryShearStrainComboSum(const Bearing&, const BearingLoads&) const;
+            Float64 GetSecondaryShearStrainComboSum(const Bearing&, const BearingLoads&, bool bUseAbsoluteStrainSum = true) const;
             /// @return Static stress 
             Float64 GetStaticStress(const Bearing&, const BearingLoads&) const;
             /// @return Cyclic stress 
