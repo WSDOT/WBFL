@@ -85,6 +85,17 @@ namespace EngToolsUnitTests
 			Assert::IsTrue(artifact.MaximumBearingEdgeToBottomFlangeEdgeDistCheck());
 			Assert::IsTrue(artifact.RequiredBearingEdgeToBottomFlangeEdgeDistCheck());
 			Assert::IsTrue(artifact.MaximumTotalLoadCheck());
+
+			// Opposing rotations must not cancel with the default absolute sum.
+			brg_loads.SetCyclicRotation(-0.006);
+			const auto absoluteResults = brg_calc.AnalyzeBearing(brg, brg_loads, criteria);
+			Assert::AreEqual(brg_calc.GetPrimaryShearStrainComboSum(brg, brg_loads), absoluteResults.PrimaryShearStrainComboSum, 1e-10);
+			criteria.bUseAbsoluteStrainSum = false;
+			const auto signedResults = brg_calc.AnalyzeBearing(brg, brg_loads, criteria);
+			const Float64 cyclicStrain = brg_calc.GetCyclicRotationalPrimaryShearStrain(brg, brg_loads);
+			Assert::AreEqual(2.0 * 1.75 * abs(cyclicStrain), absoluteResults.PrimaryShearStrainComboSum - signedResults.PrimaryShearStrainComboSum, 1e-10);
+			Assert::AreEqual(brg_calc.GetSecondaryShearStrainComboSum(brg, brg_loads, false), signedResults.SecondaryShearStrainComboSum, 1e-10);
+
 		}
 
 		TEST_METHOD(TestAllFail)
