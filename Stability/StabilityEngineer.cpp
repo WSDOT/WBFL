@@ -2418,8 +2418,8 @@ void StabilityEngineer::BuildModel(const IGirder* pGirder,const IStabilityProble
          Xprev = Xcurr;
       }
 
-      CComPtr<IFem2dPointLoad> ptLoad;
-      swPointLoads->Create(ptLoadID++,mbrID,Xmbr,0,P,0,lotMember,&ptLoad);
+      CComPtr<IFem2dPointLoad> load;
+      swPointLoads->Create(ptLoadID++,mbrID,Xmbr,0,P,0,lotMember,&load);
 
       Wg += -P;
    }
