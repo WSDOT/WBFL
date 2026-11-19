@@ -74,18 +74,18 @@ namespace WBFL
 
       private:
          // Use the EndType enum to access these arrays
-         std::array<IDType, 2> m_TransverseEdgeID; // ID of the path that defines the transverse edge of the deck
-         std::array<TransverseEdgeType, 2> m_TransverseEdgeType; // Type of line that defines the transverse edge of deck
+         std::array<IDType, 2> m_TransverseEdgeID{ INVALID_ID, INVALID_ID }; // ID of the path that defines the transverse edge of the deck
+         std::array<TransverseEdgeType, 2> m_TransverseEdgeType{ TransverseEdgeType::Pier, TransverseEdgeType::Pier }; // Type of line that defines the transverse edge of deck
 
          // Use the SideType enum to access these arrays
-         std::array<IDType, 2> m_EdgeID; // ID of construction line that defines the edge of deck
-         std::array<IDType, 2> m_EdgeBreakID; // ID of construction line that defines the break back points
+         std::array<IDType, 2> m_EdgeID{ INVALID_ID, INVALID_ID }; // ID of construction line that defines the edge of deck
+         std::array<IDType, 2> m_EdgeBreakID{ INVALID_ID, INVALID_ID }; // ID of construction line that defines the break back points
 
          // Boolean value that indicates if there is a break point 
          // in the ends of the slab.
          // use the EndType and SideType to access the array
          // e.g. m_bBreakEdge[+EndType::Start][+SideType::Left]
-         std::array<std::array<bool, 2>, 2> m_bBreakEdge;
+         std::array<std::array<bool, 2>, 2> m_bBreakEdge{ { {false, false}, {false, false} } }; // no breaks by default
       };
    };
 };

@@ -69,20 +69,19 @@ namespace CoordGeomUnitTest
 			Assert::IsTrue(Point2d(80.000000000000000, 10.000000000000000) == vPoints[i++]);
 			Assert::IsTrue(i == vPoints.size());
 
+			// Start line is parallel to Pier 100 (N 45 W) through Sta 105, end line is parallel to Pier 200 (N 45 E) through Sta 205
 			vPoints = deck_boundary->GetPerimeter(3, 100, 5.0, 200, 5.0, true);
 			i = 0;
-			Assert::IsTrue(Point2d(90.000000000000000, 10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(110.00000000000000, -10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(95.000000000000000, 10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(115.00000000000000, -10.000000000000000) == vPoints[i++]);
 			Assert::IsTrue(Point2d(120.00000000000000, -10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(150.00000000000000, -10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(155.00000000000000, -10.000000000000000) == vPoints[i++]);
 			Assert::IsTrue(Point2d(180.00000000000000, -10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(190.00000000000000, -10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(210.00000000000000, 10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(150.00000000000000, 10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(195.00000000000000, -10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(215.00000000000000, 10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(155.00000000000000, 10.000000000000000) == vPoints[i++]);
 			Assert::IsTrue(Point2d(100.00000000000000, 10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(90.000000000000000, 10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(80.000000000000000, 10.000000000000000) == vPoints[i++]);
-			Assert::IsTrue(Point2d(90.000000000000000, 10.000000000000000) == vPoints[i++]);
+			Assert::IsTrue(Point2d(95.000000000000000, 10.000000000000000) == vPoints[i++]);
 			Assert::IsTrue(i == vPoints.size());
 
 			auto edge_points = deck_boundary->GetTransverseEdgePoints(EndType::Start);

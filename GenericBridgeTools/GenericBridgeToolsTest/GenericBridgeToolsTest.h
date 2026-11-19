@@ -42,6 +42,7 @@ struct SpanDefinition
    std::vector< std::pair<Float64,Float64> > girderSpacing; // spacing at start and end of span, measured along cl-pier
 };
 
+void CreateBasicBridge(IGenericBridge** ppBridge); // bridge with a straight alignment along the X axis, and nothing else
 void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<Float64>& spanLengths,Float64 gdrSpacing,GirderIndexType nGirderLines,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
 void CreatePrecastGirderBridge(Float64 alignmentOffset,const std::vector<SpanDefinition>& spanDefinitions,IShape* shape,Float64 overhang,int deckType,bool bCompositeDeck,IGenericBridge** ppBridge);
 void CreateSplicedGirderBridge(IGenericBridge** ppBridge);
