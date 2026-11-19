@@ -43,6 +43,7 @@
 #include "TestSectionCutTool.h"
 #include "TestStrandPattern.h"
 #include "TestPrecastGirder.h"
+#include "TestCastingRegions.h"
 
 
 CComModule _Module;
@@ -53,6 +54,7 @@ int main(int argc, TCHAR* argv[])
 
    ::CoInitialize(nullptr);
 
+   CTestCastingRegions::Test(); // before the older tests, which crash (they are out of date)
    CTestSectionCutTool::Test(); // first: its new TestSkewedSlabTop runs before the older tests, which crash (they are out of date)
    CTestBridgeGeometryTool::Test();
    CTestEffectiveFlangeWidthTool::Test(); // also tests tributary width

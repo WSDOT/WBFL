@@ -49,6 +49,9 @@ public:
 
    void Init(ICastingRegions* pParent, PierIDType startPierID, Float64 Xstart, PierIDType endPierID, Float64 Xend, IMaterial* pMaterial);
 
+   // Not part of ICastingRegion. Returns the pier IDs and offsets that define the start and end boundaries of this region
+   void GetBoundaryDefinition(PierIDType* pStartPierID, Float64* pXstart, PierIDType* pEndPierID, Float64* pXend) const;
+
 DECLARE_REGISTRY_RESOURCEID(IDR_CASTING_REGION)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()

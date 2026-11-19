@@ -73,6 +73,13 @@ protected:
    HRESULT DoSaveItem(IStructuredSave2* save,ICastingRegion* item);
    HRESULT DoLoadItem(IStructuredLoad2* load,ICastingRegion* *ppItem);
 
+   // Finds the region containing a plan view point when region boundaries are parallel to the piers
+   HRESULT FindRegionParallelToPiers(IPoint2d* pPoint, SectionBias bias, IndexType* pIndex, ICastingRegion** ppRegion);
+
+   // Signed distance from a region boundary line to a point, measured parallel to the alignment at the boundary.
+   // The boundary line is parallel to the pier and passes through the alignment at the pier station + X. Positive is ahead of the line.
+   Float64 DistanceFromBoundary(IAlignment* pAlignment, IPierCollection* pPiers, PierIDType pierID, Float64 X, IPoint2d* pPoint);
+
 // ISupportsErrorInfo
 public:
 	STDMETHOD(InterfaceSupportsErrorInfo)(REFIID riid) override;

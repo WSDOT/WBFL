@@ -129,7 +129,12 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
       }
 
       auto centerline = start_pier_line->GetCenterLine();
-      if (!bParallelToPiers)
+      if (bParallelToPiers)
+      {
+         // keep the pier's direction, but pass through the point located by Xstart
+         centerline = centerline.Parallel(alignment_point);
+      }
+      else
       {
          auto alignment = bridge->GetBridgeAlignment();
          auto normal = alignment->GetNormal(start_pier_station);
@@ -185,7 +190,12 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
       }
 
       auto centerline = end_pier_line->GetCenterLine();
-      if (!bParallelToPiers)
+      if (bParallelToPiers)
+      {
+         // keep the pier's direction, but pass through the point located by Xend
+         centerline = centerline.Parallel(alignment_point);
+      }
+      else
       {
          auto alignment = bridge->GetBridgeAlignment();
          auto normal = alignment->GetNormal(end_pier_station);
@@ -272,7 +282,7 @@ std::vector<WBFL::Geometry::Point2d> DeckBoundary::GetPerimeter(IndexType nMinPo
       for (const auto& key_point : key_points)
       {
          auto [distance, offset] = m_EdgePath[+SideType::Left]->DistanceAndOffset(key_point);
-         if (::InRange(right_edge_start, distance, right_edge_end))
+         if (::InRange(left_edge_start, distance, left_edge_end))
          {
             left_path_points.insert(std::make_pair(distance, key_point));
          }
@@ -369,6 +379,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
    {
       // edge of deck is a layout line
       auto end_path = bridge->FindLayoutLine(m_TransverseEdgeID[+endType]);
+      CHECK(end_path != nullptr); // layout line m_TransverseEdgeID[+endType] must exist
       auto nPathElements = end_path->GetPathElementCount();
       CHECK(nPathElements == 1);
       auto path_element = end_path->GetPathElement(0);
@@ -384,6 +395,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
    {
       // intersect edge path with left break line
       auto left_edge_break_path = bridge->FindLayoutLine(m_EdgeBreakID[+SideType::Left]);
+      CHECK(left_edge_break_path != nullptr); // layout line m_EdgeBreakID[+SideType::Left] must exist
       bool bSuccess;
       std::tie(bSuccess,end_point_2) = left_edge_break_path->Intersect(end_line, alignment_point, true, true);
       CHECK(bSuccess);
@@ -395,6 +407,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
 
       // intersect break line with left edge path
       auto left_edge_path = bridge->FindLayoutLine(m_EdgeID[+SideType::Left]);
+      CHECK(left_edge_path != nullptr); // layout line m_EdgeID[+SideType::Left] must exist
       std::tie(bSuccess,end_point_1) = left_edge_path->Intersect(break_line, end_point_2,true,true);
       CHECK(bSuccess);
    }
@@ -402,6 +415,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
    {
       // intersect edge path with left edge path
       auto left_edge_path = bridge->FindLayoutLine(m_EdgeID[+SideType::Left]);
+      CHECK(left_edge_path != nullptr); // layout line m_EdgeID[+SideType::Left] must exist
       bool bSuccess;
       std::tie(bSuccess,end_point_1) = left_edge_path->Intersect(end_line, alignment_point,true,true);
       CHECK(bSuccess);
@@ -412,6 +426,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
    {
       // intersect edge path with right break line
       auto right_edge_break_path = bridge->FindLayoutLine(m_EdgeBreakID[+SideType::Right]);
+      CHECK(right_edge_break_path != nullptr); // layout line m_EdgeBreakID[+SideType::Right] must exist
       bool bSuccess;
       std::tie(bSuccess,end_point_3) = right_edge_break_path->Intersect(end_line, alignment_point,true,true);
       CHECK(bSuccess);
@@ -423,6 +438,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
 
       // intersect break line with left edge path
       auto right_edge_path = bridge->FindLayoutLine(m_EdgeID[+SideType::Right]);
+      CHECK(right_edge_path != nullptr); // layout line m_EdgeID[+SideType::Right] must exist
       std::tie(bSuccess,end_point_4) = right_edge_path->Intersect(break_line, end_point_3,true,true);
       CHECK(bSuccess);
    }
@@ -430,6 +446,7 @@ void DeckBoundary::CreateDeckBoundaryEndPoints(EndType endType)
    {
       // intersect edge path with right edge path
       auto right_edge_path = bridge->FindLayoutLine(m_EdgeID[+SideType::Right]);
+      CHECK(right_edge_path != nullptr); // layout line m_EdgeID[+SideType::Right] must exist
       bool bSuccess;
       std::tie(bSuccess,end_point_4) = right_edge_path->Intersect(end_line, alignment_point,true,true);
       CHECK(bSuccess);

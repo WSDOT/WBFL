@@ -19,6 +19,9 @@
     <ClCompile Include="TestSectionCutTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestCastingRegions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TestStrandPattern.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +46,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestSectionCutTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestCastingRegions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestStrandPattern.h">

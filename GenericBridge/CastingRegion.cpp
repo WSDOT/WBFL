@@ -50,6 +50,14 @@ void CCastingRegion::Init(ICastingRegions* pParent, PierIDType startPierID, Floa
    m_Material = pMaterial;
 }
 
+void CCastingRegion::GetBoundaryDefinition(PierIDType* pStartPierID, Float64* pXstart, PierIDType* pEndPierID, Float64* pXend) const
+{
+   *pStartPierID = m_StartPierID;
+   *pXstart = m_Xstart;
+   *pEndPierID = m_EndPierID;
+   *pXend = m_Xend;
+}
+
 STDMETHODIMP CCastingRegion::InterfaceSupportsErrorInfo(REFIID riid)
 {
 	static const IID* arr[] = 

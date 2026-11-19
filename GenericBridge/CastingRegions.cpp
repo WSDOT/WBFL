@@ -201,6 +201,12 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
    CComPtr<IPoint2d> point;
    locate->ByDistDir(pntStart, Xs, CComVariant(direction), 0.0, &point);
 
+   if (m_Boundary == crbParallelToPier)
+   {
+      // test the point against each region's own boundary lines
+      return FindRegionParallelToPiers(point, bias, pIndex, ppRegion);
+   }
+
    // get the station and offset of the point
    CComPtr<IAlignment> alignment;
    m_pBridge->get_Alignment(&alignment);
@@ -232,12 +238,10 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
       }
    }
 
-   if (m_Boundary == crbParallelToPier || closestPierIdx == 0 || closestPierIdx == nPiers-1)
+   if (closestPierIdx == 0 || closestPierIdx == nPiers-1)
    {
-      // region boundary is parallel to pier so intersect a line passing through point, that is parallel to the pier,
-      // to with the alignment and get the station/offset of that point
-
-      // region boundary is always parallelto the first and last pier
+      // region boundary is always parallel to the first and last pier so intersect a line passing through point,
+      // that is parallel to the pier, with the alignment and get the station/offset of that point
 
       CComPtr<IBridgePier> closestPier;
       piers->get_Item(closestPierIdx, &closestPier);
@@ -273,6 +277,100 @@ STDMETHODIMP CCastingRegions::FindRegionEx(GirderIDType ssmbrID, SegmentIndexTyp
 
    // use the other version to find the region
    return FindRegion(Xb, bias, pIndex, ppRegion);
+}
+
+HRESULT CCastingRegions::FindRegionParallelToPiers(IPoint2d* pPoint, SectionBias bias, IndexType* pIndex, ICastingRegion** ppRegion)
+{
+   // Each region is bounded by a line parallel to its start pier and a line parallel to its end pier. These are
+   // the same lines DeckBoundary::GetPerimeter uses for the region perimeter. Test the point against each region's
+   // own boundary lines. Don't project the point onto the alignment parallel to one pier and compare distances along
+   // the alignment. Adjacent piers can have different skews, so that projection can put the point in the wrong region,
+   // or in no region, for girders far from the alignment.
+   //
+   // The start of the first region and the end of the last region are not bounded. Points beyond the end piers
+   // (e.g., at girder ends) are in the end regions.
+   //
+   // When the point is on a boundary, sbLeft selects the region before the boundary and sbRight selects the region after it.
+   // Regions are stored in order along the bridge.
+   CComPtr<IAlignment> alignment;
+   m_pBridge->get_Alignment(&alignment);
+
+   CComPtr<IPierCollection> piers;
+   m_pBridge->get_Piers(&piers);
+
+   IndexType nRegions = m_coll.size();
+   for (IndexType regionIdx = 0; regionIdx < nRegions; regionIdx++)
+   {
+      CComPtr<ICastingRegion> region(m_coll[regionIdx].second.m_T);
+
+      // All regions are created by CreateRegion, so they are all CCastingRegion objects
+      const CCastingRegion* pRegion = static_cast<const CCastingRegion*>(region.p);
+      PierIDType startPierID, endPierID;
+      Float64 Xstart, Xend;
+      pRegion->GetBoundaryDefinition(&startPierID, &Xstart, &endPierID, &Xend);
+
+      bool bAfterStart = true;
+      if (0 < regionIdx)
+      {
+         Float64 d = DistanceFromBoundary(alignment, piers, startPierID, Xstart, pPoint);
+         bAfterStart = (bias == sbRight ? ::IsGE(0.0, d) : ::IsGT(0.0, d));
+      }
+
+      bool bBeforeEnd = true;
+      if (regionIdx < nRegions - 1)
+      {
+         Float64 d = DistanceFromBoundary(alignment, piers, endPierID, Xend, pPoint);
+         bBeforeEnd = (bias == sbLeft ? ::IsLE(d, 0.0) : ::IsLT(d, 0.0));
+      }
+
+      if (bAfterStart && bBeforeEnd)
+      {
+         *pIndex = regionIdx;
+         return region.CopyTo(ppRegion);
+      }
+   }
+
+   *pIndex = INVALID_INDEX;
+   return E_FAIL;
+}
+
+Float64 CCastingRegions::DistanceFromBoundary(IAlignment* pAlignment, IPierCollection* pPiers, PierIDType pierID, Float64 X, IPoint2d* pPoint)
+{
+   CComPtr<IBridgePier> pier;
+   pPiers->FindPierByID(pierID, &pier);
+   ATLASSERT(pier);
+
+   CComPtr<IStation> pierStation;
+   pier->get_Station(&pierStation);
+
+   CComPtr<IStation> station;
+   pierStation->Clone(&station);
+   station->Offset(X);
+
+   // point where the boundary line crosses the alignment
+   CComPtr<IPoint2d> pntOnAlignment;
+   pAlignment->LocatePoint(CComVariant(station), omtNormal, 0.0, CComVariant(0.0), &pntOnAlignment);
+
+   CComPtr<IDirection> alignmentDirection;
+   pAlignment->GetBearing(CComVariant(station), &alignmentDirection);
+
+   CComPtr<IDirection> pierDirection;
+   pier->get_Direction(&pierDirection);
+
+   Float64 t, p; // direction of the alignment and the boundary line
+   alignmentDirection->get_Value(&t);
+   pierDirection->get_Value(&p);
+
+   Float64 ax, ay, px, py;
+   pntOnAlignment->Location(&ax, &ay);
+   pPoint->Location(&px, &py);
+
+   // Write the vector from the alignment point to the point as a*T + b*P, where T is a unit vector along the alignment
+   // and P is a unit vector along the boundary line. Then a is the distance we want, and a = (P x (point - A))/(P x T)
+   Float64 PxT = cos(p)*sin(t) - sin(p)*cos(t);
+   ATLASSERT(!IsZero(PxT)); // boundary can't be parallel to the alignment
+   Float64 PxV = cos(p)*(py - ay) - sin(p)*(px - ax);
+   return PxV / PxT;
 }
 
 STDMETHODIMP CCastingRegions::get__EnumCastingRegions(IEnumCastingRegions** enumCastingRegions)

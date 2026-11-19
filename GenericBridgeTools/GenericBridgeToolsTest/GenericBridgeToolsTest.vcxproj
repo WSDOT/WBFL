@@ -184,6 +184,7 @@
     <ClCompile Include="TestEffectiveFlangeWidthTool.cpp" />
     <ClCompile Include="TestPrecastGirder.cpp" />
     <ClCompile Include="TestSectionCutTool.cpp" />
+    <ClCompile Include="TestCastingRegions.cpp" />
     <ClCompile Include="TestStrandPattern.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -194,6 +195,7 @@
     <ClInclude Include="TestEffectiveFlangeWidthTool.h" />
     <ClInclude Include="TestPrecastGirder.h" />
     <ClInclude Include="TestSectionCutTool.h" />
+    <ClInclude Include="TestCastingRegions.h" />
     <ClInclude Include="TestStrandPattern.h" />
   </ItemGroup>
   <ItemGroup>
