@@ -31,10 +31,10 @@
 
 using namespace WBFL::DManip;
 
-InplaceEditTask::InplaceEditTask(CDisplayView* pView,std::shared_ptr<iInplaceEditable> pEditable)
+InplaceEditTask::InplaceEditTask(CDisplay* pDisp,std::shared_ptr<iInplaceEditable> pEditable)
 {
-   m_pView = pView;
-   m_pView->SetCapture();
+   m_pDisp = pDisp;
+   m_pDisp->GetWnd()->SetCapture();
    m_pEditable = pEditable;
 }
 
@@ -152,11 +152,11 @@ void InplaceEditTask::CompleteTask()
 
       m_pEditable->DestroyEditControl();
 
-      CDManipClientDC dc(m_pView);
+      CDManipClientDC dc(m_pDisp);
 
       auto disp_obj = std::dynamic_pointer_cast<iDisplayObject>(m_pEditable);
       auto box = disp_obj->GetLogicalBoundingBox();
-      m_pView->InvalidateRect(&box);
+      m_pDisp->GetWnd()->InvalidateRect(&box);
 
       if ( CompareStates(InplaceEditFSM::Done) )
          m_pEditable->OnDataChanged();

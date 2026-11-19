@@ -104,11 +104,13 @@
     <ClCompile Include="CompoundDrawLineStrategy.cpp" />
     <ClCompile Include="CompoundDrawPointStrategy.cpp" />
     <ClCompile Include="DimensionLine.cpp" />
+    <ClCompile Include="Display.cpp" />
     <ClCompile Include="DisplayListImpl.cpp" />
     <ClCompile Include="DisplayMgrImpl.cpp" />
     <ClCompile Include="DisplayObjectDefaultImpl.cpp" />
     <ClCompile Include="DisplayObjectFactoryImpl.cpp" />
     <ClCompile Include="DisplayView.cpp" />
+    <ClCompile Include="DisplayWnd.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DragDataImpl.cpp" />
     <ClCompile Include="DropSiteImpl.cpp" />
@@ -175,6 +177,7 @@
     <ClInclude Include="..\Include\DManip\ConnectorImpl.h" />
     <ClInclude Include="..\Include\DManip\CoordinateMap.h" />
     <ClInclude Include="..\Include\DManip\DimensionLine.h" />
+    <ClInclude Include="..\Include\DManip\Display.h" />
     <ClInclude Include="..\Include\DManip\DisplayList.h" />
     <ClInclude Include="..\Include\DManip\DisplayListEvents.h" />
     <ClInclude Include="..\Include\DManip\DisplayListImpl.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="..\Include\DManip\DisplayObjectFactory.h" />
     <ClInclude Include="..\Include\DManip\DisplayObjectFactoryImpl.h" />
     <ClInclude Include="..\Include\DManip\DisplayView.h" />
+    <ClInclude Include="..\Include\DManip\DisplayWnd.h" />
     <ClInclude Include="..\Include\DManip\DManip.h" />
     <ClInclude Include="..\Include\DManip\DManipExp.h" />
     <ClInclude Include="..\Include\DManip\DManipTypes.h" />

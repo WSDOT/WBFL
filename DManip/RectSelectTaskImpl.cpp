@@ -34,9 +34,9 @@ RectSelectTask::RectSelectTask()
 RectSelectTask::RectSelectTask(std::shared_ptr<iDisplayMgr> pDM, const CPoint& startPoint)
 {
    m_pDispMgr = pDM;
-   CDisplayView* pView = m_pDispMgr->GetView();
+   CDisplay* pDisp = m_pDispMgr->GetDisplay();
 
-   pView->SetCapture();
+   pDisp->GetWnd()->SetCapture();
 
    m_FirstPoint = m_SecondPoint = m_TempPoint = startPoint;
 }
@@ -150,11 +150,11 @@ void RectSelectTask::SelectObjects()
 
 void RectSelectTask::ClearRect()
 {
-   CDisplayView* pView = m_pDispMgr->GetView();
+   CDisplay* pDisp = m_pDispMgr->GetDisplay();
 
-   if ( pView->GetCapture() == pView )
+   if ( pDisp->GetWnd()->GetCapture() == pDisp->GetWnd())
    {
-      CDManipClientDC dc(pView);
+      CDManipClientDC dc(pDisp);
 
       CRect rect(m_FirstPoint,m_SecondPoint);
       rect.NormalizeRect();
@@ -164,11 +164,11 @@ void RectSelectTask::ClearRect()
 
 void RectSelectTask::TrackRect()
 {
-   CDisplayView* pView = m_pDispMgr->GetView();
+   CDisplay* pDisp = m_pDispMgr->GetDisplay();
 
-   if ( pView->GetCapture() == pView )
+   if ( pDisp->GetWnd()->GetCapture() == pDisp->GetWnd())
    {
-      CDManipClientDC dc(pView);
+      CDManipClientDC dc(pDisp);
 
       // draw the previous rect
       CRect rect1(m_FirstPoint,m_SecondPoint);

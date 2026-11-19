@@ -145,7 +145,7 @@ namespace WBFL
 
 
       public:
-         virtual CDisplayView* GetDisplayView() override;
+         virtual CDisplay* GetDisplay() override;
          virtual CInplaceEdit* GetEditObject() override;
          virtual std::shared_ptr<iInplaceEditable> GetInplaceEditable() override;
 

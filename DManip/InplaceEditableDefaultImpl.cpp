@@ -35,9 +35,9 @@ void InplaceEditableDefaultImpl::DoInplaceEdit()
    // Create the task and start it.
    auto task = CreateTask();
 
-   auto* pView = GetDisplayView();
+   auto* pDisp = GetDisplay();
 
-   auto display_mgr = pView->GetDisplayMgr();
+   auto display_mgr = pDisp->GetDisplayMgr();
    display_mgr->SetTask(task);
 
    auto* pEdit = GetEditObject();
@@ -46,9 +46,9 @@ void InplaceEditableDefaultImpl::DoInplaceEdit()
 
 void InplaceEditableDefaultImpl::EndInplaceEdit()
 {
-   auto* pView = GetDisplayView();
+   auto* pDisp = GetDisplay();
 
-   auto display_mgr = pView->GetDisplayMgr();
+   auto display_mgr = pDisp->GetDisplayMgr();
    display_mgr->SetTask(nullptr);
 
    auto* pEdit = GetEditObject();
@@ -68,8 +68,8 @@ std::shared_ptr<iDisplayObject> InplaceEditableDefaultImpl::GetParent()
 std::shared_ptr<iTask> InplaceEditableDefaultImpl::CreateTask()
 {
    // Create the task using the task factory
-   auto* pView = GetDisplayView();
-   auto display_mgr = pView->GetDisplayMgr();
+   auto* pDisp = GetDisplay();
+   auto display_mgr = pDisp->GetDisplayMgr();
    auto task_factory = display_mgr->GetTaskFactory();
-   return task_factory->CreateInplaceEditTask(pView, GetInplaceEditable());
+   return task_factory->CreateInplaceEditTask(pDisp, GetInplaceEditable());
 }

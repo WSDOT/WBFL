@@ -238,6 +238,8 @@ library WBFLRCCapacity
       HRESULT AddRebarLayer(
          [in] Float64 ds, ///< depth to the reinforcement from the top of the section
          [in] Float64 As, ///< area of reinforcement 
+         [in] Float64 Es, ///< Modulus of elasticity 
+         [in] Float64 fy, ///< yield strength
          [in] Float64 devFactor ///< reduction factor to account for the lack of full development
       );
 
@@ -250,6 +252,12 @@ library WBFLRCCapacity
       /// Area of steel in a mild reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerSteel), helpstring("property RebarLayerSteel")] HRESULT RebarLayerSteel([in] IndexType index,[out,retval] Float64 * As);
 
+      /// Modulus of elasticity of steel in a mild reinforcement layer
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerEs), helpstring("property RebarLayerEs")] HRESULT RebarLayerEs([in] IndexType index,[out,retval] Float64 * Es);
+
+      /// Yield strength of steel in a mild reinforcement layer
+		[propget, helpcontext(IDH_IRCBeam2_RebarLayerFy), helpstring("property RebarLayerFy")] HRESULT RebarLayerFy([in] IndexType index,[out,retval] Float64 * Fy);
+
       /// Development length factor for a mild reinforcement layer
 		[propget, helpcontext(IDH_IRCBeam2_RebarLayerDevFactor), helpstring("property RebarLayerDevFactor")] HRESULT RebarLayerDevFactor([in] IndexType index,[out,retval] Float64 * devFactor);
 
@@ -259,6 +267,8 @@ library WBFLRCCapacity
          [in] IndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
+         [out] Float64 * Es, ///< Modulus of elasticity 
+         [out] Float64 * fy, ///< yield strength
          [out] Float64* devFactor ///< development length factor
       );
 
@@ -298,10 +308,6 @@ library WBFLRCCapacity
       /// Removes all prestress reinforcement from the model.
 		[helpcontext(IDH_IRCBeam2_ClearStrandLayers), helpstring("method ClearStrandLayers")] HRESULT ClearStrandLayers();
 
-      /// Yield strength of mild steel reinforcement
-		[propget, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2_fy),helpstring("property fy")] HRESULT fy([in] Float64 newVal);
-
       /// Ultimate stress of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_fpu),helpstring("property fpu")] HRESULT fpu([in] Float64 newVal);
@@ -321,10 +327,6 @@ library WBFLRCCapacity
       // Beam concrete strength
 		[propget, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([out, retval] Float64 *pVal);
 		[propput, helpcontext(IDH_IRCBeam2_FcBeam),helpstring("property FcBeam")] HRESULT FcBeam([in] Float64 newVal);
-
-      /// Modulus of elasticity of mild steel reinforcement
-		[propget, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([out, retval] Float64 *pVal);
-		[propput, helpcontext(IDH_IRCBeam2_Es),helpstring("property Es")] HRESULT Es([in] Float64 newVal);
 
       /// Modulus of elasticity of prestress reinforcement
 		[propget, helpcontext(IDH_IRCBeam2_Eps),helpstring("property Eps")] HRESULT Eps([out, retval] Float64 *pVal);
@@ -361,6 +363,8 @@ library WBFLRCCapacity
       HRESULT AddRebarLayer(
          [in] Float64 ds, ///< depth to the reinforcement from the top of the section
          [in] Float64 As, ///< area of reinforcement 
+		 [in] Float64 Es, ///< Modulus of elasticity
+         [in] Float64 fy, ///< yield strength
          [in] Float64 devFactor ///< reduction factor to account for the lack of full development
       );
 
@@ -382,6 +386,8 @@ library WBFLRCCapacity
          [in] IndexType index, ///< index of the layer
          [out] Float64 * ds,  ///< depth to the reinforcement
          [out] Float64 * As, ///< area of reinforcement
+         [out] Float64 * Es, ///< Modulus of elasticity
+         [out] Float64 * fy, ///< yield strength
          [out] Float64* devFactor ///< development length factor
       );
 

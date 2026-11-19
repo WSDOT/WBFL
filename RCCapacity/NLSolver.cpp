@@ -671,8 +671,8 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
    fs->Clear();
    for (IndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
    {
-      Float64 ds, As, devFactor;
-      rcbeam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
+      Float64 ds, As, Es, Fy, devFactor;
+      rcbeam->GetRebarLayer(rebarLayerIdx,&ds,&As,&Es,&Fy,&devFactor);
       Float64 es = GetStrain(m_ec,ds,c_guess,0,Es);
       Float64 stress;
       m_RebarModel->ComputeStress(es,&stress);
@@ -681,7 +681,7 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* rcbeam,Float64 c_guess,Float64* pM
       {
          // bar is not fully developed therefore it will pull out before it can yield
          // determine the maximum stress the bar can carry
-         Float64 maxRebarStress = devFactor * fy;
+         Float64 maxRebarStress = devFactor * Fy;
          if ( maxRebarStress < stress )
          {
             stress = maxRebarStress;
@@ -1222,8 +1222,8 @@ HRESULT CNLSolver::AnalyzeSection(IRCBeam2Ex* beam,Float64 Yguess,IUnkArray* sli
    beam->get_RebarLayerCount(&nRebarLayers);
    for ( IndexType rebarLayerIdx = 0; rebarLayerIdx < nRebarLayers; rebarLayerIdx++ )
    {
-      Float64 ds, As, devFactor;
-      beam->GetRebarLayer(rebarLayerIdx,&ds,&As,&devFactor);
+      Float64 ds, As, Es, Fy, devFactor;
+      beam->GetRebarLayer(rebarLayerIdx,&ds,&As,&Es,&Fy,&devFactor);
 
       // ds is measured down from the top... we need it in section coordinates
       ds = m_Ytop - ds;

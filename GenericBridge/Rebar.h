@@ -30,6 +30,7 @@
 #include "resource.h"       // main symbols
 
 
+
 /////////////////////////////////////////////////////////////////////////////
 // CRebar
 class ATL_NO_VTABLE CRebar : 
@@ -101,6 +102,8 @@ public:
    STDMETHOD(put_Name)(/*[in]*/ BSTR name) override;
    STDMETHOD(get_UltimateStrength)(/*[out,retval]*/ Float64* fpu) override;
 	STDMETHOD(put_UltimateStrength)(/*[in]*/ Float64 fpu) override;
+	STDMETHOD(get_Es)(/*[out,retval]*/ Float64* Es) override;
+	STDMETHOD(put_Es)(/*[in]*/ Float64 Es) override;
 	STDMETHOD(get_YieldStrength)(/*[out,retval]*/ Float64* fpy) override;
    STDMETHOD(put_YieldStrength)(/*[in]*/ Float64 fpy) override;
 	STDMETHOD(get_NominalDiameter)(/*[out,retval]*/ Float64* db) override;

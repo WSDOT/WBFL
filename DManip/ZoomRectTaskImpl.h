@@ -25,7 +25,7 @@
 
 #include "ZoomRectFSM.h"
 #include <DManip/Task.h>
-#include <DManip/DisplayView.h>
+#include <DManip/Display.h>
 
 namespace WBFL
 {
@@ -37,7 +37,8 @@ namespace WBFL
       {
       public:
          ZoomRectTask();
-         ZoomRectTask(CDisplayView* pView, HCURSOR hCursor, COLORREF color);
+         ZoomRectTask(CDisplay* pDisp, HCURSOR hCursor, COLORREF color);
+
          virtual ~ZoomRectTask();
 
          // ZoomRectTask methods (from ZoomRectFSM)
@@ -69,7 +70,7 @@ namespace WBFL
          virtual DROPEFFECT OnDropEx(COleDataObject* pDataObject,DROPEFFECT dropEffect,DROPEFFECT dropList,CPoint point) override;
 
       private:
-         CDisplayView* m_pView;
+         CDisplay* m_pDispHandler;
          CPen* m_pTrackPen;
          CPoint m_FirstPoint;
          CPoint m_SecondPoint;

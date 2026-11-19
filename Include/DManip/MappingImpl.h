@@ -31,7 +31,7 @@
 
 #include <Math/CoordMapper1d.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -83,7 +83,7 @@ namespace WBFL
          virtual void LPtoTP(LONG lx,LONG ly,LONG* tx,LONG* ty) const override;
          virtual void TPtoLP(LONG tx,LONG ty,LONG* lx,LONG* ly) const override;
          virtual CSize GetTextWindowExtent() const override;
-         virtual CSize GetTextExtent(const CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) const override;
+         virtual CSize GetTextExtent(const CDisplay* pView,const LOGFONT& font, LPCTSTR lpszText) const override;
 
       private:
          WBFL::Geometry::Size2d m_WorldExtent;

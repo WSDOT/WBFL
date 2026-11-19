@@ -221,8 +221,8 @@ STDMETHODIMP CPCISolver::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
    Float64 Abar = 0;
    for (IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
    {
-      Float64 ds, As, devFactor;
-      rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
+      Float64 ds, As, Es, Fy, devFactor;
+      rcbeam->GetRebarLayer(rebar,&ds,&As,&Es,&Fy,&devFactor);
       Abar += devFactor*As;
    }
 
@@ -341,8 +341,8 @@ STDMETHODIMP CPCISolver::Solve(IRCBeam2Ex* rcbeam,IRCSolutionEx* *solution)
       fs->Clear();
       for ( IndexType rebar = 0; rebar < nRebarLayers; rebar++ )
       {
-         Float64 ds, As, devFactor;
-         rcbeam->GetRebarLayer(rebar,&ds,&As,&devFactor);
+         Float64 ds, As, Es, Fy, devFactor;
+         rcbeam->GetRebarLayer(rebar,&ds,&As,&Es,&Fy,&devFactor);
 
          Float64 stress;
          Float64 es  = GetStrain(m_ec,ds,c_guess,0,Eps);

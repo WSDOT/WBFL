@@ -96,11 +96,6 @@ Float64 CPierImpl::GetDelta()
       m_Delta = Xcl - Xxb; // Xxb + delta = Xcl
       m_Delta = IsZero(m_Delta) ? 0 : m_Delta;
 
-      CComQIPtr<ILinearCrossBeam> cb(m_CrossBeam);
-      Float64 X2;
-      cb->get_X2(&X2);
-      m_Delta += X2;
-
       m_bIsDirty = false;
    }
 
@@ -120,6 +115,40 @@ HRESULT  CPierImpl::get_Type(PierType* type)
    CHECK_RETVAL(type);
    *type = m_Type;
    return S_OK;
+}
+
+HRESULT  CPierImpl::putref_DeckProfile(IPoint2dCollection* ppPoints)
+{
+   CHECK_IN(ppPoints);
+   m_DeckProfile = ppPoints;
+   return S_OK;
+}
+
+HRESULT  CPierImpl::get_DeckProfile(IPoint2dCollection** ppPoints)
+{
+    CHECK_RETOBJ(ppPoints);
+    return m_DeckProfile.CopyTo(ppPoints);
+}
+
+HRESULT  CPierImpl::put_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/Float64 clo)
+{
+    m_CurbLineOffset[side] = clo;
+    return S_OK;
+}
+
+HRESULT  CPierImpl::get_CurbLineOffset(/*[in]*/DirectionType side,/*[in]*/CurbLineMeasurementType clMeasure,/*[out,retval]*/Float64* pCLO)
+{
+    CHECK_RETVAL(pCLO);
+    *pCLO = m_CurbLineOffset[side];
+    if (clMeasure == clmPlaneOfPier)
+    {
+        CComPtr<IAngle> objSkew;
+        get_SkewAngle(&objSkew);
+        Float64 skew;
+        objSkew->get_Value(&skew);
+        *pCLO /= cos(skew);
+    }
+    return S_OK;
 }
 
 HRESULT  CPierImpl::get_CurbToCurbWidth(CurbLineMeasurementType clMeasure,Float64* pWcc)
@@ -296,7 +325,7 @@ HRESULT  CPierImpl::get_Elevation(/*[in]*/Float64 Xcl,/*[out,retval]*/Float64* p
 void CPierImpl::CreateDeckProfileFunction(WBFL::Math::PiecewiseFunction* pFN)
 {
    CComPtr<IPoint2dCollection> deckProfile;
-   m_pPier->get_DeckProfile(&deckProfile);
+   get_DeckProfile(&deckProfile);
 
    CComPtr<IEnumPoint2d> enumPoints;
    deckProfile->get__Enum(&enumPoints);

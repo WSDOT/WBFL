@@ -145,9 +145,9 @@ namespace WBFL
 
             // Drill up to the view and create a dc so that we can get the size of the tag
             // with that, we can make the static control the right size
-            auto view = m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetView();
+            auto disp = m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
-            CDManipClientDC dc(view);
+            CDManipClientDC dc(disp);
 
             auto unit_tag = m_IndirectMeasure.UnitOfMeasure.UnitTag();
             CSize tagExtents = dc.GetTextExtent(unit_tag.c_str());
@@ -164,9 +164,9 @@ namespace WBFL
             if (tagRect.Height() < tagExtents.cy)
                tagRect.bottom = tagRect.top + tagExtents.cy;
 
-            view->ScreenToClient(&tagRect);
+            disp->GetWnd()->ScreenToClient(&tagRect);
 
-            m_pctlUnitTag->Create(unit_tag.c_str(), WS_CHILD | WS_VISIBLE, tagRect, view);
+            m_pctlUnitTag->Create(unit_tag.c_str(), WS_CHILD | WS_VISIBLE, tagRect, disp->GetWnd());
          }
 
          virtual void DestroyEditControl() override
@@ -289,9 +289,9 @@ namespace WBFL
          virtual int GetBkMode() const override { return m_EditableTextBlock->GetBkMode(); }
 
       protected:
-         virtual CDisplayView* GetDisplayView() override
+         virtual CDisplay* GetDisplay() override
          {
-            return m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetView();
+            return m_EditableTextBlock->GetDisplayList()->GetDisplayMgr()->GetDisplay();
          }
 
          virtual CInplaceEdit* GetEditObject() override

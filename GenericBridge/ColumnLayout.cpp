@@ -485,6 +485,14 @@ STDMETHODIMP CColumnLayout::get_ColumnLocation(ColumnIndexType colIdx,Float64* p
       *pXxb += spacing;
    }
 
+   CComPtr<ICrossBeam> xbeam;
+   m_pPier->get_CrossBeam(&xbeam);
+   CComQIPtr<ILinearCrossBeam> cb(xbeam);
+   Float64 X1L;
+   cb->get_X1L(&X1L);
+
+   *pXxb -= X1L;
+
    return S_OK;
 }
 

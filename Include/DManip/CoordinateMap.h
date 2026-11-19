@@ -24,7 +24,7 @@
 #pragma once
 #include <DManip/DManipExp.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -75,7 +75,7 @@ namespace WBFL
          /// @brief Get text extent in logical coordinates. Font dimensions are expected in
          /// 1/10 points (i.e., in form needed by CreatePointFontIndirect).
          /// Adjust for DPI scaling
-         virtual CSize GetTextExtent(const CDisplayView* pView,const LOGFONT& font, LPCTSTR lpszText) const = 0;
+         virtual CSize GetTextExtent(const CDisplay* pDisp,const LOGFONT& font, LPCTSTR lpszText) const = 0;
       };
    };
 };

@@ -134,10 +134,10 @@ bool LegendDisplayObject::OnRButtonDown(UINT nFlags, const POINT& point)
 {
    if (!DisplayObjectDefaultImpl::OnRButtonDown(nFlags,point))
    {
-      auto view = GetDisplayList()->GetDisplayMgr()->GetView();
+      auto disp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
       POINT screen_point = point;
-      view->ClientToScreen(&screen_point);
+      disp->GetWnd()->ClientToScreen(&screen_point);
 
       RowIndexType nrows = max(m_LegendEntries.size(), m_nRows);
 
@@ -157,7 +157,7 @@ bool LegendDisplayObject::OnRButtonDown(UINT nFlags, const POINT& point)
       // messages
       std::weak_ptr<iContextMenuCommandCallback> listener = std::dynamic_pointer_cast<iContextMenuCommandCallback>(shared_from_this());
       m_pContextMenuMsgWnd = std::make_unique<CContextMenuCommandWnd>(listener);
-      m_pContextMenuMsgWnd->Create(nullptr, _T("MessageCatcher\0"), WS_DISABLED, CRect(), view, 0);
+      m_pContextMenuMsgWnd->Create(nullptr, _T("MessageCatcher\0"), WS_DISABLED, CRect(), disp->GetWnd(), 0);
 
       menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, screen_point.x, screen_point.y, m_pContextMenuMsgWnd.get());
 
@@ -177,7 +177,7 @@ bool LegendDisplayObject::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
          CRect box = GetLogicalBoundingBox();
          box.InflateRect(1, 1);
-         pDispMgr->GetView()->InvalidateRect(box);
+         pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 
          auto rect =  GetBoundingBox();
          auto width = rect.Width();
@@ -212,7 +212,7 @@ bool LegendDisplayObject::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
          box = GetLogicalBoundingBox();
          box.InflateRect(1, 1);
-         pDispMgr->GetView()->InvalidateRect(box);
+         pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 
          return true;
       }
@@ -228,7 +228,7 @@ void LegendDisplayObject::SetPosition(const WBFL::Geometry::Point2d& pos,bool bR
    {
       // Erase the old graphic
       CRect box = GetLogicalBoundingBox();
-      GetDisplayList()->GetDisplayMgr()->GetView()->InvalidateRect(box);
+      GetDisplayList()->GetDisplayMgr()->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
    
    // Set the new position
@@ -238,7 +238,7 @@ void LegendDisplayObject::SetPosition(const WBFL::Geometry::Point2d& pos,bool bR
    if ( bRedraw )
    {
       CRect box = GetLogicalBoundingBox(); // this is a new bounding box, different from above, because m_Position has changed
-      GetDisplayList()->GetDisplayMgr()->GetView()->InvalidateRect(box);
+      GetDisplayList()->GetDisplayMgr()->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
 
    if ( bFireEvent )
@@ -328,13 +328,13 @@ void LegendDisplayObject::SetNumRows(IndexType count)
       // must invalidate before and after change
       CRect box = GetLogicalBoundingBox();
       box.InflateRect(1,1);
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 
       m_nRows = count;
 
       box = GetLogicalBoundingBox();
       box.InflateRect(1,1);
-      pDispMgr->GetView()->InvalidateRect(box);
+      pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
    }
 }
 
@@ -370,14 +370,14 @@ SIZE LegendDisplayObject::GetMinCellSize() const
    }
 
    auto map = GetDisplayList()->GetDisplayMgr()->GetCoordinateMap();
-   auto view = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto disp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
    CSize text_size_twips(0,0);
    if (max_idx != -1)
    {
       auto name = m_LegendEntries[max_idx]->GetName();
 
-      auto size = map->GetTextExtent(view, m_Font, name.c_str());
+      auto size = map->GetTextExtent(disp, m_Font, name.c_str());
 
       long cox, coy, cex, cey;
       map->LPtoTP(0, 0, &cox, &coy);
@@ -543,13 +543,13 @@ void LegendDisplayObject::OnDragMoved(const WBFL::Geometry::Size2d& offset)
 
    CRect box = GetLogicalBoundingBox();
    box.InflateRect(1,1);
-   pDispMgr->GetView()->InvalidateRect(box);
+   pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 
    m_Position.Offset(offset);
          
    box = GetLogicalBoundingBox();
    box.InflateRect(1,1);
-   pDispMgr->GetView()->InvalidateRect(box);
+   pDispMgr->GetDisplay()->GetWnd()->InvalidateRect(box);
 
    Fire_OnDragMoved(offset);
 }
@@ -574,8 +574,8 @@ void LegendDisplayObject::DrawDragImage(CDC* pDC, std::shared_ptr<const iCoordin
 void LegendDisplayObject::OnMessage(UINT msg)
 {
    int nrows = msg - MC_MSG_BASE;
-   auto view = GetDisplayList()->GetDisplayMgr()->GetView();
-   CDManipClientDC dc(view);
+   auto disp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
+   CDManipClientDC dc(disp);
    SetNumRows(nrows);
    m_pContextMenuMsgWnd->DestroyWindow();
 }
@@ -630,7 +630,7 @@ void LegendDisplayObject::Draw(CDC* pDC, std::shared_ptr<const iCoordinateMap> m
    // title
    UINT old_align = pDC->SetTextAlign(TA_LEFT | TA_BOTTOM);
 
-   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto pDisp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
    if (0 < m_Title.length() && !bBeingDragged) // dont' draw text if we are being dragged
    {
@@ -639,12 +639,12 @@ void LegendDisplayObject::Draw(CDC* pDC, std::shared_ptr<const iCoordinateMap> m
       lf.lfWeight = m_Font.lfWeight > 700 ? FW_BLACK : m_Font.lfWeight + 200;
       lf.lfHeight = m_Font.lfHeight + 10;
 
-      CSize str_size = map->GetTextExtent(pView, lf, m_Title.c_str());
+      CSize str_size = map->GetTextExtent(pDisp, lf, m_Title.c_str());
 
       LONG tx = location.x + lwidth / 2 - str_size.cx / 2;
       LONG ty = location.y + lcheight / 8;
 
-      pView->ScaleFont(lf);
+      pDisp->ScaleFont(lf);
 
       CFont tfont;
       tfont.CreatePointFontIndirect(&lf, pDC);

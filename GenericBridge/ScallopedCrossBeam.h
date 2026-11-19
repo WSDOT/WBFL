@@ -23,25 +23,26 @@
 // Bridge_Support@wsdot.wa.gov
 ///////////////////////////////////////////////////////////////////////
 
-// LinearCrossBeam.h : Declaration of the CLinearCrossBeam
+// ScallopedCrossBeam.h : Declaration of the CScallopedCrossBeam
 
 #pragma once
 
 #include "resource.h"       // main symbols
 #include "ColumnLayout.h"
+#include <vector>
 
 /////////////////////////////////////////////////////////////////////////////
-// CLinearCrossBeam
-class ATL_NO_VTABLE CLinearCrossBeam : 
+// CScallopedCrossBeam
+class ATL_NO_VTABLE CScallopedCrossBeam : 
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CLinearCrossBeam, &CLSID_LinearCrossBeam>,
+	public CComCoClass<CScallopedCrossBeam, &CLSID_ScallopedCrossBeam>,
 	public ISupportErrorInfo,
-	public ILinearCrossBeam,
+	public IScallopedCrossBeam,
    public IStructuredStorage2,
-   public IObjectSafetyImpl<CLinearCrossBeam,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
+   public IObjectSafetyImpl<CScallopedCrossBeam,INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA>
 {
 public:
-	CLinearCrossBeam()
+	CScallopedCrossBeam()
 	{
       m_bIsLXBDirty = true;
       m_bIsUXBDirty = true;
@@ -53,13 +54,14 @@ public:
 
    void Invalidate();
 
-DECLARE_REGISTRY_RESOURCEID(IDR_LINEARCROSSBEAM)
+DECLARE_REGISTRY_RESOURCEID(IDR_SCALLOPEDCROSSBEAM)
 
 DECLARE_PROTECT_FINAL_CONSTRUCT()
 
-BEGIN_COM_MAP(CLinearCrossBeam)
+BEGIN_COM_MAP(CScallopedCrossBeam)
 	COM_INTERFACE_ENTRY(ICrossBeam)
-   COM_INTERFACE_ENTRY(ILinearCrossBeam)
+	COM_INTERFACE_ENTRY(ILinearCrossBeam)
+   COM_INTERFACE_ENTRY(IScallopedCrossBeam)
 	COM_INTERFACE_ENTRY(IStructuredStorage2)
    COM_INTERFACE_ENTRY(ISupportErrorInfo)
    COM_INTERFACE_ENTRY(IObjectSafety)
@@ -67,8 +69,11 @@ END_COM_MAP()
 
 private:
    IPier* m_pPier; // weak reference
-   Float64 m_H1, m_H2, m_H3, m_H4, m_H5;
-   Float64 m_X1, m_X2, m_X3, m_X4;
+   Float64 m_H1L, m_H1R, m_HU;
+   Float64 m_X1L, m_X1R;
+   Float64 m_RL, m_RR;
+   std::vector<Float64> m_ColumnScallopDepths;
+   std::vector<Float64> m_ColumnScallopRadii;
    Float64 m_W1, m_W2;
    CComPtr<IRebarLayout> m_RebarLayout;
 
@@ -102,30 +107,35 @@ public:
    STDMETHOD(get_RebarLayout)(/*[out,retval]*/IRebarLayout** ppRebarLayout) override;
    STDMETHOD(putref_RebarLayout)(/*[in]*/IRebarLayout* pRebarLayout) override;
 
-// ILinearCrossBeam
+// IScallopedCrossBeam
 public:
-   STDMETHOD(put_H1)(/*[in]*/Float64 H1) override;
-   STDMETHOD(get_H1)(/*[out,retval]*/Float64* pH1) override;
-   STDMETHOD(put_H2)(/*[in]*/Float64 H2) override;
-   STDMETHOD(get_H2)(/*[out,retval]*/Float64* pH2) override;
-   STDMETHOD(put_H3)(/*[in]*/Float64 H3) override;
-   STDMETHOD(get_H3)(/*[out,retval]*/Float64* pH3) override;
-   STDMETHOD(put_H4)(/*[in]*/Float64 H4) override;
-   STDMETHOD(get_H4)(/*[out,retval]*/Float64* pH4) override;
-   STDMETHOD(put_H5)(/*[in]*/Float64 H5) override;
-   STDMETHOD(get_H5)(/*[out,retval]*/Float64* pH5) override;
-   STDMETHOD(put_X1)(/*[in]*/Float64 X1) override;
-   STDMETHOD(get_X1)(/*[out,retval]*/Float64* pX1) override;
-   STDMETHOD(put_X2)(/*[in]*/Float64 X2) override;
-   STDMETHOD(get_X2)(/*[out,retval]*/Float64* pX2) override;
-   STDMETHOD(put_X3)(/*[in]*/Float64 X3) override;
-   STDMETHOD(get_X3)(/*[out,retval]*/Float64* pX3) override;
-   STDMETHOD(put_X4)(/*[in]*/Float64 X4) override;
-   STDMETHOD(get_X4)(/*[out,retval]*/Float64* pX4) override;
+   STDMETHOD(put_H1L)(/*[in]*/Float64 H1L) override;
+   STDMETHOD(get_H1L)(/*[out,retval]*/Float64* pH1L) override;
+   STDMETHOD(put_H1R)(/*[in]*/Float64 H1R) override;
+   STDMETHOD(get_H1R)(/*[out,retval]*/Float64* pH1R) override;
+
+   STDMETHOD(put_X1L)(/*[in]*/Float64 X1L) override;
+   STDMETHOD(get_X1L)(/*[out,retval]*/Float64* pX1L) override;
+   STDMETHOD(put_X1R)(/*[in]*/Float64 X1R) override;
+   STDMETHOD(get_X1R)(/*[out,retval]*/Float64* pX1R) override;
+
+   STDMETHOD(put_HU)(/*[in]*/Float64 HU) override;
+   STDMETHOD(get_HU)(/*[out,retval]*/Float64* pHU) override;
+
    STDMETHOD(put_W1)(/*[in]*/Float64 W1) override;
    STDMETHOD(get_W1)(/*[out,retval]*/Float64* pW1) override;
    STDMETHOD(put_W2)(/*[in]*/Float64 W2) override;
    STDMETHOD(get_W2)(/*[out,retval]*/Float64* pW2) override;
+
+   STDMETHOD(put_RL)(/*[in]*/Float64 RL) override;
+   STDMETHOD(get_RL)(/*[out,retval]*/Float64* pRL) override;
+   STDMETHOD(put_RR)(/*[in]*/Float64 RR) override;
+   STDMETHOD(get_RR)(/*[out,retval]*/Float64* pRR) override;
+
+   STDMETHOD(put_ColumnScallopDepth)(ColumnIndexType colIdx, Float64 depth) override;
+   STDMETHOD(get_ColumnScallopDepth)(ColumnIndexType colIdx, Float64* depth) override;
+   STDMETHOD(put_ColumnScallopRadius)(ColumnIndexType colIdx, Float64 radius) override;
+   STDMETHOD(get_ColumnScallopRadius)(ColumnIndexType colIdx, Float64* radius) override;
 
 // IStructuredStorage2
 public:

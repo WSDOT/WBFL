@@ -166,21 +166,36 @@ STDMETHODIMP CRebar::put_InstallationStage(StageIndexType stageIdx)
 
 /////////////////////////////////////////////////////
 // IMaterial implementation
-STDMETHODIMP CRebar::get_E(StageIndexType stageIdx,Float64* E)
-{
-   CHECK_RETVAL(E);
-   if ( stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX )
-      (*E) = 0;
-   else
-      (*E) = m_E;
 
+STDMETHODIMP CRebar::get_E(StageIndexType stageIdx, Float64* E)
+{
+	CHECK_RETVAL(E);
+	if (stageIdx < m_InstallationStageIdx || m_InstallationStageIdx == INVALID_INDEX)
+		(*E) = 0;
+	else
+		(*E) = m_E;
+	return S_OK;
+}
+
+STDMETHODIMP CRebar::put_E(StageIndexType stageIdx, Float64 E)
+{
+	ATLASSERT(false); // don't call this method
+	return E_NOTIMPL;
+	return S_OK;
+}
+
+
+STDMETHODIMP CRebar::get_Es(Float64* Es)
+{
+   CHECK_RETVAL(Es);
+   *Es = m_E;
    return S_OK;
 }
 
-STDMETHODIMP CRebar::put_E(StageIndexType stageIdx,Float64 E)
+STDMETHODIMP CRebar::put_Es(Float64 Es)
 {
-   ATLASSERT(false); // don't call this method
-   return E_NOTIMPL;
+   m_E = Es;
+   return S_OK;
 }
 
 STDMETHODIMP CRebar::get_Density(StageIndexType stageIdx,Float64* w)

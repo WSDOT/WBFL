@@ -25,7 +25,7 @@
 #include <DManip/DManipExp.h>
 #include <DManip/TaskFactory.h>
 
-class CDisplayView;
+class CDisplay;
 
 namespace WBFL
 {
@@ -45,12 +45,12 @@ namespace WBFL
 	      TaskFactory() = default;
 	      virtual ~TaskFactory() = default;
 
-         virtual std::shared_ptr<iTask> CreateInplaceEditTask(CDisplayView* pView,std::shared_ptr<iInplaceEditable> pEditable) const;
+         virtual std::shared_ptr<iTask> CreateInplaceEditTask(CDisplay* pDisp,std::shared_ptr<iInplaceEditable> pEditable) const;
          virtual std::shared_ptr<iTask> CreateRectSelectTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
          virtual std::shared_ptr<iTask> CreateLocalDragDropTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
          virtual std::shared_ptr<iTask> CreateForeignDragDropTask(std::shared_ptr<iDisplayMgr> pDispMgr,const CPoint& startPoint) const;
-         virtual std::shared_ptr<iTask> CreateCenterOnPointTask(CDisplayView* pView) const;
-         virtual std::shared_ptr<iTask> CreateZoomTask(CDisplayView* pView,HCURSOR hCursor,COLORREF color) const;
+         virtual std::shared_ptr<iTask> CreateCenterOnPointTask(CDisplay* pWnd) const;
+         virtual std::shared_ptr<iTask> CreateZoomTask(CDisplay* pWnd,HCURSOR hCursor,COLORREF color) const;
       };
    };
 };

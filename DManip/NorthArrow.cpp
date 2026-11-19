@@ -47,7 +47,7 @@ void NorthArrow::Draw(CDC* pDC)
    if ( !IsVisible() ) // Don't draw if not visible
       return;
 
-   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto pDisp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
 
    //   // For debugging... Draw the gravity well
 //   CComPtr<iGravityWellStrategy> strategy;
@@ -75,7 +75,7 @@ void NorthArrow::Draw(CDC* pDC)
    CSize extents = pDC->GetTextExtent("North");
    LONG size = 125*extents.cx/100;
 
-   CRect rClient = pView->GetViewRect();
+   CRect rClient = pDisp->GetViewRect();
 
    CPoint tl;
    tl.x = rClient.left;
@@ -130,9 +130,9 @@ void NorthArrow::Highlight(CDC* pDC,bool bHighlight)
 
 RECT NorthArrow::GetLogicalBoundingBox() const
 {
-   auto pView = GetDisplayList()->GetDisplayMgr()->GetView();
+   auto pDisp = GetDisplayList()->GetDisplayMgr()->GetDisplay();
    CRect rClient;
-   pView->GetClientRect(&rClient);
+   pDisp->GetWnd()->GetClientRect(&rClient);
 
    CPoint p;
    p.x = rClient.left;
@@ -182,7 +182,7 @@ void NorthArrow::SetText(LPCTSTR lpszText)
       if ( display_mgr )
       {
          CRect box = GetLogicalBoundingBox();
-         display_mgr->GetView()->InvalidateRect(box);
+         display_mgr->GetDisplay()->GetWnd()->InvalidateRect(box);
       }
    }
 }
