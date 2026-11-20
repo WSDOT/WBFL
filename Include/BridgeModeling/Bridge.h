@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BMF - Bridge Modeling Framework - Product modeling of bridge structures
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright © 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -66,7 +66,7 @@ DESCRIPTION
    A pure virtual entry class for observing bmfBridge objects.
 
 COPYRIGHT
-   Copyright © 1999-2022
+   Copyright © 1999-2026
    Washington State Department Of Transportation
    All Rights Reserved
 
@@ -101,7 +101,7 @@ DESCRIPTION
    aspect of the bridge is modified,  the observer is notified.
 
 COPYRIGHT
-   Copyright (c) 1997
+   Copyright © 1999-2026
    Washington State Department Of Transportation
    All Rights Reserved
 *****************************************************************************/

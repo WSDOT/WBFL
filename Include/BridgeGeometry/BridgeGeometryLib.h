@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // BAM - Bridge Analysis Model, Analytical modeling of bridge structures
-// Copyright (C) 1999  Washington State Department of Transportation
+// Copyright © 1999-2026  Washington State Department of Transportation
 //                     Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -33,7 +33,7 @@ DESCRIPTION
    This library provides general support classes for bridge geometry modeling.
 
 COPYRIGHT
-   Copyright (c) 2009
+   Copyright © 1999-2026
    Washington State Department Of Transportation
    All Rights Reserved
 *****************************************************************************/

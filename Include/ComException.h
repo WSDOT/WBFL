@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // WBFL - Washington Bridge Foundation Libraries
-// Copyright © 1999-2022  Washington State Department of Transportation
+// Copyright © 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 //
 // This library is a part of the Washington Bridge Foundation Libraries
@@ -61,7 +61,7 @@ DESCRIPTION
 
 
 COPYRIGHT
-   Copyright (c) 2000
+   Copyright © 1999-2026
    Washington State Department Of Transportation
    All Rights Reserved
 

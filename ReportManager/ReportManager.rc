@@ -86,6 +86,7 @@ BEGIN
         BEGIN
             VALUE "Comments", "A member of Alternate Route Project"
             VALUE "CompanyName", "Washington State Department of Transportation"
+            VALUE "LegalCopyright", "Copyright © 1999-2026, Washington State Department of Transportation, All Rights Reserved\0"
             VALUE "FileDescription", "ReportManager DLL"
             VALUE "FileVersion", "9.1.0.1"
             VALUE "InternalName", "ReportManager"

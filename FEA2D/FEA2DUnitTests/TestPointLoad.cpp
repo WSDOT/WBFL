@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////
 // FEA2D - Two-dimensional Finite Element Analysis Engine
-// Copyright � 1999-2026  Washington State Department of Transportation
+// Copyright © 1999-2026  Washington State Department of Transportation
 //                        Bridge and Structures Office
 ///////////////////////////////////////////////////////////////////////
 // TestPointLoad.cpp

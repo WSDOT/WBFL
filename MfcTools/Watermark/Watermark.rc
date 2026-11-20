@@ -208,7 +208,7 @@ BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
     LTEXT           "Watermark Version 1.0",IDC_STATIC,40,10,119,8,
                     SS_NOPREFIX
-    LTEXT           "Copyright (C) 1998",IDC_STATIC,40,25,119,8
+    LTEXT           "Copyright © 1999-2026",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
 END
 
@@ -240,7 +240,7 @@ BEGIN
             VALUE "FileDescription", "Watermark MFC Application\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "Watermark\0"
-            VALUE "LegalCopyright", "Copyright (C) 1998\0"
+            VALUE "LegalCopyright", "Copyright © 1999-2026, Washington State Department of Transportation, All Rights Reserved\0"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "Watermark.EXE\0"
             VALUE "ProductName", "Watermark Application\0"

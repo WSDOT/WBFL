@@ -32,7 +32,7 @@ DESCRIPTION
 
 
 COPYRIGHT
-   Copyright (c) 1997
+   Copyright © 1999-2026
    Washington State Department Of Transportation
    All Rights Reserved
 
