@@ -1375,26 +1375,6 @@
                helpdir=""
                flags="HASDISKIMAGE"></typelib>
    </file>
-   <file name="WBFLReportManagerAgent.dll"
-         hashalg="SHA1">
-      <comClass clsid="{809889B1-69F0-49FC-B8F5-50B0BC169EB0}"
-                tlbid="{8ACD75E4-653A-439A-8B4C-1083E1FB86E5}"
-                description="ReportManagerAgent Class"></comClass>
-      <typelib tlbid="{8ACD75E4-653A-439A-8B4C-1083E1FB86E5}"
-               version="1.0"
-               helpdir=""
-               flags="HASDISKIMAGE"></typelib>
-   </file>
-   <file name="WBFLGraphManagerAgent.dll"
-         hashalg="SHA1">
-      <comClass clsid="{1611AC48-FDC6-4f3d-AE54-DB9F7615821D}"
-                tlbid="{C425F8F7-C246-43bb-AF54-52AD12059815}"
-                description="GraphManagerAgent Class"></comClass>
-      <typelib tlbid="{C425F8F7-C246-43bb-AF54-52AD12059815}"
-               version="1.0"
-               helpdir=""
-               flags="HASDISKIMAGE"></typelib>
-   </file>
    <file name="WBFLRCCapacity.dll"
          hashalg="SHA1">
       <comClass clsid="{4FAFD823-B4C9-4F88-8D46-74F84682893C}"
