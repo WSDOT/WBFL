@@ -1,0 +1,8 @@
+// FEA2D.rc - written by hand (not with the resource editor): FEA2D has only a version resource,
+// which is in res\FEA2D.rc2 and uses the version number in WBFLVersion.h
+
+#include "winres.h"
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+#include "res\FEA2D.rc2"  // version resource; uses the version number in WBFLVersion.h
